@@ -1,0 +1,17 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DataFormats/TrackReco"/>
+<use name="CommonTools/UtilAlgos"/>
+
+<!-- for the TFileService, for the output file -->
+<use name="PhysicsTools/UtilAlgos"/>
+<use name="FWCore/ServiceRegistry"/>
+
+<use name="DataFormats/PatCandidates"/>
+
+<use name="UserCode/llvv_fwk"/>
+<use name="UserCode/ttbar-leptons-80X"/>
+
+<flags EDM_PLUGIN="1"/>
+
