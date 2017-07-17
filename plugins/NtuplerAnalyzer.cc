@@ -77,6 +77,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	edm::EDGetTokenT<reco::TrackCollection> tracks_;
 	edm::EDGetTokenT<pat::MuonCollection> muons_;
 	edm::EDGetTokenT<pat::ElectronCollection> electrons_;
+	edm::EDGetTokenT<pat::TauCollection> taus_;
 	edm::EDGetTokenT<reco::VertexCollection> vtx_;
 	edm::EDGetTokenT<double> rho_;
 
@@ -88,9 +89,12 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//  - and reset/fill stuff in analyze
 	// let's do it first manually for p4-s of leptons
 	TTree* NT_output_ttree; 
+	/*
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > > NT_lep_p4;
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > >* pt_lep_p4; // yep, vectors of complex objects require additional persistent pointers
-
+	*/
+	#define NTUPLE_INTERFACE_CLASS_DECLARE
+	#include "UserCode/NtuplerAnalyzer/interface/ntupleOutput.h"
 };
 
 //
@@ -112,6 +116,7 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
 	tracks_    = consumes<reco::TrackCollection>(edm::InputTag("generalTracks"));
 	muons_     = consumes<pat::MuonCollection>    (edm::InputTag("slimmedMuons"));
 	electrons_ = consumes<pat::ElectronCollection>(edm::InputTag("slimmedElectrons"));
+	taus_ = consumes<pat::TauCollection>(edm::InputTag("slimmedTaus"));
 	vtx_ = consumes<reco::VertexCollection>(edm::InputTag("offlineSlimmedPrimaryVertices"));
 	rho_ = consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
 	//fwlite::Handle<double> rhoHandle;
@@ -121,14 +126,29 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
 	// init ttree
 	NT_output_ttree = fs->make<TTree>("reduced_ttree", "TTree with reduced event data");
 	// connect the branch
+	/*
 	// set the additional pointer:
 	pt_lep_p4 = &NT_lep_p4;
 	NT_output_ttree->Branch("lep_p4", "vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > >", &pt_lep_p4);
 	// should be ok
+	*/
 
+	// connect the branch with macro:
+	#undef NTUPLE_INTERFACE_CLASS_DECLARE
+	#define NTUPLE_INTERFACE_CLASS_INITIALIZE
+	#include "UserCode/NtuplerAnalyzer/interface/ntupleOutput.h"
 
-   //now do what ever initialization is needed
-   usesResource("TFileService");
+	//now do what ever initialization is needed
+	usesResource("TFileService");
+
+	/* output via EDM stuff
+	 * does it work ok with skipping events?
+	 * test the straight forward way, if doesn't work -- leave it, save in TTree manualy
+	 *
+	 * error: 'produces' was not declared in this scope
+	 * -- so it's really just for producers
+	 */
+	//produces<vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > >>("leps_p4");
 
 }
 
@@ -150,12 +170,23 @@ NtuplerAnalyzer::~NtuplerAnalyzer()
 void
 NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-   using namespace edm;
+	using namespace edm;
 
-	/*
-	Handle<reco::TrackCollection> tracks;
-	iEvent.getByToken( tracks_, tracks );
+	// reset the output objects with macro
+	#undef NTUPLE_INTERFACE_CLASS_DECLARE
+	#undef NTUPLE_INTERFACE_CLASS_INITIALIZE
+	#define NTUPLE_INTERFACE_CLASS_RESET
+	#include "UserCode/NtuplerAnalyzer/interface/ntupleOutput.h"
+	// if output contains stand-alone objects (not vector of LorentxVector-s, but just 1 LorentzVector, like MET or something)
+	// you have to reset them yourself, since each object might have its' own method
+	NT_met_init.SetXYZT(0,0,0,0);
+	NT_met_uncorrected.SetXYZT(0,0,0,0);
+	NT_met_corrected.SetXYZT(0,0,0,0);
+
+	//Handle<reco::TrackCollection> tracks;
+	//iEvent.getByToken( tracks_, tracks );
 	//LogInfo("Demo") << "number of tracks "<<tracks->size();
+	/*
 	if( minTracks_ <= tracks->size() ) {
 	   LogInfo("Demo") << "number of tracks "<<tracks->size();
 	}
@@ -174,6 +205,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	Handle<pat::ElectronCollection> electrons_h;
 	iEvent.getByToken( electrons_, electrons_h );
 	pat::ElectronCollection electrons = *electrons_h;
+	Handle<pat::TauCollection> taus_h;
+	iEvent.getByToken( taus_, taus_h );
+	pat::TauCollection taus = *taus_h;
+
+	//LogInfo("Demo") << "number of muons "<< muons.size();
 
 	reco::VertexCollection vtx;
 	edm::Handle<reco::VertexCollection> vtxHandle;
@@ -219,7 +255,30 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	for(size_t l=0; l<selMuons.size(); ++l)     selLeptons.push_back(patUtils::GenericLepton (selMuons[l]     ));
 	std::sort(selLeptons.begin(), selLeptons.end(), utils::sort_CandidatesByPt);
 
-	if (selLeptons.size() == 1)
+	/*
+	 * Select taus with secondary vertex,
+	 * see if they have flightLength and flightLengthCovariance
+	 */
+	pat::TauCollection tauSecVert;
+	//LogInfo("Demo") << "taus.size() = "<< taus.size();
+	for(size_t i=0; i<taus.size(); ++i)
+		{
+		if (taus[i].hasSecondaryVertex())
+			{
+			//tauSecVert.push_back(taus[i]);
+			const pat::tau::TauPFEssential::CovMatrix& flightCovMatr = taus[i].flightLengthCov();
+			/*
+			LogInfo("Demo") << "flightLengthSig = "<< taus[i].flightLengthSig();
+			LogInfo("Demo") << "flightLength    = "<< taus[i].flightLength().x() << ',' << taus[i].flightLength().y() << ',' << taus[i].flightLength().z();
+			LogInfo("Demo") << "flightLength Covar = " << endl <<
+				flightCovMatr(0,0) << ',' << flightCovMatr(0,1) << ',' << flightCovMatr(0,2) << endl << 
+				flightCovMatr(1,0) << ',' << flightCovMatr(1,1) << ',' << flightCovMatr(2,2) << endl << 
+				flightCovMatr(2,0) << ',' << flightCovMatr(2,1) << ',' << flightCovMatr(2,2) << endl;
+			*/
+			}
+		}
+
+	if (selLeptons.size() > 1)
 		{
 		for(size_t l=0; l<selLeptons.size(); ++l)
 			{
@@ -227,6 +286,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 
 		NT_output_ttree->Fill();
+		// EDM output
+		//   but it's under if! not every event will store stuff -- see if it plays well with rest of EDM system
+		//iEvent.put(NT_lep_p4, "leps_p4");
+		// some use unknown C++ feature std::move :
+		//iEvent.put(std::move(obj), "objname");
 		}
 
 
