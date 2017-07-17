@@ -268,6 +268,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leading_track_pt)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leadChargedHadrCand_pt)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leadNeutralCand_pt)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leadCand_pt)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  tau_hasSecondaryVertex)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_flightLength)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_flightLengthSignificance)
 

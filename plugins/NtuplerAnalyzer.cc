@@ -38,10 +38,15 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
 // lepton ID/Iso prescriptions
-#include "UserCode/llvv_fwk/interface/PatUtils.h"                                                                                                                                                                                  
+#include "UserCode/llvv_fwk/interface/PatUtils.h"
+#include "UserCode/llvv_fwk/interface/MacroUtils.h"
 // couple functions processing leptons
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingMuons.h"                                                                                                                                                                  
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingElectrons.h"
+#include "UserCode/ttbar-leptons-80X/interface/ProcessingTaus.h"
+#include "UserCode/ttbar-leptons-80X/interface/ProcessingJets.h"
+#include "UserCode/ttbar-leptons-80X/interface/ProcessingBJets.h"
+#include "UserCode/ttbar-leptons-80X/interface/ProcessingHLT.h"
 
 //
 // class declaration
@@ -80,6 +85,15 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	edm::EDGetTokenT<pat::TauCollection> taus_;
 	edm::EDGetTokenT<reco::VertexCollection> vtx_;
 	edm::EDGetTokenT<double> rho_;
+	edm::EDGetTokenT<edm::TriggerResults> trigResults_;
+	//triggerObjectsHandle.getByLabel(ev, "selectedPatTrigger");
+	//iEvent.getByToken(triggerObjects_, triggerObjectsHandle);
+	edm::EDGetTokenT<vector<pat::TriggerObjectStandAlone>> triggerObjects_;
+
+	bool isMC;
+	string  muHLT_MC1  , muHLT_MC2  ,
+		muHLT_Data1, muHLT_Data2,
+		elHLT_Data , elHLT_MC   ;
 
 	// gotta be a new option for definition of the interface
 	//#include "ntupleOutput_leps.h"
@@ -109,7 +123,13 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 // constructors and destructor
 //
 NtuplerAnalyzer::NtuplerAnalyzer(const edm::ParameterSet& iConfig) :
-minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
+isMC(iConfig.getUntrackedParameter<bool>("isMC", true)),
+muHLT_MC1  (iConfig.getParameter<std::string>("muHLT_MC1")),
+muHLT_MC2  (iConfig.getParameter<std::string>("muHLT_MC2")),
+muHLT_Data1(iConfig.getParameter<std::string>("muHLT_Data1")),
+muHLT_Data2(iConfig.getParameter<std::string>("muHLT_Data2")),
+elHLT_Data (iConfig.getParameter<std::string>("elHLT_Data")),
+elHLT_MC   (iConfig.getParameter<std::string>("elHLT_MC"))
 
 {
 	/* define in constructor via call to consumes (magic thingy) */
@@ -119,6 +139,8 @@ minTracks_(iConfig.getUntrackedParameter<unsigned int>("minTracks",0))
 	taus_ = consumes<pat::TauCollection>(edm::InputTag("slimmedTaus"));
 	vtx_ = consumes<reco::VertexCollection>(edm::InputTag("offlineSlimmedPrimaryVertices"));
 	rho_ = consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
+	trigResults_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT"));
+	triggerObjects_ = consumes<vector<pat::TriggerObjectStandAlone>>(edm::InputTag("selectedPatTrigger"));
 	//fwlite::Handle<double> rhoHandle;
 	//rhoHandle.getByLabel(ev, "fixedGridRhoFastjetAll");
 
@@ -211,6 +233,70 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	//LogInfo("Demo") << "number of muons "<< muons.size();
 
+
+	// HLT TRIGGER
+	bool eTrigger = false;
+	bool muTrigger = false;
+
+	// TriggerNames for TriggerObjects --------------------
+	edm::Handle<edm::TriggerResults> trigResults; //our trigger result object
+	//edm::InputTag * trigResultsTag; // the tag object, trigResults are extracted from the event via this tag
+
+	//edm::TriggerResultsByName tr = ev.triggerResultsByName ("HLT");
+	edm::TriggerResultsByName tr = iEvent.triggerResultsByName ("HLT");
+	if (!tr.isValid ()){
+		cout << "HLT is NOT valid!" << endl;
+		return;
+		// HLT2 was a quirk of Spring16 MC campaigns (noHLT/reHLT/withHLT thing)
+		//tr = ev.triggerResultsByName ("HLT2");
+		}
+	else
+		{
+		LogInfo("Demo") << "Trigger HLT is valid";
+		//trigResultsTag = new edm::InputTag("TriggerResults","","HLT"); //make sure have correct process on MC
+		// pass trigger
+		eTrigger =    ( isMC ?  utils::passTriggerPatterns(tr, elHLT_MC) : utils::passTriggerPatterns(tr, elHLT_Data));
+		muTrigger =   ( isMC ?  utils::passTriggerPatterns(tr, muHLT_MC1, muHLT_MC2) : utils::passTriggerPatterns (tr, muHLT_Data1, muHLT_Data2));
+		}
+
+	if (!(eTrigger || muTrigger)) return;   // TODO: make here orthogonalization of triggers for data
+
+	// names for trigger bits
+	//edm::EDGetTokenT<edm::TriggerResults> trigResults_ = consumes<edm::TriggerResults>(trigResultsTag);
+	//ev.getByLabel(*trigResultsTag, trigResults);
+	iEvent.getByToken( trigResults_, trigResults );
+	const edm::TriggerNames& trigNames = iEvent.triggerNames(*trigResults);
+
+	//fwlite::Handle<vector<pat::TriggerObjectStandAlone>> triggerObjectsHandle;
+	edm::Handle<vector<pat::TriggerObjectStandAlone>> triggerObjectsHandle;
+	//triggerObjectsHandle.getByLabel(ev, "selectedPatTrigger");
+	iEvent.getByToken(triggerObjects_, triggerObjectsHandle);
+	if (!triggerObjectsHandle.isValid())
+		{
+		LogInfo("Demo") << "!triggerObjectsHandle.isValid()";
+		return;
+		}
+	vector<pat::TriggerObjectStandAlone> trig_objs = *triggerObjectsHandle;
+
+	// objects of our triggers
+	vector<pat::TriggerObjectStandAlone> el_trig_objs;
+	vector<pat::TriggerObjectStandAlone> mu_trig_objs, mu_trig_objs2;
+
+	if (eTrigger)
+		{
+		NT_HLT_el = true;
+		Processing_selectHLTobjects(trig_objs, trigNames, el_trig_objs, (isMC? elHLT_MC : elHLT_Data));
+		}
+	if (muTrigger)
+		{
+		NT_HLT_mu = true;
+		Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs,  (isMC? muHLT_MC1 : muHLT_Data1));
+		Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs2, (isMC? muHLT_MC2 : muHLT_Data2));
+		// vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
+		mu_trig_objs.insert(mu_trig_objs.end(), mu_trig_objs2.begin(), mu_trig_objs2.end());
+		}
+
+	// PRIMARY VERTEX
 	reco::VertexCollection vtx;
 	edm::Handle<reco::VertexCollection> vtxHandle;
 	iEvent.getByToken(vtx_, vtxHandle);
@@ -238,17 +324,22 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	double weight = 1;
 
+	// MUONS
 	LorentzVector muDiff(0., 0., 0., 0.);
 	unsigned int nVetoMu(0);
-	pat::MuonCollection selMuons;
+	pat::MuonCollection selIDMuons, selMuons;
 	processMuons_ID_ISO_Kinematics(muons, goodPV, weight, patUtils::llvvMuonId::StdTight, patUtils::llvvMuonId::StdLoose, patUtils::llvvMuonIso::Tight, patUtils::llvvMuonIso::Loose,               
-		30., 2.4, 10., 2.5, selMuons, muDiff, nVetoMu, false, false);
+		30., 2.4, 10., 2.5, selIDMuons, muDiff, nVetoMu, false, false);
+	nVetoMu += processMuons_MatchHLT(selIDMuons, mu_trig_objs, 0.4, selMuons);
 
-	pat::ElectronCollection selElectrons;
+	// ELECTRONS
+	pat::ElectronCollection selIDElectrons, selElectrons;
 	unsigned int nVetoE(0);
 	LorentzVector elDiff(0., 0., 0., 0.);
 	processElectrons_ID_ISO_Kinematics(electrons, goodPV, NT_fixedGridRhoFastjetAll, weight, patUtils::llvvElecId::Tight, patUtils::llvvElecId::Loose, patUtils::llvvElecIso::Tight, patUtils::llvvElecIso::Loose,
-		30., 2.4, 15., 2.5, selElectrons, elDiff, nVetoE, false, false);
+		30., 2.4, 15., 2.5, selIDElectrons, elDiff, nVetoE, false, false);
+
+	nVetoE += processElectrons_MatchHLT(selIDElectrons, el_trig_objs, 0.4, selElectrons);
 
 	std::vector<patUtils::GenericLepton> selLeptons;
 	for(size_t l=0; l<selElectrons.size(); ++l) selLeptons.push_back(patUtils::GenericLepton (selElectrons[l] ));
@@ -266,7 +357,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		if (taus[i].hasSecondaryVertex())
 			{
 			//tauSecVert.push_back(taus[i]);
-			const pat::tau::TauPFEssential::CovMatrix& flightCovMatr = taus[i].flightLengthCov();
+			//const pat::tau::TauPFEssential::CovMatrix& flightCovMatr = taus[i].flightLengthCov();
+			float x = taus[i].flightLength().x();
+			float y = taus[i].flightLength().y();
+			float z = taus[i].flightLength().z();
+			NT_tau_flightLength.push_back(x*x + y*y + z*z);
+			NT_tau_flightLengthSignificance.push_back(taus[i].flightLengthSig());
+			NT_tau_hasSecondaryVertex.push_back(true);
 			/*
 			LogInfo("Demo") << "flightLengthSig = "<< taus[i].flightLengthSig();
 			LogInfo("Demo") << "flightLength    = "<< taus[i].flightLength().x() << ',' << taus[i].flightLength().y() << ',' << taus[i].flightLength().z();
@@ -275,6 +372,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				flightCovMatr(1,0) << ',' << flightCovMatr(1,1) << ',' << flightCovMatr(2,2) << endl << 
 				flightCovMatr(2,0) << ',' << flightCovMatr(2,1) << ',' << flightCovMatr(2,2) << endl;
 			*/
+			}
+		else
+			{
+			NT_tau_flightLength.push_back(-1);
+			NT_tau_flightLengthSignificance.push_back(-1);
+			NT_tau_hasSecondaryVertex.push_back(false);
 			}
 		}
 
