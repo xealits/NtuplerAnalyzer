@@ -212,10 +212,11 @@ typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
 Float_t_in_NTuple(OUTNTUPLE, aMCatNLO_weight)
 Float_t_in_NTuple(OUTNTUPLE, gen_t_pt)
 Float_t_in_NTuple(OUTNTUPLE, gen_tb_pt)
-Int_t_in_NTuple(OUTNTUPLE, gen_t_w_decay_id) // = id of lepton (11/13/15, but the sign means which product is lepton: minus=1, plus=2) or 1 for quarks
+Int_t_in_NTuple(OUTNTUPLE, gen_t_w_decay_id) // = id of lepton (+-11/13/15, sign = sign top?) or 1 for quarks
 Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_decay_id)
 Int_t_in_NTuple(OUTNTUPLE, NUP_gen) // TODO: add gen info from TTbar
 Int_t_in_NTuple(OUTNTUPLE, nvtx)
+Int_t_in_NTuple(OUTNTUPLE, nvtx_gen)
 
 Bool_t_in_NTuple(OUTNTUPLE, HLT_el)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_mu)
@@ -259,6 +260,9 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_pu_discr)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_b_discr)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_hadronFlavour)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_partonFlavour)
+
+// GEN TAUS
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<LorentzVector>, gen_tau_p4)
 
 // TAUS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_id)

@@ -47,6 +47,7 @@
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingJets.h"
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingBJets.h"
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingHLT.h"
+#include "UserCode/ttbar-leptons-80X/interface/ProcessingGenParticles.h"
 
 //
 // class declaration
@@ -89,6 +90,10 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//triggerObjectsHandle.getByLabel(ev, "selectedPatTrigger");
 	//iEvent.getByToken(triggerObjects_, triggerObjectsHandle);
 	edm::EDGetTokenT<vector<pat::TriggerObjectStandAlone>> triggerObjects_;
+	edm::EDGetTokenT<LHEEventProduct> lheEPToken_;
+	edm::EDGetTokenT< std::vector < PileupSummaryInfo > > puInfo_;
+	edm::EDGetTokenT< std::vector < PileupSummaryInfo > > puInfo2_;
+	edm::EDGetTokenT<reco::GenParticleCollection> genParticle_;
 
 	bool isMC;
 	string  muHLT_MC1  , muHLT_MC2  ,
@@ -143,6 +148,10 @@ elHLT_MC   (iConfig.getParameter<std::string>("elHLT_MC"))
 	triggerObjects_ = consumes<vector<pat::TriggerObjectStandAlone>>(edm::InputTag("selectedPatTrigger"));
 	//fwlite::Handle<double> rhoHandle;
 	//rhoHandle.getByLabel(ev, "fixedGridRhoFastjetAll");
+	lheEPToken_ = consumes<LHEEventProduct>(edm::InputTag("externalLHEProducer"));
+	puInfo_  = consumes<std::vector<PileupSummaryInfo>>(edm::InputTag("slimmedAddPileupInfo"));
+	puInfo2_ = consumes<std::vector<PileupSummaryInfo>>(edm::InputTag("addPileupInfo"));
+	genParticle_ = consumes<reco::GenParticleCollection>(edm::InputTag("prunedGenParticles"));
 
 	edm::Service<TFileService> fs;
 	// init ttree
@@ -259,7 +268,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		muTrigger =   ( isMC ?  utils::passTriggerPatterns(tr, muHLT_MC1, muHLT_MC2) : utils::passTriggerPatterns (tr, muHLT_Data1, muHLT_Data2));
 		}
 
-	if (!(eTrigger || muTrigger)) return;   // TODO: make here orthogonalization of triggers for data
+	if (!(eTrigger || muTrigger)) return; // TODO: make orthogonalization of triggers for data, now do it afterwards?
 
 	// names for trigger bits
 	//edm::EDGetTokenT<edm::TriggerResults> trigResults_ = consumes<edm::TriggerResults>(trigResultsTag);
@@ -301,6 +310,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	edm::Handle<reco::VertexCollection> vtxHandle;
 	iEvent.getByToken(vtx_, vtxHandle);
 	if(vtxHandle.isValid() ) vtx = *vtxHandle;
+	NT_nvtx = vtx.size();
 
 	reco::Vertex goodPV;                                                                                                                                                                                               
 	unsigned int nGoodPV(0);
@@ -319,6 +329,134 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			{
 			if(nGoodPV==0) goodPV=vtx[ivtx];
 			nGoodPV++;
+			}
+		}
+
+	// couple things for MC:
+	//  - gen nvtx
+	//  - gen NUP (NUmber of Particles? needed for WNJets)
+	//  - top pt-s, channel ID and other processing gen particles (save LorentzVector of generated taus, or non-neutrino part of generated tau)
+	if(isMC)
+		{
+		// ----------------------- gen nvtx
+		int ngenITpu = 0;
+		edm::Handle < std::vector<PileupSummaryInfo>> puInfoH;
+		//puInfoH.getByLabel (ev, "slimmedAddPileupInfo");
+		iEvent.getByToken(puInfo_, puInfoH);
+		if (!puInfoH.isValid())
+			{
+			//puInfoH.getByLabel( ev, "addPileupInfo" );
+			iEvent.getByToken(puInfo2_, puInfoH);
+			if (!puInfoH.isValid()) {printf("collection PileupSummaryInfo with name slimmedAddPileupInfo or addPileupInfo does not exist\n"); exit(0);}
+			}
+		// so here we have valid puInfoH
+		// otherwise exit was called
+		for (std::vector < PileupSummaryInfo >::const_iterator it = puInfoH->begin (); it != puInfoH->end (); it++)
+			{
+			//if (it->getBunchCrossing () == 0) ngenITpu += it->getPU_NumInteractions ();
+			// guys and Mara use getTrueNumInteractions :
+			if (it->getBunchCrossing () == 0) ngenITpu += it->getTrueNumInteractions();
+			}
+		NT_nvtx_gen = ngenITpu;
+
+		// ----------------------- gen NUP
+		edm::Handle < LHEEventProduct > lheEPHandle;
+		//lheEPHandle.getByLabel (ev, "externalLHEProducer");
+		iEvent.getByToken(lheEPToken_, lheEPHandle);
+		if (isMC && lheEPHandle.isValid()) NT_NUP_gen = lheEPHandle->hepeup().NUP;
+
+		// ----------------------- gen particles
+		// parse gen particles tree and get top pt-s and channel
+		// channels are needed for:
+		// TTbar, Single-top, DY
+		// for now implement thed only TTbar and Single-Top
+		reco::GenParticleCollection gen;
+		edm::Handle<reco::GenParticleCollection> genHandle;
+		//genHandle.getByLabel(ev, "prunedGenParticles");
+		iEvent.getByToken(genParticle_, genHandle);
+		if(genHandle.isValid())
+			{
+			gen = *genHandle;
+			// For reference, some PDG IDs:
+			// QUARKS
+			// d  1
+			// u  2
+			// s  3
+			// c  4
+			// b  5
+			// t  6
+			// b' 7
+			// t' 8
+			// g 21
+			// gamma 22
+			// Z     23
+			// W     24
+			// h     25
+			// e, ve     11, 12
+			// mu, vmu   13, 14
+			// tau, vtau 15, 16
+
+			for(size_t i = 0; i < gen.size(); ++ i)	
+				{
+				const reco::GenParticle & p = gen[i];
+				int id = p.pdgId();
+				int st = p.status(); // TODO: check what is status in decat simulation (pythia for our TTbar set)
+				int n_daughters = p.numberOfDaughters();
+
+				if (abs(id) == 6) // if it is a t quark
+					{
+					if (n_daughters == 2) // it is a decay vertes of t to something
+						{
+						// find the W decay channel in this top
+						int d0_id = p.daughter(0)->pdgId();
+						int d1_id = p.daughter(1)->pdgId();
+						int W_num = d0_id == 24 ? 0 : (d1_id == 24 ? 1 : -1) ;
+						if (W_num < 0) continue;
+						const reco::Candidate * W = p.daughter( W_num );
+						const reco::Candidate * W_final = find_W_decay(W);
+						int decay_id = 1;
+						// = id of lepton or 1 for quarks
+						if (fabs(W_final->daughter(0)->pdgId()) == 11 || fabs(W_final->daughter(0)->pdgId()) == 13 || fabs(W_final->daughter(0)->pdgId()) == 15)
+							decay_id = W_final->daughter(0)->pdgId();
+						else if (fabs(W_final->daughter(1)->pdgId()) == 11 || fabs(W_final->daughter(1)->pdgId()) == 13 || fabs(W_final->daughter(1)->pdgId()) == 15)
+							decay_id = W_final->daughter(1)->pdgId();
+
+						// save stuff, according to top Id, also save top p_T
+						if (id>0)
+							{
+							NT_gen_t_pt  = p.pt();
+							NT_gen_t_w_decay_id = decay_id;
+							}
+						else
+							{
+							NT_gen_tb_pt = p.pt();
+							NT_gen_tb_w_decay_id = decay_id;
+							}
+						}
+					}
+
+				// if it is a tau -- save the non-neutrino part to the output
+				//  the status is 1 or 2
+				//  1. final state, not decays, so it should never happen for tau
+				//  2. decayed or fragmented -- the case for tau
+				if (id == 15 && st == 1)
+					NT_gen_tau_p4.push_back(p.p4()); 
+				else if (id == 15 && st == 2)
+					{
+					// it's a final state tau
+					// select its' daughters, skipping neutrinos
+					// add their momenta -- use the sum as a visible_gen_tau
+					LorentzVector vis_ds(0,0,0,0);
+					for (int j = 0; j < n_daughters; ++j)
+						{
+						const reco::Candidate * d = p.daughter(j);
+						unsigned int d_id = abs(d->pdgId());
+						if (d_id == 12 || d_id == 14 || d_id == 16) continue;
+						vis_ds += d->p4();
+						}
+					NT_gen_tau_p4.push_back(vis_ds); 
+					}
+				}
 			}
 		}
 
@@ -346,17 +484,18 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	for(size_t l=0; l<selMuons.size(); ++l)     selLeptons.push_back(patUtils::GenericLepton (selMuons[l]     ));
 	std::sort(selLeptons.begin(), selLeptons.end(), utils::sort_CandidatesByPt);
 
+	bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0;
+	if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return; // exit now to reduce computation
+
 	/*
 	 * Select taus with secondary vertex,
 	 * see if they have flightLength and flightLengthCovariance
 	 */
-	pat::TauCollection tauSecVert;
 	//LogInfo("Demo") << "taus.size() = "<< taus.size();
 	for(size_t i=0; i<taus.size(); ++i)
 		{
 		if (taus[i].hasSecondaryVertex())
 			{
-			//tauSecVert.push_back(taus[i]);
 			//const pat::tau::TauPFEssential::CovMatrix& flightCovMatr = taus[i].flightLengthCov();
 			float x = taus[i].flightLength().x();
 			float y = taus[i].flightLength().y();
@@ -381,7 +520,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		}
 
-	if (selLeptons.size() > 1)
+	//bool record_ntuple = (isSingleMu || isSingleE || pass_dileptons) && NT_nbjets > 0 && NT_tau_IDlev.size() > 0; // at least 1 b jet and 1 loose tau
+	bool record_ntuple = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3 && NT_nbjets > 0; // leptons and at least 1 b jet
+
+	if (record_ntuple)
 		{
 		for(size_t l=0; l<selLeptons.size(); ++l)
 			{
