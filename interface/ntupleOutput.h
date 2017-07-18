@@ -217,6 +217,7 @@ Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_decay_id)
 Int_t_in_NTuple(OUTNTUPLE, NUP_gen) // TODO: add gen info from TTbar
 Int_t_in_NTuple(OUTNTUPLE, nvtx)
 Int_t_in_NTuple(OUTNTUPLE, nvtx_gen)
+Float_t_in_NTuple(OUTNTUPLE, fixedGridRhoFastjetAll)
 
 Bool_t_in_NTuple(OUTNTUPLE, HLT_el)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_mu)
@@ -255,11 +256,14 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_sf_down)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_jer_factor)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_jer_factor_up)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_jer_factor_down)
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_rad)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_rad)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_etaetaMoment)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_phiphiMoment)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_pu_discr)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_b_discr)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_hadronFlavour)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_partonFlavour)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_dR_matched_tau) // number of the tau in tau vectors, if no match = -1
 
 // GEN TAUS
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tau_p4)

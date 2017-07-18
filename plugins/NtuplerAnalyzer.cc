@@ -37,11 +37,14 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
+
 // lepton ID/Iso prescriptions
 #include "UserCode/llvv_fwk/interface/PatUtils.h"
 #include "UserCode/llvv_fwk/interface/MacroUtils.h"
+// lumiUtils
+#include "UserCode/llvv_fwk/interface/LumiUtils.h"
 // couple functions processing leptons
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingMuons.h"                                                                                                                                                                  
+#include "UserCode/ttbar-leptons-80X/interface/ProcessingMuons.h"
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingElectrons.h"
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingTaus.h"
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingJets.h"
@@ -165,6 +168,8 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	double tau_kino_cuts_pt, tau_kino_cuts_eta;
 	double jet_kino_cuts_pt, jet_kino_cuts_eta;
 
+	lumiUtils::GoodLumiFilter goodLumiFilter;
+
 	// random numbers for corrections & uncertainties
 	TRandom3 *r3;
 
@@ -210,7 +215,8 @@ TjetResolutionSFFileName   (iConfig.getParameter<std::string>("scaleFactorFile")
 tau_kino_cuts_pt    (iConfig.getParameter<double>("tau_kino_cuts_pt")),
 tau_kino_cuts_eta   (iConfig.getParameter<double>("tau_kino_cuts_eta")),
 jet_kino_cuts_pt    (iConfig.getParameter<double>("jet_kino_cuts_pt")),
-jet_kino_cuts_eta   (iConfig.getParameter<double>("jet_kino_cuts_eta"))
+jet_kino_cuts_eta   (iConfig.getParameter<double>("jet_kino_cuts_eta")),
+goodLumiFilter(iConfig.getUntrackedParameter<std::vector<edm::LuminosityBlockRange>>("lumisToProcess", std::vector<edm::LuminosityBlockRange>()))
 
 {
 	r3 = new TRandom3();
@@ -243,6 +249,7 @@ jet_kino_cuts_eta   (iConfig.getParameter<double>("jet_kino_cuts_eta"))
 	bool period_EF  = !isMC && (dtag.Contains("2016E") || dtag.Contains("2016F"));
 	bool period_G   = !isMC && (dtag.Contains("2016G"));
 	bool period_H   = !isMC && (dtag.Contains("2016H"));
+
 
 	// jet IDs, corrections, resolutions etc
 	jetID = LooseJET; // TODO: move to Conf
@@ -350,7 +357,119 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	}
 	*/
 
-	Float_t NT_fixedGridRhoFastjetAll = -1;
+	// ------------------------------------------------- Apply MET FILTERS
+	/*
+	 * MET filters are data-only thing -- remove events before passing and counting lumi, since MC is then normalized to data lumi
+	 * thus after passing lumi data and MC should only have the same cuts
+	 *
+	 * info on MET filters and their presence in MINIAOD:
+	 *   https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#ETmiss_filters
+	 *   https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2017
+	 *     filter	location	data	MC(fullSim)	MC(fastSim)	comment
+	 *     primary vertex filter	available in miniAOD v2	DONE	suggested	suggested	 
+	 *     beam halo filter	available in miniAOD v2	DONE	suggested	not suggested	Beam Halo Presentation
+	 *     HBHE noise filter	available in miniAOD v2	DONE	suggested	suggested	HCAL DPG Presentation
+	 *     HBHEiso noise filter	available in miniAOD v2	DONE	suggested	suggested	same as above
+	 *     ECAL TP filter	available in miniAOD v2	DONE	suggested	suggested	ECAL DPG Presentation
+	 *     Bad PF Muon Filter	to be run on the fly	DONE	suggested	suggested	PPD presentation
+	 *     Bad Charged Hadron Filter	to be run on the fly	DONE	suggested	suggested	PPD presentation
+	 *     ee badSC noise filter	available in miniAOD v2	DONE	not suggested	not suggested
+	 *   https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/PhysicsTools/PatAlgos/python/slimming/metFilterPaths_cff.py
+	 *   https://twiki.cern.ch/twiki/bin/view/CMSPublic/ReMiniAOD03Feb2017Notes#MET_Recipes
+	 *
+	 *   https://twiki.cern.ch/twiki/bin/view/CMS/MissingET
+	 *   and their hypernews:
+	 *   https://hypernews.cern.ch/HyperNews/CMS/get/met.html
+	 */
+
+	edm::TriggerResultsByName metFilters = iEvent.triggerResultsByName("PAT");   //is present only if PAT (and miniAOD) is not run simultaniously with RECO
+	if(!metFilters.isValid()){metFilters = iEvent.triggerResultsByName("RECO");} //if not present, then it's part of RECO
+	if(!metFilters.isValid()){       
+		LogInfo("Demo") << "TriggerResultsByName for MET filters is not found in the process, as a consequence the MET filter is disabled for this event";
+		return;
+		}
+	if (! isMC && metFilters.isValid())
+		{
+		// event is good if all filters ar true
+		bool filters1 = utils::passTriggerPatterns(metFilters, "Flag_HBHENoiseFilter*", "Flag_HBHENoiseIsoFilter*", "Flag_EcalDeadCellTriggerPrimitiveFilter*");
+		bool good_vertices = utils::passTriggerPatterns(metFilters, "Flag_goodVertices");
+		bool eebad = utils::passTriggerPatterns(metFilters, "Flag_eeBadScFilter");
+		bool halo  = utils::passTriggerPatterns(metFilters, "Flag_globalTightHalo2016Filter");
+		// 2016 thing: bad muons
+		bool flag_noBadMuons = utils::passTriggerPatterns(metFilters, "Flag_noBadMuons");
+		//bool flag_duplicateMuons = utils::passTriggerPatterns(metFilters, "Flag_duplicateMuons");
+		/* from
+		 * https://twiki.cern.ch/twiki/bin/view/CMSPublic/ReMiniAOD03Feb2017Notes#Event_flags
+		 * Three flags are saved in the event:
+		      Flag_badMuons: the event contained at least one PF muon of pT > 20 GeV that is flagged as bad
+		      Flag_duplicateMuons: the event contained at least one PF muon of pT > 20 GeV that is flagged as duplicate
+		      Flag_noBadMuons: the event does not contain any PF muon of pT > 20 GeV flagged as bad or duplicate (i.e. the event is safe)
+
+		 * --- thus the Flag_noBadMuons should be enough
+		 */
+
+		if (! (filters1 & good_vertices & eebad & halo & flag_noBadMuons)) return;
+		// these Flag_noBadMuons/Flag_duplicateMuons are MET flags (the issue with bad muons in 2016),
+		// they are true if the MET got corrected and event is fine
+
+		/* 
+		 * add: BadChHadron and BadPFMuon -- it seems their name should be Flag_BadChHadron etc
+		 *
+		 * https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2017
+		 * Bad PF Muon Filter	to be run on the fly	
+		 * -- "run on the fly", no this flag in the data itself
+		 *
+		 * but at the same time:
+		 *
+		 * Note that with the in the re-miniaod you will have (will rerun as pointed out below for) the following flags for the "bad muon" events:
+		      Bad PF Muon Filter
+		      Bad Charged Hadrons
+		      Flag_badMuons -> New Giovanni's Filter that the MET is corrected for (flag is set to true if the MET got corrected)
+		      Flag_duplicateMuons -> New Giovanni's Filter that the MET is corrected for (flag is set to true if the MET got corrected)
+
+		 * aha https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#ETmiss_filters
+		 * "Note that many of the current recommended filters can be accessed directly from Miniaod using the flag stored in the TriggerResults,
+		 *  with the exception of Bad Charged Hadron and Bad Muon Filters."
+		 * --- so, 2 vs 1 that there should be no Flags for these two in MINIAOD
+		 *  they should be run on the fly
+		 */
+
+
+		/*
+		 * MET POG gives some names to their filters instead of givin the name in code
+		 * apparently the actual name in the code can be found at:
+		 * https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/PhysicsTools/PatAlgos/python/slimming/metFilterPaths_cff.py
+		 *
+		 * and there is no BadChHandron
+		 * the closes to their names are:
+		 * BadChargedCandidateFilter BadPFMuonFilter
+		 *
+		 * -- need to print out what actually is in 03Feb ReReco & ask on hypernews.
+		 *
+		 *  found these:
+		 *  root [7] metFilters.triggerNames()
+		 *  (const std::vector<std::string> &)
+		 *  { "Flag_duplicateMuons", "Flag_badMuons", "Flag_noBadMuons",
+		 *    "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
+		 *    "Flag_CSCTightHaloFilter", "Flag_CSCTightHaloTrkMuUnvetoFilter", "Flag_CSCTightHalo2015Filter",
+		 *    "Flag_globalTightHalo2016Filter", "Flag_globalSuperTightHalo2016Filter",
+		 *    "Flag_HcalStripHaloFilter", "Flag_hcalLaserEventFilter",
+		 *    "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_EcalDeadCellBoundaryEnergyFilter",
+		 *    "Flag_goodVertices",
+		 *    "Flag_eeBadScFilter",
+		 *    "Flag_ecalLaserCorrFilter",
+		 *    "Flag_trkPOGFilters",
+		 *    "Flag_chargedHadronTrackResolutionFilter",
+		 *    "Flag_muonBadTrackFilter",
+		 *    "Flag_trkPOG_manystripclus53X", "Flag_trkPOG_toomanystripclus53X", "Flag_trkPOG_logErrorTooManyClusters",
+		 *    "Flag_METFilters" }
+		 */
+		}
+
+	// PASS LUMI
+	if (!isMC)
+		if(!goodLumiFilter.isGoodLumi(iEvent.eventAuxiliary().run(), iEvent.eventAuxiliary().luminosityBlock())) return; 
+
 
 	edm::Handle<double> rhoHandle;
 	iEvent.getByToken(rho_, rhoHandle);
@@ -614,6 +733,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0;
 	if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return; // exit now to reduce computation
 
+	NT_nleps = selLeptons.size();
+
+	NT_leps_ID = 1;
+	for (unsigned int i = 0; i<selLeptons.size(); i++)
+		{
+		NT_leps_ID *= selLeptons[i].pdgId();
+		}
+	//NT_leps_ID = NT_leps_ID;
+
 	/*
 	 * TAUS
 	 */
@@ -763,6 +891,85 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	std::sort (selJetsNoLep.begin(),  selJetsNoLep.end(),  utils::sort_CandidatesByPt);
 
+	/* What is saved for b-tagging?
+	 * only N of our jets passing Medium WP
+	 *
+	 * in b-tagging MC is corrected with weight according to efficiency (measured in MC) of tagging and scale-factors (bCallibrator),
+	 * the systematics = up/down shifts in calibrator
+	 * the efficiencies and SF from the callibrator are done per pt-eta and hadronFlavour
+	 * thus all of it can be done offline, on ntuples
+	 *
+	 * here lets just save nbjets (N of our jets passing medium CSV WP)
+	 * for the record decision
+	 */
+	string btagger_label("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+	float btag_WP = 0.8484; // medium
+	NT_nbjets = 0;
+	for (unsigned int i = 0; i<selJetsNoLep.size(); i++)
+		{
+		pat::Jet& jet = selJetsNoLep[i];
+		float b_discriminator = jet.bDiscriminator(btagger_label);
+
+		// dR match to ID jet -- it's the jet from MiniAOD, without redone corrections (needed for control of corrections)
+		LorentzVector id_jet_p4(0,0,0,0);
+		for (unsigned int j=0; j<IDjets.size(); j++)
+			{
+			if (reco::deltaR(jet, IDjets[j]) < 0.4)
+				{
+				id_jet_p4 = IDjets[j].p4();
+				break;
+				}
+			}
+		// find dR match to gen_jet
+		LorentzVector gen_jet_p4(0,0,0,0);
+		for (unsigned int j=0; j<genJets.size(); j++)
+			{
+			if (reco::deltaR(jet, genJets[j]) < 0.4)
+				{
+				gen_jet_p4 = genJets[j].p4();
+				break;
+				}
+			}
+
+		// dR match to tau
+		Int_t matched_tau_number = -1;
+		for (unsigned int i=0; i<selTausNoLep.size(); i++)
+			{
+			pat::Tau& tau = selTausNoLep[i];
+			if (reco::deltaR(jet, tau) < 0.4)
+				{
+				matched_tau_number = i;
+				break;
+				}
+			}
+
+		NT_jet_id.push_back(jet.pdgId());
+		NT_jet_initial_p4.        push_back(id_jet_p4);
+		NT_jet_p4.                push_back(jet.p4());
+		NT_jet_uncorrected_p4.    push_back(jet.correctedP4("Uncorrected"));
+		NT_jet_matched_genjet_p4. push_back(gen_jet_p4);
+		NT_jet_jes_correction.         push_back(jet.userFloat("jes_correction"));
+		NT_jet_jes_correction_relShift.push_back(jet.userFloat("jes_correction_relShift"));
+		NT_jet_resolution.push_back(jet.userFloat("jet_resolution"));
+		NT_jet_sf.       push_back(jet.userFloat("jer_sf"));
+		NT_jet_sf_up.    push_back(jet.userFloat("jer_sf_up"));
+		NT_jet_sf_down.  push_back(jet.userFloat("jer_sf_down"));
+		NT_jet_jer_factor.      push_back(jet.userFloat("jer_factor"));
+		NT_jet_jer_factor_up.   push_back(jet.userFloat("jer_factor_up"));
+		NT_jet_jer_factor_down. push_back(jet.userFloat("jer_factor_down"));
+		//NT_jet_rad.push_back(jet_radius(jet));
+		NT_jet_etaetaMoment.push_back(jet.etaetaMoment());
+		NT_jet_phiphiMoment.push_back(jet.phiphiMoment());
+		NT_jet_pu_discr.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
+		NT_jet_b_discr.push_back(b_discriminator);
+		NT_jet_hadronFlavour.push_back(jet.hadronFlavour());
+		NT_jet_partonFlavour.push_back(jet.partonFlavour());
+		NT_jet_dR_matched_tau.push_back(matched_tau_number); // number of the tau in tau vectors, if no match = -1
+
+		if (b_discriminator > btag_WP) NT_nbjets += 1;
+		}
+
+	NT_njets  = selJetsNoLep.size();
 
 	//bool record_ntuple = (isSingleMu || isSingleE || pass_dileptons) && NT_nbjets > 0 && NT_tau_IDlev.size() > 0; // at least 1 b jet and 1 loose tau
 	bool record_ntuple = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3 && NT_nbjets > 0; // leptons and at least 1 b jet
