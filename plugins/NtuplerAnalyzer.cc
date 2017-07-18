@@ -168,7 +168,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	double tau_kino_cuts_pt, tau_kino_cuts_eta;
 	double jet_kino_cuts_pt, jet_kino_cuts_eta;
 
-	lumiUtils::GoodLumiFilter goodLumiFilter;
+	//lumiUtils::GoodLumiFilter goodLumiFilter;
 
 	// random numbers for corrections & uncertainties
 	TRandom3 *r3;
@@ -202,7 +202,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 //
 NtuplerAnalyzer::NtuplerAnalyzer(const edm::ParameterSet& iConfig) :
 dtag       (iConfig.getParameter<std::string>("dtag")),
-isMC(iConfig.getUntrackedParameter<bool>("isMC", true)),
+isMC       (iConfig.getParameter<bool>("isMC")),
 muHLT_MC1  (iConfig.getParameter<std::string>("muHLT_MC1")),
 muHLT_MC2  (iConfig.getParameter<std::string>("muHLT_MC2")),
 muHLT_Data1(iConfig.getParameter<std::string>("muHLT_Data1")),
@@ -215,8 +215,8 @@ TjetResolutionSFFileName   (iConfig.getParameter<std::string>("scaleFactorFile")
 tau_kino_cuts_pt    (iConfig.getParameter<double>("tau_kino_cuts_pt")),
 tau_kino_cuts_eta   (iConfig.getParameter<double>("tau_kino_cuts_eta")),
 jet_kino_cuts_pt    (iConfig.getParameter<double>("jet_kino_cuts_pt")),
-jet_kino_cuts_eta   (iConfig.getParameter<double>("jet_kino_cuts_eta")),
-goodLumiFilter(iConfig.getUntrackedParameter<std::vector<edm::LuminosityBlockRange>>("lumisToProcess", std::vector<edm::LuminosityBlockRange>()))
+jet_kino_cuts_eta   (iConfig.getParameter<double>("jet_kino_cuts_eta"))
+//goodLumiFilter(iConfig.getUntrackedParameter<std::vector<edm::LuminosityBlockRange>>("lumisToProcess", std::vector<edm::LuminosityBlockRange>()))
 
 {
 	r3 = new TRandom3();
@@ -382,6 +382,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 *   https://hypernews.cern.ch/HyperNews/CMS/get/met.html
 	 */
 
+	/*
 	edm::TriggerResultsByName metFilters = iEvent.triggerResultsByName("PAT");   //is present only if PAT (and miniAOD) is not run simultaniously with RECO
 	if(!metFilters.isValid()){metFilters = iEvent.triggerResultsByName("RECO");} //if not present, then it's part of RECO
 	if(!metFilters.isValid()){       
@@ -398,77 +399,79 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// 2016 thing: bad muons
 		bool flag_noBadMuons = utils::passTriggerPatterns(metFilters, "Flag_noBadMuons");
 		//bool flag_duplicateMuons = utils::passTriggerPatterns(metFilters, "Flag_duplicateMuons");
-		/* from
-		 * https://twiki.cern.ch/twiki/bin/view/CMSPublic/ReMiniAOD03Feb2017Notes#Event_flags
-		 * Three flags are saved in the event:
-		      Flag_badMuons: the event contained at least one PF muon of pT > 20 GeV that is flagged as bad
-		      Flag_duplicateMuons: the event contained at least one PF muon of pT > 20 GeV that is flagged as duplicate
-		      Flag_noBadMuons: the event does not contain any PF muon of pT > 20 GeV flagged as bad or duplicate (i.e. the event is safe)
+		// from
+		// https://twiki.cern.ch/twiki/bin/view/CMSPublic/ReMiniAOD03Feb2017Notes#Event_flags
+		// Three flags are saved in the event:
+		//    Flag_badMuons: the event contained at least one PF muon of pT > 20 GeV that is flagged as bad
+		//    Flag_duplicateMuons: the event contained at least one PF muon of pT > 20 GeV that is flagged as duplicate
+		//    Flag_noBadMuons: the event does not contain any PF muon of pT > 20 GeV flagged as bad or duplicate (i.e. the event is safe)
 
-		 * --- thus the Flag_noBadMuons should be enough
-		 */
+		// --- thus the Flag_noBadMuons should be enough
+		///
 
 		if (! (filters1 & good_vertices & eebad & halo & flag_noBadMuons)) return;
 		// these Flag_noBadMuons/Flag_duplicateMuons are MET flags (the issue with bad muons in 2016),
 		// they are true if the MET got corrected and event is fine
 
-		/* 
-		 * add: BadChHadron and BadPFMuon -- it seems their name should be Flag_BadChHadron etc
-		 *
-		 * https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2017
-		 * Bad PF Muon Filter	to be run on the fly	
-		 * -- "run on the fly", no this flag in the data itself
-		 *
-		 * but at the same time:
-		 *
-		 * Note that with the in the re-miniaod you will have (will rerun as pointed out below for) the following flags for the "bad muon" events:
-		      Bad PF Muon Filter
-		      Bad Charged Hadrons
-		      Flag_badMuons -> New Giovanni's Filter that the MET is corrected for (flag is set to true if the MET got corrected)
-		      Flag_duplicateMuons -> New Giovanni's Filter that the MET is corrected for (flag is set to true if the MET got corrected)
+		// 
+		// add: BadChHadron and BadPFMuon -- it seems their name should be Flag_BadChHadron etc
+		//
+		// https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2017
+		// Bad PF Muon Filter	to be run on the fly	
+		// -- "run on the fly", no this flag in the data itself
+		//
+		// but at the same time:
+		//
+		// Note that with the in the re-miniaod you will have (will rerun as pointed out below for) the following flags for the "bad muon" events:
+		//    Bad PF Muon Filter
+		//    Bad Charged Hadrons
+		//    Flag_badMuons -> New Giovanni's Filter that the MET is corrected for (flag is set to true if the MET got corrected)
+		//    Flag_duplicateMuons -> New Giovanni's Filter that the MET is corrected for (flag is set to true if the MET got corrected)
 
-		 * aha https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#ETmiss_filters
-		 * "Note that many of the current recommended filters can be accessed directly from Miniaod using the flag stored in the TriggerResults,
-		 *  with the exception of Bad Charged Hadron and Bad Muon Filters."
-		 * --- so, 2 vs 1 that there should be no Flags for these two in MINIAOD
-		 *  they should be run on the fly
-		 */
+		// aha https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#ETmiss_filters
+		// "Note that many of the current recommended filters can be accessed directly from Miniaod using the flag stored in the TriggerResults,
+		//  with the exception of Bad Charged Hadron and Bad Muon Filters."
+		// --- so, 2 vs 1 that there should be no Flags for these two in MINIAOD
+		//  they should be run on the fly
+		///
 
 
-		/*
-		 * MET POG gives some names to their filters instead of givin the name in code
-		 * apparently the actual name in the code can be found at:
-		 * https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/PhysicsTools/PatAlgos/python/slimming/metFilterPaths_cff.py
-		 *
-		 * and there is no BadChHandron
-		 * the closes to their names are:
-		 * BadChargedCandidateFilter BadPFMuonFilter
-		 *
-		 * -- need to print out what actually is in 03Feb ReReco & ask on hypernews.
-		 *
-		 *  found these:
-		 *  root [7] metFilters.triggerNames()
-		 *  (const std::vector<std::string> &)
-		 *  { "Flag_duplicateMuons", "Flag_badMuons", "Flag_noBadMuons",
-		 *    "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
-		 *    "Flag_CSCTightHaloFilter", "Flag_CSCTightHaloTrkMuUnvetoFilter", "Flag_CSCTightHalo2015Filter",
-		 *    "Flag_globalTightHalo2016Filter", "Flag_globalSuperTightHalo2016Filter",
-		 *    "Flag_HcalStripHaloFilter", "Flag_hcalLaserEventFilter",
-		 *    "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_EcalDeadCellBoundaryEnergyFilter",
-		 *    "Flag_goodVertices",
-		 *    "Flag_eeBadScFilter",
-		 *    "Flag_ecalLaserCorrFilter",
-		 *    "Flag_trkPOGFilters",
-		 *    "Flag_chargedHadronTrackResolutionFilter",
-		 *    "Flag_muonBadTrackFilter",
-		 *    "Flag_trkPOG_manystripclus53X", "Flag_trkPOG_toomanystripclus53X", "Flag_trkPOG_logErrorTooManyClusters",
-		 *    "Flag_METFilters" }
-		 */
+		//
+		// MET POG gives some names to their filters instead of givin the name in code
+		// apparently the actual name in the code can be found at:
+		// https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/PhysicsTools/PatAlgos/python/slimming/metFilterPaths_cff.py
+		//
+		// and there is no BadChHandron
+		// the closes to their names are:
+		// BadChargedCandidateFilter BadPFMuonFilter
+		//
+		// -- need to print out what actually is in 03Feb ReReco & ask on hypernews.
+		//
+		//  found these:
+		//  root [7] metFilters.triggerNames()
+		//  (const std::vector<std::string> &)
+		//  { "Flag_duplicateMuons", "Flag_badMuons", "Flag_noBadMuons",
+		//    "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter",
+		//    "Flag_CSCTightHaloFilter", "Flag_CSCTightHaloTrkMuUnvetoFilter", "Flag_CSCTightHalo2015Filter",
+		//    "Flag_globalTightHalo2016Filter", "Flag_globalSuperTightHalo2016Filter",
+		//    "Flag_HcalStripHaloFilter", "Flag_hcalLaserEventFilter",
+		//    "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_EcalDeadCellBoundaryEnergyFilter",
+		//    "Flag_goodVertices",
+		//    "Flag_eeBadScFilter",
+		//    "Flag_ecalLaserCorrFilter",
+		//    "Flag_trkPOGFilters",
+		//    "Flag_chargedHadronTrackResolutionFilter",
+		//    "Flag_muonBadTrackFilter",
+		//    "Flag_trkPOG_manystripclus53X", "Flag_trkPOG_toomanystripclus53X", "Flag_trkPOG_logErrorTooManyClusters",
+		//    "Flag_METFilters" }
+		///
 		}
+		*/
 
 	// PASS LUMI
-	if (!isMC)
-		if(!goodLumiFilter.isGoodLumi(iEvent.eventAuxiliary().run(), iEvent.eventAuxiliary().luminosityBlock())) return; 
+	// done with some trick in crab/cmsRun python config
+	//if (!isMC)
+	//	if(!goodLumiFilter.isGoodLumi(iEvent.eventAuxiliary().run(), iEvent.eventAuxiliary().luminosityBlock())) return; 
 
 
 	edm::Handle<double> rhoHandle;
