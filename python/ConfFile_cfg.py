@@ -51,6 +51,8 @@ process.source = cms.Source("PoolSource",
 process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 #process.demo.minTracks=1000
 
+process.dtag = cms.string('MC2016_TT_powheg')
+
 #process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.Tracer = cms.Service("Tracer")
 

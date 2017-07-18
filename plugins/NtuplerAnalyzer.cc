@@ -48,6 +48,48 @@
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingBJets.h"
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingHLT.h"
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingGenParticles.h"
+#include "UserCode/ttbar-leptons-80X/interface/ProcessingDRCleaning.h"
+
+
+
+// ptocedures for initializations
+namespace utils
+	{
+	namespace cmssw
+		{
+		// TODO: it is the same jetCorrector as in MacroUtils, only Fall_ prefix is set
+		// Fall15_25nsV2_
+		FactorizedJetCorrector* getJetCorrector(TString baseDir, TString pf, bool isMC)
+			{
+			gSystem->ExpandPathName(baseDir);
+			//TString pf(isMC ? "MC" : "DATA");
+			// TString pf("Fall15_25nsV2_");
+			//pf += (isMC ? "MC" : "DATA");
+
+			//order matters: L1 -> L2 -> L3 (-> Residuals)
+			std::vector<std::string> jetCorFiles;
+			std::cout << baseDir+"/"+pf+"_L1FastJet_AK4PFchs.txt" << std::endl;
+			jetCorFiles.push_back((baseDir+"/"+pf+"_L1FastJet_AK4PFchs.txt").Data());
+			jetCorFiles.push_back((baseDir+"/"+pf+"_L2Relative_AK4PFchs.txt").Data());
+			jetCorFiles.push_back((baseDir+"/"+pf+"_L3Absolute_AK4PFchs.txt").Data());
+			if(!isMC) jetCorFiles.push_back((baseDir+"/"+pf+"_L2L3Residual_AK4PFchs.txt").Data());
+			// now there is a practically empty file Fall15_25nsV2_MC_L2L3Residual_AK4PFchs.txt
+			// adding the run on it anyway
+			//jetCorFiles.push_back((baseDir+"/"+pf+"_L2L3Residual_AK4PFchs.txt").Data());
+			// it is dummy/empty file for MC and apparently is is not used
+			// but in v13.1 it seemed to influence selection a bit
+			// adding it for v13.4 -- will test later without it
+			// and removing in 13.7 test -- compare with 13.4 & 13.4_repeat
+
+			//init the parameters for correction
+			std::vector<JetCorrectorParameters> corSteps;
+			for(size_t i=0; i<jetCorFiles.size(); i++) corSteps.push_back(JetCorrectorParameters(jetCorFiles[i]));
+			//return the corrector
+			return new FactorizedJetCorrector(corSteps);
+			}
+		}
+	}
+
 
 //
 // class declaration
@@ -80,7 +122,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	 * https://twiki.cern.ch/twiki/bin/view/Main/HanDle
 	 */
 	/*declare in the class */
-	edm::EDGetTokenT<reco::TrackCollection> tracks_;
+	//edm::EDGetTokenT<reco::TrackCollection> tracks_;
 	edm::EDGetTokenT<pat::MuonCollection> muons_;
 	edm::EDGetTokenT<pat::ElectronCollection> electrons_;
 	edm::EDGetTokenT<pat::TauCollection> taus_;
@@ -95,10 +137,36 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	edm::EDGetTokenT< std::vector < PileupSummaryInfo > > puInfo2_;
 	edm::EDGetTokenT<reco::GenParticleCollection> genParticle_;
 
+	edm::EDGetTokenT<pat::METCollection> mets1_, mets2_, mets_uncorrected_;
+
+	edm::EDGetTokenT<vector<reco::GenJet>> genJets_;
+	//genJetsHandle.getByLabel(ev, "slimmedGenJets");
+	edm::EDGetTokenT<pat::JetCollection> jets_;
+	//jetsHandle.getByLabel(ev, "slimmedJets");
+
+	TString dtag;
 	bool isMC;
 	string  muHLT_MC1  , muHLT_MC2  ,
 		muHLT_Data1, muHLT_Data2,
 		elHLT_Data , elHLT_MC   ;
+
+	jet_id    jetID;
+	pu_jet_id jetPUID;
+
+	TString jecDir;
+	TString TjetResolutionFileName;
+	TString TjetResolutionSFFileName;
+
+	FactorizedJetCorrector *jesCor;
+	JetCorrectionUncertainty *totalJESUnc;
+	JME::JetResolution jet_resolution_in_pt;
+	JME::JetResolutionScaleFactor jet_resolution_sf_per_eta;
+
+	double tau_kino_cuts_pt, tau_kino_cuts_eta;
+	double jet_kino_cuts_pt, jet_kino_cuts_eta;
+
+	// random numbers for corrections & uncertainties
+	TRandom3 *r3;
 
 	// gotta be a new option for definition of the interface
 	//#include "ntupleOutput_leps.h"
@@ -128,17 +196,27 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 // constructors and destructor
 //
 NtuplerAnalyzer::NtuplerAnalyzer(const edm::ParameterSet& iConfig) :
+dtag       (iConfig.getParameter<std::string>("dtag")),
 isMC(iConfig.getUntrackedParameter<bool>("isMC", true)),
 muHLT_MC1  (iConfig.getParameter<std::string>("muHLT_MC1")),
 muHLT_MC2  (iConfig.getParameter<std::string>("muHLT_MC2")),
 muHLT_Data1(iConfig.getParameter<std::string>("muHLT_Data1")),
 muHLT_Data2(iConfig.getParameter<std::string>("muHLT_Data2")),
 elHLT_Data (iConfig.getParameter<std::string>("elHLT_Data")),
-elHLT_MC   (iConfig.getParameter<std::string>("elHLT_MC"))
+elHLT_MC   (iConfig.getParameter<std::string>("elHLT_MC")),
+jecDir     (iConfig.getParameter<std::string>("jecDir")),
+TjetResolutionFileName     (iConfig.getParameter<std::string>("resolutionFile")),
+TjetResolutionSFFileName   (iConfig.getParameter<std::string>("scaleFactorFile")),
+tau_kino_cuts_pt    (iConfig.getParameter<double>("tau_kino_cuts_pt")),
+tau_kino_cuts_eta   (iConfig.getParameter<double>("tau_kino_cuts_eta")),
+jet_kino_cuts_pt    (iConfig.getParameter<double>("jet_kino_cuts_pt")),
+jet_kino_cuts_eta   (iConfig.getParameter<double>("jet_kino_cuts_eta"))
 
 {
+	r3 = new TRandom3();
+
 	/* define in constructor via call to consumes (magic thingy) */
-	tracks_    = consumes<reco::TrackCollection>(edm::InputTag("generalTracks"));
+	//tracks_    = consumes<reco::TrackCollection>(edm::InputTag("generalTracks"));
 	muons_     = consumes<pat::MuonCollection>    (edm::InputTag("slimmedMuons"));
 	electrons_ = consumes<pat::ElectronCollection>(edm::InputTag("slimmedElectrons"));
 	taus_ = consumes<pat::TauCollection>(edm::InputTag("slimmedTaus"));
@@ -152,6 +230,55 @@ elHLT_MC   (iConfig.getParameter<std::string>("elHLT_MC"))
 	puInfo_  = consumes<std::vector<PileupSummaryInfo>>(edm::InputTag("slimmedAddPileupInfo"));
 	puInfo2_ = consumes<std::vector<PileupSummaryInfo>>(edm::InputTag("addPileupInfo"));
 	genParticle_ = consumes<reco::GenParticleCollection>(edm::InputTag("prunedGenParticles"));
+
+	mets1_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETs"));
+	mets2_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETsMuEGClean"));
+	mets_uncorrected_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETsUncorrected"));
+
+	genJets_ = consumes<vector<reco::GenJet>>(edm::InputTag("slimmedGenJets"));
+	jets_    = consumes<pat::JetCollection>(edm::InputTag("slimmedJets"));
+
+	// dtag configs
+	bool period_BCD = !isMC && (dtag.Contains("2016B") || dtag.Contains("2016C") || dtag.Contains("2016D"));
+	bool period_EF  = !isMC && (dtag.Contains("2016E") || dtag.Contains("2016F"));
+	bool period_G   = !isMC && (dtag.Contains("2016G"));
+	bool period_H   = !isMC && (dtag.Contains("2016H"));
+
+	// jet IDs, corrections, resolutions etc
+	jetID = LooseJET; // TODO: move to Conf
+	jetPUID = LoosePUJET;
+
+	// JEC, JES, JER
+	gSystem->ExpandPathName (jecDir);
+	// v1
+	// getJetCorrector(TString baseDir, TString pf, bool isMC)
+	//https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JetEnCorFWLite
+	
+	// in 2016 the corrections for data are per-period:
+	// Summer16_23Sep2016BCDV4_DATA_        Summer16_23Sep2016EFV4_DATA_        Summer16_23Sep2016GV4_DATA_        Summer16_23Sep2016HV4_DATA_
+	TString jet_corr_files;
+	if (isMC)
+		jet_corr_files = "/Summer16_23Sep2016V4_MC";
+	else if (period_BCD)
+		jet_corr_files = "/Summer16_23Sep2016BCDV4_DATA";
+	else if (period_EF)
+		jet_corr_files = "/Summer16_23Sep2016EFV4_DATA";
+	else if (period_G)
+		jet_corr_files = "/Summer16_23Sep2016GV4_DATA";
+	else if (period_H)
+		jet_corr_files = "/Summer16_23Sep2016HV4_DATA";
+	jesCor = utils::cmssw::getJetCorrector (jecDir, jet_corr_files, isMC);
+	totalJESUnc = new JetCorrectionUncertainty ((jecDir + jet_corr_files + "_Uncertainty_AK4PFchs.txt").Data());
+
+	// resolution and scale-factors for the systematics
+	gSystem->ExpandPathName(TjetResolutionFileName);
+	gSystem->ExpandPathName(TjetResolutionSFFileName);
+
+	string jetResolutionFileName   (TjetResolutionFileName);
+	string jetResolutionSFFileName (TjetResolutionSFFileName);
+	// <---- ROOT & CMSSW are best friends
+	jet_resolution_in_pt = JME::JetResolution(jetResolutionFileName);
+	jet_resolution_sf_per_eta = JME::JetResolutionScaleFactor(jetResolutionSFFileName);
 
 	edm::Service<TFileService> fs;
 	// init ttree
@@ -492,19 +619,19 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 */
 	//LogInfo("Demo") << "taus.size() = "<< taus.size();
 	//string tau_Loose_ID("byLooseCombinedIsolationDeltaBetaCorr3Hits");
-	string tau_Loose_ID("byLooseIsolationMVArun2v1DBoldDMwLT");
+	string tau_Loose_ID  ("byLooseIsolationMVArun2v1DBoldDMwLT");
+	string tau_Medium_ID ("byMediumIsolationMVArun2v1DBoldDMwLT");
+	string tau_Tight_ID  ("byTightIsolationMVArun2v1DBoldDMwLT");
 	string tau_decayMode       ("decayModeFinding");
 	string tau_againstMuon     ("againstMuonTight3");
 	string tau_againstElectron ("againstElectronTightMVA6");
-	double tau_kino_cuts_pt  = 30.;
-	double tau_kino_cuts_eta = 2.3;
 
 	pat::TauCollection IDtaus, selTaus;
 	processTaus_ID_ISO    (taus,   weight, tau_decayMode, tau_Loose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
 	processTaus_Kinematics(IDtaus, weight, tau_kino_cuts_pt, tau_kino_cuts_eta, selTaus,      false, false);
 
 	pat::TauCollection selTausNoLep;
-	crossClean_in_dR(selTaus,       selLeptons, 0.4, selTausNoLep,        weights_FULL[SYS_NOMINAL], string("selTausNoLep"),        false, debug);
+	crossClean_in_dR(selTaus,       selLeptons, 0.4, selTausNoLep,        weight, string("selTausNoLep"),        false, false);
 
 	// and these are the NT output taus
 	std::sort (selTausNoLep.begin(),  selTausNoLep.end(),  utils::sort_CandidatesByPt);
@@ -515,7 +642,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		Int_t IDlev = 0;
 		if (tau.tauID(tau_Tight_ID)) IDlev = 3;
-		else if (tau.tauID(tau_ID)) IDlev = 2;
+		else if (tau.tauID(tau_Medium_ID)) IDlev = 2;
 		else if (tau.tauID(tau_Loose_ID)) IDlev = 1;
 
 		NT_tau_id.push_back(tau.pdgId());
@@ -554,7 +681,88 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		}
 
+	// MET
+	pat::METCollection mets;
+	edm::Handle<pat::METCollection> metsHandle;
+	if (isMC)
+		//metsHandle.getByLabel(ev, "slimmedMETs"); // 2016: slimmedMETs are METs corrected by muons
+		iEvent.getByToken(mets1_, metsHandle);
+	else // ReReco 03Feb data
+		//metsHandle.getByLabel(ev, "slimmedMETsMuEGClean");
+		iEvent.getByToken(mets2_, metsHandle);
+	// 2016: slimmedMETsMuEGClean are corrected by muons and electrons, only in Data!
+	// https://twiki.cern.ch/twiki/bin/view/CMSPublic/ReMiniAOD03Feb2017Notes
+	if(metsHandle.isValid() ) mets = *metsHandle;
+	pat::MET MET = mets[0];
+	// LorentzVector met = mets[0].p4 ();
+
+	NT_met_init = MET.p4();
+
+	// also for control let's get uncorrected met and compare the two:
+	if (!isMC) // sadly this exists only in latest ReReco data made with 8.0.26 CMSSW, not in Summer16 MC
+		{
+		pat::METCollection mets_uncorrected;
+		edm::Handle<pat::METCollection> mets_uncorrectedHandle;
+		//mets_uncorrectedHandle.getByLabel(ev, "slimmedMETsUncorrected");
+		iEvent.getByToken( mets_uncorrected_, mets_uncorrectedHandle);
+		if(mets_uncorrectedHandle.isValid() ) mets_uncorrected = *mets_uncorrectedHandle;
+		pat::MET met_uncorrected = mets_uncorrected[0];
+		NT_met_uncorrected = met_uncorrected.p4();
+		}
+
+
 	// JETS
+	/* jets additionally need initialization of:
+	 * genJets
+	 * jesCor, totalJESUnc,
+	 * pass jet ID, PU jet ID (with/without PU),
+	 * systematic variation (NOMINAL, the variation factors are saved per jet for offline)
+	 * jet resolution in pt, eta (?)
+	 * kinematic cuts
+	 */
+
+	// jets
+	pat::JetCollection jets;
+	edm::Handle<pat::JetCollection>jetsHandle;
+	//jetsHandle.getByLabel(ev, "slimmedJets");
+	iEvent.getByToken(jets_, jetsHandle);
+	if(jetsHandle.isValid() ) jets = *jetsHandle;
+
+	// get genJets from the event
+	std::vector<reco::GenJet> genJets;
+	edm::Handle<std::vector<reco::GenJet>> genJetsHandle;
+	//genJetsHandle.getByLabel(ev, "slimmedGenJets");
+	iEvent.getByToken( genJets_, genJetsHandle); // twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#GenJets
+	if(genJetsHandle.isValid() ) genJets = *genJetsHandle;
+
+	LorentzVector full_jet_corr(0., 0., 0., 0.);
+	pat::JetCollection IDjets;
+	//map<systematic_shift, pat::JetCollection> IDjets;
+	// it's filled with jetSystematics by processJets_CorrectJES_SmearJERnJES_ID_ISO_with_systematics
+	//string jetID("Loose");
+	//string jetPUID("MediumPU");
+	Variation jet_m_systematic_variation = Variation::NOMINAL;
+
+	processJets_CorrectJES_SmearJERnJES_ID_ISO(jets, genJets, isMC, weight, NT_fixedGridRhoFastjetAll, nGoodPV, jesCor, totalJESUnc, 0.4/2,
+		jet_resolution_in_pt, jet_resolution_sf_per_eta, jet_m_systematic_variation, jetID, jetPUID, /*with_PU*/ false, r3, full_jet_corr, IDjets, false, false);
+
+	// ALSO MET
+	LorentzVector MET_corrected = MET.p4() - full_jet_corr;
+	float met_corrected = MET_corrected.pt();
+	NT_met_corrected = MET_corrected;
+
+	pat::JetCollection selJets;
+	processJets_Kinematics(IDjets, /*bool isMC,*/ weight, jet_kino_cuts_pt, jet_kino_cuts_eta, selJets, false, false);
+
+	pat::JetCollection selJetsNoLep;
+	crossClean_in_dR(selJets, selLeptons, 0.4, selJetsNoLep, weight, string("selJetsNoLep"), false, false);
+	// and these are output jets for NTuple
+	// they pass ID, corrected with JEC (smeared JES for MC)
+	// pass kinematic cuts (pt, eta)
+	// and dR-cleaned from selected leptons
+
+	std::sort (selJetsNoLep.begin(),  selJetsNoLep.end(),  utils::sort_CandidatesByPt);
+
 
 	//bool record_ntuple = (isSingleMu || isSingleE || pass_dileptons) && NT_nbjets > 0 && NT_tau_IDlev.size() > 0; // at least 1 b jet and 1 loose tau
 	bool record_ntuple = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3 && NT_nbjets > 0; // leptons and at least 1 b jet
