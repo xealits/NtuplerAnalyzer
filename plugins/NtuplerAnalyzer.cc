@@ -268,7 +268,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		muTrigger =   ( isMC ?  utils::passTriggerPatterns(tr, muHLT_MC1, muHLT_MC2) : utils::passTriggerPatterns (tr, muHLT_Data1, muHLT_Data2));
 		}
 
-	if (!(eTrigger || muTrigger)) return; // TODO: make orthogonalization of triggers for data, now do it afterwards?
+	if (!(eTrigger || muTrigger)) return; // orthogonalization is done afterwards
 
 	// names for trigger bits
 	//edm::EDGetTokenT<edm::TriggerResults> trigResults_ = consumes<edm::TriggerResults>(trigResultsTag);
@@ -488,21 +488,56 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return; // exit now to reduce computation
 
 	/*
-	 * Select taus with secondary vertex,
-	 * see if they have flightLength and flightLengthCovariance
+	 * TAUS
 	 */
 	//LogInfo("Demo") << "taus.size() = "<< taus.size();
-	for(size_t i=0; i<taus.size(); ++i)
+	//string tau_Loose_ID("byLooseCombinedIsolationDeltaBetaCorr3Hits");
+	string tau_Loose_ID("byLooseIsolationMVArun2v1DBoldDMwLT");
+	string tau_decayMode       ("decayModeFinding");
+	string tau_againstMuon     ("againstMuonTight3");
+	string tau_againstElectron ("againstElectronTightMVA6");
+	double tau_kino_cuts_pt  = 30.;
+	double tau_kino_cuts_eta = 2.3;
+
+	pat::TauCollection IDtaus, selTaus;
+	processTaus_ID_ISO    (taus,   weight, tau_decayMode, tau_Loose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
+	processTaus_Kinematics(IDtaus, weight, tau_kino_cuts_pt, tau_kino_cuts_eta, selTaus,      false, false);
+
+	pat::TauCollection selTausNoLep;
+	crossClean_in_dR(selTaus,       selLeptons, 0.4, selTausNoLep,        weights_FULL[SYS_NOMINAL], string("selTausNoLep"),        false, debug);
+
+	// and these are the NT output taus
+	std::sort (selTausNoLep.begin(),  selTausNoLep.end(),  utils::sort_CandidatesByPt);
+
+	for(size_t i=0; i<selTausNoLep.size(); ++i)
 		{
-		if (taus[i].hasSecondaryVertex())
+		pat::Tau& tau = selTausNoLep[i];
+
+		Int_t IDlev = 0;
+		if (tau.tauID(tau_Tight_ID)) IDlev = 3;
+		else if (tau.tauID(tau_ID)) IDlev = 2;
+		else if (tau.tauID(tau_Loose_ID)) IDlev = 1;
+
+		NT_tau_id.push_back(tau.pdgId());
+		NT_tau_decayMode.push_back(tau.decayMode());
+		NT_tau_p4.push_back(tau.p4());
+		NT_tau_IDlev.push_back(IDlev);
+		NT_tau_leading_track_pt.push_back(tau.userFloat("leading_track_pt"));
+		NT_tau_leadChargedHadrCand_pt.push_back(tau.userFloat("leadChargedHadrCand_pt"));
+		NT_tau_leadNeutralCand_pt.push_back(tau.userFloat("leadNeutralCand_pt"));
+		NT_tau_leadCand_pt.push_back(tau.userFloat("leadCand_pt"));
+		NT_tau_hasSecondaryVertex.push_back(tau.hasSecondaryVertex());
+		//NT_tau_hcalEnergy = tau.hcalEnergy();
+		//NT_tau_hcalEnergyLeadChargedHadrCand = tau.hcalEnergyLeadChargedHadrCand();
+
+		if (tau.hasSecondaryVertex())
 			{
 			//const pat::tau::TauPFEssential::CovMatrix& flightCovMatr = taus[i].flightLengthCov();
-			float x = taus[i].flightLength().x();
-			float y = taus[i].flightLength().y();
-			float z = taus[i].flightLength().z();
+			float x = tau.flightLength().x();
+			float y = tau.flightLength().y();
+			float z = tau.flightLength().z();
 			NT_tau_flightLength.push_back(x*x + y*y + z*z);
-			NT_tau_flightLengthSignificance.push_back(taus[i].flightLengthSig());
-			NT_tau_hasSecondaryVertex.push_back(true);
+			NT_tau_flightLengthSignificance.push_back(tau.flightLengthSig());
 			/*
 			LogInfo("Demo") << "flightLengthSig = "<< taus[i].flightLengthSig();
 			LogInfo("Demo") << "flightLength    = "<< taus[i].flightLength().x() << ',' << taus[i].flightLength().y() << ',' << taus[i].flightLength().z();
@@ -516,9 +551,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			{
 			NT_tau_flightLength.push_back(-1);
 			NT_tau_flightLengthSignificance.push_back(-1);
-			NT_tau_hasSecondaryVertex.push_back(false);
 			}
 		}
+
+	// JETS
 
 	//bool record_ntuple = (isSingleMu || isSingleE || pass_dileptons) && NT_nbjets > 0 && NT_tau_IDlev.size() > 0; // at least 1 b jet and 1 loose tau
 	bool record_ntuple = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3 && NT_nbjets > 0; // leptons and at least 1 b jet

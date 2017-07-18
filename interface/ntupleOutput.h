@@ -268,6 +268,7 @@ VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_id)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_p4)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_IDlev)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_decayMode)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leading_track_pt)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leadChargedHadrCand_pt)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leadNeutralCand_pt)
