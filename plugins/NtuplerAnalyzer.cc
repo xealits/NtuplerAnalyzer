@@ -336,6 +336,7 @@ void
 NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
+	LogInfo ("Demo") << "entered event";
 
 	// reset the output objects with macro
 	#undef NTUPLE_INTERFACE_CLASS_DECLARE
@@ -468,6 +469,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 		*/
 
+	LogInfo ("Demo") << "passed MET filters";
+
 	// PASS LUMI
 	// done with some trick in crab/cmsRun python config
 	//if (!isMC)
@@ -494,12 +497,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	// HLT TRIGGER
 	bool eTrigger = false;
-	bool muTrigger = false;
+	bool muTrigger1, muTrigger2, muTrigger = false;
 
 	// TriggerNames for TriggerObjects --------------------
 	edm::Handle<edm::TriggerResults> trigResults; //our trigger result object
 	//edm::InputTag * trigResultsTag; // the tag object, trigResults are extracted from the event via this tag
 
+	string matched_elTriggerName("");
+	string matched_muTriggerName1("");
+	string matched_muTriggerName2("");
 	//edm::TriggerResultsByName tr = ev.triggerResultsByName ("HLT");
 	edm::TriggerResultsByName tr = iEvent.triggerResultsByName ("HLT");
 	if (!tr.isValid ()){
@@ -513,11 +519,19 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		LogInfo("Demo") << "Trigger HLT is valid";
 		//trigResultsTag = new edm::InputTag("TriggerResults","","HLT"); //make sure have correct process on MC
 		// pass trigger
-		eTrigger =    ( isMC ?  utils::passTriggerPatterns(tr, elHLT_MC) : utils::passTriggerPatterns(tr, elHLT_Data));
-		muTrigger =   ( isMC ?  utils::passTriggerPatterns(tr, muHLT_MC1, muHLT_MC2) : utils::passTriggerPatterns (tr, muHLT_Data1, muHLT_Data2));
+		// using this:
+		//   bool passTriggerPatternsAndGetName(edm::TriggerResultsByName& tr, std::string& pathName, std::string pattern)
+		// -- pathName is the matched part of the trigger name (as I got it)
+		//    it is passed to select trigger objects
+		eTrigger   = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_elTriggerName, elHLT_MC)   : utils::passTriggerPatternsAndGetName(tr, matched_elTriggerName, elHLT_Data));
+		muTrigger1 = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_MC1) : utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_Data1));
+		muTrigger2 = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName2, muHLT_MC2) : utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName2, muHLT_Data2));
+		muTrigger = muTrigger1 || muTrigger2;
 		}
 
 	if (!(eTrigger || muTrigger)) return; // orthogonalization is done afterwards
+
+	LogInfo ("Demo") << "passed HLT " << eTrigger << ' ' << muTrigger << '(' << muTrigger1 << ',' << muTrigger2 << ')' << ';' << matched_elTriggerName << ' ' << matched_muTriggerName1 << ',' << matched_muTriggerName2;
 
 	// names for trigger bits
 	//edm::EDGetTokenT<edm::TriggerResults> trigResults_ = consumes<edm::TriggerResults>(trigResultsTag);
@@ -534,6 +548,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		LogInfo("Demo") << "!triggerObjectsHandle.isValid()";
 		return;
 		}
+	LogInfo ("Demo") << "got trigger objects";
 	vector<pat::TriggerObjectStandAlone> trig_objs = *triggerObjectsHandle;
 
 	// objects of our triggers
@@ -543,16 +558,18 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	if (eTrigger)
 		{
 		NT_HLT_el = true;
-		Processing_selectHLTobjects(trig_objs, trigNames, el_trig_objs, (isMC? elHLT_MC : elHLT_Data));
+		Processing_selectHLTobjects(trig_objs, trigNames, el_trig_objs, matched_elTriggerName);
 		}
 	if (muTrigger)
 		{
 		NT_HLT_mu = true;
-		Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs,  (isMC? muHLT_MC1 : muHLT_Data1));
-		Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs2, (isMC? muHLT_MC2 : muHLT_Data2));
+		Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs,  matched_muTriggerName1);
+		Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs2, matched_muTriggerName2);
 		// vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
 		mu_trig_objs.insert(mu_trig_objs.end(), mu_trig_objs2.begin(), mu_trig_objs2.end());
 		}
+
+	LogInfo ("Demo") << "our trigger objects: " << el_trig_objs.size() << ',' << mu_trig_objs.size();
 
 	// PRIMARY VERTEX
 	reco::VertexCollection vtx;
@@ -733,8 +750,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	for(size_t l=0; l<selMuons.size(); ++l)     selLeptons.push_back(patUtils::GenericLepton (selMuons[l]     ));
 	std::sort(selLeptons.begin(), selLeptons.end(), utils::sort_CandidatesByPt);
 
+	LogInfo ("Demo") << "selected leptons: " << '(' << selIDElectrons.size() << ',' << selIDMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
+
 	bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0;
 	if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return; // exit now to reduce computation
+
+	LogInfo ("Demo") << "passed lepton conditions ";
 
 	NT_nleps = selLeptons.size();
 
@@ -974,11 +995,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	NT_njets  = selJetsNoLep.size();
 
+	LogInfo ("Demo") << "all particles/objects are selected, nbjets = " << NT_nbjets;
+
 	//bool record_ntuple = (isSingleMu || isSingleE || pass_dileptons) && NT_nbjets > 0 && NT_tau_IDlev.size() > 0; // at least 1 b jet and 1 loose tau
 	bool record_ntuple = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3 && NT_nbjets > 0; // leptons and at least 1 b jet
 
 	if (record_ntuple)
 		{
+		LogInfo ("Demo") << "recording";
+
 		for(size_t l=0; l<selLeptons.size(); ++l)
 			{
 			NT_lep_p4.push_back(selLeptons[l].p4());
