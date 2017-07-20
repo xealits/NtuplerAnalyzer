@@ -16,6 +16,12 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer',
     resolutionFile  = cms.string('${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/data/jec/25ns/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt'),
     scaleFactorFile = cms.string('${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/data/jec/25ns/Spring16_25nsV10_MC_SF_AK4PFchs.txt'),
 
+    btag_threshold = cms.double(0.8484),
+    # X80 2016 ReReco, https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco
+    # Loose  0.5426
+    # Medium 0.8484
+    # Tight  0.9535
+
     jet_kino_cuts_pt  = cms.double( 30.),
     jet_kino_cuts_eta = cms.double( 2.4),
     tau_kino_cuts_pt  = cms.double( 30.),

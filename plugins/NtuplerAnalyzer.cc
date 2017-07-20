@@ -167,6 +167,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
 	double tau_kino_cuts_pt, tau_kino_cuts_eta;
 	double jet_kino_cuts_pt, jet_kino_cuts_eta;
+	double btag_threshold;
 
 	//lumiUtils::GoodLumiFilter goodLumiFilter;
 
@@ -215,7 +216,8 @@ TjetResolutionSFFileName   (iConfig.getParameter<std::string>("scaleFactorFile")
 tau_kino_cuts_pt    (iConfig.getParameter<double>("tau_kino_cuts_pt")),
 tau_kino_cuts_eta   (iConfig.getParameter<double>("tau_kino_cuts_eta")),
 jet_kino_cuts_pt    (iConfig.getParameter<double>("jet_kino_cuts_pt")),
-jet_kino_cuts_eta   (iConfig.getParameter<double>("jet_kino_cuts_eta"))
+jet_kino_cuts_eta   (iConfig.getParameter<double>("jet_kino_cuts_eta")),
+btag_threshold   (iConfig.getParameter<double>("btag_threshold"))
 //goodLumiFilter(iConfig.getUntrackedParameter<std::vector<edm::LuminosityBlockRange>>("lumisToProcess", std::vector<edm::LuminosityBlockRange>()))
 
 {
@@ -927,7 +929,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 * for the record decision
 	 */
 	string btagger_label("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-	float btag_WP = 0.8484; // medium
 	NT_nbjets = 0;
 	for (unsigned int i = 0; i<selJetsNoLep.size(); i++)
 		{
@@ -990,7 +991,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_jet_partonFlavour.push_back(jet.partonFlavour());
 		NT_jet_dR_matched_tau.push_back(matched_tau_number); // number of the tau in tau vectors, if no match = -1
 
-		if (b_discriminator > btag_WP) NT_nbjets += 1;
+		if (b_discriminator > btag_threshold) NT_nbjets += 1;
 		}
 
 	NT_njets  = selJetsNoLep.size();
