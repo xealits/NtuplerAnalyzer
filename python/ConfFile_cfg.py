@@ -6,9 +6,9 @@ ivars = VarParsing.VarParsing('analysis')
 
 ivars.inputFiles=(
  # Data, file on netwokr -- let's see how cmsRun gets it
- 'root://cms-xrd-global.cern.ch///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/001E3E7D-57EB-E611-8469-0CC47A7C35D2.root'
+ #'root://cms-xrd-global.cern.ch///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/001E3E7D-57EB-E611-8469-0CC47A7C35D2.root'
  # TT for tau-rich events
- #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root'
+ 'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root'
  #'root://eoscms//eos/cms///store/data/Run2016G/SingleMuon/AOD/23Sep2016-v1/120000/D400618A-839C-E611-8E83-008CFAF73190.root' # no CTPPS here
 
 # Exception Message:
@@ -23,12 +23,21 @@ ivars.inputFiles=(
 #'root://xrootd.unl.edu//store/data/Run2015D/Charmonium/AOD/PromptReco-v4/000/258/159/00000/02D2473D-E06B-E511-80DA-02163E01418B.root'
 )
 
+
 ivars.outputFile='NtuplerAnalyzer_test.root'
 # get and parse the command line arguments
 ivars.parseArguments()
 
 
 process = cms.Process("Demo")
+
+
+# setting GlobalTag for MC Morion2017:
+# https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Run2_Moriond17_re_digi_reco_camp
+# data:
+# Produced with: 8_0_26_patch1; Global tag: 80X_dataRun2_2016SeptRepro_v7 (eras B-G) 80X_dataRun2_Prompt_v16 (era H); the global tags are an update the 23Sep20216 and PromptReco ones to includes the 23Sep20216 V3 JECs on top .
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v6')
 
 # initialize MessageLogger and output report
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -68,6 +77,17 @@ process.TFileService = cms.Service("TFileService",
 )
 
 
-process.p = cms.Path(process.ntupler)
+#Testing MET filters
+#process.load("RecoMET.METFilters.metFilters_cff")
+#process.load("PhysicsTools.PatAlgos.slimming.metFilterPaths_cff")
+#from PhysicsTools.PatAlgos.slimming.metFilterPaths_cff import *
+process.load("RecoMET.METFilters.metFilters_cff") # back to this
+
+#process.p = cms.Path(Flag_BadChargedCandidateFilter * Flag_BadPFMuonFilter * process.ntupler)
+#process.p = cms.Path(BadChargedCandidateFilter * BadPFMuonFilter * process.ntupler)
+#process.p = cms.Path(process.BadChargedCandidateFilter * process.BadPFMuonFilter * process.ntupler)
+#process.p = cms.Sequence(process.BadChargedCandidateFilter * process.BadPFMuonFilter * process.ntupler)
+process.p = cms.Sequence(process.metFilters * process.ntupler)
+
 
 

@@ -368,15 +368,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 * info on MET filters and their presence in MINIAOD:
 	 *   https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#ETmiss_filters
 	 *   https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2017
-	 *     filter	location	data	MC(fullSim)	MC(fastSim)	comment
-	 *     primary vertex filter	available in miniAOD v2	DONE	suggested	suggested	 
-	 *     beam halo filter	available in miniAOD v2	DONE	suggested	not suggested	Beam Halo Presentation
-	 *     HBHE noise filter	available in miniAOD v2	DONE	suggested	suggested	HCAL DPG Presentation
-	 *     HBHEiso noise filter	available in miniAOD v2	DONE	suggested	suggested	same as above
-	 *     ECAL TP filter	available in miniAOD v2	DONE	suggested	suggested	ECAL DPG Presentation
-	 *     Bad PF Muon Filter	to be run on the fly	DONE	suggested	suggested	PPD presentation
-	 *     Bad Charged Hadron Filter	to be run on the fly	DONE	suggested	suggested	PPD presentation
-	 *     ee badSC noise filter	available in miniAOD v2	DONE	not suggested	not suggested
+	 *     filter                      location                     data	MC(fullSim)	MC(fastSim)	comment
+	 *     primary vertex filter       available in miniAOD v2	DONE	suggested	suggested	 
+	 *     beam halo filter            available in miniAOD v2	DONE	suggested	not suggested	Beam Halo Presentation
+	 *     HBHE noise filter	   available in miniAOD v2	DONE	suggested	suggested	HCAL DPG Presentation
+	 *     HBHEiso noise filter	   available in miniAOD v2	DONE	suggested	suggested	same as above
+	 *     ECAL TP filter              available in miniAOD v2	DONE	suggested	suggested	ECAL DPG Presentation
+	 *     Bad PF Muon Filter          to be run on the fly 	DONE	suggested	suggested	PPD presentation
+	 *     Bad Charged Hadron Filter   to be run on the fly 	DONE	suggested	suggested	PPD presentation
+	 *     ee badSC noise filter       available in miniAOD v2	DONE	not suggested	not suggested
 	 *   https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/PhysicsTools/PatAlgos/python/slimming/metFilterPaths_cff.py
 	 *   https://twiki.cern.ch/twiki/bin/view/CMSPublic/ReMiniAOD03Feb2017Notes#MET_Recipes
 	 *
@@ -468,6 +468,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//    "Flag_trkPOG_manystripclus53X", "Flag_trkPOG_toomanystripclus53X", "Flag_trkPOG_logErrorTooManyClusters",
 		//    "Flag_METFilters" }
 		///
+		//
+		// it seems the track of these two filters goes to:
+		// https://indico.cern.ch/event/591506/contributions/2387636/attachments/1381281/2099935/2016_12_01_MET_Scanning_Report_PPD.pdf
+		// https://twiki.cern.ch/twiki/bin/view/CMS/MissingETScanners#More_info_on_filter_bad_ChargedC
+		// and back to
+		// https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_X/PhysicsTools/PatAlgos/python/slimming/metFilterPaths_cff.py
+		// -- Flag_BadChargedCandidateFilter
+		// and Flag_BadPFMuonFilter
 		}
 		*/
 

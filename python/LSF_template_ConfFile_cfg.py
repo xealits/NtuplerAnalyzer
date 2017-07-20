@@ -17,7 +17,26 @@ ivars.outputFile = '{outfile}'
 ivars.parseArguments()
 
 
+# MC or Data is used everywhere
+isMC = {isMC}
+dtag = '{dtag}'
+
 process = cms.Process("Demo")
+
+# setting GlobalTag for MC Morion2017:
+# https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Run2_Moriond17_re_digi_reco_camp
+# data:
+# Produced with: 8_0_26_patch1;
+# Global tag: 80X_dataRun2_2016SeptRepro_v7 (eras B-G)
+# 80X_dataRun2_Prompt_v16 (era H);
+# the global tags are an update the 23Sep20216 and PromptReco ones to includes the 23Sep20216 V3 JECs on top .
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+if isMC:
+    process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v6')
+else:
+    # so, era H has different global tag
+    process.GlobalTag.globaltag = cms.string('80X_dataRun2_Prompt_v16') if '2016H' in dtag else cms.string('80X_dataRun2_2016SeptRepro_v7')
+
 
 # initialize MessageLogger and output report
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -36,9 +55,6 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(ivars.inputFiles))
 
-# MC or Data is used everywhere
-isMC = {isMC}
-
 # nope, doing lumis another way
 #theLumiMask = path.expandvars("") # for MC it defaults for "", and somehow the lumi-checker works well with that
 #process.ntupler.lumisToProcess = LumiList.LumiList(filename = theLumiMask).getVLuminosityBlockRange()
@@ -56,7 +72,7 @@ if not isMC:
 process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 process.ntupler.isMC = cms.bool({isMC})
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
-process.ntupler.dtag = cms.string('{dtag}')
+process.ntupler.dtag = cms.string(dtag)
 
 
 #process.dump=cms.EDAnalyzer('EventContentAnalyzer')
@@ -69,11 +85,11 @@ process.TFileService = cms.Service("TFileService",
 
 
 # and this is supposedly met filters
-#process.load("RecoMET.METFilters.metFilters_cff")
-# ok, these are some old filters, they crash now
+process.load("RecoMET.METFilters.metFilters_cff") # this loads the recommended (hopefully) metFilters sequence, together with BadPFMuon and BadChHadron
 
 #process.p = cms.Path(process.metFilters * process.ntupler)
-process.p = cms.Path(process.ntupler)
+#process.p = cms.Path(process.ntupler)
+process.p = cms.Sequence(process.metFilters * process.ntupler)
 
 
 
