@@ -1046,8 +1046,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		else
 			{
-			NT_tau_flightLength.push_back(-1);
-			NT_tau_flightLengthSignificance.push_back(-1);
+			NT_tau_flightLength.push_back(-111);
+			NT_tau_flightLengthSignificance.push_back(-111);
 			}
 
 		// dR match to jet
