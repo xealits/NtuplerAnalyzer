@@ -85,11 +85,28 @@ process.TFileService = cms.Service("TFileService",
 
 
 # and this is supposedly met filters
-process.load("RecoMET.METFilters.metFilters_cff") # this loads the recommended (hopefully) metFilters sequence, together with BadPFMuon and BadChHadron
+#process.load("RecoMET.METFilters.metFilters_cff") # this loads the recommended (hopefully) metFilters sequence, together with BadPFMuon and BadChHadron
 
 #process.p = cms.Path(process.metFilters * process.ntupler)
 #process.p = cms.Path(process.ntupler)
-process.p = cms.Sequence(process.metFilters * process.ntupler)
+#process.p = cms.Sequence(process.metFilters * process.ntupler)
+
+process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+#process.BadPFMuonFilter.taggingMode = cms.bool(True)
+
+process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+#process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
+
+
+process.p = cms.Path(
+ process.BadPFMuonFilter *
+ process.BadChargedCandidateFilter *
+ process.ntupler)
+
 
 
 

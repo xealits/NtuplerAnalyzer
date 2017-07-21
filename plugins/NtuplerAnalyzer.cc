@@ -169,6 +169,9 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	double jet_kino_cuts_pt, jet_kino_cuts_eta;
 	double btag_threshold;
 
+	//edm::EDGetTokenT<bool> BadChCandFilterToken_;
+	//edm::EDGetTokenT<bool> BadPFMuonFilterToken_;
+
 	//lumiUtils::GoodLumiFilter goodLumiFilter;
 
 	// random numbers for corrections & uncertainties
@@ -245,6 +248,45 @@ btag_threshold   (iConfig.getParameter<double>("btag_threshold"))
 
 	genJets_ = consumes<vector<reco::GenJet>>(edm::InputTag("slimmedGenJets"));
 	jets_    = consumes<pat::JetCollection>(edm::InputTag("slimmedJets"));
+
+	//BadChCandFilterToken_ = consumes<bool>(iConfig.getParameter<edm::InputTag>("BadChargedCandidateFilter"));
+	//BadPFMuonFilterToken_ = consumes<bool>(iConfig.getParameter<edm::InputTag>("BadPFMuonFilter"));
+	//BadChCandFilterToken_ = consumes<bool>(edm::InputTag("BadChargedCandidateFilter"));
+	//BadChCandFilterToken_ = consumes<bool>(edm::InputTag("BadChargedCandidate"));
+	/* try one of these strings:
+	 * "BadParticleFilter",
+	 *  PFCandidates  = cms.InputTag("particleFlow"),   # Collection to test
+	 *  muons  = cms.InputTag("muons"),   # Collection to test
+	 *  taggingMode   = cms.bool(False),
+	 *  filterType  =cms.string("BadChargedCandidate"
+	 *  
+	 *  and for muons:
+		BadPFMuonFilter = cms.EDFilter(
+		    "BadParticleFilter",
+		    PFCandidates  = cms.InputTag("particleFlow"),   # Collection to test
+		    muons  = cms.InputTag("muons"),   # Collection to test 
+		    taggingMode   = cms.bool(False),
+		    filterType  =cms.string("BadPFMuon"),
+		    maxDR         = cms.double(0.001),              # Maximum DR between reco::muon->innerTrack and pfCandidate 
+		...
+		BadChargedCandidateFilter = cms.EDFilter(
+		    "BadParticleFilter",
+		    PFCandidates  = cms.InputTag("particleFlow"),   # Collection to test
+		    muons  = cms.InputTag("muons"),   # Collection to test
+		    taggingMode   = cms.bool(False),
+		    filterType  =cms.string("BadChargedCandidate"),
+		    maxDR         = cms.double(0.00001),              # Maximum DR between reco::muon->innerTrack and pfCandidate 
+		    minPtDiffRel = cms.double(0.00001),               # lower threshold on difference between pt of reco::muon->innerTrack and pfCandidate
+		    minMuonTrackRelErr = cms.double(2.0),          # minimum ptError/pt on muon best track
+		    innerTrackRelErr   = cms.double(1.0),          # minimum relPtErr on innerTrack
+		    minMuonPt     = cms.double(100.0),               # minimum muon pt 
+		    segmentCompatibility = cms.double(0.3),        # compatibility between the inner track and the segments in the muon spectrometer
+		)
+	 *
+	 * -- there is no filter = True option!!
+	 */
+	//BadPFMuonFilterToken_ = consumes<bool>(edm::InputTag("BadPFMuonFilter"));
+	//BadPFMuonFilterToken_ = consumes<bool>(edm::InputTag("BadPFMuon"));
 
 	// dtag configs
 	bool period_BCD = !isMC && (dtag.Contains("2016B") || dtag.Contains("2016C") || dtag.Contains("2016D"));
@@ -361,6 +403,22 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	*/
 
 	// ------------------------------------------------- Apply MET FILTERS
+
+	/* segfaults now...
+	edm::Handle<bool> ifilterbadChCand;
+	edm::Handle<bool> ifilterbadPFMuon;
+
+	iEvent.getByToken(BadChCandFilterToken_, ifilterbadChCand);
+	bool  filterbadChCandidate = *ifilterbadChCand;
+	iEvent.getByToken(BadPFMuonFilterToken_, ifilterbadPFMuon);
+	bool filterbadPFMuon = *ifilterbadPFMuon;
+	*/
+	// in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2017
+	// they say the bool is false if rejected by event
+
+	//if (!(filterbadChCandidate && filterbadPFMuon)) return;
+	//if ((filterbadChCandidate && filterbadPFMuon)) return;
+
 	/*
 	 * MET filters are data-only thing -- remove events before passing and counting lumi, since MC is then normalized to data lumi
 	 * thus after passing lumi data and MC should only have the same cuts
@@ -868,8 +926,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//mets_uncorrectedHandle.getByLabel(ev, "slimmedMETsUncorrected");
 		iEvent.getByToken( mets_uncorrected_, mets_uncorrectedHandle);
 		if(mets_uncorrectedHandle.isValid() ) mets_uncorrected = *mets_uncorrectedHandle;
-		pat::MET met_uncorrected = mets_uncorrected[0];
-		NT_met_uncorrected = met_uncorrected.p4();
+		//pat::MET met_uncorrected = mets_uncorrected[0];
+		//NT_met_uncorrected = met_uncorrected.p4();
 		}
 
 
@@ -909,9 +967,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		jet_resolution_in_pt, jet_resolution_sf_per_eta, jet_m_systematic_variation, jetID, jetPUID, /*with_PU*/ false, r3, full_jet_corr, IDjets, false, false);
 
 	// ALSO MET
-	LorentzVector MET_corrected = MET.p4() - full_jet_corr;
-	float met_corrected = MET_corrected.pt();
-	NT_met_corrected = MET_corrected;
+	//LorentzVector MET_corrected = MET.p4() - full_jet_corr;
+	//float met_corrected = MET_corrected.pt();
+	//NT_met_corrected = MET_corrected;
 
 	pat::JetCollection selJets;
 	processJets_Kinematics(IDjets, /*bool isMC,*/ weight, jet_kino_cuts_pt, jet_kino_cuts_eta, selJets, false, false);
