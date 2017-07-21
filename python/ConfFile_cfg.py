@@ -4,11 +4,11 @@ import FWCore.ParameterSet.VarParsing as VarParsing
 # this ivars thing, whatever this is, will hold the names to the input/output files
 ivars = VarParsing.VarParsing('analysis')
 
-ivars.inputFiles=(
+ivars.inputFiles, isMC = ('file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'), True
  # Data, file on netwokr -- let's see how cmsRun gets it
  #'root://cms-xrd-global.cern.ch///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/001E3E7D-57EB-E611-8469-0CC47A7C35D2.root'
  # TT for tau-rich events
- 'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'
+ 
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/26ABF488-A0BE-E611-BEEB-0CC47A4D7640.root'
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root'
  #'root://eoscms//eos/cms///store/data/Run2016G/SingleMuon/AOD/23Sep2016-v1/120000/D400618A-839C-E611-8E83-008CFAF73190.root' # no CTPPS here
@@ -23,7 +23,6 @@ ivars.inputFiles=(
 # this one complains about absence of some wrapper of CTPPS Dimond Digi stuff...................
 #'root://eoscms//eos/cms///store/data/Run2016G/SingleMuon/MINIAOD/03Feb2017-v1/100000/02382B19-D1EA-E611-B2F9-0CC47ABAC11C.root'
 #'root://xrootd.unl.edu//store/data/Run2015D/Charmonium/AOD/PromptReco-v4/000/258/159/00000/02D2473D-E06B-E511-80DA-02163E01418B.root'
-)
 
 
 ivars.outputFile='NtuplerAnalyzer_test.root'
@@ -69,6 +68,7 @@ process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.dtag = cms.string('Data13TeV_SingleMuon2016B_03Feb2017_ver2')
+process.ntupler.isMC = isMC
 
 #process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.Tracer = cms.Service("Tracer")
@@ -80,7 +80,7 @@ process.TFileService = cms.Service("TFileService",
 
 
 #Testing MET filters
-#process.load("RecoMET.METFilters.metFilters_cff")
+process.load("RecoMET.METFilters.metFilters_cff")
 #process.load("PhysicsTools.PatAlgos.slimming.metFilterPaths_cff")
 #from PhysicsTools.PatAlgos.slimming.metFilterPaths_cff import *
 #process.load("RecoMET.METFilters.metFilters_cff") # back to this
@@ -94,22 +94,22 @@ process.TFileService = cms.Service("TFileService",
 # another way:
 #https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#How_to_run_the_Bad_Charged_Hadro
 
-#process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-#process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
-#process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-##process.BadPFMuonFilter.taggingMode = cms.bool(True)
+process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+#process.BadPFMuonFilter.taggingMode = cms.bool(True)
 #process.BadPFMuonFilter.filter = cms.bool(True)
-#
-#process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
-#process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
-#process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-##process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
+
+process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+#process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 #process.BadChargedCandidateFilter.filter = cms.bool(True)
 
 
 process.p = cms.Path(
- #process.BadPFMuonFilter *
- #process.BadChargedCandidateFilter *
+ process.BadPFMuonFilter *
+ process.BadChargedCandidateFilter *
  process.ntupler)
 
 #process.p = cms.Path(

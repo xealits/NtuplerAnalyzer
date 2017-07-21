@@ -219,6 +219,9 @@ Int_t_in_NTuple(OUTNTUPLE, nvtx)
 Int_t_in_NTuple(OUTNTUPLE, nvtx_gen)
 Float_t_in_NTuple(OUTNTUPLE, fixedGridRhoFastjetAll)
 
+Bool_t_in_NTuple(OUTNTUPLE, METfilterbadChCand)
+Bool_t_in_NTuple(OUTNTUPLE, METfilterbadPFMuon)
+
 Bool_t_in_NTuple(OUTNTUPLE, HLT_el)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_mu)
 
@@ -263,7 +266,6 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_pu_discr)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_b_discr)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_hadronFlavour)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_partonFlavour)
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_dR_matched_tau) // number of the tau in tau vectors, if no match = -1
 
 // GEN TAUS
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tau_p4)
@@ -280,4 +282,5 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leadCand_pt)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  tau_hasSecondaryVertex)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_flightLength)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_flightLengthSignificance)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_dR_matched_jet) // number of the jet in jet vectors, if no match = -1
 

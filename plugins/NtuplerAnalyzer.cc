@@ -169,8 +169,8 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	double jet_kino_cuts_pt, jet_kino_cuts_eta;
 	double btag_threshold;
 
-	//edm::EDGetTokenT<bool> BadChCandFilterToken_;
-	//edm::EDGetTokenT<bool> BadPFMuonFilterToken_;
+	edm::EDGetTokenT<bool> BadChCandFilterToken_;
+	edm::EDGetTokenT<bool> BadPFMuonFilterToken_;
 
 	//lumiUtils::GoodLumiFilter goodLumiFilter;
 
@@ -251,7 +251,6 @@ btag_threshold   (iConfig.getParameter<double>("btag_threshold"))
 
 	//BadChCandFilterToken_ = consumes<bool>(iConfig.getParameter<edm::InputTag>("BadChargedCandidateFilter"));
 	//BadPFMuonFilterToken_ = consumes<bool>(iConfig.getParameter<edm::InputTag>("BadPFMuonFilter"));
-	//BadChCandFilterToken_ = consumes<bool>(edm::InputTag("BadChargedCandidateFilter"));
 	//BadChCandFilterToken_ = consumes<bool>(edm::InputTag("BadChargedCandidate"));
 	/* try one of these strings:
 	 * "BadParticleFilter",
@@ -285,8 +284,9 @@ btag_threshold   (iConfig.getParameter<double>("btag_threshold"))
 	 *
 	 * -- there is no filter = True option!!
 	 */
-	//BadPFMuonFilterToken_ = consumes<bool>(edm::InputTag("BadPFMuonFilter"));
 	//BadPFMuonFilterToken_ = consumes<bool>(edm::InputTag("BadPFMuon"));
+	BadPFMuonFilterToken_ = consumes<bool>(edm::InputTag("BadPFMuonFilter"));
+	BadChCandFilterToken_ = consumes<bool>(edm::InputTag("BadChargedCandidateFilter"));
 
 	// dtag configs
 	bool period_BCD = !isMC && (dtag.Contains("2016B") || dtag.Contains("2016C") || dtag.Contains("2016D"));
@@ -404,15 +404,16 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	// ------------------------------------------------- Apply MET FILTERS
 
-	/* segfaults now...
 	edm::Handle<bool> ifilterbadChCand;
 	edm::Handle<bool> ifilterbadPFMuon;
 
 	iEvent.getByToken(BadChCandFilterToken_, ifilterbadChCand);
-	bool  filterbadChCandidate = *ifilterbadChCand;
 	iEvent.getByToken(BadPFMuonFilterToken_, ifilterbadPFMuon);
-	bool filterbadPFMuon = *ifilterbadPFMuon;
-	*/
+	//bool  filterbadChCandidate = *ifilterbadChCand;
+	//bool filterbadPFMuon = *ifilterbadPFMuon;
+	NT_METfilterbadChCand = *ifilterbadChCand;
+	NT_METfilterbadPFMuon = *ifilterbadPFMuon;
+
 	// in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Moriond_2017
 	// they say the bool is false if rejected by event
 
@@ -834,72 +835,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 	//NT_leps_ID = NT_leps_ID;
 
-	/*
-	 * TAUS
-	 */
-	//LogInfo("Demo") << "taus.size() = "<< taus.size();
-	//string tau_Loose_ID("byLooseCombinedIsolationDeltaBetaCorr3Hits");
-	string tau_Loose_ID  ("byLooseIsolationMVArun2v1DBoldDMwLT");
-	string tau_Medium_ID ("byMediumIsolationMVArun2v1DBoldDMwLT");
-	string tau_Tight_ID  ("byTightIsolationMVArun2v1DBoldDMwLT");
-	string tau_decayMode       ("decayModeFinding");
-	string tau_againstMuon     ("againstMuonTight3");
-	string tau_againstElectron ("againstElectronTightMVA6");
 
-	pat::TauCollection IDtaus, selTaus;
-	processTaus_ID_ISO    (taus,   weight, tau_decayMode, tau_Loose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
-	processTaus_Kinematics(IDtaus, weight, tau_kino_cuts_pt, tau_kino_cuts_eta, selTaus,      false, false);
-
-	pat::TauCollection selTausNoLep;
-	crossClean_in_dR(selTaus,       selLeptons, 0.4, selTausNoLep,        weight, string("selTausNoLep"),        false, false);
-
-	// and these are the NT output taus
-	std::sort (selTausNoLep.begin(),  selTausNoLep.end(),  utils::sort_CandidatesByPt);
-
-	for(size_t i=0; i<selTausNoLep.size(); ++i)
-		{
-		pat::Tau& tau = selTausNoLep[i];
-
-		Int_t IDlev = 0;
-		if (tau.tauID(tau_Tight_ID)) IDlev = 3;
-		else if (tau.tauID(tau_Medium_ID)) IDlev = 2;
-		else if (tau.tauID(tau_Loose_ID)) IDlev = 1;
-
-		NT_tau_id.push_back(tau.pdgId());
-		NT_tau_decayMode.push_back(tau.decayMode());
-		NT_tau_p4.push_back(tau.p4());
-		NT_tau_IDlev.push_back(IDlev);
-		NT_tau_leading_track_pt.push_back(tau.userFloat("leading_track_pt"));
-		NT_tau_leadChargedHadrCand_pt.push_back(tau.userFloat("leadChargedHadrCand_pt"));
-		NT_tau_leadNeutralCand_pt.push_back(tau.userFloat("leadNeutralCand_pt"));
-		NT_tau_leadCand_pt.push_back(tau.userFloat("leadCand_pt"));
-		NT_tau_hasSecondaryVertex.push_back(tau.hasSecondaryVertex());
-		//NT_tau_hcalEnergy = tau.hcalEnergy();
-		//NT_tau_hcalEnergyLeadChargedHadrCand = tau.hcalEnergyLeadChargedHadrCand();
-
-		if (tau.hasSecondaryVertex())
-			{
-			//const pat::tau::TauPFEssential::CovMatrix& flightCovMatr = taus[i].flightLengthCov();
-			float x = tau.flightLength().x();
-			float y = tau.flightLength().y();
-			float z = tau.flightLength().z();
-			NT_tau_flightLength.push_back(x*x + y*y + z*z);
-			NT_tau_flightLengthSignificance.push_back(tau.flightLengthSig());
-			/*
-			LogInfo("Demo") << "flightLengthSig = "<< taus[i].flightLengthSig();
-			LogInfo("Demo") << "flightLength    = "<< taus[i].flightLength().x() << ',' << taus[i].flightLength().y() << ',' << taus[i].flightLength().z();
-			LogInfo("Demo") << "flightLength Covar = " << endl <<
-				flightCovMatr(0,0) << ',' << flightCovMatr(0,1) << ',' << flightCovMatr(0,2) << endl << 
-				flightCovMatr(1,0) << ',' << flightCovMatr(1,1) << ',' << flightCovMatr(2,2) << endl << 
-				flightCovMatr(2,0) << ',' << flightCovMatr(2,1) << ',' << flightCovMatr(2,2) << endl;
-			*/
-			}
-		else
-			{
-			NT_tau_flightLength.push_back(-1);
-			NT_tau_flightLengthSignificance.push_back(-1);
-			}
-		}
 
 	// MET
 	pat::METCollection mets;
@@ -1022,18 +958,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				}
 			}
 
-		// dR match to tau
-		Int_t matched_tau_number = -1;
-		for (unsigned int i=0; i<selTausNoLep.size(); i++)
-			{
-			pat::Tau& tau = selTausNoLep[i];
-			if (reco::deltaR(jet, tau) < 0.4)
-				{
-				matched_tau_number = i;
-				break;
-				}
-			}
-
 		NT_jet_id.push_back(jet.pdgId());
 		NT_jet_initial_p4.        push_back(id_jet_p4);
 		NT_jet_p4.                push_back(jet.p4());
@@ -1055,9 +979,90 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_jet_b_discr.push_back(b_discriminator);
 		NT_jet_hadronFlavour.push_back(jet.hadronFlavour());
 		NT_jet_partonFlavour.push_back(jet.partonFlavour());
-		NT_jet_dR_matched_tau.push_back(matched_tau_number); // number of the tau in tau vectors, if no match = -1
 
 		if (b_discriminator > btag_threshold) NT_nbjets += 1;
+		}
+
+
+	/*
+	 * TAUS
+	 */
+	//LogInfo("Demo") << "taus.size() = "<< taus.size();
+	//string tau_Loose_ID("byLooseCombinedIsolationDeltaBetaCorr3Hits");
+	string tau_Loose_ID  ("byLooseIsolationMVArun2v1DBoldDMwLT");
+	string tau_Medium_ID ("byMediumIsolationMVArun2v1DBoldDMwLT");
+	string tau_Tight_ID  ("byTightIsolationMVArun2v1DBoldDMwLT");
+	string tau_decayMode       ("decayModeFinding");
+	string tau_againstMuon     ("againstMuonTight3");
+	string tau_againstElectron ("againstElectronTightMVA6");
+
+	pat::TauCollection IDtaus, selTaus;
+	processTaus_ID_ISO    (taus,   weight, tau_decayMode, tau_Loose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
+	processTaus_Kinematics(IDtaus, weight, tau_kino_cuts_pt, tau_kino_cuts_eta, selTaus,      false, false);
+
+	pat::TauCollection selTausNoLep;
+	crossClean_in_dR(selTaus,       selLeptons, 0.4, selTausNoLep,        weight, string("selTausNoLep"),        false, false);
+
+	// and these are the NT output taus
+	std::sort (selTausNoLep.begin(),  selTausNoLep.end(),  utils::sort_CandidatesByPt);
+
+	for(size_t i=0; i<selTausNoLep.size(); ++i)
+		{
+		pat::Tau& tau = selTausNoLep[i];
+
+		Int_t IDlev = 0;
+		if (tau.tauID(tau_Tight_ID)) IDlev = 3;
+		else if (tau.tauID(tau_Medium_ID)) IDlev = 2;
+		else if (tau.tauID(tau_Loose_ID)) IDlev = 1;
+
+		NT_tau_id.push_back(tau.pdgId());
+		NT_tau_decayMode.push_back(tau.decayMode());
+		NT_tau_p4.push_back(tau.p4());
+		NT_tau_IDlev.push_back(IDlev);
+		NT_tau_leading_track_pt.push_back(tau.userFloat("leading_track_pt"));
+		NT_tau_leadChargedHadrCand_pt.push_back(tau.userFloat("leadChargedHadrCand_pt"));
+		NT_tau_leadNeutralCand_pt.push_back(tau.userFloat("leadNeutralCand_pt"));
+		NT_tau_leadCand_pt.push_back(tau.userFloat("leadCand_pt"));
+		NT_tau_hasSecondaryVertex.push_back(tau.hasSecondaryVertex());
+		//NT_tau_hcalEnergy = tau.hcalEnergy();
+		//NT_tau_hcalEnergyLeadChargedHadrCand = tau.hcalEnergyLeadChargedHadrCand();
+
+		if (tau.hasSecondaryVertex())
+			{
+			//const pat::tau::TauPFEssential::CovMatrix& flightCovMatr = taus[i].flightLengthCov();
+			float x = tau.flightLength().x();
+			float y = tau.flightLength().y();
+			float z = tau.flightLength().z();
+			NT_tau_flightLength.push_back(x*x + y*y + z*z);
+			NT_tau_flightLengthSignificance.push_back(tau.flightLengthSig());
+			/*
+			LogInfo("Demo") << "flightLengthSig = "<< taus[i].flightLengthSig();
+			LogInfo("Demo") << "flightLength    = "<< taus[i].flightLength().x() << ',' << taus[i].flightLength().y() << ',' << taus[i].flightLength().z();
+			LogInfo("Demo") << "flightLength Covar = " << endl <<
+				flightCovMatr(0,0) << ',' << flightCovMatr(0,1) << ',' << flightCovMatr(0,2) << endl << 
+				flightCovMatr(1,0) << ',' << flightCovMatr(1,1) << ',' << flightCovMatr(2,2) << endl << 
+				flightCovMatr(2,0) << ',' << flightCovMatr(2,1) << ',' << flightCovMatr(2,2) << endl;
+			*/
+			}
+		else
+			{
+			NT_tau_flightLength.push_back(-1);
+			NT_tau_flightLengthSignificance.push_back(-1);
+			}
+
+		// dR match to jet
+		Int_t matched_jet_number = -1;
+		for (unsigned int i=0; i<selJetsNoLep.size(); i++)
+			{
+			pat::Jet& jet = selJetsNoLep[i];
+			if (reco::deltaR(jet, tau) < 0.4)
+				{
+				matched_jet_number = i;
+				break;
+				}
+			}
+
+		NT_tau_dR_matched_jet.push_back(matched_jet_number); // number of the jet in jet vectors, if no match = -1
 		}
 
 	NT_njets  = selJetsNoLep.size();

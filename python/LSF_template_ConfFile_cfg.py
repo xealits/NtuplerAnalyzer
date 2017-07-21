@@ -30,6 +30,7 @@ process = cms.Process("Demo")
 # Global tag: 80X_dataRun2_2016SeptRepro_v7 (eras B-G)
 # 80X_dataRun2_Prompt_v16 (era H);
 # the global tags are an update the 23Sep20216 and PromptReco ones to includes the 23Sep20216 V3 JECs on top .
+# in principle, now MET filters work without the GlobalTag anyway...
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 if isMC:
     process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v6')
@@ -70,7 +71,7 @@ if not isMC:
 
 # NTUPLER
 process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
-process.ntupler.isMC = cms.bool({isMC})
+process.ntupler.isMC = cms.bool(isMC)
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.dtag = cms.string(dtag)
 
