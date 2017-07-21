@@ -743,8 +743,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					if (n_daughters == 2) // it is a decay vertes of t to something
 						{
 						// find the W decay channel in this top
-						int d0_id = p.daughter(0)->pdgId();
-						int d1_id = p.daughter(1)->pdgId();
+						int d0_id = abs(p.daughter(0)->pdgId());
+						int d1_id = abs(p.daughter(1)->pdgId());
 						int W_num = d0_id == 24 ? 0 : (d1_id == 24 ? 1 : -1) ;
 						if (W_num < 0) continue;
 						const reco::Candidate * W = p.daughter( W_num );
