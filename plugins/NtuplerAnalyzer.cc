@@ -673,6 +673,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//  - top pt-s, channel ID and other processing gen particles (save LorentzVector of generated taus, or non-neutrino part of generated tau)
 	if(isMC)
 		{
+		LogInfo ("Demo") << "Processing MC";
 		// ----------------------- gen nvtx
 		int ngenITpu = 0;
 		edm::Handle < std::vector<PileupSummaryInfo>> puInfoH;
@@ -700,6 +701,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		iEvent.getByToken(lheEPToken_, lheEPHandle);
 		if (isMC && lheEPHandle.isValid()) NT_NUP_gen = lheEPHandle->hepeup().NUP;
 
+		LogInfo ("Demo") << "Processing MC, gen particles";
 		// ----------------------- gen particles
 		// parse gen particles tree and get top pt-s and channel
 		// channels are needed for:
@@ -731,6 +733,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// mu, vmu   13, 14
 			// tau, vtau 15, 16
 
+			LogInfo ("Demo") << "Processing MC, gen particles, t decays and taus";
 			for(size_t i = 0; i < gen.size(); ++ i)	
 				{
 				const reco::GenParticle & p = gen[i];
@@ -746,15 +749,23 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						unsigned int d0_id = abs(p.daughter(0)->pdgId());
 						unsigned int d1_id = abs(p.daughter(1)->pdgId());
 						int W_num = d0_id == 24 ? 0 : (d1_id == 24 ? 1 : -1) ;
-						//if (W_num < 0) continue;
+						if (W_num < 0) continue;
 						const reco::Candidate * W = p.daughter( W_num );
 						const reco::Candidate * W_final = find_W_decay(W);
 						int decay_id = 1;
 						// = id of lepton or 1 for quarks
 						if (fabs(W_final->daughter(0)->pdgId()) == 11 || fabs(W_final->daughter(0)->pdgId()) == 13 || fabs(W_final->daughter(0)->pdgId()) == 15)
+							{
 							decay_id = W_final->daughter(0)->pdgId();
+							if (fabs(W_final->daughter(0)->pdgId()) == 15)
+								decay_id *= simple_tau_decay_id(W_final->daughter(0)); // = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
+							}
 						else if (fabs(W_final->daughter(1)->pdgId()) == 11 || fabs(W_final->daughter(1)->pdgId()) == 13 || fabs(W_final->daughter(1)->pdgId()) == 15)
+							{
 							decay_id = W_final->daughter(1)->pdgId();
+							if (fabs(W_final->daughter(1)->pdgId()) == 15)
+								decay_id *= simple_tau_decay_id(W_final->daughter(1));
+							}
 
 						// save stuff, according to top Id, also save top p_T
 						if (id>0)
@@ -774,24 +785,27 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				//  the status is 1 or 2
 				//  1. final state, not decays, so it should never happen for tau
 				//  2. decayed or fragmented -- the case for tau
-				if (id == 15 && st == 1)
+				if (abs(id) == 15 && st == 1)
 					NT_gen_tau_p4.push_back(p.p4()); 
-				else if (id == 15 && st == 2)
+				else if (abs(id) == 15 && st == 2)
 					{
 					// it's a final state tau
 					// select its' daughters, skipping neutrinos
 					// add their momenta -- use the sum as a visible_gen_tau
 					LorentzVector vis_ds(0,0,0,0);
+					LogInfo ("Demo") << "N tau daughters: " << n_daughters;
 					for (int j = 0; j < n_daughters; ++j)
 						{
 						const reco::Candidate * d = p.daughter(j);
 						unsigned int d_id = abs(d->pdgId());
+						LogInfo ("Demo") << j << " tau daughter ID = " << d->pdgId();
 						if (d_id == 12 || d_id == 14 || d_id == 16) continue;
 						vis_ds += d->p4();
 						}
 					NT_gen_tau_p4.push_back(vis_ds); 
 					}
 				}
+			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id;
 			}
 		}
 

@@ -41,19 +41,36 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v6')
 
 # initialize MessageLogger and output report
-#process.load("FWCore.MessageLogger.MessageLogger_cfi")
-#process.MessageLogger.cerr.threshold = 'INFO'
-#process.MessageLogger.categories.append('Demo')
-#process.MessageLogger.cerr.INFO = cms.untracked.PSet(
-#    limit = cms.untracked.int32(-1)
+process.load("FWCore.MessageLogger.MessageLogger_cfi")
+process.MessageLogger.cerr.threshold = 'INFO'
+process.MessageLogger.categories.append('Demo')
+process.MessageLogger.cerr.INFO = cms.untracked.PSet(
+    limit = cms.untracked.int32(-1)
+)
+#process.MessageLogger = cms.Service("MessageLogger",
+#       destinations   = cms.untracked.vstring(
+#                                             'detailedInfo'
+#                                               ,'critical'
+#                                               ,'cerr'
+#                    ),
+#       ,critical       = cms.untracked.PSet(
+#                       , threshold = cms.untracked.string('ERROR') 
+#        ),
+#       detailedInfo   = cms.untracked.PSet(
+#                      threshold = cms.untracked.string('INFO') 
+#       ),
+#       cerr           = cms.untracked.PSet(
+#                       threshold  = cms.untracked.string('WARNING') 
+#        )
 #)
-#process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+
+process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use

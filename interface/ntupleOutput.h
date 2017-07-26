@@ -213,6 +213,10 @@ Float_t_in_NTuple(OUTNTUPLE, aMCatNLO_weight)
 Float_t_in_NTuple(OUTNTUPLE, gen_t_pt)
 Float_t_in_NTuple(OUTNTUPLE, gen_tb_pt)
 Int_t_in_NTuple(OUTNTUPLE, gen_t_w_decay_id) // = id of lepton (+-11/13/15, sign = sign top?) or 1 for quarks
+// if it is tau the ID is multiplied by ID of the decay:
+//     11, 13 for leptons (positive, no sign -- the sign is tau's)
+//     the 20 + 5*Nch + Npi0 (just 5*Nch + Npi0 should be 1, 2, 10 etc -- the possible overlap is 3 charged + 1 neutral pi = 11, it's a rare decay, maybe negligible, but still let's add shift by 20)
+//     (no overlaps with lepton id-s)
 Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_decay_id)
 Int_t_in_NTuple(OUTNTUPLE, NUP_gen) // TODO: add gen info from TTbar
 Int_t_in_NTuple(OUTNTUPLE, nvtx)
