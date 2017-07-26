@@ -734,6 +734,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// tau, vtau 15, 16
 
 			LogInfo ("Demo") << "Processing MC, gen particles, t decays and taus";
+			NT_gen_pythia8_prompt_leptons_N = 0;
+			NT_gen_N_wdecays = 0;
 			for(size_t i = 0; i < gen.size(); ++ i)	
 				{
 				const reco::GenParticle & p = gen[i];
@@ -803,6 +805,41 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						vis_ds += d->p4();
 						}
 					NT_gen_tau_p4.push_back(vis_ds); 
+					}
+
+				// Prompt leptons ID for Z->LL
+				// pythia 8 stores prompt particles with status 21-29 ("hardest subprocess", PYTHIA 8 Worksheet for tutorial at ASP 2012 Summer School)
+				// -- checked DYJetsToLL -- there is no Z (pdgId 23) particles, but prompt leptons work fine
+				// thus save N prompt leptons in the process
+				// and their ID
+				if ((abs(id) == 11 || abs(id) == 13 || abs(id) == 15) && st > 20 && st < 30)
+					{
+					NT_gen_pythia8_prompt_leptons_N += 1;
+					int gen_prompt_lepton_ID = id;
+					if (abs(id) == 15)
+						gen_prompt_lepton_ID *= simple_tau_decay_id(&p);
+					NT_gen_pythia8_prompt_leptons_IDs.push_back(gen_prompt_lepton_ID);
+					LogInfo ("Demo") << "Found (pythia8) prompt lepton: " << id << ' ' << gen_prompt_lepton_ID << ' ' << NT_gen_pythia8_prompt_leptons_N;
+					}
+
+				// and W->Lnu processes, apparently prompt leptons don't work there -- sometimes lepton goes directly to final state
+				// search for first W decay -- it's supposedly prompt
+				// could merge this with t decay procedure, or search from the final state leptons..
+				if (abs(id) == 24 && n_daughters == 2)
+					{
+					int wdecay_id = 1;
+					int d0_id = abs(p.daughter(0)->pdgId());
+					int d1_id = abs(p.daughter(1)->pdgId());
+					int lep_daughter = (d0_id == 11 || d0_id == 13 || d0_id == 15 ? 0 : (d1_id == 11 || d1_id == 13 || d1_id == 15 ? 1 : -1));
+					if (lep_daughter >= 0)
+						{
+						wdecay_id = p.daughter(lep_daughter)->pdgId();
+						if (abs(wdecay_id) == 15)
+							wdecay_id *= simple_tau_decay_id(p.daughter(lep_daughter));
+						}
+
+					NT_gen_N_wdecays += 1;
+					NT_gen_wdecays_IDs.push_back(wdecay_id);
 					}
 				}
 			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id;

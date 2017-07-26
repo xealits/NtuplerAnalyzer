@@ -215,9 +215,16 @@ Float_t_in_NTuple(OUTNTUPLE, gen_tb_pt)
 Int_t_in_NTuple(OUTNTUPLE, gen_t_w_decay_id) // = id of lepton (+-11/13/15, sign = sign top?) or 1 for quarks
 // if it is tau the ID is multiplied by ID of the decay:
 //     11, 13 for leptons (positive, no sign -- the sign is tau's)
-//     the 20 + 5*Nch + Npi0 (just 5*Nch + Npi0 should be 1, 2, 10 etc -- the possible overlap is 3 charged + 1 neutral pi = 11, it's a rare decay, maybe negligible, but still let's add shift by 20)
+//     the 20 + 5*(Nch-1) + Npi0 (just 5*Nch + Npi0 should be 1, 2, 10 etc -- the possible overlap is 3 charged + 1 neutral pi = 11, it's a rare decay, maybe negligible, but still let's add shift by 20)
 //     (no overlaps with lepton id-s)
 Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_decay_id)
+Int_t_in_NTuple(OUTNTUPLE, gen_pythia8_prompt_leptons_N)  // N leptons with status = 21-29 (pythia 8, "particles from hardest subprocess", "Pythia 8 worksheet" for tutorial at the ASP 2012 Summer School)
+//Int_t_in_NTuple(OUTNTUPLE, gen_prompt_leptons_ID) // product of their ID-s, tau ID = pdgID * by (20 + 5*...)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_pythia8_prompt_leptons_IDs) // ID-s of the prompt leptons, tau ID = pdgID * by (20 + 5*...)
+// for WJets MC
+Int_t_in_NTuple(OUTNTUPLE, gen_N_wdecays)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_wdecays_IDs) // ID-s of the prompt leptons, tau ID = pdgID * by (20 + 5*...)
+
 Int_t_in_NTuple(OUTNTUPLE, NUP_gen) // TODO: add gen info from TTbar
 Int_t_in_NTuple(OUTNTUPLE, nvtx)
 Int_t_in_NTuple(OUTNTUPLE, nvtx_gen)

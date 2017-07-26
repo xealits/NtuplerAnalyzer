@@ -8,7 +8,11 @@ ivars.inputFiles, isMC = ('file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'), Tru
  # Data, file on netwokr -- let's see how cmsRun gets it
  #'root://cms-xrd-global.cern.ch///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/001E3E7D-57EB-E611-8469-0CC47A7C35D2.root'
  # TT for tau-rich events
- 
+ 'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'
+ # DY file
+ #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/0EE8D393-D0DE-E611-9106-A4BF0101202F.root'
+ # WJets
+ #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/009CE684-45BB-E611-A261-001E67E6F8FA.root'
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/26ABF488-A0BE-E611-BEEB-0CC47A4D7640.root'
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root'
  #'root://eoscms//eos/cms///store/data/Run2016G/SingleMuon/AOD/23Sep2016-v1/120000/D400618A-839C-E611-8E83-008CFAF73190.root' # no CTPPS here
@@ -42,11 +46,11 @@ process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v
 
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.threshold = 'INFO'
-process.MessageLogger.categories.append('Demo')
-process.MessageLogger.cerr.INFO = cms.untracked.PSet(
-    limit = cms.untracked.int32(-1)
-)
+#process.MessageLogger.cerr.threshold = 'INFO'
+#process.MessageLogger.categories.append('Demo')
+#process.MessageLogger.cerr.INFO = cms.untracked.PSet(
+#    limit = cms.untracked.int32(-1)
+#)
 #process.MessageLogger = cms.Service("MessageLogger",
 #       destinations   = cms.untracked.vstring(
 #                                             'detailedInfo'
@@ -66,11 +70,11 @@ process.MessageLogger.cerr.INFO = cms.untracked.PSet(
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
-process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+#process.load("FWCore.MessageLogger.MessageLogger_cfi")
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
