@@ -37,8 +37,8 @@ process = cms.Process("Demo")
 # https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Run2_Moriond17_re_digi_reco_camp
 # data:
 # Produced with: 8_0_26_patch1; Global tag: 80X_dataRun2_2016SeptRepro_v7 (eras B-G) 80X_dataRun2_Prompt_v16 (era H); the global tags are an update the 23Sep20216 and PromptReco ones to includes the 23Sep20216 V3 JECs on top .
-#process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-#process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v6')
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v6')
 
 # initialize MessageLogger and output report
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
@@ -68,7 +68,7 @@ process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.dtag = cms.string('Data13TeV_SingleMuon2016B_03Feb2017_ver2')
-process.ntupler.isMC = isMC
+process.ntupler.isMC = cms.bool(True)
 
 #process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.Tracer = cms.Service("Tracer")
@@ -83,7 +83,7 @@ process.TFileService = cms.Service("TFileService",
 process.load("RecoMET.METFilters.metFilters_cff")
 #process.load("PhysicsTools.PatAlgos.slimming.metFilterPaths_cff")
 #from PhysicsTools.PatAlgos.slimming.metFilterPaths_cff import *
-#process.load("RecoMET.METFilters.metFilters_cff") # back to this
+process.load("RecoMET.METFilters.metFilters_cff") # back to this
 
 #process.p = cms.Path(Flag_BadChargedCandidateFilter * Flag_BadPFMuonFilter * process.ntupler)
 #process.p = cms.Path(BadChargedCandidateFilter * BadPFMuonFilter * process.ntupler)
