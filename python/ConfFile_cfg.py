@@ -4,11 +4,13 @@ import FWCore.ParameterSet.VarParsing as VarParsing
 # this ivars thing, whatever this is, will hold the names to the input/output files
 ivars = VarParsing.VarParsing('analysis')
 
-ivars.inputFiles, isMC = ('file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'), True
+ivars.inputFiles, isMC = (
  # Data, file on netwokr -- let's see how cmsRun gets it
  #'root://cms-xrd-global.cern.ch///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/001E3E7D-57EB-E611-8469-0CC47A7C35D2.root'
  # TT for tau-rich events
- 'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'
+ #'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'
+# single top
+ 'file:ST_tW_top_0C2044DB-0EC2-E611-8567-0CC47A7FC378.root'
  # DY file
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/0EE8D393-D0DE-E611-9106-A4BF0101202F.root'
  # WJets
@@ -27,6 +29,7 @@ ivars.inputFiles, isMC = ('file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'), Tru
 # this one complains about absence of some wrapper of CTPPS Dimond Digi stuff...................
 #'root://eoscms//eos/cms///store/data/Run2016G/SingleMuon/MINIAOD/03Feb2017-v1/100000/02382B19-D1EA-E611-B2F9-0CC47ABAC11C.root'
 #'root://xrootd.unl.edu//store/data/Run2015D/Charmonium/AOD/PromptReco-v4/000/258/159/00000/02D2473D-E06B-E511-80DA-02163E01418B.root'
+), True
 
 
 ivars.outputFile='NtuplerAnalyzer_test.root'

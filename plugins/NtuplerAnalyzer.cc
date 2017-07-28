@@ -736,6 +736,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			LogInfo ("Demo") << "Processing MC, gen particles, t decays and taus";
 			NT_gen_pythia8_prompt_leptons_N = 0;
 			NT_gen_N_wdecays = 0;
+			NT_gen_N_zdecays = 0;
 			for(size_t i = 0; i < gen.size(); ++ i)	
 				{
 				const reco::GenParticle & p = gen[i];
@@ -820,6 +821,24 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						gen_prompt_lepton_ID *= simple_tau_decay_id(&p);
 					NT_gen_pythia8_prompt_leptons_IDs.push_back(gen_prompt_lepton_ID);
 					LogInfo ("Demo") << "Found (pythia8) prompt lepton: " << id << ' ' << gen_prompt_lepton_ID << ' ' << NT_gen_pythia8_prompt_leptons_N;
+					}
+
+				// but madgraph DY (50-Inf, i.e. the main one) has the Z-s............
+				if (abs(id) == 23 && n_daughters == 2)
+					{
+					int Zdecay_id = 1;
+					int d0_id = abs(p.daughter(0)->pdgId());
+					int d1_id = abs(p.daughter(1)->pdgId());
+					int lep_daughter = (d0_id == 11 || d0_id == 13 || d0_id == 15 ? 0 : (d1_id == 11 || d1_id == 13 || d1_id == 15 ? 1 : -1));
+					if (lep_daughter >= 0)
+						{
+						Zdecay_id = p.daughter(lep_daughter)->pdgId();
+						if (abs(Zdecay_id) == 15)
+							Zdecay_id *= simple_tau_decay_id(p.daughter(lep_daughter));
+						}
+
+					NT_gen_N_zdecays += 1;
+					NT_gen_zdecays_IDs.push_back(Zdecay_id);
 					}
 
 				// and W->Lnu processes, apparently prompt leptons don't work there -- sometimes lepton goes directly to final state

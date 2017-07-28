@@ -224,6 +224,8 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_pythia8_prompt_leptons_IDs) // ID-
 // for WJets MC
 Int_t_in_NTuple(OUTNTUPLE, gen_N_wdecays)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_wdecays_IDs) // ID-s of the prompt leptons, tau ID = pdgID * by (20 + 5*...)
+Int_t_in_NTuple(OUTNTUPLE, gen_N_zdecays)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_zdecays_IDs)
 
 Int_t_in_NTuple(OUTNTUPLE, NUP_gen) // TODO: add gen info from TTbar
 Int_t_in_NTuple(OUTNTUPLE, nvtx)
