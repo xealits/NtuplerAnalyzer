@@ -826,19 +826,19 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				// but madgraph DY (50-Inf, i.e. the main one) has the Z-s............
 				if (abs(id) == 23 && n_daughters == 2)
 					{
-					int Zdecay_id = 1;
+					NT_gen_N_zdecays += 1;
 					int d0_id = abs(p.daughter(0)->pdgId());
 					int d1_id = abs(p.daughter(1)->pdgId());
-					int lep_daughter = (d0_id == 11 || d0_id == 13 || d0_id == 15 ? 0 : (d1_id == 11 || d1_id == 13 || d1_id == 15 ? 1 : -1));
+					int a_d0_id = abs(d0_id);
+					int a_d1_id = abs(d1_id);
+					int lep_daughter = (a_d0_id == 11 || a_d0_id == 13 || a_d0_id == 15 ? 0 : (a_d1_id == 11 || a_d1_id == 13 || a_d1_id == 15 ? 1 : -1));
 					if (lep_daughter >= 0)
 						{
-						Zdecay_id = p.daughter(lep_daughter)->pdgId();
-						if (abs(Zdecay_id) == 15)
-							Zdecay_id *= simple_tau_decay_id(p.daughter(lep_daughter));
+						if (a_d0_id == 15) d0_id *= simple_tau_decay_id(p.daughter(0));
+						if (a_d1_id == 15) d1_id *= simple_tau_decay_id(p.daughter(1));
 						}
-
-					NT_gen_N_zdecays += 1;
-					NT_gen_zdecays_IDs.push_back(Zdecay_id);
+					NT_gen_zdecays_IDs.push_back(d0_id);
+					NT_gen_zdecays_IDs.push_back(d1_id);
 					}
 
 				// and W->Lnu processes, apparently prompt leptons don't work there -- sometimes lepton goes directly to final state
