@@ -185,6 +185,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//  - and reset/fill stuff in analyze
 	// let's do it first manually for p4-s of leptons
 	TTree* NT_output_ttree; 
+	TH1D* event_counter; 
 	/*
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > > NT_lep_p4;
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > >* pt_lep_p4; // yep, vectors of complex objects require additional persistent pointers
@@ -334,6 +335,8 @@ btag_threshold   (iConfig.getParameter<double>("btag_threshold"))
 	edm::Service<TFileService> fs;
 	// init ttree
 	NT_output_ttree = fs->make<TTree>("reduced_ttree", "TTree with reduced event data");
+	event_counter = fs->make<TH1D>( "events_counter"  , "pass category", 100,  0, 100);
+
 	// connect the branch
 	/*
 	// set the additional pointer:
@@ -381,6 +384,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 {
 	using namespace edm;
 	LogInfo ("Demo") << "entered event";
+	event_counter->Fill(1);
 
 	// reset the output objects with macro
 	#undef NTUPLE_INTERFACE_CLASS_DECLARE
@@ -599,6 +603,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 
 	if (!(eTrigger || muTrigger)) return; // orthogonalization is done afterwards
+	event_counter->Fill(2);
 
 	LogInfo ("Demo") << "passed HLT " << eTrigger << ' ' << muTrigger << '(' << muTrigger1 << ',' << muTrigger2 << ')' << ';' << matched_elTriggerName << ' ' << matched_muTriggerName1 << ',' << matched_muTriggerName2;
 
@@ -893,6 +898,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0;
 	if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return; // exit now to reduce computation
+	event_counter->Fill(3);
 
 	LogInfo ("Demo") << "passed lepton conditions ";
 

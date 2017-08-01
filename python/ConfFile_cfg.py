@@ -76,8 +76,11 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1025) )
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
+
+
+
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
@@ -104,7 +107,7 @@ process.TFileService = cms.Service("TFileService",
 
 
 #Testing MET filters
-process.load("RecoMET.METFilters.metFilters_cff")
+#process.load("RecoMET.METFilters.metFilters_cff")
 #process.load("PhysicsTools.PatAlgos.slimming.metFilterPaths_cff")
 #from PhysicsTools.PatAlgos.slimming.metFilterPaths_cff import *
 process.load("RecoMET.METFilters.metFilters_cff") # back to this

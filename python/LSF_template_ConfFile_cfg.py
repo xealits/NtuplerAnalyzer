@@ -46,10 +46,20 @@ else:
 #process.MessageLogger.cerr.INFO = cms.untracked.PSet(
 #    limit = cms.untracked.int32(-1)
 #)
-#process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 100000
+
+process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+# reports N events tried and passed for each module in the filter-analyzer path
+# example:
+# TrigReport ---------- Module Summary ------------
+# TrigReport    Visited   Executed     Passed     Failed      Error Name
+# TrigReport       1025       1025       1025          0          0 BadChargedCandidateFilter
+# TrigReport       1025       1025       1025          0          0 BadPFMuonFilter
+# TrigReport       1025       1025       1025          0          0 TriggerResults
+# TrigReport       1025       1025       1025          0          0 ntupler
+
 
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
