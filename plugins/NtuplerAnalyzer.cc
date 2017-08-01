@@ -827,8 +827,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				if (abs(id) == 23 && n_daughters == 2)
 					{
 					NT_gen_N_zdecays += 1;
-					int d0_id = abs(p.daughter(0)->pdgId());
-					int d1_id = abs(p.daughter(1)->pdgId());
+					int d0_id = p.daughter(0)->pdgId();
+					int d1_id = p.daughter(1)->pdgId();
 					int a_d0_id = abs(d0_id);
 					int a_d1_id = abs(d1_id);
 					int lep_daughter = (a_d0_id == 11 || a_d0_id == 13 || a_d0_id == 15 ? 0 : (a_d1_id == 11 || a_d1_id == 13 || a_d1_id == 15 ? 1 : -1));
