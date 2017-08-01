@@ -53,6 +53,17 @@
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingGenParticles.h"
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingDRCleaning.h"
 
+double pu_vector_NOMINAL[] = {0, 0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
+0.884048630953726, 0.964813189764159, 1.07045369167689, 1.12497267309738, 1.17367530613108, 1.20239808206413, 1.20815108390021, 1.20049333094509, 1.18284686347315, 1.14408796655615,
+1.0962284704313, 1.06549162803223, 1.05151011089581, 1.05159666626121, 1.05064452078328, 1.0491726301522, 1.05772537082991, 1.07279673875566, 1.0837536468865, 1.09536667397119,
+1.10934472980173, 1.09375894592864, 1.08263679568271, 1.04289345879947, 0.9851490341672, 0.909983816540809, 0.821346330143864, 0.71704523475871, 0.609800913869359, 0.502935245638477,
+0.405579825620816, 0.309696044611377, 0.228191137503131, 0.163380359253309, 0.113368437957202, 0.0772279997453792, 0.0508111733313502, 0.0319007262683943, 0.0200879459309245, 0.0122753366005436,
+0.00739933885813127, 0.00437426967257811, 0.00260473545284139, 0.00157047254226743, 0.000969500595715493, 0.000733193118123283, 0.000669817107713128, 0.000728548958604492, 0.000934559691182011, 0.00133719688378802,
+0.00186652283903214, 0.00314422244976771, 0.00406954793369611, 0.00467888840511915, 0.00505224284441512, 0.00562827194936864, 0.0055889504870752, 0.00522867039470319, 0.00450752163476433, 0.00395300774604375,
+0.00330577167682956, 0.00308353042577215, 0.00277846504893301, 0.00223943190687725, 0.00196650068765464, 0.00184742734258922, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0};
 
 
 // ptocedures for initializations
@@ -139,6 +150,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	edm::EDGetTokenT< std::vector < PileupSummaryInfo > > puInfo_;
 	edm::EDGetTokenT< std::vector < PileupSummaryInfo > > puInfo2_;
 	edm::EDGetTokenT<reco::GenParticleCollection> genParticle_;
+	edm::EDGetTokenT<GenEventInfoProduct> evt_;
 
 	edm::EDGetTokenT<pat::METCollection> mets1_, mets2_, mets_uncorrected_;
 
@@ -148,7 +160,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//jetsHandle.getByLabel(ev, "slimmedJets");
 
 	TString dtag;
-	bool isMC;
+	bool isMC, aMCatNLO;
 	string  muHLT_MC1  , muHLT_MC2  ,
 		muHLT_Data1, muHLT_Data2,
 		elHLT_Data , elHLT_MC   ;
@@ -185,7 +197,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//  - and reset/fill stuff in analyze
 	// let's do it first manually for p4-s of leptons
 	TTree* NT_output_ttree; 
-	TH1D* event_counter; 
+	TH1D *event_counter, *weight_counter; 
 	/*
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > > NT_lep_p4;
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > >* pt_lep_p4; // yep, vectors of complex objects require additional persistent pointers
@@ -243,6 +255,8 @@ btag_threshold   (iConfig.getParameter<double>("btag_threshold"))
 	puInfo2_ = consumes<std::vector<PileupSummaryInfo>>(edm::InputTag("addPileupInfo"));
 	genParticle_ = consumes<reco::GenParticleCollection>(edm::InputTag("prunedGenParticles"));
 
+	evt_  = consumes<GenEventInfoProduct>(edm::InputTag("generator"));
+
 	mets1_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETs"));
 	mets2_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETsMuEGClean"));
 	mets_uncorrected_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETsUncorrected"));
@@ -295,6 +309,8 @@ btag_threshold   (iConfig.getParameter<double>("btag_threshold"))
 	bool period_G   = !isMC && (dtag.Contains("2016G"));
 	bool period_H   = !isMC && (dtag.Contains("2016H"));
 
+	aMCatNLO = dtag.Contains("amcatnlo");
+
 
 	// jet IDs, corrections, resolutions etc
 	jetID = LooseJET; // TODO: move to Conf
@@ -335,7 +351,11 @@ btag_threshold   (iConfig.getParameter<double>("btag_threshold"))
 	edm::Service<TFileService> fs;
 	// init ttree
 	NT_output_ttree = fs->make<TTree>("reduced_ttree", "TTree with reduced event data");
-	event_counter = fs->make<TH1D>( "events_counter"  , "pass category", 100,  0, 100);
+	event_counter  = fs->make<TH1D>( "events_counter"  , "pass category", 100,  0, 100);
+	weight_counter = fs->make<TH1D>( "weight_counter"  , "pass category", 100,  0, 100); // for control of effect from PU reweighting, aMCatNLO gen -1 weights, top pt
+	// in principle it should be orthogonal to the ntuple preselection
+	// and be possible to do it after the preselection
+	// N_presel / weighted N_presel = N_all / weighted N_all
 
 	// connect the branch
 	/*
@@ -385,6 +405,225 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	using namespace edm;
 	LogInfo ("Demo") << "entered event";
 	event_counter->Fill(1);
+	double weight = 1;
+
+	// couple things for MC:
+	//  - gen aMCatNLO
+	//  - gen nvtx
+	//  - gen NUP (NUmber of Particles? needed for WNJets)
+	//  - top pt-s, channel ID and other processing gen particles (save LorentzVector of generated taus, or non-neutrino part of generated tau)
+	if(isMC)
+		{
+		LogInfo ("Demo") << "Processing MC";
+		double weight_TopPT = 1, weight_Gen = 1;
+		// ----------------------- aMCatNLO -1 weights
+		//fwlite::Handle<GenEventInfoProduct> evt;
+		//evt.getByLabel(ev, "generator");
+		edm::Handle<GenEventInfoProduct> evt;
+		iEvent.getByToken(evt_, evt);
+		if(evt.isValid())
+			{
+			//if (debug) cout << "evt is valid, evt->weight() = " << evt->weight() << "\n";
+			LogInfo("Demo") << "evt is valid, evt->weight() = " << evt->weight();
+			weight_Gen = (evt->weight() > 0 ) ? 1. : -1. ;
+			NT_aMCatNLO_weight = evt->weight();
+			}
+
+		// ----------------------- gen nvtx
+		int ngenITpu = 0;
+		edm::Handle < std::vector<PileupSummaryInfo>> puInfoH;
+		//puInfoH.getByLabel (ev, "slimmedAddPileupInfo");
+		iEvent.getByToken(puInfo_, puInfoH);
+		if (!puInfoH.isValid())
+			{
+			//puInfoH.getByLabel( ev, "addPileupInfo" );
+			iEvent.getByToken(puInfo2_, puInfoH);
+			if (!puInfoH.isValid()) {printf("collection PileupSummaryInfo with name slimmedAddPileupInfo or addPileupInfo does not exist\n"); exit(0);}
+			}
+		// so here we have valid puInfoH
+		// otherwise exit was called
+		for (std::vector < PileupSummaryInfo >::const_iterator it = puInfoH->begin (); it != puInfoH->end (); it++)
+			{
+			//if (it->getBunchCrossing () == 0) ngenITpu += it->getPU_NumInteractions ();
+			// guys and Mara use getTrueNumInteractions :
+			if (it->getBunchCrossing () == 0) ngenITpu += it->getTrueNumInteractions();
+			}
+		NT_nvtx_gen = ngenITpu;
+
+		// ----------------------- gen NUP
+		edm::Handle < LHEEventProduct > lheEPHandle;
+		//lheEPHandle.getByLabel (ev, "externalLHEProducer");
+		iEvent.getByToken(lheEPToken_, lheEPHandle);
+		if (isMC && lheEPHandle.isValid()) NT_NUP_gen = lheEPHandle->hepeup().NUP;
+
+		LogInfo ("Demo") << "Processing MC, gen particles";
+		// ----------------------- gen particles
+		// parse gen particles tree and get top pt-s and channel
+		// channels are needed for:
+		// TTbar, Single-top, DY
+		// for now implement thed only TTbar and Single-Top
+		reco::GenParticleCollection gen;
+		edm::Handle<reco::GenParticleCollection> genHandle;
+		//genHandle.getByLabel(ev, "prunedGenParticles");
+		iEvent.getByToken(genParticle_, genHandle);
+		if(genHandle.isValid())
+			{
+			gen = *genHandle;
+			// For reference, some PDG IDs:
+			// QUARKS
+			// d  1
+			// u  2
+			// s  3
+			// c  4
+			// b  5
+			// t  6
+			// b' 7
+			// t' 8
+			// g 21
+			// gamma 22
+			// Z     23
+			// W     24
+			// h     25
+			// e, ve     11, 12
+			// mu, vmu   13, 14
+			// tau, vtau 15, 16
+
+			LogInfo ("Demo") << "Processing MC, gen particles, t decays and taus";
+			NT_gen_pythia8_prompt_leptons_N = 0;
+			NT_gen_N_wdecays = 0;
+			NT_gen_N_zdecays = 0;
+			for(size_t i = 0; i < gen.size(); ++ i)	
+				{
+				const reco::GenParticle & p = gen[i];
+				int id = p.pdgId();
+				int st = p.status(); // TODO: check what is status in decat simulation (pythia for our TTbar set)
+				int n_daughters = p.numberOfDaughters();
+
+				if (abs(id) == 6) // if it is a t quark
+					{
+					if (n_daughters == 2) // it is a decay vertes of t to something
+						{
+						// calculate top_pt weights:
+						weight_TopPT *= TMath::Sqrt(top_pT_SF(p.pt()));
+						// find the W decay channel in this top
+						unsigned int d0_id = abs(p.daughter(0)->pdgId());
+						unsigned int d1_id = abs(p.daughter(1)->pdgId());
+						int W_num = d0_id == 24 ? 0 : (d1_id == 24 ? 1 : -1) ;
+						if (W_num < 0) continue;
+						const reco::Candidate * W = p.daughter( W_num );
+						const reco::Candidate * W_final = find_W_decay(W);
+						int decay_id = 1;
+						// = id of lepton or 1 for quarks
+						if (fabs(W_final->daughter(0)->pdgId()) == 11 || fabs(W_final->daughter(0)->pdgId()) == 13 || fabs(W_final->daughter(0)->pdgId()) == 15)
+							{
+							decay_id = W_final->daughter(0)->pdgId();
+							if (fabs(W_final->daughter(0)->pdgId()) == 15)
+								decay_id *= simple_tau_decay_id(W_final->daughter(0)); // = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
+							}
+						else if (fabs(W_final->daughter(1)->pdgId()) == 11 || fabs(W_final->daughter(1)->pdgId()) == 13 || fabs(W_final->daughter(1)->pdgId()) == 15)
+							{
+							decay_id = W_final->daughter(1)->pdgId();
+							if (fabs(W_final->daughter(1)->pdgId()) == 15)
+								decay_id *= simple_tau_decay_id(W_final->daughter(1));
+							}
+
+						// save stuff, according to top Id, also save top p_T
+						if (id>0)
+							{
+							NT_gen_t_pt  = p.pt();
+							NT_gen_t_w_decay_id = decay_id;
+							}
+						else
+							{
+							NT_gen_tb_pt = p.pt();
+							NT_gen_tb_w_decay_id = decay_id;
+							}
+						}
+					}
+
+				// if it is a tau -- save the non-neutrino part to the output
+				//  the status is 1 or 2
+				//  1. final state, not decays, so it should never happen for tau
+				//  2. decayed or fragmented -- the case for tau
+				if (abs(id) == 15 && st == 1)
+					NT_gen_tau_p4.push_back(p.p4()); 
+				else if (abs(id) == 15 && st == 2)
+					{
+					// it's a final state tau
+					// select its' daughters, skipping neutrinos
+					// add their momenta -- use the sum as a visible_gen_tau
+					LorentzVector vis_ds(0,0,0,0);
+					LogInfo ("Demo") << "N tau daughters: " << n_daughters;
+					for (int j = 0; j < n_daughters; ++j)
+						{
+						const reco::Candidate * d = p.daughter(j);
+						unsigned int d_id = abs(d->pdgId());
+						LogInfo ("Demo") << j << " tau daughter ID = " << d->pdgId();
+						if (d_id == 12 || d_id == 14 || d_id == 16) continue;
+						vis_ds += d->p4();
+						}
+					NT_gen_tau_p4.push_back(vis_ds); 
+					}
+
+				// Prompt leptons ID for Z->LL
+				// pythia 8 stores prompt particles with status 21-29 ("hardest subprocess", PYTHIA 8 Worksheet for tutorial at ASP 2012 Summer School)
+				// -- checked DYJetsToLL -- there is no Z (pdgId 23) particles, but prompt leptons work fine
+				// thus save N prompt leptons in the process
+				// and their ID
+				if ((abs(id) == 11 || abs(id) == 13 || abs(id) == 15) && st > 20 && st < 30)
+					{
+					NT_gen_pythia8_prompt_leptons_N += 1;
+					int gen_prompt_lepton_ID = id;
+					if (abs(id) == 15)
+						gen_prompt_lepton_ID *= simple_tau_decay_id(&p);
+					NT_gen_pythia8_prompt_leptons_IDs.push_back(gen_prompt_lepton_ID);
+					LogInfo ("Demo") << "Found (pythia8) prompt lepton: " << id << ' ' << gen_prompt_lepton_ID << ' ' << NT_gen_pythia8_prompt_leptons_N;
+					}
+
+				// but madgraph DY (50-Inf, i.e. the main one) has the Z-s............
+				if (abs(id) == 23 && n_daughters == 2)
+					{
+					NT_gen_N_zdecays += 1;
+					int d0_id = p.daughter(0)->pdgId();
+					int d1_id = p.daughter(1)->pdgId();
+					int a_d0_id = abs(d0_id);
+					int a_d1_id = abs(d1_id);
+					int lep_daughter = (a_d0_id == 11 || a_d0_id == 13 || a_d0_id == 15 ? 0 : (a_d1_id == 11 || a_d1_id == 13 || a_d1_id == 15 ? 1 : -1));
+					if (lep_daughter >= 0)
+						{
+						if (a_d0_id == 15) d0_id *= simple_tau_decay_id(p.daughter(0));
+						if (a_d1_id == 15) d1_id *= simple_tau_decay_id(p.daughter(1));
+						}
+					NT_gen_zdecays_IDs.push_back(d0_id);
+					NT_gen_zdecays_IDs.push_back(d1_id);
+					}
+
+				// and W->Lnu processes, apparently prompt leptons don't work there -- sometimes lepton goes directly to final state
+				// search for first W decay -- it's supposedly prompt
+				// could merge this with t decay procedure, or search from the final state leptons..
+				if (abs(id) == 24 && n_daughters == 2)
+					{
+					int wdecay_id = 1;
+					int d0_id = abs(p.daughter(0)->pdgId());
+					int d1_id = abs(p.daughter(1)->pdgId());
+					int lep_daughter = (d0_id == 11 || d0_id == 13 || d0_id == 15 ? 0 : (d1_id == 11 || d1_id == 13 || d1_id == 15 ? 1 : -1));
+					if (lep_daughter >= 0)
+						{
+						wdecay_id = p.daughter(lep_daughter)->pdgId();
+						if (abs(wdecay_id) == 15)
+							wdecay_id *= simple_tau_decay_id(p.daughter(lep_daughter));
+						}
+
+					NT_gen_N_wdecays += 1;
+					NT_gen_wdecays_IDs.push_back(wdecay_id);
+					}
+				}
+			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id;
+			}
+
+		weight = pu_vector_NOMINAL[NT_nvtx_gen] * (aMCatNLO? weight_Gen : 1) * weight_TopPT;
+		}
+	weight_counter->Fill(1, weight);
 
 	// reset the output objects with macro
 	#undef NTUPLE_INTERFACE_CLASS_DECLARE
@@ -604,6 +843,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	if (!(eTrigger || muTrigger)) return; // orthogonalization is done afterwards
 	event_counter->Fill(2);
+	weight_counter->Fill(2, weight);
 
 	LogInfo ("Demo") << "passed HLT " << eTrigger << ' ' << muTrigger << '(' << muTrigger1 << ',' << muTrigger2 << ')' << ';' << matched_elTriggerName << ' ' << matched_muTriggerName1 << ',' << matched_muTriggerName2;
 
@@ -672,205 +912,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		}
 
-	// couple things for MC:
-	//  - gen nvtx
-	//  - gen NUP (NUmber of Particles? needed for WNJets)
-	//  - top pt-s, channel ID and other processing gen particles (save LorentzVector of generated taus, or non-neutrino part of generated tau)
-	if(isMC)
-		{
-		LogInfo ("Demo") << "Processing MC";
-		// ----------------------- gen nvtx
-		int ngenITpu = 0;
-		edm::Handle < std::vector<PileupSummaryInfo>> puInfoH;
-		//puInfoH.getByLabel (ev, "slimmedAddPileupInfo");
-		iEvent.getByToken(puInfo_, puInfoH);
-		if (!puInfoH.isValid())
-			{
-			//puInfoH.getByLabel( ev, "addPileupInfo" );
-			iEvent.getByToken(puInfo2_, puInfoH);
-			if (!puInfoH.isValid()) {printf("collection PileupSummaryInfo with name slimmedAddPileupInfo or addPileupInfo does not exist\n"); exit(0);}
-			}
-		// so here we have valid puInfoH
-		// otherwise exit was called
-		for (std::vector < PileupSummaryInfo >::const_iterator it = puInfoH->begin (); it != puInfoH->end (); it++)
-			{
-			//if (it->getBunchCrossing () == 0) ngenITpu += it->getPU_NumInteractions ();
-			// guys and Mara use getTrueNumInteractions :
-			if (it->getBunchCrossing () == 0) ngenITpu += it->getTrueNumInteractions();
-			}
-		NT_nvtx_gen = ngenITpu;
-
-		// ----------------------- gen NUP
-		edm::Handle < LHEEventProduct > lheEPHandle;
-		//lheEPHandle.getByLabel (ev, "externalLHEProducer");
-		iEvent.getByToken(lheEPToken_, lheEPHandle);
-		if (isMC && lheEPHandle.isValid()) NT_NUP_gen = lheEPHandle->hepeup().NUP;
-
-		LogInfo ("Demo") << "Processing MC, gen particles";
-		// ----------------------- gen particles
-		// parse gen particles tree and get top pt-s and channel
-		// channels are needed for:
-		// TTbar, Single-top, DY
-		// for now implement thed only TTbar and Single-Top
-		reco::GenParticleCollection gen;
-		edm::Handle<reco::GenParticleCollection> genHandle;
-		//genHandle.getByLabel(ev, "prunedGenParticles");
-		iEvent.getByToken(genParticle_, genHandle);
-		if(genHandle.isValid())
-			{
-			gen = *genHandle;
-			// For reference, some PDG IDs:
-			// QUARKS
-			// d  1
-			// u  2
-			// s  3
-			// c  4
-			// b  5
-			// t  6
-			// b' 7
-			// t' 8
-			// g 21
-			// gamma 22
-			// Z     23
-			// W     24
-			// h     25
-			// e, ve     11, 12
-			// mu, vmu   13, 14
-			// tau, vtau 15, 16
-
-			LogInfo ("Demo") << "Processing MC, gen particles, t decays and taus";
-			NT_gen_pythia8_prompt_leptons_N = 0;
-			NT_gen_N_wdecays = 0;
-			NT_gen_N_zdecays = 0;
-			for(size_t i = 0; i < gen.size(); ++ i)	
-				{
-				const reco::GenParticle & p = gen[i];
-				int id = p.pdgId();
-				int st = p.status(); // TODO: check what is status in decat simulation (pythia for our TTbar set)
-				int n_daughters = p.numberOfDaughters();
-
-				if (abs(id) == 6) // if it is a t quark
-					{
-					if (n_daughters == 2) // it is a decay vertes of t to something
-						{
-						// find the W decay channel in this top
-						unsigned int d0_id = abs(p.daughter(0)->pdgId());
-						unsigned int d1_id = abs(p.daughter(1)->pdgId());
-						int W_num = d0_id == 24 ? 0 : (d1_id == 24 ? 1 : -1) ;
-						if (W_num < 0) continue;
-						const reco::Candidate * W = p.daughter( W_num );
-						const reco::Candidate * W_final = find_W_decay(W);
-						int decay_id = 1;
-						// = id of lepton or 1 for quarks
-						if (fabs(W_final->daughter(0)->pdgId()) == 11 || fabs(W_final->daughter(0)->pdgId()) == 13 || fabs(W_final->daughter(0)->pdgId()) == 15)
-							{
-							decay_id = W_final->daughter(0)->pdgId();
-							if (fabs(W_final->daughter(0)->pdgId()) == 15)
-								decay_id *= simple_tau_decay_id(W_final->daughter(0)); // = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
-							}
-						else if (fabs(W_final->daughter(1)->pdgId()) == 11 || fabs(W_final->daughter(1)->pdgId()) == 13 || fabs(W_final->daughter(1)->pdgId()) == 15)
-							{
-							decay_id = W_final->daughter(1)->pdgId();
-							if (fabs(W_final->daughter(1)->pdgId()) == 15)
-								decay_id *= simple_tau_decay_id(W_final->daughter(1));
-							}
-
-						// save stuff, according to top Id, also save top p_T
-						if (id>0)
-							{
-							NT_gen_t_pt  = p.pt();
-							NT_gen_t_w_decay_id = decay_id;
-							}
-						else
-							{
-							NT_gen_tb_pt = p.pt();
-							NT_gen_tb_w_decay_id = decay_id;
-							}
-						}
-					}
-
-				// if it is a tau -- save the non-neutrino part to the output
-				//  the status is 1 or 2
-				//  1. final state, not decays, so it should never happen for tau
-				//  2. decayed or fragmented -- the case for tau
-				if (abs(id) == 15 && st == 1)
-					NT_gen_tau_p4.push_back(p.p4()); 
-				else if (abs(id) == 15 && st == 2)
-					{
-					// it's a final state tau
-					// select its' daughters, skipping neutrinos
-					// add their momenta -- use the sum as a visible_gen_tau
-					LorentzVector vis_ds(0,0,0,0);
-					LogInfo ("Demo") << "N tau daughters: " << n_daughters;
-					for (int j = 0; j < n_daughters; ++j)
-						{
-						const reco::Candidate * d = p.daughter(j);
-						unsigned int d_id = abs(d->pdgId());
-						LogInfo ("Demo") << j << " tau daughter ID = " << d->pdgId();
-						if (d_id == 12 || d_id == 14 || d_id == 16) continue;
-						vis_ds += d->p4();
-						}
-					NT_gen_tau_p4.push_back(vis_ds); 
-					}
-
-				// Prompt leptons ID for Z->LL
-				// pythia 8 stores prompt particles with status 21-29 ("hardest subprocess", PYTHIA 8 Worksheet for tutorial at ASP 2012 Summer School)
-				// -- checked DYJetsToLL -- there is no Z (pdgId 23) particles, but prompt leptons work fine
-				// thus save N prompt leptons in the process
-				// and their ID
-				if ((abs(id) == 11 || abs(id) == 13 || abs(id) == 15) && st > 20 && st < 30)
-					{
-					NT_gen_pythia8_prompt_leptons_N += 1;
-					int gen_prompt_lepton_ID = id;
-					if (abs(id) == 15)
-						gen_prompt_lepton_ID *= simple_tau_decay_id(&p);
-					NT_gen_pythia8_prompt_leptons_IDs.push_back(gen_prompt_lepton_ID);
-					LogInfo ("Demo") << "Found (pythia8) prompt lepton: " << id << ' ' << gen_prompt_lepton_ID << ' ' << NT_gen_pythia8_prompt_leptons_N;
-					}
-
-				// but madgraph DY (50-Inf, i.e. the main one) has the Z-s............
-				if (abs(id) == 23 && n_daughters == 2)
-					{
-					NT_gen_N_zdecays += 1;
-					int d0_id = p.daughter(0)->pdgId();
-					int d1_id = p.daughter(1)->pdgId();
-					int a_d0_id = abs(d0_id);
-					int a_d1_id = abs(d1_id);
-					int lep_daughter = (a_d0_id == 11 || a_d0_id == 13 || a_d0_id == 15 ? 0 : (a_d1_id == 11 || a_d1_id == 13 || a_d1_id == 15 ? 1 : -1));
-					if (lep_daughter >= 0)
-						{
-						if (a_d0_id == 15) d0_id *= simple_tau_decay_id(p.daughter(0));
-						if (a_d1_id == 15) d1_id *= simple_tau_decay_id(p.daughter(1));
-						}
-					NT_gen_zdecays_IDs.push_back(d0_id);
-					NT_gen_zdecays_IDs.push_back(d1_id);
-					}
-
-				// and W->Lnu processes, apparently prompt leptons don't work there -- sometimes lepton goes directly to final state
-				// search for first W decay -- it's supposedly prompt
-				// could merge this with t decay procedure, or search from the final state leptons..
-				if (abs(id) == 24 && n_daughters == 2)
-					{
-					int wdecay_id = 1;
-					int d0_id = abs(p.daughter(0)->pdgId());
-					int d1_id = abs(p.daughter(1)->pdgId());
-					int lep_daughter = (d0_id == 11 || d0_id == 13 || d0_id == 15 ? 0 : (d1_id == 11 || d1_id == 13 || d1_id == 15 ? 1 : -1));
-					if (lep_daughter >= 0)
-						{
-						wdecay_id = p.daughter(lep_daughter)->pdgId();
-						if (abs(wdecay_id) == 15)
-							wdecay_id *= simple_tau_decay_id(p.daughter(lep_daughter));
-						}
-
-					NT_gen_N_wdecays += 1;
-					NT_gen_wdecays_IDs.push_back(wdecay_id);
-					}
-				}
-			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id;
-			}
-		}
-
-	double weight = 1;
+	//weight = 1; // reset weights?
 
 	// MUONS
 	LorentzVector muDiff(0., 0., 0., 0.);
@@ -899,6 +941,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0;
 	if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return; // exit now to reduce computation
 	event_counter->Fill(3);
+	weight_counter->Fill(3, weight);
 
 	LogInfo ("Demo") << "passed lepton conditions ";
 
