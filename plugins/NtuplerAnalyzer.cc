@@ -403,7 +403,20 @@ void
 NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 	using namespace edm;
-	LogInfo ("Demo") << "entered event";
+	LogInfo ("Demo") << "entered event " << iEvent.eventAuxiliary().run() << ' ' << iEvent.eventAuxiliary().luminosityBlock();
+
+	// reset the output objects with macro
+	#undef NTUPLE_INTERFACE_CLASS_DECLARE
+	#undef NTUPLE_INTERFACE_CLASS_INITIALIZE
+	#define NTUPLE_INTERFACE_CLASS_RESET
+	#include "UserCode/NtuplerAnalyzer/interface/ntupleOutput.h"
+	// if output contains stand-alone objects (not vector of LorentxVector-s, but just 1 LorentzVector, like MET or something)
+	// you have to reset them yourself, since each object might have its' own method
+	NT_met_init.SetXYZT(0,0,0,0);
+	NT_met_uncorrected.SetXYZT(0,0,0,0);
+	NT_met_corrected.SetXYZT(0,0,0,0);
+
+
 	event_counter->Fill(1);
 	double weight = 1;
 
@@ -499,45 +512,42 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				int st = p.status(); // TODO: check what is status in decat simulation (pythia for our TTbar set)
 				int n_daughters = p.numberOfDaughters();
 
-				if (abs(id) == 6) // if it is a t quark
-					{
-					if (n_daughters == 2) // it is a decay vertes of t to something
+				if (abs(id) == 6 && n_daughters == 2) // if it is a t quark
+					{ // it is a decay vertes of t to something
+					// calculate top_pt weights:
+					weight_TopPT *= TMath::Sqrt(top_pT_SF(p.pt()));
+					// find the W decay channel in this top
+					unsigned int d0_id = abs(p.daughter(0)->pdgId());
+					unsigned int d1_id = abs(p.daughter(1)->pdgId());
+					int W_num = d0_id == 24 ? 0 : (d1_id == 24 ? 1 : -1) ;
+					if (W_num < 0) continue;
+					const reco::Candidate * W = p.daughter( W_num );
+					const reco::Candidate * W_final = find_W_decay(W);
+					int decay_id = 1;
+					// = id of lepton or 1 for quarks
+					if (fabs(W_final->daughter(0)->pdgId()) == 11 || fabs(W_final->daughter(0)->pdgId()) == 13 || fabs(W_final->daughter(0)->pdgId()) == 15)
 						{
-						// calculate top_pt weights:
-						weight_TopPT *= TMath::Sqrt(top_pT_SF(p.pt()));
-						// find the W decay channel in this top
-						unsigned int d0_id = abs(p.daughter(0)->pdgId());
-						unsigned int d1_id = abs(p.daughter(1)->pdgId());
-						int W_num = d0_id == 24 ? 0 : (d1_id == 24 ? 1 : -1) ;
-						if (W_num < 0) continue;
-						const reco::Candidate * W = p.daughter( W_num );
-						const reco::Candidate * W_final = find_W_decay(W);
-						int decay_id = 1;
-						// = id of lepton or 1 for quarks
-						if (fabs(W_final->daughter(0)->pdgId()) == 11 || fabs(W_final->daughter(0)->pdgId()) == 13 || fabs(W_final->daughter(0)->pdgId()) == 15)
-							{
-							decay_id = W_final->daughter(0)->pdgId();
-							if (fabs(W_final->daughter(0)->pdgId()) == 15)
-								decay_id *= simple_tau_decay_id(W_final->daughter(0)); // = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
-							}
-						else if (fabs(W_final->daughter(1)->pdgId()) == 11 || fabs(W_final->daughter(1)->pdgId()) == 13 || fabs(W_final->daughter(1)->pdgId()) == 15)
-							{
-							decay_id = W_final->daughter(1)->pdgId();
-							if (fabs(W_final->daughter(1)->pdgId()) == 15)
-								decay_id *= simple_tau_decay_id(W_final->daughter(1));
-							}
+						decay_id = W_final->daughter(0)->pdgId();
+						if (fabs(W_final->daughter(0)->pdgId()) == 15)
+							decay_id *= simple_tau_decay_id(W_final->daughter(0)); // = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
+						}
+					else if (fabs(W_final->daughter(1)->pdgId()) == 11 || fabs(W_final->daughter(1)->pdgId()) == 13 || fabs(W_final->daughter(1)->pdgId()) == 15)
+						{
+						decay_id = W_final->daughter(1)->pdgId();
+						if (fabs(W_final->daughter(1)->pdgId()) == 15)
+							decay_id *= simple_tau_decay_id(W_final->daughter(1));
+						}
 
-						// save stuff, according to top Id, also save top p_T
-						if (id>0)
-							{
-							NT_gen_t_pt  = p.pt();
-							NT_gen_t_w_decay_id = decay_id;
-							}
-						else
-							{
-							NT_gen_tb_pt = p.pt();
-							NT_gen_tb_w_decay_id = decay_id;
-							}
+					// save stuff, according to top Id, also save top p_T
+					if (id>0)
+						{
+						NT_gen_t_pt  = p.pt();
+						NT_gen_t_w_decay_id = decay_id;
+						}
+					else
+						{
+						NT_gen_tb_pt = p.pt();
+						NT_gen_tb_w_decay_id = decay_id;
 						}
 					}
 
@@ -624,17 +634,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		weight = pu_vector_NOMINAL[NT_nvtx_gen] * (aMCatNLO? weight_Gen : 1) * weight_TopPT;
 		}
 	weight_counter->Fill(1, weight);
-
-	// reset the output objects with macro
-	#undef NTUPLE_INTERFACE_CLASS_DECLARE
-	#undef NTUPLE_INTERFACE_CLASS_INITIALIZE
-	#define NTUPLE_INTERFACE_CLASS_RESET
-	#include "UserCode/NtuplerAnalyzer/interface/ntupleOutput.h"
-	// if output contains stand-alone objects (not vector of LorentxVector-s, but just 1 LorentzVector, like MET or something)
-	// you have to reset them yourself, since each object might have its' own method
-	NT_met_init.SetXYZT(0,0,0,0);
-	NT_met_uncorrected.SetXYZT(0,0,0,0);
-	NT_met_corrected.SetXYZT(0,0,0,0);
 
 	//Handle<reco::TrackCollection> tracks;
 	//iEvent.getByToken( tracks_, tracks );
@@ -786,7 +785,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// PASS LUMI
 	// done with some trick in crab/cmsRun python config
 	//if (!isMC)
-	//	if(!goodLumiFilter.isGoodLumi(iEvent.eventAuxiliary().run(), iEvent.eventAuxiliary().luminosityBlock())) return; 
+		//if(!goodLumiFilter.isGoodLumi(iEvent.eventAuxiliary().run(), iEvent.eventAuxiliary().luminosityBlock())) return; 
 
 
 	edm::Handle<double> rhoHandle;
@@ -981,8 +980,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//mets_uncorrectedHandle.getByLabel(ev, "slimmedMETsUncorrected");
 		iEvent.getByToken( mets_uncorrected_, mets_uncorrectedHandle);
 		if(mets_uncorrectedHandle.isValid() ) mets_uncorrected = *mets_uncorrectedHandle;
-		//pat::MET met_uncorrected = mets_uncorrected[0];
-		//NT_met_uncorrected = met_uncorrected.p4();
+		pat::MET met_uncorrected = mets_uncorrected[0];
+		NT_met_uncorrected = met_uncorrected.p4();
 		}
 
 
@@ -1022,9 +1021,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		jet_resolution_in_pt, jet_resolution_sf_per_eta, jet_m_systematic_variation, jetID, jetPUID, /*with_PU*/ false, r3, full_jet_corr, IDjets, false, false);
 
 	// ALSO MET
-	//LorentzVector MET_corrected = MET.p4() - full_jet_corr;
+	LorentzVector MET_corrected = MET.p4() - full_jet_corr;
 	//float met_corrected = MET_corrected.pt();
-	//NT_met_corrected = MET_corrected;
+	NT_met_corrected = MET_corrected;
 
 	pat::JetCollection selJets;
 	processJets_Kinematics(IDjets, /*bool isMC,*/ weight, jet_kino_cuts_pt, jet_kino_cuts_eta, selJets, false, false);
@@ -1194,6 +1193,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	if (record_ntuple)
 		{
 		LogInfo ("Demo") << "recording";
+		event_counter->Fill(4);
+		weight_counter->Fill(4, weight);
 
 		for(size_t l=0; l<selLeptons.size(); ++l)
 			{
@@ -1232,6 +1233,12 @@ NtuplerAnalyzer::beginJob()
 void 
 NtuplerAnalyzer::endJob() 
 {
+/*
+if(!isMC){
+	goodLumiFilter.FindLumiInFiles(urls); // urls! why are they here at all? no even 1 comment in that "Utilities!"
+	goodLumiFilter.DumpToJson(((outUrl.ReplaceAll(".root",""))+".json").Data());
+	}
+*/
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------

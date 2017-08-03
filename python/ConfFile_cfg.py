@@ -8,9 +8,9 @@ ivars.inputFiles, isMC = (
  # Data, file on netwokr -- let's see how cmsRun gets it
  #'root://cms-xrd-global.cern.ch///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/001E3E7D-57EB-E611-8469-0CC47A7C35D2.root'
  # TT for tau-rich events
- #'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'
+ 'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'
 # single top
- 'file:ST_tW_top_0C2044DB-0EC2-E611-8567-0CC47A7FC378.root'
+ #'file:ST_tW_top_0C2044DB-0EC2-E611-8567-0CC47A7FC378.root'
  # DY file
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/0EE8D393-D0DE-E611-9106-A4BF0101202F.root'
  # WJets
@@ -49,11 +49,11 @@ process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v
 
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-#process.MessageLogger.cerr.threshold = 'INFO'
-#process.MessageLogger.categories.append('Demo')
-#process.MessageLogger.cerr.INFO = cms.untracked.PSet(
-#    limit = cms.untracked.int32(-1)
-#)
+process.MessageLogger.cerr.threshold = 'INFO'
+process.MessageLogger.categories.append('Demo')
+process.MessageLogger.cerr.INFO = cms.untracked.PSet(
+    limit = cms.untracked.int32(-1)
+)
 #process.MessageLogger = cms.Service("MessageLogger",
 #       destinations   = cms.untracked.vstring(
 #                                             'detailedInfo'
@@ -76,7 +76,7 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1025) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 
 

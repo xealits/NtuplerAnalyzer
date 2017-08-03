@@ -1,9 +1,12 @@
+from os import path as path
+
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 #import PhysicsTools.PythonAnalysis.LumiList as LumiList
 import FWCore.PythonUtilities.LumiList as LumiList
 import FWCore.ParameterSet.Types as CfgTypes
 #LumiList.LumiList().getVLuminosityBlockRange()
+
 
 # this ivars thing, whatever this is, will hold the names to the input/output files
 ivars = VarParsing.VarParsing('analysis')
@@ -78,12 +81,19 @@ if not isMC:
     JSONfile = '{lumiMask}'
     myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')
     process.source.lumisToProcess.extend(myLumis)
+# it's not clear how to get the output from this: which LumiSecs have actually been processed (and which were not due to job crashes etc)
+# maybe should use the old utility from llvv_fwk
 
 # NTUPLER
 process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 process.ntupler.isMC = cms.bool(isMC)
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.dtag = cms.string(dtag)
+
+theLumiMask = path.expandvars("{lumiMask}")
+process.ntupler.lumisToProcess = LumiList.LumiList(filename = theLumiMask).getVLuminosityBlockRange()
+
+
 
 
 #process.dump=cms.EDAnalyzer('EventContentAnalyzer')
