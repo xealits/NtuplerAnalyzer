@@ -176,7 +176,8 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	bool isMC, aMCatNLO;
 	string  muHLT_MC1  , muHLT_MC2  ,
 		muHLT_Data1, muHLT_Data2,
-		elHLT_Data , elHLT_MC   ;
+		elHLT_Data , elHLT_MC,
+		lepMonitorHLT;
 
 	jet_id    jetID;
 	pu_jet_id jetPUID;
@@ -190,7 +191,9 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	JME::JetResolution jet_resolution_in_pt;
 	JME::JetResolutionScaleFactor jet_resolution_sf_per_eta;
 
-	double tau_kino_cuts_pt, tau_kino_cuts_eta;
+	double  el_kino_cuts_pt, el_kino_cuts_eta, el_veto_kino_cuts_pt, el_veto_kino_cuts_eta,
+		mu_kino_cuts_pt, mu_kino_cuts_eta, mu_veto_kino_cuts_pt, mu_veto_kino_cuts_eta,
+		tau_kino_cuts_pt, tau_kino_cuts_eta;
 	double jet_kino_cuts_pt, jet_kino_cuts_eta;
 	double btag_threshold;
 
@@ -239,9 +242,18 @@ muHLT_Data1(iConfig.getParameter<std::string>("muHLT_Data1")),
 muHLT_Data2(iConfig.getParameter<std::string>("muHLT_Data2")),
 elHLT_Data (iConfig.getParameter<std::string>("elHLT_Data")),
 elHLT_MC   (iConfig.getParameter<std::string>("elHLT_MC")),
+lepMonitorHLT   (iConfig.getParameter<std::string>("lepMonitorHLT")),
 jecDir     (iConfig.getParameter<std::string>("jecDir")),
 TjetResolutionFileName     (iConfig.getParameter<std::string>("resolutionFile")),
 TjetResolutionSFFileName   (iConfig.getParameter<std::string>("scaleFactorFile")),
+el_kino_cuts_pt    (iConfig.getParameter<double>("el_kino_cuts_pt")),
+el_kino_cuts_eta   (iConfig.getParameter<double>("el_kino_cuts_eta")),
+el_veto_kino_cuts_pt    (iConfig.getParameter<double>("el_veto_kino_cuts_pt")),
+el_veto_kino_cuts_eta   (iConfig.getParameter<double>("el_veto_kino_cuts_eta")),
+mu_kino_cuts_pt    (iConfig.getParameter<double>("mu_kino_cuts_pt")),
+mu_kino_cuts_eta   (iConfig.getParameter<double>("mu_kino_cuts_eta")),
+mu_veto_kino_cuts_pt    (iConfig.getParameter<double>("mu_veto_kino_cuts_pt")),
+mu_veto_kino_cuts_eta   (iConfig.getParameter<double>("mu_veto_kino_cuts_eta")),
 tau_kino_cuts_pt    (iConfig.getParameter<double>("tau_kino_cuts_pt")),
 tau_kino_cuts_eta   (iConfig.getParameter<double>("tau_kino_cuts_eta")),
 jet_kino_cuts_pt    (iConfig.getParameter<double>("jet_kino_cuts_pt")),
@@ -823,6 +835,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 
 	// HLT TRIGGER
+	bool lepMonitorTrigger = false;
 	bool eTrigger = false;
 	bool muTrigger1, muTrigger2, muTrigger = false;
 
@@ -850,13 +863,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//   bool passTriggerPatternsAndGetName(edm::TriggerResultsByName& tr, std::string& pathName, std::string pattern)
 		// -- pathName is the matched part of the trigger name (as I got it)
 		//    it is passed to select trigger objects
+		lepMonitorTrigger   = utils::passTriggerPatterns(tr, lepMonitorHLT);
 		eTrigger   = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_elTriggerName, elHLT_MC)   : utils::passTriggerPatternsAndGetName(tr, matched_elTriggerName, elHLT_Data));
 		muTrigger1 = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_MC1) : utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_Data1));
 		muTrigger2 = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName2, muHLT_MC2) : utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName2, muHLT_Data2));
 		muTrigger = muTrigger1 || muTrigger2;
 		}
 
-	if (!(eTrigger || muTrigger)) return; // orthogonalization is done afterwards
+	if (!(eTrigger || muTrigger || lepMonitorTrigger)) return; // orthogonalization is done afterwards
 	event_counter->Fill(2);
 	weight_counter->Fill(2, weight);
 
@@ -884,6 +898,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	vector<pat::TriggerObjectStandAlone> el_trig_objs;
 	vector<pat::TriggerObjectStandAlone> mu_trig_objs, mu_trig_objs2;
 
+	NT_HLT_lepMonitor = lepMonitorTrigger;
 	if (eTrigger)
 		{
 		NT_HLT_el = true;
@@ -939,19 +954,46 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// MUONS
 	LorentzVector muDiff(0., 0., 0., 0.);
 	unsigned int nVetoMu(0);
-	pat::MuonCollection selIDMuons, selMuons;
+	//pat::MuonCollection selIDMuons, selMuons;
+	pat::MuonCollection selMuons;
 	processMuons_ID_ISO_Kinematics(muons, goodPV, weight, patUtils::llvvMuonId::StdTight, patUtils::llvvMuonId::StdLoose, patUtils::llvvMuonIso::Tight, patUtils::llvvMuonIso::Loose,               
-		30., 2.4, 10., 2.5, selIDMuons, muDiff, nVetoMu, false, false);
-	nVetoMu += processMuons_MatchHLT(selIDMuons, mu_trig_objs, 0.4, selMuons);
+		mu_kino_cuts_pt, mu_kino_cuts_eta, mu_veto_kino_cuts_pt, mu_veto_kino_cuts_eta, selMuons, muDiff, nVetoMu, false, false);
+
+	//nVetoMu += processMuons_MatchHLT(selIDMuons, mu_trig_objs, 0.4, selMuons);
 
 	// ELECTRONS
-	pat::ElectronCollection selIDElectrons, selElectrons;
+	//pat::ElectronCollection selIDElectrons, selElectrons;
+	pat::ElectronCollection selElectrons;
 	unsigned int nVetoE(0);
 	LorentzVector elDiff(0., 0., 0., 0.);
 	processElectrons_ID_ISO_Kinematics(electrons, goodPV, NT_fixedGridRhoFastjetAll, weight, patUtils::llvvElecId::Tight, patUtils::llvvElecId::Loose, patUtils::llvvElecIso::Tight, patUtils::llvvElecIso::Loose,
-		30., 2.4, 15., 2.5, selIDElectrons, elDiff, nVetoE, false, false);
+		el_kino_cuts_pt, el_kino_cuts_eta, el_veto_kino_cuts_pt, el_veto_kino_cuts_eta, selElectrons, elDiff, nVetoE, false, false);
 
-	nVetoE += processElectrons_MatchHLT(selIDElectrons, el_trig_objs, 0.4, selElectrons);
+	//nVetoE += processElectrons_MatchHLT(selIDElectrons, el_trig_objs, 0.4, selElectrons);
+
+	for(size_t l=0; l<selMuons.size(); ++l)
+		{
+		NT_lep_p4.push_back(selMuons[l].p4());
+		NT_lep_id.push_back(selMuons[l].pdgId());
+		// mu_trig_objs or el_trig_objs
+		NT_lep_matched_HLT.push_back(processMuon_matchesHLTs(selMuons[l], mu_trig_objs, 0.4));
+		NT_lep_dz  .push_back(selMuons[l].muonBestTrack()->dz (goodPV.position()));
+		NT_lep_dxy .push_back(selMuons[l].muonBestTrack()->dxy (goodPV.position()));
+		NT_lep_dB.push_back(selMuons[l].dB());
+		NT_lep_relIso.push_back(relIso(selMuons[l], NT_fixedGridRhoFastjetAll));
+		}
+
+	for(size_t l=0; l<selElectrons.size(); ++l)
+		{
+		NT_lep_p4.push_back(selElectrons[l].p4());
+		NT_lep_id.push_back(selElectrons[l].pdgId());
+		// mu_trig_objs or el_trig_objs
+		NT_lep_matched_HLT.push_back(processElectron_matchesHLTs(selElectrons[l], el_trig_objs, 0.4));
+		NT_lep_dz  .push_back(selElectrons[l].gsfTrack()->dz (goodPV.position()));
+		NT_lep_dxy .push_back(selElectrons[l].gsfTrack()->dxy (goodPV.position()));
+		NT_lep_dB.push_back(selElectrons[l].dB());
+		NT_lep_relIso.push_back(relIso(selElectrons[l], NT_fixedGridRhoFastjetAll));
+		}
 
 	std::vector<patUtils::GenericLepton> selLeptons;
 	for(size_t l=0; l<selElectrons.size(); ++l) selLeptons.push_back(patUtils::GenericLepton (selElectrons[l] ));
@@ -1343,18 +1385,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	LogInfo ("Demo") << "all particles/objects are selected, nbjets = " << NT_nbjets;
 
 	//bool record_ntuple = (isSingleMu || isSingleE || pass_dileptons) && NT_nbjets > 0 && NT_tau_IDlev.size() > 0; // at least 1 b jet and 1 loose tau
-	bool record_ntuple = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3 && NT_nbjets > 0; // leptons and at least 1 b jet
+	bool pass_leptons = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3;
+	bool record_ntuple = pass_leptons && NT_nbjets > 0; // leptons and at least 1 b jet
+	record_ntuple |= pass_leptons && lepMonitorTrigger;
 
 	if (record_ntuple)
 		{
 		LogInfo ("Demo") << "recording";
 		event_counter->Fill(4);
 		weight_counter->Fill(4, weight);
-
-		for(size_t l=0; l<selLeptons.size(); ++l)
-			{
-			NT_lep_p4.push_back(selLeptons[l].p4());
-			}
 
 		NT_output_ttree->Fill();
 		// EDM output

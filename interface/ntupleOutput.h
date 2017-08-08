@@ -235,6 +235,7 @@ Float_t_in_NTuple(OUTNTUPLE, fixedGridRhoFastjetAll)
 Bool_t_in_NTuple(OUTNTUPLE, METfilterbadChCand)
 Bool_t_in_NTuple(OUTNTUPLE, METfilterbadPFMuon)
 
+Bool_t_in_NTuple(OUTNTUPLE, HLT_lepMonitor)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_el)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_mu)
 
@@ -265,6 +266,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_dxy)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_dz)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_relIso)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_dB)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, lep_matched_HLT)
 
 // JETS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, jet_id)
