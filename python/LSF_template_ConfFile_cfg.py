@@ -26,9 +26,6 @@ dtag = '{dtag}'
 
 process = cms.Process("Demo")
 
-# some feature for tracks?
-process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
-
 # setting GlobalTag for MC Morion2017:
 # https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Run2_Moriond17_re_digi_reco_camp
 # data:
@@ -37,12 +34,17 @@ process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 # 80X_dataRun2_Prompt_v16 (era H);
 # the global tags are an update the 23Sep20216 and PromptReco ones to includes the 23Sep20216 V3 JECs on top .
 # in principle, now MET filters work without the GlobalTag anyway...
+process.load("Configuration.Geometry.GeometryIdeal_cff")
+process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 if isMC:
     process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v6')
 else:
     # so, era H has different global tag
     process.GlobalTag.globaltag = cms.string('80X_dataRun2_Prompt_v16') if '2016H' in dtag else cms.string('80X_dataRun2_2016SeptRepro_v7')
+
+# some feature for tracks?
+process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 
 
 # initialize MessageLogger and output report

@@ -39,23 +39,31 @@ ivars.parseArguments()
 
 process = cms.Process("Demo")
 
-# some feature for tracks?
-process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 
 # setting GlobalTag for MC Morion2017:
 # https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Run2_Moriond17_re_digi_reco_camp
 # data:
 # Produced with: 8_0_26_patch1; Global tag: 80X_dataRun2_2016SeptRepro_v7 (eras B-G) 80X_dataRun2_Prompt_v16 (era H); the global tags are an update the 23Sep20216 and PromptReco ones to includes the 23Sep20216 V3 JECs on top .
+process.load("Configuration.Geometry.GeometryIdeal_cff")
+process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v6')
 
+# some feature for tracks?
+process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
+#process.options = cms.untracked.PSet(
+#    wantSummary = cms.untracked.bool( True ),
+#    #SkipEvent = cms.untracked.vstring('ProductNotFound')
+#)
+
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.threshold = 'INFO'
-process.MessageLogger.categories.append('Demo')
-process.MessageLogger.cerr.INFO = cms.untracked.PSet(
-    limit = cms.untracked.int32(-1)
-)
+#process.MessageLogger.cerr.threshold = 'INFO'
+#process.MessageLogger.categories.append('Demo')
+#process.MessageLogger.cerr.INFO = cms.untracked.PSet(
+#    limit = cms.untracked.int32(-1)
+#)
+
 #process.MessageLogger = cms.Service("MessageLogger",
 #       destinations   = cms.untracked.vstring(
 #                                             'detailedInfo'
@@ -78,7 +86,7 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 
 
@@ -137,6 +145,7 @@ process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidate
 
 
 process.p = cms.Path(
+ #process.TransientTrackBuilderESProducer +
  process.BadPFMuonFilter *
  process.BadChargedCandidateFilter *
  process.ntupler)
