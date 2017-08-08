@@ -39,6 +39,8 @@ ivars.parseArguments()
 
 process = cms.Process("Demo")
 
+# some feature for tracks?
+process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 
 # setting GlobalTag for MC Morion2017:
 # https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Run2_Moriond17_re_digi_reco_camp

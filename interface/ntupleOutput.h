@@ -244,6 +244,15 @@ Int_t_in_NTuple(OUTNTUPLE, njets)
 Int_t_in_NTuple(OUTNTUPLE, nbjets)
 Int_t_in_NTuple(OUTNTUPLE, ntaus)
 
+// Primary Vertices
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_x)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_y)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_z)
+// just errors instead of full covar matrices for now:
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_x_err)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_y_err)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_z_err)
+
 // MET OUTPUT
 OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, met_init)
 OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, met_uncorrected)
@@ -296,4 +305,11 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  tau_hasSecondaryVertex)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_flightLength)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_flightLengthSignificance)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_dR_matched_jet) // number of the jet in jet vectors, if no match = -1
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_isOk)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_matchingQuality)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_x)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_y)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_z)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<math::Error<3>::type>, tau_SV_cov)
+
 

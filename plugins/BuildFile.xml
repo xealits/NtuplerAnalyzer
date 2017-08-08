@@ -8,7 +8,12 @@
 <use name="PhysicsTools/UtilAlgos"/>
 <use name="FWCore/ServiceRegistry"/>
 
+<use name="DataFormats/RecoCandidate"/>
 <use name="DataFormats/PatCandidates"/>
+
+<use name="TrackingTools/TransientTrack"/>
+<use name="TrackingTools/Records"/>
+<use name="RecoVertex/AdaptiveVertexFit"/>
 
 <use name="UserCode/llvv_fwk"/>
 <use name="UserCode/ttbar-leptons-80X"/>

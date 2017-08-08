@@ -37,6 +37,16 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
+// the vertex fitter for tau secondary vertex
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"//VertexCollection
+
+#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+#include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
+#include "RecoVertex/AdaptiveVertexFit/interface/AdaptiveVertexFitter.h"
+
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
 
 // lepton ID/Iso prescriptions
 #include "UserCode/llvv_fwk/interface/PatUtils.h"
@@ -152,6 +162,9 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	edm::EDGetTokenT<reco::GenParticleCollection> genParticle_;
 	edm::EDGetTokenT<GenEventInfoProduct> evt_;
 
+	edm::EDGetTokenT<edm::View<pat::PackedCandidate>> tracks_;
+	edm::EDGetTokenT<reco::BeamSpot> beamSpot_;
+
 	edm::EDGetTokenT<pat::METCollection> mets1_, mets2_, mets_uncorrected_;
 
 	edm::EDGetTokenT<vector<reco::GenJet>> genJets_;
@@ -256,6 +269,9 @@ btag_threshold   (iConfig.getParameter<double>("btag_threshold"))
 	genParticle_ = consumes<reco::GenParticleCollection>(edm::InputTag("prunedGenParticles"));
 
 	evt_  = consumes<GenEventInfoProduct>(edm::InputTag("generator"));
+
+	tracks_ = consumes<edm::View<pat::PackedCandidate>> (edm::InputTag("packedPFCandidates"));
+	beamSpot_ = consumes<reco::BeamSpot> (edm::InputTag("offlineBeamSpot"));
 
 	mets1_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETs"));
 	mets2_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETsMuEGClean"));
@@ -908,6 +924,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			{
 			if(nGoodPV==0) goodPV=vtx[ivtx];
 			nGoodPV++;
+			// save info on the vertex
+			NT_PV_x.push_back(vtx[ivtx].x());
+			NT_PV_y.push_back(vtx[ivtx].y());
+			NT_PV_z.push_back(vtx[ivtx].z());
+			NT_PV_x_err.push_back(vtx[ivtx].xError());
+			NT_PV_y_err.push_back(vtx[ivtx].yError());
+			NT_PV_z_err.push_back(vtx[ivtx].zError());
 			}
 		}
 
@@ -1181,6 +1204,138 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 
 		NT_tau_dR_matched_jet.push_back(matched_jet_number); // number of the jet in jet vectors, if no match = -1
+
+		// Re-reconstructed Secondary Vertex (SV) for taus with 3 pions
+		// for each tau save the bool if fit is ok
+		// and parameters,
+		// default value for the parameters of not good fit are 999.
+		// Also save matching quality (= sum of dR of the matching to general tracks).
+		bool fitOk = false;  
+		TransientVertex transVtx;
+		double matchingQuality(0);
+		if (tau.decayMode() > 9)
+			{
+			/*
+			 * 1) unpack things necessary for the fitter, tau candidate tracks, beamSpot & general tracks
+			 * 2) match tracks it tau candidates
+			 * 3) fit adaptivefitter to the matched tracks
+			 * 4) save with "quality score" = sum of dR of the matching
+			 */
+
+			// tau tracks
+			reco::CandidatePtrVector sigCands = tau.signalChargedHadrCands();//signalCands();
+
+			// BEAMSPOT
+			//
+			reco::BeamSpot beamSpot;
+			edm::Handle<reco::BeamSpot> beamSpotHandle;
+			iEvent.getByToken(beamSpot_, beamSpotHandle);
+			if (beamSpotHandle.isValid()) beamSpot = *beamSpotHandle;
+
+			// TRACKS
+			//
+			edm::Handle<edm::View<pat::PackedCandidate>> tracksHandle;
+			iEvent.getByToken(tracks_, tracksHandle);
+			//if (tracksHandle.isValid()) tracks = *tracksHandle;
+			const edm::View<pat::PackedCandidate>* cands = tracksHandle.product();
+
+			// some more feature for tracks
+			// the python conf load some module TransientTrackBuilder from cmssw package TrackingTools.TransientTrack
+			// probably the module stores this stuff to the event..
+			edm::ESHandle<TransientTrackBuilder> transTrackBuilder;
+			iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", transTrackBuilder);
+
+			// select tracks associated with PV
+			reco::TrackCollection pvTracks;
+			//TLorentzVector aTrack;
+			for(size_t i=0; i<cands->size(); ++i)
+				{
+				if((*cands)[i].charge()==0 || (*cands)[i].vertexRef().isNull()) continue;
+				if(!(*cands)[i].bestTrack()) continue;
+				
+				unsigned int key = (*cands)[i].vertexRef().key();
+				int quality = (*cands)[i].pvAssociationQuality();
+				
+				if(key!=0 ||
+					(quality!=pat::PackedCandidate::UsedInFitTight
+					 && quality!=pat::PackedCandidate::UsedInFitLoose)) continue;
+				
+				pvTracks.push_back(*((*cands)[i].bestTrack()));
+				}
+
+			// match pvTracks to tau tracks
+			std::vector<reco::TransientTrack> transTracks;  
+
+			std::vector<double > tracksToBeRemoved; // compare by Pt due to the conflict of comparing const and not const iterators
+			for (reco::CandidatePtrVector::const_iterator itr = sigCands.begin(); itr != sigCands.end(); ++itr)
+				{
+				double deR(999.); 
+				double checkqual(0);
+				reco::Track closestTrack;
+				for(auto iter: pvTracks)
+					{
+					if(std::find(tracksToBeRemoved.begin(), tracksToBeRemoved.end(), iter.pt())!=tracksToBeRemoved.end()) continue;
+					if( sqrt(pow(iter.eta() - (*itr)->p4().eta(),2) + pow(iter.phi() - (*itr)->p4().phi(),2))  < deR)
+						{
+						deR = sqrt(pow(iter.eta() - (*itr)->p4().eta(),2) + pow(iter.phi() - (*itr)->p4().phi(),2));
+						checkqual=deR;
+						closestTrack = iter;
+						}
+					}
+				matchingQuality+=checkqual;
+				tracksToBeRemoved.push_back(closestTrack.pt());
+				transTracks.push_back(transTrackBuilder->build(closestTrack));
+				//cout<<"  closestTrackiter eta  :  "<<   closestTrack.eta() << "   phi   " << closestTrack.phi() << "    pt  "<< closestTrack.pt() <<endl;
+				}
+
+			// do the fit
+			if(transTracks.size() >= 2 )
+				{
+				AdaptiveVertexFitter avf;
+				avf.setWeightThreshold(0.001); 
+				try
+					{
+					transVtx = avf.vertex(transTracks, beamSpot);
+					fitOk = true; 
+					}
+				catch (...)
+					{
+					fitOk = false; 
+					std::cout<<"Vtx fit failed!"<<std::endl;
+					}
+				}
+
+			fitOk = fitOk && transVtx.isValid() && fabs(transVtx.position().x())<1 && fabs(transVtx.position().y())<1;
+			}
+
+		// save the vertex
+		NT_tau_SV_fit_isOk.push_back(fitOk);
+		if(fitOk)
+			{
+			///NOTE: we take original vertex z position, as this gives the best reults on CP
+			///variables. To be understood; probable reason are missing tracks with Pt<0.95GeV
+			NT_tau_SV_fit_matchingQuality.push_back(matchingQuality);
+			NT_tau_SV_fit_x.push_back(transVtx.position().x());
+			NT_tau_SV_fit_y.push_back(transVtx.position().y());
+			NT_tau_SV_fit_z.push_back(transVtx.position().z());
+			reco::Vertex secondaryVertex = transVtx;
+			// covariance matrix
+			math::Error<3>::type svCov;
+			secondaryVertex.fill(svCov);
+			NT_tau_SV_cov.push_back(svCov);
+			}
+		else
+			{
+			NT_tau_SV_fit_matchingQuality.push_back(999.);
+			NT_tau_SV_fit_x.push_back(999.);
+			NT_tau_SV_fit_y.push_back(999.);
+			NT_tau_SV_fit_z.push_back(999.);
+			math::Error<3>::type svCov;
+			svCov(0,0) = 999;
+			svCov(1,1) = 999;
+			svCov(2,2) = 999;
+			NT_tau_SV_cov.push_back(svCov);
+			}
 		}
 
 	NT_njets  = selJetsNoLep.size();
