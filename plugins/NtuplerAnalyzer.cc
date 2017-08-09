@@ -1000,10 +1000,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	for(size_t l=0; l<selMuons.size(); ++l)     selLeptons.push_back(patUtils::GenericLepton (selMuons[l]     ));
 	std::sort(selLeptons.begin(), selLeptons.end(), utils::sort_CandidatesByPt);
 
-	LogInfo ("Demo") << "selected leptons: " << '(' << selIDElectrons.size() << ',' << selIDMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
+	//LogInfo ("Demo") << "selected leptons: " << '(' << selIDElectrons.size() << ',' << selIDMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
+	LogInfo ("Demo") << "selected leptons: " << '(' << selElectrons.size() << ',' << selMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
 
 	bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0;
-	if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return; // exit now to reduce computation
+	//if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return; // exit now to reduce computation -- nope, there are other records too
 	event_counter->Fill(3);
 	weight_counter->Fill(3, weight);
 
@@ -1172,15 +1173,17 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 */
 	//LogInfo("Demo") << "taus.size() = "<< taus.size();
 	//string tau_Loose_ID("byLooseCombinedIsolationDeltaBetaCorr3Hits");
+	string tau_VLoose_ID ("byVLooseIsolationMVArun2v1DBoldDMwLT");
 	string tau_Loose_ID  ("byLooseIsolationMVArun2v1DBoldDMwLT");
 	string tau_Medium_ID ("byMediumIsolationMVArun2v1DBoldDMwLT");
 	string tau_Tight_ID  ("byTightIsolationMVArun2v1DBoldDMwLT");
+	string tau_VTight_ID ("byVTightIsolationMVArun2v1DBoldDMwLT");
 	string tau_decayMode       ("decayModeFinding");
 	string tau_againstMuon     ("againstMuonTight3");
 	string tau_againstElectron ("againstElectronTightMVA6");
 
 	pat::TauCollection IDtaus, selTaus;
-	processTaus_ID_ISO    (taus,   weight, tau_decayMode, tau_Loose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
+	processTaus_ID_ISO    (taus,   weight, tau_decayMode, tau_VLoose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
 	processTaus_Kinematics(IDtaus, weight, tau_kino_cuts_pt, tau_kino_cuts_eta, selTaus,      false, false);
 
 	pat::TauCollection selTausNoLep;
@@ -1189,14 +1192,19 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// and these are the NT output taus
 	std::sort (selTausNoLep.begin(),  selTausNoLep.end(),  utils::sort_CandidatesByPt);
 
+	NT_ntaus = 0;
 	for(size_t i=0; i<selTausNoLep.size(); ++i)
 		{
 		pat::Tau& tau = selTausNoLep[i];
 
 		Int_t IDlev = 0;
-		if (tau.tauID(tau_Tight_ID)) IDlev = 3;
-		else if (tau.tauID(tau_Medium_ID)) IDlev = 2;
-		else if (tau.tauID(tau_Loose_ID)) IDlev = 1;
+		if (tau.tauID(tau_VTight_ID)) IDlev = 5;
+		else if (tau.tauID(tau_Tight_ID))  IDlev = 4;
+		else if (tau.tauID(tau_Medium_ID)) IDlev = 3;
+		else if (tau.tauID(tau_Loose_ID))  IDlev = 2;
+		else if (tau.tauID(tau_VLoose_ID)) IDlev = 1;
+
+		if (IDlev > 0) NT_ntaus += 1;
 
 		NT_tau_id.push_back(tau.pdgId());
 		NT_tau_decayMode.push_back(tau.decayMode());
@@ -1386,8 +1394,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	//bool record_ntuple = (isSingleMu || isSingleE || pass_dileptons) && NT_nbjets > 0 && NT_tau_IDlev.size() > 0; // at least 1 b jet and 1 loose tau
 	bool pass_leptons = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3;
-	bool record_ntuple = pass_leptons && NT_nbjets > 0; // leptons and at least 1 b jet
-	record_ntuple |= pass_leptons && lepMonitorTrigger;
+	bool record_ntuple = false;
+	//record_ntuple |= pass_leptons && NT_nbjets > 0; // leptons and at least 1 b jet
+	record_ntuple |= pass_leptons && NT_ntaus > 0;
+	record_ntuple |= pass_leptons && lepMonitorTrigger; // this one might be heavy, but hopefully the monitorTrigger is low rate (HT400 jets now)
+	// and record all el-mu events (it's mainly TTbar, so should be few)
+	record_ntuple |= clean_lep_conditions && abs(NT_leps_ID) == 143;
 
 	if (record_ntuple)
 		{
