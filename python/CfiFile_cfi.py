@@ -12,7 +12,7 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer',
     muHLT_Data2 = cms.string("HLT_IsoTkMu24_v*"),
     elHLT_Data  = cms.string("HLT_Ele27_WPTight_Gsf_v*"),
     elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v7"),
-    lepMonitorHLT = cms.string("HLT_PFHT400_SixJet30_DoubleBTagCSV_p056"),
+    lepMonitorHLT = cms.string("HLT_PFHT400_*"),
 
     jecDir          = cms.string('${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/data/jec/25ns/'),
     resolutionFile  = cms.string('${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/data/jec/25ns/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt'),
