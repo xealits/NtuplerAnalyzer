@@ -1183,7 +1183,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	string tau_againstElectron ("againstElectronTightMVA6");
 
 	pat::TauCollection IDtaus, selTaus;
-	processTaus_ID_ISO    (taus,   weight, tau_decayMode, tau_VLoose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
+	processTaus_ID    (taus,   weight, tau_decayMode, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
+	//processTaus_ID_ISO    (taus,   weight, tau_decayMode, tau_VLoose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
 	processTaus_Kinematics(IDtaus, weight, tau_kino_cuts_pt, tau_kino_cuts_eta, selTaus,      false, false);
 
 	pat::TauCollection selTausNoLep;
@@ -1192,7 +1193,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// and these are the NT output taus
 	std::sort (selTausNoLep.begin(),  selTausNoLep.end(),  utils::sort_CandidatesByPt);
 
-	NT_ntaus = 0;
+	//NT_ntaus = 0;
+	NT_ntaus = selTausNoLep.size(); // all tau before MVA anti-jet iso
 	for(size_t i=0; i<selTausNoLep.size(); ++i)
 		{
 		pat::Tau& tau = selTausNoLep[i];
@@ -1204,7 +1206,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		else if (tau.tauID(tau_Loose_ID))  IDlev = 2;
 		else if (tau.tauID(tau_VLoose_ID)) IDlev = 1;
 
-		if (IDlev > 0) NT_ntaus += 1;
+		//if (IDlev > 0) NT_ntaus += 1;
 
 		NT_tau_id.push_back(tau.pdgId());
 		NT_tau_decayMode.push_back(tau.decayMode());
@@ -1399,7 +1401,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	record_ntuple |= pass_leptons && NT_ntaus > 0;
 	record_ntuple |= pass_leptons && lepMonitorTrigger; // this one might be heavy, but hopefully the monitorTrigger is low rate (HT400 jets now)
 	// and record all el-mu events (it's mainly TTbar, so should be few)
-	record_ntuple |= clean_lep_conditions && abs(NT_leps_ID) == 143;
+	//record_ntuple |= clean_lep_conditions && abs(NT_leps_ID) == 143;
+	record_ntuple |= clean_lep_conditions && selLeptons.size() == 2; // just all dileptons -- lots of DY here
 
 	if (record_ntuple)
 		{
