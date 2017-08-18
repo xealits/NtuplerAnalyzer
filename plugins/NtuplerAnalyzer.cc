@@ -172,6 +172,8 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	edm::EDGetTokenT<pat::JetCollection> jets_;
 	//jetsHandle.getByLabel(ev, "slimmedJets");
 
+	bool record_tauID, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep;
+
 	TString dtag;
 	bool isMC, aMCatNLO;
 	string  muHLT_MC1  , muHLT_MC2  ,
@@ -234,6 +236,11 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 // constructors and destructor
 //
 NtuplerAnalyzer::NtuplerAnalyzer(const edm::ParameterSet& iConfig) :
+record_tauID         (iConfig.getParameter<bool>("record_tauID"))         ,
+record_bPreselection (iConfig.getParameter<bool>("record_bPreselection")) ,
+record_MonitorHLT    (iConfig.getParameter<bool>("record_MonitorHLT"))    ,
+record_ElMu          (iConfig.getParameter<bool>("record_ElMu"))          ,
+record_Dilep         (iConfig.getParameter<bool>("record_Dilep"))         ,
 dtag       (iConfig.getParameter<std::string>("dtag")),
 isMC       (iConfig.getParameter<bool>("isMC")),
 muHLT_MC1  (iConfig.getParameter<std::string>("muHLT_MC1")),
@@ -1397,12 +1404,44 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//bool record_ntuple = (isSingleMu || isSingleE || pass_dileptons) && NT_nbjets > 0 && NT_tau_IDlev.size() > 0; // at least 1 b jet and 1 loose tau
 	bool pass_leptons = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3;
 	bool record_ntuple = false;
-	//record_ntuple |= pass_leptons && NT_nbjets > 0; // leptons and at least 1 b jet
-	record_ntuple |= pass_leptons && NT_ntaus > 0;
-	record_ntuple |= pass_leptons && lepMonitorTrigger; // this one might be heavy, but hopefully the monitorTrigger is low rate (HT400 jets now)
-	// and record all el-mu events (it's mainly TTbar, so should be few)
-	//record_ntuple |= clean_lep_conditions && abs(NT_leps_ID) == 143;
-	record_ntuple |= clean_lep_conditions && selLeptons.size() == 2; // just all dileptons -- lots of DY here
+
+	if (record_tauID)
+		{
+		/*
+		 * tau ID preselection
+		 * about twice less events then in our preselection with b jets
+		 *
+		 * should contain good WJets control sample
+		 */
+		record_ntuple |= pass_leptons && NT_ntaus > 0;
+		}
+	if (record_bPreselection)
+		{
+		/* leptons and at least 1 b jet
+		 * our old preselection
+		 */
+		record_ntuple |= pass_leptons && NT_nbjets > 0;
+		}
+	if (record_MonitorHLT)
+		{
+		/* the HLT efficiency study
+		 * only few events in lepMonitorTrigger
+		 */
+		record_ntuple |= pass_leptons && lepMonitorTrigger;
+		}
+	if (record_ElMu)
+		{
+		// all el-mu events (it's mainly TTbar, so should be few)
+		record_ntuple |= clean_lep_conditions && abs(NT_leps_ID) == 143;
+		}
+	if (record_Dilep)
+		{
+		/* just all dileptons -- lots of DY here
+		 * control for lepton IDs
+		 * about = to tau ID preselection
+		 */
+		record_ntuple |= clean_lep_conditions && selLeptons.size() == 2;
+		}
 
 	if (record_ntuple)
 		{
