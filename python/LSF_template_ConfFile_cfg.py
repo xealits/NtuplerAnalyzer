@@ -98,12 +98,13 @@ process.ntupler.dtag = cms.string(dtag)
 theLumiMask = path.expandvars("{lumiMask}")
 process.ntupler.lumisToProcess = LumiList.LumiList(filename = theLumiMask).getVLuminosityBlockRange()
 
+record_scheme = '{record_scheme}'
 if record_scheme:
-    record_tauID         = cms.bool('tauID'         in '{record_scheme}')
-    record_bPreselection = cms.bool('bPreselection' in '{record_scheme}')
-    record_MonitorHLT    = cms.bool('MonitorHLT'    in '{record_scheme}')
-    record_ElMu          = cms.bool('ElMu'          in '{record_scheme}')
-    record_Dilep         = cms.bool('Dilep'         in '{record_scheme}')
+    process.ntupler.record_tauID         = cms.bool('tauID'         in record_scheme)
+    process.ntupler.record_bPreselection = cms.bool('bPreselection' in record_scheme)
+    process.ntupler.record_MonitorHLT    = cms.bool('MonitorHLT'    in record_scheme)
+    process.ntupler.record_ElMu          = cms.bool('ElMu'          in record_scheme)
+    process.ntupler.record_Dilep         = cms.bool('Dilep'         in record_scheme)
 
 
 

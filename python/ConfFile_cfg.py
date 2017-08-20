@@ -58,11 +58,11 @@ process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-#process.MessageLogger.cerr.threshold = 'INFO'
-#process.MessageLogger.categories.append('Demo')
-#process.MessageLogger.cerr.INFO = cms.untracked.PSet(
-#    limit = cms.untracked.int32(-1)
-#)
+process.MessageLogger.cerr.threshold = 'INFO'
+process.MessageLogger.categories.append('Demo')
+process.MessageLogger.cerr.INFO = cms.untracked.PSet(
+    limit = cms.untracked.int32(-1)
+)
 
 #process.MessageLogger = cms.Service("MessageLogger",
 #       destinations   = cms.untracked.vstring(
@@ -84,7 +84,7 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
@@ -106,6 +106,14 @@ process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.dtag = cms.string('Data13TeV_SingleMuon2016B_03Feb2017_ver2')
 process.ntupler.isMC = cms.bool(True)
+
+record_scheme = 'ElMu'
+if record_scheme:
+    process.ntupler.record_tauID         = cms.bool('tauID'         in record_scheme)
+    process.ntupler.record_bPreselection = cms.bool('bPreselection' in record_scheme)
+    process.ntupler.record_MonitorHLT    = cms.bool('MonitorHLT'    in record_scheme)
+    process.ntupler.record_ElMu          = cms.bool('ElMu'          in record_scheme)
+    process.ntupler.record_Dilep         = cms.bool('Dilep'         in record_scheme)
 
 #process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.Tracer = cms.Service("Tracer")

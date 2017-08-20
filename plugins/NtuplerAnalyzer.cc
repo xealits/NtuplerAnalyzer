@@ -1445,7 +1445,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	if (record_ntuple)
 		{
-		LogInfo ("Demo") << "recording";
+		LogInfo ("Demo") << "recording " << record_tauID << record_bPreselection << record_MonitorHLT << record_ElMu << record_Dilep;
 		event_counter->Fill(4);
 		weight_counter->Fill(4, weight);
 
