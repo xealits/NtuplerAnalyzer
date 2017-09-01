@@ -451,6 +451,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NT_met_uncorrected.SetXYZT(0,0,0,0);
 	NT_met_corrected.SetXYZT(0,0,0,0);
 
+	NT_gen_t_w_final_p4.SetXYZT(0,0,0,0);
+	NT_gen_t_b_final_p4.SetXYZT(0,0,0,0);
+	NT_gen_tb_w_final_p4.SetXYZT(0,0,0,0);
+	NT_gen_tb_b_final_p4.SetXYZT(0,0,0,0);
+
 
 	event_counter->Fill(1);
 	double weight = 1;
@@ -536,6 +541,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// mu, vmu   13, 14
 			// tau, vtau 15, 16
 
+        		vector<const reco::Candidate*> t_b_parts, tb_b_parts, t_W_parts, tb_W_parts;
 			LogInfo ("Demo") << "Processing MC, gen particles, t decays and taus";
 			NT_gen_pythia8_prompt_leptons_N = 0;
 			NT_gen_N_wdecays = 0;
@@ -557,6 +563,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					int W_num = d0_id == 24 ? 0 : (d1_id == 24 ? 1 : -1) ;
 					if (W_num < 0) continue;
 					const reco::Candidate * W = p.daughter( W_num );
+					const reco::Candidate * b = p.daughter( 1 - W_num );
 					const reco::Candidate * W_final = find_W_decay(W);
 					int decay_id = 1;
 					// = id of lepton or 1 for quarks
@@ -578,11 +585,23 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						{
 						NT_gen_t_pt  = p.pt();
 						NT_gen_t_w_decay_id = decay_id;
+						save_final_states(W, NT_gen_t_w_final_p4s, NT_gen_t_w_final_pdgIds, NT_gen_t_w_final_statuses, t_W_parts);
+						save_final_states(b, NT_gen_t_b_final_p4s, NT_gen_t_b_final_pdgIds, NT_gen_t_b_final_statuses, t_b_parts);
+						for (int i=0; i<NT_gen_t_w_final_p4s.size(); i++)
+							NT_gen_t_w_final_p4 += NT_gen_t_w_final_p4s[i];
+						for (int i=0; i<NT_gen_t_b_final_p4s.size(); i++)
+							NT_gen_t_b_final_p4 += NT_gen_t_b_final_p4s[i];
 						}
 					else
 						{
 						NT_gen_tb_pt = p.pt();
 						NT_gen_tb_w_decay_id = decay_id;
+						save_final_states(W, NT_gen_tb_w_final_p4s, NT_gen_tb_w_final_pdgIds, NT_gen_tb_w_final_statuses, tb_W_parts);
+						save_final_states(b, NT_gen_tb_b_final_p4s, NT_gen_tb_b_final_pdgIds, NT_gen_tb_b_final_statuses, tb_b_parts);
+						for (int i=0; i<NT_gen_tb_w_final_p4s.size(); i++)
+							NT_gen_tb_w_final_p4 += NT_gen_tb_w_final_p4s[i];
+						for (int i=0; i<NT_gen_tb_b_final_p4s.size(); i++)
+							NT_gen_tb_b_final_p4 += NT_gen_tb_b_final_p4s[i];
 						}
 					}
 

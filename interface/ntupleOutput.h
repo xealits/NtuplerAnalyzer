@@ -218,6 +218,26 @@ Int_t_in_NTuple(OUTNTUPLE, gen_t_w_decay_id) // = id of lepton (+-11/13/15, sign
 //     the 20 + 5*(Nch-1) + Npi0 (just 5*Nch + Npi0 should be 1, 2, 10 etc -- the possible overlap is 3 charged + 1 neutral pi = 11, it's a rare decay, maybe negligible, but still let's add shift by 20)
 //     (no overlaps with lepton id-s)
 Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_decay_id)
+
+// final states of t/tb b and W:
+Int_t_in_NTuple(OUTNTUPLE, gen_t_w_final_pdgIds)
+Int_t_in_NTuple(OUTNTUPLE, gen_t_w_final_statuses)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_t_w_final_p4s)
+Int_t_in_NTuple(OUTNTUPLE, gen_t_b_final_pdgIds)
+Int_t_in_NTuple(OUTNTUPLE, gen_t_b_final_statuses)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_t_b_final_p4s)
+Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_final_pdgIds)
+Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_final_statuses)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tb_w_final_p4s)
+Int_t_in_NTuple(OUTNTUPLE, gen_tb_b_final_pdgIds)
+Int_t_in_NTuple(OUTNTUPLE, gen_tb_b_final_statuses)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tb_b_final_p4s)
+// sums of p4-s
+OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, gen_t_w_final_p4)
+OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, gen_t_b_final_p4)
+OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, gen_tb_w_final_p4)
+OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, gen_tb_b_final_p4)
+
 Int_t_in_NTuple(OUTNTUPLE, gen_pythia8_prompt_leptons_N)  // N leptons with status = 21-29 (pythia 8, "particles from hardest subprocess", "Pythia 8 worksheet" for tutorial at the ASP 2012 Summer School)
 //Int_t_in_NTuple(OUTNTUPLE, gen_prompt_leptons_ID) // product of their ID-s, tau ID = pdgID * by (20 + 5*...)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_pythia8_prompt_leptons_IDs) // ID-s of the prompt leptons, tau ID = pdgID * by (20 + 5*...)
