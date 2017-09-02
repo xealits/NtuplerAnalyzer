@@ -152,7 +152,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	edm::EDGetTokenT<pat::TauCollection> taus_;
 	edm::EDGetTokenT<reco::VertexCollection> vtx_;
 	edm::EDGetTokenT<double> rho_;
-	edm::EDGetTokenT<edm::TriggerResults> trigResults_;
+	edm::EDGetTokenT<edm::TriggerResults> trigResults_, trigResultsRECO_, trigResultsPAT_;
 	//triggerObjectsHandle.getByLabel(ev, "selectedPatTrigger");
 	//iEvent.getByToken(triggerObjects_, triggerObjectsHandle);
 	edm::EDGetTokenT<vector<pat::TriggerObjectStandAlone>> triggerObjects_;
@@ -279,6 +279,8 @@ btag_threshold   (iConfig.getParameter<double>("btag_threshold"))
 	vtx_ = consumes<reco::VertexCollection>(edm::InputTag("offlineSlimmedPrimaryVertices"));
 	rho_ = consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
 	trigResults_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT"));
+	trigResultsRECO_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","RECO"));
+	trigResultsPAT_     = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","PAT"));
 	triggerObjects_ = consumes<vector<pat::TriggerObjectStandAlone>>(edm::InputTag("selectedPatTrigger"));
 	//fwlite::Handle<double> rhoHandle;
 	//rhoHandle.getByLabel(ev, "fixedGridRhoFastjetAll");
@@ -746,8 +748,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 *   https://hypernews.cern.ch/HyperNews/CMS/get/met.html
 	 */
 
-	edm::TriggerResultsByName metFilters = iEvent.triggerResultsByName("PAT");   //is present only if PAT (and miniAOD) is not run simultaniously with RECO
-	if(!metFilters.isValid()){metFilters = iEvent.triggerResultsByName("RECO");} //if not present, then it's part of RECO
+	edm::TriggerResultsByName metFilters = iEvent.triggerResultsByName("RECO"); //is present only if PAT (and miniAOD) is not run simultaniously with RECO
+	if(!metFilters.isValid()){metFilters = iEvent.triggerResultsByName("PAT");} //if not present, then it's part of RECO
 	if(!metFilters.isValid()){       
 		LogInfo("Demo") << "TriggerResultsByName for MET filters is not found in the process, as a consequence the MET filter is disabled for this event";
 		return;
