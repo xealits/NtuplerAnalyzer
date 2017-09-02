@@ -220,17 +220,17 @@ Int_t_in_NTuple(OUTNTUPLE, gen_t_w_decay_id) // = id of lepton (+-11/13/15, sign
 Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_decay_id)
 
 // final states of t/tb b and W:
-Int_t_in_NTuple(OUTNTUPLE, gen_t_w_final_pdgIds)
-Int_t_in_NTuple(OUTNTUPLE, gen_t_w_final_statuses)
+VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_w_final_pdgIds)
+VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_w_final_statuses)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_t_w_final_p4s)
-Int_t_in_NTuple(OUTNTUPLE, gen_t_b_final_pdgIds)
-Int_t_in_NTuple(OUTNTUPLE, gen_t_b_final_statuses)
+VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_b_final_pdgIds)
+VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_b_final_statuses)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_t_b_final_p4s)
-Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_final_pdgIds)
-Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_final_statuses)
+VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_tb_w_final_pdgIds)
+VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_tb_w_final_statuses)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tb_w_final_p4s)
-Int_t_in_NTuple(OUTNTUPLE, gen_tb_b_final_pdgIds)
-Int_t_in_NTuple(OUTNTUPLE, gen_tb_b_final_statuses)
+VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_tb_b_final_pdgIds)
+VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_tb_b_final_statuses)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tb_b_final_p4s)
 // sums of p4-s
 OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, gen_t_w_final_p4)
@@ -254,6 +254,7 @@ Float_t_in_NTuple(OUTNTUPLE, fixedGridRhoFastjetAll)
 
 Bool_t_in_NTuple(OUTNTUPLE, METfilterbadChCand)
 Bool_t_in_NTuple(OUTNTUPLE, METfilterbadPFMuon)
+Bool_t_in_NTuple(OUTNTUPLE, pass_basic_METfilters)
 
 Bool_t_in_NTuple(OUTNTUPLE, HLT_lepMonitor)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_el)
@@ -333,5 +334,12 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_x)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_y)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_z)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<math::Error<3>::type>, tau_SV_cov)
+
+// PV REFITTED
+Float_t_in_NTuple(OUTNTUPLE, PV_fit_isOk)
+Float_t_in_NTuple(OUTNTUPLE, PV_fit_x)
+Float_t_in_NTuple(OUTNTUPLE, PV_fit_y)
+Float_t_in_NTuple(OUTNTUPLE, PV_fit_z)
+OBJECT_in_NTuple(OUTNTUPLE, math::Error<3>::type, PV_cov)
 
 
