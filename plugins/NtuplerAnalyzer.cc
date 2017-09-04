@@ -165,7 +165,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	edm::EDGetTokenT<edm::View<pat::PackedCandidate>> tracks_;
 	edm::EDGetTokenT<reco::BeamSpot> beamSpot_;
 
-	edm::EDGetTokenT<pat::METCollection> mets1_, mets2_, mets_uncorrected_;
+	edm::EDGetTokenT<pat::METCollection> mets_slimmedMETs_, mets_slimmedMETsMuEGClean_, mets_uncorrected_;
 
 	edm::EDGetTokenT<vector<reco::GenJet>> genJets_;
 	//genJetsHandle.getByLabel(ev, "slimmedGenJets");
@@ -294,8 +294,8 @@ btag_threshold   (iConfig.getParameter<double>("btag_threshold"))
 	tracks_ = consumes<edm::View<pat::PackedCandidate>> (edm::InputTag("packedPFCandidates"));
 	beamSpot_ = consumes<reco::BeamSpot> (edm::InputTag("offlineBeamSpot"));
 
-	mets1_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETs"));
-	mets2_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETsMuEGClean"));
+	mets_slimmedMETs_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETs"));
+	mets_slimmedMETsMuEGClean_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETsMuEGClean"));
 	mets_uncorrected_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETsUncorrected"));
 
 	genJets_ = consumes<vector<reco::GenJet>>(edm::InputTag("slimmedGenJets"));
@@ -452,6 +452,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NT_met_init.SetXYZT(0,0,0,0);
 	NT_met_uncorrected.SetXYZT(0,0,0,0);
 	NT_met_corrected.SetXYZT(0,0,0,0);
+	NT_met_slimmedMets.SetXYZT(0,0,0,0);
+	NT_met_slimmedMETsMuEGClean.SetXYZT(0,0,0,0);
+
+	NT_jets_full_correction.SetXYZT(0,0,0,0);
 
 	NT_gen_t_w_final_p4.SetXYZT(0,0,0,0);
 	NT_gen_t_b_final_p4.SetXYZT(0,0,0,0);
@@ -467,6 +471,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	event_counter->Fill(1);
 	double weight = 1;
+
+	NT_indexevents = iEvent.id().event();
+	NT_runNumber   = iEvent.id().run();
+	NT_lumi        = iEvent.luminosityBlock();
 
 	// couple things for MC:
 	//  - gen aMCatNLO
@@ -762,7 +770,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		bool eebad = utils::passTriggerPatterns(metFilters, "Flag_eeBadScFilter");
 		bool halo  = utils::passTriggerPatterns(metFilters, "Flag_globalTightHalo2016Filter");
 		// 2016 thing: bad muons
-		bool flag_noBadMuons = utils::passTriggerPatterns(metFilters, "Flag_noBadMuons");
+		//bool flag_noBadMuons = utils::passTriggerPatterns(metFilters, "Flag_noBadMuons"); // <---- the bad muons are done on the fly with cfg.py thingy
 		//bool flag_duplicateMuons = utils::passTriggerPatterns(metFilters, "Flag_duplicateMuons");
 		// from
 		// https://twiki.cern.ch/twiki/bin/view/CMSPublic/ReMiniAOD03Feb2017Notes#Event_flags
@@ -776,7 +784,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		//if (! (filters1 & good_vertices & eebad & halo & flag_noBadMuons)) return;
 		// save for study
-		NT_pass_basic_METfilters = filters1 & good_vertices & eebad & halo & flag_noBadMuons;
+		NT_pass_basic_METfilters = filters1 & good_vertices & eebad & halo;
 		// these Flag_noBadMuons/Flag_duplicateMuons are MET flags (the issue with bad muons in 2016),
 		// they are true if the MET got corrected and event is fine
 
@@ -1056,21 +1064,29 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 
 	// MET
-	pat::METCollection mets;
-	edm::Handle<pat::METCollection> metsHandle;
-	if (isMC)
-		//metsHandle.getByLabel(ev, "slimmedMETs"); // 2016: slimmedMETs are METs corrected by muons
-		iEvent.getByToken(mets1_, metsHandle);
-	else // ReReco 03Feb data
-		//metsHandle.getByLabel(ev, "slimmedMETsMuEGClean");
-		iEvent.getByToken(mets2_, metsHandle);
+	pat::METCollection mets_slimmedMETs, mets_slimmedMETsMuEGClean;
+	edm::Handle<pat::METCollection> metsHandle_slimmedMETs;
+	edm::Handle<pat::METCollection> metsHandle_slimmedMETsMuEGClean;
+	iEvent.getByToken(mets_slimmedMETs_, metsHandle_slimmedMETs);
+	iEvent.getByToken(mets_slimmedMETsMuEGClean_, metsHandle_slimmedMETsMuEGClean);
+
 	// 2016: slimmedMETsMuEGClean are corrected by muons and electrons, only in Data!
 	// https://twiki.cern.ch/twiki/bin/view/CMSPublic/ReMiniAOD03Feb2017Notes
-	if(metsHandle.isValid() ) mets = *metsHandle;
-	pat::MET MET = mets[0];
-	// LorentzVector met = mets[0].p4 ();
+	// slimmedMets should be there for both Data and MC
+	if(metsHandle_slimmedMETs.isValid() )
+		{
+		const pat::MET& MET = metsHandle_slimmedMETs->front();
+		NT_met_slimmedMets = MET.p4();
+		NT_met_init = MET.p4();
+		}
+	// LorentzVector met = mets_slimmedMETs[0].p4 ();
 
-	NT_met_init = MET.p4();
+	// these are valid only for data
+	if(metsHandle_slimmedMETsMuEGClean.isValid() )
+		{
+		const pat::MET& MET2 = metsHandle_slimmedMETsMuEGClean->front();
+		NT_met_slimmedMETsMuEGClean = MET2.p4();
+		}
 
 	// also for control let's get uncorrected met and compare the two:
 	if (!isMC) // sadly this exists only in latest ReReco data made with 8.0.26 CMSSW, not in Summer16 MC
@@ -1120,8 +1136,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	processJets_CorrectJES_SmearJERnJES_ID_ISO(jets, genJets, isMC, weight, NT_fixedGridRhoFastjetAll, nGoodPV, jesCor, totalJESUnc, 0.4/2,
 		jet_resolution_in_pt, jet_resolution_sf_per_eta, jet_m_systematic_variation, jetID, jetPUID, /*with_PU*/ false, r3, full_jet_corr, IDjets, false, false);
 
+	NT_jets_full_correction = full_jet_corr;
 	// ALSO MET
-	LorentzVector MET_corrected = MET.p4() - full_jet_corr;
+	LorentzVector MET_corrected = NT_met_init - full_jet_corr;
 	//float met_corrected = MET_corrected.pt();
 	NT_met_corrected = MET_corrected;
 

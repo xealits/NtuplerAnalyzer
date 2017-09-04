@@ -72,6 +72,7 @@
 	#define OBJECT_in_NTuple(NTuple, CLASS, Name)   CLASS   NT_##Name;
 	#define Float_t_in_NTuple(NTuple, Name)         Float_t NT_##Name;
 	#define Int_t_in_NTuple(NTuple, Name)           Int_t   NT_##Name;
+	#define ULong64_t_in_NTuple(NTuple, Name)       ULong64_t   NT_##Name;
 	#define Bool_t_in_NTuple(NTuple, Name)          Bool_t  NT_##Name;
 #elif defined(NTUPLE_INTERFACE_CLASS_INITIALIZE)
 	// hook up branch
@@ -82,6 +83,7 @@
 	#define OBJECT_in_NTuple(NTuple, CLASS, Name)   NTuple->Branch(#Name, #CLASS, &NT_##Name);
 	#define Float_t_in_NTuple(NTuple, Name)         NTuple->Branch(#Name, &NT_##Name, #Name "/F");
 	#define Int_t_in_NTuple(NTuple, Name)           NTuple->Branch(#Name, &NT_##Name, #Name "/I");
+	#define ULong64_t_in_NTuple(NTuple, Name)       NTuple->Branch(#Name, &NT_##Name, #Name "/l");
 	#define Bool_t_in_NTuple(NTuple, Name)          NTuple->Branch(#Name, &NT_##Name, #Name "/O");
 #elif defined(NTUPLE_INTERFACE_CLASS_RESET)
 	#define VECTOR_PARAMs_in_NTuple(NTuple, TYPE, Name)            NT_##Name.clear();
@@ -93,6 +95,7 @@
 	// and these are defaults:
 	#define Float_t_in_NTuple(NTuple, Name)         NT_##Name = DEFAULT_PARAMETER ;
 	#define Int_t_in_NTuple(NTuple, Name)           NT_##Name = DEFAULT_PARAMETER ;
+	#define ULong64_t_in_NTuple(NTuple, Name)       NT_##Name = DEFAULT_PARAMETER ;
 	#define Bool_t_in_NTuple(NTuple, Name)          NT_##Name = false;
 // ok, the classes should work
 // the following are outdated at the moment:
@@ -102,12 +105,14 @@
 	#define OBJECT_in_NTuple(NTuple, CLASS, Name)   CLASS   NT_##Name; NTuple.Branch(#Name, #CLASS, &NT_##Name);
 	#define Float_t_in_NTuple(NTuple, Name)         Float_t NT_##Name; NTuple.Branch(#Name, &NT_##Name, #Name "/F");
 	#define Int_t_in_NTuple(NTuple, Name)           Int_t   NT_##Name; NTuple.Branch(#Name, &NT_##Name, #Name "/I");
+	#define ULong64_t_in_NTuple(NTuple, Name)       ULong64_t   NT_##Name; NTuple.Branch(#Name, &NT_##Name, #Name "/l");
 	#define Bool_t_in_NTuple(NTuple, Name)          Bool_t  NT_##Name; NTuple.Branch(#Name, &NT_##Name, #Name "/O");
 #elif defined(NTUPLE_INTERFACE_OPEN)
 	#define OBJECT_in_NTuple(NTuple, CLASS, Name)   CLASS*  NT_##Name = 0; NTuple->SetBranchAddress(#Name, &NT_##Name);
 	#define PARAMETER_in_NTuple(NTuple, TYPE, Name)  TYPE   NT_##Name; NTuple->SetBranchAddress(#Name, &NT_##Name);
 	#define Float_t_in_NTuple(NTuple, Name)         PARAMETER_in_NTuple(NTuple, Float_t, Name);
 	#define Int_t_in_NTuple(NTuple, Name)           PARAMETER_in_NTuple(NTuple, Int_t, Name);
+	#define ULong64_t_in_NTuple(NTuple, Name)       PARAMETER_in_NTuple(NTuple, ULong64_t, Name);
 	#define Bool_t_in_NTuple(NTuple, Name)          PARAMETER_in_NTuple(NTuple, Bool_t, Name);
 #else
 	error: set ntuple interface mode
@@ -209,6 +214,10 @@ typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
  */
 
 // COMMON OUTPUT
+ULong64_t_in_NTuple(OUTNTUPLE, indexevents)
+Int_t_in_NTuple(OUTNTUPLE, runNumber)
+Int_t_in_NTuple(OUTNTUPLE, lumi)
+
 Float_t_in_NTuple(OUTNTUPLE, aMCatNLO_weight)
 Float_t_in_NTuple(OUTNTUPLE, gen_t_pt)
 Float_t_in_NTuple(OUTNTUPLE, gen_tb_pt)
@@ -279,6 +288,9 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_z_err)
 OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, met_init)
 OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, met_uncorrected)
 OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, met_corrected)
+OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, met_slimmedMets)
+OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, met_slimmedMETsMuEGClean)
+OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, jets_full_correction)
 
 // LEPTONS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, lep_id)
