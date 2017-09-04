@@ -1126,97 +1126,296 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	if(genJetsHandle.isValid() ) genJets = *genJetsHandle;
 
 	LorentzVector full_jet_corr(0., 0., 0., 0.);
-	pat::JetCollection IDjets;
+	//pat::JetCollection IDjets;
+	//pat::JetCollection selJets;
+	pat::JetCollection selJetsNoLep;
 	//map<systematic_shift, pat::JetCollection> IDjets;
 	// it's filled with jetSystematics by processJets_CorrectJES_SmearJERnJES_ID_ISO_with_systematics
 	//string jetID("Loose");
 	//string jetPUID("MediumPU");
 	Variation jet_m_systematic_variation = Variation::NOMINAL;
 
-	processJets_CorrectJES_SmearJERnJES_ID_ISO(jets, genJets, isMC, weight, NT_fixedGridRhoFastjetAll, nGoodPV, jesCor, totalJESUnc, 0.4/2,
-		jet_resolution_in_pt, jet_resolution_sf_per_eta, jet_m_systematic_variation, jetID, jetPUID, /*with_PU*/ false, r3, full_jet_corr, IDjets, false, false);
+	//processJets_CorrectJES_SmearJERnJES_ID_ISO(jets, genJets, isMC, weight, NT_fixedGridRhoFastjetAll, nGoodPV, jesCor, totalJESUnc, 0.4/2,
+	//	jet_resolution_in_pt, jet_resolution_sf_per_eta, jet_m_systematic_variation, jetID, jetPUID, /*with_PU*/ false, r3, full_jet_corr, IDjets, false, false);
+	// selecting jets in the following loop
+	// similar to https://github.com/LLRCMS/LLRHiggsTauTau/blob/b8bc9146cab462fdaf8e4161761b5e70a08f4a65/NtupleProducer/plugins/HTauTauNtuplizer.cc
 
-	NT_jets_full_correction = full_jet_corr;
+	NT_nbjets = 0;
+	NT_nallbjets = 0;
+	NT_njets = 0;
+	NT_nalljets = 0;
+	string btagger_label("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+	for (unsigned int ijet=0; ijet<jets.size(); ijet++)
+		{
+		pat::Jet& jet = jets[ijet];
+		// the only requirements are pt and no-leptons in dR:
+		if (jet.pt() < jet_kino_cuts_pt) continue;
+		// all eta pass -- forward jets too, usefull for WJets control region
+
+		//crossClean_in_dR(selJets, selLeptons, 0.4, selJetsNoLep, weight, string("selJetsNoLep"), false, false);
+	        bool overlapWithLepton(false);
+		float min_dR = 0.4;
+	        for(unsigned int l=0; l<(unsigned int)selLeptons.size();++l)
+	                {
+	                if (reco::deltaR(jet, selLeptons[l])<min_dR)
+	                        { overlapWithLepton=true; break; }
+	                }
+	        if (overlapWithLepton) continue;
+
+		NT_jet_id.push_back(jet.pdgId());
+		NT_jet_p4.                push_back(jet.p4());
+
+		LorentzVector jet_initial_p4 = jet.p4();
+
+		//NT_jet_rad.push_back(jet_radius(jet));
+		NT_jet_etaetaMoment.push_back(jet.etaetaMoment());
+		NT_jet_phiphiMoment.push_back(jet.phiphiMoment());
+		NT_jet_pu_discr.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
+		//NT_jet_pu_discr_updated.push_back(ijet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant") ? ijet->userFloat("pileupJetIdUpdated:fullDiscriminant") : -999);
+		float b_discriminator = jet.bDiscriminator(btagger_label);
+		NT_jet_b_discr.push_back(b_discriminator);
+		if (b_discriminator > btag_threshold) NT_nallbjets += 1;
+
+		NT_jet_hadronFlavour.push_back(jet.hadronFlavour());
+		NT_jet_partonFlavour.push_back(jet.partonFlavour());
+
+		// PF jet ID
+	        // from the twiki:
+	        // https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2016
+	        float NHF = jet.neutralHadronEnergyFraction();
+	        float NEMF = jet.neutralEmEnergyFraction();
+	        float CHF = jet.chargedHadronEnergyFraction();
+	        float MUF = jet.muonEnergyFraction();
+	        float CEMF = jet.chargedEmEnergyFraction(); // chargedEmEnergyFraction (relative to uncorrected jet energy)
+	        float NumConst = jet.chargedMultiplicity()+jet.neutralMultiplicity();
+	        float NumNeutralParticles =jet.neutralMultiplicity();
+	        float CHM = jet.chargedMultiplicity();
+
+		double abseta = fabs(jet.eta());
+
+		bool looseJetID = false;
+		bool tightJetID = false;
+		bool tightLepVetoJetID = false;
+
+		// and latest (at Moriond17) stuff:
+		// https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2016
+		// quote:
+		// > Note: All fractions are calculated with the raw/uncorrected energy of the jet (only then they add up to unity). So the PF JetID has to be applied before the jet energy corrections.
+		// --- khmm....
+		// in MINIAOD the jets are already corrected  --> one gets the uncorrected jet and reapplies the corrections
+		// > ... collection of AK4 jets slimmedJets, made from ak4PFJetsCHS ... "These have standard jet energy corrections applied (L1FastJet, L2, L3), and a pT cut at 10 GeV"
+		// so now one need to get the uncorrected jet --> 
+		// TODO <-- it doesn't make sense: corrected jet differs only in pt, which doesn't matter in these cuts
+
+		if (abseta <= 2.7)
+			{
+			looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abs(eta)>2.4);
+			tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abs(eta)>2.4);
+			tightLepVetoJetID = ((NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((abseta<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || abseta>2.4) );
+			}
+		else if (abseta <= 3.0)
+			{
+			looseJetID = (NHF<0.98 && NEMF>0.01 && NumNeutralParticles>2);
+			tightJetID = looseJetID;
+			}
+		else
+			{
+			looseJetID = (NEMF<0.90 && NumNeutralParticles>10);
+			tightJetID = looseJetID;
+			}
+
+		int jetid = 0;
+		if (looseJetID)
+			{
+			++jetid;
+			if (fabs(jet.eta()) < jet_kino_cuts_eta)
+				{
+				NT_njets += 1;
+				if (b_discriminator > btag_threshold) NT_nbjets += 1;
+				}
+			// counter of our old jets: cut on pt, on eta (small eta, central jet) and PFID Loose
+			}
+		if (tightJetID) ++jetid;
+		if (tightLepVetoJetID) ++jetid;
+
+		NT_jet_PFID.push_back(jetid);
+
+		// corrections
+		NT_jet_area.push_back (jet.jetArea());
+
+		float jecFactor = jet.jecFactor("Uncorrected") ;
+	 	//float jetRawPt = jecFactor * jet.pt();
+		//float jetRawPt2 = ijet->pt() / jecFactor; // this is wrong
+		NT_jet_uncorrected_jecFactor.push_back (jecFactor);
+		LorentzVector rawJet = jet.correctedP4("Uncorrected");
+		NT_jet_uncorrected_p4.    push_back(rawJet);
+		// TODO: compare the two offline
+
+		// save FactorizedCorrector factor
+		//double toRawSF=jet.correctedJet("Uncorrected").pt()/jet.pt();
+		//LorentzVector rawJet(jet*toRawSF);
+		// FactorizedCorrector with all jet correction files
+		jesCor->setJetEta(rawJet.eta());
+		jesCor->setJetPt(rawJet.pt());
+		jesCor->setJetA(jet.jetArea());
+		jesCor->setRho(NT_fixedGridRhoFastjetAll);
+		//jesCor->setNPV(nGoodPV); // not used in PU Jet ID example, shouldn't matter
+		float jes_correction = jesCor->getCorrection();
+		//jet.setP4(rawJet*jes_correction);
+		//LorentzVector jesCorJet = (rawJet*jes_correction);
+		//jet.addUserFloat("jes_correction", jes_correction);
+		// TODO: compare jet_p4 (default MiniAOD jet) and uncorrected_p4 * jes_correction <- re-corrected jet
+		NT_jet_jes_correction.push_back(jes_correction);
+
+		float dR_max = 0.4/2;
+		double jet_resolution = -1;
+		double jer_sf = -1;
+		double jer_sf_up = -1;
+		double jer_sf_down = -1;
+		// and the final factors from these SFs
+		double jer_factor = -1, jer_factor_up = -1, jer_factor_down = -1;
+		LorentzVector gen_jet_p4(0,0,0,0);
+		// here is the matching of the jet:
+		if(isMC)
+			{
+			// the JER SF and resolution for the jet:
+			//std::vector<double> jer_sf_pair = JER_SF(jet.eta());
+			//double jer_sf = jer_sf_pair[0];
+			//double jer_resolution = jer_sf_pair[1]; // TODO: not sure about this -- is the table the same as what their tool returns?
+			// getting it with the tool from files:
+			jet_resolution = jet_resolution_in_pt,.getResolution({{JME::Binning::JetPt, jet.pt()}, {JME::Binning::JetEta, jet.eta()}, {JME::Binning::Rho, rho}});
+			//jer_sf = resolution_sf.getScaleFactor({{JME::Binning::JetEta, jet.eta()}}, m_systematic_variation);
+			jer_sf      = jet_resolution_sf_per_eta.getScaleFactor({{JME::Binning::JetEta, jet.eta()}}, Variation::NOMINAL);
+			jer_sf_up   = jet_resolution_sf_per_eta.getScaleFactor({{JME::Binning::JetEta, jet.eta()}}, Variation::UP);
+			jer_sf_down = jet_resolution_sf_per_eta.getScaleFactor({{JME::Binning::JetEta, jet.eta()}}, Variation::DOWN);
+
+			// matching to generation jet:
+			//const reco::GenJet* genJet=jet.genJet();
+			// the PAT doc describes it as "return the matched generated jet"
+			// what's the matching procedure?
+			// for now I'll do it manually in dR, as shown in Jet POG example
+			// https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_25/PhysicsTools/PatUtils/interface/SmearedJetProducerT.h
+			const reco::GenJet* matched_genJet = nullptr;
+			//double dR_max = 0.4/2; // 0.4 is the jet cone parameter of AK4 jets, which I use
+			// moved it to parameters of the procedure
+			for (unsigned int i=0; i<genJets.size(); i++)
+				{
+				reco::GenJet& genJet = genJets[i];
+				double dR = reco::deltaR(jet, genJet);
+
+				if (dR > dR_max) continue;
+
+				double dPt = std::abs(genJet.pt() - jet.pt());
+				double dPt_max_factor = 3*jet.pt(); // from twiki
+				if (dPt > dPt_max_factor * jet_resolution) continue;
+
+				matched_genJet = &genJet;
+				}
+
+			// calculate and apply the smearing factor to jet energy
+			// with one of the two algorithms, if jet matched to genJet or not
+			if (matched_genJet)
+				{ // the scaling is ok
+				gen_jet_p4 = matched_genJet->p4();
+
+				double dPt = jet.pt() - matched_genJet->pt();
+				//double genjetpt( genJet ? genJet->pt(): 0.);                    
+				//std::vector<double> smearJER=utils::cmssw::smearJER(jet.pt(),jet.eta(),genjetpt);
+				// using the local smear:
+				//std::vector<double> JER_smearing_factor = smearJER(jet.pt(),jet.eta(),genjetpt);
+				//double jer_smearing = JER_smearing_factor[0];
+				jer_factor = TMath::Max(0., 1. + (jer_sf - 1) * dPt / jet.pt());
+				jer_factor_up   = TMath::Max(0., 1. + (jer_sf_up   - 1) * dPt / jet.pt());
+				jer_factor_down = TMath::Max(0., 1. + (jer_sf_down - 1) * dPt / jet.pt());
+				jet.setP4(jet.p4()*jer_factor); // same as scaleEnergy in the Jet POG example
+				// but they also do MIN_ENERGY thing
+				// which is static constexpr const double MIN_JET_ENERGY = 1e-2;
+				}
+			else
+				{ // the smearing with gaussian randomizer
+
+				// this is the example:
+				//double sigma = jet_resolution * std::sqrt(jer_sf * jer_sf - 1);
+				//double smearFactor = 1 + r3->Gaus(0, sigma);
+				// this is the twiki:
+				double smearFactor      = 1. + r3->Gaus(0, jet_resolution) * std::sqrt(TMath::Max(0., jer_sf*jer_sf - 1.));
+				double smearFactor_up   = 1. + r3->Gaus(0, jet_resolution) * std::sqrt(TMath::Max(0., jer_sf_up*jer_sf_up - 1.));
+				double smearFactor_down = 1. + r3->Gaus(0, jet_resolution) * std::sqrt(TMath::Max(0., jer_sf_down*jer_sf_down - 1.));
+				jer_factor = TMath::Max(0., smearFactor);
+				jer_factor_up   = TMath::Max(0., smearFactor_up);
+				jer_factor_down = TMath::Max(0., smearFactor_down);
+
+				// multiplying a Gaussian should = to multiplying the sigma
+				jet.setP4(jet.p4()*jer_factor);
+				}
+
+			// THUS MC was shifted by SF jer_factor -- it got corrected and the correction has to be propagated to MET
+			full_jet_corr += jet.p4() - jet_initial_p4; // initial jet + this difference = corrected jet
+			}
+
+		NT_jet_resolution.push_back(jet_resolution);
+		NT_jet_sf.       push_back(jet_sf);
+		NT_jet_sf_up.    push_back(jet_sf_up);
+		NT_jet_sf_down.  push_back(jet_sf_down);
+
+		NT_jet_matched_genjet_p4. push_back(gen_jet_p4);
+		NT_jet_jer_factor.      push_back(jer_factor);
+		NT_jet_jer_factor_up.   push_back(jer_factor_up);
+		NT_jet_jer_factor_down. push_back(jer_factor_down);
+
+		// jet energy scale has uncertainty
+		totalJESUnc->setJetEta(jet.eta());
+		totalJESUnc->setJetPt(jet.pt()); // should be the corrected jet pt <- de hell this means? do it after MC SF?
+		float relShift = fabs(totalJESUnc->getUncertainty(true));
+		//jet.addUserFloat("jes_correction_relShift", relShift);
+		// use it with rawJet*jes_correction*(1 +- relShift)
+		// since all these corrections are multiplication of p4
+		// I can do this shift whenever I want
+		// uncertainty shift is saved only for the NOMINAL jet, which is default MiniAOD one now
+		NT_jet_jes_correction_relShift.push_back(relShift);
+
+		/* just a note:
+		 * so, my jets are default MiniAOD jets + MC SF for energy resolution
+		 * the energy resolution UP/DOWN is saved and the energy scale uncertainty
+		 *
+		 * also I save JES factors: for reapplied Factorized Corrector and for uncorrected jet
+		 * in principle I can jet nominal jets with reapplied Factorized Corrector, just without systematic uncertainties
+		 * I save slimmedMETs[0] as main MET and propagate jet MC SF to it as met_corrected
+		 * it corresponds to nominal jets
+		 * there are other control mets
+		 *
+		 * it corresponds to LLRHiggs mets and jets
+		 * and it is simple separation of different corrections and mets
+		 */
+
+		// save this jet -- it's used in tau dR match to jets
+		selJetsNoLep.push_back(jet);
+		/* requirements for there jets: pt and no leptons in dR
+		 * no PFID requirement and no eta
+		 */
+		}
+	NT_nalljets  = selJetsNoLep.size();
+
+	NT_jets_full_correction = full_jet_corr; // initial jets + this correction = corrected jets
 	// ALSO MET
 	LorentzVector MET_corrected = NT_met_init - full_jet_corr;
 	//float met_corrected = MET_corrected.pt();
 	NT_met_corrected = MET_corrected;
+	// TODO: I don't correct NT_met_slimmedMets and the other -- the correction should be applied offline if needed
+	// in principle NT_met_init = NT_met_slimmedMets -- so NT_met_corrected saves the applied correction
 
-	pat::JetCollection selJets;
-	processJets_Kinematics(IDjets, /*bool isMC,*/ weight, jet_kino_cuts_pt, jet_kino_cuts_eta, selJets, false, false);
+	//pat::JetCollection selJets;
+	//processJets_Kinematics(IDjets, /*bool isMC,*/ weight, jet_kino_cuts_pt, jet_kino_cuts_eta, selJets, false, false);
 
-	pat::JetCollection selJetsNoLep;
-	crossClean_in_dR(selJets, selLeptons, 0.4, selJetsNoLep, weight, string("selJetsNoLep"), false, false);
+	//pat::JetCollection selJetsNoLep;
+	//crossClean_in_dR(selJets, selLeptons, 0.4, selJetsNoLep, weight, string("selJetsNoLep"), false, false);
 	// and these are output jets for NTuple
 	// they pass ID, corrected with JEC (smeared JES for MC)
 	// pass kinematic cuts (pt, eta)
 	// and dR-cleaned from selected leptons
 
-	std::sort (selJetsNoLep.begin(),  selJetsNoLep.end(),  utils::sort_CandidatesByPt);
-
-	/* What is saved for b-tagging?
-	 * only N of our jets passing Medium WP
-	 *
-	 * in b-tagging MC is corrected with weight according to efficiency (measured in MC) of tagging and scale-factors (bCallibrator),
-	 * the systematics = up/down shifts in calibrator
-	 * the efficiencies and SF from the callibrator are done per pt-eta and hadronFlavour
-	 * thus all of it can be done offline, on ntuples
-	 *
-	 * here lets just save nbjets (N of our jets passing medium CSV WP)
-	 * for the record decision
-	 */
-	string btagger_label("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-	NT_nbjets = 0;
-	for (unsigned int i = 0; i<selJetsNoLep.size(); i++)
-		{
-		pat::Jet& jet = selJetsNoLep[i];
-		float b_discriminator = jet.bDiscriminator(btagger_label);
-
-		// dR match to ID jet -- it's the jet from MiniAOD, without redone corrections (needed for control of corrections)
-		LorentzVector id_jet_p4(0,0,0,0);
-		for (unsigned int j=0; j<IDjets.size(); j++)
-			{
-			if (reco::deltaR(jet, IDjets[j]) < 0.4)
-				{
-				id_jet_p4 = IDjets[j].p4();
-				break;
-				}
-			}
-		// find dR match to gen_jet
-		LorentzVector gen_jet_p4(0,0,0,0);
-		for (unsigned int j=0; j<genJets.size(); j++)
-			{
-			if (reco::deltaR(jet, genJets[j]) < 0.4)
-				{
-				gen_jet_p4 = genJets[j].p4();
-				break;
-				}
-			}
-
-		NT_jet_id.push_back(jet.pdgId());
-		NT_jet_initial_p4.        push_back(id_jet_p4);
-		NT_jet_p4.                push_back(jet.p4());
-		NT_jet_uncorrected_p4.    push_back(jet.correctedP4("Uncorrected"));
-		NT_jet_matched_genjet_p4. push_back(gen_jet_p4);
-		NT_jet_jes_correction.         push_back(jet.userFloat("jes_correction"));
-		NT_jet_jes_correction_relShift.push_back(jet.userFloat("jes_correction_relShift"));
-		NT_jet_resolution.push_back(jet.userFloat("jet_resolution"));
-		NT_jet_sf.       push_back(jet.userFloat("jer_sf"));
-		NT_jet_sf_up.    push_back(jet.userFloat("jer_sf_up"));
-		NT_jet_sf_down.  push_back(jet.userFloat("jer_sf_down"));
-		NT_jet_jer_factor.      push_back(jet.userFloat("jer_factor"));
-		NT_jet_jer_factor_up.   push_back(jet.userFloat("jer_factor_up"));
-		NT_jet_jer_factor_down. push_back(jet.userFloat("jer_factor_down"));
-		//NT_jet_rad.push_back(jet_radius(jet));
-		NT_jet_etaetaMoment.push_back(jet.etaetaMoment());
-		NT_jet_phiphiMoment.push_back(jet.phiphiMoment());
-		NT_jet_pu_discr.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
-		NT_jet_b_discr.push_back(b_discriminator);
-		NT_jet_hadronFlavour.push_back(jet.hadronFlavour());
-		NT_jet_partonFlavour.push_back(jet.partonFlavour());
-
-		if (b_discriminator > btag_threshold) NT_nbjets += 1;
-		}
+	//std::sort (selJetsNoLep.begin(),  selJetsNoLep.end(),  utils::sort_CandidatesByPt);
+	// no need for sort
 
 
 	/*
@@ -1505,7 +1704,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 
 
-	NT_njets  = selJetsNoLep.size();
 
 	LogInfo ("Demo") << "all particles/objects are selected, nbjets = " << NT_nbjets;
 

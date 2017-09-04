@@ -271,8 +271,10 @@ Bool_t_in_NTuple(OUTNTUPLE, HLT_mu)
 
 Int_t_in_NTuple(OUTNTUPLE, leps_ID)
 Int_t_in_NTuple(OUTNTUPLE, nleps)
-Int_t_in_NTuple(OUTNTUPLE, njets)
-Int_t_in_NTuple(OUTNTUPLE, nbjets)
+Int_t_in_NTuple(OUTNTUPLE, njets)  // small eta and Loose PFID
+Int_t_in_NTuple(OUTNTUPLE, nbjets) // N b-jets among these
+Int_t_in_NTuple(OUTNTUPLE, nalljets)  // all jets, only pt and no leptons in dR
+Int_t_in_NTuple(OUTNTUPLE, nallbjets) // N b-jets among them
 Int_t_in_NTuple(OUTNTUPLE, ntaus)
 
 // Primary Vertices
@@ -307,8 +309,15 @@ VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_p4)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_uncorrected_p4)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_matched_genjet_p4)
+
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_PFID)
+
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_area)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_uncorrected_jecFactor)
+
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_jes_correction)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_jes_correction_relShift)
+
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_resolution)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_sf)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_sf_up)
@@ -316,6 +325,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_sf_down)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_jer_factor)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_jer_factor_up)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_jer_factor_down)
+
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_rad)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_etaetaMoment)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_phiphiMoment)
