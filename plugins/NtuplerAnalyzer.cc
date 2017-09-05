@@ -604,9 +604,17 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						save_final_states(W, NT_gen_t_w_final_p4s, NT_gen_t_w_final_pdgIds, NT_gen_t_w_final_statuses, t_W_parts);
 						save_final_states(b, NT_gen_t_b_final_p4s, NT_gen_t_b_final_pdgIds, NT_gen_t_b_final_statuses, t_b_parts);
 						for (unsigned int i=0; i<NT_gen_t_w_final_p4s.size(); i++)
+							{
+							// skip neutrinos
+							if (abs(NT_gen_t_w_final_pdgIds[i]) == 12 || abs(NT_gen_t_w_final_pdgIds[i]) == 14 || abs(NT_gen_t_w_final_pdgIds[i]) == 16) continue;
 							NT_gen_t_w_final_p4 += NT_gen_t_w_final_p4s[i];
+							}
 						for (unsigned int i=0; i<NT_gen_t_b_final_p4s.size(); i++)
+							{
+							// skip neutrinos
+							if (abs(NT_gen_t_b_final_pdgIds[i]) == 12 || abs(NT_gen_t_b_final_pdgIds[i]) == 14 || abs(NT_gen_t_b_final_pdgIds[i]) == 16) continue;
 							NT_gen_t_b_final_p4 += NT_gen_t_b_final_p4s[i];
+							}
 						}
 					else
 						{
@@ -615,9 +623,17 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						save_final_states(W, NT_gen_tb_w_final_p4s, NT_gen_tb_w_final_pdgIds, NT_gen_tb_w_final_statuses, tb_W_parts);
 						save_final_states(b, NT_gen_tb_b_final_p4s, NT_gen_tb_b_final_pdgIds, NT_gen_tb_b_final_statuses, tb_b_parts);
 						for (unsigned int i=0; i<NT_gen_tb_w_final_p4s.size(); i++)
+							{
+							// skip neutrinos
+							if (abs(NT_gen_tb_w_final_pdgIds[i]) == 12 || abs(NT_gen_tb_w_final_pdgIds[i]) == 14 || abs(NT_gen_tb_w_final_pdgIds[i]) == 16) continue;
 							NT_gen_tb_w_final_p4 += NT_gen_tb_w_final_p4s[i];
+							}
 						for (unsigned int i=0; i<NT_gen_tb_b_final_p4s.size(); i++)
+							{
+							// skip neutrinos
+							if (abs(NT_gen_tb_b_final_pdgIds[i]) == 12 || abs(NT_gen_tb_b_final_pdgIds[i]) == 14 || abs(NT_gen_tb_b_final_pdgIds[i]) == 16) continue;
 							NT_gen_tb_b_final_p4 += NT_gen_tb_b_final_p4s[i];
+							}
 						}
 					}
 
