@@ -1209,8 +1209,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		if (abseta <= 2.7)
 			{
-			looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abs(eta)>2.4);
-			tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abs(eta)>2.4);
+			looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1) && ((abseta<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abseta>2.4);
+			tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1) && ((abseta<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abseta>2.4);
 			tightLepVetoJetID = ((NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((abseta<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || abseta>2.4) );
 			}
 		else if (abseta <= 3.0)
@@ -1228,7 +1228,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		if (looseJetID)
 			{
 			++jetid;
-			if (fabs(jet.eta()) < jet_kino_cuts_eta)
+			if (abseta < jet_kino_cuts_eta)
 				{
 				NT_njets += 1;
 				if (b_discriminator > btag_threshold) NT_nbjets += 1;
@@ -1283,7 +1283,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			//double jer_sf = jer_sf_pair[0];
 			//double jer_resolution = jer_sf_pair[1]; // TODO: not sure about this -- is the table the same as what their tool returns?
 			// getting it with the tool from files:
-			jet_resolution = jet_resolution_in_pt,.getResolution({{JME::Binning::JetPt, jet.pt()}, {JME::Binning::JetEta, jet.eta()}, {JME::Binning::Rho, rho}});
+			jet_resolution = jet_resolution_in_pt.getResolution({{JME::Binning::JetPt, jet.pt()},
+				{JME::Binning::JetEta, jet.eta()},
+				{JME::Binning::Rho, NT_fixedGridRhoFastjetAll}});
 			//jer_sf = resolution_sf.getScaleFactor({{JME::Binning::JetEta, jet.eta()}}, m_systematic_variation);
 			jer_sf      = jet_resolution_sf_per_eta.getScaleFactor({{JME::Binning::JetEta, jet.eta()}}, Variation::NOMINAL);
 			jer_sf_up   = jet_resolution_sf_per_eta.getScaleFactor({{JME::Binning::JetEta, jet.eta()}}, Variation::UP);
@@ -1354,14 +1356,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 
 		NT_jet_resolution.push_back(jet_resolution);
-		NT_jet_sf.       push_back(jet_sf);
-		NT_jet_sf_up.    push_back(jet_sf_up);
-		NT_jet_sf_down.  push_back(jet_sf_down);
+		NT_jet_sf.        push_back(jer_sf);
+		NT_jet_sf_up.     push_back(jer_sf_up);
+		NT_jet_sf_down.   push_back(jer_sf_down);
 
-		NT_jet_matched_genjet_p4. push_back(gen_jet_p4);
-		NT_jet_jer_factor.      push_back(jer_factor);
-		NT_jet_jer_factor_up.   push_back(jer_factor_up);
-		NT_jet_jer_factor_down. push_back(jer_factor_down);
+		NT_jet_matched_genjet_p4.push_back(gen_jet_p4);
+		NT_jet_jer_factor.       push_back(jer_factor);
+		NT_jet_jer_factor_up.    push_back(jer_factor_up);
+		NT_jet_jer_factor_down.  push_back(jer_factor_down);
 
 		// jet energy scale has uncertainty
 		totalJESUnc->setJetEta(jet.eta());
