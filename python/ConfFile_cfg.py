@@ -7,8 +7,10 @@ ivars = VarParsing.VarParsing('analysis')
 ivars.inputFiles, isMC = (
  # Data, file on netwokr -- let's see how cmsRun gets it
  #'root://cms-xrd-global.cern.ch///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/001E3E7D-57EB-E611-8469-0CC47A7C35D2.root'
+ #31 Aug present on CERN
+ 'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00B474D3-ADEA-E611-9E30-D067E5F910F5.root'
  # TT for tau-rich events
- 'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'
+ #'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'
 # single top
  #'file:ST_tW_top_0C2044DB-0EC2-E611-8567-0CC47A7FC378.root'
  # DY file
@@ -84,9 +86,9 @@ process.MessageLogger.cerr.INFO = cms.untracked.PSet(
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000000) )
 
 
 
@@ -142,13 +144,13 @@ process.load("RecoMET.METFilters.metFilters_cff") # back to this
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
 process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
 process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-#process.BadPFMuonFilter.taggingMode = cms.bool(True)
+process.BadPFMuonFilter.taggingMode = cms.bool(True)
 #process.BadPFMuonFilter.filter = cms.bool(True)
 
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-#process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
+process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 #process.BadChargedCandidateFilter.filter = cms.bool(True)
 
 

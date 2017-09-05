@@ -1265,7 +1265,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//LorentzVector jesCorJet = (rawJet*jes_correction);
 		//jet.addUserFloat("jes_correction", jes_correction);
 		// TODO: compare jet_p4 (default MiniAOD jet) and uncorrected_p4 * jes_correction <- re-corrected jet
-		NT_jet_jes_correction.push_back(jes_correction);
+		NT_jet_jes_recorrection.push_back(jes_correction);
 
 		float dR_max = 0.4/2;
 		double jet_resolution = -1;
@@ -1356,9 +1356,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 
 		NT_jet_resolution.push_back(jet_resolution);
-		NT_jet_sf.        push_back(jer_sf);
-		NT_jet_sf_up.     push_back(jer_sf_up);
-		NT_jet_sf_down.   push_back(jer_sf_down);
+		NT_jet_jer_sf.        push_back(jer_sf);
+		NT_jet_jer_sf_up.     push_back(jer_sf_up);
+		NT_jet_jer_sf_down.   push_back(jer_sf_down);
 
 		NT_jet_matched_genjet_p4.push_back(gen_jet_p4);
 		NT_jet_jer_factor.       push_back(jer_factor);
@@ -1374,7 +1374,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// since all these corrections are multiplication of p4
 		// I can do this shift whenever I want
 		// uncertainty shift is saved only for the NOMINAL jet, which is default MiniAOD one now
-		NT_jet_jes_correction_relShift.push_back(relShift);
+		NT_jet_jes_uncertainty.push_back(relShift);
 
 		/* just a note:
 		 * so, my jets are default MiniAOD jets + MC SF for energy resolution
