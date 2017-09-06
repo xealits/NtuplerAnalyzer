@@ -95,6 +95,12 @@ process.ntupler.isMC = cms.bool(isMC)
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.dtag = cms.string(dtag)
 
+process.ntupler.isLocal = cms.bool(True) # LSF submition is local
+# for LumiDump:
+process.ntupler.input = cms.untracked.vstring({input})
+process.ntupler.outfile = '{outfile}'
+
+
 theLumiMask = path.expandvars("{lumiMask}")
 process.ntupler.lumisToProcess = LumiList.LumiList(filename = theLumiMask).getVLuminosityBlockRange()
 

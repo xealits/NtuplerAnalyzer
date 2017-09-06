@@ -24,7 +24,7 @@ ivars.inputFiles=(
 'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/081F8997-ADEA-E611-AE36-002481CFE1EC.root'
 )
 
-ivars.outputFile = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_25/src/UserCode/NtuplerAnalyzer/Data13TeV_SingleMuon2016H_03Feb2017_ver2_0.root'
+ivars.outputFile = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_25/src/UserCode/ttbar-leptons-80X/outdir/v12.5_dilep//Data13TeV_SingleMuon2016H_03Feb2017_ver2_0.root'
 # get and parse the command line arguments
 ivars.parseArguments()
 
@@ -80,7 +80,7 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(ivars.inputFiles))
 
@@ -105,16 +105,31 @@ process.ntupler.isMC = cms.bool(isMC)
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.dtag = cms.string(dtag)
 
+process.ntupler.isLocal = cms.bool(True) # LSF submition is local
+# for LumiDump:
+process.ntupler.input = cms.untracked.vstring('root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00633FF0-85EA-E611-811C-001E674FB25C.root',
+'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/006517CB-8AEA-E611-8CF6-0CC47AC08BD4.root',
+'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/008BE852-89EA-E611-A265-001E67396AEA.root',
+'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/009A586B-A6EA-E611-B612-001E674FD1DD.root',
+'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00B474D3-ADEA-E611-9E30-D067E5F910F5.root',
+'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00BC6AB7-94EA-E611-BC4E-0CC47AD9908C.root',
+'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/0226548B-7AEA-E611-B312-001E674FBC11.root',
+'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/06161A14-88EA-E611-8994-001E674FBC11.root',
+'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/069ADB63-89EA-E611-8781-001E674FB153.root',
+'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/081F8997-ADEA-E611-AE36-002481CFE1EC.root')
+process.ntupler.outfile = cms.string('/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_25/src/UserCode/NtuplerAnalyzer/Data13TeV_SingleMuon2016H_03Feb2017_ver2_0.root')
+
+
 theLumiMask = path.expandvars("/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_25/src/UserCode/ttbar-leptons-80X/analysis/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt")
 process.ntupler.lumisToProcess = LumiList.LumiList(filename = theLumiMask).getVLuminosityBlockRange()
 
 record_scheme = 'Dilep'
 if record_scheme:
-    record_tauID         = cms.bool('tauID'         in record_scheme)
-    record_bPreselection = cms.bool('bPreselection' in record_scheme)
-    record_MonitorHLT    = cms.bool('MonitorHLT'    in record_scheme)
-    record_ElMu          = cms.bool('ElMu'          in record_scheme)
-    record_Dilep         = cms.bool('Dilep'         in record_scheme)
+    process.ntupler.record_tauID         = cms.bool('tauID'         in record_scheme)
+    process.ntupler.record_bPreselection = cms.bool('bPreselection' in record_scheme)
+    process.ntupler.record_MonitorHLT    = cms.bool('MonitorHLT'    in record_scheme)
+    process.ntupler.record_ElMu          = cms.bool('ElMu'          in record_scheme)
+    process.ntupler.record_Dilep         = cms.bool('Dilep'         in record_scheme)
 
 
 

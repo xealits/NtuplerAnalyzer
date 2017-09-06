@@ -176,6 +176,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
 	TString dtag;
 	bool isMC, aMCatNLO;
+	bool isLocal;
 	string  muHLT_MC1  , muHLT_MC2  ,
 		muHLT_Data1, muHLT_Data2,
 		elHLT_Data , elHLT_MC,
@@ -202,7 +203,9 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	edm::EDGetTokenT<bool> BadChCandFilterToken_;
 	edm::EDGetTokenT<bool> BadPFMuonFilterToken_;
 
-	//lumiUtils::GoodLumiFilter goodLumiFilter;
+	lumiUtils::GoodLumiFilter goodLumiFilter;
+	std::vector < std::string > urls; // = runProcess.getUntrackedParameter < std::vector < std::string > >("input");
+	TString outUrl;
 
 	// random numbers for corrections & uncertainties
 	TRandom3 *r3;
@@ -243,6 +246,7 @@ record_ElMu          (iConfig.getParameter<bool>("record_ElMu"))          ,
 record_Dilep         (iConfig.getParameter<bool>("record_Dilep"))         ,
 dtag       (iConfig.getParameter<std::string>("dtag")),
 isMC       (iConfig.getParameter<bool>("isMC")),
+isLocal    (iConfig.getParameter<bool>("isLocal")),
 muHLT_MC1  (iConfig.getParameter<std::string>("muHLT_MC1")),
 muHLT_MC2  (iConfig.getParameter<std::string>("muHLT_MC2")),
 muHLT_Data1(iConfig.getParameter<std::string>("muHLT_Data1")),
@@ -265,8 +269,10 @@ tau_kino_cuts_pt    (iConfig.getParameter<double>("tau_kino_cuts_pt")),
 tau_kino_cuts_eta   (iConfig.getParameter<double>("tau_kino_cuts_eta")),
 jet_kino_cuts_pt    (iConfig.getParameter<double>("jet_kino_cuts_pt")),
 jet_kino_cuts_eta   (iConfig.getParameter<double>("jet_kino_cuts_eta")),
-btag_threshold   (iConfig.getParameter<double>("btag_threshold"))
-//goodLumiFilter(iConfig.getUntrackedParameter<std::vector<edm::LuminosityBlockRange>>("lumisToProcess", std::vector<edm::LuminosityBlockRange>()))
+btag_threshold   (iConfig.getParameter<double>("btag_threshold")),
+goodLumiFilter   (iConfig.getUntrackedParameter<std::vector<edm::LuminosityBlockRange>>("lumisToProcess", std::vector<edm::LuminosityBlockRange>())),
+urls   (iConfig.getUntrackedParameter <std::vector <std::string> >("input")),
+outUrl (iConfig.getParameter<std::string>("outfile"))
 
 {
 	r3 = new TRandom3();
@@ -469,7 +475,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NT_PV_cov = pvCov;
 
 
-	event_counter->Fill(1);
+	unsigned int event_checkpoint = 0;
+	event_counter->Fill(event_checkpoint++);
 	double weight = 1;
 
 	NT_indexevents = iEvent.id().event();
@@ -719,7 +726,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		weight = pu_vector_NOMINAL[NT_nvtx_gen] * (aMCatNLO? weight_Gen : 1) * weight_TopPT;
 		}
-	weight_counter->Fill(1, weight);
+	weight_counter->Fill(event_checkpoint, weight);
 
 	//Handle<reco::TrackCollection> tracks;
 	//iEvent.getByToken( tracks_, tracks );
@@ -870,8 +877,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	// PASS LUMI
 	// done with some trick in crab/cmsRun python config
-	//if (!isMC)
-		//if(!goodLumiFilter.isGoodLumi(iEvent.eventAuxiliary().run(), iEvent.eventAuxiliary().luminosityBlock())) return; 
+	if (!isMC && isLocal)
+		{
+		if (!goodLumiFilter.isGoodLumi(iEvent.eventAuxiliary().run(), iEvent.eventAuxiliary().luminosityBlock())) return; 
+		}
+	event_counter->Fill(event_checkpoint++);
+	weight_counter->Fill(event_checkpoint, weight);
 
 
 	edm::Handle<double> rhoHandle;
@@ -929,8 +940,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 
 	if (!(eTrigger || muTrigger || lepMonitorTrigger)) return; // orthogonalization is done afterwards
-	event_counter->Fill(2);
-	weight_counter->Fill(2, weight);
+	event_counter ->Fill(event_checkpoint++);
+	weight_counter->Fill(event_checkpoint, weight);
 
 	LogInfo ("Demo") << "passed HLT " << eTrigger << ' ' << muTrigger << '(' << muTrigger1 << ',' << muTrigger2 << ')' << ';' << matched_elTriggerName << ' ' << matched_muTriggerName1 << ',' << matched_muTriggerName2;
 
@@ -1063,8 +1074,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0;
 	//if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return; // exit now to reduce computation -- nope, there are other records too
-	event_counter->Fill(3);
-	weight_counter->Fill(3, weight);
+	event_counter ->Fill(event_checkpoint++);
+	weight_counter->Fill(event_checkpoint, weight);
 
 	LogInfo ("Demo") << "passed lepton conditions ";
 
@@ -1770,8 +1781,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	if (record_ntuple)
 		{
 		LogInfo ("Demo") << "recording " << record_tauID << record_bPreselection << record_MonitorHLT << record_ElMu << record_Dilep;
-		event_counter->Fill(4);
-		weight_counter->Fill(4, weight);
+		event_counter ->Fill(event_checkpoint++);
+		weight_counter->Fill(event_checkpoint, weight);
 
 		NT_output_ttree->Fill();
 		// EDM output
@@ -1805,12 +1816,10 @@ NtuplerAnalyzer::beginJob()
 void 
 NtuplerAnalyzer::endJob() 
 {
-/*
 if(!isMC){
 	goodLumiFilter.FindLumiInFiles(urls); // urls! why are they here at all? no even 1 comment in that "Utilities!"
 	goodLumiFilter.DumpToJson(((outUrl.ReplaceAll(".root",""))+".json").Data());
 	}
-*/
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------

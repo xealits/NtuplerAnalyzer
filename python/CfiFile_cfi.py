@@ -12,6 +12,7 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer',
     record_Dilep         = cms.bool(False) ,
 
     isMC = cms.bool(False),
+    isLocal = cms.bool(False),
     muHLT_MC1   = cms.string("HLT_IsoMu24_v4"  ),
     muHLT_MC2   = cms.string("HLT_IsoTkMu24_v4"),
     muHLT_Data1 = cms.string("HLT_IsoMu24_v*"  ), # the HLT pattern match

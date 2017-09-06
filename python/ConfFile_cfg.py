@@ -4,11 +4,12 @@ import FWCore.ParameterSet.VarParsing as VarParsing
 # this ivars thing, whatever this is, will hold the names to the input/output files
 ivars = VarParsing.VarParsing('analysis')
 
-ivars.inputFiles, isMC = (
+
+input_files, isMC = ('root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00B474D3-ADEA-E611-9E30-D067E5F910F5.root',), True
  # Data, file on netwokr -- let's see how cmsRun gets it
  #'root://cms-xrd-global.cern.ch///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/001E3E7D-57EB-E611-8469-0CC47A7C35D2.root'
  #31 Aug present on CERN
- 'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00B474D3-ADEA-E611-9E30-D067E5F910F5.root'
+ #'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00B474D3-ADEA-E611-9E30-D067E5F910F5.root'
  # TT for tau-rich events
  #'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'
 # single top
@@ -31,8 +32,9 @@ ivars.inputFiles, isMC = (
 # this one complains about absence of some wrapper of CTPPS Dimond Digi stuff...................
 #'root://eoscms//eos/cms///store/data/Run2016G/SingleMuon/MINIAOD/03Feb2017-v1/100000/02382B19-D1EA-E611-B2F9-0CC47ABAC11C.root'
 #'root://xrootd.unl.edu//store/data/Run2015D/Charmonium/AOD/PromptReco-v4/000/258/159/00000/02D2473D-E06B-E511-80DA-02163E01418B.root'
-), True
+#), True
 
+ivars.inputFiles = input_files
 
 ivars.outputFile='NtuplerAnalyzer_test.root'
 # get and parse the command line arguments
@@ -108,6 +110,7 @@ process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.dtag = cms.string('Data13TeV_SingleMuon2016B_03Feb2017_ver2')
 process.ntupler.isMC = cms.bool(True)
+process.ntupler.isLocal = cms.bool(True)
 
 record_scheme = 'ElMu'
 if record_scheme:
