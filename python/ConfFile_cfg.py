@@ -5,7 +5,7 @@ import FWCore.ParameterSet.VarParsing as VarParsing
 ivars = VarParsing.VarParsing('analysis')
 
 
-input_files, isMC = ('root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00B474D3-ADEA-E611-9E30-D067E5F910F5.root',), True
+input_files, isMC = ('root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00B474D3-ADEA-E611-9E30-D067E5F910F5.root',), False
  # Data, file on netwokr -- let's see how cmsRun gets it
  #'root://cms-xrd-global.cern.ch///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/001E3E7D-57EB-E611-8469-0CC47A7C35D2.root'
  #31 Aug present on CERN
@@ -36,7 +36,8 @@ input_files, isMC = ('root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MI
 
 ivars.inputFiles = input_files
 
-ivars.outputFile='NtuplerAnalyzer_test.root'
+output_file = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_25/src/UserCode/NtuplerAnalyzer/NtuplerAnalyzer_test.root'
+ivars.outputFile = output_file
 # get and parse the command line arguments
 ivars.parseArguments()
 
@@ -90,7 +91,7 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 
 
@@ -109,8 +110,12 @@ process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.dtag = cms.string('Data13TeV_SingleMuon2016B_03Feb2017_ver2')
-process.ntupler.isMC = cms.bool(True)
+process.ntupler.isMC = cms.bool(isMC)
 process.ntupler.isLocal = cms.bool(True)
+
+# for LumiDump:
+process.ntupler.input = cms.untracked.vstring(input_files)
+process.ntupler.outfile = cms.string(output_file)
 
 record_scheme = 'ElMu'
 if record_scheme:

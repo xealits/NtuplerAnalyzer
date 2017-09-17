@@ -1160,7 +1160,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// it's filled with jetSystematics by processJets_CorrectJES_SmearJERnJES_ID_ISO_with_systematics
 	//string jetID("Loose");
 	//string jetPUID("MediumPU");
-	Variation jet_m_systematic_variation = Variation::NOMINAL;
+	//Variation jet_m_systematic_variation = Variation::NOMINAL;
 
 	//processJets_CorrectJES_SmearJERnJES_ID_ISO(jets, genJets, isMC, weight, NT_fixedGridRhoFastjetAll, nGoodPV, jesCor, totalJESUnc, 0.4/2,
 	//	jet_resolution_in_pt, jet_resolution_sf_per_eta, jet_m_systematic_variation, jetID, jetPUID, /*with_PU*/ false, r3, full_jet_corr, IDjets, false, false);
@@ -1684,16 +1684,16 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			for (reco::CandidatePtrVector::const_iterator itr = sigCands.begin(); itr != sigCands.end(); ++itr, i++)
 				{
 				// save as Same Sign track
-				if (itr->charge() * tau.pdgId > 0)
+				if ((*itr)->charge() * tau.pdgId() > 0)
 					{
-					NT_tau_SV_fit_track_SS_p4.push_back(itr->p4());
+					NT_tau_SV_fit_track_SS_p4.push_back((*itr)->p4());
 					}
 				else if (i == 0) // first OS track
 					{
-					NT_tau_SV_fit_track_OS1_p4.push_back(itr->p4());
+					NT_tau_SV_fit_track_OS1_p4.push_back((*itr)->p4());
 					}
 				else // second OS track
-					NT_tau_SV_fit_track_OS2_p4.push_back(itr->p4());
+					NT_tau_SV_fit_track_OS2_p4.push_back((*itr)->p4());
 				}
 			}
 		else
