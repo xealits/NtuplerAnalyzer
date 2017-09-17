@@ -350,12 +350,21 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  tau_hasSecondaryVertex)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_flightLength)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_flightLengthSignificance)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_dR_matched_jet) // number of the jet in jet vectors, if no match = -1
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, tau_SV_fit_isOk)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, tau_SV_fit_isOk)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_refited_index) // number in the vectors of refited tau
+
+// TAUS refit OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_matchingQuality)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_x)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_y)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_z)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<math::Error<3>::type>, tau_SV_cov)
+// info on tracks of the tau
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_ntracks) // for control
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_SS_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_OS1_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_OS2_p4)
+
 
 // PV REFITTED
 Bool_t_in_NTuple(OUTNTUPLE, PV_fit_isOk)

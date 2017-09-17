@@ -1649,9 +1649,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 
 		// save the vertex
-		NT_tau_SV_fit_isOk.push_back(fitOk_SV);
+		//NT_tau_SV_fit_isOk.push_back(fitOk_SV);
 		if(fitOk_SV)
 			{
+			// store the index of refited taus to the all taus vectors
+			NT_tau_refited_index.push_back(NT_tau_SV_fit_matchingQuality.size()); // the last number in current vectors of refited taus
+
+			// now add the new tau to refitted taus
 			// set the tracks corresponding to tau to be removed for PV refit
 			// tracksToBeRemoved_PV
 			for (unsigned int i=0; i<tracksToBeRemoved.size(); i++)
@@ -1668,18 +1672,34 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			math::Error<3>::type svCov;
 			secondaryVertex.fill(svCov);
 			NT_tau_SV_cov.push_back(svCov);
+
+			// and save the tracks (for kinematic fits on them)
+			//transTracks_tau // <- not sure about using these for momentum TODO: check
+			// using Signal Candidates of tau
+			reco::CandidatePtrVector sigCands = tau.signalChargedHadrCands();
+			// for control number of signal candidates (should only be = 3, the 3pi decay):
+			NT_tau_SV_fit_ntracks.push_back(sigCands.size());
+
+			int i = 0;
+			for (reco::CandidatePtrVector::const_iterator itr = sigCands.begin(); itr != sigCands.end(); ++itr, i++)
+				{
+				// save as Same Sign track
+				if (itr->charge() * tau.pdgId > 0)
+					{
+					NT_tau_SV_fit_track_SS_p4.push_back(itr->p4());
+					}
+				else if (i == 0) // first OS track
+					{
+					NT_tau_SV_fit_track_OS1_p4.push_back(itr->p4());
+					}
+				else // second OS track
+					NT_tau_SV_fit_track_OS2_p4.push_back(itr->p4());
+				}
 			}
 		else
 			{
-			NT_tau_SV_fit_matchingQuality.push_back(999.);
-			NT_tau_SV_fit_x.push_back(999.);
-			NT_tau_SV_fit_y.push_back(999.);
-			NT_tau_SV_fit_z.push_back(999.);
-			math::Error<3>::type svCov;
-			svCov(0,0) = 999;
-			svCov(1,1) = 999;
-			svCov(2,2) = 999;
-			NT_tau_SV_cov.push_back(svCov);
+			// store default index of refited taus to the all taus vectors
+			NT_tau_refited_index.push_back(-1);
 			}
 		}
 
