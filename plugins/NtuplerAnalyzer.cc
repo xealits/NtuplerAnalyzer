@@ -1472,7 +1472,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// and these are the NT output taus
 	std::sort (selTausNoLep.begin(),  selTausNoLep.end(),  utils::sort_CandidatesByPt);
 
-	// PREPARE REFITTING TAU SV AND PV
+	// PREPARE TRACKS AND STUFF for REFITTING TAU SV AND PV
 
 	// BEAMSPOT
 	//
@@ -1486,7 +1486,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	edm::Handle<edm::View<pat::PackedCandidate>> tracksHandle;
 	iEvent.getByToken(tracks_, tracksHandle);
 	//if (tracksHandle.isValid()) tracks = *tracksHandle;
-	const edm::View<pat::PackedCandidate>* cands = tracksHandle.product();
+	const edm::View<pat::PackedCandidate>* track_cands = tracksHandle.product();
 
 	// some more feature for tracks
 	// the python conf load some module TransientTrackBuilder from cmssw package TrackingTools.TransientTrack
@@ -1496,20 +1496,29 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	// select tracks associated with PV
 	reco::TrackCollection pvTracks;
+	reco::TrackCollection allTracks; // for taus (with possible SV) (testing now)
+
 	//TLorentzVector aTrack;
-	for(size_t i=0; i<cands->size(); ++i)
+	for(size_t i=0; i<track_cands->size(); ++i)
 		{
-		if((*cands)[i].charge()==0 || (*cands)[i].vertexRef().isNull()) continue;
-		if(!(*cands)[i].bestTrack()) continue;
-		
-		unsigned int key = (*cands)[i].vertexRef().key();
-		int quality = (*cands)[i].pvAssociationQuality();
-		
-		if(key!=0 ||
+		if((*track_cands)[i].charge()==0 || (*track_cands)[i].vertexRef().isNull()) continue;
+		if(!(*track_cands)[i].bestTrack()) continue;
+
+		unsigned int key = (*track_cands)[i].vertexRef().key();
+		int quality = (*track_cands)[i].pvAssociationQuality();
+
+		// here I need to select "good" tracks
+		// save them to all tracks
+		// and if they belong to PV save them to pv tracks
+		if (!(key!=0 ||
 			(quality!=pat::PackedCandidate::UsedInFitTight
-			 && quality!=pat::PackedCandidate::UsedInFitLoose)) continue;
-		
-		pvTracks.push_back(*((*cands)[i].bestTrack()));
+			 && quality!=pat::PackedCandidate::UsedInFitLoose)))// continue;
+			{
+			pvTracks.push_back(*((*track_cands)[i].bestTrack()));
+			}
+
+		// TODO: add requirement of "goodness"?
+		allTracks.push_back(*((*track_cands)[i].bestTrack()));
 		}
 
 	//NT_ntaus = 0;
@@ -1599,9 +1608,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			 * 4) save with "quality score" = sum of dR of the matching
 			 */
 
-			// tau tracks
+			// PAT tau tracks
 			reco::CandidatePtrVector sigCands = tau.signalChargedHadrCands();//signalCands();
-			// match pvTracks to tau tracks
+
+			// rebuild tau tracks (supposed o be more precise)
+			// match allTracks (not pvTracks) to tau tracks
 			std::vector<reco::TransientTrack> transTracks_tau;  
 
 			for (reco::CandidatePtrVector::const_iterator itr = sigCands.begin(); itr != sigCands.end(); ++itr)
@@ -1610,7 +1621,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				double checkqual(0);
 				reco::Track closestTrack;
 
-				for(auto iter: pvTracks)
+				//for(auto iter: pvTracks)
+				for(auto iter: allTracks)
 					{
 					if(std::find(tracksToBeRemoved.begin(), tracksToBeRemoved.end(), iter.pt())!=tracksToBeRemoved.end())
 						continue;
@@ -1629,7 +1641,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				}
 
 			// do the tau SV refit
-			if(transTracks_tau.size() >= 2 )
+			if (transTracks_tau.size() >= 2 )
 				{
 				AdaptiveVertexFitter avf;
 				avf.setWeightThreshold(0.001); 
@@ -1704,9 +1716,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 
 	// if some tracks were removed (SV was refitted for a tau)
-	// refut PV
+	// refit PV
 	// build transient tracks of the rest of the tracks
-	// fo PV refitting
+	// for PV refitting
 	if (tracksToBeRemoved_PV.size()>0)
 		{
 		TransientVertex transVtx_PV;
