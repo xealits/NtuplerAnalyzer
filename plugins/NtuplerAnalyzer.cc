@@ -463,9 +463,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	NT_jets_full_correction.SetXYZT(0,0,0,0);
 
-	NT_gen_t_w_final_p4.SetXYZT(0,0,0,0);
+	NT_gen_t_w1_final_p4.SetXYZT(0,0,0,0);
+	NT_gen_t_w2_final_p4.SetXYZT(0,0,0,0);
 	NT_gen_t_b_final_p4.SetXYZT(0,0,0,0);
-	NT_gen_tb_w_final_p4.SetXYZT(0,0,0,0);
+	NT_gen_tb_w1_final_p4.SetXYZT(0,0,0,0);
+	NT_gen_tb_w2_final_p4.SetXYZT(0,0,0,0);
 	NT_gen_tb_b_final_p4.SetXYZT(0,0,0,0);
 
 	math::Error<3>::type pvCov;
@@ -564,7 +566,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// mu, vmu   13, 14
 			// tau, vtau 15, 16
 
-        		vector<const reco::Candidate*> t_b_parts, tb_b_parts, t_W_parts, tb_W_parts;
+        		vector<const reco::Candidate*> t_b_parts, tb_b_parts, t_W1_parts, tb_W1_parts, t_W2_parts, tb_W2_parts;
 			LogInfo ("Demo") << "Processing MC, gen particles, t decays and taus";
 			NT_gen_pythia8_prompt_leptons_N = 0;
 			NT_gen_N_wdecays = 0;
@@ -608,13 +610,20 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						{
 						NT_gen_t_pt  = p.pt();
 						NT_gen_t_w_decay_id = decay_id;
-						save_final_states(W, NT_gen_t_w_final_p4s, NT_gen_t_w_final_pdgIds, NT_gen_t_w_final_statuses, t_W_parts);
+						save_final_states(W_final->daughter(0), NT_gen_t_w1_final_p4s, NT_gen_t_w1_final_pdgIds, NT_gen_t_w1_final_statuses, t_W1_parts);
+						save_final_states(W_final->daughter(1), NT_gen_t_w2_final_p4s, NT_gen_t_w2_final_pdgIds, NT_gen_t_w2_final_statuses, t_W2_parts);
 						save_final_states(b, NT_gen_t_b_final_p4s, NT_gen_t_b_final_pdgIds, NT_gen_t_b_final_statuses, t_b_parts);
-						for (unsigned int i=0; i<NT_gen_t_w_final_p4s.size(); i++)
+						for (unsigned int i=0; i<NT_gen_t_w1_final_p4s.size(); i++)
 							{
 							// skip neutrinos
-							if (abs(NT_gen_t_w_final_pdgIds[i]) == 12 || abs(NT_gen_t_w_final_pdgIds[i]) == 14 || abs(NT_gen_t_w_final_pdgIds[i]) == 16) continue;
-							NT_gen_t_w_final_p4 += NT_gen_t_w_final_p4s[i];
+							if (abs(NT_gen_t_w1_final_pdgIds[i]) == 12 || abs(NT_gen_t_w1_final_pdgIds[i]) == 14 || abs(NT_gen_t_w1_final_pdgIds[i]) == 16) continue;
+							NT_gen_t_w1_final_p4 += NT_gen_t_w1_final_p4s[i];
+							}
+						for (unsigned int i=0; i<NT_gen_t_w2_final_p4s.size(); i++)
+							{
+							// skip neutrinos
+							if (abs(NT_gen_t_w2_final_pdgIds[i]) == 12 || abs(NT_gen_t_w2_final_pdgIds[i]) == 14 || abs(NT_gen_t_w2_final_pdgIds[i]) == 16) continue;
+							NT_gen_t_w2_final_p4 += NT_gen_t_w2_final_p4s[i];
 							}
 						for (unsigned int i=0; i<NT_gen_t_b_final_p4s.size(); i++)
 							{
@@ -623,17 +632,25 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							NT_gen_t_b_final_p4 += NT_gen_t_b_final_p4s[i];
 							}
 						}
+
 					else
 						{
 						NT_gen_tb_pt = p.pt();
 						NT_gen_tb_w_decay_id = decay_id;
-						save_final_states(W, NT_gen_tb_w_final_p4s, NT_gen_tb_w_final_pdgIds, NT_gen_tb_w_final_statuses, tb_W_parts);
+						save_final_states(W_final->daughter(0), NT_gen_tb_w1_final_p4s, NT_gen_tb_w1_final_pdgIds, NT_gen_tb_w1_final_statuses, tb_W_parts);
+						save_final_states(W_final->daughter(1), NT_gen_tb_w2_final_p4s, NT_gen_tb_w2_final_pdgIds, NT_gen_tb_w2_final_statuses, tb_W_parts);
 						save_final_states(b, NT_gen_tb_b_final_p4s, NT_gen_tb_b_final_pdgIds, NT_gen_tb_b_final_statuses, tb_b_parts);
-						for (unsigned int i=0; i<NT_gen_tb_w_final_p4s.size(); i++)
+						for (unsigned int i=0; i<NT_gen_tb_w1_final_p4s.size(); i++)
 							{
 							// skip neutrinos
-							if (abs(NT_gen_tb_w_final_pdgIds[i]) == 12 || abs(NT_gen_tb_w_final_pdgIds[i]) == 14 || abs(NT_gen_tb_w_final_pdgIds[i]) == 16) continue;
-							NT_gen_tb_w_final_p4 += NT_gen_tb_w_final_p4s[i];
+							if (abs(NT_gen_tb_w1_final_pdgIds[i]) == 12 || abs(NT_gen_tb_w1_final_pdgIds[i]) == 14 || abs(NT_gen_tb_w1_final_pdgIds[i]) == 16) continue;
+							NT_gen_tb_w1_final_p4 += NT_gen_tb_w1_final_p4s[i];
+							}
+						for (unsigned int i=0; i<NT_gen_tb_w2_final_p4s.size(); i++)
+							{
+							// skip neutrinos
+							if (abs(NT_gen_tb_w2_final_pdgIds[i]) == 12 || abs(NT_gen_tb_w2_final_pdgIds[i]) == 14 || abs(NT_gen_tb_w2_final_pdgIds[i]) == 16) continue;
+							NT_gen_tb_w2_final_p4 += NT_gen_tb_w2_final_p4s[i];
 							}
 						for (unsigned int i=0; i<NT_gen_tb_b_final_p4s.size(); i++)
 							{
