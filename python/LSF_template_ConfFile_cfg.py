@@ -98,7 +98,7 @@ process.ntupler.dtag = cms.string(dtag)
 process.ntupler.isLocal = cms.bool(True) # LSF submition is local
 # for LumiDump:
 process.ntupler.input = cms.untracked.vstring({input})
-process.ntupler.outfile = '{outfile}'
+process.ntupler.outfile = cms.string('{outfile}')
 
 
 theLumiMask = path.expandvars("{lumiMask}")

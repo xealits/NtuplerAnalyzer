@@ -66,7 +66,8 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'INFO'
 process.MessageLogger.categories.append('Demo')
 process.MessageLogger.cerr.INFO = cms.untracked.PSet(
-    limit = cms.untracked.int32(-1)
+    #limit = cms.untracked.int32(-1)
+    limit = cms.untracked.int32(10000)
 )
 
 #process.MessageLogger = cms.Service("MessageLogger",
