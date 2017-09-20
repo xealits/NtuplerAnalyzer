@@ -637,8 +637,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						{
 						NT_gen_tb_pt = p.pt();
 						NT_gen_tb_w_decay_id = decay_id;
-						save_final_states(W_final->daughter(0), NT_gen_tb_w1_final_p4s, NT_gen_tb_w1_final_pdgIds, NT_gen_tb_w1_final_statuses, tb_W_parts);
-						save_final_states(W_final->daughter(1), NT_gen_tb_w2_final_p4s, NT_gen_tb_w2_final_pdgIds, NT_gen_tb_w2_final_statuses, tb_W_parts);
+						save_final_states(W_final->daughter(0), NT_gen_tb_w1_final_p4s, NT_gen_tb_w1_final_pdgIds, NT_gen_tb_w1_final_statuses, tb_W1_parts);
+						save_final_states(W_final->daughter(1), NT_gen_tb_w2_final_p4s, NT_gen_tb_w2_final_pdgIds, NT_gen_tb_w2_final_statuses, tb_W2_parts);
 						save_final_states(b, NT_gen_tb_b_final_p4s, NT_gen_tb_b_final_pdgIds, NT_gen_tb_b_final_statuses, tb_b_parts);
 						for (unsigned int i=0; i<NT_gen_tb_w1_final_p4s.size(); i++)
 							{
