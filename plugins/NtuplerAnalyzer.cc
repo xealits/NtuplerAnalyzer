@@ -1692,20 +1692,21 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// for control number of signal candidates (should only be = 3, the 3pi decay):
 			NT_tau_SV_fit_ntracks.push_back(sigCands.size());
 
-			int i = 0;
-			for (reco::CandidatePtrVector::const_iterator itr = sigCands.begin(); itr != sigCands.end(); ++itr, i++)
+			bool i = true;
+			for (reco::CandidatePtrVector::const_iterator itr_cand = sigCands.begin(); itr_cand != sigCands.end(); ++itr_cand)
 				{
 				// save as Same Sign track
-				if ((*itr)->charge() * tau.pdgId() > 0)
+				if ((*itr_cand)->charge() * tau.pdgId() > 0)
 					{
-					NT_tau_SV_fit_track_SS_p4.push_back((*itr)->p4());
+					NT_tau_SV_fit_track_SS_p4.push_back((*itr_cand)->p4());
 					}
-				else if (i == 0) // first OS track
+				else if (i) // first OS track
 					{
-					NT_tau_SV_fit_track_OS1_p4.push_back((*itr)->p4());
+					NT_tau_SV_fit_track_OS1_p4.push_back((*itr_cand)->p4());
+					i = false;
 					}
 				else // second OS track
-					NT_tau_SV_fit_track_OS2_p4.push_back((*itr)->p4());
+					NT_tau_SV_fit_track_OS2_p4.push_back((*itr_cand)->p4());
 				}
 			}
 		else
