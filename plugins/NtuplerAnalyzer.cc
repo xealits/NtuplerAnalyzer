@@ -534,8 +534,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		iEvent.getByToken(lheEPToken_, lheEPHandle);
 		if (isMC && lheEPHandle.isValid()) NT_NUP_gen = lheEPHandle->hepeup().NUP;
 
+
 		LogInfo ("Demo") << "Processing MC, gen particles";
-		// ----------------------- gen particles
+		// ----------------------- GENERATED PARTICLES
 		// parse gen particles tree and get top pt-s and channel
 		// channels are needed for:
 		// TTbar, Single-top, DY
@@ -566,6 +567,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// mu, vmu   13, 14
 			// tau, vtau 15, 16
 
+			NT_gen_genPx = 0, NT_gen_genPy = 0, NT_gen_visPx = 0, NT_gen_visPy = 0;
+
         		vector<const reco::Candidate*> t_b_parts, tb_b_parts, t_W1_parts, tb_W1_parts, t_W2_parts, tb_W2_parts;
 			LogInfo ("Demo") << "Processing MC, gen particles, t decays and taus";
 			NT_gen_pythia8_prompt_leptons_N = 0;
@@ -575,11 +578,30 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				{
 				const reco::GenParticle & p = gen[i];
 				int id = p.pdgId();
+				unsigned int a_id = abs(id);
 				int st = p.status(); // TODO: check what is status in decat simulation (pythia for our TTbar set)
 				int n_daughters = p.numberOfDaughters();
 
-				if (abs(id) == 6 && n_daughters == 2) // if it is a t quark
-					{ // it is a decay vertes of t to something
+				// Save parameters for recoil corrections
+				// relevant for DY and WJets
+				if ((a_id >= 11 && a_id <= 16 && p->fromHardProcessFinalState()) ||
+					(p->isDirectHardProcessTauDecayProduct()))
+					{
+					NT_gen_genPx += p->p4.Px();
+					NT_gen_genPy += p->p4.Py();
+
+					if ( !(a_id == 12 || a_id == 14 || a_id == 16) )
+						{
+						NT_gen_visPx += p->p4.Px();
+						NT_gen_visPy += p->p4.Py();
+						}
+					}
+
+				if (abs(id) == 6 && n_daughters == 2)
+					// if it is a t quark
+					// it is a decay vertex of t to something
+					// (could use p.isLastCopy())
+					{
 					// calculate top_pt weights:
 					weight_TopPT *= TMath::Sqrt(top_pT_SF(p.pt()));
 					// find the W decay channel in this top

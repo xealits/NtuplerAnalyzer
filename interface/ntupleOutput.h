@@ -264,6 +264,13 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_wdecays_IDs) // ID-s of the prompt
 Int_t_in_NTuple(OUTNTUPLE, gen_N_zdecays)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_zdecays_IDs)
 
+// for recoil corrections:
+Float_t_in_NTuple(OUTNTUPLE, gen_genPx)
+Float_t_in_NTuple(OUTNTUPLE, gen_genPy)
+Float_t_in_NTuple(OUTNTUPLE, gen_visPx)
+Float_t_in_NTuple(OUTNTUPLE, gen_visPy)
+
+
 Int_t_in_NTuple(OUTNTUPLE, NUP_gen) // TODO: add gen info from TTbar
 Int_t_in_NTuple(OUTNTUPLE, nvtx)
 Int_t_in_NTuple(OUTNTUPLE, nvtx_gen)
