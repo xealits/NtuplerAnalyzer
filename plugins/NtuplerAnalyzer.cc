@@ -584,16 +584,17 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 				// Save parameters for recoil corrections
 				// relevant for DY and WJets
-				if ((a_id >= 11 && a_id <= 16 && p->fromHardProcessFinalState()) ||
-					(p->isDirectHardProcessTauDecayProduct()))
+				if ((a_id >= 11 && a_id <= 16 && p.fromHardProcessFinalState()) ||
+					//(p.isDirectHardProcessTauDecayProduct()))
+					(p.isDirectHardProcessTauDecayProductFinalState())) // same stuff
 					{
-					NT_gen_genPx += p->p4.Px();
-					NT_gen_genPy += p->p4.Py();
+					NT_gen_genPx += p.p4().Px();
+					NT_gen_genPy += p.p4().Py();
 
 					if ( !(a_id == 12 || a_id == 14 || a_id == 16) )
 						{
-						NT_gen_visPx += p->p4.Px();
-						NT_gen_visPy += p->p4.Py();
+						NT_gen_visPx += p.p4().Px();
+						NT_gen_visPy += p.p4().Py();
 						}
 					}
 
