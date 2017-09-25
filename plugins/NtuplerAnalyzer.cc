@@ -48,6 +48,10 @@
 
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 
+// MET recoil corrections for DY and WJets, from higgs->tautau group
+// usage: https://github.com/CMS-HTT/RecoilCorrections/blob/master/instructions.txt
+#include "HTT-utilities/RecoilCorrections/interface/RecoilCorrector.h"
+
 // lepton ID/Iso prescriptions
 #include "UserCode/llvv_fwk/interface/PatUtils.h"
 #include "UserCode/llvv_fwk/interface/MacroUtils.h"
@@ -171,6 +175,8 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//genJetsHandle.getByLabel(ev, "slimmedGenJets");
 	edm::EDGetTokenT<pat::JetCollection> jets_;
 	//jetsHandle.getByLabel(ev, "slimmedJets");
+
+	RecoilCorrector* recoilPFMetCorrector;
 
 	bool record_tauID, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep;
 
@@ -345,6 +351,11 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	//BadPFMuonFilterToken_ = consumes<bool>(edm::InputTag("BadPFMuon"));
 	BadPFMuonFilterToken_ = consumes<bool>(edm::InputTag("BadPFMuonFilter"));
 	BadChCandFilterToken_ = consumes<bool>(edm::InputTag("BadChargedCandidateFilter"));
+
+	// recoild corrector
+	TString recoil_corrections_data_file("${CMSSW_BASE}/src/HTT-utilities/RecoilCorrections/data/TypeIPFMET_2016BCD.root");
+	gSystem->ExpandPathName(recoil_corrections_data_file);
+	recoilPFMetCorrector = new RecoilCorrector(recoil_corrections_data_file);
 
 	// dtag configs
 	bool period_BCD = !isMC && (dtag.Contains("2016B") || dtag.Contains("2016C") || dtag.Contains("2016D"));
@@ -1230,7 +1241,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	        if (overlapWithLepton) continue;
 
 		NT_jet_id.push_back(jet.pdgId());
-		NT_jet_p4.                push_back(jet.p4());
+		NT_jet_p4.push_back(jet.p4());
 
 		LorentzVector jet_initial_p4 = jet.p4();
 
@@ -1467,11 +1478,26 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	NT_jets_full_correction = full_jet_corr; // initial jets + this correction = corrected jets
 	// ALSO MET
-	LorentzVector MET_corrected = NT_met_init - full_jet_corr;
+	LorentzVector MET_corrected = NT_met_init - full_jet_corr; // checked: this is really negligible correction
 	//float met_corrected = MET_corrected.pt();
 	NT_met_corrected = MET_corrected;
 	// TODO: I don't correct NT_met_slimmedMets and the other -- the correction should be applied offline if needed
 	// in principle NT_met_init = NT_met_slimmedMets -- so NT_met_corrected saves the applied correction
+
+	// APPLY RECOILD CORRECTIONS TO MET
+	NT_pfmetcorr_ex = 0;
+	NT_pfmetcorr_ey = 0;
+	recoilPFMetCorrector.CorrectByMeanResolution(
+		NT_met_corrected.Px(), // uncorrected type I pf met px (float)
+		NT_met_corrected.Py(), // uncorrected type I pf met py (float)
+		NT_gen_genPx, // generator Z/W/Higgs px (float)
+		NT_gen_genPy, // generator Z/W/Higgs py (float)
+		NT_gen_visPx, // generator visible Z/W/Higgs px (float)
+		NT_gen_visPy, // generator visible Z/W/Higgs py (float)
+		NT_nalljets,  // number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
+		NT_pfmetcorr_ex, // corrected type I pf met px (float)
+		NT_pfmetcorr_ey  // corrected type I pf met py (float)
+		);
 
 	//pat::JetCollection selJets;
 	//processJets_Kinematics(IDjets, /*bool isMC,*/ weight, jet_kino_cuts_pt, jet_kino_cuts_eta, selJets, false, false);
