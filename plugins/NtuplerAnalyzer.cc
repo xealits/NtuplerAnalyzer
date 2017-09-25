@@ -1487,7 +1487,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// APPLY RECOILD CORRECTIONS TO MET
 	NT_pfmetcorr_ex = 0;
 	NT_pfmetcorr_ey = 0;
-	recoilPFMetCorrector.CorrectByMeanResolution(
+	recoilPFMetCorrector->CorrectByMeanResolution(
 		NT_met_corrected.Px(), // uncorrected type I pf met px (float)
 		NT_met_corrected.Py(), // uncorrected type I pf met py (float)
 		NT_gen_genPx, // generator Z/W/Higgs px (float)
