@@ -177,11 +177,12 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//jetsHandle.getByLabel(ev, "slimmedJets");
 
 	RecoilCorrector* recoilPFMetCorrector;
+	TH2D* zPtMass_histo;
 
 	bool record_tauID, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep;
 
 	TString dtag;
-	bool isMC, aMCatNLO;
+	bool isMC, aMCatNLO, isWJets, isDY;
 	bool isLocal;
 	string  muHLT_MC1  , muHLT_MC2  ,
 		muHLT_Data1, muHLT_Data2,
@@ -352,11 +353,6 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	BadPFMuonFilterToken_ = consumes<bool>(edm::InputTag("BadPFMuonFilter"));
 	BadChCandFilterToken_ = consumes<bool>(edm::InputTag("BadChargedCandidateFilter"));
 
-	// recoild corrector
-	TString recoil_corrections_data_file("${CMSSW_BASE}/src/HTT-utilities/RecoilCorrections/data/TypeIPFMET_2016BCD.root");
-	gSystem->ExpandPathName(recoil_corrections_data_file);
-	recoilPFMetCorrector = new RecoilCorrector(recoil_corrections_data_file);
-
 	// dtag configs
 	bool period_BCD = !isMC && (dtag.Contains("2016B") || dtag.Contains("2016C") || dtag.Contains("2016D"));
 	bool period_EF  = !isMC && (dtag.Contains("2016E") || dtag.Contains("2016F"));
@@ -364,6 +360,27 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	bool period_H   = !isMC && (dtag.Contains("2016H"));
 
 	aMCatNLO = dtag.Contains("amcatnlo");
+	isWJets = dtag.Contains("WJet") || dtag.Contains("W0Jet") || dtag.Contains("W1Jet") || dtag.Contains("W2Jet") || dtag.Contains("W3Jet") || dtag.Contains("W4Jet");
+	isDY = dtag.Contains("DYJet");
+
+	// recoild corrector
+	if (isDY || isWJets)
+		{
+		TString recoil_corrections_data_file("${CMSSW_BASE}/src/HTT-utilities/RecoilCorrections/data/TypeIPFMET_2016BCD.root");
+		gSystem->ExpandPathName(recoil_corrections_data_file);
+		recoilPFMetCorrector = new RecoilCorrector(recoil_corrections_data_file);
+		}
+
+	/*
+	 * let's find the weight in processing
+	 * also do the same in met corrector
+	 */
+	//if (isDY)
+	//	{
+	//	TString zPtMass_filename("${CMSSW_BASE}/src/HTT-utilities/RecoilCorrections/data/TypeIPFMET_2016BCD.root");
+	//	gSystem->ExpandPathName(zPtMass_filename);
+	//	zPtMass_histo = ;
+	//	}
 
 
 	// jet IDs, corrections, resolutions etc
@@ -585,6 +602,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_gen_pythia8_prompt_leptons_N = 0;
 			NT_gen_N_wdecays = 0;
 			NT_gen_N_zdecays = 0;
+			LorentzVector genMomentum(0,0,0,0);
+			NT_genPt = 0;
+			NT_genMass = 0;
+			//NT_zPtWeight = 1;
 			for(size_t i = 0; i < gen.size(); ++ i)	
 				{
 				const reco::GenParticle & p = gen[i];
@@ -595,17 +616,22 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 				// Save parameters for recoil corrections
 				// relevant for DY and WJets
-				if ((a_id >= 11 && a_id <= 16 && p.fromHardProcessFinalState()) ||
-					//(p.isDirectHardProcessTauDecayProduct()))
-					(p.isDirectHardProcessTauDecayProductFinalState())) // same stuff
+				if (isDY || isWJets)
 					{
-					NT_gen_genPx += p.p4().Px();
-					NT_gen_genPy += p.p4().Py();
-
-					if ( !(a_id == 12 || a_id == 14 || a_id == 16) )
+					if ((a_id >= 11 && a_id <= 16 && p.fromHardProcessFinalState()) ||
+						//(p.isDirectHardProcessTauDecayProduct()))
+						(p.isDirectHardProcessTauDecayProductFinalState())) // same stuff
 						{
-						NT_gen_visPx += p.p4().Px();
-						NT_gen_visPy += p.p4().Py();
+						if (isDY) genMomentum += p.p4();
+
+						NT_gen_genPx += p.p4().Px();
+						NT_gen_genPy += p.p4().Py();
+
+						if ( !(a_id == 12 || a_id == 14 || a_id == 16) )
+							{
+							NT_gen_visPx += p.p4().Px();
+							NT_gen_visPy += p.p4().Py();
+							}
 						}
 					}
 
@@ -772,6 +798,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					NT_gen_wdecays_IDs.push_back(wdecay_id);
 					}
 				}
+
+			if (isDY)
+				{
+				NT_genPt = genMomentum.Pt();
+				NT_genMass = genMomentum.M();
+				// weight in processing
+				//NT_zPtWeight = zPtMass_histo->GetBinContent(zPtMass_histo->GetXaxis()->FindBin(NT_genMass), zPtMass_histo->GetYaxis()->FindBin(NT_genPt));
+				}
+
 			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id;
 			}
 

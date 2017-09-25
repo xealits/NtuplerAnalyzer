@@ -270,6 +270,10 @@ Float_t_in_NTuple(OUTNTUPLE, gen_genPy)
 Float_t_in_NTuple(OUTNTUPLE, gen_visPx)
 Float_t_in_NTuple(OUTNTUPLE, gen_visPy)
 
+// for Z pt-mass correction:
+Float_t_in_NTuple(OUTNTUPLE, genPt)
+Float_t_in_NTuple(OUTNTUPLE, genMass)
+
 
 Int_t_in_NTuple(OUTNTUPLE, NUP_gen) // TODO: add gen info from TTbar
 Int_t_in_NTuple(OUTNTUPLE, nvtx)
