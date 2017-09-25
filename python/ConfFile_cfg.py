@@ -11,7 +11,7 @@ input_files, isMC = ('root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MI
  #31 Aug present on CERN
  #'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00B474D3-ADEA-E611-9E30-D067E5F910F5.root'
  # TT for tau-rich events
- #'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root'
+input_files, isMC = ('file:165F54A0-A3BE-E611-B3F7-0025905A606A.root',), True
 # single top
  #'file:ST_tW_top_0C2044DB-0EC2-E611-8567-0CC47A7FC378.root'
  # DY file
@@ -64,7 +64,7 @@ process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'INFO'
-process.MessageLogger.categories.append('Demo')
+#process.MessageLogger.categories.append('Demo')
 process.MessageLogger.cerr.INFO = cms.untracked.PSet(
     #limit = cms.untracked.int32(-1)
     limit = cms.untracked.int32(10000)
@@ -90,9 +90,9 @@ process.MessageLogger.cerr.INFO = cms.untracked.PSet(
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.MessageLogger.cerr.FwkReport.reportEvery = -1
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000000) )
 
 
 

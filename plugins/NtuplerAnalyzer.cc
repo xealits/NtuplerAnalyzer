@@ -1555,6 +1555,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			 && quality!=pat::PackedCandidate::UsedInFitLoose)))// continue;
 			{
 			pvTracks.push_back(*((*track_cands)[i].bestTrack()));
+			// allTracks.push_back(*((*track_cands)[i].bestTrack())); // test for HelixLine Momentum is zero
 			}
 
 		// TODO: add requirement of "goodness"?
