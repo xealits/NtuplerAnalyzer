@@ -366,7 +366,8 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	// recoild corrector
 	if (isDY || isWJets)
 		{
-		TString recoil_corrections_data_file("${CMSSW_BASE}/src/HTT-utilities/RecoilCorrections/data/TypeIPFMET_2016BCD.root");
+		//TString recoil_corrections_data_file("${CMSSW_BASE}/src/HTT-utilities/RecoilCorrections/data/TypeIPFMET_2016BCD.root");
+		TString recoil_corrections_data_file("/HTT-utilities/RecoilCorrections/data/TypeIPFMET_2016BCD.root");
 		gSystem->ExpandPathName(recoil_corrections_data_file);
 		recoilPFMetCorrector = new RecoilCorrector(recoil_corrections_data_file);
 		}
@@ -866,12 +867,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 */
 
 	edm::TriggerResultsByName metFilters = iEvent.triggerResultsByName("RECO"); //is present only if PAT (and miniAOD) is not run simultaniously with RECO
-	if(!metFilters.isValid()){metFilters = iEvent.triggerResultsByName("PAT");} //if not present, then it's part of RECO
-	if(!metFilters.isValid()){       
+	if(!isMC && !metFilters.isValid()){metFilters = iEvent.triggerResultsByName("PAT");} //if not present, then it's part of RECO
+	if(!isMC && !metFilters.isValid()){       
 		LogInfo("Demo") << "TriggerResultsByName for MET filters is not found in the process, as a consequence the MET filter is disabled for this event";
 		return;
 		}
-	if (! isMC && metFilters.isValid())
+	if (!isMC && metFilters.isValid())
 		{
 		// event is good if all filters ar true
 		bool filters1 = utils::passTriggerPatterns(metFilters, "Flag_HBHENoiseFilter*", "Flag_HBHENoiseIsoFilter*", "Flag_EcalDeadCellTriggerPrimitiveFilter*");
@@ -1159,7 +1160,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	LogInfo ("Demo") << "selected leptons: " << '(' << selElectrons.size() << ',' << selMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
 
 	bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0;
-	//if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return; // exit now to reduce computation -- nope, there are other records too
+	if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return;
+	// exit now to reduce computation -- all record schemes have this requirement
+
 	event_counter ->Fill(event_checkpoint++);
 	weight_counter->Fill(event_checkpoint, weight);
 
@@ -1535,6 +1538,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_pfmetcorr_ex, // corrected type I pf met px (float)
 			NT_pfmetcorr_ey  // corrected type I pf met py (float)
 			);
+		LogInfo("Demo") << "recoil-corrected MET = " << NT_pfmetcorr_ex << ' ' << NT_pfmetcorr_ey;
 		}
 
 	//pat::JetCollection selJets;
