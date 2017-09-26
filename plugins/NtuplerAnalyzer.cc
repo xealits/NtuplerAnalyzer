@@ -50,7 +50,8 @@
 
 // MET recoil corrections for DY and WJets, from higgs->tautau group
 // usage: https://github.com/CMS-HTT/RecoilCorrections/blob/master/instructions.txt
-#include "HTT-utilities/RecoilCorrections/interface/RecoilCorrector.h"
+//#include "HTT-utilities/RecoilCorrections/interface/RecoilCorrector.h"
+// do correction off-line in processing
 
 // lepton ID/Iso prescriptions
 #include "UserCode/llvv_fwk/interface/PatUtils.h"
@@ -176,7 +177,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	edm::EDGetTokenT<pat::JetCollection> jets_;
 	//jetsHandle.getByLabel(ev, "slimmedJets");
 
-	RecoilCorrector* recoilPFMetCorrector;
+	//RecoilCorrector* recoilPFMetCorrector;
 	TH2D* zPtMass_histo;
 
 	bool record_tauID, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep;
@@ -363,7 +364,8 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	isWJets = dtag.Contains("WJet") || dtag.Contains("W0Jet") || dtag.Contains("W1Jet") || dtag.Contains("W2Jet") || dtag.Contains("W3Jet") || dtag.Contains("W4Jet");
 	isDY = dtag.Contains("DYJet");
 
-	// recoild corrector
+	/* do it offline
+	// recoil corrector
 	if (isDY || isWJets)
 		{
 		//TString recoil_corrections_data_file("${CMSSW_BASE}/src/HTT-utilities/RecoilCorrections/data/TypeIPFMET_2016BCD.root");
@@ -371,6 +373,7 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 		gSystem->ExpandPathName(recoil_corrections_data_file);
 		recoilPFMetCorrector = new RecoilCorrector(recoil_corrections_data_file);
 		}
+	*/
 
 	/*
 	 * let's find the weight in processing
@@ -1522,6 +1525,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// TODO: I don't correct NT_met_slimmedMets and the other -- the correction should be applied offline if needed
 	// in principle NT_met_init = NT_met_slimmedMets -- so NT_met_corrected saves the applied correction
 
+	/* apply them offline
 	// APPLY RECOILD CORRECTIONS TO MET
 	NT_pfmetcorr_ex = 0;
 	NT_pfmetcorr_ey = 0;
@@ -1540,6 +1544,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			);
 		LogInfo("Demo") << "recoil-corrected MET = " << NT_pfmetcorr_ex << ' ' << NT_pfmetcorr_ey;
 		}
+	*/
 
 	//pat::JetCollection selJets;
 	//processJets_Kinematics(IDjets, /*bool isMC,*/ weight, jet_kino_cuts_pt, jet_kino_cuts_eta, selJets, false, false);
