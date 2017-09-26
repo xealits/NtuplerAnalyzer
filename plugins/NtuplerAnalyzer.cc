@@ -573,6 +573,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		edm::Handle<reco::GenParticleCollection> genHandle;
 		//genHandle.getByLabel(ev, "prunedGenParticles");
 		iEvent.getByToken(genParticle_, genHandle);
+
+		NT_gen_genPx = 0, NT_gen_genPy = 0, NT_gen_visPx = 0, NT_gen_visPy = 0;
 		if(genHandle.isValid())
 			{
 			gen = *genHandle;
@@ -594,8 +596,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// e, ve     11, 12
 			// mu, vmu   13, 14
 			// tau, vtau 15, 16
-
-			NT_gen_genPx = 0, NT_gen_genPy = 0, NT_gen_visPx = 0, NT_gen_visPy = 0;
 
         		vector<const reco::Candidate*> t_b_parts, tb_b_parts, t_W1_parts, tb_W1_parts, t_W2_parts, tb_W2_parts;
 			LogInfo ("Demo") << "Processing MC, gen particles, t decays and taus";
@@ -1522,17 +1522,20 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// APPLY RECOILD CORRECTIONS TO MET
 	NT_pfmetcorr_ex = 0;
 	NT_pfmetcorr_ey = 0;
-	recoilPFMetCorrector->CorrectByMeanResolution(
-		NT_met_corrected.Px(), // uncorrected type I pf met px (float)
-		NT_met_corrected.Py(), // uncorrected type I pf met py (float)
-		NT_gen_genPx, // generator Z/W/Higgs px (float)
-		NT_gen_genPy, // generator Z/W/Higgs py (float)
-		NT_gen_visPx, // generator visible Z/W/Higgs px (float)
-		NT_gen_visPy, // generator visible Z/W/Higgs py (float)
-		NT_nalljets,  // number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
-		NT_pfmetcorr_ex, // corrected type I pf met px (float)
-		NT_pfmetcorr_ey  // corrected type I pf met py (float)
-		);
+	if (isDY || isWJets)
+		{
+		recoilPFMetCorrector->CorrectByMeanResolution(
+			NT_met_corrected.Px(), // uncorrected type I pf met px (float)
+			NT_met_corrected.Py(), // uncorrected type I pf met py (float)
+			NT_gen_genPx, // generator Z/W/Higgs px (float)
+			NT_gen_genPy, // generator Z/W/Higgs py (float)
+			NT_gen_visPx, // generator visible Z/W/Higgs px (float)
+			NT_gen_visPy, // generator visible Z/W/Higgs py (float)
+			NT_nalljets,  // number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
+			NT_pfmetcorr_ex, // corrected type I pf met px (float)
+			NT_pfmetcorr_ey  // corrected type I pf met py (float)
+			);
+		}
 
 	//pat::JetCollection selJets;
 	//processJets_Kinematics(IDjets, /*bool isMC,*/ weight, jet_kino_cuts_pt, jet_kino_cuts_eta, selJets, false, false);
