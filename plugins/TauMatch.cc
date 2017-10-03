@@ -186,7 +186,7 @@ class TauMatch : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
 	bool record_tauID, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep;
 
 	TString dtag;
-	bool isMC, aMCatNLO, isWJets, isDY;
+	bool isMC, aMCatNLO, isWJets, isDY, isTT;
 	bool isLocal;
 	string  muHLT_MC1  , muHLT_MC2  ,
 		muHLT_Data1, muHLT_Data2,
@@ -368,6 +368,7 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	aMCatNLO = dtag.Contains("amcatnlo");
 	isWJets = dtag.Contains("WJet") || dtag.Contains("W0Jet") || dtag.Contains("W1Jet") || dtag.Contains("W2Jet") || dtag.Contains("W3Jet") || dtag.Contains("W4Jet");
 	isDY = dtag.Contains("DYJet");
+	isTT = dtag.Contains("TT");
 
 	/* do it offline
 	// recoil corrector
@@ -793,6 +794,14 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		weight = pu_vector_NOMINAL[NT_nvtx_gen] * (aMCatNLO? weight_Gen : 1) * weight_TopPT;
 		}
 	weight_counter->Fill(event_checkpoint, weight);
+
+	// record only ljets and lepton-tau
+	if (isTT)
+		{
+		bool record_mc_channels = (abs(NT_gen_tb_w_decay_id) == 13 && (abs(NT_gen_t_w_decay_id) == 1 || abs(NT_gen_t_w_decay_id) > 15*15)) ||
+			(abs(NT_gen_t_w_decay_id) == 13 && (abs(NT_gen_tb_w_decay_id) == 1 || abs(NT_gen_tb_w_decay_id) > 15*15));
+		if (!record_mc_channels) return;
+		}
 
 	//Handle<reco::TrackCollection> tracks;
 	//iEvent.getByToken( tracks_, tracks );
@@ -1551,8 +1560,8 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	string tau_againstElectron ("againstElectronTightMVA6");
 
 	pat::TauCollection IDtaus, selTaus;
-	processTaus_ID    (taus,   weight, tau_decayMode, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
-	//processTaus_ID_ISO    (taus,   weight, tau_decayMode, tau_VLoose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
+	//processTaus_ID    (taus,   weight, tau_decayMode, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
+	processTaus_ID_ISO  (taus,   weight, tau_decayMode, tau_Loose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
 	processTaus_Kinematics(IDtaus, weight, tau_kino_cuts_pt, tau_kino_cuts_eta, selTaus,      false, false);
 
 	pat::TauCollection selTausNoLep;
@@ -1688,12 +1697,12 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		// dR match to jet
 		Int_t matched_jet_number = -1;
-		for (unsigned int i=0; i<selJetsNoLep.size(); i++)
+		for (unsigned int jet_i=0; jet_i<selJetsNoLep.size(); jet_i++)
 			{
-			pat::Jet& jet = selJetsNoLep[i];
+			pat::Jet& jet = selJetsNoLep[jet_i];
 			if (reco::deltaR(jet, tau) < 0.4)
 				{
-				matched_jet_number = i;
+				matched_jet_number = jet_i;
 				break;
 				}
 			}
@@ -1705,14 +1714,14 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		if (isMC)
 			{
 			// dR match to gen tau
-			for (unsigned int i=0; i<NT_gen_tau_final_p4s.size(); i++)
+			for (unsigned int gen_i=0; gen_i<NT_gen_tau_final_p4s.size(); gen_i++)
 				{
-				LorentzVector& gentau = NT_gen_tau_final_p4s[i];
-				double dR = reco::deltaR(gentau, tau);
+				LorentzVector& gentau_product = NT_gen_tau_final_p4s[gen_i];
+				double dR = reco::deltaR(gentau_product, tau);
 				if (dR < gentau_min_dR)
 					{
 					gentau_min_dR = dR;
-					matched_gen_tau_number = i;
+					matched_gen_tau_number = gen_i;
 					}
 				}
 			}
@@ -1827,38 +1836,42 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			for (reco::CandidatePtrVector::const_iterator itr_cand = sigCands.begin(); itr_cand != sigCands.end(); ++itr_cand)
 				{
 				// find closest match to general track
-				double min_dR(999.);
+				double min_dR(99999.);
 				int matched_track = -1, index = 0;
 				for(auto iter: allTracks)
 					{
 					double dR = sqrt(pow(iter.eta() - (*itr_cand)->p4().eta(),2) + pow(iter.phi() - (*itr_cand)->p4().phi(),2));
 					if (dR < min_dR)
 						{
-						dR = min_dR;
+						min_dR = dR;
 						matched_track = index;
 						}
 					index++;
 					}
 
-				// save as Same Sign track
-				if ((*itr_cand)->charge() * tau.pdgId() > 0)
+				NT_tau_SV_tracks_char.push_back((*itr_cand)->charge());
+				NT_tau_SV_tracks_tuID.push_back(tau.pdgId());
+
+				// 1 Opposite Sign track
+				if (((*itr_cand)->charge() * tau.pdgId()) < 0)
 					{
-					NT_tau_SV_fit_track_SS_p4.push_back((*itr_cand)->p4());
-					NT_tau_SV_fit_track_SS_matched_track.push_back(matched_track);
-					NT_tau_SV_fit_track_SS_matched_track_dR.push_back(min_dR);
+					NT_tau_SV_fit_track_OS_p4.push_back((*itr_cand)->p4());
+					NT_tau_SV_fit_track_OS_matched_track.push_back(matched_track);
+					NT_tau_SV_fit_track_OS_matched_track_dR.push_back(min_dR);
 					}
-				else if (i) // first OS track
+				// 2 Same Sign tracks
+				else if (i) // first SS track
 					{
-					NT_tau_SV_fit_track_OS1_p4.push_back((*itr_cand)->p4());
-					NT_tau_SV_fit_track_OS1_matched_track.push_back(matched_track);
-					NT_tau_SV_fit_track_OS1_matched_track_dR.push_back(min_dR);
+					NT_tau_SV_fit_track_SS1_p4.push_back((*itr_cand)->p4());
+					NT_tau_SV_fit_track_SS1_matched_track.push_back(matched_track);
+					NT_tau_SV_fit_track_SS1_matched_track_dR.push_back(min_dR);
 					i = false;
 					}
-				else // second OS track
+				else // second SS track
 					{
-					NT_tau_SV_fit_track_OS2_p4.push_back((*itr_cand)->p4());
-					NT_tau_SV_fit_track_OS2_matched_track.push_back(matched_track);
-					NT_tau_SV_fit_track_OS2_matched_track_dR.push_back(min_dR);
+					NT_tau_SV_fit_track_SS2_p4.push_back((*itr_cand)->p4());
+					NT_tau_SV_fit_track_SS2_matched_track.push_back(matched_track);
+					NT_tau_SV_fit_track_SS2_matched_track_dR.push_back(min_dR);
 					}
 				}
 			}
@@ -1873,6 +1886,7 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	// refit PV
 	// build transient tracks of the rest of the tracks
 	// for PV refitting
+	bool fitOk_PV = false;  
 	if (tracksToBeRemoved_PV.size()>0)
 		{
 		TransientVertex transVtx_PV;
@@ -1885,7 +1899,6 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			transTracks_nottau.push_back(transTrackBuilder->build(iter));
 			}
 
-		bool fitOk_PV = false;  
 		if (transTracks_nottau.size() >= 2 ) {
 			AdaptiveVertexFitter avf;
 			avf.setWeightThreshold(0.001); 
@@ -1915,6 +1928,29 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			//pvVertex.fill(pvCov);
 			//NT_PV_cov = pvCov;
 			pvVertex.fill(NT_PV_cov);
+
+			// find SV-PV dists for taus
+			for (unsigned int sv_i = 0; sv_i < NT_tau_SV_fit_x.size(); sv_i++)
+				{
+				Float_t svx = NT_tau_SV_fit_x[sv_i];
+				Float_t svy = NT_tau_SV_fit_y[sv_i];
+				Float_t svz = NT_tau_SV_fit_z[sv_i];
+				NT_tau_SV_dist.push_back(sqrt(pow(NT_PV_fit_x - svx, 2) + pow(NT_PV_fit_y - svy, 2) + pow(NT_PV_fit_z - svz, 2)));
+				}
+			}
+		}
+
+	if (!fitOk_PV)
+		{
+		Float_t pvx = goodPV.position().x();
+		Float_t pvy = goodPV.position().y();
+		Float_t pvz = goodPV.position().z();
+		for (unsigned int sv_i = 0; sv_i < NT_tau_SV_fit_x.size(); sv_i++)
+			{
+			Float_t svx = NT_tau_SV_fit_x[sv_i];
+			Float_t svy = NT_tau_SV_fit_y[sv_i];
+			Float_t svz = NT_tau_SV_fit_z[sv_i];
+			NT_tau_SV_dist.push_back(sqrt(pow(pvx - svx, 2) + pow(pvy - svy, 2) + pow(pvz - svz, 2)));
 			}
 		}
 
