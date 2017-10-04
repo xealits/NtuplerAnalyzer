@@ -1561,7 +1561,7 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	pat::TauCollection IDtaus, selTaus;
 	//processTaus_ID    (taus,   weight, tau_decayMode, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
-	processTaus_ID_ISO  (taus,   weight, tau_decayMode, tau_Loose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
+	processTaus_ID_ISO  (taus,   weight, tau_decayMode, tau_VLoose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
 	processTaus_Kinematics(IDtaus, weight, tau_kino_cuts_pt, tau_kino_cuts_eta, selTaus,      false, false);
 
 	pat::TauCollection selTausNoLep;
@@ -1636,9 +1636,9 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		NT_track_vertex_association.push_back(quality);
 
 		NT_track_b.push_back(distance.R());
-		//NT_track_closest_point_x.push_back(distance.x());
-		//NT_track_closest_point_y.push_back(distance.y());
-		//NT_track_closest_point_z.push_back(distance.z());
+		NT_track_b_x.push_back(distance.x());
+		NT_track_b_y.push_back(distance.y());
+		NT_track_b_z.push_back(distance.z());
 		}
 
 	//NT_ntaus = 0;

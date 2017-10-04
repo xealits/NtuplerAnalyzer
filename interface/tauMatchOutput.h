@@ -428,11 +428,11 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, track_vertex_association) // quality o
  * ...
  */
 
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_b) // distance between closest point and refered vertex
 // for check:
-//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_closest_point_x) // closest point position
-//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_closest_point_y) // closest point position
-//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_closest_point_z) // closest point position
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_b) // distance between closest point and refered vertex
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_b_x) // closest point position relative to ref vertex
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_b_y)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_b_z)
 
 
 // Primary Vertices
