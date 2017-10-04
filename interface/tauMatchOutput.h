@@ -354,6 +354,8 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_b_discr)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_hadronFlavour)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_partonFlavour)
 
+
+
 // TAUS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_id)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_p4)
@@ -370,13 +372,14 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_dR_matched_jet) // number of the
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, tau_SV_fit_isOk)
 // index in the vectors of refited tau
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_refited_index)
-// closest gen tau
+// closest gen product of gen tau
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_gen_index)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_gen_dR)
 
 
 // TAUS refit OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_matchingQuality)
+// TODO save Point?
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_x)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_y)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_z)
@@ -384,7 +387,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_dist) // distance to refitted
 
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<math::Error<3>::type>, tau_SV_cov)
 // info on tracks of the tau
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_ntracks) // for control
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_SV_fit_ntracks) // for control
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_tracks_char) // for control
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_tracks_tuID) // for control
 
@@ -399,24 +402,14 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_track)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_OS_matched_track_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_SS1_matched_track_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_SS2_matched_track_dR)
+// closest gen tau products, indexes in the products vectors
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_OS_matched_gen)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS1_matched_gen)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_gen)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_OS_matched_gen_dR)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_SS1_matched_gen_dR)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_SS2_matched_gen_dR)
 
-
-// Primary Vertices
-// the very good PV is first in the vectors
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_x)
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_y)
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_z)
-// just errors instead of full covar matrices for now:
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_x_err)
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_y_err)
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_z_err)
-
-// PV REFITTED
-Bool_t_in_NTuple(OUTNTUPLE, PV_fit_isOk)
-Float_t_in_NTuple(OUTNTUPLE, PV_fit_x)
-Float_t_in_NTuple(OUTNTUPLE, PV_fit_y)
-Float_t_in_NTuple(OUTNTUPLE, PV_fit_z)
-OBJECT_in_NTuple(OUTNTUPLE, math::Error<3>::type, PV_cov)
 
 
 // TRACKS
@@ -440,5 +433,23 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_b) // distance between closest
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_closest_point_x) // closest point position
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_closest_point_y) // closest point position
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_closest_point_z) // closest point position
+
+
+// Primary Vertices
+// the very good PV is first in the vectors
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_x)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_y)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_z)
+// just errors instead of full covar matrices for now:
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_x_err)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_y_err)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_z_err)
+
+// PV REFITTED
+Bool_t_in_NTuple(OUTNTUPLE, PV_fit_isOk)
+Float_t_in_NTuple(OUTNTUPLE, PV_fit_x)
+Float_t_in_NTuple(OUTNTUPLE, PV_fit_y)
+Float_t_in_NTuple(OUTNTUPLE, PV_fit_z)
+OBJECT_in_NTuple(OUTNTUPLE, math::Error<3>::type, PV_cov)
 
 

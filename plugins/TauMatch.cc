@@ -1849,15 +1849,33 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 					index++;
 					}
 
+				double min_dR_gen(99999.);
+				int matched_gen = -1, index_gen = 0;
+				for(auto iter: NT_gen_tau_final_p4s)
+					{
+					double dR = sqrt(pow(iter.eta() - (*itr_cand)->p4().eta(),2) + pow(iter.phi() - (*itr_cand)->p4().phi(),2));
+					if (dR < min_dR_gen)
+						{
+						min_dR_gen = dR;
+						matched_gen = index_gen;
+						}
+					index_gen++;
+					}
+
 				NT_tau_SV_tracks_char.push_back((*itr_cand)->charge());
 				NT_tau_SV_tracks_tuID.push_back(tau.pdgId());
 
 				// 1 Opposite Sign track
-				if (((*itr_cand)->charge() * tau.pdgId()) < 0)
+				//if (((*itr_cand)->charge() * tau.pdgId()) < 0)
+				// strangely enough something is reverted in PAT
+				// tau has 2 OS tracks and 1 SS (seems like charge or some convention is not conserved)
+				if (((*itr_cand)->charge() * tau.pdgId()) > 0)
 					{
 					NT_tau_SV_fit_track_OS_p4.push_back((*itr_cand)->p4());
 					NT_tau_SV_fit_track_OS_matched_track.push_back(matched_track);
 					NT_tau_SV_fit_track_OS_matched_track_dR.push_back(min_dR);
+					NT_tau_SV_fit_track_OS_matched_gen.push_back(matched_gen);
+					NT_tau_SV_fit_track_OS_matched_gen_dR.push_back(min_dR_gen);
 					}
 				// 2 Same Sign tracks
 				else if (i) // first SS track
@@ -1865,6 +1883,8 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 					NT_tau_SV_fit_track_SS1_p4.push_back((*itr_cand)->p4());
 					NT_tau_SV_fit_track_SS1_matched_track.push_back(matched_track);
 					NT_tau_SV_fit_track_SS1_matched_track_dR.push_back(min_dR);
+					NT_tau_SV_fit_track_SS1_matched_gen.push_back(matched_gen);
+					NT_tau_SV_fit_track_SS1_matched_gen_dR.push_back(min_dR_gen);
 					i = false;
 					}
 				else // second SS track
@@ -1872,6 +1892,8 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 					NT_tau_SV_fit_track_SS2_p4.push_back((*itr_cand)->p4());
 					NT_tau_SV_fit_track_SS2_matched_track.push_back(matched_track);
 					NT_tau_SV_fit_track_SS2_matched_track_dR.push_back(min_dR);
+					NT_tau_SV_fit_track_SS2_matched_gen.push_back(matched_gen);
+					NT_tau_SV_fit_track_SS2_matched_gen_dR.push_back(min_dR_gen);
 					}
 				}
 			}
