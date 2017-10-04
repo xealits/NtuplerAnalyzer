@@ -1716,6 +1716,11 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			// dR match to gen tau
 			for (unsigned int gen_i=0; gen_i<NT_gen_tau_final_p4s.size(); gen_i++)
 				{
+				// skip neutrinos
+				int aid = abs(NT_gen_tau_final_pdgIds[gen_i]);
+				if (aid == 12 || aid == 14 || aid == 16)
+					continue;
+
 				LorentzVector& gentau_product = NT_gen_tau_final_p4s[gen_i];
 				double dR = reco::deltaR(gentau_product, tau);
 				if (dR < gentau_min_dR)
