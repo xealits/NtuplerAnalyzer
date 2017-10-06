@@ -402,6 +402,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_track)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_OS_matched_track_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_SS1_matched_track_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_SS2_matched_track_dR)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_matchQ) // just sum of all dR
 // closest gen tau products, indexes in the products vectors
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_OS_matched_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS1_matched_gen)
@@ -409,6 +410,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_OS_matched_gen_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_SS1_matched_gen_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_SS2_matched_gen_dR)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_matchQ_gen) // just sum of all dR
 
 
 

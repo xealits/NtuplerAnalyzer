@@ -1835,72 +1835,123 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			// using Signal Candidates of tau
 			reco::CandidatePtrVector sigCands = tau.signalChargedHadrCands();
 			// for control number of signal candidates (should only be = 3, the 3pi decay):
-			NT_tau_SV_fit_ntracks.push_back(sigCands.size());
+			NT_tau_SV_fit_ntracks.push_back(sigCands.size()); // checked, it is always == 3
 
+			// get OS, SS and SS1 cand
+			reco::Candidate* track_os;
+			reco::Candidate* track_ss1;
+			reco::Candidate* track_ss2;
 			bool i = true;
 			for (reco::CandidatePtrVector::const_iterator itr_cand = sigCands.begin(); itr_cand != sigCands.end(); ++itr_cand)
 				{
-				// find closest match to general track
-				double min_dR(99999.);
-				int matched_track = -1, index = 0;
-				for(auto iter: allTracks)
-					{
-					double dR = sqrt(pow(iter.eta() - (*itr_cand)->p4().eta(),2) + pow(iter.phi() - (*itr_cand)->p4().phi(),2));
-					if (dR < min_dR)
-						{
-						min_dR = dR;
-						matched_track = index;
-						}
-					index++;
-					}
-
-				double min_dR_gen(99999.);
-				int matched_gen = -1, index_gen = 0;
-				for(auto iter: NT_gen_tau_final_p4s)
-					{
-					double dR = sqrt(pow(iter.eta() - (*itr_cand)->p4().eta(),2) + pow(iter.phi() - (*itr_cand)->p4().phi(),2));
-					if (dR < min_dR_gen)
-						{
-						min_dR_gen = dR;
-						matched_gen = index_gen;
-						}
-					index_gen++;
-					}
-
-				NT_tau_SV_tracks_char.push_back((*itr_cand)->charge());
-				NT_tau_SV_tracks_tuID.push_back(tau.pdgId());
-
 				// 1 Opposite Sign track
 				//if (((*itr_cand)->charge() * tau.pdgId()) < 0)
 				// strangely enough something is reverted in PAT
 				// tau has 2 OS tracks and 1 SS (seems like charge or some convention is not conserved)
 				if (((*itr_cand)->charge() * tau.pdgId()) > 0)
 					{
-					NT_tau_SV_fit_track_OS_p4.push_back((*itr_cand)->p4());
-					NT_tau_SV_fit_track_OS_matched_track.push_back(matched_track);
-					NT_tau_SV_fit_track_OS_matched_track_dR.push_back(min_dR);
-					NT_tau_SV_fit_track_OS_matched_gen.push_back(matched_gen);
-					NT_tau_SV_fit_track_OS_matched_gen_dR.push_back(min_dR_gen);
+					track_os = *itr_cand;
 					}
 				// 2 Same Sign tracks
 				else if (i) // first SS track
 					{
-					NT_tau_SV_fit_track_SS1_p4.push_back((*itr_cand)->p4());
-					NT_tau_SV_fit_track_SS1_matched_track.push_back(matched_track);
-					NT_tau_SV_fit_track_SS1_matched_track_dR.push_back(min_dR);
-					NT_tau_SV_fit_track_SS1_matched_gen.push_back(matched_gen);
-					NT_tau_SV_fit_track_SS1_matched_gen_dR.push_back(min_dR_gen);
+					track_ss1 = *itr_cand;
 					i = false;
 					}
 				else // second SS track
 					{
-					NT_tau_SV_fit_track_SS2_p4.push_back((*itr_cand)->p4());
-					NT_tau_SV_fit_track_SS2_matched_track.push_back(matched_track);
-					NT_tau_SV_fit_track_SS2_matched_track_dR.push_back(min_dR);
-					NT_tau_SV_fit_track_SS2_matched_gen.push_back(matched_gen);
-					NT_tau_SV_fit_track_SS2_matched_gen_dR.push_back(min_dR_gen);
+					track_ss2 = *itr_cand;
 					}
 				}
+			NT_tau_SV_fit_track_OS_p4. push_back(track_os ->p4());
+			NT_tau_SV_fit_track_SS1_p4.push_back(track_ss1->p4());
+			NT_tau_SV_fit_track_SS2_p4.push_back(track_ss2->p4());
+
+			// find closest matches to general track
+			double min_dR_os(99999.), min_dR_ss1(99999.), min_dR_ss2(99999.);
+			int matched_track_os = -1, matched_track_ss1 = -1, matched_track_ss2 = -1, index = 0;
+			for(auto iter: allTracks)
+				{
+				double dR_os  = sqrt(pow(iter.eta() - track_os ->p4().eta(), 2) + pow(iter.phi() - track_os ->p4().phi(), 2));
+				double dR_ss1 = sqrt(pow(iter.eta() - track_ss1->p4().eta(), 2) + pow(iter.phi() - track_ss1->p4().phi(), 2));
+				double dR_ss2 = sqrt(pow(iter.eta() - track_ss2->p4().eta(), 2) + pow(iter.phi() - track_ss2->p4().phi(), 2));
+				// there is no order in saving tracks
+				// in principle two sigCands can match to the same track
+				// but then dR should be large
+				// and matchQ (matchQuality) will be large
+				if (dR_os < min_dR_os)
+					{
+					min_dR_os = dR;
+					matched_track_os = index;
+					}
+				if (dR_ss1 < min_dR_ss1)
+					{
+					min_dR_ss1 = dR;
+					matched_track_ss1 = index;
+					}
+				if (dR_ss2 < min_dR_ss2)
+					{
+					min_dR_ss2 = dR;
+					matched_track_ss2 = index;
+					}
+				index++;
+				}
+
+			// for control
+			// it turns out positive tau has 2 negative tracks and 1 positive..
+			// pdgId 15 = +-- tracks
+			NT_tau_SV_tracks_char.push_back((*allTracks[matched_track_os])->charge());
+			NT_tau_SV_tracks_tuID.push_back(tau.pdgId());
+			NT_tau_SV_tracks_char.push_back((*allTracks[matched_track_ss1])->charge());
+			NT_tau_SV_tracks_tuID.push_back(tau.pdgId());
+			NT_tau_SV_tracks_char.push_back((*allTracks[matched_track_ss2])->charge());
+			NT_tau_SV_tracks_tuID.push_back(tau.pdgId());
+
+			double min_dR_gen_os(99999.), min_dR_gen_ss1(99999.), min_dR_gen_ss2(99999.);
+			int matched_gen_os = -1, matched_gen_ss1 = -1, matched_gen_ss2 = -1, index_gen = 0;
+			for(auto iter: NT_gen_tau_final_p4s)
+				{
+				//double dR = sqrt(pow(iter.eta() - (*itr_cand)->p4().eta(),2) + pow(iter.phi() - (*itr_cand)->p4().phi(),2));
+				double dR_os  = sqrt(pow(iter.eta() - track_os ->p4().eta(), 2) + pow(iter.phi() - track_os ->p4().phi(), 2));
+				double dR_ss1 = sqrt(pow(iter.eta() - track_ss1->p4().eta(), 2) + pow(iter.phi() - track_ss1->p4().phi(), 2));
+				double dR_ss2 = sqrt(pow(iter.eta() - track_ss2->p4().eta(), 2) + pow(iter.phi() - track_ss2->p4().phi(), 2));
+				// the problem with matching the same product to different sigCands is even bigger than with tracks
+				// but this is used only in tests -- leaving it be
+				if (dR_os < min_dR_gen_os)
+					{
+					min_dR_gen_os = dR;
+					matched_gen_os = index_gen;
+					}
+				if (dR_ss1 < min_dR_gen_ss1)
+					{
+					min_dR_gen_ss1 = dR;
+					matched_gen_ss1 = index_gen;
+					}
+				if (dR_ss2 < min_dR_gen_ss2)
+					{
+					min_dR_gen_ss2 = dR;
+					matched_gen_ss2 = index_gen;
+					}
+				index_gen++;
+				}
+
+			NT_tau_SV_fit_track_OS_matched_track.push_back(matched_track_os);
+			NT_tau_SV_fit_track_OS_matched_track_dR.push_back(min_dR_os);
+			NT_tau_SV_fit_track_OS_matched_gen.push_back(matched_gen_os);
+			NT_tau_SV_fit_track_OS_matched_gen_dR.push_back(min_dR_gen_os);
+
+			NT_tau_SV_fit_track_SS1_matched_track.push_back(matched_track_ss1);
+			NT_tau_SV_fit_track_SS1_matched_track_dR.push_back(min_dR_ss1);
+			NT_tau_SV_fit_track_SS1_matched_gen.push_back(matched_gen_ss1);
+			NT_tau_SV_fit_track_SS1_matched_gen_dR.push_back(min_dR_gen_ss1);
+
+			NT_tau_SV_fit_track_SS2_matched_track.push_back(matched_track_ss2);
+			NT_tau_SV_fit_track_SS2_matched_track_dR.push_back(min_dR_ss2);
+			NT_tau_SV_fit_track_SS2_matched_gen.push_back(matched_gen_ss2);
+			NT_tau_SV_fit_track_SS2_matched_gen_dR.push_back(min_dR_gen_ss2);
+
+			NT_tau_SV_fit_track_matchQ.push_back(min_dR_os + min_dR_ss1 + min_dR_ss2);
+			NT_tau_SV_fit_track_matchQ_gen.push_back(min_dR_gen_os + min_dR_gen_ss1 + min_dR_gen_ss2);
 			}
 		else
 			{
