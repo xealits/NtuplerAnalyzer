@@ -41,6 +41,27 @@ double b_anglesum(
 	return b1.Angle(b2) + b2.Angle(b3) + b3.Angle(b1);
         }
 
+// it seems tau-lep has smaller angles than lep-jets
+double track_anglesum(
+	Float_t v1eta, Float_t v1phi,
+	Float_t v2eta, Float_t v2phi,
+	Float_t v3eta, Float_t v3phi
+	)
+        {
+
+	TVector3 t1, t2, t3;
+	t1.SetPtEtaPhi(1, v1eta, v1phi);
+	t2.SetPtEtaPhi(1, v2eta, v2phi);
+	t3.SetPtEtaPhi(1, v3eta, v3phi);
+
+	t1.SetMag(1);
+	t2.SetMag(1);
+	t3.SetMag(1);
+
+	return t1.Angle(t2) + t2.Angle(t3) + t3.Angle(t1);
+        }
+
+
 double b_angle_track(
 	Float_t b1x, Float_t b1y, Float_t b1z,
 	Float_t t1eta, Float_t t1phi
@@ -534,7 +555,6 @@ double b_simple_SV(
 	return x_average / x_deviation;
 	}
 
-
 // add pt-s to tracks
 double b_simple_SV_pt(
 	Float_t b1x, Float_t b1y, Float_t b1z,
@@ -545,6 +565,11 @@ double b_simple_SV_pt(
 	Float_t v3pt, Float_t v3eta, Float_t v3phi
 	)
         {
+	Float_t tracker_error = 0.2; // approximately systematic error on positions
+	// 0.0002 is not noticable
+	// 0.002 has slight effect
+	// cannot pass it as function parameter in root/cint/tformula!!!!!!
+
 	TVector3 b_vec1, b_vec2, b_vec3;
 	b_vec1.SetXYZ(b1x, b1y, b1z);
 	b_vec2.SetXYZ(b2x, b2y, b2z);
@@ -608,10 +633,24 @@ double b_simple_SV_pt(
 	dB = perp_b_long3 - perp_b_long1;
 	double x31 = dV.Dot(dB) / dV.Mag2();
 
-	double x_average = (x12 + x23 + x31) / 3;
-	double x_deviation = sqrt(pow(x12 - x_average, 2) + pow(x23 - x_average, 2) + pow(x31 - x_average, 2));
+	// and systematic error of tracker
+	double syst12 = tracker_error / t1.Angle(t2); // technically / Sin (or Tan), but Sin = Angle with these angles
+	double syst23 = tracker_error / t2.Angle(t3); // technically / Sin (or Tan), but Sin = Angle with these angles
+	double syst31 = tracker_error / t3.Angle(t1); // technically / Sin (or Tan), but Sin = Angle with these angles
+	//double syst = pow(syst12, 2) + pow(syst23, 2) + pow(syst31, 2);
+	double syst12_weight = 1/syst12;
+	double syst23_weight = 1/syst23;
+	double syst31_weight = 1/syst31;
 
-	return x_average / x_deviation;
+	//double x_average = (x12 + x23 + x31) / 3;
+	//double x_deviation = pow(x12 - x_average, 2) + pow(x23 - x_average, 2) + pow(x31 - x_average, 2);
+	//double x_dev_syst = x_deviation + syst;
+
+	// weighted average with tracker errors
+	double x_average = (x12*syst12_weight + x23*syst23_weight + x31*syst31_weight) / (syst12_weight + syst23_weight + syst31_weight);
+	double x_deviation = (syst12_weight*pow(x12 - x_average, 2) + syst23_weight*pow(x23 - x_average, 2) + syst31_weight*pow(x31 - x_average, 2))/(2*(syst12_weight + syst23_weight + syst31_weight)/3);
+
+	return x_average / sqrt(x_deviation);
 	}
 
 
