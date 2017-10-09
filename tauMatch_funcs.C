@@ -1,4 +1,5 @@
 #include "TVector3.h"
+#include "TMatrixD.h"
 
 
 double v_angle(
@@ -13,6 +14,15 @@ double v_angle(
 	b2.SetMag(1);
 
 	return b1.Angle(b2);
+        }
+
+double b_Eta(
+	Float_t b1x, Float_t b1y, Float_t b1z
+	)
+        {
+	TVector3 b1;
+	b1.SetXYZ(b1x, b1y, b1z);
+	return b1.Eta();
         }
 
 double b_angle(
@@ -40,6 +50,245 @@ double b_anglesum(
 
 	return b1.Angle(b2) + b2.Angle(b3) + b3.Angle(b1);
         }
+
+
+double b_plane_unitary_volume(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z
+	)
+        {
+	TVector3 b1,b2,b3;
+
+	b1.SetXYZ(b1x, b1y, b1z);
+	b2.SetXYZ(b2x, b2y, b2z);
+	b3.SetXYZ(b3x, b3y, b3z);
+
+	b1.SetMag(1);
+	b2.SetMag(1);
+	b3.SetMag(1);
+
+	TMatrixD m(3,3);
+	m[0][0] = b1[0];
+	m[0][1] = b1[1];
+	m[0][2] = b1[2];
+	m[1][0] = b2[0];
+	m[1][1] = b2[1];
+	m[1][2] = b2[2];
+	m[2][0] = b3[0];
+	m[2][1] = b3[1];
+	m[2][2] = b3[2];
+
+	return m.Determinant();
+        }
+
+double b_plane_angle_sum(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z,
+	Float_t v1eta, Float_t v1phi
+	)
+        {
+	TVector3 b1,b2,b3, tau;
+
+	b1.SetXYZ(b1x, b1y, b1z);
+	b2.SetXYZ(b2x, b2y, b2z);
+	b3.SetXYZ(b3x, b3y, b3z);
+	tau.SetPtEtaPhi(1, v1eta, v1phi);
+
+	//b1.SetMag(1);
+	//b2.SetMag(1);
+	//b3.SetMag(1);
+
+	// find vector products of b _in_direction_ of tau
+	// sum of them will give b-plane vector
+
+	TVector3 b12 = b1.Cross(b2);
+	TVector3 b23 = b2.Cross(b3);
+	TVector3 b31 = b3.Cross(b1);
+
+	if (b12 * tau < 0) b12 *= -1;
+	if (b23 * tau < 0) b23 *= -1;
+	if (b31 * tau < 0) b31 *= -1;
+
+	return b31.Angle(b12) + b31.Angle(b23) + b12.Angle(b23);
+        }
+
+double b_plane_Eta(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z,
+	Float_t v1eta, Float_t v1phi
+	)
+        {
+	TVector3 b1,b2,b3, tau;
+
+	b1.SetXYZ(b1x, b1y, b1z);
+	b2.SetXYZ(b2x, b2y, b2z);
+	b3.SetXYZ(b3x, b3y, b3z);
+	tau.SetPtEtaPhi(1, v1eta, v1phi);
+
+	b1.SetMag(1);
+	b2.SetMag(1);
+	b3.SetMag(1);
+
+	// find vector products of b _in_direction_ of tau
+	// sum of them will give b-plane vector
+
+	TVector3 b12 = b1.Cross(b2);
+	TVector3 b23 = b2.Cross(b3);
+	TVector3 b31 = b3.Cross(b1);
+
+	if (b12 * tau < 0) b12 *= -1;
+	if (b23 * tau < 0) b23 *= -1;
+	if (b31 * tau < 0) b31 *= -1;
+
+	TVector3 b_plane = b12 + b23 + b31;
+
+	return b_plane.Eta();
+        }
+
+double b_plane_Phi(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z,
+	Float_t v1eta, Float_t v1phi
+	)
+        {
+	TVector3 b1,b2,b3, tau;
+
+	b1.SetXYZ(b1x, b1y, b1z);
+	b2.SetXYZ(b2x, b2y, b2z);
+	b3.SetXYZ(b3x, b3y, b3z);
+	tau.SetPtEtaPhi(1, v1eta, v1phi);
+
+	b1.SetMag(1);
+	b2.SetMag(1);
+	b3.SetMag(1);
+
+	// find vector products of b _in_direction_ of tau
+	// sum of them will give b-plane vector
+
+	TVector3 b12 = b1.Cross(b2);
+	TVector3 b23 = b2.Cross(b3);
+	TVector3 b31 = b3.Cross(b1);
+
+	if (b12 * tau < 0) b12 *= -1;
+	if (b23 * tau < 0) b23 *= -1;
+	if (b31 * tau < 0) b31 *= -1;
+
+	TVector3 b_plane = b12 + b23 + b31;
+
+	return b_plane.Phi();
+        }
+
+
+
+
+double b_plane_angle_tau(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z,
+	Float_t v1eta, Float_t v1phi
+	)
+        {
+	TVector3 b1,b2,b3, tau;
+
+	b1.SetXYZ(b1x, b1y, b1z);
+	b2.SetXYZ(b2x, b2y, b2z);
+	b3.SetXYZ(b3x, b3y, b3z);
+	tau.SetPtEtaPhi(1, v1eta, v1phi);
+
+	//b1.SetMag(1);
+	//b2.SetMag(1);
+	//b3.SetMag(1);
+
+	// find vector products of b _in_direction_ of tau
+	// sum of them will give b-plane vector
+
+	TVector3 b12 = b1.Cross(b2);
+	TVector3 b23 = b2.Cross(b3);
+	TVector3 b31 = b3.Cross(b1);
+
+	if (b12 * tau < 0) b12 *= -1;
+	if (b23 * tau < 0) b23 *= -1;
+	if (b31 * tau < 0) b31 *= -1;
+
+	TVector3 b_plane = b12 + b23 + b31;
+
+	return b_plane.Angle(tau);
+        }
+
+double b_plane_dPhi_tau(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z,
+	Float_t v1eta, Float_t v1phi
+	)
+        {
+	TVector3 b1,b2,b3, tau;
+
+	b1.SetXYZ(b1x, b1y, b1z);
+	b2.SetXYZ(b2x, b2y, b2z);
+	b3.SetXYZ(b3x, b3y, b3z);
+	tau.SetPtEtaPhi(1, v1eta, v1phi);
+
+	//b1.SetMag(1);
+	//b2.SetMag(1);
+	//b3.SetMag(1);
+
+	// find vector products of b _in_direction_ of tau
+	// sum of them will give b-plane vector
+
+	TVector3 b12 = b1.Cross(b2);
+	TVector3 b23 = b2.Cross(b3);
+	TVector3 b31 = b3.Cross(b1);
+
+	if (b12 * tau < 0) b12 *= -1;
+	if (b23 * tau < 0) b23 *= -1;
+	if (b31 * tau < 0) b31 *= -1;
+
+	TVector3 b_plane = b12 + b23 + b31;
+
+	return (b_plane - tau).Phi();
+        }
+
+double b_plane_dEta_tau(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z,
+	Float_t v1eta, Float_t v1phi
+	)
+        {
+	TVector3 b1,b2,b3, tau;
+
+	b1.SetXYZ(b1x, b1y, b1z);
+	b2.SetXYZ(b2x, b2y, b2z);
+	b3.SetXYZ(b3x, b3y, b3z);
+	tau.SetPtEtaPhi(1, v1eta, v1phi);
+
+	//b1.SetMag(1);
+	//b2.SetMag(1);
+	//b3.SetMag(1);
+
+	// find vector products of b _in_direction_ of tau
+	// sum of them will give b-plane vector
+
+	TVector3 b12 = b1.Cross(b2);
+	TVector3 b23 = b2.Cross(b3);
+	TVector3 b31 = b3.Cross(b1);
+
+	if (b12 * tau < 0) b12 *= -1;
+	if (b23 * tau < 0) b23 *= -1;
+	if (b31 * tau < 0) b31 *= -1;
+
+	TVector3 b_plane = b12 + b23 + b31;
+
+	return (b_plane - tau).Eta();
+        }
+
+
+
 
 // it seems tau-lep has smaller angles than lep-jets
 double track_anglesum(
@@ -296,6 +545,43 @@ double b_perp_angle(
 	}
 
 double b_tau_angle(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t v1eta, Float_t v1phi
+	)
+        {
+	TVector3 b_vec, tau;
+	b_vec.SetXYZ(b1x, b1y, b1z);
+	tau.SetPtEtaPhi(1, v1eta, v1phi);
+
+	return b_vec.Angle(tau);
+	}
+
+double b_tracksum_angle(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t v1pt, Float_t v1eta, Float_t v1phi,
+	Float_t v2pt, Float_t v2eta, Float_t v2phi,
+	Float_t v3pt, Float_t v3eta, Float_t v3phi
+	)
+        {
+	TVector3 b_vec;
+	b_vec.SetXYZ(b1x, b1y, b1z);
+
+	TVector3 t1, t2, t3;
+	t1.SetPtEtaPhi(v1pt, v1eta, v1phi);
+	//t1.SetMag(1);
+	t2.SetPtEtaPhi(v2pt, v2eta, v2phi);
+	//t2.SetMag(1);
+	t3.SetPtEtaPhi(v3pt, v3eta, v3phi);
+	//t3.SetMag(1);
+
+	TVector3 t_sum = t1 + t2 + t3;
+	t_sum.SetMag(1);
+
+	return b_vec.Angle(t_sum);
+	}
+
+
+double b_tracksum1_angle(
 	Float_t b1x, Float_t b1y, Float_t b1z,
 	Float_t v1eta, Float_t v1phi,
 	Float_t v2eta, Float_t v2phi,
@@ -555,6 +841,7 @@ double b_simple_SV(
 	return x_average / x_deviation;
 	}
 
+// FINAL SV calc
 // add pt-s to tracks
 double b_simple_SV_pt(
 	Float_t b1x, Float_t b1y, Float_t b1z,
