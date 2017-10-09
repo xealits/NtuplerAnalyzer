@@ -1610,7 +1610,7 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		auto ref_vertex = *((*track_cands)[i].vertexRef());
 
 		auto closest_point = (*track_cands)[i].vertex();
-		auto distance = ref_vertex.position() - closest_point;
+		auto distance = closest_point - ref_vertex.position();
 
 		// here I need to select "good" tracks
 		// save them to all tracks

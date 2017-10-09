@@ -1,5 +1,10 @@
 #include "TVector3.h"
+#include "TVector2.h"
 #include "TMatrixD.h"
+#include "TMath.h"
+#include "Math/SVector.h"
+//#include "Math/SVector2.h"
+#include "Math/SMatrix.h"
 
 
 double v_angle(
@@ -712,14 +717,14 @@ double b_plane_angle3(
 // correcting Z component of b, which has largest reconstruction error
 // other components are not changed
 // --- worse than projections
-double b_cor_angle_trk(
+double corZ_angle_trk(
 	Float_t b1x, Float_t b1y, Float_t b1z,
 	Float_t v1eta, Float_t v1phi,
 	Float_t v2eta, Float_t v2phi
 	)
         {
 	TVector3 b_vec, trk, tau;
-	b_vec.SetXYZ(b1x, b1y, b1z);
+	b_vec.SetXYZ(-b1x, -b1y, -b1z);
 	trk.SetPtEtaPhi(1, v1eta, v1phi);
 	tau.SetPtEtaPhi(1, v2eta, v2phi);
 
@@ -740,6 +745,114 @@ double b_cor_angle_trk(
 	return b_vec.Angle(trk_perp);
 	//return trk_perp.Angle(tau);
 	}
+
+// let's try anyway
+double corZ_average_SV(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z,
+	Float_t v1pt, Float_t v1eta, Float_t v1phi,
+	Float_t v2pt, Float_t v2eta, Float_t v2phi,
+	Float_t v3pt, Float_t v3eta, Float_t v3phi
+	)
+        {
+	Float_t tracker_error = 0.2; // approximately systematic error on positions
+
+	TVector3 b_vec1, b_vec2, b_vec3;
+	b_vec1.SetXYZ(-b1x, -b1y, -b1z);
+	b_vec2.SetXYZ(-b2x, -b2y, -b2z);
+	b_vec3.SetXYZ(-b3x, -b3y, -b3z);
+
+	TVector3 t1, t2, t3;
+	t1.SetPtEtaPhi(v1pt, v1eta, v1phi);
+	t1.SetMag(1);
+	t2.SetPtEtaPhi(v2pt, v2eta, v2phi);
+	t2.SetMag(1);
+	t3.SetPtEtaPhi(v3pt, v3eta, v3phi);
+	t3.SetMag(1);
+
+	TVector3 t_sum = t1 + t2 + t3;
+	t_sum.SetMag(1);
+
+	// after establishing direction of tau
+	// tracks are only geometrical lines
+	t1.SetMag(1);
+	t2.SetMag(1);
+	t3.SetMag(1);
+
+	// instead of projections correct Z
+	//TVector3 b_long1 = t_sum * (b_vec1.Dot(t_sum));
+	//TVector3 b_perp1 = b_vec1 - b_long1;
+	//TVector3 b_long2 = t_sum * (b_vec2.Dot(t_sum));
+	//TVector3 b_perp2 = b_vec2 - b_long2;
+	//TVector3 b_long3 = t_sum * (b_vec3.Dot(t_sum));
+	//TVector3 b_perp3 = b_vec3 - b_long3;
+	double bz_cor = - (b_vec1.x()*t_sum.x() + b_vec1.y()*t_sum.y()) / t_sum.z();
+	b_vec1.SetZ(bz_cor);
+	bz_cor = - (b_vec2.x()*t_sum.x() + b_vec2.y()*t_sum.y()) / t_sum.z();
+	b_vec2.SetZ(bz_cor);
+	bz_cor = - (b_vec3.x()*t_sum.x() + b_vec3.y()*t_sum.y()) / t_sum.z();
+	b_vec3.SetZ(bz_cor);
+
+	// in the perp plane find b long to tracks
+
+	// perpendicular parts of tracks
+	TVector3 t1_long = t_sum * (t1.Dot(t_sum));
+	TVector3 t1_perp = t1 - t1_long;
+	TVector3 t2_long = t_sum * (t2.Dot(t_sum));
+	TVector3 t2_perp = t2 - t2_long;
+	TVector3 t3_long = t_sum * (t3.Dot(t_sum));
+	TVector3 t3_perp = t3 - t3_long;
+
+	t1_perp.SetMag(1);
+	t2_perp.SetMag(1);
+	t3_perp.SetMag(1);
+
+	//TVector3 perp_b_long1 = t1_perp * (b_perp1.Dot(t1_perp));
+	////TVector3 perp_b_perp1 = b_perp1 - perp_b_long1;
+	//TVector3 perp_b_long2 = t2_perp * (b_perp2.Dot(t2_perp));
+	////TVector3 perp_b_perp2 = b_perp2 - perp_b_long2;
+	//TVector3 perp_b_long3 = t3_perp * (b_perp3.Dot(t3_perp));
+	////TVector3 perp_b_perp3 = b_perp3 - perp_b_long3;
+
+	// just using corrected b vecs
+	TVector3 perp_b_long1 = t1_perp * (b_vec1.Dot(t1_perp));
+	TVector3 perp_b_long2 = t2_perp * (b_vec2.Dot(t2_perp));
+	TVector3 perp_b_long3 = t3_perp * (b_vec3.Dot(t3_perp));
+
+
+	// the best point calculation
+	TVector3 dV = t1 - t2;
+	TVector3 dB = perp_b_long1 - perp_b_long2;
+	double x12 = dV.Dot(dB) / dV.Mag2();
+	dV = t2 - t3;
+	dB = perp_b_long2 - perp_b_long3;
+	double x23 = dV.Dot(dB) / dV.Mag2();
+	dV = t3 - t1;
+	dB = perp_b_long3 - perp_b_long1;
+	double x31 = dV.Dot(dB) / dV.Mag2();
+
+	// and systematic error of tracker
+	double syst12 = tracker_error / t1.Angle(t2); // technically / Sin (or Tan), but Sin = Angle with these angles
+	double syst23 = tracker_error / t2.Angle(t3); // technically / Sin (or Tan), but Sin = Angle with these angles
+	double syst31 = tracker_error / t3.Angle(t1); // technically / Sin (or Tan), but Sin = Angle with these angles
+	//double syst = pow(syst12, 2) + pow(syst23, 2) + pow(syst31, 2);
+	double syst12_weight = 1/syst12;
+	double syst23_weight = 1/syst23;
+	double syst31_weight = 1/syst31;
+
+	//double x_average = (x12 + x23 + x31) / 3;
+	//double x_deviation = pow(x12 - x_average, 2) + pow(x23 - x_average, 2) + pow(x31 - x_average, 2);
+	//double x_dev_syst = x_deviation + syst;
+
+	// weighted average with tracker errors
+	double x_average = (x12*syst12_weight + x23*syst23_weight + x31*syst31_weight) / (syst12_weight + syst23_weight + syst31_weight);
+	double x_deviation = (syst12_weight*pow(x12 - x_average, 2) + syst23_weight*pow(x23 - x_average, 2) + syst31_weight*pow(x31 - x_average, 2))/(2*(syst12_weight + syst23_weight + syst31_weight)/3);
+
+	return x_average / sqrt(x_deviation);
+	}
+
+
 
 // testing third version, aiming at optimal direction
 // avarage of b-track plane intersections
@@ -884,8 +997,9 @@ double b_track_plane_intersections_average_perp_angle(
 // doesn't break with typos
 
 
+// optimal directions
 // ok, it's late, let's try simple SV with this plane direction
-double b_track_plane_intersections_raw_SV(
+double optimal_directions_intersections_raw_SV(
 	Float_t b1x, Float_t b1y, Float_t b1z,
 	Float_t b2x, Float_t b2y, Float_t b2z,
 	Float_t b3x, Float_t b3y, Float_t b3z,
@@ -899,9 +1013,9 @@ double b_track_plane_intersections_raw_SV(
 	// it will cancel out with weights
 
 	TVector3 b_vec1, b_vec2, b_vec3;
-	b_vec1.SetXYZ(b1x, b1y, b1z); // 100% known that z here has giant error -- need to do something with it
-	b_vec2.SetXYZ(b2x, b2y, b2z);
-	b_vec3.SetXYZ(b3x, b3y, b3z);
+	b_vec1.SetXYZ(-b1x, -b1y, -b1z); // 100% known that z here has giant error -- need to do something with it
+	b_vec2.SetXYZ(-b2x, -b2y, -b2z);
+	b_vec3.SetXYZ(-b3x, -b3y, -b3z);
 
 	TVector3 t1, t2, t3;
 	t1.SetPtEtaPhi(v1pt, v1eta, v1phi);
@@ -1225,6 +1339,507 @@ double b_simple_SV_pt(
 
 
 
+
+
+
+
+// SV in xy plane, ignoring z
+//
+
+// shouldn't be rperp
+double xy_b_track_angle(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t v1eta, Float_t v1phi
+	)
+        {
+	TVector3 b1, tau;
+
+	b1.SetXYZ(b1x, b1y, 0);
+	tau.SetPtEtaPhi(1, v1eta, v1phi);
+	tau.SetZ(0);
+
+	return b1.Angle(tau);
+	}
+
+
+// degenerative ROOT and its' crap packages...
+
+// x
+// y
+//  1 2
+struct vec2 {
+	double x;
+	double y;
+	};
+
+struct mat2 {
+	double x1;
+	double x2;
+	double y1;
+	double y2;
+	};
+
+struct vec2 dot2(struct mat2 mat, struct vec2 vec)
+	//struct mat2 tracks_inv_m = {.x1 = tracks[0][0], .x2 = tracks[1][0], .y1 = tracks[0][1], .y2 = tracks[1][1]};
+	{
+	return {vec.x*mat.x1 + vec.y*mat.x2, vec.x*mat.y1 + vec.y*mat.y2};
+	}
+
+//struct vec2 xy_b_track_pair_bestpoint(
+double xy_b_delirium_Phi(
+	Float_t b1x, Float_t b1y
+	)
+        {
+	TVector3 b1;
+	b1.SetXYZ(b1x, b1y, 0);
+	return b1.Phi();
+	}
+
+double xy_b_delirium_tauPhi(
+	Float_t taueta, Float_t tauphi
+	)
+        {
+	TVector3 b1, v2;
+	b1.SetPtEtaPhi(1, taueta, tauphi);
+	b1.SetZ(0);
+	b1.SetMag(1);
+	v2.SetPtEtaPhi(1, 0, tauphi);
+	return b1.Angle(v2);
+	}
+
+
+//struct vec2 xy_b_track_pair_bestpoint(
+//	int which,
+//	Float_t b1x, Float_t b1y, Float_t b1z,
+//	Float_t b2x, Float_t b2y, Float_t b2z,
+//	Float_t v1eta, Float_t v1phi,
+//	Float_t v2eta, Float_t v2phi
+//	)
+//        {
+//	struct vec2 out = {0,0};
+//	return out;
+//	}
+
+struct vec2 xy_b_track_pair_bestpoint(
+//double xy_b_track_pair_bestpoint_test(
+	int which,
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t v1eta, Float_t v1phi,
+	Float_t v2eta, Float_t v2phi
+	//Float_t tauphi
+	)
+        {
+	TVector3 b1, b2, t1, t2;
+
+	// b is inverted in ntupler
+	b1.SetXYZ(-b1x, -b1y, 0);
+	b2.SetXYZ(-b2x, -b2y, 0);
+
+	t1.SetPtEtaPhi(1, v1eta, v1phi);
+	t1.SetZ(0);
+	t2.SetPtEtaPhi(1, v2eta, v2phi);
+	t2.SetZ(0);
+
+	t1.SetMag(1);
+	t2.SetMag(1);
+
+	TVector3 t_sum = t1 + t2;
+	t_sum.SetMag(1);
+
+	//TVector3 tau;
+	//tau.SetPtEtaPhi(1, 0, tauphi);
+	//tau.SetMag(1);
+
+	//TVectorD* t1_xy = new TVectorD(2);
+	//TVectorD* t2_xy = new TVectorD(2);
+	//t1_xy->SetXY(t1.X(), t1.Y());
+	//t2_xy->SetXY(t2.X(), t2.Y());
+	//ROOT::Math::SVector2 t1_xy(t1.X(), t1.Y());
+	//ROOT::Math::SVector2 t2_xy(t2.X(), t2.Y());
+	//SVector2 t1_xy(t1.X(), t1.Y());
+	//SVector2 t2_xy(t2.X(), t2.Y());
+	//SVector<double,2> t1_xy(t1.X(), t1.Y());
+	//SVector<double,2> t2_xy(t2.X(), t2.Y());
+	struct vec2 t1_xy = {.x = t1.X(), .y =  t1.Y()};
+	struct vec2 t2_xy = {.x = t2.X(), .y =  t2.Y()};
+
+	TMatrixD tracks_orig(2,2);
+	tracks_orig[0][0] =  t1.X();
+	tracks_orig[0][1] =  t1.Y();
+	tracks_orig[1][0] = -t2.X();
+	tracks_orig[1][1] = -t2.Y();
+	//SMatrix22 tracks;
+	TMatrixD tracks(2,2);
+	tracks[0][0] =  t1.X();
+	tracks[0][1] =  t1.Y();
+	tracks[1][0] = -t2.X();
+	tracks[1][1] = -t2.Y();
+	// not sure about the row/coloumn order here
+	// t1 multiplies by x
+	// -t2 by y
+	tracks.Invert();
+	// the only thing needed from this crap
+
+	//TVectorD *bs_xy = new TVectorD(2);
+	//bs_xy->SetXY(b2.x() - b1.x(), b2.y() - b1.y());
+	//ROOT::Math::SVector2 bs_xy(b2.x() - b1.x(), b2.y() - b1.y());
+	//SVector2 bs_xy(b2.x() - b1.x(), b2.y() - b1.y());
+	//auto solution = tracks * (bs_xy);
+
+	struct vec2 bs_xy = {.x = b2.x() - b1.x(), .y = b2.y() - b1.y()};
+	//struct mat2 tracks_inv_m = {.x1 = tracks[0][0], .x2 = tracks[0][1], .y1 = tracks[1][0], .y2 = tracks[1][1]};
+	struct mat2 tracks_inv_m = {.x1 = tracks[0][0], .x2 = tracks[1][0], .y1 = tracks[0][1], .y2 = tracks[1][1]};
+
+	struct vec2 solution = dot2(tracks_inv_m, bs_xy);
+
+	//auto best_point = t1_xy*solution.X() + b1;
+	// should = to
+	//auto best_point2 = t2_xy*solution.y() + b2;
+
+	struct vec2 best_point1, best_point2;
+
+	// tests
+	// t1 - x parameter solution
+	// t2 - y parameter solution
+	best_point1.x = t1_xy.x * solution.x + b1.x();
+	best_point1.y = t1_xy.y * solution.x + b1.y();
+	best_point2.x = t2_xy.x * solution.y + b2.x();
+	best_point2.y = t2_xy.y * solution.y + b2.y();
+
+	TVector3 t1_long, t1_perp, t2_long, t2_perp;
+
+	/*
+	switch (which)
+		{
+		case -12:
+			return b1.X();
+		case -13:
+			return b1.Y();
+		case -14:
+			return b1.Z();
+		// check solution
+		case 1:
+			//return (solution.x * t1[0] - solution.y * t2[0]) - (b2.x() - b1.x());
+			return (solution.x * t1.x() - solution.y * t2.x()) - (b2.x() - b1.x());
+		case 2:
+			//return (solution.x * t1[1] - solution.y * t2[1]) - (b2.y() - b1.y());
+			return (solution.x * t1.y() - solution.y * t2.y()) - (b2.y() - b1.y());
+		case 3:
+			return (tracks_orig * tracks)[0][0];
+			break;
+		case 4:
+			return (tracks_orig * tracks)[0][1];
+			break;
+		case 5:
+			return (tracks_orig * tracks)[1][0];
+			break;
+		case 6:
+			return (tracks_orig * tracks)[1][1];
+			break;
+		case 7:
+			return abs(best_point1.x - best_point2.x) + abs(best_point1.y - best_point2.y);
+			break;
+		case 8:
+			return solution.x;
+		case 9:
+			return solution.y;
+		case 10:
+			// track perp part is along b or against b
+			//t1_long = t_sum * (t1.Dot(t_sum));
+			//t1_perp = t1 - t1_long;
+			t1_long = tau * (t1.Dot(tau));
+			t1_perp = t1 - t1_long;
+			return t1_perp * b1;
+
+		case 11:
+			//t2_long = t_sum * (t2.Dot(t_sum));
+			//t2_perp = t2 - t2_long;
+			t2_long = tau * (t2.Dot(tau));
+			t2_perp = t2 - t2_long;
+			return t2_perp * b2;
+
+		case 12:
+			// project t1 on t2
+			t2.SetMag(1);
+			t1_long = t2 * (t1.Dot(t2));
+			t1_perp = t1 - t1_long;
+			return t1_perp * b1;
+		case 13:
+			// project t1 on t2
+			t1.SetMag(1);
+			t2_long = t1 * (t2.Dot(t1));
+			t2_perp = t2 - t2_long;
+			return t2_perp * b2;
+
+		}
+	return 0;
+	}
+	*/
+
+	struct vec2 best_point;
+	if (which > 0)
+		{
+		best_point.x = t1_xy.x * solution.x + b1.x();
+		best_point.y = t1_xy.y * solution.x + b1.y();
+		}
+	else
+		{
+		best_point.x = t2_xy.x * solution.y + b2.x();
+		best_point.y = t2_xy.y * solution.y + b2.y();
+		}
+	//struct vec2 best_point = (which > 0 ? struct vec2 {.x = t1_xy.x * solution.x + b1.x(), .y= t1_xy.y * solution.y + b1.y()} : struct vec2 {.x = t2_xy.x * solution.x + b2.x(), .y= t2_xy.y * solution.y + b2.y()});
+	//struct vec2 best_point2 = {.x = t2_xy.x * solution.x + b2.x(), .y= t2_xy.y * solution.y + b2.y()};
+	return best_point;
+	}
+
+
+double xy_b_track_pair_bestpoint_tests(
+	int which,
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t v1eta, Float_t v1phi,
+	Float_t v2eta, Float_t v2phi
+	)
+	{
+	TVector3 b1, b2, t1, t2;
+
+	b1.SetXYZ(b1x, b1y, 0);
+	t1.SetPtEtaPhi(1, v1eta, v1phi);
+	t1.SetZ(0);
+
+	b2.SetXYZ(b2x, b2y, 0);
+	t2.SetPtEtaPhi(1, v2eta, v2phi);
+	t2.SetZ(0);
+
+	t1.SetMag(1);
+	t2.SetMag(1);
+
+	//TVectorD* t1_xy = new TVectorD(2);
+	//TVectorD* t2_xy = new TVectorD(2);
+	//t1_xy->SetXY(t1.X(), t1.Y());
+	//t2_xy->SetXY(t2.X(), t2.Y());
+	//ROOT::Math::SVector2 t1_xy(t1.X(), t1.Y());
+	//ROOT::Math::SVector2 t2_xy(t2.X(), t2.Y());
+	//SVector2 t1_xy(t1.X(), t1.Y());
+	//SVector2 t2_xy(t2.X(), t2.Y());
+	//SVector<double,2> t1_xy(t1.X(), t1.Y());
+	//SVector<double,2> t2_xy(t2.X(), t2.Y());
+	struct vec2 t1_xy = {.x = t1.X(), .y =  t1.Y()};
+	struct vec2 t2_xy = {.x = t2.X(), .y =  t2.Y()};
+
+	//SMatrix22 tracks;
+	TMatrixD tracks_orig(2,2);
+	tracks_orig[0][0] = t1[0];
+	tracks_orig[0][1] = t1[1];
+	tracks_orig[1][0] = -t2[0];
+	tracks_orig[1][1] = -t2[1];
+	TMatrixD tracks(2,2);
+	tracks[0][0] = t1[0];
+	tracks[0][1] = t1[1];
+	tracks[1][0] = -t2[0];
+	tracks[1][1] = -t2[1];
+	// not sure about the row/coloumn order here
+	// t1 multiplies by x
+	// -t2 by y
+	tracks.Invert();
+	// the only thing needed from this crap
+
+	//TVectorD *bs_xy = new TVectorD(2);
+	//bs_xy->SetXY(b2.x() - b1.x(), b2.y() - b1.y());
+	//ROOT::Math::SVector2 bs_xy(b2.x() - b1.x(), b2.y() - b1.y());
+	//SVector2 bs_xy(b2.x() - b1.x(), b2.y() - b1.y());
+	//auto solution = tracks * (bs_xy);
+
+	struct vec2 bs_xy = {.x = b2.x() - b1.x(), .y = b2.y() - b1.y()};
+	//struct mat2 tracks_inv_m = {.x1 = tracks[0][0], .x2 = tracks[0][1], .y1 = tracks[1][0], .y2 = tracks[1][1]};
+	struct mat2 tracks_inv_m = {.x1 = tracks[0][0], .x2 = tracks[1][0], .y1 = tracks[0][1], .y2 = tracks[1][1]};
+
+	struct vec2 solution = dot2(tracks_inv_m, bs_xy);
+
+	//auto best_point = t1_xy*solution.X() + b1;
+	// should = to
+	//auto best_point2 = t2_xy*solution.y() + b2;
+
+	//struct vec2 best_point = (which > 0 ? {.x = t1_xy.x * solution.x + b1.x(), .y= t1_xy.y * solution.y + b1.y()} : {.x = t2_xy.x * solution.x + b2.x(), .y= t2_xy.y * solution.y + b2.y()});
+	//struct vec2 best_point2 = {.x = t2_xy.x * solution.x + b2.x(), .y= t2_xy.y * solution.y + b2.y()};
+	//return best_point;
+
+	switch (which)
+		{
+		// check solution
+		case 1:
+			return (solution.x * t1[0] - solution.y * t2[0]) - (b2.x() - b1.x());
+			break;
+		case 2:
+			return (solution.x * t1[1] - solution.y * t2[1]) - (b2.y() - b1.y());
+			break;
+		case 3:
+			return (tracks_orig * tracks)[0][0];
+			break;
+		case 4:
+			return (tracks_orig * tracks)[0][1];
+			break;
+		case 5:
+			return (tracks_orig * tracks)[1][0];
+			break;
+		case 6:
+			return (tracks_orig * tracks)[1][1];
+			break;
+		}
+	return 0;
+	}
+
+// 
+double xy_plane_b_tau_directions(
+	int which,
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z,
+	Float_t v1eta, Float_t v1phi,
+	Float_t v2eta, Float_t v2phi,
+	Float_t v3eta, Float_t v3phi
+	)
+        {
+	TVector3 b1, b2, b3;
+	b1.SetXYZ(b1x, b1y, 0);
+	b2.SetXYZ(b2x, b2y, 0);
+	b3.SetXYZ(b3x, b3y, 0);
+	TVector3 t1, t2, t3;
+	t1.SetPtEtaPhi(1, 0, v1phi); // maybe just eta = 0?
+	t2.SetPtEtaPhi(1, 0, v2phi);
+	t3.SetPtEtaPhi(1, 0, v3phi);
+	TVector3 t_sum = t1 + t2 + t3;
+	t_sum.SetMag(1);
+
+	switch(which)
+		{
+		case 1:
+			return t_sum.Dot(b1);
+		case 2:
+			return t_sum.Dot(b2);
+		case 3:
+			return t_sum.Dot(b3);
+		}
+
+	return 0;
+	}
+
+// 
+//TVectorD xy_b_track_pair_bestpoint(
+//double xy_b_track_pair_bestpoint(
+double xy_average_SV(
+	int which,
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z,
+	Float_t v1eta, Float_t v1phi,
+	Float_t v2eta, Float_t v2phi,
+	Float_t v3eta, Float_t v3phi
+	)
+        {
+	struct vec2 bp12 = xy_b_track_pair_bestpoint( 1,
+		b1x, b1y, b1z,
+		b2x, b2y, b2z,
+		v1eta, v1phi,
+		v2eta, v2phi);
+	struct vec2 bp23 = xy_b_track_pair_bestpoint( 1,
+		b2x, b2y, b2z,
+		b3x, b3y, b3z,
+		v2eta, v2phi,
+		v3eta, v3phi);
+	struct vec2 bp31 = xy_b_track_pair_bestpoint( 1,
+		b3x, b3y, b3z,
+		b1x, b1y, b1z,
+		v3eta, v3phi,
+		v1eta, v1phi);
+
+	double av_x = (bp12.x + bp23.x + bp31.x) / 3;
+	double av_y = (bp12.y + bp23.y + bp31.y) / 3;
+
+	double dev_x = sqrt((pow(bp12.x - av_x, 2) + pow(bp23.x - av_x, 2) + pow(bp31.x - av_x, 2)) / 3);
+	double dev_y = sqrt((pow(bp12.y - av_y, 2) + pow(bp23.y - av_y, 2) + pow(bp31.y - av_y, 2)) / 3);
+
+	TVector3 t1, t2, t3, t_sum;
+	double tau_dir = 0;
+	switch (which)
+		{
+		case -3:
+			// proj on tau scaled by deviations
+			t1.SetPtEtaPhi(1, 0, v1phi); // maybe just eta = 0?
+			t2.SetPtEtaPhi(1, 0, v2phi);
+			t3.SetPtEtaPhi(1, 0, v3phi);
+			//t1.SetZ(0);
+			//t2.SetZ(0);
+			//t3.SetZ(0);
+			t_sum = t1 + t2 + t3;
+			t_sum.SetMag(1);
+
+			tau_dir = t_sum.X() * av_x / dev_x + t_sum.Y() * av_y / dev_y;
+
+			return tau_dir;
+
+		case -2:
+			// flightLength in xy proj on tau
+			t1.SetPtEtaPhi(1, 0, v1phi); // maybe just eta = 0?
+			t2.SetPtEtaPhi(1, 0, v2phi);
+			t3.SetPtEtaPhi(1, 0, v3phi);
+			//t1.SetZ(0);
+			//t2.SetZ(0);
+			//t3.SetZ(0);
+			t_sum = t1 + t2 + t3;
+			t_sum.SetMag(1);
+
+			tau_dir = t_sum.X() * av_x + t_sum.Y() * av_y;
+
+			return tau_dir;
+
+		case -1:
+			t1.SetPtEtaPhi(1, 0, v1phi); // maybe just eta = 0?
+			t2.SetPtEtaPhi(1, 0, v2phi);
+			t3.SetPtEtaPhi(1, 0, v3phi);
+			//t1.SetZ(0);
+			//t2.SetZ(0);
+			//t3.SetZ(0);
+			t_sum = t1 + t2 + t3;
+			t_sum.SetMag(1);
+
+			tau_dir = t_sum.X() * av_x + t_sum.Y() * av_y;
+
+			if (tau_dir > 0)
+				return  sqrt(pow(av_x, 2) + pow(av_y, 2));
+			else
+				return -sqrt(pow(av_x, 2) + pow(av_y, 2));
+
+		case 0:
+			t1.SetPtEtaPhi(1, 0, v1phi); // maybe just eta = 0?
+			t2.SetPtEtaPhi(1, 0, v2phi);
+			t3.SetPtEtaPhi(1, 0, v3phi);
+			//t1.SetZ(0);
+			//t2.SetZ(0);
+			//t3.SetZ(0);
+			t_sum = t1 + t2 + t3;
+			t_sum.SetMag(1);
+
+			tau_dir = t_sum.X() * av_x + t_sum.Y() * av_y;
+
+			if (tau_dir > 0)
+				return sqrt(pow(av_x/dev_x, 2) + pow(av_y/dev_y, 2));
+			else
+				return -sqrt(pow(av_x/dev_x, 2) + pow(av_y/dev_y, 2));
+			//return av_x;
+		case 1:
+			return av_x;
+		case 2:
+			return av_y;
+		case 3:
+			return dev_x;
+		case 4:
+			return dev_y;
+		}
+
+	return 0;
+	}
 
 
 
