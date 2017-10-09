@@ -708,6 +708,287 @@ double b_plane_angle3(
 	}
 
 
+// testing second version of b projection
+// correcting Z component of b, which has largest reconstruction error
+// other components are not changed
+// --- worse than projections
+double b_cor_angle_trk(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t v1eta, Float_t v1phi,
+	Float_t v2eta, Float_t v2phi
+	)
+        {
+	TVector3 b_vec, trk, tau;
+	b_vec.SetXYZ(b1x, b1y, b1z);
+	trk.SetPtEtaPhi(1, v1eta, v1phi);
+	tau.SetPtEtaPhi(1, v2eta, v2phi);
+
+	tau.SetMag(1);
+
+	// the transverse plane is built from tau vector
+	// correct b
+	// return angle between b and transverse part of track
+
+	// corrected bz component
+	double bz_cor = - (b_vec.x()*tau.x() + b_vec.y()*tau.y()) / tau.z();
+	b_vec.SetZ(bz_cor);
+
+	// find perpendicular of track
+	TVector3 trk_long = tau * (trk.Dot(tau));
+	TVector3 trk_perp = trk - trk_long;
+
+	return b_vec.Angle(trk_perp);
+	//return trk_perp.Angle(tau);
+	}
+
+// testing third version, aiming at optimal direction
+// avarage of b-track plane intersections
+double b_track_plane_intersections_average(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z,
+	Float_t v1pt, Float_t v1eta, Float_t v1phi,
+	Float_t v2pt, Float_t v2eta, Float_t v2phi,
+	Float_t v3pt, Float_t v3eta, Float_t v3phi,
+	Float_t taupt, Float_t taueta, Float_t tauphi
+	)
+        {
+	TVector3 b_vec1, b_vec2, b_vec3;
+	b_vec1.SetXYZ(b1x, b1y, b1z); // 100% known that z here has giant error -- need to do something with it
+	b_vec2.SetXYZ(b2x, b2y, b2z);
+	b_vec3.SetXYZ(b3x, b3y, b3z);
+
+	TVector3 t1, t2, t3;
+	t1.SetPtEtaPhi(v1pt, v1eta, v1phi);
+	t2.SetPtEtaPhi(v2pt, v2eta, v2phi);
+	t3.SetPtEtaPhi(v3pt, v3eta, v3phi);
+
+	//TVector3 tau = t1+t2+t3;
+	TVector3 tau;
+	tau.SetPtEtaPhi(taupt, taueta, tauphi);
+
+	TVector3 bpl1 = b_vec1.Cross(t1);
+	TVector3 bpl2 = b_vec2.Cross(t2);
+	TVector3 bpl3 = b_vec3.Cross(t3);
+
+	TVector3 intr12 = bpl1.Cross(bpl2);
+	TVector3 intr23 = bpl2.Cross(bpl3);
+	TVector3 intr31 = bpl3.Cross(bpl1);
+
+	// point them at tau
+	if (intr12 * tau < 0) intr12 *= -1;
+	if (intr23 * tau < 0) intr23 *= -1;
+	if (intr31 * tau < 0) intr31 *= -1;
+
+	//intr12.SetMag(1);
+	//intr23.SetMag(1);
+	//intr31.SetMag(1);
+
+	TVector3 average = intr12 + intr23 + intr31;
+
+	//return intr12.Angle(intr23) + intr23.Angle(intr31) + intr31.Angle(intr12);
+	return average.Angle(tau);
+	}
+
+
+// check angle between perpendicular b and track
+double b_track_plane_intersections_average_perp_angle(
+	int which, //
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z,
+	Float_t v1pt, Float_t v1eta, Float_t v1phi,
+	Float_t v2pt, Float_t v2eta, Float_t v2phi,
+	Float_t v3pt, Float_t v3eta, Float_t v3phi,
+	Float_t taupt, Float_t taueta, Float_t tauphi
+	)
+        {
+	TVector3 b_vec1, b_vec2, b_vec3;
+	b_vec1.SetXYZ(b1x, b1y, b1z); // 100% known that z here has giant error -- need to do something with it
+	b_vec2.SetXYZ(b2x, b2y, b2z);
+	b_vec3.SetXYZ(b3x, b3y, b3z);
+
+	TVector3 t1, t2, t3;
+	t1.SetPtEtaPhi(v1pt, v1eta, v1phi);
+	t2.SetPtEtaPhi(v2pt, v2eta, v2phi);
+	t3.SetPtEtaPhi(v3pt, v3eta, v3phi);
+
+	//TVector3 tau = t1+t2+t3;
+	TVector3 tau;
+	tau.SetPtEtaPhi(taupt, taueta, tauphi);
+
+	TVector3 bpl1 = b_vec1.Cross(t1);
+	TVector3 bpl2 = b_vec2.Cross(t2);
+	TVector3 bpl3 = b_vec3.Cross(t3);
+
+	TVector3 intr12 = bpl1.Cross(bpl2);
+	TVector3 intr23 = bpl2.Cross(bpl3);
+	TVector3 intr31 = bpl3.Cross(bpl1);
+
+	// point them at tau
+	if (intr12 * tau < 0) intr12 *= -1;
+	if (intr23 * tau < 0) intr23 *= -1;
+	if (intr31 * tau < 0) intr31 *= -1;
+
+	//intr12.SetMag(1);
+	//intr23.SetMag(1);
+	//intr31.SetMag(1);
+
+	TVector3 average = intr12 + intr23 + intr31;
+	average.SetMag(1);
+
+	// find perpendicular b-s
+	TVector3 b_long, b_perp, t_long, t_perp;
+
+	switch (which)
+		{
+		case 0:
+			b_long = average * (b_vec1.Dot(average));
+			b_perp = b_vec1 - b_long;
+			t_long = average * (t1.Dot(average));
+			t_perp = t1 - t_long;
+			return b_perp.Angle(t_perp);
+			//return b_perp.Angle(average);
+			//return t_perp.Angle(average);
+			break;
+		case 1:
+			b_long = average * (b_vec2.Dot(average));
+			b_perp = b_vec2 - b_long;
+			t_long = average * (t2.Dot(average));
+			t_perp = t2 - t_long;
+			return b_perp.Angle(t_perp);
+			//return average.Angle(t_perp);
+			//return average.Angle(b_perp);
+			break;
+		case 2:
+			b_long = average * (b_vec3.Dot(average));
+			b_perp = b_vec3 - b_long;
+			t_long = average * (t3.Dot(average));
+			t_perp = t3 - t_long;
+			return b_perp.Angle(t_perp);
+			break;
+		case 3:
+			// for tests
+			b_long = average * (b_vec3.Dot(average));
+			b_perp = b_vec3 - b_long;
+			t_long = average * (t3.Dot(average));
+			t_perp = t3 - t_long;
+			return b_perp.Angle(t_perp);
+			break;
+		default:
+			return average.Angle(tau);
+		}
+	return -1;
+	}
+// strange result
+// doesn't break with typos
+
+
+// ok, it's late, let's try simple SV with this plane direction
+double b_track_plane_intersections_raw_SV(
+	Float_t b1x, Float_t b1y, Float_t b1z,
+	Float_t b2x, Float_t b2y, Float_t b2z,
+	Float_t b3x, Float_t b3y, Float_t b3z,
+	Float_t v1pt, Float_t v1eta, Float_t v1phi,
+	Float_t v2pt, Float_t v2eta, Float_t v2phi,
+	Float_t v3pt, Float_t v3eta, Float_t v3phi,
+	Float_t taupt, Float_t taueta, Float_t tauphi
+	)
+        {
+	Float_t tracker_error = 0.002; // approximately systematic error on positions
+	// it will cancel out with weights
+
+	TVector3 b_vec1, b_vec2, b_vec3;
+	b_vec1.SetXYZ(b1x, b1y, b1z); // 100% known that z here has giant error -- need to do something with it
+	b_vec2.SetXYZ(b2x, b2y, b2z);
+	b_vec3.SetXYZ(b3x, b3y, b3z);
+
+	TVector3 t1, t2, t3;
+	t1.SetPtEtaPhi(v1pt, v1eta, v1phi);
+	t2.SetPtEtaPhi(v2pt, v2eta, v2phi);
+	t3.SetPtEtaPhi(v3pt, v3eta, v3phi);
+
+	//TVector3 tau = t1+t2+t3;
+	TVector3 tau;
+	tau.SetPtEtaPhi(taupt, taueta, tauphi);
+
+	TVector3 bpl1 = b_vec1.Cross(t1);
+	TVector3 bpl2 = b_vec2.Cross(t2);
+	TVector3 bpl3 = b_vec3.Cross(t3);
+
+	TVector3 intr12 = bpl1.Cross(bpl2);
+	TVector3 intr23 = bpl2.Cross(bpl3);
+	TVector3 intr31 = bpl3.Cross(bpl1);
+
+	// point them at tau
+	if (intr12 * tau < 0) intr12 *= -1;
+	if (intr23 * tau < 0) intr23 *= -1;
+	if (intr31 * tau < 0) intr31 *= -1;
+
+	//intr12.SetMag(1);
+	//intr23.SetMag(1);
+	//intr31.SetMag(1);
+
+	TVector3 average = intr12 + intr23 + intr31;
+	average.SetMag(1);
+	// got plane direction
+
+	// find perpendicular b-s
+
+	TVector3 b_long1 = average * (b_vec1.Dot(average));
+	TVector3 b_perp1 = b_vec1 - b_long1;
+	TVector3 b_long2 = average * (b_vec2.Dot(average));
+	TVector3 b_perp2 = b_vec2 - b_long2;
+	TVector3 b_long3 = average * (b_vec3.Dot(average));
+	TVector3 b_perp3 = b_vec3 - b_long3;
+
+	// in the perp plane find b long to tracks
+
+	// perpendicular parts of tracks
+	TVector3 t1_long = average * (t1.Dot(average));
+	TVector3 t1_perp = t1 - t1_long;
+	TVector3 t2_long = average * (t2.Dot(average));
+	TVector3 t2_perp = t2 - t2_long;
+	TVector3 t3_long = average * (t3.Dot(average));
+	TVector3 t3_perp = t3 - t3_long;
+
+	// no additional correction to b-s
+
+	// the best point calculation
+	TVector3 dV = t1 - t2;
+	TVector3 dB = b_perp1 - b_perp2;
+	double x12 = dV.Dot(dB) / dV.Mag2();
+	dV = t2 - t3;
+	dB = b_perp2 - b_perp3;
+	double x23 = dV.Dot(dB) / dV.Mag2();
+	dV = t3 - t1;
+	dB = b_perp3 - b_perp1;
+	double x31 = dV.Dot(dB) / dV.Mag2();
+
+	// and systematic error of tracker
+	double syst12 = tracker_error / t1.Angle(t2); // technically / Sin (or Tan), but Sin = Angle with these angles
+	double syst23 = tracker_error / t2.Angle(t3); // technically / Sin (or Tan), but Sin = Angle with these angles
+	double syst31 = tracker_error / t3.Angle(t1); // technically / Sin (or Tan), but Sin = Angle with these angles
+	//double syst = pow(syst12, 2) + pow(syst23, 2) + pow(syst31, 2);
+	double syst12_weight = 1/syst12;
+	double syst23_weight = 1/syst23;
+	double syst31_weight = 1/syst31;
+
+	//double x_average = (x12 + x23 + x31) / 3;
+	//double x_deviation = pow(x12 - x_average, 2) + pow(x23 - x_average, 2) + pow(x31 - x_average, 2);
+	//double x_dev_syst = x_deviation + syst;
+
+	// weighted average with tracker errors
+	double x_average = (x12*syst12_weight + x23*syst23_weight + x31*syst31_weight) / (syst12_weight + syst23_weight + syst31_weight);
+	double x_deviation = (syst12_weight*pow(x12 - x_average, 2) + syst23_weight*pow(x23 - x_average, 2) + syst31_weight*pow(x31 - x_average, 2))/(2*(syst12_weight + syst23_weight + syst31_weight)/3);
+
+	return x_average / sqrt(x_deviation);
+	}
+
+
+
+
+
 // simple SV
 // finds best point for each pair
 // with the following simple algorithm
