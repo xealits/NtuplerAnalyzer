@@ -1078,9 +1078,11 @@ double optimal_directions_intersections_raw_SV(
 	if (intr23 * tau < 0) intr23 *= -1;
 	if (intr31 * tau < 0) intr31 *= -1;
 
-	//intr12.SetMag(1);
-	//intr23.SetMag(1);
-	//intr31.SetMag(1);
+	// to discard effect from randomly big Z affecting stuff
+	// set directions to 1
+	intr12.SetMag(1);
+	intr23.SetMag(1);
+	intr31.SetMag(1);
 
 	// so this is the optimal direction
 	TVector3 average = intr12 + intr23 + intr31;
