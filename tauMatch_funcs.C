@@ -1055,10 +1055,16 @@ double optimal_directions_intersections_raw_SV(
 	t2.SetPtEtaPhi(v2pt, v2eta, v2phi);
 	t3.SetPtEtaPhi(v3pt, v3eta, v3phi);
 
+	// weighted bis direction -- used in simple b SV (Friday result)
+	TVector3 t_sum = t1 + t2 + t3;
+	t_sum.SetMag(1);
+
 	//TVector3 tau = t1+t2+t3;
 	TVector3 tau;
 	tau.SetPtEtaPhi(taupt, taueta, tauphi);
 
+	// find the "optimal direction"
+	// -- direction of minimal angles betwee tracks and b-s in perpendicular plane
 	TVector3 bpl1 = b_vec1.Cross(t1);
 	TVector3 bpl2 = b_vec2.Cross(t2);
 	TVector3 bpl3 = b_vec3.Cross(t3);
@@ -1081,16 +1087,32 @@ double optimal_directions_intersections_raw_SV(
 	average.SetMag(1);
 	// got plane direction
 
+	// perpendiculars to bis direction, for reference
 	// find perpendicular b-s
+	TVector3 b_bis_long1 = average * (b_vec1.Dot(average));
+	TVector3 b_bis_perp1 = b_vec1 - b_bis_long1;
+	TVector3 b_bis_long2 = average * (b_vec2.Dot(average));
+	TVector3 b_bis_perp2 = b_vec2 - b_bis_long2;
+	TVector3 b_bis_long3 = average * (b_vec3.Dot(average));
+	TVector3 b_bis_perp3 = b_vec3 - b_bis_long3;
 
+	// perpendicular parts of tracks
+	TVector3 t1_bis_long = average * (t1.Dot(average));
+	TVector3 t1_bis_perp = t1 - t1_bis_long;
+	TVector3 t2_bis_long = average * (t2.Dot(average));
+	TVector3 t2_bis_perp = t2 - t2_bis_long;
+	TVector3 t3_bis_long = average * (t3.Dot(average));
+	TVector3 t3_bis_perp = t3 - t3_bis_long;
+
+
+	// and to optimal direction
+	// find perpendicular b-s
 	TVector3 b_long1 = average * (b_vec1.Dot(average));
 	TVector3 b_perp1 = b_vec1 - b_long1;
 	TVector3 b_long2 = average * (b_vec2.Dot(average));
 	TVector3 b_perp2 = b_vec2 - b_long2;
 	TVector3 b_long3 = average * (b_vec3.Dot(average));
 	TVector3 b_perp3 = b_vec3 - b_long3;
-
-	// in the perp plane find b long to tracks
 
 	// perpendicular parts of tracks
 	TVector3 t1_long = average * (t1.Dot(average));
@@ -1100,7 +1122,8 @@ double optimal_directions_intersections_raw_SV(
 	TVector3 t3_long = average * (t3.Dot(average));
 	TVector3 t3_perp = t3 - t3_long;
 
-	// no additional correction to b-s
+	// in the perp plane find b long to tracks
+	// -- nope, no additional correction to b-s
 
 	// the best point calculation
 	TVector3 dV = t1 - t2;
@@ -1137,6 +1160,12 @@ double optimal_directions_intersections_raw_SV(
 			return average.Eta();
 		case 2:
 			return average.Angle(tau);
+
+		// test on optimalness of optimal direction
+		case 3: // angles between b and tracks in perp plane of the direction
+			return b_perp1.Angle(t1_perp) + b_perp2.Angle(t2_perp) + b_perp3.Angle(t3_perp);
+		case 4: // and same angles w.r. to bis direction
+			return b_bis_perp1.Angle(t1_bis_perp) + b_bis_perp2.Angle(t2_bis_perp) + b_bis_perp3.Angle(t3_bis_perp);
 		}
 
 	return x_average / sqrt(x_deviation);
