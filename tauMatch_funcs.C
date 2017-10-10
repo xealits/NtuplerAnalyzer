@@ -1089,19 +1089,19 @@ double optimal_directions_intersections_raw_SV(
 
 	// perpendiculars to bis direction, for reference
 	// find perpendicular b-s
-	TVector3 b_bis_long1 = average * (b_vec1.Dot(average));
+	TVector3 b_bis_long1 = t_sum * (b_vec1.Dot(t_sum));
 	TVector3 b_bis_perp1 = b_vec1 - b_bis_long1;
-	TVector3 b_bis_long2 = average * (b_vec2.Dot(average));
+	TVector3 b_bis_long2 = t_sum * (b_vec2.Dot(t_sum));
 	TVector3 b_bis_perp2 = b_vec2 - b_bis_long2;
-	TVector3 b_bis_long3 = average * (b_vec3.Dot(average));
+	TVector3 b_bis_long3 = t_sum * (b_vec3.Dot(t_sum));
 	TVector3 b_bis_perp3 = b_vec3 - b_bis_long3;
 
 	// perpendicular parts of tracks
-	TVector3 t1_bis_long = average * (t1.Dot(average));
+	TVector3 t1_bis_long = t_sum * (t1.Dot(t_sum));
 	TVector3 t1_bis_perp = t1 - t1_bis_long;
-	TVector3 t2_bis_long = average * (t2.Dot(average));
+	TVector3 t2_bis_long = t_sum * (t2.Dot(t_sum));
 	TVector3 t2_bis_perp = t2 - t2_bis_long;
-	TVector3 t3_bis_long = average * (t3.Dot(average));
+	TVector3 t3_bis_long = t_sum * (t3.Dot(t_sum));
 	TVector3 t3_bis_perp = t3 - t3_bis_long;
 
 
