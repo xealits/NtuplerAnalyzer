@@ -1074,6 +1074,9 @@ double optimal_directions_intersections_raw_SV(
 
 	// find the "optimal direction"
 	// -- direction of minimal angles betwee tracks and b-s in perpendicular plane
+
+	/*
+	// 1)
 	// it should maximize sum of angles between tracks and b-s in transverse plane
 	// and minimize the angles between intersections
 	double max_angle_sum = 0;
@@ -1155,6 +1158,67 @@ double optimal_directions_intersections_raw_SV(
 	b_vec1.SetZ(max_b1_z);
 	b_vec2.SetZ(max_b2_z);
 	b_vec3.SetZ(max_b3_z);
+	*/
+
+	// 2)
+	// just shift bis direction randomly in max phi max theta deviations
+	// choose best position, i.e. max sum b-track angles in transverse plane
+	// thus, no Z changes
+	double max_angle_sum = 0;
+	TVector3 max_average;
+
+	// find max phi and theta dev around bis
+	double max_dPhi = 0, max_dTheta = 0;
+
+	double dPhi = abs(t_sum.Phi() - t1.Phi());
+	if (dPhi > max_dPhi) max_dPhi = dPhi;
+	dPhi = abs(t_sum.Phi() - t2.Phi());
+	if (dPhi > max_dPhi) max_dPhi = dPhi;
+	dPhi = abs(t_sum.Phi() - t3.Phi());
+	if (dPhi > max_dPhi) max_dPhi = dPhi;
+
+	double dTheta = abs(t_sum.Theta() - t1.Theta());
+	if (dTheta > max_dTheta) max_dTheta = dTheta;
+	dTheta = abs(t_sum.Theta() - t2.Theta());
+	if (dTheta > max_dTheta) max_dTheta = dTheta;
+	dTheta = abs(t_sum.Theta() - t3.Theta());
+	if (dTheta > max_dTheta) max_dTheta = dTheta;
+
+	for (unsigned int i = 0; i<100; i++)
+		{
+		// +- max dphi
+		double dPhi_shift   = max_dPhi * r3->Uniform() * 2 - max_dPhi;
+		double dTheta_shift = max_dTheta * r3->Uniform() * 2 - max_dTheta;
+		TVector3 direction = t_sum;
+		direction.SetPhi(t_sum.Phi() + dPhi_shift);
+		direction.SetTheta(t_sum.Theta() + dTheta_shift);
+
+		direction.SetMag(1); // just in case
+
+		// and to the direction
+		// find perpendicular b-s
+		TVector3 b_long1 = direction * (b_vec1.Dot(direction));
+		TVector3 b_perp1 = b_vec1 - b_long1;
+		TVector3 b_long2 = direction * (b_vec2.Dot(direction));
+		TVector3 b_perp2 = b_vec2 - b_long2;
+		TVector3 b_long3 = direction * (b_vec3.Dot(direction));
+		TVector3 b_perp3 = b_vec3 - b_long3;
+
+		// perpendicular parts of tracks
+		TVector3 t1_long = direction * (t1.Dot(direction));
+		TVector3 t1_perp = t1 - t1_long;
+		TVector3 t2_long = direction * (t2.Dot(direction));
+		TVector3 t2_perp = t2 - t2_long;
+		TVector3 t3_long = direction * (t3.Dot(direction));
+		TVector3 t3_perp = t3 - t3_long;
+
+		double angle_sum = b_perp1.Angle(t1_perp) + b_perp2.Angle(t2_perp) + b_perp3.Angle(t3_perp);
+		if (angle_sum > max_angle_sum)
+			{
+			max_angle_sum = angle_sum;
+			max_average = direction;
+			}
+		}
 
 	// and to optimal direction
 	// find perpendicular b-s
@@ -1184,6 +1248,13 @@ double optimal_directions_intersections_raw_SV(
 	TVector3 b_long_perp2 = t2_perp * (b_perp2.Dot(t2_perp));
 	TVector3 b_long_perp3 = t3_perp * (b_perp3.Dot(t3_perp));
 
+	// [let's try without these for now]
+
+	/*
+	TVector3 b_long_perp1 = b_perp1;
+	TVector3 b_long_perp2 = b_perp2;
+	TVector3 b_long_perp3 = b_perp3;
+	*/
 
 
 	// perpendiculars to bis direction, for reference
@@ -1280,7 +1351,7 @@ double optimal_directions_intersections_raw_SV(
 		case 5:
 			return max_angle_sum;
 		case 6:
-			return min_intersection_angle_sum;
+			return 0; // not used min_intersection_angle_sum;
 
 		// best point tests
 		case 7:
