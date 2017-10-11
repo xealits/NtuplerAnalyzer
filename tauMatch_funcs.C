@@ -1345,6 +1345,7 @@ double optimal_directions_intersections_raw_SV(
 	double conv_frac2 = (bp23 - bp32).Mag()/dB2.Mag();
 	double conv_frac3 = (bp31 - bp13).Mag()/dB3.Mag();
 	double conv_frac_sum = conv_frac1 + conv_frac2 + conv_frac3;
+	double conv_frac_averaged = sqrt(pow(conv_frac1, 2) + pow(conv_frac2, 2) + pow(conv_frac3, 2));
 
 	// weighted average with tracker errors
 	//double x_average = (x12*syst12_weight + x23*syst23_weight + x31*syst31_weight) / (syst12_weight + syst23_weight + syst31_weight);
@@ -1413,11 +1414,11 @@ double optimal_directions_intersections_raw_SV(
 		case 19: // convergences relative to b dist-s
 			return sqrt(pow((bp12 - bp21).Mag()/dB1.Mag(), 2) + pow((bp23 - bp32).Mag()/dB2.Mag(), 2) + pow((bp31 - bp13).Mag()/dB3.Mag(), 2));
 		case 20: // trying to get correlations/structure among them
-			return ((bp12 - bp21).Mag()/dB1.Mag()) / ((bp12 - bp21).Mag()/dB1.Mag() + (bp23 - bp32).Mag()/dB2.Mag() + (bp31 - bp13).Mag()/dB3.Mag());
+			return conv_frac1 / conv_frac_averaged;
 		case 21:
-			return ((bp23 - bp32).Mag()/dB2.Mag()) / ((bp12 - bp21).Mag()/dB1.Mag() + (bp23 - bp32).Mag()/dB2.Mag() + (bp31 - bp13).Mag()/dB3.Mag());
+			return conv_frac2 / conv_frac_averaged;
 		case 22:
-			return ((bp31 - bp13).Mag()/dB3.Mag()) / ((bp12 - bp21).Mag()/dB1.Mag() + (bp23 - bp32).Mag()/dB2.Mag() + (bp31 - bp13).Mag()/dB3.Mag());
+			return conv_frac3 / conv_frac_averaged;
 
 		case 23: // SV with this convergence
 			convergence_factor = 1 / (1 + sqrt(pow((bp12 - bp21).Mag()/dB1.Mag(), 2) + pow((bp23 - bp32).Mag()/dB2.Mag(), 2) + pow((bp31 - bp13).Mag()/dB3.Mag(), 2)));
@@ -1449,6 +1450,13 @@ double optimal_directions_intersections_raw_SV(
 				return   bp_average.Mag() * convergence_factor / sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
 			else
 				return - bp_average.Mag() * convergence_factor / sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
+
+		case 30: // linear convergances
+			return conv_frac1 / conv_frac_sum;
+		case 31:
+			return conv_frac2 / conv_frac_sum;
+		case 32:
+			return conv_frac3 / conv_frac_sum;
 		}
 
 	return x_average / sqrt(x_deviation);
