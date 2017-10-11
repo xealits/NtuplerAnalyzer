@@ -1,3 +1,4 @@
+#include "TRandom3.h"
 #include "TVector3.h"
 #include "TVector2.h"
 #include "TMatrixD.h"
@@ -1029,6 +1030,8 @@ double max_track_bis_angle(
 	}
 
 
+TRandom3 *r3 = new TRandom3();
+
 // optimal directions
 // ok, it's late, let's try simple SV with this plane direction
 double optimal_directions_intersections_raw_SV(
@@ -1059,35 +1062,129 @@ double optimal_directions_intersections_raw_SV(
 	TVector3 t_sum = t1 + t2 + t3;
 	t_sum.SetMag(1);
 
+	// after establishing direction of tau
+	// tracks are only geometrical lines
+	t1.SetMag(1);
+	t2.SetMag(1);
+	t3.SetMag(1);
+
 	//TVector3 tau = t1+t2+t3;
 	TVector3 tau;
 	tau.SetPtEtaPhi(taupt, taueta, tauphi);
 
 	// find the "optimal direction"
 	// -- direction of minimal angles betwee tracks and b-s in perpendicular plane
-	TVector3 bpl1 = b_vec1.Cross(t1);
-	TVector3 bpl2 = b_vec2.Cross(t2);
-	TVector3 bpl3 = b_vec3.Cross(t3);
+	// it should maximize sum of angles between tracks and b-s in transverse plane
+	// and minimize the angles between intersections
+	double max_angle_sum = 0;
+	double min_intersection_angle_sum = 999;
+	// randomly change Z coordinate of b-s to find the maximum
+	TVector3 max_average;
 
-	TVector3 intr12 = bpl1.Cross(bpl2);
-	TVector3 intr23 = bpl2.Cross(bpl3);
-	TVector3 intr31 = bpl3.Cross(bpl1);
+	double orig_b1_z = b_vec1.Z();
+	double orig_b2_z = b_vec2.Z();
+	double orig_b3_z = b_vec3.Z();
+	double max_b1_z = orig_b1_z;
+	double max_b2_z = orig_b2_z;
+	double max_b3_z = orig_b3_z;
 
-	// point them at tau
-	if (intr12 * tau < 0) intr12 *= -1;
-	if (intr23 * tau < 0) intr23 *= -1;
-	if (intr31 * tau < 0) intr31 *= -1;
+	for (unsigned int i = 0; i<1000; i++)
+		{
+		//b_vec1.SetZ(2 * orig_b1_z * r3->Uniform());
+		//b_vec2.SetZ(2 * orig_b2_z * r3->Uniform());
+		//b_vec3.SetZ(2 * orig_b3_z * r3->Uniform());
+		//   Z +- 1.5Z = -0.5Z -- + 2.5Z = r(3Z) - 0.5Z
+		b_vec1.SetZ(3 * orig_b1_z * r3->Uniform() - 0.5*orig_b1_z);
+		b_vec2.SetZ(3 * orig_b2_z * r3->Uniform() - 0.5*orig_b2_z);
+		b_vec3.SetZ(3 * orig_b3_z * r3->Uniform() - 0.5*orig_b3_z);
 
-	// to discard effect from randomly big Z affecting stuff
-	// set directions to 1
-	intr12.SetMag(1);
-	intr23.SetMag(1);
-	intr31.SetMag(1);
+		TVector3 bpl1 = b_vec1.Cross(t1);
+		TVector3 bpl2 = b_vec2.Cross(t2);
+		TVector3 bpl3 = b_vec3.Cross(t3);
 
-	// so this is the optimal direction
-	TVector3 average = intr12 + intr23 + intr31;
-	average.SetMag(1);
-	// got plane direction
+		TVector3 intr12 = bpl1.Cross(bpl2);
+		TVector3 intr23 = bpl2.Cross(bpl3);
+		TVector3 intr31 = bpl3.Cross(bpl1);
+
+		// point them at tau
+		if (intr12 * tau < 0) intr12 *= -1;
+		if (intr23 * tau < 0) intr23 *= -1;
+		if (intr31 * tau < 0) intr31 *= -1;
+
+		// to discard effect from randomly big Z affecting stuff
+		// set directions to 1
+		intr12.SetMag(1);
+		intr23.SetMag(1);
+		intr31.SetMag(1);
+
+		double intersection_angle_sum = intr12.Angle(intr23) + intr23.Angle(intr31) + intr31.Angle(intr12);
+
+		// so this is the optimal direction
+		TVector3 average = intr12 + intr23 + intr31;
+		average.SetMag(1);
+		// got plane direction
+
+		// and to optimal direction
+		// find perpendicular b-s
+		TVector3 b_long1 = average * (b_vec1.Dot(average));
+		TVector3 b_perp1 = b_vec1 - b_long1;
+		TVector3 b_long2 = average * (b_vec2.Dot(average));
+		TVector3 b_perp2 = b_vec2 - b_long2;
+		TVector3 b_long3 = average * (b_vec3.Dot(average));
+		TVector3 b_perp3 = b_vec3 - b_long3;
+
+		// perpendicular parts of tracks
+		TVector3 t1_long = average * (t1.Dot(average));
+		TVector3 t1_perp = t1 - t1_long;
+		TVector3 t2_long = average * (t2.Dot(average));
+		TVector3 t2_perp = t2 - t2_long;
+		TVector3 t3_long = average * (t3.Dot(average));
+		TVector3 t3_perp = t3 - t3_long;
+
+		double angle_sum = b_perp1.Angle(t1_perp) + b_perp2.Angle(t2_perp) + b_perp3.Angle(t3_perp);
+		if (angle_sum > max_angle_sum && intersection_angle_sum < min_intersection_angle_sum)
+			{
+			min_intersection_angle_sum = intersection_angle_sum;
+			max_angle_sum = angle_sum;
+			max_average = average;
+			max_b1_z = b_vec1.Z();
+			max_b2_z = b_vec2.Z();
+			max_b3_z = b_vec3.Z();
+			}
+		}
+	b_vec1.SetZ(max_b1_z);
+	b_vec2.SetZ(max_b2_z);
+	b_vec3.SetZ(max_b3_z);
+
+	// and to optimal direction
+	// find perpendicular b-s
+	TVector3 b_long1 = max_average * (b_vec1.Dot(max_average));
+	TVector3 b_perp1 = b_vec1 - b_long1;
+	TVector3 b_long2 = max_average * (b_vec2.Dot(max_average));
+	TVector3 b_perp2 = b_vec2 - b_long2;
+	TVector3 b_long3 = max_average * (b_vec3.Dot(max_average));
+	TVector3 b_perp3 = b_vec3 - b_long3;
+
+	// perpendicular parts of tracks
+	TVector3 t1_long = max_average * (t1.Dot(max_average));
+	TVector3 t1_perp = t1 - t1_long;
+	TVector3 t2_long = max_average * (t2.Dot(max_average));
+	TVector3 t2_perp = t2 - t2_long;
+	TVector3 t3_long = max_average * (t3.Dot(max_average));
+	TVector3 t3_perp = t3 - t3_long;
+
+	// project found b-s to perp tracks
+	// in principle it should not be needed, since the direction is found to fit them together well
+	// but let's try to get to simple SV best result
+	t1_perp.SetMag(1);
+	t2_perp.SetMag(1);
+	t3_perp.SetMag(1);
+
+	TVector3 b_long_perp1 = t1_perp * (b_perp1.Dot(t1_perp));
+	TVector3 b_long_perp2 = t2_perp * (b_perp2.Dot(t2_perp));
+	TVector3 b_long_perp3 = t3_perp * (b_perp3.Dot(t3_perp));
+
+
 
 	// perpendiculars to bis direction, for reference
 	// find perpendicular b-s
@@ -1106,37 +1203,48 @@ double optimal_directions_intersections_raw_SV(
 	TVector3 t3_bis_long = t_sum * (t3.Dot(t_sum));
 	TVector3 t3_bis_perp = t3 - t3_bis_long;
 
-
-	// and to optimal direction
-	// find perpendicular b-s
-	TVector3 b_long1 = average * (b_vec1.Dot(average));
-	TVector3 b_perp1 = b_vec1 - b_long1;
-	TVector3 b_long2 = average * (b_vec2.Dot(average));
-	TVector3 b_perp2 = b_vec2 - b_long2;
-	TVector3 b_long3 = average * (b_vec3.Dot(average));
-	TVector3 b_perp3 = b_vec3 - b_long3;
-
-	// perpendicular parts of tracks
-	TVector3 t1_long = average * (t1.Dot(average));
-	TVector3 t1_perp = t1 - t1_long;
-	TVector3 t2_long = average * (t2.Dot(average));
-	TVector3 t2_perp = t2 - t2_long;
-	TVector3 t3_long = average * (t3.Dot(average));
-	TVector3 t3_perp = t3 - t3_long;
-
 	// in the perp plane find b long to tracks
 	// -- nope, no additional correction to b-s
 
 	// the best point calculation
+	// with just transverse b-s
+	//TVector3 dV = t1 - t2;
+	//TVector3 dB = b_perp1 - b_perp2;
+	//double x12 = dV.Dot(dB) / dV.Mag2();
+	//dV = t2 - t3;
+	//dB = b_perp2 - b_perp3;
+	//double x23 = dV.Dot(dB) / dV.Mag2();
+	//dV = t3 - t1;
+	//dB = b_perp3 - b_perp1;
+	//double x31 = dV.Dot(dB) / dV.Mag2();
+
+	// the best point calculation with projected b-s
 	TVector3 dV = t1 - t2;
-	TVector3 dB = b_perp1 - b_perp2;
-	double x12 = dV.Dot(dB) / dV.Mag2();
+	TVector3 dB = b_long_perp1 - b_long_perp2;
+	double x12 = - dV.Dot(dB) / dV.Mag2();
 	dV = t2 - t3;
-	dB = b_perp2 - b_perp3;
-	double x23 = dV.Dot(dB) / dV.Mag2();
+	dB = b_long_perp2 - b_long_perp3;
+	double x23 = - dV.Dot(dB) / dV.Mag2();
 	dV = t3 - t1;
-	dB = b_perp3 - b_perp1;
-	double x31 = dV.Dot(dB) / dV.Mag2();
+	dB = b_long_perp3 - b_long_perp1;
+	double x31 = - dV.Dot(dB) / dV.Mag2();
+
+	TVector3 bp12 = b_long_perp1 + x12 * t1;
+	TVector3 bp21 = b_long_perp2 + x12 * t2;
+	TVector3 bp_1 = 0.5*(bp12 + bp21);
+
+	TVector3 bp23 = b_long_perp2 + x23 * t2;
+	TVector3 bp32 = b_long_perp3 + x23 * t3;
+	TVector3 bp_2 = 0.5*(bp23 + bp32);
+
+	TVector3 bp31 = b_long_perp3 + x31 * t3;
+	TVector3 bp13 = b_long_perp1 + x31 * t1;
+	TVector3 bp_3 = 0.5*(bp31 + bp13);
+
+	TVector3 bp_average = 0.3333*(bp_1 + bp_2 + bp_3);
+	TVector3 bp_dev1 = bp_1 - bp_average;
+	TVector3 bp_dev2 = bp_2 - bp_average;
+	TVector3 bp_dev3 = bp_3 - bp_average;
 
 	// and systematic error of tracker
 	double syst12 = tracker_error / t1.Angle(t2); // technically / Sin (or Tan), but Sin = Angle with these angles
@@ -1147,27 +1255,63 @@ double optimal_directions_intersections_raw_SV(
 	double syst23_weight = 1/syst23;
 	double syst31_weight = 1/syst31;
 
-	//double x_average = (x12 + x23 + x31) / 3;
-	//double x_deviation = pow(x12 - x_average, 2) + pow(x23 - x_average, 2) + pow(x31 - x_average, 2);
+	// not weighted averages
+	double x_average = (x12 + x23 + x31) / 3;
+	double x_deviation = (pow(x12 - x_average, 2) + pow(x23 - x_average, 2) + pow(x31 - x_average, 2)) * 0.3333;
 	//double x_dev_syst = x_deviation + syst;
 
 	// weighted average with tracker errors
-	double x_average = (x12*syst12_weight + x23*syst23_weight + x31*syst31_weight) / (syst12_weight + syst23_weight + syst31_weight);
-	double x_deviation = (syst12_weight*pow(x12 - x_average, 2) + syst23_weight*pow(x23 - x_average, 2) + syst31_weight*pow(x31 - x_average, 2))/(2*(syst12_weight + syst23_weight + syst31_weight)/3);
+	//double x_average = (x12*syst12_weight + x23*syst23_weight + x31*syst31_weight) / (syst12_weight + syst23_weight + syst31_weight);
+	//double x_deviation = (syst12_weight*pow(x12 - x_average, 2) + syst23_weight*pow(x23 - x_average, 2) + syst31_weight*pow(x31 - x_average, 2))/(2*(syst12_weight + syst23_weight + syst31_weight)/3);
 
 	switch (which)
 		{
 		// test optimal direction
 		case 1:
-			return average.Eta();
+			return max_average.Eta();
 		case 2:
-			return average.Angle(tau);
+			return max_average.Angle(tau);
 
 		// test on optimalness of optimal direction
-		case 3: // angles between b and tracks in perp plane of the direction
-			return b_perp1.Angle(t1_perp) + b_perp2.Angle(t2_perp) + b_perp3.Angle(t3_perp);
-		case 4: // and same angles w.r. to bis direction
+		case 3: // and same angles w.r. to bis direction
 			return b_bis_perp1.Angle(t1_bis_perp) + b_bis_perp2.Angle(t2_bis_perp) + b_bis_perp3.Angle(t3_bis_perp);
+		case 4: // angles between b and tracks in perp plane of the direction
+			return b_perp1.Angle(t1_perp) + b_perp2.Angle(t2_perp) + b_perp3.Angle(t3_perp);
+		case 5:
+			return max_angle_sum;
+		case 6:
+			return min_intersection_angle_sum;
+
+		// best point tests
+		case 7:
+			return (bp12 - bp21).Mag();
+		case 8:
+			return (bp23 - bp32).Mag();
+		case 9:
+			return (bp31 - bp13).Mag();
+		// distances between b-s of tracks
+		case 10:
+			return (b_long_perp1 - b_long_perp2).Mag();
+		case 11:
+			return (b_long_perp2 - b_long_perp3).Mag();
+		case 12:
+			return (b_long_perp3 - b_long_perp1).Mag();
+
+		// flight Len, SV convergence, deviations
+		case 13: // flight Len
+			if (bp_average.Dot(tau) > 0)
+				return bp_average.Mag();
+			else
+				return - bp_average.Mag();
+		case 14: // convergence
+			return sqrt(pow((bp12 - bp21).Mag(), 2) + pow((bp23 - bp32).Mag(), 2) + pow((bp31 - bp13).Mag(), 2));
+		case 15: // deviations
+			return sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
+		case 16: // flight Sign with deviation
+			if (bp_average.Dot(tau) > 0)
+				return bp_average.Mag() / sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
+			else
+				return - bp_average.Mag() / sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
 		}
 
 	return x_average / sqrt(x_deviation);
