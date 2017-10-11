@@ -1291,14 +1291,16 @@ double optimal_directions_intersections_raw_SV(
 
 	// the best point calculation with projected b-s
 	TVector3 dV = t1 - t2;
-	TVector3 dB = b_long_perp1 - b_long_perp2;
-	double x12 = - dV.Dot(dB) / dV.Mag2();
+	TVector3 dB1 = b_long_perp1 - b_long_perp2;
+	double x12 = - dV.Dot(dB1) / dV.Mag2();
+
 	dV = t2 - t3;
-	dB = b_long_perp2 - b_long_perp3;
-	double x23 = - dV.Dot(dB) / dV.Mag2();
+	TVector3 dB2 = b_long_perp2 - b_long_perp3;
+	double x23 = - dV.Dot(dB2) / dV.Mag2();
+
 	dV = t3 - t1;
-	dB = b_long_perp3 - b_long_perp1;
-	double x31 = - dV.Dot(dB) / dV.Mag2();
+	TVector3 dB3 = b_long_perp3 - b_long_perp1;
+	double x31 = - dV.Dot(dB3) / dV.Mag2();
 
 	TVector3 bp12 = b_long_perp1 + x12 * t1;
 	TVector3 bp21 = b_long_perp2 + x12 * t2;
@@ -1330,6 +1332,19 @@ double optimal_directions_intersections_raw_SV(
 	double x_average = (x12 + x23 + x31) / 3;
 	double x_deviation = (pow(x12 - x_average, 2) + pow(x23 - x_average, 2) + pow(x31 - x_average, 2)) * 0.3333;
 	//double x_dev_syst = x_deviation + syst;
+
+	double convergence_factor = 1;
+	double triang_a = 0, triang_b = 0;
+
+	const double tan60 = 1.732, sin60 = 0.866;
+
+	double conv1 = (bp12 - bp21).Mag();
+	double conv2 = (bp23 - bp32).Mag();
+	double conv3 = (bp31 - bp13).Mag();
+	double conv_frac1 = (bp12 - bp21).Mag()/dB1.Mag();
+	double conv_frac2 = (bp23 - bp32).Mag()/dB2.Mag();
+	double conv_frac3 = (bp31 - bp13).Mag()/dB3.Mag();
+	double conv_frac_sum = conv_frac1 + conv_frac2 + conv_frac3;
 
 	// weighted average with tracker errors
 	//double x_average = (x12*syst12_weight + x23*syst23_weight + x31*syst31_weight) / (syst12_weight + syst23_weight + syst31_weight);
@@ -1383,6 +1398,57 @@ double optimal_directions_intersections_raw_SV(
 				return bp_average.Mag() / sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
 			else
 				return - bp_average.Mag() / sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
+
+		// projections of deviations
+		case 17: // long dev-s
+			bp_average.SetMag(1);
+			return sqrt(pow(bp_dev1.Dot(bp_average), 2) + pow(bp_dev2.Dot(bp_average), 2) + pow(bp_dev3.Dot(bp_average), 2));
+		case 18: // perpendicular deviations
+			bp_average.SetMag(1);
+			return sqrt(pow((bp_dev1 - bp_average * bp_dev1.Dot(bp_average)).Mag(), 2) +
+				pow((bp_dev2 - bp_average * bp_dev2.Dot(bp_average)).Mag(), 2) +
+				pow((bp_dev3 - bp_average * bp_dev3.Dot(bp_average)).Mag(), 2));
+
+		// more on convergence, convergence penalty
+		case 19: // convergences relative to b dist-s
+			return sqrt(pow((bp12 - bp21).Mag()/dB1.Mag(), 2) + pow((bp23 - bp32).Mag()/dB2.Mag(), 2) + pow((bp31 - bp13).Mag()/dB3.Mag(), 2));
+		case 20: // trying to get correlations/structure among them
+			return ((bp12 - bp21).Mag()/dB1.Mag()) / ((bp12 - bp21).Mag()/dB1.Mag() + (bp23 - bp32).Mag()/dB2.Mag() + (bp31 - bp13).Mag()/dB3.Mag());
+		case 21:
+			return ((bp23 - bp32).Mag()/dB2.Mag()) / ((bp12 - bp21).Mag()/dB1.Mag() + (bp23 - bp32).Mag()/dB2.Mag() + (bp31 - bp13).Mag()/dB3.Mag());
+		case 22:
+			return ((bp31 - bp13).Mag()/dB3.Mag()) / ((bp12 - bp21).Mag()/dB1.Mag() + (bp23 - bp32).Mag()/dB2.Mag() + (bp31 - bp13).Mag()/dB3.Mag());
+
+		case 23: // SV with this convergence
+			convergence_factor = 1 / (1 + sqrt(pow((bp12 - bp21).Mag()/dB1.Mag(), 2) + pow((bp23 - bp32).Mag()/dB2.Mag(), 2) + pow((bp31 - bp13).Mag()/dB3.Mag(), 2)));
+			if (bp_average.Dot(tau) > 0)
+				return   bp_average.Mag() * convergence_factor / sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
+			else
+				return - bp_average.Mag() * convergence_factor / sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
+		// triangular correlation diagram
+		case 24: // X
+			triang_a = ((bp12 - bp21).Mag()/dB1.Mag()) / ((bp12 - bp21).Mag()/dB1.Mag() + (bp23 - bp32).Mag()/dB2.Mag() + (bp31 - bp13).Mag()/dB3.Mag());
+			triang_b = ((bp23 - bp32).Mag()/dB2.Mag()) / ((bp12 - bp21).Mag()/dB1.Mag() + (bp23 - bp32).Mag()/dB2.Mag() + (bp31 - bp13).Mag()/dB3.Mag());
+			return triang_a/tan60 + triang_b/sin60;
+		case 25: // Y
+			triang_a = ((bp12 - bp21).Mag()/dB1.Mag()) / ((bp12 - bp21).Mag()/dB1.Mag() + (bp23 - bp32).Mag()/dB2.Mag() + (bp31 - bp13).Mag()/dB3.Mag());
+			triang_b = ((bp23 - bp32).Mag()/dB2.Mag()) / ((bp12 - bp21).Mag()/dB1.Mag() + (bp23 - bp32).Mag()/dB2.Mag() + (bp31 - bp13).Mag()/dB3.Mag());
+			return triang_a; // + triang_b*0.5; // sin 30
+		case 26: // volume of convergence discrepancy (should catch the correlations)
+			return ((bp12 - bp21).Mag()/dB1.Mag()) * ((bp23 - bp32).Mag()/dB2.Mag()) * ((bp31 - bp13).Mag()/dB3.Mag());
+		case 27: // relative to 0.3*0.3*0.3 = 0.027
+			return ((bp12 - bp21).Mag()/dB1.Mag()) * ((bp23 - bp32).Mag()/dB2.Mag()) * ((bp31 - bp13).Mag()/dB3.Mag()) / 0.027;
+		case 28: // volume of relatives
+			return (conv_frac1/conv_frac_sum) * (conv_frac2/conv_frac_sum) * (conv_frac3/conv_frac_sum);
+		case 29: // SV out of all penalties
+			// by relative convergence volume
+			convergence_factor *= 1 / (1 + ((bp12 - bp21).Mag()/dB1.Mag()) * ((bp23 - bp32).Mag()/dB2.Mag()) * ((bp31 - bp13).Mag()/dB3.Mag()) / 0.027);
+			// by fraction sum-s, extracting correlation of divergences
+			convergence_factor *= 1 / (1 + (conv_frac1/conv_frac_sum) * (conv_frac2/conv_frac_sum) * (conv_frac3/conv_frac_sum));
+			if (bp_average.Dot(tau) > 0)
+				return   bp_average.Mag() * convergence_factor / sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
+			else
+				return - bp_average.Mag() * convergence_factor / sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
 		}
 
 	return x_average / sqrt(x_deviation);
