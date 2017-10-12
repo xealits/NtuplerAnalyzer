@@ -1165,7 +1165,7 @@ double optimal_directions_intersections_raw_SV(
 	// choose best position, i.e. max sum b-track angles in transverse plane
 	// thus, no Z changes
 	double max_angle_sum = 0;
-	TVector3 max_average;
+	TVector3 max_average = t_sum; // initial best direction is bis
 
 	// find max phi and theta dev around bis
 	double max_dPhi = 0, max_dTheta = 0;
@@ -1184,14 +1184,22 @@ double optimal_directions_intersections_raw_SV(
 	dTheta = abs(t_sum.Theta() - t3.Theta());
 	if (dTheta > max_dTheta) max_dTheta = dTheta;
 
-	for (unsigned int i = 0; i<100; i++)
+	for (unsigned int i = 0; i<1000; i++)
 		{
-		// +- max dphi
-		double dPhi_shift   = max_dPhi * r3->Uniform() * 2 - max_dPhi;
-		double dTheta_shift = max_dTheta * r3->Uniform() * 2 - max_dTheta;
-		TVector3 direction = t_sum;
-		direction.SetPhi(t_sum.Phi() + dPhi_shift);
-		direction.SetTheta(t_sum.Theta() + dTheta_shift);
+		//// uniform search around bis dir +- max dphi
+		//double dPhi_shift   = max_dPhi * r3->Uniform() * 2 - max_dPhi;
+		//double dTheta_shift = max_dTheta * r3->Uniform() * 2 - max_dTheta;
+		//TVector3 direction = t_sum;
+		//direction.SetPhi(t_sum.Phi() + dPhi_shift);
+		//direction.SetTheta(t_sum.Theta() + dTheta_shift);
+
+		// Gaussian + Markov walk from bis dir
+		double dPhi_shift   = r3->Gaus(0, max_dPhi);
+		double dTheta_shift = r3->Gaus(0, max_dTheta);
+		// shift around current best (in principle I should also reduce sigma..)
+		TVector3 direction = max_average;
+		direction.SetPhi(max_average.Phi() + dPhi_shift);
+		direction.SetTheta(max_average.Theta() + dTheta_shift);
 
 		direction.SetMag(1); // just in case
 
