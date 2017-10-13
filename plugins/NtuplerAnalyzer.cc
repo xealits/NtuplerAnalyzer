@@ -95,7 +95,7 @@ struct sv_pair geometrical_SV(
 	TVector3& b_vec3, TVector3& tr3
 	)
 	{
-	Float_t tracker_error = 0.002; // approximately systematic error on positions
+	//Float_t tracker_error = 0.002; // approximately systematic error on positions
 	// it will cancel out with weights
 
 	//TVector3 b_vec1, b_vec2, b_vec3;
@@ -2078,24 +2078,149 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// using Signal Candidates of tau
 			reco::CandidatePtrVector sigCands = tau.signalChargedHadrCands();
 			// for control number of signal candidates (should only be = 3, the 3pi decay):
-			NT_tau_SV_fit_ntracks.push_back(sigCands.size());
+			//NT_tau_SV_fit_ntracks.push_back(sigCands.size());
+			// tests show all is ok
 
 			bool i = true;
 			for (reco::CandidatePtrVector::const_iterator itr_cand = sigCands.begin(); itr_cand != sigCands.end(); ++itr_cand)
 				{
 				// save as Same Sign track
+				// (something is reverted in signs here)
 				if ((*itr_cand)->charge() * tau.pdgId() > 0)
 					{
-					NT_tau_SV_fit_track_SS_p4.push_back((*itr_cand)->p4());
+					NT_tau_SV_fit_track_OS_p4.push_back((*itr_cand)->p4());
 					}
 				else if (i) // first OS track
 					{
-					NT_tau_SV_fit_track_OS1_p4.push_back((*itr_cand)->p4());
+					NT_tau_SV_fit_track_SS1_p4.push_back((*itr_cand)->p4());
 					i = false;
 					}
 				else // second OS track
-					NT_tau_SV_fit_track_OS2_p4.push_back((*itr_cand)->p4());
+					NT_tau_SV_fit_track_SS2_p4.push_back((*itr_cand)->p4());
 				}
+
+			// loop through tracks and save their impact parameters
+			// and match quality dR
+			double min_dR_os(99999.), min_dR_ss1(99999.), min_dR_ss2(99999.);
+			int matched_track_OS = -1, matched_track_SS1 = -1, matched_track_SS2 = -1;
+			for(size_t i=0; i<track_cands->size(); ++i)
+				{
+				// TODO: these requirements are probably the reasone some tracks are not found for tau sigCands
+				if((*track_cands)[i].charge()==0 || (*track_cands)[i].vertexRef().isNull()) continue;
+				if(!(*track_cands)[i].bestTrack()) continue;
+
+				auto track = (*track_cands)[i].bestTrack();
+
+				// find closest matches to general track
+				double dR_os  = sqrt(pow(track->eta() - NT_tau_SV_fit_track_OS_p4 .back().eta(), 2) + pow(track->phi() - NT_tau_SV_fit_track_OS_p4 .back().phi(), 2));
+				double dR_ss1 = sqrt(pow(track->eta() - NT_tau_SV_fit_track_SS1_p4.back().eta(), 2) + pow(track->phi() - NT_tau_SV_fit_track_SS1_p4.back().phi(), 2));
+				double dR_ss2 = sqrt(pow(track->eta() - NT_tau_SV_fit_track_SS1_p4.back().eta(), 2) + pow(track->phi() - NT_tau_SV_fit_track_SS1_p4.back().phi(), 2));
+				// there is no order in saving tracks
+				// in principle two sigCands can match to the same track
+				// but then dR should be large
+				// and matchQ (matchQuality) will be large
+				if (dR_os < min_dR_os)
+					{
+					min_dR_os = dR_os;
+					matched_track_OS = i;
+					}
+				if (dR_ss1 < min_dR_ss1)
+					{
+					min_dR_ss1 = dR_ss1;
+					matched_track_SS1 = i;
+					}
+				if (dR_ss2 < min_dR_ss2)
+					{
+					min_dR_ss2 = dR_ss2;
+					matched_track_SS2 = i;
+					}
+				}
+
+			// tracks are matched, save parameters
+
+			// quality of match
+			NT_tau_SV_fit_track_OS_matched_track_dR .push_back(min_dR_os);
+			NT_tau_SV_fit_track_SS1_matched_track_dR.push_back(min_dR_ss1);
+			NT_tau_SV_fit_track_SS2_matched_track_dR.push_back(min_dR_ss2);
+			NT_tau_SV_fit_track_matchQ.push_back(min_dR_os + min_dR_ss1 + min_dR_ss2);
+
+			// track parameters:
+			//  - vector of impact parameter
+			//  - vertex reference key (0 is the PV of the event)
+			//  - vertex association quality, whether the track was used in the fit
+
+			// OS
+			int track_index;
+			unsigned int key;
+			int quality;
+			TVector3 impact;
+
+			track_index = matched_track_OS;
+
+			key = (*track_cands)[track_index].vertexRef().key();
+			quality = (*track_cands)[track_index].pvAssociationQuality();
+
+			auto ref_vertex = *((*track_cands)[track_index].vertexRef());
+			auto closest_point = (*track_cands)[track_index].vertex();
+			auto distance = closest_point - ref_vertex.position();
+			// distance is of class ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
+			impact.SetXYZ(distance.x(), distance.y(), distance.z());
+
+			NT_tau_SV_fit_track_OS_matched_track_vtxkey.push_back(key);
+			NT_tau_SV_fit_track_OS_matched_track_vtxQ.push_back(quality);
+			NT_tau_SV_fit_track_OS_matched_track_b.push_back(impact);
+
+			// SS1
+			track_index = matched_track_SS1;
+
+			key = (*track_cands)[track_index].vertexRef().key();
+			quality = (*track_cands)[track_index].pvAssociationQuality();
+
+			ref_vertex = *((*track_cands)[track_index].vertexRef());
+			closest_point = (*track_cands)[track_index].vertex();
+			distance = closest_point - ref_vertex.position();
+			// distance is of class ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
+			impact.SetXYZ(distance.x(), distance.y(), distance.z());
+
+			NT_tau_SV_fit_track_SS1_matched_track_vtxkey.push_back(key);
+			NT_tau_SV_fit_track_SS1_matched_track_vtxQ.push_back(quality);
+			NT_tau_SV_fit_track_SS1_matched_track_b.push_back(impact);
+
+			// SS2
+			track_index = matched_track_SS2;
+
+			key = (*track_cands)[track_index].vertexRef().key();
+			quality = (*track_cands)[track_index].pvAssociationQuality();
+
+			ref_vertex = *((*track_cands)[track_index].vertexRef());
+			closest_point = (*track_cands)[track_index].vertex();
+			distance = closest_point - ref_vertex.position();
+			// distance is of class ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
+			impact.SetXYZ(distance.x(), distance.y(), distance.z());
+
+			NT_tau_SV_fit_track_SS2_matched_track_vtxkey.push_back(key);
+			NT_tau_SV_fit_track_SS2_matched_track_vtxQ.push_back(quality);
+			NT_tau_SV_fit_track_SS2_matched_track_b.push_back(impact);
+
+			TVector3 tr_ss2;
+			TVector3 tr_os ;
+			TVector3 tr_ss1;
+			tr_ss2.SetXYZ(NT_tau_SV_fit_track_SS2_p4.back().X(), NT_tau_SV_fit_track_SS2_p4.back().Y(), NT_tau_SV_fit_track_SS2_p4.back().Z());
+			tr_os .SetXYZ(NT_tau_SV_fit_track_OS_p4 .back().X(), NT_tau_SV_fit_track_OS_p4 .back().Y(), NT_tau_SV_fit_track_OS_p4 .back().Z());
+			tr_ss1.SetXYZ(NT_tau_SV_fit_track_SS1_p4.back().X(), NT_tau_SV_fit_track_SS1_p4.back().Y(), NT_tau_SV_fit_track_SS1_p4.back().Z());
+
+			// let's save also Vector3 of tracks? to not have to convert everything every time
+			NT_tau_SV_fit_track_OS_matched_track_p3 .push_back(tr_os );
+			NT_tau_SV_fit_track_SS1_matched_track_p3.push_back(tr_ss1);
+			NT_tau_SV_fit_track_SS2_matched_track_p3.push_back(tr_ss2);
+
+			// geometrical SV
+			struct sv_pair geom_SV = geometrical_SV(
+				NT_tau_SV_fit_track_SS2_matched_track_b.back(), tr_ss2,
+				NT_tau_SV_fit_track_OS_matched_track_b.back(),  tr_os,
+				NT_tau_SV_fit_track_SS1_matched_track_b.back(), tr_ss1);
+			NT_tau_SV_geom_flightLen.push_back(geom_SV.flightLength);
+			NT_tau_SV_geom_flightLenSign.push_back(geom_SV.flightLengthSignificance);
 			}
 		else
 			{

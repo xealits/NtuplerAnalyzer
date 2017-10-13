@@ -1602,6 +1602,7 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	//TLorentzVector aTrack;
 	for(size_t i=0; i<track_cands->size(); ++i)
 		{
+		// TODO: these requirements are probably the reasone some tracks are not found for tau sigCands
 		if((*track_cands)[i].charge()==0 || (*track_cands)[i].vertexRef().isNull()) continue;
 		if(!(*track_cands)[i].bestTrack()) continue;
 

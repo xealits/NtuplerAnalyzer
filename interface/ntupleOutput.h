@@ -381,11 +381,55 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_y)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_z)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<math::Error<3>::type>, tau_SV_cov)
 // info on tracks of the tau
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_ntracks) // for control
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_SS_p4)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_OS1_p4)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_OS2_p4)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_ntracks) // for control
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_SS_p4)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_OS1_p4)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_OS2_p4)
 
+// these are from sigCands
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_OS_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_SS1_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_SS2_p4)
+// closest tracks, indexes in the tracks vectors
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_OS_matched_track)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS1_matched_track)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_track)
+// assume momentum from sigCands is correct
+// get impact parameters (b) from general tracks
+// save as ROOT::Math::XYZPoint?
+// first -- match quality, dR
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_OS_matched_track_dR)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_SS1_matched_track_dR)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_SS2_matched_track_dR)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_matchQ) // just sum of all dR
+// track parameters
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_OS_matched_track_vtxkey)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS1_matched_track_vtxkey)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_track_vtxkey)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_OS_matched_track_vtxQ)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS1_matched_track_vtxQ)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_track_vtxQ)
+// the impact parameter is ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
+// I'd like to save TVector3..
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_OS_matched_track_b)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS1_matched_track_b)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS2_matched_track_b)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_OS_matched_track_p3)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS1_matched_track_p3)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS2_matched_track_p3)
+// closest gen tau products, indexes in the products vectors
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_OS_matched_gen)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS1_matched_gen)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_gen)
+//
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_OS_matched_gen_dR)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_SS1_matched_gen_dR)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_SS2_matched_gen_dR)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_track_matchQ_gen) // just sum of all dR
+
+// finally, the geometrical SV
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_geom_flightLen)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_geom_flightLenSign)
 
 // PV REFITTED
 Bool_t_in_NTuple(OUTNTUPLE, PV_fit_isOk)
