@@ -2362,7 +2362,7 @@ NtuplerAnalyzer::beginJob()
 void 
 NtuplerAnalyzer::endJob() 
 {
-if(!isMC){
+if (isLocal && !isMC){
 	goodLumiFilter.FindLumiInFiles(urls); // urls! why are they here at all? no even 1 comment in that "Utilities!"
 	goodLumiFilter.DumpToJson(((outUrl.ReplaceAll(".root",""))+".json").Data());
 	}

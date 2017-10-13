@@ -25,15 +25,15 @@ ivars.inputFiles=(
 #'root://cms-xrd-global.cern.ch///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/3E18521B-A4BE-E611-8843-0025905A607E.root'
 )
 
-#ivars.outputFile = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/MC2016_Summer16_TTJets_powheg_0.root'
-ivars.outputFile = 'MC2016_Summer16_TTJets_powheg.root'
-# get and parse the command line arguments
-ivars.parseArguments()
-
 
 # MC or Data is used everywhere
-isMC = True # PARAMETER
-dtag = 'MC2016_Summer16_TTJets_powheg' # PARAMETER
+isMC = {isMC}   # PARAMETER
+dtag = '{dtag}' # PARAMETER
+
+#ivars.outputFile = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/MC2016_Summer16_TTJets_powheg_0.root'
+ivars.outputFile = dtag + '.root'
+# get and parse the command line arguments
+ivars.parseArguments()
 
 process = cms.Process("Demo")
 
@@ -89,16 +89,17 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(ivar
 #theLumiMask = path.expandvars("") # for MC it defaults for "", and somehow the lumi-checker works well with that
 #process.ntupler.lumisToProcess = LumiList.LumiList(filename = theLumiMask).getVLuminosityBlockRange()
 
-# new lumi processing from
-# https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePythonTips#Use_a_JSON_file_of_good_lumi_sec
-# not sure how it works and how it counts lumisections processed
-if not isMC:
-    process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
-    JSONfile = ''
-    myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')
-    process.source.lumisToProcess.extend(myLumis)
-# it's not clear how to get the output from this: which LumiSecs have actually been processed (and which were not due to job crashes etc)
-# maybe should use the old utility from llvv_fwk
+# it is handled by CRAB
+## new lumi processing from
+## https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePythonTips#Use_a_JSON_file_of_good_lumi_sec
+## not sure how it works and how it counts lumisections processed
+#if not isMC:
+#    process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
+#    JSONfile = ''
+#    myLumis = LumiList.LumiList(filename = JSONfile).getCMSSWString().split(',')
+#    process.source.lumisToProcess.extend(myLumis)
+## it's not clear how to get the output from this: which LumiSecs have actually been processed (and which were not due to job crashes etc)
+## maybe should use the old utility from llvv_fwk
 
 # NTUPLER
 process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
@@ -107,6 +108,7 @@ process.ntupler.isMC = cms.bool(isMC)
 process.ntupler.dtag = cms.string(dtag)
 
 process.ntupler.isLocal = cms.bool(False) # LSF submition is local
+
 # for LumiDump (to be scraped):
 process.ntupler.input = cms.untracked.vstring(
 'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root',
@@ -124,10 +126,10 @@ process.ntupler.input = cms.untracked.vstring(
 process.ntupler.outfile = cms.string('/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_25/src/UserCode/ttbar-leptons-80X/outdir/v12.7//MC2016_Summer16_TTJets_powheg_0.root')
 
 
-theLumiMask = path.expandvars("") # PARAMETER -- lumi should be handled via CRAB3
+theLumiMask = path.expandvars("") # -- lumi should be handled via CRAB3, but for now I leave this config option available in Ntupler for local runs
 process.ntupler.lumisToProcess = LumiList.LumiList(filename = theLumiMask).getVLuminosityBlockRange()
 
-record_scheme = 'ElMu' # PARAMETER
+record_scheme = '{record_scheme}' # PARAMETER
 if record_scheme:
     process.ntupler.record_tauID         = cms.bool('tauID'         in record_scheme)
     process.ntupler.record_bPreselection = cms.bool('bPreselection' in record_scheme)
