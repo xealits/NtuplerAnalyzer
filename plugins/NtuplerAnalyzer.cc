@@ -48,6 +48,8 @@
 
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 
+#include "TRandom3.h"
+
 // MET recoil corrections for DY and WJets, from higgs->tautau group
 // usage: https://github.com/CMS-HTT/RecoilCorrections/blob/master/instructions.txt
 //#include "HTT-utilities/RecoilCorrections/interface/RecoilCorrector.h"
@@ -80,6 +82,278 @@ static double pu_vector_NOMINAL[] = {0, 0.360609416811339, 0.910848525427002, 1.
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0};
 
+struct sv_pair {
+	double flightLength;
+	double flightLengthSignificance;
+};
+
+TRandom3 *r3 = new TRandom3();
+
+struct sv_pair geometrical_SV(
+	TVector3& b_vec1, TVector3& tr1,
+	TVector3& b_vec2, TVector3& tr2,
+	TVector3& b_vec3, TVector3& tr3
+	)
+	{
+	Float_t tracker_error = 0.002; // approximately systematic error on positions
+	// it will cancel out with weights
+
+	//TVector3 b_vec1, b_vec2, b_vec3;
+	//b_vec1.SetXYZ(-b1x, -b1y, -b1z); // 100% known that z here has giant error -- need to do something with it
+	//b_vec2.SetXYZ(-b2x, -b2y, -b2z);
+	//b_vec3.SetXYZ(-b3x, -b3y, -b3z);
+
+	// I need just the direction of tracks for geometry
+	// thus making copy
+	TVector3 t1, t2, t3;
+	t1 = tr1;
+	t2 = tr2;
+	t3 = tr3;
+	//t1.SetPtEtaPhi(v1pt, v1eta, v1phi);
+	//t2.SetPtEtaPhi(v2pt, v2eta, v2phi);
+	//t3.SetPtEtaPhi(v3pt, v3eta, v3phi);
+
+	// weighted bis direction -- used in simple b SV (Friday result)
+	TVector3 t_sum = t1 + t2 + t3;
+	t_sum.SetMag(1);
+
+	// after establishing direction of tau
+	// tracks are only geometrical lines
+	t1.SetMag(1);
+	t2.SetMag(1);
+	t3.SetMag(1);
+
+	//TVector3 tau = t1+t2+t3;
+	//TVector3 tau;
+	//tau.SetPtEtaPhi(taupt, taueta, tauphi);
+	// tests show that tau direction and the sum are practically the same
+
+	// find the "optimal direction"
+	// -- direction of minimal angles betwee tracks and b-s in perpendicular plane
+
+	// 2)
+	// just shift bis direction randomly in max phi max theta deviations
+	// choose best position, i.e. max sum b-track angles in transverse plane
+	// thus, no Z changes
+	double max_angle_sum = 0;
+	TVector3 max_average = t_sum; // initial best direction is bis
+
+	// find max phi and theta dev around bis
+	double max_dPhi = 0, max_dTheta = 0;
+
+	double dPhi = abs(t_sum.Phi() - t1.Phi());
+	if (dPhi > max_dPhi) max_dPhi = dPhi;
+	dPhi = abs(t_sum.Phi() - t2.Phi());
+	if (dPhi > max_dPhi) max_dPhi = dPhi;
+	dPhi = abs(t_sum.Phi() - t3.Phi());
+	if (dPhi > max_dPhi) max_dPhi = dPhi;
+
+	double dTheta = abs(t_sum.Theta() - t1.Theta());
+	if (dTheta > max_dTheta) max_dTheta = dTheta;
+	dTheta = abs(t_sum.Theta() - t2.Theta());
+	if (dTheta > max_dTheta) max_dTheta = dTheta;
+	dTheta = abs(t_sum.Theta() - t3.Theta());
+	if (dTheta > max_dTheta) max_dTheta = dTheta;
+
+	for (unsigned int i = 0; i<1000; i++)
+		{
+		//// uniform search around bis dir +- max dphi
+		//double dPhi_shift   = max_dPhi * r3->Uniform() * 2 - max_dPhi;
+		//double dTheta_shift = max_dTheta * r3->Uniform() * 2 - max_dTheta;
+		//TVector3 direction = t_sum;
+		//direction.SetPhi(t_sum.Phi() + dPhi_shift);
+		//direction.SetTheta(t_sum.Theta() + dTheta_shift);
+
+		// Gaussian + Markov walk from bis dir
+		double dPhi_shift   = r3->Gaus(0, max_dPhi);
+		double dTheta_shift = r3->Gaus(0, max_dTheta);
+		// shift around current best (in principle I should also reduce sigma..)
+		TVector3 direction = max_average;
+		direction.SetPhi(max_average.Phi() + dPhi_shift);
+		direction.SetTheta(max_average.Theta() + dTheta_shift);
+
+		direction.SetMag(1); // just in case
+
+		// and to the direction
+		// find perpendicular b-s
+		TVector3 b_long1 = direction * (b_vec1.Dot(direction));
+		TVector3 b_perp1 = b_vec1 - b_long1;
+		TVector3 b_long2 = direction * (b_vec2.Dot(direction));
+		TVector3 b_perp2 = b_vec2 - b_long2;
+		TVector3 b_long3 = direction * (b_vec3.Dot(direction));
+		TVector3 b_perp3 = b_vec3 - b_long3;
+
+		// perpendicular parts of tracks
+		TVector3 t1_long = direction * (t1.Dot(direction));
+		TVector3 t1_perp = t1 - t1_long;
+		TVector3 t2_long = direction * (t2.Dot(direction));
+		TVector3 t2_perp = t2 - t2_long;
+		TVector3 t3_long = direction * (t3.Dot(direction));
+		TVector3 t3_perp = t3 - t3_long;
+
+		double angle_sum = b_perp1.Angle(t1_perp) + b_perp2.Angle(t2_perp) + b_perp3.Angle(t3_perp);
+		if (angle_sum > max_angle_sum)
+			{
+			max_angle_sum = angle_sum;
+			max_average = direction;
+			}
+		}
+
+	// and to optimal direction
+	// find perpendicular b-s
+	TVector3 b_long1 = max_average * (b_vec1.Dot(max_average));
+	TVector3 b_perp1 = b_vec1 - b_long1;
+	TVector3 b_long2 = max_average * (b_vec2.Dot(max_average));
+	TVector3 b_perp2 = b_vec2 - b_long2;
+	TVector3 b_long3 = max_average * (b_vec3.Dot(max_average));
+	TVector3 b_perp3 = b_vec3 - b_long3;
+
+	// perpendicular parts of tracks
+	TVector3 t1_long = max_average * (t1.Dot(max_average));
+	TVector3 t1_perp = t1 - t1_long;
+	TVector3 t2_long = max_average * (t2.Dot(max_average));
+	TVector3 t2_perp = t2 - t2_long;
+	TVector3 t3_long = max_average * (t3.Dot(max_average));
+	TVector3 t3_perp = t3 - t3_long;
+
+	// project found b-s to perp tracks
+	// in principle it should not be needed, since the direction is found to fit them together well
+	// but let's try to get to simple SV best result
+	t1_perp.SetMag(1);
+	t2_perp.SetMag(1);
+	t3_perp.SetMag(1);
+
+	TVector3 b_long_perp1 = t1_perp * (b_perp1.Dot(t1_perp));
+	TVector3 b_long_perp2 = t2_perp * (b_perp2.Dot(t2_perp));
+	TVector3 b_long_perp3 = t3_perp * (b_perp3.Dot(t3_perp));
+
+	// [let's try without these for now]
+
+	/*
+	TVector3 b_long_perp1 = b_perp1;
+	TVector3 b_long_perp2 = b_perp2;
+	TVector3 b_long_perp3 = b_perp3;
+	*/
+
+
+	// perpendiculars to bis direction, for reference
+	// find perpendicular b-s
+	TVector3 b_bis_long1 = t_sum * (b_vec1.Dot(t_sum));
+	TVector3 b_bis_perp1 = b_vec1 - b_bis_long1;
+	TVector3 b_bis_long2 = t_sum * (b_vec2.Dot(t_sum));
+	TVector3 b_bis_perp2 = b_vec2 - b_bis_long2;
+	TVector3 b_bis_long3 = t_sum * (b_vec3.Dot(t_sum));
+	TVector3 b_bis_perp3 = b_vec3 - b_bis_long3;
+
+	// perpendicular parts of tracks
+	TVector3 t1_bis_long = t_sum * (t1.Dot(t_sum));
+	TVector3 t1_bis_perp = t1 - t1_bis_long;
+	TVector3 t2_bis_long = t_sum * (t2.Dot(t_sum));
+	TVector3 t2_bis_perp = t2 - t2_bis_long;
+	TVector3 t3_bis_long = t_sum * (t3.Dot(t_sum));
+	TVector3 t3_bis_perp = t3 - t3_bis_long;
+
+	// in the perp plane find b long to tracks
+	// -- nope, no additional correction to b-s
+
+	// the best point calculation
+	// with just transverse b-s
+	//TVector3 dV = t1 - t2;
+	//TVector3 dB = b_perp1 - b_perp2;
+	//double x12 = dV.Dot(dB) / dV.Mag2();
+	//dV = t2 - t3;
+	//dB = b_perp2 - b_perp3;
+	//double x23 = dV.Dot(dB) / dV.Mag2();
+	//dV = t3 - t1;
+	//dB = b_perp3 - b_perp1;
+	//double x31 = dV.Dot(dB) / dV.Mag2();
+
+	// the best point calculation with projected b-s
+	TVector3 dV = t1 - t2;
+	TVector3 dB1 = b_long_perp1 - b_long_perp2;
+	double x12 = - dV.Dot(dB1) / dV.Mag2();
+
+	dV = t2 - t3;
+	TVector3 dB2 = b_long_perp2 - b_long_perp3;
+	double x23 = - dV.Dot(dB2) / dV.Mag2();
+
+	dV = t3 - t1;
+	TVector3 dB3 = b_long_perp3 - b_long_perp1;
+	double x31 = - dV.Dot(dB3) / dV.Mag2();
+
+	TVector3 bp12 = b_long_perp1 + x12 * t1;
+	TVector3 bp21 = b_long_perp2 + x12 * t2;
+	TVector3 bp_1 = 0.5*(bp12 + bp21);
+
+	TVector3 bp23 = b_long_perp2 + x23 * t2;
+	TVector3 bp32 = b_long_perp3 + x23 * t3;
+	TVector3 bp_2 = 0.5*(bp23 + bp32);
+
+	TVector3 bp31 = b_long_perp3 + x31 * t3;
+	TVector3 bp13 = b_long_perp1 + x31 * t1;
+	TVector3 bp_3 = 0.5*(bp31 + bp13);
+
+	TVector3 bp_average = 0.3333*(bp_1 + bp_2 + bp_3);
+	TVector3 bp_dev1 = bp_1 - bp_average;
+	TVector3 bp_dev2 = bp_2 - bp_average;
+	TVector3 bp_dev3 = bp_3 - bp_average;
+
+	/*
+	// and systematic error of tracker
+	double syst12 = tracker_error / t1.Angle(t2); // technically / Sin (or Tan), but Sin = Angle with these angles
+	double syst23 = tracker_error / t2.Angle(t3); // technically / Sin (or Tan), but Sin = Angle with these angles
+	double syst31 = tracker_error / t3.Angle(t1); // technically / Sin (or Tan), but Sin = Angle with these angles
+	//double syst = pow(syst12, 2) + pow(syst23, 2) + pow(syst31, 2);
+	double syst12_weight = 1/syst12;
+	double syst23_weight = 1/syst23;
+	double syst31_weight = 1/syst31;
+
+	// not weighted averages
+	double x_average = (x12 + x23 + x31) / 3;
+	double x_deviation = (pow(x12 - x_average, 2) + pow(x23 - x_average, 2) + pow(x31 - x_average, 2)) * 0.3333;
+	//double x_dev_syst = x_deviation + syst;
+
+	// weighted average with tracker errors
+	//double x_average = (x12*syst12_weight + x23*syst23_weight + x31*syst31_weight) / (syst12_weight + syst23_weight + syst31_weight);
+	//double x_deviation = (syst12_weight*pow(x12 - x_average, 2) + syst23_weight*pow(x23 - x_average, 2) + syst31_weight*pow(x31 - x_average, 2))/(2*(syst12_weight + syst23_weight + syst31_weight)/3);
+	*/
+
+	double convergence_factor = 1;
+
+	//double triang_a = 0, triang_b = 0;
+	//const double tan60 = 1.732, sin60 = 0.866;
+
+	double conv1 = (bp12 - bp21).Mag();
+	double conv2 = (bp23 - bp32).Mag();
+	double conv3 = (bp31 - bp13).Mag();
+	double conv_frac1 = conv1/dB1.Mag();
+	double conv_frac2 = conv2/dB2.Mag();
+	double conv_frac3 = conv3/dB3.Mag();
+	double conv_frac_sum = conv_frac1 + conv_frac2 + conv_frac3;
+	double conv_frac_averaged = sqrt(pow(conv_frac1, 2) + pow(conv_frac2, 2) + pow(conv_frac3, 2));
+
+	// SV out of all penalties
+	double flightLength = 0, flightLengthSignificance = 0;
+	// by relative convergence volume
+	convergence_factor *= 1 / (1 + conv_frac1 * conv_frac2 * conv_frac3 / 0.027); // 0.027 = 0.3*0.3*0.3 -- when fractions are equal
+	// by fraction sum-s, extracting correlation of divergences
+	convergence_factor *= 1 / (1 + (conv_frac1/conv_frac_sum) * (conv_frac2/conv_frac_sum) * (conv_frac3/conv_frac_sum));
+
+	// sign of flight
+	if (bp_average.Dot(t_sum) > 0)
+		{
+		flightLength = bp_average.Mag();
+		flightLengthSignificance = flightLength * convergence_factor / sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
+		}
+	else
+		{
+		flightLength = - bp_average.Mag();
+		flightLengthSignificance = flightLength * convergence_factor / sqrt(pow(bp_dev1.Mag(), 2) + pow(bp_dev2.Mag(), 2) + pow(bp_dev3.Mag(), 2));
+		}
+
+	struct sv_pair SV = {.flightLength = flightLength, .flightLengthSignificance = flightLengthSignificance};
+	return SV;
+	}
 
 // ptocedures for initializations
 namespace utils

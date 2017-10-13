@@ -1611,6 +1611,8 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 		auto closest_point = (*track_cands)[i].vertex();
 		auto distance = closest_point - ref_vertex.position();
+		// distance is of class ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
+		//TVector3 distance = closest_point - ref_vertex.position();
 
 		// here I need to select "good" tracks
 		// save them to all tracks
@@ -1838,29 +1840,36 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			NT_tau_SV_fit_ntracks.push_back(sigCands.size()); // checked, it is always == 3
 
 			// get OS, SS and SS1 cand
-			reco::Candidate* track_os;
-			reco::Candidate* track_ss1;
-			reco::Candidate* track_ss2;
+			//const reco::Candidate* track_os;
+			//const reco::Candidate* track_ss1;
+			//const reco::Candidate* track_ss2;
+
+			edm::Ptr<reco::Candidate> track_os;
+			edm::Ptr<reco::Candidate> track_ss1;
+			edm::Ptr<reco::Candidate> track_ss2;
 			bool i = true;
-			for (reco::CandidatePtrVector::const_iterator itr_cand = sigCands.begin(); itr_cand != sigCands.end(); ++itr_cand)
+			//for (reco::CandidatePtrVector::const_iterator itr_cand = sigCands.begin(); itr_cand != sigCands.end(); ++itr_cand)
+			for (unsigned int track_it = 0; track_it<sigCands.size(); track_it++)
 				{
 				// 1 Opposite Sign track
 				//if (((*itr_cand)->charge() * tau.pdgId()) < 0)
 				// strangely enough something is reverted in PAT
 				// tau has 2 OS tracks and 1 SS (seems like charge or some convention is not conserved)
-				if (((*itr_cand)->charge() * tau.pdgId()) > 0)
+				edm::Ptr<reco::Candidate> track = sigCands[track_it];
+				//if (((*itr_cand)->charge() * tau.pdgId()) > 0)
+				if ((track->charge() * tau.pdgId()) > 0)
 					{
-					track_os = *itr_cand;
+					track_os  = track;
 					}
 				// 2 Same Sign tracks
 				else if (i) // first SS track
 					{
-					track_ss1 = *itr_cand;
+					track_ss1 = track;
 					i = false;
 					}
 				else // second SS track
 					{
-					track_ss2 = *itr_cand;
+					track_ss2 = track;
 					}
 				}
 			NT_tau_SV_fit_track_OS_p4. push_back(track_os ->p4());
@@ -1881,17 +1890,17 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 				// and matchQ (matchQuality) will be large
 				if (dR_os < min_dR_os)
 					{
-					min_dR_os = dR;
+					min_dR_os = dR_os;
 					matched_track_os = index;
 					}
 				if (dR_ss1 < min_dR_ss1)
 					{
-					min_dR_ss1 = dR;
+					min_dR_ss1 = dR_ss1;
 					matched_track_ss1 = index;
 					}
 				if (dR_ss2 < min_dR_ss2)
 					{
-					min_dR_ss2 = dR;
+					min_dR_ss2 = dR_ss2;
 					matched_track_ss2 = index;
 					}
 				index++;
@@ -1900,11 +1909,14 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			// for control
 			// it turns out positive tau has 2 negative tracks and 1 positive..
 			// pdgId 15 = +-- tracks
-			NT_tau_SV_tracks_char.push_back((*allTracks[matched_track_os])->charge());
+			//NT_tau_SV_tracks_char.push_back((*allTracks[matched_track_os ])->charge());
+			//NT_tau_SV_tracks_char.push_back((*allTracks[matched_track_ss1])->charge());
+			//NT_tau_SV_tracks_char.push_back((*allTracks[matched_track_ss2])->charge());
+			NT_tau_SV_tracks_char.push_back(track_os ->charge());
+			NT_tau_SV_tracks_char.push_back(track_ss1->charge());
+			NT_tau_SV_tracks_char.push_back(track_ss2->charge());
 			NT_tau_SV_tracks_tuID.push_back(tau.pdgId());
-			NT_tau_SV_tracks_char.push_back((*allTracks[matched_track_ss1])->charge());
 			NT_tau_SV_tracks_tuID.push_back(tau.pdgId());
-			NT_tau_SV_tracks_char.push_back((*allTracks[matched_track_ss2])->charge());
 			NT_tau_SV_tracks_tuID.push_back(tau.pdgId());
 
 			double min_dR_gen_os(99999.), min_dR_gen_ss1(99999.), min_dR_gen_ss2(99999.);
@@ -1919,17 +1931,17 @@ TauMatch::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 				// but this is used only in tests -- leaving it be
 				if (dR_os < min_dR_gen_os)
 					{
-					min_dR_gen_os = dR;
+					min_dR_gen_os = dR_os;
 					matched_gen_os = index_gen;
 					}
 				if (dR_ss1 < min_dR_gen_ss1)
 					{
-					min_dR_gen_ss1 = dR;
+					min_dR_gen_ss1 = dR_ss1;
 					matched_gen_ss1 = index_gen;
 					}
 				if (dR_ss2 < min_dR_gen_ss2)
 					{
-					min_dR_gen_ss2 = dR;
+					min_dR_gen_ss2 = dR_ss2;
 					matched_gen_ss2 = index_gen;
 					}
 				index_gen++;
