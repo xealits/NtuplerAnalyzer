@@ -204,7 +204,10 @@
 #define NTUPLEOUTPUT_LORENTZVECTOR_H
 // the exact LorentzVector declaration
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
+typedef ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag> Vector_3D;
 #endif /* NTUPLEOUTPUT_LORENTZVECTOR_H */
+
+#define COMMA ,
 
 //#endif /* NTUPLEOUTPUT_INTERFACE_H */
 
@@ -410,13 +413,26 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_OS_matched_track_vtxQ
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS1_matched_track_vtxQ)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_track_vtxQ)
 // the impact parameter is ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
-// I'd like to save TVector3..
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_OS_matched_track_b)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS1_matched_track_b)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS2_matched_track_b)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_OS_matched_track_p3)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS1_matched_track_p3)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS2_matched_track_p3)
+// I'd like to save TVector3.. TVector3 is not writable to TTree branches without magic
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_OS_matched_track_b)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS1_matched_track_b)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS2_matched_track_b)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_OS_matched_track_p3)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS1_matched_track_p3)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS2_matched_track_p3)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double> COMMA ROOT::Math::DefaultCoordinateSystemTag>>, tau_SV_fit_track_OS_matched_track_b)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double> COMMA ROOT::Math::DefaultCoordinateSystemTag>>, tau_SV_fit_track_SS1_matched_track_b)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double> COMMA ROOT::Math::DefaultCoordinateSystemTag>>, tau_SV_fit_track_SS2_matched_track_b)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double> COMMA ROOT::Math::DefaultCoordinateSystemTag>>, tau_SV_fit_track_OS_matched_track_p3)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double> COMMA ROOT::Math::DefaultCoordinateSystemTag>>, tau_SV_fit_track_SS1_matched_track_p3)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double> COMMA ROOT::Math::DefaultCoordinateSystemTag>>, tau_SV_fit_track_SS2_matched_track_p3)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<Vector_3D>, tau_SV_fit_track_OS_matched_track_b)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<Vector_3D>, tau_SV_fit_track_SS1_matched_track_b)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<Vector_3D>, tau_SV_fit_track_SS2_matched_track_b)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<Vector_3D>, tau_SV_fit_track_OS_matched_track_p3)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<Vector_3D>, tau_SV_fit_track_SS1_matched_track_p3)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<Vector_3D>, tau_SV_fit_track_SS2_matched_track_p3)
+
 // closest gen tau products, indexes in the products vectors
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_OS_matched_gen)
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS1_matched_gen)

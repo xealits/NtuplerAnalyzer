@@ -89,26 +89,31 @@ struct sv_pair {
 
 TRandom3 *r3 = new TRandom3();
 
+typedef ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag> ROOT_TTree_vector3D;
+
 struct sv_pair geometrical_SV(
-	TVector3& b_vec1, TVector3& tr1,
-	TVector3& b_vec2, TVector3& tr2,
-	TVector3& b_vec3, TVector3& tr3
+	ROOT_TTree_vector3D& b_1, ROOT_TTree_vector3D& tr1,
+	ROOT_TTree_vector3D& b_2, ROOT_TTree_vector3D& tr2,
+	ROOT_TTree_vector3D& b_3, ROOT_TTree_vector3D& tr3
 	)
 	{
 	//Float_t tracker_error = 0.002; // approximately systematic error on positions
 	// it will cancel out with weights
 
-	//TVector3 b_vec1, b_vec2, b_vec3;
+	TVector3 b_vec1, b_vec2, b_vec3;
 	//b_vec1.SetXYZ(-b1x, -b1y, -b1z); // 100% known that z here has giant error -- need to do something with it
 	//b_vec2.SetXYZ(-b2x, -b2y, -b2z);
 	//b_vec3.SetXYZ(-b3x, -b3y, -b3z);
+	b_vec1.SetXYZ(b_1.X(), b_1.Y(), b_1.Z());
+	b_vec2.SetXYZ(b_2.X(), b_2.Y(), b_2.Z());
+	b_vec3.SetXYZ(b_3.X(), b_3.Y(), b_3.Z());
 
 	// I need just the direction of tracks for geometry
 	// thus making copy
 	TVector3 t1, t2, t3;
-	t1 = tr1;
-	t2 = tr2;
-	t3 = tr3;
+	t1.SetXYZ(tr1.X(), tr1.Y(), tr1.Z());
+	t2.SetXYZ(tr2.X(), tr2.Y(), tr2.Z());
+	t3.SetXYZ(tr3.X(), tr3.Y(), tr3.Z());
 	//t1.SetPtEtaPhi(v1pt, v1eta, v1phi);
 	//t2.SetPtEtaPhi(v2pt, v2eta, v2phi);
 	//t3.SetPtEtaPhi(v3pt, v3eta, v3phi);
@@ -2153,7 +2158,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			int track_index;
 			unsigned int key;
 			int quality;
-			TVector3 impact;
+			//TVector3 impact;
 
 			track_index = matched_track_OS;
 
@@ -2164,11 +2169,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			auto closest_point = (*track_cands)[track_index].vertex();
 			auto distance = closest_point - ref_vertex.position();
 			// distance is of class ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
-			impact.SetXYZ(distance.x(), distance.y(), distance.z());
+			//impact.SetXYZ(distance.x(), distance.y(), distance.z());
 
 			NT_tau_SV_fit_track_OS_matched_track_vtxkey.push_back(key);
 			NT_tau_SV_fit_track_OS_matched_track_vtxQ.push_back(quality);
-			NT_tau_SV_fit_track_OS_matched_track_b.push_back(impact);
+			NT_tau_SV_fit_track_OS_matched_track_b.push_back(distance);
 
 			// SS1
 			track_index = matched_track_SS1;
@@ -2180,11 +2185,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			closest_point = (*track_cands)[track_index].vertex();
 			distance = closest_point - ref_vertex.position();
 			// distance is of class ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
-			impact.SetXYZ(distance.x(), distance.y(), distance.z());
+			//impact.SetXYZ(distance.x(), distance.y(), distance.z());
 
 			NT_tau_SV_fit_track_SS1_matched_track_vtxkey.push_back(key);
 			NT_tau_SV_fit_track_SS1_matched_track_vtxQ.push_back(quality);
-			NT_tau_SV_fit_track_SS1_matched_track_b.push_back(impact);
+			NT_tau_SV_fit_track_SS1_matched_track_b.push_back(distance);
 
 			// SS2
 			track_index = matched_track_SS2;
@@ -2196,29 +2201,29 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			closest_point = (*track_cands)[track_index].vertex();
 			distance = closest_point - ref_vertex.position();
 			// distance is of class ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
-			impact.SetXYZ(distance.x(), distance.y(), distance.z());
+			//impact.SetXYZ(distance.x(), distance.y(), distance.z());
 
 			NT_tau_SV_fit_track_SS2_matched_track_vtxkey.push_back(key);
 			NT_tau_SV_fit_track_SS2_matched_track_vtxQ.push_back(quality);
-			NT_tau_SV_fit_track_SS2_matched_track_b.push_back(impact);
+			NT_tau_SV_fit_track_SS2_matched_track_b.push_back(distance);
 
-			TVector3 tr_ss2;
-			TVector3 tr_os ;
-			TVector3 tr_ss1;
-			tr_ss2.SetXYZ(NT_tau_SV_fit_track_SS2_p4.back().X(), NT_tau_SV_fit_track_SS2_p4.back().Y(), NT_tau_SV_fit_track_SS2_p4.back().Z());
-			tr_os .SetXYZ(NT_tau_SV_fit_track_OS_p4 .back().X(), NT_tau_SV_fit_track_OS_p4 .back().Y(), NT_tau_SV_fit_track_OS_p4 .back().Z());
-			tr_ss1.SetXYZ(NT_tau_SV_fit_track_SS1_p4.back().X(), NT_tau_SV_fit_track_SS1_p4.back().Y(), NT_tau_SV_fit_track_SS1_p4.back().Z());
+			//TVector3 tr_ss2;
+			//TVector3 tr_os ;
+			//TVector3 tr_ss1;
+			//tr_ss2.SetXYZ(NT_tau_SV_fit_track_SS2_p4.back().X(), NT_tau_SV_fit_track_SS2_p4.back().Y(), NT_tau_SV_fit_track_SS2_p4.back().Z());
+			//tr_os .SetXYZ(NT_tau_SV_fit_track_OS_p4 .back().X(), NT_tau_SV_fit_track_OS_p4 .back().Y(), NT_tau_SV_fit_track_OS_p4 .back().Z());
+			//tr_ss1.SetXYZ(NT_tau_SV_fit_track_SS1_p4.back().X(), NT_tau_SV_fit_track_SS1_p4.back().Y(), NT_tau_SV_fit_track_SS1_p4.back().Z());
 
 			// let's save also Vector3 of tracks? to not have to convert everything every time
-			NT_tau_SV_fit_track_OS_matched_track_p3 .push_back(tr_os );
-			NT_tau_SV_fit_track_SS1_matched_track_p3.push_back(tr_ss1);
-			NT_tau_SV_fit_track_SS2_matched_track_p3.push_back(tr_ss2);
+			NT_tau_SV_fit_track_OS_matched_track_p3 .push_back(NT_tau_SV_fit_track_OS_p4 .back().Vect());
+			NT_tau_SV_fit_track_SS1_matched_track_p3.push_back(NT_tau_SV_fit_track_SS1_p4.back().Vect());
+			NT_tau_SV_fit_track_SS2_matched_track_p3.push_back(NT_tau_SV_fit_track_SS2_p4.back().Vect());
 
 			// geometrical SV
 			struct sv_pair geom_SV = geometrical_SV(
-				NT_tau_SV_fit_track_SS2_matched_track_b.back(), tr_ss2,
-				NT_tau_SV_fit_track_OS_matched_track_b.back(),  tr_os,
-				NT_tau_SV_fit_track_SS1_matched_track_b.back(), tr_ss1);
+				NT_tau_SV_fit_track_SS2_matched_track_b.back(), NT_tau_SV_fit_track_SS2_matched_track_p3.back(),
+				NT_tau_SV_fit_track_OS_matched_track_b .back(), NT_tau_SV_fit_track_OS_matched_track_p3 .back(),
+				NT_tau_SV_fit_track_SS1_matched_track_b.back(), NT_tau_SV_fit_track_SS1_matched_track_p3.back());
 			NT_tau_SV_geom_flightLen.push_back(geom_SV.flightLength);
 			NT_tau_SV_geom_flightLenSign.push_back(geom_SV.flightLengthSignificance);
 			}
