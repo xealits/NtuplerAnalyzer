@@ -120,10 +120,19 @@ struct sv_pair geometrical_SV(
 
 	// weighted bis direction -- used in simple b SV (Friday result)
 	TVector3 t_sum = t1 + t2 + t3;
+
+	// root throws warning "zero vector can't be streched"
+	// crab jobs crash with it
+	// protective programming follows
+	struct sv_pair sv_zeros = {0., 0.};
+	if (t_sum.Mag() == 0)
+		return sv_zeros;
 	t_sum.SetMag(1);
 
 	// after establishing direction of tau
 	// tracks are only geometrical lines
+	if (t1.Mag() == 0 || t2.Mag() == 0 || t3.Mag() == 0)
+		return sv_zeros;
 	t1.SetMag(1);
 	t2.SetMag(1);
 	t3.SetMag(1);
@@ -177,6 +186,8 @@ struct sv_pair geometrical_SV(
 		direction.SetPhi(max_average.Phi() + dPhi_shift);
 		direction.SetTheta(max_average.Theta() + dTheta_shift);
 
+		if (direction.Mag() == 0)
+			return sv_zeros;
 		direction.SetMag(1); // just in case
 
 		// and to the direction
@@ -224,6 +235,8 @@ struct sv_pair geometrical_SV(
 	// project found b-s to perp tracks
 	// in principle it should not be needed, since the direction is found to fit them together well
 	// but let's try to get to simple SV best result
+	if (t1_perp.Mag() == 0 || t2_perp.Mag() == 0 || t3_perp.Mag() == 0)
+		return sv_zeros;
 	t1_perp.SetMag(1);
 	t2_perp.SetMag(1);
 	t3_perp.SetMag(1);
