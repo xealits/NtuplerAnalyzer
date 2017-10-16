@@ -23,10 +23,10 @@ config.Data.inputDataset = dset
 config.Data.inputDBS = 'global'
 if not LumiMask:
     config.Data.splitting = 'FileBased'
-    config.Data.unitsPerJob = 10
+    config.Data.unitsPerJob = 10 # about 300MB job output files for TTbar in tauID+Dilep record
 else:
     config.Data.splitting = 'LumiBased'
-    config.Data.unitsPerJob = 20
+    config.Data.unitsPerJob = 500 # should produce 100-150MB job output files for tauID+Dilep record
     config.Data.lumiMask = LumiMask
 
 config.Data.outLFNDirBase = '/store/user/%s/%s/' % (getUsernameFromSiteDB(), version)
