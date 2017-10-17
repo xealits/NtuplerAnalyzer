@@ -14,8 +14,8 @@ if __name__ == '__main__':
         )
     #def main(input_dir, dtag, outdir, range_min, range_max):
 
-    parser.add_argument("input_dir", help="merged-sets directory of results from jobs")
-    parser.add_argument("dtag",      help="basically it's the filename with the TTree from jobs")
+    parser.add_argument("input_file", help="file with results from job")
+    #parser.add_argument("dtag",      help="basically it's the filename with the TTree from jobs")
     parser.add_argument("outdir",    help="where to store the output")
     parser.add_argument("-s", "--range-min", type=int, default=0,    help="number of event to start processing from")
     parser.add_argument("-e", "--range-max",   type=int, default=None, help="number of event to end processing")
@@ -24,6 +24,6 @@ if __name__ == '__main__':
 
     from support_channel_distrs import main
 
-    main(args.input_dir, args.dtag, args.outdir, args.range_min, args.range_max)
+    main(args.input_file, args.outdir, args.range_min, args.range_max)
 
 

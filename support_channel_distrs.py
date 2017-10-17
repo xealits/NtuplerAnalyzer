@@ -344,7 +344,8 @@ if with_bSF:
     logging.info("loading b-tagging SF stuff")
 
     ROOT.gROOT.Reset()
-    ROOT.gROOT.ProcessLine(".L pu_weight.C+") # this is also needed for stuf to run
+    #ROOT.gROOT.ProcessLine(".L pu_weight.C+") # this is also needed for stuf to run
+    # not sure I use it right now
     ROOT.gSystem.Load("libUserCodettbar-leptons-80X.so")
     #ROOT.gROOT.ProcessLine("set_bSF_calibrators()")
 
@@ -597,6 +598,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max):
     ('weight_el_bSF_down', TH1D("weight_el_bSF_down", "", 50, 0, 2)),
     ])
 
+    # strange, getting PyROOT_NoneObjects from these after output
+    for _, h in control_hs.items():
+        h.SetDirectory(0)
+
     #channels = {'el': ['foo'], 'mu': ['foo'], 'mujets': ['foo'],
     #'mujets_b': ['foo'], 'taumutauh': ['foo'], 'taumutauh_antiMt_pretau_allb': ['foo'], 'taumutauh_antiMt_pretau': ['foo'], 'taumutauh_antiMt': ['foo'], 'taumutauh_antiMt_OS': ['foo']}
     #channels = {'presel': ['foo'], 'el': ['foo'], 'mu': ['foo']}
@@ -726,6 +731,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max):
                                                'nbjets': TH1D('%s_%s_%s_nbjets' % (chan, sys, proc), '', 5, 0, 5),
                                                'dijet_trijet_mass': TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, sys, proc), '', 20, 0, 400) })
                 for chan, (procs, _) in channels.items() for proc in procs for sys in systematic_names])
+
+    # strange, getting PyROOT_NoneObjects from these after output
+    for _, histos in out_hs.items():
+        for h in histos.values():
+            h.SetDirectory(0)
 
     '''
     for d, histos in out_hs.items():
@@ -1247,7 +1257,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max):
 
 
 
-def main(input_dir, dtag, outdir, range_min, range_max):
+#def main(input_dir, dtag, outdir, range_min, range_max):
+def main(input_filename, outdir, range_min, range_max):
 
     #if '-w' in argv:
     #    input_filename, nick = '/eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7/MC2016_Summer16_WJets_amcatnlo.root', 'wjets'
@@ -1262,10 +1273,11 @@ def main(input_dir, dtag, outdir, range_min, range_max):
     #    #logging.info("init b SFs with: " + init_bSF_call)
     #    #gROOT.ProcessLine(init_bSF_call)
 
-    input_filename = input_dir + '/' + dtag + '.root'
+    #input_filename = input_dir + '/' + dtag + '.root'
 
     #dtag = input_filename.split('/')[-1].split('.')[0]
-    logging.info("dtag = " + dtag)
+    #logging.info("dtag = " + dtag)
+    logging.info("input file = " + input_filename)
     f = TFile(input_filename)
     #f = TFile('outdir/v12.3/merged-sets/MC2016_Summer16_TTJets_powheg.root')
 
@@ -1273,10 +1285,21 @@ def main(input_dir, dtag, outdir, range_min, range_max):
     logging.info("N entries = %s" % tree.GetEntries())
     if not range_max: range_max = tree.GetEntries()
     logging.info("range = %d, %d" % (range_min, range_max))
-    c_hs, out_hs = full_loop(tree, dtag, 0, 6175, range_min, range_max)
+    c_hs, out_hs = full_loop(tree, input_filename, 0, 6175, range_min, range_max)
+
+    events_counter = f.Get('ntupler/events_counter')
+    weight_counter = f.Get('ntupler/weight_counter')
+    events_counter.SetDirectory(0)
+    weight_counter.SetDirectory(0)
+
+    f.Close()
 
     for name, h in c_hs.items():
-        print "%20s %9.5f" % (name, h.GetMean())
+        try:
+            print "%20s %9.5f" % (name, h.GetMean())
+        except Exception as e:
+            print e.__class__, e.__doc__, e.message
+            continue
 
     if with_bSF:
         print "eff_b             ", h_control_btag_eff_b             .GetMean()
@@ -1307,7 +1330,10 @@ def main(input_dir, dtag, outdir, range_min, range_max):
     #            for chan, (procs, _) in channels.items() for proc in procs for sys in systematic_names])
 
     #fout = TFile("lets_test.root", "RECREATE")
-    fout = TFile(outdir + '/' + dtag + "_%d-%d.root" % (range_min, range_max), "RECREATE")
+    #fout = TFile(outdir + '/' + dtag + "_%d-%d.root" % (range_min, range_max), "RECREATE")
+    fout_name = input_filename.split('/')[-1].split('.root')[0] + "_%d-%d.root" % (range_min, range_max)
+    fout = TFile(fout_name, "RECREATE")
+    fout.Write()
 
     for (chan, proc, sys), histos in out_hs.items():
         fout.cd()
@@ -1330,6 +1356,13 @@ def main(input_dir, dtag, outdir, range_min, range_max):
             histo.SetDirectory(out_dir)
             histo.Write()
         #out_dir.Print()
+
+    #events_counter.SetDirectory()
+    #weight_counter.SetDirectory()
+    fout.cd()
+    events_counter.Write() # hopefully these go to the root of the tfile
+    weight_counter.Write()
+
     fout.Write()
 
 
