@@ -1,10 +1,10 @@
+import os
 from os import environ
 from array import array
 from collections import OrderedDict
 import cProfile
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
 
 logging.info('importing ROOT')
 import ROOT
@@ -538,7 +538,7 @@ def calc_lj_var(light_jets, b_jets):
 
 
 # no data types/protocols in ROOT -- looping has to be done manually
-def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max):
+def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     '''full_loop(tree, dtag)
 
     TTree tree
@@ -559,7 +559,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max):
     isDibosons = 'WW' in dtag or 'ZZ' in dtag or 'WZ' in dtag
 
     #set_bSF_effs_for_dtag(dtag)
-    if with_bSF: print bEff_histo_b, bEff_histo_c, bEff_histo_udsg
+    if with_bSF: logger.write(' '.join(str(id(h)) for h in (bEff_histo_b, bEff_histo_c, bEff_histo_udsg)))
     #print b_alljet, b_tagged, c_alljet, c_tagged, udsg_alljet, udsg_tagged
     #global bTagging_b_jet_efficiency, bTagging_c_jet_efficiency, bTagging_udsg_jet_efficiency
     #bTagging_b_jet_efficiency = bTagging_X_jet_efficiency(b_alljet, b_tagged)
@@ -744,7 +744,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max):
             histo.Print()
     '''
 
-    print "N entries:", tree.GetEntries()
+    logger.write("N entries: %d" % tree.GetEntries())
     if not range_max or range_max > tree.GetEntries():
         range_mas = tree.GetEntries()
 
@@ -1249,9 +1249,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max):
                 control_hs['weight_el_bSF_down'].Fill(calc_btag_sf_weight(b_discr > 0.8484, flavId, p4.pt(), p4.eta(), "down"))
 
     profile.disable()
-    profile.print_stats()
+    #profile.print_stats()
+    # there is no returning string
+    #profile.dump_stats()
 
-    return control_hs, out_hs
+    return out_hs, control_hs, profile
 
 
 
@@ -1260,32 +1262,52 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max):
 #def main(input_dir, dtag, outdir, range_min, range_max):
 def main(input_filename, outdir, range_min, range_max):
 
+    fout_name = input_filename.split('/')[-1].split('.root')[0] + "_%d-%d.root" % (range_min, range_max)
+    logger_file = outdir + '/logs/' + fout_name.split('.root')[0] + '.log'
+
+    # this dir should be made at spawning the threads
+    if not os.path.exists(outdir + '/logs/'):
+        os.makedirs(outdir + '/logs/')
+
+    ## it doesn't deal with threads
+    ##logger = logging.getLogger('job_processing_%d' % hash(logger_file))
+    #logger = logging.getLogger()
+    #hdlr = logging.FileHandler(logger_file)
+    #formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    #hdlr.setFormatter(formatter)
+    #logger.addHandler(hdlr) 
+    ##logger.setLevel(logging.WARNING)
+    #logger.setLevel(logging.INFO)
+    logger = file(logger_file, 'w')
+
     #if '-w' in argv:
     #    input_filename, nick = '/eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7/MC2016_Summer16_WJets_amcatnlo.root', 'wjets'
     #    dtag = "MC2016_Summer16_WJets_madgraph"
     #    #init_bSF_call = 'set_bSF_effs_for_dtag("' + dtag + '");'
-    #    #logging.info("init b SFs with: " + init_bSF_call)
+    #    #logger.write("init b SFs with: " + init_bSF_call)
     #    #gROOT.ProcessLine(init_bSF_call)
     #else:
     #    input_filename, nick = '/eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7/MC2016_Summer16_TTJets_powheg_1.root', 'tt'
     #    dtag = "MC2016_Summer16_TTJets_powheg"
     #    #init_bSF_call = 'set_bSF_effs_for_dtag("' + dtag + '");'
-    #    #logging.info("init b SFs with: " + init_bSF_call)
+    #    #logger.write("init b SFs with: " + init_bSF_call)
     #    #gROOT.ProcessLine(init_bSF_call)
 
     #input_filename = input_dir + '/' + dtag + '.root'
 
     #dtag = input_filename.split('/')[-1].split('.')[0]
-    #logging.info("dtag = " + dtag)
-    logging.info("input file = " + input_filename)
+    #logger.write("dtag = " + dtag)
+    logger.write("input file = " + input_filename)
     f = TFile(input_filename)
     #f = TFile('outdir/v12.3/merged-sets/MC2016_Summer16_TTJets_powheg.root')
 
     tree = f.Get('ntupler/reduced_ttree')
-    logging.info("N entries = %s" % tree.GetEntries())
+    logger.write("N entries = %s" % tree.GetEntries())
     if not range_max: range_max = tree.GetEntries()
-    logging.info("range = %d, %d" % (range_min, range_max))
-    c_hs, out_hs = full_loop(tree, input_filename, 0, 6175, range_min, range_max)
+    logger.write("range = %d, %d" % (range_min, range_max))
+    out_hs, c_hs, perf_profile = full_loop(tree, input_filename, 0, 6175, range_min, range_max, logger)
+
+    perf_profile.dump_stats(logger_file.split('.log')[0] + '.cprof')
 
     events_counter = f.Get('ntupler/events_counter')
     weight_counter = f.Get('ntupler/weight_counter')
@@ -1296,21 +1318,22 @@ def main(input_filename, outdir, range_min, range_max):
 
     for name, h in c_hs.items():
         try:
-            print "%20s %9.5f" % (name, h.GetMean())
+            logger.write("%20s %9.5f" % (name, h.GetMean()))
         except Exception as e:
-            print e.__class__, e.__doc__, e.message
+            #logger.error("%s\n%s\n%s" % (e.__class__, e.__doc__, e.message))
+            logger.write("%s\n%s\n%s" % (e.__class__, e.__doc__, e.message))
             continue
 
     if with_bSF:
-        print "eff_b             ", h_control_btag_eff_b             .GetMean()
-        print "eff_c             ", h_control_btag_eff_c             .GetMean()
-        print "eff_udsg          ", h_control_btag_eff_udsg          .GetMean()
-        print "weight_b          ", h_control_btag_weight_b          .GetMean()
-        print "weight_c          ", h_control_btag_weight_c          .GetMean()
-        print "weight_udsg       ", h_control_btag_weight_udsg       .GetMean()
-        print "weight_notag_b    ", h_control_btag_weight_notag_b    .GetMean()
-        print "weight_notag_c    ", h_control_btag_weight_notag_c    .GetMean()
-        print "weight_notag_udsg ", h_control_btag_weight_notag_udsg .GetMean()
+        logger.write( "eff_b             %f" % h_control_btag_eff_b             .GetMean())
+        logger.write( "eff_c             %f" % h_control_btag_eff_c             .GetMean())
+        logger.write( "eff_udsg          %f" % h_control_btag_eff_udsg          .GetMean())
+        logger.write( "weight_b          %f" % h_control_btag_weight_b          .GetMean())
+        logger.write( "weight_c          %f" % h_control_btag_weight_c          .GetMean())
+        logger.write( "weight_udsg       %f" % h_control_btag_weight_udsg       .GetMean())
+        logger.write( "weight_notag_b    %f" % h_control_btag_weight_notag_b    .GetMean())
+        logger.write( "weight_notag_c    %f" % h_control_btag_weight_notag_c    .GetMean())
+        logger.write( "weight_notag_udsg %f" % h_control_btag_weight_notag_udsg .GetMean())
 
     '''
     for d, histos in out_hs.items():
@@ -1331,18 +1354,18 @@ def main(input_filename, outdir, range_min, range_max):
 
     #fout = TFile("lets_test.root", "RECREATE")
     #fout = TFile(outdir + '/' + dtag + "_%d-%d.root" % (range_min, range_max), "RECREATE")
-    fout_name = input_filename.split('/')[-1].split('.root')[0] + "_%d-%d.root" % (range_min, range_max)
-    fout = TFile(fout_name, "RECREATE")
+    #fout_name = outdir + '/' + 
+    fout = TFile(outdir + '/' + fout_name, "RECREATE")
     fout.Write()
 
     for (chan, proc, sys), histos in out_hs.items():
         fout.cd()
         out_dir_name = '%s/%s/%s/' % (chan, proc, sys)
         if fout.Get(out_dir_name):
-            #logging.debug('found ' + out_dir_name)
+            #logger.debug('found ' + out_dir_name)
             out_dir = fout.Get(out_dir_name)
         else:
-            #logging.debug('made  ' + out_dir_name)
+            #logger.debug('made  ' + out_dir_name)
             out_dir_c = fout.Get(chan) if fout.Get(chan) else fout.mkdir(chan)
             out_dir_c.cd()
             out_dir_p = out_dir_c.Get(proc) if out_dir_c.Get(proc) else out_dir_c.mkdir(proc)
