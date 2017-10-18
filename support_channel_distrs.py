@@ -588,6 +588,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         logging.info("loading Z pt mass weights")
         zPtMass_filename = environ['CMSSW_BASE'] + '/src/UserCode/zpt_weights_2016.root'
         zPtMassWeights_file  = TFile(zPtMass_filename)
+        zPtMassWeights_file.Print()
         zPtMassWeights_histo     = zPtMassWeights_file.Get("zptmass_histo")
         zPtMassWeights_histo_err = zPtMassWeights_file.Get("zptmass_histo_err")
 

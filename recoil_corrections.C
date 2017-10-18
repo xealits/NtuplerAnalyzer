@@ -11,8 +11,6 @@
 
 #include "HTT-utilities/RecoilCorrections/interface/RecoilCorrector.h"
 
-#include "UserCode/ttbar-leptons-80X/interface/wrapper.h"
-
 const double b_Medium_WP = 0.8484;
 
 // the exact LorentzVector declaration
