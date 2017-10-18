@@ -29,8 +29,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # configure log and common file for threads
-    if not os.path.exists(args.outdir + '/logs/'):
+    try:
         os.makedirs(args.outdir + '/logs/')
+        
+    except OSError as e:
+        print e.errno, e.strerror
 
     if args.log_file:
         logger_file = args.outdir + '/logs/' + args.log_file.split('/')[-1].split('.root')[0] + '.log'
