@@ -10,7 +10,12 @@ logging = Logging.getLogger("common")
 
 logging.info('importing ROOT')
 import ROOT
-from ROOT import TFile, TTree, TH1D, TH2D, gROOT, gSystem, TCanvas, TGraphAsymmErrors, TMath
+from ROOT import TFile, TTree, TH1D, TH2D, gROOT, gSystem, TCanvas, TGraphAsymmErrors, TMath, TString
+
+# the lib is needed for BTagCalibrator and Recoil corrections
+# TODO: somehow these 2 CMSSW classes should be acceptable from pyROOT on its' own without the whole lib
+ROOT.gROOT.Reset()
+ROOT.gSystem.Load("libUserCodettbar-leptons-80X.so")
 
 pileup_ratio = array('d', [0, 0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
 0.884048630953726, 0.964813189764159, 1.07045369167689, 1.12497267309738, 1.17367530613108, 1.20239808206413, 1.20815108390021, 1.20049333094509, 1.18284686347315, 1.14408796655615,
@@ -299,7 +304,6 @@ def lepton_electron_trigger_SF(eta, pt):
 
 
 
-
 '''
 b-tagging SF
 
@@ -340,15 +344,14 @@ yup:
 -- test tomorrow
 '''
 
+
 with_bSF = True
 
 if with_bSF:
     logging.info("loading b-tagging SF stuff")
 
-    ROOT.gROOT.Reset()
     #ROOT.gROOT.ProcessLine(".L pu_weight.C+") # this is also needed for stuf to run
     # not sure I use it right now
-    ROOT.gSystem.Load("libUserCodettbar-leptons-80X.so")
     #ROOT.gROOT.ProcessLine("set_bSF_calibrators()")
 
 
@@ -559,6 +562,38 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     isWJets = 'WJet' in dtag or 'W1Jet' in dtag or 'W2Jet' in dtag or 'W3Jet' in dtag or 'W4Jet' in dtag
     isQCD = 'QCD' in dtag
     isDibosons = 'WW' in dtag or 'ZZ' in dtag or 'WZ' in dtag
+
+    # Recoil corrections
+    doRecoilCorrections = isWJets or isDY # TODO: check if it is needed for DY
+    if doRecoilCorrections:
+        logging.info("will use Recoil Corrections")
+        ROOT.gROOT.ProcessLine(".L /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/recoil_corrections.C+") # TODO: change absolute path to relative
+        #recoil_corrections_data_file = TString("/HTT-utilities/RecoilCorrections/data/TypeIPFMET_2016BCD.root")
+        #recoilPFMetCorrector = ROOT.RecoilCorrector(recoil_corrections_data_file);
+        #ROOT.BTagCalibrationReader
+
+
+    # Z pt mass weight
+    # std::string zPtMassWeights_filename = std::string(std::getenv("CMSSW_BASE")) + "/src/UserCode/zpt_weights_2016.root";
+    # TFile* zPtMassWeights_file  = TFile::Open(zPtMassWeights_filename.c_str());
+    # TH2D*  zPtMassWeights_histo = (TH2D*) zPtMassWeights_file->Get("zptmass_histo");
+    # TH2D*  zPtMassWeights_histo_err = (TH2D*) zPtMassWeights_file->Get("zptmass_histo_err");
+    # 
+    # float zPtMass_weight(float genMass, float genPt)
+    #         {
+    #         return zPtMassWeights_histo->GetBinContent(zPtMassWeights_histo->GetXaxis()->FindBin(genMass), zPtMassWeights_histo->GetYaxis()->FindBin(genPt));
+    #         }
+
+    if isDY:
+        logging.info("loading Z pt mass weights")
+        zPtMass_filename = environ['CMSSW_BASE'] + '/src/UserCode/zpt_weights_2016.root'
+        zPtMassWeights_file  = TFile(zPtMass_filename)
+        zPtMassWeights_histo     = zPtMassWeights_file.Get("zptmass_histo")
+        zPtMassWeights_histo_err = zPtMassWeights_file.Get("zptmass_histo_err")
+
+        def zPtMass_weight(genMass, genPt):
+            return zPtMassWeights_histo.GetBinContent(zPtMassWeights_histo.GetXaxis().FindBin(genMass), zPtMassWeights_histo.GetYaxis().FindBin(genPt))
+
 
     #set_bSF_effs_for_dtag(dtag)
     if with_bSF: logger.write(' '.join(str(id(h)) for h in (bEff_histo_b, bEff_histo_c, bEff_histo_udsg)) + '\n')
@@ -785,12 +820,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         if not ev.tau_p4.size() > 0: continue
 
         # expensive calls and they don't depend on systematics now
-        if isDY or isWJets:
+        if doRecoilCorrections:
             #def transverse_mass_pts(v1_x, v1_y, v2_x, v2_y):
             #met_x = ev.pfmetcorr_ex
             #met_y = ev.pfmetcorr_ey
 	    # no, recalculated them
-            met_x = met_pt_recoilcor_x(
+            met_x = ROOT.met_pt_recoilcor_x(
                 ev.met_corrected.Px(), # uncorrected type I pf met px (float)
                 ev.met_corrected.Py(), # uncorrected type I pf met py (float)
                 ev.gen_genPx, # generator Z/W/Higgs px (float)
@@ -799,7 +834,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 ev.gen_visPy, # generator visible Z/W/Higgs py (float)
                 ev.nalljets  # number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
                 )
-            met_y = met_pt_recoilcor_y(
+            met_y = ROOT.met_pt_recoilcor_y(
                 ev.met_corrected.Px(), # uncorrected type I pf met px (float)
                 ev.met_corrected.Py(), # uncorrected type I pf met py (float)
                 ev.gen_genPx, # generator Z/W/Higgs px (float)
