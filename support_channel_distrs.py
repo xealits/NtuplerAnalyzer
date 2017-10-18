@@ -3,8 +3,10 @@ from os import environ
 from array import array
 from collections import OrderedDict
 import cProfile
-import logging
+import logging as Logging
 
+
+logging = Logging.getLogger("common")
 
 logging.info('importing ROOT')
 import ROOT
@@ -559,7 +561,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     isDibosons = 'WW' in dtag or 'ZZ' in dtag or 'WZ' in dtag
 
     #set_bSF_effs_for_dtag(dtag)
-    if with_bSF: logger.write(' '.join(str(id(h)) for h in (bEff_histo_b, bEff_histo_c, bEff_histo_udsg)))
+    if with_bSF: logger.write(' '.join(str(id(h)) for h in (bEff_histo_b, bEff_histo_c, bEff_histo_udsg)) + '\n')
     #print b_alljet, b_tagged, c_alljet, c_tagged, udsg_alljet, udsg_tagged
     #global bTagging_b_jet_efficiency, bTagging_c_jet_efficiency, bTagging_udsg_jet_efficiency
     #bTagging_b_jet_efficiency = bTagging_X_jet_efficiency(b_alljet, b_tagged)
@@ -723,12 +725,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     #            choice of subprocesses depends on channel (sadly),
     #            (find most precise subprocess ones, then store accordingly for channels)
     # sys     -- shape systematics
-    out_hs = OrderedDict([((chan, proc, sys), {'met': TH1D('%s_%s_%s_met' % (chan, sys, proc), '', 40, 0, 400),
+    out_hs = OrderedDict([((chan, proc, sys), {'met':        TH1D('%s_%s_%s_met' % (chan, sys, proc), '', 40, 0, 400),
                                                'Mt_lep_met': TH1D('%s_%s_%s_Mt_lep_met' % (chan, sys, proc), '', 20, 0, 200),
                                                #'Mt_lep_met_d': TH1D('Mt_lep_met_d'+chan+proc+sys, '', 20, 0, 200), # calculate with method of objects
                                                'Mt_tau_met': TH1D('%s_%s_%s_Mt_tau_met' % (chan, sys, proc), '', 20, 0, 200),
-                                               'njets':  TH1D('%s_%s_%s_njets' % (chan, sys, proc),  '', 10, 0, 10),
-                                               'nbjets': TH1D('%s_%s_%s_nbjets' % (chan, sys, proc), '', 5, 0, 5),
+                                               'njets':      TH1D('%s_%s_%s_njets' % (chan, sys, proc),  '', 10, 0, 10),
+                                               'nbjets':     TH1D('%s_%s_%s_nbjets' % (chan, sys, proc), '', 5, 0, 5),
                                                'dijet_trijet_mass': TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, sys, proc), '', 20, 0, 400) })
                 for chan, (procs, _) in channels.items() for proc in procs for sys in systematic_names])
 
@@ -744,7 +746,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             histo.Print()
     '''
 
-    logger.write("N entries: %d" % tree.GetEntries())
+    logger.write("N entries: %d\n" % tree.GetEntries())
     if not range_max or range_max > tree.GetEntries():
         range_mas = tree.GetEntries()
 
@@ -1261,6 +1263,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
 #def main(input_dir, dtag, outdir, range_min, range_max):
 def main(input_filename, outdir, range_min, range_max):
+    f = TFile(input_filename)
+    tree = f.Get('ntupler/reduced_ttree')
+    if not range_max: range_max = tree.GetEntries()
 
     fout_name = input_filename.split('/')[-1].split('.root')[0] + "_%d-%d.root" % (range_min, range_max)
     logger_file = outdir + '/logs/' + fout_name.split('.root')[0] + '.log'
@@ -1297,14 +1302,12 @@ def main(input_filename, outdir, range_min, range_max):
 
     #dtag = input_filename.split('/')[-1].split('.')[0]
     #logger.write("dtag = " + dtag)
-    logger.write("input file = " + input_filename)
-    f = TFile(input_filename)
+    logger.write("input file = %s\n" % input_filename)
     #f = TFile('outdir/v12.3/merged-sets/MC2016_Summer16_TTJets_powheg.root')
 
-    tree = f.Get('ntupler/reduced_ttree')
-    logger.write("N entries = %s" % tree.GetEntries())
-    if not range_max: range_max = tree.GetEntries()
-    logger.write("range = %d, %d" % (range_min, range_max))
+    logger.write("N entries = %s\n" % tree.GetEntries())
+
+    logger.write("range = %d, %d\n" % (range_min, range_max))
     out_hs, c_hs, perf_profile = full_loop(tree, input_filename, 0, 6175, range_min, range_max, logger)
 
     perf_profile.dump_stats(logger_file.split('.log')[0] + '.cprof')
@@ -1318,22 +1321,22 @@ def main(input_filename, outdir, range_min, range_max):
 
     for name, h in c_hs.items():
         try:
-            logger.write("%20s %9.5f" % (name, h.GetMean()))
+            logger.write("%20s %9.5f\n" % (name, h.GetMean()))
         except Exception as e:
             #logger.error("%s\n%s\n%s" % (e.__class__, e.__doc__, e.message))
-            logger.write("%s\n%s\n%s" % (e.__class__, e.__doc__, e.message))
+            logger.write("%s\n%s\n%s\n" % (e.__class__, e.__doc__, e.message))
             continue
 
     if with_bSF:
-        logger.write( "eff_b             %f" % h_control_btag_eff_b             .GetMean())
-        logger.write( "eff_c             %f" % h_control_btag_eff_c             .GetMean())
-        logger.write( "eff_udsg          %f" % h_control_btag_eff_udsg          .GetMean())
-        logger.write( "weight_b          %f" % h_control_btag_weight_b          .GetMean())
-        logger.write( "weight_c          %f" % h_control_btag_weight_c          .GetMean())
-        logger.write( "weight_udsg       %f" % h_control_btag_weight_udsg       .GetMean())
-        logger.write( "weight_notag_b    %f" % h_control_btag_weight_notag_b    .GetMean())
-        logger.write( "weight_notag_c    %f" % h_control_btag_weight_notag_c    .GetMean())
-        logger.write( "weight_notag_udsg %f" % h_control_btag_weight_notag_udsg .GetMean())
+        logger.write("eff_b             %f\n" % h_control_btag_eff_b             .GetMean())
+        logger.write("eff_c             %f\n" % h_control_btag_eff_c             .GetMean())
+        logger.write("eff_udsg          %f\n" % h_control_btag_eff_udsg          .GetMean())
+        logger.write("weight_b          %f\n" % h_control_btag_weight_b          .GetMean())
+        logger.write("weight_c          %f\n" % h_control_btag_weight_c          .GetMean())
+        logger.write("weight_udsg       %f\n" % h_control_btag_weight_udsg       .GetMean())
+        logger.write("weight_notag_b    %f\n" % h_control_btag_weight_notag_b    .GetMean())
+        logger.write("weight_notag_c    %f\n" % h_control_btag_weight_notag_c    .GetMean())
+        logger.write("weight_notag_udsg %f\n" % h_control_btag_weight_notag_udsg .GetMean())
 
     '''
     for d, histos in out_hs.items():
