@@ -787,8 +787,28 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # expensive calls and they don't depend on systematics now
         if isDY or isWJets:
             #def transverse_mass_pts(v1_x, v1_y, v2_x, v2_y):
-            met_x = ev.pfmetcorr_ex
-            met_y = ev.pfmetcorr_ey
+            #met_x = ev.pfmetcorr_ex
+            #met_y = ev.pfmetcorr_ey
+	    # no, recalculated them
+            met_x = met_pt_recoilcor_x(
+                ev.met_corrected.Px(), # uncorrected type I pf met px (float)
+                ev.met_corrected.Py(), # uncorrected type I pf met py (float)
+                ev.gen_genPx, # generator Z/W/Higgs px (float)
+                ev.gen_genPy, # generator Z/W/Higgs py (float)
+                ev.gen_visPx, # generator visible Z/W/Higgs px (float)
+                ev.gen_visPy, # generator visible Z/W/Higgs py (float)
+                ev.nalljets  # number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
+                )
+            met_y = met_pt_recoilcor_y(
+                ev.met_corrected.Px(), # uncorrected type I pf met px (float)
+                ev.met_corrected.Py(), # uncorrected type I pf met py (float)
+                ev.gen_genPx, # generator Z/W/Higgs px (float)
+                ev.gen_genPy, # generator Z/W/Higgs py (float)
+                ev.gen_visPx, # generator visible Z/W/Higgs px (float)
+                ev.gen_visPy, # generator visible Z/W/Higgs py (float)
+                ev.nalljets  # number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
+                )
+
             #Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.pfmetcorr_ex, ev.pfmetcorr_ey)
             #Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px(), ev.tau_p4[0].Py(), ev.pfmetcorr_ex, ev.pfmetcorr_ey)
             # TODO: tau is corrected with systematic ES
@@ -800,6 +820,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             #Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px(), ev.tau_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
         # also
         #Mt_lep_met_d = (ev.lep_p4[0] + ev.met_corrected).Mt()
+
 
         # TODO: pass jet systematics to met?
         Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x, met_y)
@@ -820,6 +841,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
             if aMCatNLO and ev.aMCatNLO_weight < 0:
                 weight *= -1
+
+	    weight_z_mass_pt = 1.
+            if isDY:
+                # float zPtMass_weight(float genMass, float genPt)
+                weight_z_mass_pt *= zPtMass_weight(ev.genMass, ev.genPt)
+                weight *= weight_z_mass_pt
 
             weight_top_pt = 1.
             if isTT:
