@@ -739,7 +739,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
     proc = process
 
-    systematic_names = ['NOMINAL',
+    if isMC:
+        systematic_names = ['NOMINAL',
                 'JESUp'     ,
                 'JESDown'   ,
                 'JERUp'     ,
@@ -751,6 +752,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 'PUUp'      ,
                 'PUDown'    ,
                 ]
+    else:
+        systematic_names = ['NOMINAL']
 
     if isTT:
         systematic_names.append('TOPPTUp')
