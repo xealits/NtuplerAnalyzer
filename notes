@@ -1,3 +1,52 @@
+# crab submition
+
+for d in `cat dsets_feb_rereco`
+python make_crab_cfgs.py $d v13-0 Dilep_tauID
+
+for d in `cat dsets_ext_wjets_dyjets `
+python make_crab_cfgs.py $d v13-0 Dilep_tauID
+
+for c in `ls python/crab_cfgs/v13-0/*crab.py`
+crab submit -c $c
+
+for c in `cat new_sub`
+do
+crab submit -c $c
+done
+
+for c in `cat dsets_feb_rereco`
+do
+python make_crab_cfgs.py $c v13-1 Dilep_tauID
+done
+
+for c in `ls python/crab_cfgs/v13-1/*crab.py`
+crab submit -c $c
+
+
+## resubmit
+
+--force for resubmit finished jobs
+
+for j in `cat fresh_crabs`
+do
+crab resubmit --force -d $j
+done
+
+
+
+## status
+
+for c in `ls crab_projects/crab_Ntupler_v13-0_* -d`
+do
+  crab status -d $c
+done
+
+
+
+
+
+
+
 # track info in TrackMatch TTree
 
 ((TTree*) tauMatch->Get("tauMatch_ttree"))->Scan("tau_IDlev[0]:tau_p4[0].E(): tau_flightLength[0]: tau_SV_dist[0]: tau_SV_fit_track_OS_matched_gen_dR[tau_refited_index[0]]:tau_SV_fit_track_SS1_matched_gen_dR[tau_refited_index[0]]:tau_SV_fit_track_SS2_matched_gen_dR[tau_refited_index[0]]: tau_SV_fit_track_OS_matched_track_dR[tau_refited_index[0]]:tau_SV_fit_track_SS1_matched_track_dR[tau_refited_index[0]]:tau_SV_fit_track_SS2_matched_track_dR[tau_refited_index[0]]: track_b[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]]:track_b[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]]:track_b[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]]: track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].eta():track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].eta():track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].eta(): track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].phi():track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].phi():track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].phi(): track_vertex_key[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]]:track_vertex_key[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]]:track_vertex_key[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]]: track_vertex_association[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]]:track_vertex_association[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]]:track_vertex_association[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]] ", "tau_IDlev[0]>1 && gen_t_w_decay_id != 1 && gen_tb_w_decay_id != 1", "")
