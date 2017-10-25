@@ -656,19 +656,19 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     # the others have 1 process per whole dtag for now
     # (split DY and single-top later
 
-    tt_el_procs = ['tt_eltau', 'tt_lj', 'tt_other']
-    tt_mu_procs = ['tt_mutau', 'tt_lj', 'tt_other']
+    tt_el_procs = ['tt_eltau', 'tt_lj', 'tt_taultauh', 'tt_other']
+    tt_mu_procs = ['tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other']
 
     if isMC:
         if isTT:
-            channels = {'el_presel': (['tt_eltau', 'tt_lj', 'tt_other'], 'tt_other'),
-                   'el_sel':        (['tt_eltau', 'tt_lj', 'tt_other'], 'tt_other'),
-                   'el_lj':     (['tt_eltau', 'tt_lj', 'tt_other'], 'tt_other'),
-                   'el_lj_out': (['tt_eltau', 'tt_lj', 'tt_other'], 'tt_other'),
-                   'mu_presel': (['tt_mutau', 'tt_lj', 'tt_other'], 'tt_other'),
-                   'mu_sel':        (['tt_mutau', 'tt_lj', 'tt_other'], 'tt_other'),
-                   'mu_lj':     (['tt_mutau', 'tt_lj', 'tt_other'], 'tt_other'),
-                   'mu_lj_out': (['tt_mutau', 'tt_lj', 'tt_other'], 'tt_other')}
+            channels = {'el_presel': (['tt_eltau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
+                   'el_sel':         (['tt_eltau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
+                   'el_lj':          (['tt_eltau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
+                   'el_lj_out':      (['tt_eltau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
+                   'mu_presel':      (['tt_mutau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
+                   'mu_sel':         (['tt_mutau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
+                   'mu_lj':          (['tt_mutau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
+                   'mu_lj_out':      (['tt_mutau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other')}
             process = 'tt_other'
 
         if isWJets:
@@ -683,26 +683,26 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             process = 'wjets'
 
         if isDY:
-            channels = {'el_presel': (['dy'], 'dy'),
-                   'el_sel':        (['dy'], 'dy'),
-                   'el_lj':     (['dy'], 'dy'),
-                   'el_lj_out': (['dy'], 'dy'),
-                   'mu_presel': (['dy'], 'dy'),
-                   'mu_sel':        (['dy'], 'dy'),
-                   'mu_lj':     (['dy'], 'dy'),
-                   'mu_lj_out': (['dy'], 'dy')}
-            process = 'dy'
+            channels = {'el_presel': (['dy_tautau', 'dy_other'], 'dy_other'),
+                   'el_sel':         (['dy_tautau', 'dy_other'], 'dy_other'),
+                   'el_lj':          (['dy_tautau', 'dy_other'], 'dy_other'),
+                   'el_lj_out':      (['dy_tautau', 'dy_other'], 'dy_other'),
+                   'mu_presel':      (['dy_tautau', 'dy_other'], 'dy_other'),
+                   'mu_sel':         (['dy_tautau', 'dy_other'], 'dy_other'),
+                   'mu_lj':          (['dy_tautau', 'dy_other'], 'dy_other'),
+                   'mu_lj_out':      (['dy_tautau', 'dy_other'], 'dy_other')}
+            process = 'dy_other'
 
         if isSTop:
-            channels = {'el_presel': (['singletop'], 'singletop'),
-                   'el_sel':          (['singletop'], 'singletop'),
-                   'el_lj':       (['singletop'], 'singletop'),
-                   'el_lj_out':   (['singletop'], 'singletop'),
-                   'mu_presel':   (['singletop'], 'singletop'),
-                   'mu_sel':          (['singletop'], 'singletop'),
-                   'mu_lj':       (['singletop'], 'singletop'),
-                   'mu_lj_out':   (['singletop'], 'singletop')}
-            process = 'singletop'
+            channels = {'el_presel': (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other'),
+                   'el_sel':         (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other'),
+                   'el_lj':          (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other'),
+                   'el_lj_out':      (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other'),
+                   'mu_presel':      (['s_top_mutau', 's_top_lj', 's_top_other'], 's_top_other'),
+                   'mu_sel':         (['s_top_mutau', 's_top_lj', 's_top_other'], 's_top_other'),
+                   'mu_lj':          (['s_top_mutau', 's_top_lj', 's_top_other'], 's_top_other'),
+                   'mu_lj_out':      (['s_top_mutau', 's_top_lj', 's_top_other'], 's_top_other')}
+            process = 's_top_other'
 
         if isQCD:
             channels = {'el_presel': (['qcd'], 'qcd'),
@@ -903,6 +903,24 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 # float zPtMass_weight(float genMass, float genPt)
                 weight_z_mass_pt *= zPtMass_weight(ev.genMass, ev.genPt)
                 weight *= weight_z_mass_pt
+		# DY has this trick, which I had to solve cleanly in ntuples
+		# but I just dumped all info downstream..
+		# it might have actual Z particle in decay chain
+		# or not (and no gamma too) -- then you judge from "prompt" leptons
+		# the mutually exclusive case never appears
+                if ev.gen_N_zdecays > 0:
+                    lep1_id = abs(ev.gen_zdecays_IDs[0])
+                    lep2_id = abs(ev.gen_zdecays_IDs[1])
+                else:
+		    # check prompt leptns
+		    # if no Z decay the leptons are there
+                    lep1_id = abs(ev.gen_pythia8_prompt_leptons_IDs[0])
+                    lep2_id = abs(ev.gen_pythia8_prompt_leptons_IDs[1])
+                # TODO: actually track tau decays fro DY? -- no need, it's a small background
+                if lep1_id >= 15 and lep2_id >= 15:
+                    proc = 'dy_tautau'
+                else:
+                    proc = 'dy_other'
 
             weight_top_pt = 1.
             if isTT:
@@ -910,14 +928,35 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 #weight *= weight_top_pt # to sys
                 control_hs['weight_top_pt']   .Fill(weight_top_pt)
                 # basically only difference is eltau/mutau
-                if (abs(ev.gen_t_w_decay_id) > 15*15 and abs(ev.gen_tb_w_decay_id) == 13) or (abs(ev.gen_t_w_decay_id) == 13 and abs(ev.gen_tb_w_decay_id) > 15*15): # lt
+                t_wid  = abs(ev.gen_t_w_decay_id)
+                tb_wid = abs(ev.gen_tb_w_decay_id)
+                if (t_wid > 15*15 and tb_wid == 13) or (t_wid == 13 and tb_wid > 15*15): # lt
                     proc = 'tt_mutau'
-                elif (abs(ev.gen_t_w_decay_id) > 15*15 and abs(ev.gen_tb_w_decay_id) == 11) or (abs(ev.gen_t_w_decay_id) == 11 and abs(ev.gen_tb_w_decay_id) > 15*15): # lt
+                elif (t_wid > 15*15 and tb_wid == 11) or (t_wid == 11 and tb_wid > 15*15): # lt
                     proc = 'tt_eltau'
-                elif abs(ev.gen_t_w_decay_id * ev.gen_tb_w_decay_id) == 13 or abs(ev.gen_t_w_decay_id * ev.gen_tb_w_decay_id) == 11: # lj
+                elif t_wid * tb_wid == 13 or t_wid * tb_wid == 11: # lj
                     proc = 'tt_lj'
+                elif (t_wid > 15*15 and (tb_wid == 11*15 or tb_wid == 13*15)) or
+                     ((t_wid == 11*15 or t_wid == 13*15) and tb_wid > 15*15): # taul tauh
+                    proc = 'tt_taultauh'
                 else:
                     proc = 'tt_other'
+
+            if isSTop:
+                # basically only difference is eltau/mutau
+                w1_id = abs(ev.gen_wdecays_IDs[0])
+                w2_id = abs(ev.gen_wdecays_IDs[1])
+                if (w1_id > 15*15 and w2_id == 13) or (w1_id == 13 and w2_id > 15*15): # lt
+                    proc = 's_top_mutau'
+                elif (w1_id > 15*15 and w2_id == 11) or (w1_id == 11 and w2_id > 15*15): # lt
+                    proc = 's_top_eltau'
+                elif w1_id * w2_id == 13 or w1_id * w2_id == 11: # lj
+                    proc = 's_top_lj'
+                #elif (w1_id > 15*15 and (w2_id == 11*15 or w2_id == 13*15)) or
+                #     ((w1_id == 11*15 or w1_id == 13*15) and w2_id > 15*15): # taul tauh
+                #    proc = 'tt_taultauh'
+                else:
+                    proc = 's_top_other'
 
             if pass_mu and isMC:
                 mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
@@ -1250,10 +1289,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             if taus: # there are taus, check if b-jets overlap with it
                 tau_p4 = taus[0][0]
                 for j_p4, _ in jets_b:
-		    # these are LorentzVectors -- they don't have DeltaR,
-		    # TLorentzVectors do, but they don't have "mass" method...
-		    tj_p4   = TLorentzVector(j_p4.X(), j_p4.Y(), j_p4.Z(), j_p4.T())
-		    ttau_p4 = TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T())
+                    # these are LorentzVectors -- they don't have DeltaR,
+                    # TLorentzVectors do, but they don't have "mass" method...
+                    tj_p4   = TLorentzVector(j_p4.X(), j_p4.Y(), j_p4.Z(), j_p4.T())
+                    ttau_p4 = TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T())
                     if tj_p4.DeltaR(ttau_p4) < 0.3:
                         tau_matched_dR_bjet = True
                         break
