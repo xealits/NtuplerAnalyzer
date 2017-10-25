@@ -1250,7 +1250,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             if taus: # there are taus, check if b-jets overlap with it
                 tau_p4 = taus[0][0]
                 for j_p4, _ in jets_b:
-                    if j_p4.DeltaR(tau_p4) < 0.3:
+		    # these are LorentzVectors -- they don't have DeltaR,
+		    # TLorentzVectors do, but they don't have "mass" method...
+		    tj_p4   = TLorentzVector(j_p4.X(), j_p4.Y(), j_p4.Z(), j_p4.T())
+		    ttau_p4 = TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T())
+                    if tj_p4.DeltaR(ttau_p4) < 0.3:
                         tau_matched_dR_bjet = True
                         break
 
@@ -1336,7 +1340,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 out_hs[(chan, proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, sys_weight)
                 out_hs[(chan, proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, sys_weight)
 
-                out_hs[(chan, proc, sys_name)]['Mt_tau_met']  .Fill(Mt_tau_met, sys_weight)
+                if has_medium_tau:
+                    lep_tau = ev.lep_p4[0] + taus[0][0]
+                    out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), sys_weight)
+                    out_hs[(chan, proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, sys_weight)
+
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, sys_weight)
                 out_hs[(chan, proc, sys_name)]['dijet_mass']  .Fill(w_mass, sys_weight)
                 out_hs[(chan, proc, sys_name)]['trijet_mass'] .Fill(t_mass, sys_weight)
