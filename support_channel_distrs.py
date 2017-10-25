@@ -660,87 +660,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     tt_mu_procs = ['tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other']
 
     if isMC:
-        if isTT:
-            channels = {'el_presel': (['tt_eltau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
-                   'el_sel':         (['tt_eltau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
-                   'el_lj':          (['tt_eltau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
-                   'el_lj_out':      (['tt_eltau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
-                   'mu_presel':      (['tt_mutau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
-                   'mu_sel':         (['tt_mutau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
-                   'mu_lj':          (['tt_mutau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other'),
-                   'mu_lj_out':      (['tt_mutau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other')}
-            process = 'tt_other'
-
-        if isWJets:
-            channels = {'el_presel': (['wjets'], 'wjets'),
-                      'el_sel':        (['wjets'], 'wjets'),
-                      'el_lj':     (['wjets'], 'wjets'),
-                      'el_lj_out': (['wjets'], 'wjets'),
-                      'mu_presel': (['wjets'], 'wjets'),
-                      'mu_sel':        (['wjets'], 'wjets'),
-                      'mu_lj':     (['wjets'], 'wjets'),
-                      'mu_lj_out': (['wjets'], 'wjets')}
-            process = 'wjets'
-
-        if isDY:
-            channels = {'el_presel': (['dy_tautau', 'dy_other'], 'dy_other'),
-                   'el_sel':         (['dy_tautau', 'dy_other'], 'dy_other'),
-                   'el_lj':          (['dy_tautau', 'dy_other'], 'dy_other'),
-                   'el_lj_out':      (['dy_tautau', 'dy_other'], 'dy_other'),
-                   'mu_presel':      (['dy_tautau', 'dy_other'], 'dy_other'),
-                   'mu_sel':         (['dy_tautau', 'dy_other'], 'dy_other'),
-                   'mu_lj':          (['dy_tautau', 'dy_other'], 'dy_other'),
-                   'mu_lj_out':      (['dy_tautau', 'dy_other'], 'dy_other')}
-            process = 'dy_other'
-
-        if isSTop:
-            channels = {'el_presel': (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other'),
-                   'el_sel':         (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other'),
-                   'el_lj':          (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other'),
-                   'el_lj_out':      (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other'),
-                   'mu_presel':      (['s_top_mutau', 's_top_lj', 's_top_other'], 's_top_other'),
-                   'mu_sel':         (['s_top_mutau', 's_top_lj', 's_top_other'], 's_top_other'),
-                   'mu_lj':          (['s_top_mutau', 's_top_lj', 's_top_other'], 's_top_other'),
-                   'mu_lj_out':      (['s_top_mutau', 's_top_lj', 's_top_other'], 's_top_other')}
-            process = 's_top_other'
-
-        if isQCD:
-            channels = {'el_presel': (['qcd'], 'qcd'),
-                   'el_sel':          (['qcd'], 'qcd'),
-                   'el_lj':       (['qcd'], 'qcd'),
-                   'el_lj_out':   (['qcd'], 'qcd'),
-                   'mu_presel':   (['qcd'], 'qcd'),
-                   'mu_sel':          (['qcd'], 'qcd'),
-                   'mu_lj':       (['qcd'], 'qcd'),
-                   'mu_lj_out':   (['qcd'], 'qcd')}
-            process = 'qcd'
-
-        if isDibosons:
-            channels = {'el_presel': (['dibosons'], 'dibosons'),
-                   'el_sel':          (['dibosons'], 'dibosons'),
-                   'el_lj':       (['dibosons'], 'dibosons'),
-                   'el_lj_out':   (['dibosons'], 'dibosons'),
-                   'mu_presel':   (['dibosons'], 'dibosons'),
-                   'mu_sel':          (['dibosons'], 'dibosons'),
-                   'mu_lj':       (['dibosons'], 'dibosons'),
-                   'mu_lj_out':   (['dibosons'], 'dibosons')}
-            process = 'dibosons'
-
-    else:
-        channels = {'el_presel': (['data'], 'data'),
-                      'el_sel':        (['data'], 'data'),
-                      'el_lj':     (['data'], 'data'),
-                      'el_lj_out': (['data'], 'data'),
-                      'mu_presel': (['data'], 'data'),
-                      'mu_sel':        (['data'], 'data'),
-                      'mu_lj':     (['data'], 'data'),
-                      'mu_lj_out': (['data'], 'data')}
-        process = 'data'
-
-    proc = process
-
-    if isMC:
-        systematic_names = ['NOMINAL',
+        systematic_names_all = ['NOMINAL',
                 'JESUp'     ,
                 'JESDown'   ,
                 'JERUp'     ,
@@ -752,12 +672,102 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 'PUUp'      ,
                 'PUDown'    ,
                 ]
+        systematic_names_pu = ['NOMINAL', 'PUUp', 'PUDown']
     else:
-        systematic_names = ['NOMINAL']
+        systematic_names_all = ['NOMINAL']
+        systematic_names_pu  = ['NOMINAL']
 
     if isTT:
-        systematic_names.append('TOPPTUp')
-        systematic_names.append('TOPPTDown')
+        systematic_names_all.append('TOPPTUp')
+        systematic_names_all.append('TOPPTDown')
+
+    if isMC:
+        if isTT:
+            tt_procs_el =  (['tt_eltau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other')
+            tt_procs_mu =  (['tt_mutau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other')
+            channels = {'el_presel': (tt_procs_el, systematic_names_all),
+                   'el_sel':         (tt_procs_el, systematic_names_all),
+                   'el_lj':          (tt_procs_el, systematic_names_all),
+                   'el_lj_out':      (tt_procs_el, systematic_names_all),
+                   'mu_presel':      (tt_procs_mu, systematic_names_all),
+                   'mu_sel':         (tt_procs_mu, systematic_names_all),
+                   'mu_lj':          (tt_procs_mu, systematic_names_all),
+                   'mu_lj_out':      (tt_procs_mu, systematic_names_all)}
+            process = 'tt_other'
+
+        if isWJets:
+            wjets_procs = (['wjets'], 'wjets')
+            channels = {'el_presel': (wjets_procs, systematic_names_all),
+                      'el_sel':      (wjets_procs, systematic_names_all),
+                      'el_lj':       (wjets_procs, systematic_names_all),
+                      'el_lj_out':   (wjets_procs, systematic_names_all),
+                      'mu_presel':   (wjets_procs, systematic_names_all),
+                      'mu_sel':      (wjets_procs, systematic_names_all),
+                      'mu_lj':       (wjets_procs, systematic_names_all),
+                      'mu_lj_out':   (wjets_procs, systematic_names_all)}
+            process = 'wjets'
+
+        if isDY:
+            dy_procs = (['dy_tautau', 'dy_other'], 'dy_other')
+            channels = {'el_presel': (dy_procs, systematic_names_all),
+                   'el_sel':         (dy_procs, systematic_names_all),
+                   'el_lj':          (dy_procs, systematic_names_all),
+                   'el_lj_out':      (dy_procs, systematic_names_all),
+                   'mu_presel':      (dy_procs, systematic_names_all),
+                   'mu_sel':         (dy_procs, systematic_names_all),
+                   'mu_lj':          (dy_procs, systematic_names_all),
+                   'mu_lj_out':      (dy_procs, systematic_names_all)}
+            process = 'dy_other'
+
+        if isSTop:
+            s_top_procs = (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other')
+            channels = {'el_presel': (s_top_procs, systematic_names_all),
+                   'el_sel':         (s_top_procs, systematic_names_all),
+                   'el_lj':          (s_top_procs, systematic_names_all),
+                   'el_lj_out':      (s_top_procs, systematic_names_all),
+                   'mu_presel':      (s_top_procs, systematic_names_all),
+                   'mu_sel':         (s_top_procs, systematic_names_all),
+                   'mu_lj':          (s_top_procs, systematic_names_all),
+                   'mu_lj_out':      (s_top_procs, systematic_names_all)}
+            process = 's_top_other'
+
+        if isQCD:
+            qcd_procs = (['qcd'], 'qcd')
+            channels = {'el_presel': (qcd_procs, systematic_names_all),
+                   'el_sel':         (qcd_procs, systematic_names_all),
+                   'el_lj':          (qcd_procs, systematic_names_all),
+                   'el_lj_out':      (qcd_procs, systematic_names_all),
+                   'mu_presel':      (qcd_procs, systematic_names_all),
+                   'mu_sel':         (qcd_procs, systematic_names_all),
+                   'mu_lj':          (qcd_procs, systematic_names_all),
+                   'mu_lj_out':      (qcd_procs, systematic_names_all)}
+            process = 'qcd'
+
+        if isDibosons:
+            dibosons_procs = (['dibosons'], 'dibosons')
+            channels = {'el_presel': (dibosons_procs, systematic_names_all),
+                   'el_sel':         (dibosons_procs, systematic_names_all),
+                   'el_lj':          (dibosons_procs, systematic_names_all),
+                   'el_lj_out':      (dibosons_procs, systematic_names_all),
+                   'mu_presel':      (dibosons_procs, systematic_names_all),
+                   'mu_sel':         (dibosons_procs, systematic_names_all),
+                   'mu_lj':          (dibosons_procs, systematic_names_all),
+                   'mu_lj_out':      (dibosons_procs, systematic_names_all)}
+            process = 'dibosons'
+
+    else:
+        data_procs = (['data'], 'data')
+        channels = {'el_presel': (data_procs, systematic_names_all),
+                    'el_sel':    (data_procs, systematic_names_all),
+                    'el_lj':     (data_procs, systematic_names_all),
+                    'el_lj_out': (data_procs, systematic_names_all),
+                    'mu_presel': (data_procs, systematic_names_all),
+                    'mu_sel':    (data_procs, systematic_names_all),
+                    'mu_lj':     (data_procs, systematic_names_all),
+                    'mu_lj_out': (data_procs, systematic_names_all)}
+        process = 'data'
+
+    proc = process
 
     # channel -- reco selection
     # proc    -- MC gen info, like inclusive tt VS tt->mutau and others,
@@ -786,7 +796,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 300),
                                                '2D_dijet_trijet':   TH2D('%s_%s_%s_2D_dijet_trijet'   % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
                                                'dijet_trijet_mass': TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400) })
-                for chan, (procs, _) in channels.items() for proc in procs for sys in systematic_names])
+                for chan, ((procs, _), sys) in channels.items() for proc in procs])
 
     # strange, getting PyROOT_NoneObjects from these after output
     for _, histos in out_hs.items():
