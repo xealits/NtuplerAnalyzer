@@ -676,10 +676,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     else:
         systematic_names_all = ['NOMINAL']
         systematic_names_pu  = ['NOMINAL']
+    systematic_names_toppt = ['NOMINAL']
 
     if isTT:
         systematic_names_all.append('TOPPTUp')
         systematic_names_all.append('TOPPTDown')
+        systematic_names_toppt = ['NOMINAL', 'TOPPTUp']
 
     if isMC:
         if isTT:
@@ -693,26 +695,25 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'mu_sel':         (tt_procs_mu, systematic_names_all),
                    'mu_lj':          (tt_procs_mu, systematic_names_all),
                    'mu_lj_out':      (tt_procs_mu, systematic_names_all),
-		   # same sign for some QCD control
+                   # same sign for some QCD control
                    'el_sel_ss':      (tt_procs_el, ['NOMINAL']),
                    'mu_sel_ss':      (tt_procs_mu, ['NOMINAL']),
                    'el_presel_ss':   (tt_procs_el, ['NOMINAL']),
                    'mu_presel_ss':   (tt_procs_mu, ['NOMINAL']),
-		   # with tau POG selection
-		   'pog_el_presel':  (tt_procs_el, systematic_names_pu),
-		   'pog_mu_presel':  (tt_procs_mu, systematic_names_pu),
-		   'pog_el_sel':     (tt_procs_el, systematic_names_pu),
-		   'pog_mu_sel':     (tt_procs_mu, systematic_names_pu),
-		   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
-		   'adv_el_sel':     (tt_procs_el, systematic_names_pu),
-		   'adv_mu_sel':     (tt_procs_mu, systematic_names_pu),
-		   # control selections: WJets, DY mumu and tautau, tt elmu
-		   'ctr_mu_wjet':    (tt_procs_mu, ['NOMINAL']),
-		   'ctr_mu_dy_mumu': (tt_procs_mu, ['NOMINAL']),
-		   'ctr_mu_dy_tt':   (tt_procs_mu, ['NOMINAL']),
-		   'ctr_mu_tt_em':   (tt_procs_mu, ['NOMINAL']),
-		   }
-            process = 'tt_other'
+                   # with tau POG selection
+                   'pog_mu_presel':  (tt_procs_mu, systematic_names_toppt),
+                   'pog_mu_pass':    (tt_procs_mu, systematic_names_toppt),
+                   'pog_mu_fail':    (tt_procs_mu, systematic_names_toppt),
+                   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
+                   'adv_el_sel':     (tt_procs_el, systematic_names_pu),
+                   'adv_mu_sel':     (tt_procs_mu, systematic_names_pu),
+                   # control selections: WJets, DY mumu and tautau, tt elmu
+                   'ctr_mu_wjet':    (tt_procs_mu, ['NOMINAL']),
+                   'ctr_mu_dy_mumu': (tt_procs_mu, ['NOMINAL']),
+                   'ctr_mu_dy_tt':   (tt_procs_mu, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (tt_procs_mu, ['NOMINAL']),
+                   }
+            usual_process = 'tt_other'
 
         if isWJets:
             wjets_procs = (['wjets'], 'wjets')
@@ -724,8 +725,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'mu_sel':      (wjets_procs, systematic_names_all),
                    'mu_lj':       (wjets_procs, systematic_names_all),
                    'mu_lj_out':   (wjets_procs, systematic_names_all),
-		   # selection steps to control shape of DY and WJets
-		   # current definitions are:
+                   # selection steps to control shape of DY and WJets
+                   # current definitions are:
                    #pass_single_lep_presel = large_met and has_3jets and has_bjets #and os_lep_med_tau
                    #pass_single_lep_sel = pass_single_lep_presel and os_lep_med_tau
                    'mu_sel_nomet':         (wjets_procs, ['NOMINAL']),
@@ -740,26 +741,25 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    #'el_sel_no3jets':       (wjets_procs, ['NOMINAL']),
                    'mu_sel_only3jets':     (wjets_procs, ['NOMINAL']),
                    #'el_sel_only3jets':     (wjets_procs, ['NOMINAL']),
-		   # same sign for some QCD control
+                   # same sign for some QCD control
                    'el_sel_ss':      (wjets_procs, ['NOMINAL']),
                    'mu_sel_ss':      (wjets_procs, ['NOMINAL']),
                    'el_presel_ss':   (wjets_procs, ['NOMINAL']),
                    'mu_presel_ss':   (wjets_procs, ['NOMINAL']),
-		   # with tau POG selection
-		   'pog_el_presel':  (wjets_procs, systematic_names_pu),
-		   'pog_mu_presel':  (wjets_procs, systematic_names_pu),
-		   'pog_el_sel':     (wjets_procs, systematic_names_pu),
-		   'pog_mu_sel':     (wjets_procs, systematic_names_pu),
-		   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
-		   'adv_el_sel':     (wjets_procs, systematic_names_pu),
-		   'adv_mu_sel':     (wjets_procs, systematic_names_pu),
-		   # control selections: WJets, DY mumu and tautau, tt elmu
-		   'ctr_mu_wjet':    (wjets_procs, ['NOMINAL']),
-		   'ctr_mu_dy_mumu': (wjets_procs, ['NOMINAL']),
-		   'ctr_mu_dy_tt':   (wjets_procs, ['NOMINAL']),
-		   'ctr_mu_tt_em':   (wjets_procs, ['NOMINAL']),
-		   }
-            process = 'wjets'
+                   # with tau POG selection
+                   'pog_mu_presel':  (wjets_procs, systematic_names_toppt),
+                   'pog_mu_pass':    (wjets_procs, systematic_names_toppt),
+                   'pog_mu_fail':    (wjets_procs, systematic_names_toppt),
+                   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
+                   'adv_el_sel':     (wjets_procs, systematic_names_pu),
+                   'adv_mu_sel':     (wjets_procs, systematic_names_pu),
+                   # control selections: WJets, DY mumu and tautau, tt elmu
+                   'ctr_mu_wjet':    (wjets_procs, ['NOMINAL']),
+                   'ctr_mu_dy_mumu': (wjets_procs, ['NOMINAL']),
+                   'ctr_mu_dy_tt':   (wjets_procs, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (wjets_procs, ['NOMINAL']),
+                   }
+            usual_process = 'wjets'
 
         if isDY:
             dy_procs = (['dy_tautau', 'dy_other'], 'dy_other')
@@ -771,8 +771,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'mu_sel':         (dy_procs, systematic_names_all),
                    'mu_lj':          (dy_procs, systematic_names_all),
                    'mu_lj_out':      (dy_procs, systematic_names_all),
-		   # selection steps to control shape of DY and WJets
-		   # current definitions are:
+                   # selection steps to control shape of DY and WJets
+                   # current definitions are:
                    #pass_single_lep_presel = large_met and has_3jets and has_bjets #and os_lep_med_tau
                    #pass_single_lep_sel = pass_single_lep_presel and os_lep_med_tau
                    'mu_sel_nomet':         (dy_procs, ['NOMINAL']),
@@ -787,26 +787,25 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    #'el_sel_no3jets':       (dy_procs, ['NOMINAL']),
                    'mu_sel_only3jets':     (dy_procs, ['NOMINAL']),
                    #'el_sel_only3jets':     (dy_procs, ['NOMINAL']),
-		   # same sign for some QCD control
+                   # same sign for some QCD control
                    'el_sel_ss':      (dy_procs, ['NOMINAL']),
                    'mu_sel_ss':      (dy_procs, ['NOMINAL']),
                    'el_presel_ss':   (dy_procs, ['NOMINAL']),
                    'mu_presel_ss':   (dy_procs, ['NOMINAL']),
-		   # with tau POG selection
-		   'pog_el_presel':  (dy_procs, systematic_names_pu),
-		   'pog_mu_presel':  (dy_procs, systematic_names_pu),
-		   'pog_el_sel':     (dy_procs, systematic_names_pu),
-		   'pog_mu_sel':     (dy_procs, systematic_names_pu),
-		   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
-		   'adv_el_sel':     (dy_procs, systematic_names_pu),
-		   'adv_mu_sel':     (dy_procs, systematic_names_pu),
-		   # control selections: WJets, DY mumu and tautau, tt elmu
-		   'ctr_mu_wjet':    (dy_procs, ['NOMINAL']),
-		   'ctr_mu_dy_mumu': (dy_procs, ['NOMINAL']),
-		   'ctr_mu_dy_tt':   (dy_procs, ['NOMINAL']),
-		   'ctr_mu_tt_em':   (dy_procs, ['NOMINAL']),
-		   }
-            process = 'dy_other'
+                   # with tau POG selection
+                   'pog_mu_presel':  (dy_procs, systematic_names_toppt),
+                   'pog_mu_pass':    (dy_procs, systematic_names_toppt),
+                   'pog_mu_fail':    (dy_procs, systematic_names_toppt),
+                   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
+                   'adv_el_sel':     (dy_procs, systematic_names_pu),
+                   'adv_mu_sel':     (dy_procs, systematic_names_pu),
+                   # control selections: WJets, DY mumu and tautau, tt elmu
+                   'ctr_mu_wjet':    (dy_procs, ['NOMINAL']),
+                   'ctr_mu_dy_mumu': (dy_procs, ['NOMINAL']),
+                   'ctr_mu_dy_tt':   (dy_procs, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (dy_procs, ['NOMINAL']),
+                   }
+            usual_process = 'dy_other'
 
         if isSTop:
             s_top_procs = (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other')
@@ -818,26 +817,25 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'mu_sel':         (s_top_procs, systematic_names_all),
                    'mu_lj':          (s_top_procs, systematic_names_all),
                    'mu_lj_out':      (s_top_procs, systematic_names_all),
-		   # same sign for some QCD control
+                   # same sign for some QCD control
                    'el_sel_ss':      (s_top_procs, ['NOMINAL']),
                    'mu_sel_ss':      (s_top_procs, ['NOMINAL']),
                    'el_presel_ss':   (s_top_procs, ['NOMINAL']),
                    'mu_presel_ss':   (s_top_procs, ['NOMINAL']),
-		   # with tau POG selection
-		   'pog_el_presel':  (s_top_procs, systematic_names_pu),
-		   'pog_mu_presel':  (s_top_procs, systematic_names_pu),
-		   'pog_el_sel':     (s_top_procs, systematic_names_pu),
-		   'pog_mu_sel':     (s_top_procs, systematic_names_pu),
-		   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
-		   'adv_el_sel':     (s_top_procs, systematic_names_pu),
-		   'adv_mu_sel':     (s_top_procs, systematic_names_pu),
-		   # control selections: WJets, DY mumu and tautau, tt elmu
-		   'ctr_mu_wjet':    (s_top_procs, ['NOMINAL']),
-		   'ctr_mu_dy_mumu': (s_top_procs, ['NOMINAL']),
-		   'ctr_mu_dy_tt':   (s_top_procs, ['NOMINAL']),
-		   'ctr_mu_tt_em':   (s_top_procs, ['NOMINAL']),
-		   }
-            process = 's_top_other'
+                   # with tau POG selection
+                   'pog_mu_presel':  (s_top_procs, systematic_names_toppt),
+                   'pog_mu_pass':    (s_top_procs, systematic_names_toppt),
+                   'pog_mu_fail':    (s_top_procs, systematic_names_toppt),
+                   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
+                   'adv_el_sel':     (s_top_procs, systematic_names_pu),
+                   'adv_mu_sel':     (s_top_procs, systematic_names_pu),
+                   # control selections: WJets, DY mumu and tautau, tt elmu
+                   'ctr_mu_wjet':    (s_top_procs, ['NOMINAL']),
+                   'ctr_mu_dy_mumu': (s_top_procs, ['NOMINAL']),
+                   'ctr_mu_dy_tt':   (s_top_procs, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (s_top_procs, ['NOMINAL']),
+                   }
+            usual_process = 's_top_other'
 
         if isQCD:
             qcd_procs = (['qcd'], 'qcd')
@@ -849,26 +847,25 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'mu_sel':         (qcd_procs, systematic_names_all),
                    'mu_lj':          (qcd_procs, systematic_names_all),
                    'mu_lj_out':      (qcd_procs, systematic_names_all),
-		   # same sign for some QCD control
+                   # same sign for some QCD control
                    'el_sel_ss':      (qcd_procs, ['NOMINAL']),
                    'mu_sel_ss':      (qcd_procs, ['NOMINAL']),
                    'el_presel_ss':   (qcd_procs, ['NOMINAL']),
                    'mu_presel_ss':   (qcd_procs, ['NOMINAL']),
-		   # with tau POG selection
-		   'pog_el_presel':  (qcd_procs, systematic_names_pu),
-		   'pog_mu_presel':  (qcd_procs, systematic_names_pu),
-		   'pog_el_sel':     (qcd_procs, systematic_names_pu),
-		   'pog_mu_sel':     (qcd_procs, systematic_names_pu),
-		   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
-		   'adv_el_sel':     (qcd_procs, systematic_names_pu),
-		   'adv_mu_sel':     (qcd_procs, systematic_names_pu),
-		   # control selections: WJets, DY mumu and tautau, tt elmu
-		   'ctr_mu_wjet':    (qcd_procs, ['NOMINAL']),
-		   'ctr_mu_dy_mumu': (qcd_procs, ['NOMINAL']),
-		   'ctr_mu_dy_tt':   (qcd_procs, ['NOMINAL']),
-		   'ctr_mu_tt_em':   (qcd_procs, ['NOMINAL']),
-		   }
-            process = 'qcd'
+                   # with tau POG selection
+                   'pog_mu_presel':  (qcd_procs, systematic_names_toppt),
+                   'pog_mu_pass':    (qcd_procs, systematic_names_toppt),
+                   'pog_mu_fail':    (qcd_procs, systematic_names_toppt),
+                   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
+                   'adv_el_sel':     (qcd_procs, systematic_names_pu),
+                   'adv_mu_sel':     (qcd_procs, systematic_names_pu),
+                   # control selections: WJets, DY mumu and tautau, tt elmu
+                   'ctr_mu_wjet':    (qcd_procs, ['NOMINAL']),
+                   'ctr_mu_dy_mumu': (qcd_procs, ['NOMINAL']),
+                   'ctr_mu_dy_tt':   (qcd_procs, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (qcd_procs, ['NOMINAL']),
+                   }
+            usual_process = 'qcd'
 
         if isDibosons:
             dibosons_procs = (['dibosons'], 'dibosons')
@@ -880,26 +877,25 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'mu_sel':         (dibosons_procs, systematic_names_all),
                    'mu_lj':          (dibosons_procs, systematic_names_all),
                    'mu_lj_out':      (dibosons_procs, systematic_names_all),
-		   # same sign for some QCD control
+                   # same sign for some QCD control
                    'el_sel_ss':      (dibosons_procs, ['NOMINAL']),
                    'mu_sel_ss':      (dibosons_procs, ['NOMINAL']),
                    'el_presel_ss':   (dibosons_procs, ['NOMINAL']),
                    'mu_presel_ss':   (dibosons_procs, ['NOMINAL']),
-		   # with tau POG selection
-		   'pog_el_presel':  (dibosons_procs, systematic_names_pu),
-		   'pog_mu_presel':  (dibosons_procs, systematic_names_pu),
-		   'pog_el_sel':     (dibosons_procs, systematic_names_pu),
-		   'pog_mu_sel':     (dibosons_procs, systematic_names_pu),
-		   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
-		   'adv_el_sel':     (dibosons_procs, systematic_names_pu),
-		   'adv_mu_sel':     (dibosons_procs, systematic_names_pu),
-		   # control selections: WJets, DY mumu and tautau, tt elmu
-		   'ctr_mu_wjet':    (dibosons_procs, ['NOMINAL']),
-		   'ctr_mu_dy_mumu': (dibosons_procs, ['NOMINAL']),
-		   'ctr_mu_dy_tt':   (dibosons_procs, ['NOMINAL']),
-		   'ctr_mu_tt_em':   (dibosons_procs, ['NOMINAL']),
-		   }
-            process = 'dibosons'
+                   # with tau POG selection
+                   'pog_mu_presel':  (dibosons_procs, systematic_names_toppt),
+                   'pog_mu_pass':    (dibosons_procs, systematic_names_toppt),
+                   'pog_mu_fail':    (dibosons_procs, systematic_names_toppt),
+                   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
+                   'adv_el_sel':     (dibosons_procs, systematic_names_pu),
+                   'adv_mu_sel':     (dibosons_procs, systematic_names_pu),
+                   # control selections: WJets, DY mumu and tautau, tt elmu
+                   'ctr_mu_wjet':    (dibosons_procs, ['NOMINAL']),
+                   'ctr_mu_dy_mumu': (dibosons_procs, ['NOMINAL']),
+                   'ctr_mu_dy_tt':   (dibosons_procs, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (dibosons_procs, ['NOMINAL']),
+                   }
+            usual_process = 'dibosons'
 
     else:
         data_procs = (['data'], 'data')
@@ -911,28 +907,27 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'mu_sel':    (data_procs, systematic_names_all),
                    'mu_lj':     (data_procs, systematic_names_all),
                    'mu_lj_out': (data_procs, systematic_names_all),
-		   # same sign for some QCD control
+                   # same sign for some QCD control
                    'el_sel_ss':      (data_procs, ['NOMINAL']),
                    'mu_sel_ss':      (data_procs, ['NOMINAL']),
                    'el_presel_ss':   (data_procs, ['NOMINAL']),
                    'mu_presel_ss':   (data_procs, ['NOMINAL']),
-		   # with tau POG selection
-		   'pog_el_presel':  (data_procs, systematic_names_pu),
-		   'pog_mu_presel':  (data_procs, systematic_names_pu),
-		   'pog_el_sel':     (data_procs, systematic_names_pu),
-		   'pog_mu_sel':     (data_procs, systematic_names_pu),
-		   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
-		   'adv_el_sel':     (data_procs, systematic_names_pu),
-		   'adv_mu_sel':     (data_procs, systematic_names_pu),
-		   # control selections: WJets, DY mumu and tautau, tt elmu
-		   'ctr_mu_wjet':    (data_procs, ['NOMINAL']),
-		   'ctr_mu_dy_mumu': (data_procs, ['NOMINAL']),
-		   'ctr_mu_dy_tt':   (data_procs, ['NOMINAL']),
-		   'ctr_mu_tt_em':   (data_procs, ['NOMINAL']),
-		    }
-        process = 'data'
+                   # with tau POG selection
+                   'pog_mu_presel':  (data_procs, systematic_names_toppt),
+                   'pog_mu_pass':    (data_procs, systematic_names_toppt),
+                   'pog_mu_fail':    (data_procs, systematic_names_toppt),
+                   # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
+                   'adv_el_sel':     (data_procs, systematic_names_pu),
+                   'adv_mu_sel':     (data_procs, systematic_names_pu),
+                   # control selections: WJets, DY mumu and tautau, tt elmu
+                   'ctr_mu_wjet':    (data_procs, ['NOMINAL']),
+                   'ctr_mu_dy_mumu': (data_procs, ['NOMINAL']),
+                   'ctr_mu_dy_tt':   (data_procs, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (data_procs, ['NOMINAL']),
+                    }
+        usual_process = 'data'
 
-    proc = process
+    proc = usual_process
 
     # channel -- reco selection
     # proc    -- MC gen info, like inclusive tt VS tt->mutau and others,
@@ -1006,12 +1001,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # TODO: is there relIso cut now?
         pass_mu = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 27 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 # lep_relIso[0]
         pass_el = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 # lep_relIso[0]
-        pass_elmu = abs(ev.leps_ID) == 11*13 and (ev.HLT_mu or ev.HLT_el) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and
-	    (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and
-	    (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02)
-        pass_mumu = abs(ev.leps_ID) == 13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and
-	    (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and
-	    (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02)
+        pass_elmu = ev.leps_ID == -11*13 and (ev.HLT_mu or ev.HLT_el) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and
+            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and
+            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02)
+        pass_mumu = ev.leps_ID == -13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and
+            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and
+            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02)
 
         # 1-lep channels, 2mu DY and el-mu ttbar
         if not (pass_mu or pass_el or pass_mumu or pass_elmu): continue
@@ -1084,17 +1079,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 # float zPtMass_weight(float genMass, float genPt)
                 weight_z_mass_pt *= zPtMass_weight(ev.genMass, ev.genPt)
                 weight *= weight_z_mass_pt
-		# DY has this trick, which I had to solve cleanly in ntuples
-		# but I just dumped all info downstream..
-		# it might have actual Z particle in decay chain
-		# or not (and no gamma too) -- then you judge from "prompt" leptons
-		# the mutually exclusive case never appears
+                # DY has this trick, which I had to solve cleanly in ntuples
+                # but I just dumped all info downstream..
+                # it might have actual Z particle in decay chain
+                # or not (and no gamma too) -- then you judge from "prompt" leptons
+                # the mutually exclusive case never appears
                 if ev.gen_N_zdecays > 0:
                     lep1_id = abs(ev.gen_zdecays_IDs[0])
                     lep2_id = abs(ev.gen_zdecays_IDs[1])
                 else:
-		    # check prompt leptns
-		    # if no Z decay the leptons are there
+                    # check prompt leptns
+                    # if no Z decay the leptons are there
                     lep1_id = abs(ev.gen_pythia8_prompt_leptons_IDs[0])
                     lep2_id = abs(ev.gen_pythia8_prompt_leptons_IDs[1])
                 # TODO: actually track tau decays fro DY? -- no need, it's a small background
@@ -1350,7 +1345,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
         # p4 momenta of taus and the Energy Scale factor
         taus_nominal = []
-        taus_es_up = []
+        taus_es_up   = []
         taus_es_down = []
 
         # only top pt tau is treated but that's fine
@@ -1358,36 +1353,41 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # it should work like Python does and not copy these objects! (cast)
             #p4, DM, IDlev = ev.tau_p4[0], ev.tau_decayMode[0], ev.tau_IDlev[0]
             #if IDlev < 3 or abs(p4.eta()) < 2.4: continue # only Medium taus
-            DM = ev.tau_decayMode[0]
-            if DM == 0:
-              factor = 0.995
-              if isMC:
-                factor_up   = 0.995 + 0.012
-                factor_down = 0.995 - 0.012
-            elif DM < 10:
-              factor = 1.011
-              if isMC:
-                factor_up   = 1.011 + 0.012
-                factor_down = 1.011 - 0.012
-            else:
-              factor = 1.006
-              if isMC:
-                factor_up   = 1.006 + 0.012
-                factor_down = 1.006 - 0.012
 
-            #has_tau = (ev.tau_p4[0].pt() * factor) > 30
-            taus_nominal.append(ev.tau_p4[0], factor)
-            ## calculate it later, inplace of record
-            #if not Mt_tau_met_nominal:
-            #    Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px()*factor, ev.tau_p4[0].Py()*factor, met_x, met_y)
-            if isMC:
-                #has_tau_es_up   = (ev.tau_p4[0].pt() * factor_up  ) > 30
-                #has_tau_es_down = (ev.tau_p4[0].pt() * factor_down) > 30
-                taus_es_up.append(ev.tau_p4[0], factor_up)
-                taus_es_down.append(ev.tau_p4[0], factor_down)
-                #if not Mt_tau_met_up:
-                #    Mt_tau_met_up   = transverse_mass_pts(ev.tau_p4[0].Px()*factor_up, ev.tau_p4[0].Py()*factor_up, met_x, met_y)
-                #    Mt_tau_met_down = transverse_mass_pts(ev.tau_p4[0].Px()*factor_down, ev.tau_p4[0].Py()*factor_down, met_x, met_y)
+            # check dR to lepton
+            tlep_p4 = TLorentzVector(ev.lep_p4[0].X(), ev.lep_p4[0].Y(), ev.lep_p4[0].Z(), ev.lep_p4[0].T())
+            ttau_p4 = TLorentzVector(ev.tau_p4[0].X(), ev.tau_p4[0].Y(), ev.tau_p4[0].Z(), ev.tau_p4[0].T())
+            if tlep_p4.DeltaR(ttau_p4) > 0.3:
+                DM = ev.tau_decayMode[0]
+                if DM == 0:
+                  factor = 0.995
+                  if isMC:
+                    factor_up   = 0.995 + 0.012
+                    factor_down = 0.995 - 0.012
+                elif DM < 10:
+                  factor = 1.011
+                  if isMC:
+                    factor_up   = 1.011 + 0.012
+                    factor_down = 1.011 - 0.012
+                else:
+                  factor = 1.006
+                  if isMC:
+                    factor_up   = 1.006 + 0.012
+                    factor_down = 1.006 - 0.012
+
+                #has_tau = (ev.tau_p4[0].pt() * factor) > 30
+                taus_nominal.append(ev.tau_p4[0], factor)
+                ## calculate it later, inplace of record
+                #if not Mt_tau_met_nominal:
+                #    Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px()*factor, ev.tau_p4[0].Py()*factor, met_x, met_y)
+                if isMC:
+                    #has_tau_es_up   = (ev.tau_p4[0].pt() * factor_up  ) > 30
+                    #has_tau_es_down = (ev.tau_p4[0].pt() * factor_down) > 30
+                    taus_es_up.append(ev.tau_p4[0], factor_up)
+                    taus_es_down.append(ev.tau_p4[0], factor_down)
+                    #if not Mt_tau_met_up:
+                    #    Mt_tau_met_up   = transverse_mass_pts(ev.tau_p4[0].Px()*factor_up, ev.tau_p4[0].Py()*factor_up, met_x, met_y)
+                    #    Mt_tau_met_down = transverse_mass_pts(ev.tau_p4[0].Px()*factor_down, ev.tau_p4[0].Py()*factor_down, met_x, met_y)
 
         #has_medium_tau = any(IDlev > 2 and p4.pt() > 30 for IDlev, p4 in zip(ev.tau_IDlev, ev.tau_p4))
         #has_medium_tau = ev.tau_IDlev.size() > 0 and ev.tau_IDlev[0] > 2 and ev.tau_p4[0].pt() > 30
@@ -1491,52 +1491,125 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             #has_medium_tau = has_pre_tau and tau_pts[0] > 30 and ev.tau_IDlev[0] > 2
             has_medium_tau = len(taus) > 0
             os_lep_med_tau = has_medium_tau and ev.tau_id[0]*ev.lep_id[0] < 0
+            ss_lep_med_tau = has_medium_tau and ev.tau_id[0]*ev.lep_id[0] > 0
             # dilep_mass is not TES corrected
             # it's used only in control regions and shouldn't be a big deal
             #dy_dilep_mass = has_pre_tau and (45 < (ev.lep_p4[0] + ev.tau_p4[0]).mass() < 85)
 
+            if has_medium_tau:
+                lep_tau = ev.lep_p4[0] + taus[0][0]
+                lep_tau_mass = lep_tau.mass()
+
             pass_single_lep_presel = large_met and has_3jets and has_bjets #and os_lep_med_tau
             pass_single_lep_sel = pass_single_lep_presel and os_lep_med_tau
-            #pass_mujets    = pass_mu and has_pre_tau and large_Mt_lep
-            #pass_mujets_b  = pass_mu and has_pre_tau and large_Mt_lep and has_bjets
-            #pass_taumutauh = pass_mu and os_lep_med_tau and dy_dilep_mass and not large_Mt_lep and not has_bjets
-            #pass_antiMt_taumutauh_pretau_allb = pass_mu and not dy_dilep_mass and large_Mt_lep
-            #pass_antiMt_taumutauh_pretau      = pass_mu and not dy_dilep_mass and large_Mt_lep and not has_bjets
-            #pass_antiMt_taumutauh             = pass_mu and not dy_dilep_mass and large_Mt_lep and not has_bjets and has_medium_tau
-            #pass_antiMt_taumutauh_OS          = pass_mu and not dy_dilep_mass and large_Mt_lep and not has_bjets and os_lep_med_tau
 
-            # to not over-calculate lj parameters
-            if not (pass_single_lep_presel or pass_single_lep_sel): # added sel for consistency
+
+            # all the channel selections follow
+
+            passed_channels = []
+            if pass_el and pass_single_lep_presel:
+                passed_channels.append('el_presel')
+            if pass_mu and pass_single_lep_presel:
+                passed_channels.append('mu_presel')
+
+            if pass_el and pass_single_lep_sel:
+                passed_channels.append('el_sel')
+            if pass_mu and pass_single_lep_sel:
+                passed_channels.append('mu_sel')
+
+            lj_var, w_mass, t_mass = 0.,0.,0.
+            lj_cut = 50
+            if pass_single_lep_sel:
+                # calc lj_var
+                lj_var, w_mass, t_mass = calc_lj_var(jets, jets_b)
+                large_lj = lj_var > lj_cut
+                if pass_el and large_lj:
+                    passed_channels.append('el_lj')
+                else:
+                    passed_channels.append('el_lj_out')
+                if pass_mu and large_lj:
+                    passed_channels.append('mu_lj')
+                else:
+                    passed_channels.append('mu_lj_out')
+
+            # steps for DY and WJets shape control
+            if pass_mu and os_lep_med_tau and has_3jets and has_bjets:
+                passed_channels.append('mu_sel_nomet')
+            if pass_mu and os_lep_med_tau and large_met:
+                passed_channels.append('mu_sel_onlymet')
+            if pass_mu and os_lep_med_tau and large_met and has_3jets:
+                passed_channels.append('mu_sel_nobtag')
+            if pass_mu and os_lep_med_tau and has_bjets:
+                passed_channels.append('mu_sel_onlybtag')
+            if pass_mu and os_lep_med_tau and has_bjets and large_met:
+                passed_channels.append('mu_sel_no3jets')
+            if pass_mu and os_lep_med_tau and has_3jets:
+                passed_channels.append('mu_sel_only3jets')
+
+            # same sign for some QCD control
+            if pass_el and pass_single_lep_presel and ss_lep_med_tau:
+                passed_channels.append('el_sel_ss')
+            if pass_mu and pass_single_lep_presel and ss_lep_med_tau:
+                passed_channels.append('mu_sel_ss')
+            if pass_el and pass_single_lep_presel and ss_lep_med_tau:
+                passed_channels.append('el_presel_ss')
+            if pass_mu and pass_single_lep_presel and ss_lep_med_tau:
+                passed_channels.append('mu_presel_ss')
+
+            # with tau POG selection
+            # mu cand, tau cand, di-mu veto, el veto, mu veto, Mt < 40 and p-zeta > 40 -- DY -> tautau
+            # in tt no Mt and p-zeta -- instead at least 1 b
+            # and then -- pass or not the medium ID
+            # TODO: I don't have di-muon veto + need to add the veto leptons to output somehow -- their counters for example
+            if pass_mu and has_bjets:
+                passed_channels.append('pog_mu_presel')
+            if pass_pog_mu_presel and has_medium_tau:
+                passed_channels.append('pog_mu_pass')
+            if pass_pog_mu_presel and not has_medium_tau:
+                passed_channels.append('pog_mu_fail')
+
+            # with addition of no DY mass, no tau match to b-tag (could add a cut on small MT)
+            if pass_el and large_met and has_3jets and has_bjets_no_tau_match and (lep_tau_mass < 45 or lep_tau_mass > 85):
+                passed_channels.append('adv_el_sel')
+            if pass_mu and large_met and has_3jets and has_bjets_no_tau_match and (lep_tau_mass < 45 or lep_tau_mass > 85):
+                passed_channels.append('adv_mu_sel')
+            # check the mass cut in distribution of lep+tau mass in usual selection
+
+            # control selections: WJets, DY mumu and tautau, tt elmu
+            # WJets control
+            #HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0] && abs(lep_p4[0].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02
+            # && tau_IDlev[0] > -1
+            # && nbjets == 0
+            # && (divector_mass(lep_p4[0].x(), lep_p4[0].y(), lep_p4[0].z(), lep_p4[0].t(), tau_p4[0].x(), tau_p4[0].y(), tau_p4[0].z(), tau_p4[0].t()) < 45 || divector_mass(lep_p4[0].x(), lep_p4[0].y(), lep_p4[0].z(), lep_p4[0].t(), tau_p4[0].x(), tau_p4[0].y(), tau_p4[0].z(), tau_p4[0].t()) > 85)
+            # also may add MT > 50 or met > X -- cuts QCD
+            if pass_mu and nbjets == 0 and (Mt_lep_met > 50 or met > 40) # skipped lep+tau mass -- hopefuly DY will be small:
+                passed_channels.append('ctr_mu_wjet')
+            # DY -> taumu tauh
+            # HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0] && abs(lep_p4[0].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02
+            # && tau_IDlev[0] > 2 && lep_id[0]*tau_id[0] < 0
+            # && divector_mass(lep_p4[0].x(), lep_p4[0].y(), lep_p4[0].z(), lep_p4[0].t(), tau_p4[0].x(), tau_p4[0].y(), tau_p4[0].z(), tau_p4[0].t()) > 45 && divector_mass(lep_p4[0].x(), lep_p4[0].y(), lep_p4[0].z(), lep_p4[0].t(), tau_p4[0].x(), tau_p4[0].y(), tau_p4[0].z(), tau_p4[0].t()) < 85
+            # && transverse_mass(lep_p4[0].pt(), met_corrected.pt(), lep_p4[0].phi(), met_corrected.phi()) < 40
+            if pass_mu and os_lep_med_tau and lep_tau_mass > 45 and lep_tau_mass < 85 and Mt_lep_met < 40:
+                passed_channels.append('ctr_mu_dy_tt')
+            if pass_mumu:
+                passed_channels.append('ctr_mu_dy_mumu')
+            if pass_elmu:
+                passed_channels.append('ctr_mu_tt_em')
+
+
+            # keeping this as legacy?
+            if not passed_channels:
                 continue
 
-            lj_cut = 50
-            passed_channels = []
-            # TODO: more selections, alternative (tau POG) presel and sel, steps from presel to our sel to track shapes of WJets and DY, 4 control selections
-            if pass_el:
-                if pass_single_lep_presel:
-                    passed_channels.append('el_presel')
-                    # calc lj_var
-                    lj_var, w_mass, t_mass = calc_lj_var(jets, jets_b)
-                    large_lj = lj_var > lj_cut # TODO: implement lj_var
-                if pass_single_lep_sel:
-                    passed_channels.append('el_sel')
-                    if not large_lj: passed_channels.append('el_lj')
-                    if large_lj: passed_channels.append('el_lj_out')
-            else:
-                if pass_single_lep_presel:
-                    passed_channels.append('mu_presel')
-                    lj_var, w_mass, t_mass = calc_lj_var(jets, jets_b)
-                    large_lj = lj_var > lj_cut # TODO: implement lj_var
-                if pass_single_lep_sel:
-                    passed_channels.append('mu_sel')
-                    if not large_lj: passed_channels.append('mu_lj')
-                    if large_lj: passed_channels.append('mu_lj_out')
-
-            # now the process variety is restricted to 2 separate channels and TT
-            if isTT and pass_el:
-                proc = proc if proc in tt_el_procs else 'tt_other'
-            elif isTT and pass_mu:
-                proc = proc if proc in tt_mu_procs else 'tt_other'
+            # this should not be needed now:
+            #    proc is set to usual_process,
+            #    if the MC is split more -- it is done
+            #    the splitting is the same for all channels, it is per-MC not per-MC-in-channel as was supposed at the beginning
+            ## now the process variety is restricted to 2 separate channels and TT
+            #if isTT and pass_el:
+            #    proc = proc if proc in tt_el_procs else 'tt_other'
+            #elif isTT and pass_mu:
+            #    proc = proc if proc in tt_mu_procs else 'tt_other'
 
             ## save distrs
             #for chan, proc in chan_subproc_pairs:
@@ -1545,9 +1618,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             #    out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, weight)
             #    out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(25, weight)
             for chan in passed_channels:
-		# some channels might not have only inclusive processes or minimal systematics
-		if (chan, proc, sys_name) not in out_hs:
-		    continue # TODO: so it doesn't change amount of computing, systematics are per event, not per channel
+                # some channels might not have only inclusive processes or minimal systematics
+                if (chan, proc, sys_name) not in out_hs:
+                    continue # TODO: so it doesn't change amount of computing, systematics are per event, not per channel
+                    # but it does reduce the amount of output -- no geom progression
 
                 out_hs[(chan, proc, sys_name)]['met'].Fill(met_pt, sys_weight)
                 out_hs[(chan, proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  sys_weight)
@@ -1565,8 +1639,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 out_hs[(chan, proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, sys_weight)
 
                 if has_medium_tau:
-                    lep_tau = ev.lep_p4[0] + taus[0][0]
-                    out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), sys_weight)
+                    #lep_tau = ev.lep_p4[0] + taus[0][0] # done above
+                    #out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), sys_weight)
+                    out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, sys_weight)
                     out_hs[(chan, proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, sys_weight)
 
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, sys_weight)
