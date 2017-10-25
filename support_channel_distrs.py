@@ -1124,10 +1124,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         #            Mt_tau_met_up   = transverse_mass_pts(ev.tau_p4[0].Px()*factor_up, ev.tau_p4[0].Py()*factor_down, met_x, met_y)
         #            Mt_tau_met_down = transverse_mass_pts(ev.tau_p4[0].Px()*factor_up, ev.tau_p4[0].Py()*factor_down, met_x, met_y)
 
-        has_tau = False
-        has_tau_es_up = False
-        has_tau_es_down = False
+        #has_tau = False
+        #has_tau_es_up = False
+        #has_tau_es_down = False
 
+        # p4 momenta of taus and the Energy Scale factor
+        taus_nominal = []
+        taus_es_up = []
+        taus_es_down = []
+
+        # only top pt tau is treated but that's fine
         if ev.tau_p4.size() > 0 and ev.tau_IDlev[0] > 2 and abs(ev.tau_p4[0].eta()) < 2.4:
             # it should work like Python does and not copy these objects! (cast)
             #p4, DM, IDlev = ev.tau_p4[0], ev.tau_decayMode[0], ev.tau_IDlev[0]
@@ -1149,15 +1155,19 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 factor_up   = 1.006 + 0.012
                 factor_down = 1.006 - 0.012
 
-            has_tau = (ev.tau_p4[0].pt() * factor) > 30
-            if not Mt_tau_met_nominal:
-                Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px()*factor, ev.tau_p4[0].Py()*factor, met_x, met_y)
+            #has_tau = (ev.tau_p4[0].pt() * factor) > 30
+            taus_nominal.append(ev.tau_p4[0], factor)
+            ## calculate it later, inplace of record
+            #if not Mt_tau_met_nominal:
+            #    Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px()*factor, ev.tau_p4[0].Py()*factor, met_x, met_y)
             if isMC:
-                has_tau_es_up   = (ev.tau_p4[0].pt() * factor_up  ) > 30
-                has_tau_es_down = (ev.tau_p4[0].pt() * factor_down) > 30
-                if not Mt_tau_met_up:
-                    Mt_tau_met_up   = transverse_mass_pts(ev.tau_p4[0].Px()*factor_up, ev.tau_p4[0].Py()*factor_up, met_x, met_y)
-                    Mt_tau_met_down = transverse_mass_pts(ev.tau_p4[0].Px()*factor_down, ev.tau_p4[0].Py()*factor_down, met_x, met_y)
+                #has_tau_es_up   = (ev.tau_p4[0].pt() * factor_up  ) > 30
+                #has_tau_es_down = (ev.tau_p4[0].pt() * factor_down) > 30
+                taus_es_up.append(ev.tau_p4[0], factor_up)
+                taus_es_down.append(ev.tau_p4[0], factor_down)
+                #if not Mt_tau_met_up:
+                #    Mt_tau_met_up   = transverse_mass_pts(ev.tau_p4[0].Px()*factor_up, ev.tau_p4[0].Py()*factor_up, met_x, met_y)
+                #    Mt_tau_met_down = transverse_mass_pts(ev.tau_p4[0].Px()*factor_down, ev.tau_p4[0].Py()*factor_down, met_x, met_y)
 
         #has_medium_tau = any(IDlev > 2 and p4.pt() > 30 for IDlev, p4 in zip(ev.tau_IDlev, ev.tau_p4))
         #has_medium_tau = ev.tau_IDlev.size() > 0 and ev.tau_IDlev[0] > 2 and ev.tau_p4[0].pt() > 30
@@ -1172,32 +1182,38 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # jet pts, tau pts, b weight (=1 for data), pu weight (=1 for data)
 
         if isMC:
-            systematics = {'NOMINAL'   : [jets_nominal,  jets_b_nominal,  has_tau, weight_bSF,          weight_pu,    1, Mt_tau_met_nominal],
-                           'JESUp'     : [jets_jes_up,   jets_b_jes_up,   has_tau, weight_bSF_jes_up,   weight_pu,    1, Mt_tau_met_nominal],
-                           'JESDown'   : [jets_jes_down, jets_b_jes_down, has_tau, weight_bSF_jes_down, weight_pu,    1, Mt_tau_met_nominal],
-                           'JERUp'     : [jets_jer_up,   jets_b_jer_up,   has_tau, weight_bSF_jer_up,   weight_pu,    1, Mt_tau_met_nominal],
-                           'JERDown'   : [jets_jer_down, jets_b_jer_down, has_tau, weight_bSF_jer_down, weight_pu,    1, Mt_tau_met_nominal],
-                           'TauESUp'   : [jets_nominal,  jets_b_nominal,  has_tau_es_up  , weight_bSF,     weight_pu,    1, Mt_tau_met_up],
-                           'TauESDown' : [jets_nominal,  jets_b_nominal,  has_tau_es_down, weight_bSF,     weight_pu,    1, Mt_tau_met_down],
-                           'bSFUp'     : [jets_nominal,  jets_b_nominal,  has_tau, weight_bSF_up  ,     weight_pu,    1, Mt_tau_met_nominal],
-                           'bSFDown'   : [jets_nominal,  jets_b_nominal,  has_tau, weight_bSF_down,     weight_pu,    1, Mt_tau_met_nominal],
-                           'PUUp'      : [jets_nominal,  jets_b_nominal,  has_tau, weight_bSF,          weight_pu_up, 1, Mt_tau_met_nominal],
-                           'PUDown'    : [jets_nominal,  jets_b_nominal,  has_tau, weight_bSF,          weight_pu_dn, 1, Mt_tau_met_nominal],
+            systematics = {'NOMINAL'   : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF,          weight_pu,    1],
+                           'JESUp'     : [jets_jes_up,   jets_b_jes_up,   taus_nominal, weight_bSF_jes_up,   weight_pu,    1],
+                           'JESDown'   : [jets_jes_down, jets_b_jes_down, taus_nominal, weight_bSF_jes_down, weight_pu,    1],
+                           'JERUp'     : [jets_jer_up,   jets_b_jer_up,   taus_nominal, weight_bSF_jer_up,   weight_pu,    1],
+                           'JERDown'   : [jets_jer_down, jets_b_jer_down, taus_nominal, weight_bSF_jer_down, weight_pu,    1],
+                           'TauESUp'   : [jets_nominal,  jets_b_nominal,  tau_es_up  ,  weight_bSF,          weight_pu,    1],
+                           'TauESDown' : [jets_nominal,  jets_b_nominal,  tau_es_down,  weight_bSF,          weight_pu,    1],
+                           'bSFUp'     : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF_up  ,     weight_pu,    1],
+                           'bSFDown'   : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF_down,     weight_pu,    1],
+                           'PUUp'      : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF,          weight_pu_up, 1],
+                           'PUDown'    : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF,          weight_pu_dn, 1],
                            }
             if isTT:
-                systematics['TOPPTUp'] = [jets_nominal, jets_b_nominal, has_tau, weight_bSF, weight_pu, weight_top_pt, Mt_tau_met_nominal]
-                systematics['TOPPTDown'] = [jets_nominal, jets_b_nominal, has_tau, weight_bSF, weight_pu, 1., Mt_tau_met_nominal]
+                systematics['TOPPTUp']   = [jets_nominal, jets_b_nominal, taus_nominal, weight_bSF, weight_pu, weight_top_pt]
+                systematics['TOPPTDown'] = [jets_nominal, jets_b_nominal, taus_nominal, weight_bSF, weight_pu, 1.]
         else:
-            systematics = {'NOMINAL': [jets_nominal, jets_b_nominal, has_tau, 1., 1., 1., Mt_tau_met_nominal]}
+            systematics = {'NOMINAL': [jets_nominal, jets_b_nominal, taus_nominal, 1., 1., 1.]}
 
         # for each systematic
         # pass one of the reco selections
         # check the subprocess
         # store distr
 
-        for sys_name, (jets, jets_b, has_medium_tau, weight_bSF, weight_PU, weight_top_pt, Mt_tau_met) in systematics.items():
+        for sys_name, (jets, jets_b, taus, weight_bSF, weight_PU, weight_top_pt) in systematics.items():
             sys_weight = weight * weight_bSF * weight_PU * weight_top_pt
             # pass reco selections
+
+            Mt_tau_met = 0
+            if taus:# there are taus
+                # Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px()*factor, ev.tau_p4[0].Py()*factor, met_x, met_y)
+                tau_p4, factor = taus[0]
+                Mt_tau_met = transverse_mass_pts(tau_p4.Px()*factor, tau_p4.Py()*factor, met_x, met_y)
 
             # from channel_distrs
             # --- 'mu': {'common': 'HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0]  && lep_p4[0].pt() > 30 && fabs(lep_p4[0].eta()) < 2.4',
@@ -1229,12 +1245,27 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             large_met = met_pt > 40
             #large_Mt_lep = Mt_lep_met > 40
             nbjets = len(jets_b)
-            njets =  nbjets + len(jets)
-            has_bjets = len(jets_b) > 0
-            has_3jets = (len(jets) + len(jets_b)) > 2
+
+            tau_matched_dR_bjet = False
+            if taus: # there are taus, check if b-jets overlap with it
+                tau_p4 = taus[0][0]
+                for j_p4, _ in jets_b:
+                    if j_p4.DeltaR(tau_p4) < 0.3:
+                        tau_matched_dR_bjet = True
+                        break
+
+            njets = nbjets + len(jets)
+            nbjets_no_tau_match = nbjets - tau_matched_dR_bjet
+            njets_no_tau_match  = nbjets + njets - tau_matched_dR_bjet
+
+            has_bjets = nbjets > 0
+            has_bjets_no_tau_match = nbjets_no_tau_match > 0
+            has_3jets = njets > 2
+            has_3jets_no_tau_match = njets_no_tau_match > 2
+
             #has_pre_tau = len(tau_pts) > 0
             #has_medium_tau = has_pre_tau and tau_pts[0] > 30 and ev.tau_IDlev[0] > 2
-            #has_medium_tau = tau_pts[0] > 30 and ev.tau_IDlev[0] > 2
+            has_medium_tau = len(taus) > 0
             os_lep_med_tau = has_medium_tau and ev.tau_id[0]*ev.lep_id[0] < 0
             # dilep_mass is not TES corrected
             # it's used only in control regions and shouldn't be a big deal
