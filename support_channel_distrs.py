@@ -479,14 +479,14 @@ def calc_btag_sf_weight(hasCSVtag, flavId, pt, eta, sys="central"):
 def top_pT_SF(x):
     # the SF function is SF(x)=exp(a+bx)
     # where x is pT of the top quark (at generation?)
-    # sqrt(s)         channel     	a     	b
-    # 7 TeV         all combined 	0.199 	-0.00166
-    # 7 TeV         l+jets      	0.174 	-0.00137
-    # 7 TeV         dilepton    	0.222 	-0.00197
-    # 8 TeV         all combined 	0.156 	-0.00137
-    # 8 TeV         l+jets       	0.159 	-0.00141
-    # 8 TeV         dilepton     	0.148 	-0.00129
-    # 13 TeV        all combined	0.0615	-0.0005
+    # sqrt(s)         channel             a             b
+    # 7 TeV         all combined         0.199         -0.00166
+    # 7 TeV         l+jets              0.174         -0.00137
+    # 7 TeV         dilepton            0.222         -0.00197
+    # 8 TeV         all combined         0.156         -0.00137
+    # 8 TeV         l+jets               0.159         -0.00141
+    # 8 TeV         dilepton             0.148         -0.00129
+    # 13 TeV        all combined        0.0615        -0.0005
     # -- taking all combined 13 TeV
     a = 0.0615
     b = -0.0005
@@ -516,19 +516,19 @@ def calc_lj_var(light_jets, b_jets):
     for j, mult in light_jets:
         new_dist = abs(j.mass() * mult - 80) # DANGER: the LorentzVector is used, .M() is spacial magnitude
         if new_dist < dist_W:
-	    dist_W = new_dist
-	    closest_to_W = j * mult
+            dist_W = new_dist
+            closest_to_W = j * mult
 
     # pairs of light jets
     for i in range(len(light_jets)):
       for u in range(i):
         ji, multi = light_jets[i]
         ju, multu = light_jets[u]
-	pair = ji * multi + ju * multu
+        pair = ji * multi + ju * multu
         new_dist = abs(pair.mass() - 80)
         if new_dist < dist_W:
-	    dist_W = new_dist
-	    closest_to_W = pair
+            dist_W = new_dist
+            closest_to_W = pair
 
     # closest to 173
     dist_t = 99999
@@ -536,8 +536,8 @@ def calc_lj_var(light_jets, b_jets):
         pair = j * mult + closest_to_W
         new_dist = abs(pair.mass() - 173)
         if new_dist < dist_t:
-	    dist_t = new_dist
-	    closest_to_t = pair
+            dist_t = new_dist
+            closest_to_t = pair
 
     return TMath.Sqrt(dist_W*dist_W + dist_t*dist_t), closest_to_W.mass(), closest_to_t.mass()
 
@@ -764,13 +764,28 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     #            choice of subprocesses depends on channel (sadly),
     #            (find most precise subprocess ones, then store accordingly for channels)
     # sys     -- shape systematics
-    out_hs = OrderedDict([((chan, proc, sys), {'met':        TH1D('%s_%s_%s_met' % (chan, sys, proc), '', 40, 0, 400),
-                                               'Mt_lep_met': TH1D('%s_%s_%s_Mt_lep_met' % (chan, sys, proc), '', 20, 0, 200),
-                                               #'Mt_lep_met_d': TH1D('Mt_lep_met_d'+chan+proc+sys, '', 20, 0, 200), # calculate with method of objects
-                                               'Mt_tau_met': TH1D('%s_%s_%s_Mt_tau_met' % (chan, sys, proc), '', 20, 0, 200),
-                                               'njets':      TH1D('%s_%s_%s_njets' % (chan, sys, proc),  '', 10, 0, 10),
-                                               'nbjets':     TH1D('%s_%s_%s_nbjets' % (chan, sys, proc), '', 5, 0, 5),
-                                               'dijet_trijet_mass': TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, sys, proc), '', 20, 0, 400) })
+    out_hs = OrderedDict([((chan, proc, sys), {'met':        TH1D('%s_%s_%s_met'        % (chan, proc, sys), '', 40, 0, 400),
+                                               'lep_pt':     TH1D('%s_%s_%s_lep_pt'     % (chan, proc, sys), '', 20, 0, 200),
+                                               'lep_eta':    TH1D('%s_%s_%s_lep_eta'    % (chan, proc, sys), '', 20, -2.5, 2.5),
+                                               'jet_pt':     TH1D('%s_%s_%s_jet_pt'     % (chan, proc, sys), '', 30, 0, 300),
+                                               'jet_eta':    TH1D('%s_%s_%s_jet_eta'    % (chan, proc, sys), '', 20, -2.5, 2.5),
+                                               'bjet_pt':    TH1D('%s_%s_%s_bjet_pt'    % (chan, proc, sys), '', 30, 0, 300),
+                                               'bjet_eta':   TH1D('%s_%s_%s_bjet_eta'   % (chan, proc, sys), '', 20, -2.5, 2.5),
+                                               'dphi_lep_met': TH1D('%s_%s_%s_dphi_lep_met' % (chan, proc, sys), '', 20, -3.2, 3.2),
+                                               'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
+                                               'Mt_lep_met_f': TH1D('%s_%s_%s_Mt_lep_met_f' % (chan, proc, sys), '', 20, 0, 200),
+                                               'Mt_lep_met':  TH1D('%s_%s_%s_Mt_lep_met' % (chan, proc, sys), '', 10, 0, 200),
+                                               'Mt_tau_met':  TH1D('%s_%s_%s_Mt_tau_met' % (chan, proc, sys), '', 20, 0, 200),
+                                               'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
+                                               'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 100, 0, 100),
+                                               # TODO: add rho to ntuples
+                                               'rho':         TH1D('%s_%s_%s_rho'        % (chan, proc, sys), '', 50, 0, 50),
+                                               'njets':       TH1D('%s_%s_%s_njets'      % (chan, proc, sys), '', 10, 0, 10),
+                                               'nbjets':      TH1D('%s_%s_%s_nbjets'     % (chan, proc, sys), '', 5, 0, 5),
+                                               'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', 20, 0, 200),
+                                               'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 300),
+                                               '2D_dijet_trijet':   TH2D('%s_%s_%s_2D_dijet_trijet'   % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
+                                               'dijet_trijet_mass': TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400) })
                 for chan, (procs, _) in channels.items() for proc in procs for sys in systematic_names])
 
     # strange, getting PyROOT_NoneObjects from these after output
@@ -828,7 +843,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             #def transverse_mass_pts(v1_x, v1_y, v2_x, v2_y):
             #met_x = ev.pfmetcorr_ex
             #met_y = ev.pfmetcorr_ey
-	    # no, recalculated them
+            # no, recalculated them
             met_x = ROOT.met_pt_recoilcor_x(
                 ev.met_corrected.Px(), # uncorrected type I pf met px (float)
                 ev.met_corrected.Py(), # uncorrected type I pf met py (float)
@@ -863,6 +878,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
         # TODO: pass jet systematics to met?
         Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x, met_y)
+        dphi_lep_met = ev.lep_p4[0].Phi() - TVector3(met_x, met_y, 0).Phi()
+        cos_dphi_lep_met = TMath.Cos(dphi_lep_met)
         met_pt = TMath.Sqrt(met_x*met_x + met_y*met_y)
 
         weight = 1. # common weight of event (1. for data)
@@ -881,7 +898,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             if aMCatNLO and ev.aMCatNLO_weight < 0:
                 weight *= -1
 
-	    weight_z_mass_pt = 1.
+            weight_z_mass_pt = 1.
             if isDY:
                 # float zPtMass_weight(float genMass, float genPt)
                 weight_z_mass_pt *= zPtMass_weight(ev.genMass, ev.genPt)
@@ -1012,6 +1029,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     weight_bSF_down *= calc_btag_sf_weight(b_tagged, flavId, p4.pt(), p4.eta(), "down")
 
             if isMC:
+                # vary the jets with systematics, save b-tagged and other
                 factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
                 #jes_shift = ev.jet_jes_correction_relShift[i]
                 jes_shift = ev.jet_jes_uncertainty[i]
@@ -1073,10 +1091,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         Mt_tau_met_nominal, Mt_tau_met_up, Mt_tau_met_down = 0, 0, 0
 
         # so, actually what I need from taus is
-	# whether there is a medium tau with pt 30, eta 2.4
-	# and if it is OS with the lepton
-	# usually it is the tau on first position (0)
-	# should I really loop?
+        # whether there is a medium tau with pt 30, eta 2.4
+        # and if it is OS with the lepton
+        # usually it is the tau on first position (0)
+        # should I really loop?
 
         #for i in range(ev.tau_p4.size()):
         #    # it should work like Python does and not copy these objects! (cast)
@@ -1133,7 +1151,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
             has_tau = (ev.tau_p4[0].pt() * factor) > 30
             if not Mt_tau_met_nominal:
-	        Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px()*factor, ev.tau_p4[0].Py()*factor, met_x, met_y)
+                Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px()*factor, ev.tau_p4[0].Py()*factor, met_x, met_y)
             if isMC:
                 has_tau_es_up   = (ev.tau_p4[0].pt() * factor_up  ) > 30
                 has_tau_es_down = (ev.tau_p4[0].pt() * factor_down) > 30
@@ -1232,25 +1250,30 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             #pass_antiMt_taumutauh             = pass_mu and not dy_dilep_mass and large_Mt_lep and not has_bjets and has_medium_tau
             #pass_antiMt_taumutauh_OS          = pass_mu and not dy_dilep_mass and large_Mt_lep and not has_bjets and os_lep_med_tau
 
+            # to not over-calculate lj parameters
+            if not (pass_single_lep_presel or pass_single_lep_sel): # added sel for consistency
+                continue
+
             lj_cut = 50
             passed_channels = []
+            # TODO: more selections, alternative (tau POG) presel and sel, steps from presel to our sel to track shapes of WJets and DY, 4 control selections
             if pass_el:
                 if pass_single_lep_presel:
-		    passed_channels.append('el_presel')
-		    # calc lj_var
-		    lj_var, w_mass, t_mass = calc_lj_var(jets, jets_b)
+                    passed_channels.append('el_presel')
+                    # calc lj_var
+                    lj_var, w_mass, t_mass = calc_lj_var(jets, jets_b)
                     large_lj = lj_var > lj_cut # TODO: implement lj_var
                 if pass_single_lep_sel:
-		    passed_channels.append('el_sel')
+                    passed_channels.append('el_sel')
                     if not large_lj: passed_channels.append('el_lj')
                     if large_lj: passed_channels.append('el_lj_out')
             else:
                 if pass_single_lep_presel:
-		    passed_channels.append('mu_presel')
-		    lj_var, w_mass, t_mass = calc_lj_var(jets, jets_b)
+                    passed_channels.append('mu_presel')
+                    lj_var, w_mass, t_mass = calc_lj_var(jets, jets_b)
                     large_lj = lj_var > lj_cut # TODO: implement lj_var
                 if pass_single_lep_sel:
-		    passed_channels.append('mu_sel')
+                    passed_channels.append('mu_sel')
                     if not large_lj: passed_channels.append('mu_lj')
                     if large_lj: passed_channels.append('mu_lj_out')
 
@@ -1268,12 +1291,30 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             #    out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(25, weight)
             for chan in passed_channels:
                 out_hs[(chan, proc, sys_name)]['met'].Fill(met_pt, sys_weight)
-                out_hs[(chan, proc, sys_name)]['Mt_tau_met'].Fill(Mt_tau_met, sys_weight)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met'].Fill(Mt_lep_met, sys_weight)
+                out_hs[(chan, proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  sys_weight)
+                out_hs[(chan, proc, sys_name)]['lep_eta'] .Fill(ev.lep_p4[0].eta(), sys_weight)
+                # not tagged jets
+                out_hs[(chan, proc, sys_name)]['jet_pt']  .Fill(jets[0].pt(),  sys_weight)
+                out_hs[(chan, proc, sys_name)]['jet_eta'] .Fill(jets[0].eta(), sys_weight)
+                # tagged jets
+                out_hs[(chan, proc, sys_name)]['bjet_pt']  .Fill(jets_b[0].pt(),  sys_weight)
+                out_hs[(chan, proc, sys_name)]['bjet_eta'] .Fill(jets_b[0].eta(), sys_weight)
+
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f']  .Fill(Mt_lep_met, sys_weight)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, sys_weight)
+                out_hs[(chan, proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, sys_weight)
+                out_hs[(chan, proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, sys_weight)
+
+                out_hs[(chan, proc, sys_name)]['Mt_tau_met']  .Fill(Mt_tau_met, sys_weight)
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, sys_weight)
+                out_hs[(chan, proc, sys_name)]['dijet_mass']  .Fill(w_mass, sys_weight)
+                out_hs[(chan, proc, sys_name)]['trijet_mass'] .Fill(t_mass, sys_weight)
+                out_hs[(chan, proc, sys_name)]['2D_dijet_trijet'] .Fill(w_mass, t_mass, sys_weight)
                 out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(lj_var, sys_weight)
+
                 out_hs[(chan, proc, sys_name)]['njets'].Fill(njets, sys_weight)
                 out_hs[(chan, proc, sys_name)]['nbjets'].Fill(nbjets, sys_weight)
+                out_hs[(chan, proc, sys_name)]['nvtx'].Fill(ev.nvtx, sys_weight)
 
         if save_control:
           if pass_mu:
