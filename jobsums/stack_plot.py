@@ -68,7 +68,7 @@ nick_colour = {
 "s_top_lj": kAzure+1,
 "s_top_other": kAzure+2,
 
-"tt_taultauhtt_other" :  kCyan-5,
+"tt_taultauh" : kCyan-3,
 "tt_jj": kGreen+4,
 "tt_lj": kGreen+3,
 "tt_em": kYellow-7,

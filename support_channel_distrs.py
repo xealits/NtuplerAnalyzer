@@ -505,19 +505,20 @@ def transverse_mass_pts(v1_x, v1_y, v2_x, v2_y):
 
 #lj_var = calc_lj_var(jets, jets_b)
 def calc_lj_var(light_jets, b_jets):
-    if len(b_jets) == 0 or len(light_jets) == 0: return 2000, 2000, 2000
-    # loop over light jets -- check their mass and mass of their pairs to be close to 80
+    if len(b_jets) == 0 or len(light_jets) < 2: return 5000., 5000., 5000.
+    # (not doing it now) loop over light jets -- check their mass
+    # loop over light jets, check mass of their pairs to be close to 80
     # find the closest vector
     # then loop over b jets finding the combination with mass closest to 173
 
     # light jets close to W
-    dist_W = 99999
-    # closest_vector
-    for j, mult in light_jets:
-        new_dist = abs(j.mass() * mult - 80) # DANGER: the LorentzVector is used, .M() is spacial magnitude
-        if new_dist < dist_W:
-            dist_W = new_dist
-            closest_to_W = j * mult
+    dist_W = 99999.
+    ## closest_vector
+    #for j, mult in light_jets:
+    #    new_dist = abs(j.mass() * mult - 80) # DANGER: the LorentzVector is used, .M() is spacial magnitude
+    #    if new_dist < dist_W:
+    #        dist_W = new_dist
+    #        closest_to_W = j * mult
 
     # pairs of light jets
     for i in range(len(light_jets)):
@@ -531,7 +532,7 @@ def calc_lj_var(light_jets, b_jets):
             closest_to_W = pair
 
     # closest to 173
-    dist_t = 99999
+    dist_t = 99999.
     for j, mult in b_jets:
         pair = j * mult + closest_to_W
         new_dist = abs(pair.mass() - 173)
