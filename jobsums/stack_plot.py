@@ -48,7 +48,7 @@ fdata = TFile(args.data_file)
 
 # only nominal in data
 #histo_data = fdata.Get(channel + '/data/' + sys_name + '/' + '_'.join([channel, sys_name, 'data', distr_name]))
-histo_data = fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'NOMINAL', 'data', distr_name]))
+histo_data = fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', distr_name]))
 histo_data.Print()
 logging.debug("data: %f" % histo_data.Integral())
 
@@ -59,10 +59,16 @@ hs = THStack("mc_stack", "mc_stack")
 nick_colour = {
 "data": kWhite,
 "dy": kGray,
+"dy_other": kGray,
+"dy_tautau": kGray+2,
 "wjets": kRed+1,
 "dibosons": kCyan,
 "singletop": kAzure,
+"s_top_eltau": kAzure,
+"s_top_lj": kAzure+1,
+"s_top_other": kAzure+2,
 
+"tt_taultauhtt_other" :  kCyan-5,
 "tt_jj": kGreen+4,
 "tt_lj": kGreen+3,
 "tt_em": kYellow-7,
@@ -102,6 +108,7 @@ for chan in list(f.GetListOfKeys()):
             continue
 
         for sys in list(process.ReadObj().GetListOfKeys()):
+            fixed_sys_name = sys_name
             if 'TOPPT' in sys_name:
                 fixed_sys_name = sys_name if 'tt' in nick else 'NOMINAL'
             if fixed_sys_name != sys.GetName():
@@ -111,15 +118,15 @@ for chan in list(f.GetListOfKeys()):
                 for histo_key in list(sys.ReadObj().GetListOfKeys()):
                     # rename for given shapes of dy and wjets
                     if args.shape and nick in ('dy', 'wjets'):
-                        histo_name = '_'.join([args.shape, fixed_sys_name, nick, distr_name])
+                        histo_name = '_'.join([args.shape, nick, fixed_sys_name, distr_name])
                     else:
-                        histo_name = '_'.join([channel, fixed_sys_name, nick, distr_name])
+                        histo_name = '_'.join([channel, nick, fixed_sys_name, distr_name])
 
                     if histo_key.GetName() != histo_name:
                         continue
 
                     histo = histo_key.ReadObj()
-                    logging.info("%s   %s   %x = %f %f" % (histo_name, histo_key.GetName(), histo_key.GetName() == '_'.join([channel, fixed_sys_name, nick, distr_name]), histo.GetEntries(), histo.Integral()))
+                    logging.info("%s   %s   %x = %f %f" % (histo_name, histo_key.GetName(), histo_key.GetName() == '_'.join([channel, nick, fixed_sys_name, distr_name]), histo.GetEntries(), histo.Integral()))
 
                     col = nick_colour[nick]
                     histo.SetFillColor( col );

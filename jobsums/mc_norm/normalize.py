@@ -214,7 +214,7 @@ for fname in files:
                     # but apparently it fixes stuff in wjets
                     # -- filter the ROOT's stderr on commandline
                     # check if root is loosing the errors somewhere here
-                    if process == 'mu_sel' and sys.GetName() == 'NOMINAL' and histo_key.GetName() == '_'.join([process, sys_name, nick, 'Mt_lep_met']):
+                    if process == 'mu_sel' and sys.GetName() == 'NOMINAL' and histo_key.GetName() == '_'.join([process, nick, sys_name, 'Mt_lep_met']):
                         err_init = 0.
                         sum_of_weights_init = h.GetSumOfWeights()
                         for i in range(h.GetSize()):
@@ -222,7 +222,7 @@ for fname in files:
 
                     h.Scale(scale)
                     #h.Print()
-                    if process == 'mu_sel' and sys.GetName() == 'NOMINAL' and histo_key.GetName() == '_'.join([process, sys_name, nick, 'Mt_lep_met']):
+                    if process == 'mu_sel' and sys.GetName() == 'NOMINAL' and histo_key.GetName() == '_'.join([process, nick, sys_name, 'Mt_lep_met']):
                         err_scaled = 0.
                         for i in range(h.GetSize()):
                             err_scaled += h.GetBinError(i)

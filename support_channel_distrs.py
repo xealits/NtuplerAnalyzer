@@ -10,7 +10,7 @@ logging = Logging.getLogger("common")
 
 logging.info('importing ROOT')
 import ROOT
-from ROOT import TFile, TTree, TH1D, TH2D, gROOT, gSystem, TCanvas, TGraphAsymmErrors, TMath, TString
+from ROOT import TFile, TTree, TH1D, TH2D, TLorentzVector, TVector3, gROOT, gSystem, TCanvas, TGraphAsymmErrors, TMath, TString
 
 # the lib is needed for BTagCalibrator and Recoil corrections
 # TODO: somehow these 2 CMSSW classes should be acceptable from pyROOT on its' own without the whole lib
@@ -929,6 +929,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
     proc = usual_process
 
+    # test
+    logger.write('%s\n' % str('%s_%s_%s' % (chan, proc, sys[0]) for chan, ((procs, _), sys) in channels.items() for proc in procs))
+
     # channel -- reco selection
     # proc    -- MC gen info, like inclusive tt VS tt->mutau and others,
     #            choice of subprocesses depends on channel (sadly),
@@ -937,6 +940,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     out_hs = OrderedDict([((chan, proc, sys), {'met':        TH1D('%s_%s_%s_met'        % (chan, proc, sys), '', 40, 0, 400),
                                                'lep_pt':     TH1D('%s_%s_%s_lep_pt'     % (chan, proc, sys), '', 20, 0, 200),
                                                'lep_eta':    TH1D('%s_%s_%s_lep_eta'    % (chan, proc, sys), '', 20, -2.5, 2.5),
+                                               'tau_pt':     TH1D('%s_%s_%s_tau_pt'     % (chan, proc, sys), '', 30, 0, 150),
+                                               'tau_eta':    TH1D('%s_%s_%s_tau_eta'    % (chan, proc, sys), '', 20, -2.5, 2.5),
                                                'jet_pt':     TH1D('%s_%s_%s_jet_pt'     % (chan, proc, sys), '', 30, 0, 300),
                                                'jet_eta':    TH1D('%s_%s_%s_jet_eta'    % (chan, proc, sys), '', 20, -2.5, 2.5),
                                                'bjet_pt':    TH1D('%s_%s_%s_bjet_pt'    % (chan, proc, sys), '', 30, 0, 300),
@@ -956,7 +961,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 300),
                                                '2D_dijet_trijet':   TH2D('%s_%s_%s_2D_dijet_trijet'   % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
                                                'dijet_trijet_mass': TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400) })
-                for chan, ((procs, _), sys) in channels.items() for proc in procs])
+                for chan, ((procs, _), systs) in channels.items() for proc in procs for sys in systs])
 
     # strange, getting PyROOT_NoneObjects from these after output
     for _, histos in out_hs.items():
@@ -1001,11 +1006,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # TODO: is there relIso cut now?
         pass_mu = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 27 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 # lep_relIso[0]
         pass_el = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 # lep_relIso[0]
-        pass_elmu = ev.leps_ID == -11*13 and (ev.HLT_mu or ev.HLT_el) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and
-            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and
+        pass_elmu = ev.leps_ID == -11*13 and (ev.HLT_mu or ev.HLT_el) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and \
+            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02)
-        pass_mumu = ev.leps_ID == -13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and
-            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and
+        pass_mumu = ev.leps_ID == -13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and \
+            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02)
 
         # 1-lep channels, 2mu DY and el-mu ttbar
@@ -1112,7 +1117,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     proc = 'tt_eltau'
                 elif t_wid * tb_wid == 13 or t_wid * tb_wid == 11: # lj
                     proc = 'tt_lj'
-                elif (t_wid > 15*15 and (tb_wid == 11*15 or tb_wid == 13*15)) or
+                elif (t_wid > 15*15 and (tb_wid == 11*15 or tb_wid == 13*15)) or \
                      ((t_wid == 11*15 or t_wid == 13*15) and tb_wid > 15*15): # taul tauh
                     proc = 'tt_taultauh'
                 else:
@@ -1376,15 +1381,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     factor_down = 1.006 - 0.012
 
                 #has_tau = (ev.tau_p4[0].pt() * factor) > 30
-                taus_nominal.append(ev.tau_p4[0], factor)
+                taus_nominal.append((ev.tau_p4[0], factor))
                 ## calculate it later, inplace of record
                 #if not Mt_tau_met_nominal:
                 #    Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px()*factor, ev.tau_p4[0].Py()*factor, met_x, met_y)
                 if isMC:
                     #has_tau_es_up   = (ev.tau_p4[0].pt() * factor_up  ) > 30
                     #has_tau_es_down = (ev.tau_p4[0].pt() * factor_down) > 30
-                    taus_es_up.append(ev.tau_p4[0], factor_up)
-                    taus_es_down.append(ev.tau_p4[0], factor_down)
+                    taus_es_up.append((ev.tau_p4[0], factor_up))
+                    taus_es_down.append((ev.tau_p4[0], factor_down))
                     #if not Mt_tau_met_up:
                     #    Mt_tau_met_up   = transverse_mass_pts(ev.tau_p4[0].Px()*factor_up, ev.tau_p4[0].Py()*factor_up, met_x, met_y)
                     #    Mt_tau_met_down = transverse_mass_pts(ev.tau_p4[0].Px()*factor_down, ev.tau_p4[0].Py()*factor_down, met_x, met_y)
@@ -1407,8 +1412,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                            'JESDown'   : [jets_jes_down, jets_b_jes_down, taus_nominal, weight_bSF_jes_down, weight_pu,    1],
                            'JERUp'     : [jets_jer_up,   jets_b_jer_up,   taus_nominal, weight_bSF_jer_up,   weight_pu,    1],
                            'JERDown'   : [jets_jer_down, jets_b_jer_down, taus_nominal, weight_bSF_jer_down, weight_pu,    1],
-                           'TauESUp'   : [jets_nominal,  jets_b_nominal,  tau_es_up  ,  weight_bSF,          weight_pu,    1],
-                           'TauESDown' : [jets_nominal,  jets_b_nominal,  tau_es_down,  weight_bSF,          weight_pu,    1],
+                           'TauESUp'   : [jets_nominal,  jets_b_nominal,  taus_es_up  ,  weight_bSF,          weight_pu,    1],
+                           'TauESDown' : [jets_nominal,  jets_b_nominal,  taus_es_down,  weight_bSF,          weight_pu,    1],
                            'bSFUp'     : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF_up  ,     weight_pu,    1],
                            'bSFDown'   : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF_down,     weight_pu,    1],
                            'PUUp'      : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF,          weight_pu_up, 1],
@@ -1517,7 +1522,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             if pass_mu and pass_single_lep_sel:
                 passed_channels.append('mu_sel')
 
-            lj_var, w_mass, t_mass = 0.,0.,0.
+            lj_var, w_mass, t_mass = -11., -11., -11.
             lj_cut = 50
             if pass_single_lep_sel:
                 # calc lj_var
@@ -1563,15 +1568,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # TODO: I don't have di-muon veto + need to add the veto leptons to output somehow -- their counters for example
             if pass_mu and has_bjets:
                 passed_channels.append('pog_mu_presel')
-            if pass_pog_mu_presel and has_medium_tau:
+            if pass_mu and has_bjets and has_medium_tau:
                 passed_channels.append('pog_mu_pass')
-            if pass_pog_mu_presel and not has_medium_tau:
+            if pass_mu and has_bjets and not has_medium_tau:
                 passed_channels.append('pog_mu_fail')
 
             # with addition of no DY mass, no tau match to b-tag (could add a cut on small MT)
-            if pass_el and large_met and has_3jets and has_bjets_no_tau_match and (lep_tau_mass < 45 or lep_tau_mass > 85):
+            if pass_el and large_met and has_3jets and has_bjets_no_tau_match and os_lep_med_tau and (lep_tau_mass < 45 or lep_tau_mass > 85):
                 passed_channels.append('adv_el_sel')
-            if pass_mu and large_met and has_3jets and has_bjets_no_tau_match and (lep_tau_mass < 45 or lep_tau_mass > 85):
+            if pass_mu and large_met and has_3jets and has_bjets_no_tau_match and os_lep_med_tau and (lep_tau_mass < 45 or lep_tau_mass > 85):
                 passed_channels.append('adv_mu_sel')
             # check the mass cut in distribution of lep+tau mass in usual selection
 
@@ -1582,7 +1587,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # && nbjets == 0
             # && (divector_mass(lep_p4[0].x(), lep_p4[0].y(), lep_p4[0].z(), lep_p4[0].t(), tau_p4[0].x(), tau_p4[0].y(), tau_p4[0].z(), tau_p4[0].t()) < 45 || divector_mass(lep_p4[0].x(), lep_p4[0].y(), lep_p4[0].z(), lep_p4[0].t(), tau_p4[0].x(), tau_p4[0].y(), tau_p4[0].z(), tau_p4[0].t()) > 85)
             # also may add MT > 50 or met > X -- cuts QCD
-            if pass_mu and nbjets == 0 and (Mt_lep_met > 50 or met > 40) # skipped lep+tau mass -- hopefuly DY will be small:
+            if pass_mu and nbjets == 0 and (Mt_lep_met > 50 or met_pt > 40): # skipped lep+tau mass -- hopefuly DY will be small
                 passed_channels.append('ctr_mu_wjet')
             # DY -> taumu tauh
             # HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0] && abs(lep_p4[0].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02
@@ -1627,11 +1632,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 out_hs[(chan, proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  sys_weight)
                 out_hs[(chan, proc, sys_name)]['lep_eta'] .Fill(ev.lep_p4[0].eta(), sys_weight)
                 # not tagged jets
-                out_hs[(chan, proc, sys_name)]['jet_pt']  .Fill(jets[0].pt(),  sys_weight)
-                out_hs[(chan, proc, sys_name)]['jet_eta'] .Fill(jets[0].eta(), sys_weight)
+                if jets:
+                    out_hs[(chan, proc, sys_name)]['jet_pt']  .Fill(jets[0][0].pt() * jets[0][1],  sys_weight)
+                    out_hs[(chan, proc, sys_name)]['jet_eta'] .Fill(jets[0][0].eta(), sys_weight)
                 # tagged jets
-                out_hs[(chan, proc, sys_name)]['bjet_pt']  .Fill(jets_b[0].pt(),  sys_weight)
-                out_hs[(chan, proc, sys_name)]['bjet_eta'] .Fill(jets_b[0].eta(), sys_weight)
+                if jets_b:
+                    out_hs[(chan, proc, sys_name)]['bjet_pt']  .Fill(jets_b[0][0].pt() * jets_b[0][1],  sys_weight)
+                    out_hs[(chan, proc, sys_name)]['bjet_eta'] .Fill(jets_b[0][0].eta(), sys_weight)
 
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f']  .Fill(Mt_lep_met, sys_weight)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, sys_weight)
@@ -1641,6 +1648,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 if has_medium_tau:
                     #lep_tau = ev.lep_p4[0] + taus[0][0] # done above
                     #out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), sys_weight)
+                    out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(taus[0][0].pt() * taus[0][1],  sys_weight)
+                    out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(taus[0][0].eta(), sys_weight)
                     out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, sys_weight)
                     out_hs[(chan, proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, sys_weight)
 
