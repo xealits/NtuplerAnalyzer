@@ -685,8 +685,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
     if isMC:
         if isTT:
-            tt_procs_el =  (['tt_eltau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other')
-            tt_procs_mu =  (['tt_mutau', 'tt_lj', 'tt_taultauh' 'tt_other'], 'tt_other')
+            tt_procs_el =  (['tt_eltau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
+            tt_procs_mu =  (['tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             channels = {'el_presel': (tt_procs_el, systematic_names_all),
                    'el_sel':         (tt_procs_el, systematic_names_all),
                    'el_lj':          (tt_procs_el, systematic_names_all),
@@ -808,32 +808,33 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             usual_process = 'dy_other'
 
         if isSTop:
-            s_top_procs = (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other')
-            channels = {'el_presel': (s_top_procs, systematic_names_all),
-                   'el_sel':         (s_top_procs, systematic_names_all),
-                   'el_lj':          (s_top_procs, systematic_names_all),
-                   'el_lj_out':      (s_top_procs, systematic_names_all),
-                   'mu_presel':      (s_top_procs, systematic_names_all),
-                   'mu_sel':         (s_top_procs, systematic_names_all),
-                   'mu_lj':          (s_top_procs, systematic_names_all),
-                   'mu_lj_out':      (s_top_procs, systematic_names_all),
+            s_top_procs_el = (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other')
+            s_top_procs_mu = (['s_top_mutau', 's_top_lj', 's_top_other'], 's_top_other')
+            channels = {'el_presel': (s_top_procs_el, systematic_names_all),
+                   'el_sel':         (s_top_procs_el, systematic_names_all),
+                   'el_lj':          (s_top_procs_el, systematic_names_all),
+                   'el_lj_out':      (s_top_procs_el, systematic_names_all),
+                   'mu_presel':      (s_top_procs_mu, systematic_names_all),
+                   'mu_sel':         (s_top_procs_mu, systematic_names_all),
+                   'mu_lj':          (s_top_procs_mu, systematic_names_all),
+                   'mu_lj_out':      (s_top_procs_mu, systematic_names_all),
                    # same sign for some QCD control
-                   'el_sel_ss':      (s_top_procs, ['NOMINAL']),
-                   'mu_sel_ss':      (s_top_procs, ['NOMINAL']),
-                   'el_presel_ss':   (s_top_procs, ['NOMINAL']),
-                   'mu_presel_ss':   (s_top_procs, ['NOMINAL']),
+                   'el_sel_ss':      (s_top_procs_el, ['NOMINAL']),
+                   'mu_sel_ss':      (s_top_procs_mu, ['NOMINAL']),
+                   'el_presel_ss':   (s_top_procs_el, ['NOMINAL']),
+                   'mu_presel_ss':   (s_top_procs_mu, ['NOMINAL']),
                    # with tau POG selection
-                   'pog_mu_presel':  (s_top_procs, systematic_names_toppt),
-                   'pog_mu_pass':    (s_top_procs, systematic_names_toppt),
-                   'pog_mu_fail':    (s_top_procs, systematic_names_toppt),
+                   'pog_mu_presel':  (s_top_procs_mu, systematic_names_toppt),
+                   'pog_mu_pass':    (s_top_procs_mu, systematic_names_toppt),
+                   'pog_mu_fail':    (s_top_procs_mu, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
-                   'adv_el_sel':     (s_top_procs, systematic_names_pu),
-                   'adv_mu_sel':     (s_top_procs, systematic_names_pu),
+                   'adv_el_sel':     (s_top_procs_el, systematic_names_pu),
+                   'adv_mu_sel':     (s_top_procs_mu, systematic_names_pu),
                    # control selections: WJets, DY mumu and tautau, tt elmu
-                   'ctr_mu_wjet':    (s_top_procs, ['NOMINAL']),
-                   'ctr_mu_dy_mumu': (s_top_procs, ['NOMINAL']),
-                   'ctr_mu_dy_tt':   (s_top_procs, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (s_top_procs, ['NOMINAL']),
+                   'ctr_mu_wjet':    (s_top_procs_mu, ['NOMINAL']),
+                   'ctr_mu_dy_mumu': (s_top_procs_mu, ['NOMINAL']),
+                   'ctr_mu_dy_tt':   (s_top_procs_mu, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (s_top_procs_mu, ['NOMINAL']),
                    }
             usual_process = 's_top_other'
 
