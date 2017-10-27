@@ -1048,7 +1048,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 ev.gen_genPy, # generator Z/W/Higgs py (float)
                 ev.gen_visPx, # generator visible Z/W/Higgs px (float)
                 ev.gen_visPy, # generator visible Z/W/Higgs py (float)
-                ev.nalljets  # number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
+                0  # max recoil (I checked that -- plot in scrap/recoil-corrections-study)
+                #ev.nalljets  # number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
                 )
             met_y = ROOT.met_pt_recoilcor_y(
                 ev.met_corrected.Px(), # uncorrected type I pf met px (float)
@@ -1057,7 +1058,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 ev.gen_genPy, # generator Z/W/Higgs py (float)
                 ev.gen_visPx, # generator visible Z/W/Higgs px (float)
                 ev.gen_visPy, # generator visible Z/W/Higgs py (float)
-                ev.nalljets  # number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
+                0
+                #ev.nalljets  # number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
                 )
 
             #Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.pfmetcorr_ex, ev.pfmetcorr_ey)
