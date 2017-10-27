@@ -1009,7 +1009,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         pass_mu = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 27 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 # lep_relIso[0]
         pass_el = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 # lep_relIso[0]
         pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and \
-	    (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
+            (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02)
         pass_mumu = ev.leps_ID == -13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and \
@@ -1498,6 +1498,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             #has_pre_tau = len(tau_pts) > 0
             #has_medium_tau = has_pre_tau and tau_pts[0] > 30 and ev.tau_IDlev[0] > 2
             has_medium_tau = len(taus) > 0
+
+            # these are for single-lepton
             os_lep_med_tau = has_medium_tau and ev.tau_id[0]*ev.lep_id[0] < 0
             ss_lep_med_tau = has_medium_tau and ev.tau_id[0]*ev.lep_id[0] > 0
             # dilep_mass is not TES corrected
@@ -1508,7 +1510,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 lep_tau = ev.lep_p4[0] + taus[0][0]
                 lep_tau_mass = lep_tau.mass()
 
-            pass_single_lep_presel = large_met and has_3jets and has_bjets #and os_lep_med_tau
+            pass_single_lep_presel = large_met and has_3jets and has_bjets and (pass_el or pass_mu) #and os_lep_med_tau
             pass_single_lep_sel = pass_single_lep_presel and os_lep_med_tau
 
 
@@ -1531,14 +1533,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 # calc lj_var
                 lj_var, w_mass, t_mass = calc_lj_var(jets, jets_b)
                 large_lj = lj_var > lj_cut
-                if pass_el and large_lj:
-                    passed_channels.append('el_lj')
-                else:
-                    passed_channels.append('el_lj_out')
-                if pass_mu and large_lj:
-                    passed_channels.append('mu_lj')
-                else:
-                    passed_channels.append('mu_lj_out')
+
+                # all these channels are exclusive
+                fit_category_selection = ('el' if pass_el else 'mu') + '_' + ('lj_out' if large_lj else 'lj')
+                passed_channels.append(fit_category_selection)
 
             # steps for DY and WJets shape control
             if pass_mu and os_lep_med_tau and has_3jets and has_bjets:
