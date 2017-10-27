@@ -53,7 +53,6 @@ fdata = TFile(args.data_file)
 #histo_data = fdata.Get(channel + '/data/' + sys_name + '/' + '_'.join([channel, sys_name, 'data', distr_name]))
 histo_data = fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', distr_name]))
 histo_data.Print()
-logging.debug("data: %f" % histo_data.Integral())
 
 
 def get_histos(infile, channel, shape_channel, sys_name, distr_name):
@@ -76,7 +75,7 @@ def get_histos(infile, channel, shape_channel, sys_name, distr_name):
        sorted_pkeys = sorted(processes_keys, key=lambda pkey: pkey.GetName() if pkey.GetName() not in ('qcd') else 'z_' + pkey.GetName())
        for process in sorted_pkeys:
            nick = process.GetName()
-           logging.info(nick)
+           #logging.info(nick)
 
            if nick == 'data':
                continue
@@ -159,6 +158,8 @@ hs_sum2.SetFillColor(1);
 hs_sum2.SetMarkerStyle(1)
 hs_sum2.SetMarkerColor(0)
 
+logging.info("data   = %f" % histo_data.Integral())
+logging.info("mc sum = %f %f" % (hs_sum1.Integral(), hs_sum2.Integral()))
 
 if not args.plot and not args.ratio:
     fout = TFile(args.mc_file.split('.root')[0] + '_%s_%s_%s.root' % (distr_name, channel, sys_name), 'RECREATE')
@@ -210,6 +211,19 @@ else:
         hs_sum1_relative = hs_sum1.Clone()
         histo_data_relative.SetName("rel_data")
         hs_sum1_relative.SetName("rel_mc")
+
+        histo_data_relative.SetStats(False)
+        hs_sum1_relative.SetStats(False)
+
+        #histo_data_relative.GetYaxis().SetRange(0.5, 1.5)
+        #histo_data_relative.GetYaxis().SetUserRange(0.5, 1.5)
+        #hs_sum1_relative.GetYaxis().SetRange(0.5, 1.5)
+        #hs_sum1_relative.GetYaxis().SetUserRange(0.5, 1.5)
+
+        histo_data_relative.SetMaximum(1.5)
+        histo_data_relative.SetMinimum(0.5)
+        hs_sum1_relative.SetMaximum(1.5)
+        hs_sum1_relative.SetMinimum(0.5)
 
         histo_data_relative.Divide(hs_sum1)
         hs_sum1_relative.Divide(hs_sum1)
