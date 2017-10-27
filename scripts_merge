@@ -1,0 +1,31 @@
+
+cat merge_jobs_* > all_merge_jobs
+
+foreach d (`grep --only-matching "/lstore[^ ]*" all_merge_jobs | uniq`)
+mkdir $d
+end
+
+wc -l all_merge_jobs / n_queues
+
+n_queues = 5+5+5+12+12
+
+split -l 60 all_merge_jobs queue_all_merge_
+
+ls queue_all_merge_* > queue_commands
+
+-- split them into 5 5 5 12 12
+
+ssh fermi01 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands1 "'
+ssh fermi02 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands2 "'
+ssh fermi03 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands3 "'
+ssh fermi04 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands4 "'
+ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands5 "'
+
+test on resources
+ssh fermi01 'screen -d -m bash -c "lscpu | grep ^CPU ; uptime ; bash" '
+ssh fermi02 'screen -d -m bash -c "lscpu | grep ^CPU ; uptime ; bash" '
+ssh fermi03 'screen -d -m bash -c "lscpu | grep ^CPU ; uptime ; bash" '
+ssh fermi04 'screen -d -m bash -c "lscpu | grep ^CPU ; uptime ; bash" '
+ssh fermi05 'screen -d -m bash -c "lscpu | grep ^CPU ; uptime ; bash" '
+
+
