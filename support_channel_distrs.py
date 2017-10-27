@@ -704,6 +704,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with tau POG selection
                    'pog_mu_presel':  (tt_procs_mu, systematic_names_toppt),
                    'pog_mu_pass':    (tt_procs_mu, systematic_names_toppt),
+                   'pog_mu_pass_ss': (tt_procs_mu, systematic_names_toppt),
                    'pog_mu_fail':    (tt_procs_mu, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (tt_procs_el, systematic_names_pu),
@@ -712,6 +713,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_wjet':    (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (tt_procs_mu, ['NOMINAL']),
+                   'ctr_mu_dy_tt_ss':(tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_tt_em':   (tt_procs_mu, ['NOMINAL']),
                    }
             usual_process = 'tt_other'
@@ -750,6 +752,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with tau POG selection
                    'pog_mu_presel':  (wjets_procs, systematic_names_toppt),
                    'pog_mu_pass':    (wjets_procs, systematic_names_toppt),
+                   'pog_mu_pass_ss': (wjets_procs, systematic_names_toppt),
                    'pog_mu_fail':    (wjets_procs, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (wjets_procs, systematic_names_pu),
@@ -758,6 +761,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_wjet':    (wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (wjets_procs, ['NOMINAL']),
+                   'ctr_mu_dy_tt_ss':(wjets_procs, ['NOMINAL']),
                    'ctr_mu_tt_em':   (wjets_procs, ['NOMINAL']),
                    }
             usual_process = 'wjets'
@@ -796,6 +800,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with tau POG selection
                    'pog_mu_presel':  (dy_procs, systematic_names_toppt),
                    'pog_mu_pass':    (dy_procs, systematic_names_toppt),
+                   'pog_mu_pass_ss': (dy_procs, systematic_names_toppt),
                    'pog_mu_fail':    (dy_procs, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (dy_procs, systematic_names_pu),
@@ -804,6 +809,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_wjet':    (dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (dy_procs, ['NOMINAL']),
+                   'ctr_mu_dy_tt_ss':(dy_procs, ['NOMINAL']),
                    'ctr_mu_tt_em':   (dy_procs, ['NOMINAL']),
                    }
             usual_process = 'dy_other'
@@ -826,7 +832,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'mu_presel_ss':   (s_top_procs_mu, ['NOMINAL']),
                    # with tau POG selection
                    'pog_mu_presel':  (s_top_procs_mu, systematic_names_toppt),
-                   'pog_mu_pass':    (s_top_procs_mu, systematic_names_toppt),
+                   'pog_mu_pass_ss': (s_top_procs_mu, systematic_names_toppt),
                    'pog_mu_fail':    (s_top_procs_mu, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (s_top_procs_el, systematic_names_pu),
@@ -835,6 +841,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_wjet':    (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (s_top_procs_mu, ['NOMINAL']),
+                   'ctr_mu_dy_tt_ss':(s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_tt_em':   (s_top_procs_mu, ['NOMINAL']),
                    }
             usual_process = 's_top_other'
@@ -857,6 +864,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with tau POG selection
                    'pog_mu_presel':  (qcd_procs, systematic_names_toppt),
                    'pog_mu_pass':    (qcd_procs, systematic_names_toppt),
+                   'pog_mu_pass_ss': (qcd_procs, systematic_names_toppt),
                    'pog_mu_fail':    (qcd_procs, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (qcd_procs, systematic_names_pu),
@@ -865,6 +873,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_wjet':    (qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (qcd_procs, ['NOMINAL']),
+                   'ctr_mu_dy_tt_ss':(qcd_procs, ['NOMINAL']),
                    'ctr_mu_tt_em':   (qcd_procs, ['NOMINAL']),
                    }
             usual_process = 'qcd'
@@ -887,6 +896,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with tau POG selection
                    'pog_mu_presel':  (dibosons_procs, systematic_names_toppt),
                    'pog_mu_pass':    (dibosons_procs, systematic_names_toppt),
+                   'pog_mu_pass_ss': (dibosons_procs, systematic_names_toppt),
                    'pog_mu_fail':    (dibosons_procs, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (dibosons_procs, systematic_names_pu),
@@ -895,6 +905,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_wjet':    (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (dibosons_procs, ['NOMINAL']),
+                   'ctr_mu_dy_tt_ss':(dibosons_procs, ['NOMINAL']),
                    'ctr_mu_tt_em':   (dibosons_procs, ['NOMINAL']),
                    }
             usual_process = 'dibosons'
@@ -917,6 +928,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with tau POG selection
                    'pog_mu_presel':  (data_procs, systematic_names_toppt),
                    'pog_mu_pass':    (data_procs, systematic_names_toppt),
+                   'pog_mu_pass_ss': (data_procs, systematic_names_toppt),
                    'pog_mu_fail':    (data_procs, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (data_procs, systematic_names_pu),
@@ -925,6 +937,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_wjet':    (data_procs, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (data_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (data_procs, ['NOMINAL']),
+                   'ctr_mu_dy_tt_ss':(data_procs, ['NOMINAL']),
                    'ctr_mu_tt_em':   (data_procs, ['NOMINAL']),
                     }
         usual_process = 'data'
@@ -1569,8 +1582,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # TODO: I don't have di-muon veto + need to add the veto leptons to output somehow -- their counters for example
             if pass_mu and has_bjets:
                 passed_channels.append('pog_mu_presel')
-            if pass_mu and has_bjets and has_medium_tau:
+            #if pass_mu and has_bjets and has_medium_tau:
+            if pass_mu and has_bjets and os_lep_med_tau:
                 passed_channels.append('pog_mu_pass')
+            if pass_mu and has_bjets and ss_lep_med_tau:
+                passed_channels.append('pog_mu_pass_ss')
             if pass_mu and has_bjets and not has_medium_tau:
                 passed_channels.append('pog_mu_fail')
 
@@ -1597,6 +1613,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # && transverse_mass(lep_p4[0].pt(), met_corrected.pt(), lep_p4[0].phi(), met_corrected.phi()) < 40
             if pass_mu and os_lep_med_tau and lep_tau_mass > 45 and lep_tau_mass < 85 and Mt_lep_met < 40:
                 passed_channels.append('ctr_mu_dy_tt')
+            if pass_mu and ss_lep_med_tau and lep_tau_mass > 45 and lep_tau_mass < 85 and Mt_lep_met < 40:
+                passed_channels.append('ctr_mu_dy_tt_ss')
             if pass_mumu:
                 passed_channels.append('ctr_mu_dy_mumu')
             if pass_elmu:
