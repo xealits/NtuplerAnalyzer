@@ -554,8 +554,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     ratio_bcdef = lumi_bcdef / (lumi_bcdef + lumi_gh)
     ratio_gh    = lumi_gh / (lumi_bcdef + lumi_gh)
 
-    save_control = False
     isMC = 'MC' in dtag
+    #save_control = False
+    save_weights = True and isMC
     aMCatNLO = 'amcatnlo' in dtag
     isTT = 'TT' in dtag
     isSTop = 'SingleT' in dtag or 'tchannel' in dtag or 'schannel' in dtag
@@ -610,6 +611,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     ('weight_pu_up', TH1D("weight_pu_up", "", 50, 0, 2)),
     ('weight_pu_dn', TH1D("weight_pu_dn", "", 50, 0, 2)),
     ('weight_top_pt', TH1D("weight_top_pt", "", 50, 0, 2)),
+
+    ('weight_z_mass_pt', TH1D("weight_z_mass_pt", "", 50, 0, 2)),
+    ('weight_bSF',       TH1D("weight_bSF", "", 50, 0, 2)),
 
     ('weight_mu_trk_bcdef', TH1D("weight_mu_trk_bcdef", "", 50, 0, 2)),
     ('weight_mu_id_bcdef' , TH1D("weight_mu_id_bcdef", "", 50, 0, 2)),
@@ -1122,6 +1126,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     proc = 'dy_other'
 
             weight_top_pt = 1.
+            # "Only top quarks in SM ttbar events must be reweighted, not single tops or tops from BSM production mechanisms."
+            # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting
             if isTT:
                 weight_top_pt = ttbar_pT_SF(ev.gen_t_pt, ev.gen_tb_pt)
                 #weight *= weight_top_pt # to sys
@@ -1157,7 +1163,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 else:
                     proc = 's_top_other'
 
-            if pass_mu and isMC:
+            if (pass_mu or pass_elmu or pass_mumu) and isMC:
                 mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 mu_trg_sf = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 # bcdef gh eras
@@ -1684,8 +1690,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 out_hs[(chan, proc, sys_name)]['nbjets'].Fill(nbjets, sys_weight)
                 out_hs[(chan, proc, sys_name)]['nvtx'].Fill(ev.nvtx, sys_weight)
 
-        if save_control:
-          if pass_mu:
+        if save_weights:
+          #weight_bSF = 1.
+          #weight_bSF_up, weight_bSF_down = 1., 1.
+          #weight_bSF_jer_up, weight_bSF_jer_down = 1., 1.
+          #weight_bSF_jes_up, weight_bSF_jes_down = 1., 1.
+          control_hs['weight_z_mass_pt'] .Fill(weight_z_mass_pt)
+          control_hs['weight_bSF']    .Fill(weight_bSF)
+          #control_hs['weight_top_pt'] .Fill(weight_top_pt) # done above
+
+          if pass_mu or pass_elmu or pass_mumu:
             # bcdef_weight_trk, bcdef_weight_id, bcdef_weight_iso, gh_weight_trk, gh_weight_id, gh_weight_iso
             #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
             #mu_trg_sf = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
@@ -1702,13 +1716,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             control_hs['weight_mu_trg_gh'].Fill(mu_trg_sf[1])
             control_hs['weight_mu_all_gh'].Fill(mu_trg_sf[1] * mu_sfs[3] * mu_sfs[4] * mu_sfs[5])
 
-            for i, (p4, flavId, b_discr) in enumerate(zip(ev.jet_p4, ev.jet_hadronFlavour, ev.jet_b_discr)):
-                # calc_btag_sf_weight(hasCSVtag: bool, flavId: int, pt: float, eta: float) -> float:
-                control_hs['weight_mu_bSF'].Fill(calc_btag_sf_weight(b_discr > 0.8484, flavId, p4.pt(), p4.eta()))
-                control_hs['weight_mu_bSF_up']  .Fill(calc_btag_sf_weight(b_discr > 0.8484, flavId, p4.pt(), p4.eta(), "up"))
-                control_hs['weight_mu_bSF_down'].Fill(calc_btag_sf_weight(b_discr > 0.8484, flavId, p4.pt(), p4.eta(), "down"))
-            # I do need a working standalone b-tag calibrator instead of this jogling
-            #b_taggin_SF(jet0_p4.pt(), jet0_p4.eta(), jet0_b_discr, jet0_hadronFlavour, 0.8484)
+            control_hs['weight_mu_bSF'].Fill(weight_bSF)
+            control_hs['weight_mu_bSF_up']  .Fill(weight_bSF_up)
+            control_hs['weight_mu_bSF_down'].Fill(weight_bSF_down)
 
           elif pass_el:
             #el_sfs = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
@@ -1719,11 +1729,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             control_hs['weight_el_trg'].Fill(el_trg_sf)
             control_hs['weight_el_all'].Fill(el_trg_sf * el_sfs[0] * el_sfs[1])
 
-            for i, (p4, flavId, b_discr) in enumerate(zip(ev.jet_p4, ev.jet_hadronFlavour, ev.jet_b_discr)):
-                # calc_btag_sf_weight(hasCSVtag: bool, flavId: int, pt: float, eta: float) -> float:
-                control_hs['weight_el_bSF'].Fill(calc_btag_sf_weight(b_discr > 0.8484, flavId, p4.pt(), p4.eta()))
-                control_hs['weight_el_bSF_up']  .Fill(calc_btag_sf_weight(b_discr > 0.8484, flavId, p4.pt(), p4.eta(), "up"))
-                control_hs['weight_el_bSF_down'].Fill(calc_btag_sf_weight(b_discr > 0.8484, flavId, p4.pt(), p4.eta(), "down"))
+            control_hs['weight_el_bSF'].Fill(weight_bSF)
+            control_hs['weight_el_bSF_up']  .Fill(weight_bSF_up)
+            control_hs['weight_el_bSF_down'].Fill(weight_bSF_down)
 
     profile.disable()
     #profile.print_stats()
