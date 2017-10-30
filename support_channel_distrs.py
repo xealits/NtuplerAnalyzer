@@ -1755,7 +1755,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
 
 #def main(input_dir, dtag, outdir, range_min, range_max):
-def main(input_filename, outdir, range_min, range_max):
+def main(input_filename, outdir, range_min, range_max, lumi_bcdef=20263.3, lumi_gh=16518.588):
+    '''main(input_filename, outdir, range_min, range_max, lumi_bcdef=20263.3, lumi_gh=16518.588)
+
+    lumi defaults are from _full_ golden json for muon
+    -- the bad lumis don't reduce it that much, should not affect the ratio too much
+    '''
+
+
     f = TFile(input_filename)
     tree = f.Get('ntupler/reduced_ttree')
     if not range_max: range_max = tree.GetEntries()
@@ -1801,7 +1808,9 @@ def main(input_filename, outdir, range_min, range_max):
     logger.write("N entries = %s\n" % tree.GetEntries())
 
     logger.write("range = %d, %d\n" % (range_min, range_max))
-    out_hs, c_hs, perf_profile = full_loop(tree, input_filename, 0, 6175, range_min, range_max, logger)
+
+    logger.write("lumi BCDEF GH = %f %f\n" % (lumi_bcdef, lumi_gh))
+    out_hs, c_hs, perf_profile = full_loop(tree, input_filename, lumi_bcdef, lumi_gh, range_min, range_max, logger)
 
     perf_profile.dump_stats(logger_file.split('.log')[0] + '.cprof')
 
