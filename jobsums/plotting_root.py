@@ -9,6 +9,7 @@ nick_colour = {
 "dibosons": kCyan,
 "singletop": kAzure,
 "s_top_eltau": kAzure,
+"s_top_mutau": kAzure,
 "s_top_lj": kAzure+1,
 "s_top_other": kAzure+2,
 

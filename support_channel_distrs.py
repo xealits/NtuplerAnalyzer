@@ -554,16 +554,23 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     ratio_bcdef = lumi_bcdef / (lumi_bcdef + lumi_gh)
     ratio_gh    = lumi_gh / (lumi_bcdef + lumi_gh)
 
+    logger.write('dtag=%s\n' % dtag)
+    logger.write('lumi_bcdef=%f lumi_gh=%f\n' % (lumi_bcdef, lumi_gh))
+
     isMC = 'MC' in dtag
     #save_control = False
     save_weights = True and isMC
     aMCatNLO = 'amcatnlo' in dtag
     isTT = 'TT' in dtag
     isSTop = 'SingleT' in dtag or 'tchannel' in dtag or 'schannel' in dtag
+    isSTopTSchannels = 'tchannel' in dtag or 'schannel' in dtag
     isDY = 'DY' in dtag
     isWJets = 'WJet' in dtag or 'W1Jet' in dtag or 'W2Jet' in dtag or 'W3Jet' in dtag or 'W4Jet' in dtag
     isQCD = 'QCD' in dtag
     isDibosons = 'WW' in dtag or 'ZZ' in dtag or 'WZ' in dtag
+
+    logger.write(' '.join(name + '=' + str(setting) for name, setting in
+        [('isMC', isMC), ('save_weights', save_weights), ('aMCatNLO', aMCatNLO), ('isTT', isTT), ('isSTop', isSTop), ('isSTopTSchannels', isSTopTSchannels), ('isDY', isDY), ('isWJets', isWJets), ('isQCD', isQCD), ('isDibosons', isDibosons)]) + '\n')
 
     # Recoil corrections
     doRecoilCorrections = isWJets or isDY # TODO: check if it is needed for DY
@@ -1150,7 +1157,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             if isSTop:
                 # basically only difference is eltau/mutau
                 w1_id = abs(ev.gen_wdecays_IDs[0])
-                w2_id = abs(ev.gen_wdecays_IDs[1])
+                w2_id = 1
+                if not isSTopTSchannels:
+                    w2_id = abs(ev.gen_wdecays_IDs[1])
+                # t/s channels emit top and a quark -- top ID + jets
                 if (w1_id > 15*15 and w2_id == 13) or (w1_id == 13 and w2_id > 15*15): # lt
                     proc = 's_top_mutau'
                 elif (w1_id > 15*15 and w2_id == 11) or (w1_id == 11 and w2_id > 15*15): # lt

@@ -1,3 +1,4 @@
+from os.path import isfile
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -184,7 +185,13 @@ files = [
 
 
 for fname in files:
-    f = TFile(fname + '.root', "UPDATE")
+    # check if file exists
+    filename = fname + '.root'
+    if not isfile(filename):
+        logging.warning("file doesn't exist: %s" % filename)
+        continue
+
+    f = TFile(filename, "UPDATE")
     #f = TFile(fname + '.root')
     weight_counter = f.Get('weight_counter')
     #weight_counter->GetBinContent(2)
