@@ -35,6 +35,7 @@ def stack_n_legend(used_histos):
     for histo, nick in used_histos:
         col = nick_colour[nick]
         histo.SetFillColor( col );
+        histo.SetLineColor( col );
         histo.SetMarkerStyle(20);
         histo.SetLineStyle(0);
         histo.SetMarkerColor(col);

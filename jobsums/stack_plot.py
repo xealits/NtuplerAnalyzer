@@ -17,6 +17,7 @@ parser.add_argument("-d", "--distr",  type=str, default='Mt_lep_met', help="reco
 parser.add_argument("-x", "--shape",  type=str, default='', help="selection for shape distributions of wjets and dy")
 parser.add_argument("-p", "--plot",  action = "store_true", help="don't save the root file, plot stacked histogram in png")
 parser.add_argument("-r", "--ratio", action = "store_true", help="don't save the root file, make ratio plot (in addition to stack or alone)")
+parser.add_argument("-f", "--form-shapes", action = "store_true", help="plot the shapes of distributions normalized to 1")
 
 args = parser.parse_args()
 
@@ -173,6 +174,25 @@ if not args.plot and not args.ratio:
     leg.Write('leg')
     fout.Write()
     fout.Close()
+
+elif args.form_shapes:
+    from ROOT import gStyle, gROOT, TCanvas, TPad
+    gROOT.SetBatch()
+    gStyle.SetOptStat(0)
+    cst = TCanvas("cst","stacked hists",10,10,700,700)
+    pad = TPad("pad","This is pad", 0., 0.,  1., 1.)
+    pad.Draw()
+
+    pad.cd()
+    histo_data.Draw("hist")
+    for histo in used_histos:
+        histo.Scale(1/histo.Integral())
+	#histo.SetFillColor( # it shouldn't be needed with hist drawing option
+        histo.Draw("hist same")
+
+    leg.Draw("same")
+
+    cst.SaveAs('_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes.png')
 
 else:
     from ROOT import gStyle, gROOT, TCanvas, TPad
