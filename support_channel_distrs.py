@@ -722,6 +722,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (tt_procs_mu, systematic_names_pu),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (tt_procs_mu, ['NOMINAL']),
+                   'ctr_mu_wjet_old':(tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(tt_procs_mu, ['NOMINAL']),
@@ -770,6 +771,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (wjets_procs, systematic_names_pu),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (wjets_procs, ['NOMINAL']),
+                   'ctr_mu_wjet_old':(wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(wjets_procs, ['NOMINAL']),
@@ -818,6 +820,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (dy_procs, systematic_names_pu),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (dy_procs, ['NOMINAL']),
+                   'ctr_mu_wjet_old':(dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(dy_procs, ['NOMINAL']),
@@ -850,6 +853,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (s_top_procs_mu, systematic_names_pu),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (s_top_procs_mu, ['NOMINAL']),
+                   'ctr_mu_wjet_old':(s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(s_top_procs_mu, ['NOMINAL']),
@@ -882,6 +886,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (qcd_procs, systematic_names_pu),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (qcd_procs, ['NOMINAL']),
+                   'ctr_mu_wjet_old':(qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(qcd_procs, ['NOMINAL']),
@@ -914,6 +919,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (dibosons_procs, systematic_names_pu),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (dibosons_procs, ['NOMINAL']),
+                   'ctr_mu_wjet_old':(dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(dibosons_procs, ['NOMINAL']),
@@ -946,6 +952,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (data_procs, systematic_names_pu),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (data_procs, ['NOMINAL']),
+                   'ctr_mu_wjet_old':(data_procs, ['NOMINAL']),
                    'ctr_mu_dy_mumu': (data_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (data_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(data_procs, ['NOMINAL']),
@@ -963,7 +970,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     #            choice of subprocesses depends on channel (sadly),
     #            (find most precise subprocess ones, then store accordingly for channels)
     # sys     -- shape systematics
-    out_hs = OrderedDict([((chan, proc, sys), {'met':        TH1D('%s_%s_%s_met'        % (chan, proc, sys), '', 40, 0, 400),
+    out_hs = OrderedDict([((chan, proc, sys), {'met':        TH1D('%s_%s_%s_met'        % (chan, proc, sys), '', 30, 0, 300),
                                                'lep_pt':     TH1D('%s_%s_%s_lep_pt'     % (chan, proc, sys), '', 20, 0, 200),
                                                'lep_eta':    TH1D('%s_%s_%s_lep_eta'    % (chan, proc, sys), '', 20, -2.5, 2.5),
                                                'tau_pt':     TH1D('%s_%s_%s_tau_pt'     % (chan, proc, sys), '', 30, 0, 150),
@@ -977,6 +984,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'Mt_lep_met_f': TH1D('%s_%s_%s_Mt_lep_met_f' % (chan, proc, sys), '', 20, 0, 200),
                                                'Mt_lep_met':  TH1D('%s_%s_%s_Mt_lep_met' % (chan, proc, sys), '', 10, 0, 200),
                                                'Mt_tau_met':  TH1D('%s_%s_%s_Mt_tau_met' % (chan, proc, sys), '', 20, 0, 200),
+                                               # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
+                                               'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
                                                'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
                                                'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 100, 0, 100),
                                                # TODO: add rho to ntuples
@@ -1537,7 +1546,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # it's used only in control regions and shouldn't be a big deal
             #dy_dilep_mass = has_pre_tau and (45 < (ev.lep_p4[0] + ev.tau_p4[0]).mass() < 85)
 
-            if has_medium_tau:
+            #if has_medium_tau:
+            if len(ev.tau_p4) > 0:
                 lep_tau = ev.lep_p4[0] + taus[0][0]
                 lep_tau_mass = lep_tau.mass()
 
@@ -1609,9 +1619,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 passed_channels.append('pog_mu_fail')
 
             # with addition of no DY mass, no tau match to b-tag (could add a cut on small MT)
-            if pass_el and large_met and has_3jets and has_bjets_no_tau_match and os_lep_med_tau and (lep_tau_mass < 45 or lep_tau_mass > 85):
+            if pass_el and large_met and has_3jets and has_bjets_no_tau_match and os_lep_med_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
                 passed_channels.append('adv_el_sel')
-            if pass_mu and large_met and has_3jets and has_bjets_no_tau_match and os_lep_med_tau and (lep_tau_mass < 45 or lep_tau_mass > 85):
+            if pass_mu and large_met and has_3jets and has_bjets_no_tau_match and os_lep_med_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
                 passed_channels.append('adv_mu_sel')
             # check the mass cut in distribution of lep+tau mass in usual selection
 
@@ -1622,8 +1632,20 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # && nbjets == 0
             # && (divector_mass(lep_p4[0].x(), lep_p4[0].y(), lep_p4[0].z(), lep_p4[0].t(), tau_p4[0].x(), tau_p4[0].y(), tau_p4[0].z(), tau_p4[0].t()) < 45 || divector_mass(lep_p4[0].x(), lep_p4[0].y(), lep_p4[0].z(), lep_p4[0].t(), tau_p4[0].x(), tau_p4[0].y(), tau_p4[0].z(), tau_p4[0].t()) > 85)
             # also may add MT > 50 or met > X -- cuts QCD
-            if pass_mu and nbjets == 0 and (Mt_lep_met > 50 or met_pt > 40): # skipped lep+tau mass -- hopefuly DY will be small
+
+            if pass_mu and nbjets == 0 and (Mt_lep_met > 50 or met_pt > 40): # skipped lep+tau mass -- hopefuly DY will be small (-- it became larger than tt)
                 passed_channels.append('ctr_mu_wjet')
+            # and some tau candidate
+            # skipped lep+tau mass -- hopefuly DY will be small (-- it became larger than tt)
+            # OS/SS for QCD control
+            if pass_mu and nbjets == 0 and len(ev.tau_p4) > 0:
+                passed_channels.append('ctr_mu_wjet_old')
+            if pass_mu and nbjets == 0 and len(ev.tau_p4) > 0:
+                if ev.tau_id[0]*ev.lep_id[0] < 0:
+                    passed_channels.append('ctr_mu_wjet_old_os')
+                elif ev.tau_id[0]*ev.lep_id[0] > 0:
+                    passed_channels.append('ctr_mu_wjet_old_ss')
+
             # DY -> taumu tauh
             # HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0] && abs(lep_p4[0].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02
             # && tau_IDlev[0] > 2 && lep_id[0]*tau_id[0] < 0
@@ -1682,7 +1704,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 out_hs[(chan, proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, sys_weight)
                 out_hs[(chan, proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, sys_weight)
 
-                if has_medium_tau:
+                if pass_mumu or pass_elmu:
+                    lep_lep = ev.lep_p4[0] + ev.lep_p4[1]
+                    lep_lep_mass = lep_lep.mass()
+                    out_hs[(chan, proc, sys_name)]['M_lep_lep']  .Fill(lep_lep_mass, sys_weight)
+
+                #if has_medium_tau:
+                if len(ev.tau_p4) > 0:
                     #lep_tau = ev.lep_p4[0] + taus[0][0] # done above
                     #out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), sys_weight)
                     out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(taus[0][0].pt() * taus[0][1],  sys_weight)
