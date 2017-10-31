@@ -1,3 +1,89 @@
+# hig comb commands
+
+## NLL scan
+
+combine -M MultiDimFit ttxsec/tt_el_2.txt --algo grid --points 2000 --rMax 2
+root -l higgsCombineTest.MultiDimFit.mH120.root
+limit->Draw("2*deltaNLL:r", "2*deltaNLL<10", "colz")
+
+
+## pulls in fit
+
+combine -M FitDiagnostics ttxsec/tt_el_2.txt
+
+(corrected diffNuisances to output only s+b -- option "-o")
+
+python test/diffNuisances.py fitDiagnostics.root -g pulls_of_nuisances.root -o
+root -l pulls_of_nuisances.root
+gStyle->SetOptStat(0)
+nuisancs->Draw()
+
+
+
+## post-fit distributions
+
+combine -M MaxLikelihoodFit ttxsec/play_shapes_tt_mu.txt --saveShapes --saveWithUncertainties
+
+-- saves post-fit uncertainty, and then additional stack-plot should put the distr-s together
+
+
+
+## covariance matrices
+
+they are done in simple
+
+combine -M FitDiagnostics ttxsec/tt_el_2.txt --plots
+
+-- the png files are saved for fit with b or b+s
+
+more plots with:
+
+combine -M FitDiagnostics ttxsec/tt_mu_2.txt --plots --saveShapes
+
+
+
+## datacard to "workspace"
+
+required here and there by stuff
+
+./scripts/text2workspace.py ttxsec/tt_el_2.txt
+
+
+
+## toys
+
+combine -M FitDiagnostics ttxsec/tt_el_2.txt --name Data
+combine -M FitDiagnostics ttxsec/tt_el_2.txt -t 20000 --toysFrequentist --noErrors --minos none --name Toys --expectSignal 1
+
+-- (without --expectSignal 1 it seems this generates toys with signal = 0)
+
+cd test
+root -l
+.L plotParametersFromToys.C+
+
+plotParametersFromToys("../fitDiagnosticsToys.root","../fitDiagnosticsData.root", "../tt_el_2.root", "r>0 && r<2")
+
+-- weirdness
+
+  --expectSignal arg (=0)       If set to non-zero, generate *signal* 
+                                toys instead of background ones, with 
+                                the specified signal strength.
+
+
+
+
+## impacts
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d tt_el_2.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d tt_el_2.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d tt_el_2.root -m 125 -o impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i impacts.json -o impacts
+
+
+
+
+
+
 # crab submition
 
 for d in `cat dsets_feb_rereco`
