@@ -29,3 +29,15 @@ ssh fermi04 'screen -d -m bash -c "lscpu | grep ^CPU ; uptime ; bash" '
 ssh fermi05 'screen -d -m bash -c "lscpu | grep ^CPU ; uptime ; bash" '
 
 
+hadd-ing
+
+foreach d (`cat jobs_hadd.dtags.small`)
+hadd try2_split11_2/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split11/$d/*.root &
+end
+
+foreach d (`cat jobs_hadd.dtags.large_aa`)
+
+foreach d (SingleMuon SingleElectron)
+hadd try2_split11_2/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split11/$d/*.root &
+end
+
