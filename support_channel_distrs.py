@@ -1546,9 +1546,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # it's used only in control regions and shouldn't be a big deal
             #dy_dilep_mass = has_pre_tau and (45 < (ev.lep_p4[0] + ev.tau_p4[0]).mass() < 85)
 
-            #if has_medium_tau:
-            if len(ev.tau_p4) > 0:
-                lep_tau = ev.lep_p4[0] + taus[0][0]
+            if has_medium_tau:
+            #if len(ev.tau_p4) > 0:
+                lep_tau = ev.lep_p4[0] + taus[0][0] * taus[0][1]
                 lep_tau_mass = lep_tau.mass()
 
             pass_single_lep_presel = large_met and has_3jets and has_bjets and (pass_el or pass_mu) #and os_lep_med_tau
@@ -1709,8 +1709,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     lep_lep_mass = lep_lep.mass()
                     out_hs[(chan, proc, sys_name)]['M_lep_lep']  .Fill(lep_lep_mass, sys_weight)
 
-                #if has_medium_tau:
-                if len(ev.tau_p4) > 0:
+                if has_medium_tau:
+                #if len(ev.tau_p4) > 0:
                     #lep_tau = ev.lep_p4[0] + taus[0][0] # done above
                     #out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), sys_weight)
                     out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(taus[0][0].pt() * taus[0][1],  sys_weight)
