@@ -987,7 +987,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
                                                'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
                                                'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
-                                               'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 100, 0, 100),
+                                               'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
                                                # TODO: add rho to ntuples
                                                'rho':         TH1D('%s_%s_%s_rho'        % (chan, proc, sys), '', 50, 0, 50),
                                                'njets':       TH1D('%s_%s_%s_njets'      % (chan, proc, sys), '', 10, 0, 10),

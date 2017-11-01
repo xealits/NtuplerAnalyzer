@@ -104,6 +104,9 @@ for channel in channels:
     print 'rate          ' + ''.join('%-15.3f' % histo.Integral() for histo in histos)
 
     histo_name = '_'.join([channel, 'data', sys_name, distr_name])
-    data_histo = fdata.Get('%s/%s/%s/%s' % (channel, 'data', sys_name, histo_name))
+    full_path = '%s/%s/%s/%s' % (channel, 'data', sys_name, histo_name)
+    print full_path
+    data_histo = fdata.Get(full_path)
     print 'obs %f' % data_histo.Integral()
+    print 'mc sum = %f' % sum(h.Integral() for h in histos)
 
