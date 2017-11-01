@@ -18,6 +18,7 @@ parser.add_argument("-x", "--shape",  type=str, default='', help="selection for 
 parser.add_argument("-p", "--plot",  action = "store_true", help="don't save the root file, plot stacked histogram in png")
 parser.add_argument("-r", "--ratio", action = "store_true", help="don't save the root file, make ratio plot (in addition to stack or alone)")
 parser.add_argument("-f", "--form-shapes", action = "store_true", help="plot the shapes of distributions normalized to 1")
+parser.add_argument("-o", "--output-directory",  type=str, default='', help="optional output directory")
 
 args = parser.parse_args()
 
@@ -163,7 +164,8 @@ logging.info("data   = %f" % histo_data.Integral())
 logging.info("mc sum = %f %f" % (hs_sum1.Integral(), hs_sum2.Integral()))
 
 if not args.plot and not args.ratio:
-    fout = TFile(args.mc_file.split('.root')[0] + '_%s_%s_%s.root' % (distr_name, channel, sys_name), 'RECREATE')
+    fout = TFile((args.output_directory + '/' if args.output_directory else '') +
+        args.mc_file.split('.root')[0] + '_%s_%s_%s.root' % (distr_name, channel, sys_name), 'RECREATE')
     fout.cd()
     histo_data.Write() #'data')
     for h in histos:
@@ -213,16 +215,6 @@ else:
         pad1.Draw()
 
     # plotting
-
-    if args.plot:
-        pad1.cd()
-
-        histo_data.Draw("e1 p")
-        hs.Draw("same")
-        hs_sum1.Draw("same e2")
-        histo_data.Draw("same e1p")
-        leg.Draw("same")
-
     if args.ratio:
         pad2.cd()
 
@@ -251,7 +243,24 @@ else:
         hs_sum1_relative.Draw("e2")
         histo_data_relative.Draw("e p same")
 
+    if args.plot:
+        pad1.cd()
+
+        histo_data.SetTitle("%s %s" % (channel, sys_name))
+        hs_sum1   .SetTitle("%s %s" % (channel, sys_name))
+
+        histo_data.SetXTitle(distr_name)
+        #hs        .SetXTitle(distr_name)
+        hs_sum1   .SetXTitle(distr_name)
+
+        histo_data.Draw("e1 p")
+        hs.Draw("same")
+        hs_sum1.Draw("same e2")
+        histo_data.Draw("same e1p")
+        leg.Draw("same")
+
+
     stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
-    cst.SaveAs('_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + stack_or_ratio + ".png")
+    cst.SaveAs((args.output_directory + '/' if args.output_directory else '') + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + stack_or_ratio + ".png")
 
 
