@@ -726,7 +726,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(tt_procs_mu, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (tt_procs_mu, [systematic_names_toppt]),
+                   'ctr_mu_tt_em':   (tt_procs_mu, systematic_names_toppt),
                    }
             usual_process = 'tt_other'
 
@@ -775,7 +775,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(wjets_procs, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (wjets_procs, [systematic_names_toppt]),
+                   'ctr_mu_tt_em':   (wjets_procs, systematic_names_toppt),
                    }
             usual_process = 'wjets'
 
@@ -824,7 +824,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(dy_procs, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (dy_procs, [systematic_names_toppt]),
+                   'ctr_mu_tt_em':   (dy_procs, systematic_names_toppt),
                    }
             usual_process = 'dy_other'
 
@@ -857,7 +857,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(s_top_procs_mu, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (s_top_procs_mu, [systematic_names_toppt]),
+                   'ctr_mu_tt_em':   (s_top_procs_mu, systematic_names_toppt),
                    }
             usual_process = 's_top_other'
 
@@ -890,7 +890,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(qcd_procs, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (qcd_procs, [systematic_names_toppt]),
+                   'ctr_mu_tt_em':   (qcd_procs, systematic_names_toppt),
                    }
             usual_process = 'qcd'
 
@@ -923,7 +923,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(dibosons_procs, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (dibosons_procs, [systematic_names_toppt]),
+                   'ctr_mu_tt_em':   (dibosons_procs, systematic_names_toppt),
                    }
             usual_process = 'dibosons'
 
@@ -956,14 +956,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (data_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (data_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(data_procs, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (data_procs, [systematic_names_toppt]),
+                   'ctr_mu_tt_em':   (data_procs, systematic_names_toppt),
                     }
         usual_process = 'data'
 
     proc = usual_process
 
     # test
-    logger.write('%s\n' % str('%s_%s_%s' % (chan, proc, sys[0]) for chan, ((procs, _), sys) in channels.items() for proc in procs))
+    logger.write('%s\n' % '\n'.join('%s_%s_%s' % (chan, proc, sys[0]) for chan, ((procs, _), sys) in channels.items() for proc in procs))
 
     # channel -- reco selection
     # proc    -- MC gen info, like inclusive tt VS tt->mutau and others,
