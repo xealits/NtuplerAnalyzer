@@ -726,7 +726,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(tt_procs_mu, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (tt_procs_mu, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (tt_procs_mu, [systematic_names_toppt]),
                    }
             usual_process = 'tt_other'
 
@@ -775,7 +775,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(wjets_procs, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (wjets_procs, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (wjets_procs, [systematic_names_toppt]),
                    }
             usual_process = 'wjets'
 
@@ -824,7 +824,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(dy_procs, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (dy_procs, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (dy_procs, [systematic_names_toppt]),
                    }
             usual_process = 'dy_other'
 
@@ -857,7 +857,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(s_top_procs_mu, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (s_top_procs_mu, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (s_top_procs_mu, [systematic_names_toppt]),
                    }
             usual_process = 's_top_other'
 
@@ -890,7 +890,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(qcd_procs, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (qcd_procs, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (qcd_procs, [systematic_names_toppt]),
                    }
             usual_process = 'qcd'
 
@@ -923,7 +923,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(dibosons_procs, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (dibosons_procs, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (dibosons_procs, [systematic_names_toppt]),
                    }
             usual_process = 'dibosons'
 
@@ -956,7 +956,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (data_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (data_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(data_procs, ['NOMINAL']),
-                   'ctr_mu_tt_em':   (data_procs, ['NOMINAL']),
+                   'ctr_mu_tt_em':   (data_procs, [systematic_names_toppt]),
                     }
         usual_process = 'data'
 
@@ -993,7 +993,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'njets':       TH1D('%s_%s_%s_njets'      % (chan, proc, sys), '', 10, 0, 10),
                                                'nbjets':      TH1D('%s_%s_%s_nbjets'     % (chan, proc, sys), '', 5, 0, 5),
                                                'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', 20, 0, 200),
-                                               'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 300),
+                                               'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
                                                '2D_dijet_trijet':   TH2D('%s_%s_%s_2D_dijet_trijet'   % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
                                                'dijet_trijet_mass': TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400) })
                 for chan, ((procs, _), systs) in channels.items() for proc in procs for sys in systs])
