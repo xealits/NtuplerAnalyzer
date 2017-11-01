@@ -1,0 +1,33 @@
+Combination of htt_tt_0_8TeV=htt_tt_0_8TeV.txt  htt_tt_1_8TeV=htt_tt_1_8TeV.txt  htt_tt_2_8TeV=htt_tt_2_8TeV.txt
+imax 2 number of bins
+jmax 6 number of processes minus 1
+kmax 11 number of nuisance parameters
+----------------------------------------------------------------------------------------------------------------------------------
+shapes *         mu_lj      ./test1_mu_presel_shapes.root mu_lj/$PROCESS/NOMINAL/mu_lj_NOMINAL_$PROCESS_Mt_lep_met mu_lj/$PROCESS/$SYSTEMATIC/mu_lj_$SYSTEMATIC_$PROCESS_Mt_lep_met
+shapes data_obs  mu_lj      ./test1_mu_presel_shapes.root mu_lj/data/NOMINAL/mu_lj_NOMINAL_data_Mt_lep_met         mu_lj/data/$SYSTEMATIC/mu_lj_$SYSTEMATIC_data_Mt_lep_met
+shapes dy        mu_lj      ./test1_mu_presel_shapes.root mu_presel_to_mu_lj/dy/NOMINAL/mu_presel_to_mu_lj_NOMINAL_dy_Mt_lep_met             mu_presel_to_mu_lj/dy/$SYSTEMATIC/mu_presel_to_mu_lj_$SYSTEMATIC_dy_Mt_lep_met
+shapes wjets     mu_lj      ./test1_mu_presel_shapes.root mu_presel_to_mu_lj/wjets/NOMINAL/mu_presel_to_mu_lj_NOMINAL_wjets_Mt_lep_met       mu_presel_to_mu_lj/wjets/$SYSTEMATIC/mu_presel_to_mu_lj_$SYSTEMATIC_wjets_Mt_lep_met
+shapes *         mu_lj_out  ./test1_mu_presel_shapes.root mu_lj_out/$PROCESS/NOMINAL/mu_lj_out_NOMINAL_$PROCESS_Mt_lep_met mu_lj_out/$PROCESS/$SYSTEMATIC/mu_lj_out_$SYSTEMATIC_$PROCESS_Mt_lep_met
+shapes data_obs  mu_lj_out  ./test1_mu_presel_shapes.root mu_lj_out/data/NOMINAL/mu_lj_out_NOMINAL_data_Mt_lep_met         mu_lj_out/data/$SYSTEMATIC/mu_lj_out_$SYSTEMATIC_data_Mt_lep_met
+shapes dy        mu_lj_out  ./test1_mu_presel_shapes.root mu_presel_to_mu_lj_out/dy/NOMINAL/mu_presel_to_mu_lj_out_NOMINAL_dy_Mt_lep_met         mu_presel_to_mu_lj_out/dy/$SYSTEMATIC/mu_presel_to_mu_lj_out_$SYSTEMATIC_dy_Mt_lep_met
+shapes wjets     mu_lj_out  ./test1_mu_presel_shapes.root mu_presel_to_mu_lj_out/wjets/NOMINAL/mu_presel_to_mu_lj_out_NOMINAL_wjets_Mt_lep_met   mu_presel_to_mu_lj_out/wjets/$SYSTEMATIC/mu_presel_to_mu_lj_out_$SYSTEMATIC_wjets_Mt_lep_met
+----------------------------------------------------------------------------------------------------------------------------------
+bin          mu_lj          mu_lj_out
+observation  3954.0         6226.0
+----------------------------------------------------------------------------------------------------------------------------------
+bin                                                    mu_lj     mu_lj     mu_lj     mu_lj     mu_lj     mu_lj     mu_lj        mu_lj_out   mu_lj_out   mu_lj_out   mu_lj_out   mu_lj_out   mu_lj_out   mu_lj_out
+process                                                dy        wjets     singletop dibosons  tt_lj     tt_other  tt_mutau     dy          wjets       singletop   dibosons    tt_lj       tt_other    tt_mutau
+process                                                6         5         4         3         2         1         0            6           5           4           3           2           1           0       
+rate                                                   54.5561   73.5064   189.1547  12.4636   1319.7233 239.3605  1937.2694    186.4544    536.3435    365.7894    30.2183     1075.4821   390.3285    3769.7132
+----------------------------------------------------------------------------------------------------------------------------------
+lumi_13TeV              lnN                            1.026     1.026     1.026     1.026     1.026     1.026     1.026        1.026       1.026       1.026       1.026       1.026       1.026       1.026
+tauID_eff               lnN                            1.05      -         1.05      -         -         1.05      1.05         1.05        -           1.05        -           -           1.05        1.05
+tau_fakes               lnN                            -         1.15      -         1.15      1.15      -         -            -           1.15        -           1.15        1.15        -           -
+dy_norm                 lnN                            1.3       -         -         -         -         -         -            1.3         -           -           -           -           -           -
+wjets_norm              lnN                            -         1.3       -         -         -         -         -            -           1.3         -           -           -           -           -
+JES           shape                                    1.0       1.0       1.0       1.0       1.0       1.0       1.0          1.0         1.0         1.0         1.0         1.0         1.0         1.0
+JER           shape                                    1.0       1.0       1.0       1.0       1.0       1.0       1.0          1.0         1.0         1.0         1.0         1.0         1.0         1.0
+TauES         shape                                    1.0       1.0       1.0       1.0       1.0       1.0       1.0          1.0         1.0         1.0         1.0         1.0         1.0         1.0
+bSF           shape                                    1.0       1.0       1.0       1.0       1.0       1.0       1.0          1.0         1.0         1.0         1.0         1.0         1.0         1.0
+PU            shape                                    1.0       1.0       1.0       1.0       1.0       1.0       1.0          1.0         1.0         1.0         1.0         1.0         1.0         1.0
+TOPPT         shape                                    -         -         -         -         1.0       1.0       1.0          -           -           -           -           1.0         1.0         1.0
