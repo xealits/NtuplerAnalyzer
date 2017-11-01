@@ -45,7 +45,11 @@ file = ROOT.TFile(args[0])
 if file == None: raise RuntimeError, "Cannot open file %s" % args[0]
 fit_s  = file.Get("fit_s")
 fit_b  = file.Get("fit_b")
+if not fit_b:
+    mu_file = ROOT.TFile('fitDiagnosticsMu.root')
+    fit_b = mu_file.Get('fit_b')
 prefit = file.Get("nuisances_prefit")
+
 if fit_s == None or fit_s.ClassName()   != "RooFitResult": raise RuntimeError, "File %s does not contain the output of the signal fit 'fit_s'"     % args[0]
 if fit_b == None or fit_b.ClassName()   != "RooFitResult": raise RuntimeError, "File %s does not contain the output of the background fit 'fit_b'" % args[0]
 if prefit == None or prefit.ClassName() != "RooArgSet":    raise RuntimeError, "File %s does not contain the prefit nuisances 'nuisances_prefit'"  % args[0]

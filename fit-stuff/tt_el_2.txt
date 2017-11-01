@@ -3,10 +3,10 @@ imax 2 number of bins
 jmax 10 number of processes minus 1
 kmax 11 number of nuisance parameters
 ----------------------------------------------------------------------------------------------------------------------------------
-shapes *         el_lj      ./el_try2_split12.root el_lj/$PROCESS/NOMINAL/el_lj_$PROCESS_NOMINAL_Mt_lep_met el_lj/$PROCESS/$SYSTEMATIC/el_lj_$PROCESS_$SYSTEMATIC_Mt_lep_met
-shapes data_obs  el_lj      ./el_try2_split12.root el_lj/data/NOMINAL/el_lj_data_NOMINAL_Mt_lep_met         el_lj/data/$SYSTEMATIC/el_lj_data_$SYSTEMATIC_Mt_lep_met
-shapes *         el_lj_out  ./el_try2_split12.root el_lj_out/$PROCESS/NOMINAL/el_lj_out_$PROCESS_NOMINAL_Mt_lep_met el_lj_out/$PROCESS/$SYSTEMATIC/el_lj_out_$PROCESS_$SYSTEMATIC_Mt_lep_met
-shapes data_obs  el_lj_out  ./el_try2_split12.root el_lj_out/data/NOMINAL/el_lj_out_data_NOMINAL_Mt_lep_met         el_lj_out/data/$SYSTEMATIC/el_lj_out_data_$SYSTEMATIC_Mt_lep_met
+shapes *         el_lj      ./split12_el_2.root el_lj/$PROCESS/NOMINAL/el_lj_$PROCESS_NOMINAL_Mt_lep_met el_lj/$PROCESS/$SYSTEMATIC/el_lj_$PROCESS_$SYSTEMATIC_Mt_lep_met
+shapes data_obs  el_lj      ./split12_el_2.root el_lj/data/NOMINAL/el_lj_data_NOMINAL_Mt_lep_met         el_lj/data/$SYSTEMATIC/el_lj_data_$SYSTEMATIC_Mt_lep_met
+shapes *         el_lj_out  ./split12_el_2.root el_lj_out/$PROCESS/NOMINAL/el_lj_out_$PROCESS_NOMINAL_Mt_lep_met el_lj_out/$PROCESS/$SYSTEMATIC/el_lj_out_$PROCESS_$SYSTEMATIC_Mt_lep_met
+shapes data_obs  el_lj_out  ./split12_el_2.root el_lj_out/data/NOMINAL/el_lj_out_data_NOMINAL_Mt_lep_met         el_lj_out/data/$SYSTEMATIC/el_lj_out_data_$SYSTEMATIC_Mt_lep_met
 ----------------------------------------------------------------------------------------------------------------------------------
 bin          el_lj          el_lj_out
 observation  4821.00        7116.00

@@ -21,6 +21,13 @@ gStyle->SetOptStat(0)
 nuisancs->Draw()
 
 
+-- now it crashes on electrons (!!!! worked yesterday fully all was done with electrons!!) with:
+  File "ttxsec/fit-stuff/diffNuisances.py", line 50, in <module>
+    if fit_b == None or fit_b.ClassName()   != "RooFitResult": raise RuntimeError, "File %s does not contain the output of the background fit 'fit_b'" % args[0]
+RuntimeError: File fitDiagnostics.root does not contain the output of the background fit 'fit_b'
+
+
+
 
 ## post-fit distributions
 

@@ -1424,7 +1424,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     factor_down = 1.006 - 0.012
 
                 #has_tau = (ev.tau_p4[0].pt() * factor) > 30
-                if ev.tau_p4[0] * factor > 30.:
+                if ev.tau_p4[0].pt() * factor > 30.:
                     taus_nominal.append((ev.tau_p4[0], factor))
                 ## calculate it later, inplace of record
                 #if not Mt_tau_met_nominal:
@@ -1432,9 +1432,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 if isMC:
                     #has_tau_es_up   = (ev.tau_p4[0].pt() * factor_up  ) > 30
                     #has_tau_es_down = (ev.tau_p4[0].pt() * factor_down) > 30
-                    if ev.tau_p4[0] * factor_up > 30.:
+                    if ev.tau_p4[0].pt() * factor_up > 30.:
                         taus_es_up.append((ev.tau_p4[0], factor_up))
-                    if ev.tau_p4[0] * factor_down > 30.:
+                    if ev.tau_p4[0].pt() * factor_down > 30.:
                         taus_es_down.append((ev.tau_p4[0], factor_down))
                     #if not Mt_tau_met_up:
                     #    Mt_tau_met_up   = transverse_mass_pts(ev.tau_p4[0].Px()*factor_up, ev.tau_p4[0].Py()*factor_up, met_x, met_y)

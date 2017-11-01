@@ -3,10 +3,10 @@ imax 2 number of bins
 jmax 10 number of processes minus 1
 kmax 11 number of nuisance parameters
 ----------------------------------------------------------------------------------------------------------------------------------
-shapes *         mu_lj      ./mu_try2_split12.root mu_lj/$PROCESS/NOMINAL/mu_lj_$PROCESS_NOMINAL_Mt_lep_met mu_lj/$PROCESS/$SYSTEMATIC/mu_lj_$PROCESS_$SYSTEMATIC_Mt_lep_met
-shapes data_obs  mu_lj      ./mu_try2_split12.root mu_lj/data/NOMINAL/mu_lj_data_NOMINAL_Mt_lep_met         mu_lj/data/$SYSTEMATIC/mu_lj_data_$SYSTEMATIC_Mt_lep_met
-shapes *         mu_lj_out  ./mu_try2_split12.root mu_lj_out/$PROCESS/NOMINAL/mu_lj_out_$PROCESS_NOMINAL_Mt_lep_met mu_lj_out/$PROCESS/$SYSTEMATIC/mu_lj_out_$PROCESS_$SYSTEMATIC_Mt_lep_met
-shapes data_obs  mu_lj_out  ./mu_try2_split12.root mu_lj_out/data/NOMINAL/mu_lj_out_data_NOMINAL_Mt_lep_met         mu_lj_out/data/$SYSTEMATIC/mu_lj_out_data_$SYSTEMATIC_Mt_lep_met
+shapes *         mu_lj      ./split12_mu_2.root mu_lj/$PROCESS/NOMINAL/mu_lj_$PROCESS_NOMINAL_Mt_lep_met mu_lj/$PROCESS/$SYSTEMATIC/mu_lj_$PROCESS_$SYSTEMATIC_Mt_lep_met
+shapes data_obs  mu_lj      ./split12_mu_2.root mu_lj/data/NOMINAL/mu_lj_data_NOMINAL_Mt_lep_met         mu_lj/data/$SYSTEMATIC/mu_lj_data_$SYSTEMATIC_Mt_lep_met
+shapes *         mu_lj_out  ./split12_mu_2.root mu_lj_out/$PROCESS/NOMINAL/mu_lj_out_$PROCESS_NOMINAL_Mt_lep_met mu_lj_out/$PROCESS/$SYSTEMATIC/mu_lj_out_$PROCESS_$SYSTEMATIC_Mt_lep_met
+shapes data_obs  mu_lj_out  ./split12_mu_2.root mu_lj_out/data/NOMINAL/mu_lj_out_data_NOMINAL_Mt_lep_met         mu_lj_out/data/$SYSTEMATIC/mu_lj_out_data_$SYSTEMATIC_Mt_lep_met
 ----------------------------------------------------------------------------------------------------------------------------------
 bin          mu_lj          mu_lj_out
 observation  8320.00        12168.00
@@ -15,7 +15,7 @@ bin           mu_lj          mu_lj          mu_lj          mu_lj          mu_lj 
 process       dy_tautau      dy_other       wjets          s_top_mutau    s_top_other    s_top_lj       dibosons       tt_taultauh    tt_lj          tt_other       tt_mutau         dy_tautau      dy_other       wjets          s_top_mutau    s_top_other    s_top_lj       dibosons       tt_taultauh    tt_lj          tt_other       tt_mutau       
 process       10             9              8              7              6              5              4              3              2              1              0                10             9              8              7              6              5              4              3              2              1              0              
 rate          116.619        10.782         259.717        167.583        31.723         246.412        25.430         225.343        3483.609       324.745        3708.597         331.988        22.359         502.705        373.230        56.452         338.218        64.415         418.569        2754.377       394.357        6994.035       
-------------------------------------------------------------------------------------------------------------------------------------------------------------                      --------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 lumi_13TeV              lnN                            1.026     1.026     1.026     1.026         1.026       1.026       1.026    1.026        1.026     1.026     1.026        1.026     1.026     1.026       1.026        1.026       1.026       1.026      1.026        1.026     1.026     1.026       
 tauID_eff               lnN                            1.05      -         -         1.05          1.05        -           -        1.05         -         -         1.05         1.05      -         -           1.05         1.05        -           -          1.05         -         -         1.05        
 tau_fakes               lnN                            -         1.15      1.15      -             -           1.15        1.15     -            1.15      1.15      -            -         1.15      1.15        -            -           1.15        1.15       -            1.15      1.15      -           
