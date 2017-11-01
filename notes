@@ -2,19 +2,21 @@
 
 ## NLL scan
 
-combine -M MultiDimFit ttxsec/tt_el_2.txt --algo grid --points 2000 --rMax 2
-root -l higgsCombineTest.MultiDimFit.mH120.root
+combine -M MultiDimFit ttxsec/tt_el_2.txt --algo grid --points 2000 --rMax 2 --name El
+root -l higgsCombineEl.MultiDimFit.mH120.root
 limit->Draw("2*deltaNLL:r", "2*deltaNLL<10", "colz")
 
 
 ## pulls in fit
 
-combine -M FitDiagnostics ttxsec/tt_el_2.txt
+combine -M FitDiagnostics ttxsec/fit-stuff/tt_el_2.txt --name El
 
 (corrected diffNuisances to output only s+b -- option "-o")
 
 python test/diffNuisances.py fitDiagnostics.root -g pulls_of_nuisances.root -o
-root -l pulls_of_nuisances.root
+
+python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsMu.root -g pulls_of_nuisances_mu.root -o
+root -l pulls_of_nuisances_mu.root
 gStyle->SetOptStat(0)
 nuisancs->Draw()
 
