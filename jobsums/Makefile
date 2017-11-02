@@ -4,6 +4,18 @@ plots_sel: mc_in=mc_mu_try2_split12.root
 plots_sel: out_dir=./
 plots_sel: sel=mu
 plots_sel:
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met -s TOPPTUp
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met -s bSFUp
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met -s bSFDown
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met -s JESUp
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met -s JESDown
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met -s TOPPTUp
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met -s bSFUp
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met -s bSFDown
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met -s JESUp
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met -s JESDown
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_sel -d Mt_lep_met
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_sel -d Mt_lep_met -s TOPPTUp
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_sel -d dijet_mass

@@ -34,15 +34,15 @@ ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW
 hadd-ing
 
 foreach d (`cat jobs_hadd.dtags.small`)
-hadd try2_split12/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split12/$d/*.root &
+hadd try2_split12-1/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split12/$d/*.root &
 end
 
 foreach d (`cat jobs_hadd.dtags.large_aa`)
-hadd try2_split12/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split12/$d/*.root &
+hadd try2_split12-1/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split12/$d/*.root &
 end
 
 foreach d (`cat jobs_hadd.dtags.large_ab`)
-hadd try2_split12/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split12/$d/*.root &
+hadd try2_split12-1/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split12/$d/*.root &
 end
 
 foreach d (SingleMuon SingleElectron)

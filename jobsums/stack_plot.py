@@ -163,9 +163,10 @@ hs_sum2.SetMarkerColor(0)
 logging.info("data   = %f" % histo_data.Integral())
 logging.info("mc sum = %f %f" % (hs_sum1.Integral(), hs_sum2.Integral()))
 
+out_dir = args.output_directory + '/' if args.output_directory else './'
+
 if not args.plot and not args.ratio:
-    fout = TFile((args.output_directory + '/' if args.output_directory else '') +
-        args.mc_file.split('.root')[0] + '_%s_%s_%s.root' % (distr_name, channel, sys_name), 'RECREATE')
+    fout = TFile(out_dir + args.mc_file.split('.root')[0] + '_%s_%s_%s.root' % (distr_name, channel, sys_name), 'RECREATE')
     fout.cd()
     histo_data.Write() #'data')
     for h in histos:
@@ -186,15 +187,19 @@ elif args.form_shapes:
     pad.Draw()
 
     pad.cd()
+    histo_data.Scale(1/histo_data.Integral())
     histo_data.Draw("hist")
-    for histo in used_histos:
+    for histo, nick in used_histos:
+        if nick not in ('wjets', 'tt_mutau', 'tt_eltau', 'tt_lj'): continue # adhoc
         histo.Scale(1/histo.Integral())
 	#histo.SetFillColor( # it shouldn't be needed with hist drawing option
+        # nope, it's needed...
+        histo.SetFillColorAlpha(0, 0.0)
         histo.Draw("hist same")
 
     leg.Draw("same")
 
-    cst.SaveAs('_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes.png')
+    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes.png')
 
 else:
     from ROOT import gStyle, gROOT, TCanvas, TPad
@@ -259,8 +264,7 @@ else:
         histo_data.Draw("same e1p")
         leg.Draw("same")
 
-
     stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
-    cst.SaveAs((args.output_directory + '/' if args.output_directory else '') + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + stack_or_ratio + ".png")
+    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + stack_or_ratio + ".png")
 
 

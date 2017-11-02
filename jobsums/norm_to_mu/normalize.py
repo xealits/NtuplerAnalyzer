@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser(
     #epilog = "Example:\n$ python job_submit.py ttbarleps80_eventSelection jobing/my_runAnalysis_cfg_NEWSUBMIT.templ.py bin/ttbar-leptons-80X/analysis/dsets_testing_noHLT_TTbar.json test/tests/outdir_test_v11_ttbar_v8.40/"
     )
 
-parser.add_argument('-l', '--lumi', type=float, default=35900, help="luminosity in pb (default 35867.060 -- good lumies of full json for Muon, good lumis of reduced Electron json = 31341.774)")
+parser.add_argument('-l', '--lumi', type=float, default=None, help="luminosity in pb to use instead of defaults")
 parser.add_argument('-m', '--mu', action = "store_true", help="use SingleMuon full json lumi = 35867.060")
 parser.add_argument('-e', '--el', action = "store_true", help="use SingleElectron reduced json lumi = 31341.774")
 
@@ -19,15 +19,18 @@ args = parser.parse_args()
 control_channel = 'mu_lj'
 
 if args.mu:
-    args.lumi = 35867.060
+    lumi = 35867.060
     control_channel = 'mu_lj'
 elif args.el:
-    args.lumi = 31341.774
+    lumi = 31341.774
     control_channel = 'el_lj'
 
+if args.lumi:
+    lumi = args.lumi
 
 
-logging.info("lumi = %f" % args.lumi)
+logging.info("lumi = %f" % lumi)
+logging.info("control_channel = %s" % control_channel)
 
 logging.info("import ROOT")
 
@@ -228,7 +231,7 @@ for fname in files:
     #weight_counter->GetBinContent(2)
     #scale = xsecs[fname] / weight_counter.GetBinContent(2)
     # norm to lumi mu+tau
-    scale = args.lumi
+    scale = lumi
 
     #logging.info("%s %f" % (fname, scale))
 
@@ -240,7 +243,9 @@ for fname in files:
         #try:
         for chan in list(proc.ReadObj().GetListOfKeys()):
             nick = chan.GetName()
-            if nick in ('tt_mutau', 'tt_eltau', 'tt_taultauh', 'dy_tautau', 's_top_eltau', 's_top_mutau', 'dy_tautau'):
+            if nick == 'tt_mutau':
+                tauIDSF_factor = 0.90
+            elif nick in ('tt_mutau', 'tt_eltau', 'tt_taultauh', 'dy_tautau', 's_top_eltau', 's_top_mutau', 'dy_tautau'):
                 tauIDSF_factor = 0.95
             else:
                 tauIDSF_factor = 1.
@@ -271,6 +276,9 @@ for fname in files:
                     # it will raise Warnin for histograms which already have this -- have to filter it offline
                     if isMC:
                         h.Scale(scale * tauIDSF_factor * pu_factor)
+                        if h.Integral() < 0:
+                            h.Scale(-1.)
+
                     #h.Print()
                     if process == control_channel and sys_name == 'NOMINAL' and histo_key.GetName() == '_'.join([process, nick, sys_name, 'Mt_lep_met']):
                         err_scaled = 0.
