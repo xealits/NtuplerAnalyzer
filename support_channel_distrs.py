@@ -971,6 +971,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     #            (find most precise subprocess ones, then store accordingly for channels)
     # sys     -- shape systematics
     out_hs = OrderedDict([((chan, proc, sys), {'met':        TH1D('%s_%s_%s_met'        % (chan, proc, sys), '', 30, 0, 300),
+                                               'init_met':   TH1D('%s_%s_%s_init_met'   % (chan, proc, sys), '', 30, 0, 300),
                                                'lep_pt':     TH1D('%s_%s_%s_lep_pt'     % (chan, proc, sys), '', 20, 0, 200),
                                                'lep_eta':    TH1D('%s_%s_%s_lep_eta'    % (chan, proc, sys), '', 20, -2.5, 2.5),
                                                'tau_pt':     TH1D('%s_%s_%s_tau_pt'     % (chan, proc, sys), '', 30, 0, 150),
@@ -1691,6 +1692,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     # but it does reduce the amount of output -- no geom progression
 
                 out_hs[(chan, proc, sys_name)]['met'].Fill(met_pt, sys_weight)
+                out_hs[(chan, proc, sys_name)]['init_met'].Fill(ev.met_corrected.pt(), sys_weight) # for control
                 out_hs[(chan, proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  sys_weight)
                 out_hs[(chan, proc, sys_name)]['lep_eta'] .Fill(ev.lep_p4[0].eta(), sys_weight)
                 # not tagged jets
