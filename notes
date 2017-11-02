@@ -33,7 +33,13 @@ RuntimeError: File fitDiagnostics.root does not contain the output of the backgr
 
 combine -M MaxLikelihoodFit ttxsec/play_shapes_tt_mu.txt --saveShapes --saveWithUncertainties
 
+combine -M FitDiagnostics ttxsec/fit-stuff/tt_mu_2_spec.txt --saveShapes --saveWithUncertainties --name Mu
+fitDiagnosticsMu.root
+
 -- saves post-fit uncertainty, and then additional stack-plot should put the distr-s together
+
+also notice:
+ WARNING --  From combine v7, method MaxLikelihoodFit has been renamed to FitDiagnostics
 
 
 
@@ -83,12 +89,18 @@ plotParametersFromToys("../fitDiagnosticsToys.root","../fitDiagnosticsData.root"
 
 ## impacts
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d tt_el_2.root -m 125 --robustFit 1 --doInitialFit
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d tt_el_2.root -m 125 --robustFit 1 --doFits --parallel 5
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d tt_el_2.root -m 125 -o impacts.json
-../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i impacts.json -o impacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d tt_el_12-1.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d tt_el_12-1.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d tt_el_12-1.root -m 125 -o el_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i el_impacts.json -o el_impacts
 
 
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d tt_mu_12-1.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d tt_mu_12-1.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d tt_mu_12-1.root -m 125 -o mu_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i mu_impacts.json -o mu_impacts
+
+it creates pdf
 
 
 
