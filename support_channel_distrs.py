@@ -572,6 +572,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     logger.write(' '.join(name + '=' + str(setting) for name, setting in
         [('isMC', isMC), ('save_weights', save_weights), ('aMCatNLO', aMCatNLO), ('isTT', isTT), ('isSTop', isSTop), ('isSTopTSchannels', isSTopTSchannels), ('isDY', isDY), ('isWJets', isWJets), ('isQCD', isQCD), ('isDibosons', isDibosons)]) + '\n')
 
+
+    logging.info("load root_funcs")
+    ROOT.gROOT.ProcessLine(".L /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/root_funcs.C+") # TODO: change absolute path to relative
+
     # Recoil corrections
     doRecoilCorrections = isWJets or isDY # TODO: check if it is needed for DY
     if doRecoilCorrections:
@@ -982,7 +986,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'bjet_eta':   TH1D('%s_%s_%s_bjet_eta'   % (chan, proc, sys), '', 20, -2.5, 2.5),
                                                'dphi_lep_met': TH1D('%s_%s_%s_dphi_lep_met' % (chan, proc, sys), '', 20, -3.2, 3.2),
                                                'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
-                                               'Mt_lep_met_f': TH1D('%s_%s_%s_Mt_lep_met_f' % (chan, proc, sys), '', 20, 0, 200),
+                                               'Mt_lep_met_f_mth':   TH1D('%s_%s_%s_Mt_lep_met_f_mth'   % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_cos':   TH1D('%s_%s_%s_Mt_lep_met_f_cos'   % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_cos_c': TH1D('%s_%s_%s_Mt_lep_met_f_cos_c' % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_c':     TH1D('%s_%s_%s_Mt_lep_met_f_c'     % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_test':  TH1D('%s_%s_%s_Mt_lep_met_f_test'  % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f':       TH1D('%s_%s_%s_Mt_lep_met_f'       % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met':  TH1D('%s_%s_%s_Mt_lep_met' % (chan, proc, sys), '', 10, 0, 200),
                                                'Mt_tau_met':  TH1D('%s_%s_%s_Mt_tau_met' % (chan, proc, sys), '', 20, 0, 200),
                                                # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
@@ -1082,6 +1091,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 0
                 #ev.nalljets  # number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
                 )
+            Mt_lep_met_c   = ROOT.MTlep_met_pt_recoilcor(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py(), ev.gen_genPx, ev.gen_genPy, ev.gen_visPx, ev.gen_visPy, 0)
 
             #Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.pfmetcorr_ex, ev.pfmetcorr_ey)
             #Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px(), ev.tau_p4[0].Py(), ev.pfmetcorr_ex, ev.pfmetcorr_ey)
@@ -1089,6 +1099,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         else:
             met_x = ev.met_corrected.Px()
             met_y = ev.met_corrected.Py()
+            Mt_lep_met_c   = ROOT.MTlep_c(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
+            Mt_lep_met_test = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x, met_y)
             #Mt_lep_met = transverse_mass(ev.lep_p4[0], ev.met_corrected)
             #Mt_tau_met = transverse_mass(ev.tau_p4[0], ev.met_corrected)
             #Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px(), ev.tau_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
@@ -1098,16 +1110,29 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
         # TODO: pass jet systematics to met?
         Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x, met_y)
-        dphi_lep_met = ev.lep_p4[0].Phi() - TVector3(met_x, met_y, 0).Phi()
+        #met_vector = TLorentzVector(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
+        #met_vector = ROOT.Math.LorentzVector(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
+        #met_vector = ROOT.Math.LorentzVector(ROOT.Math.PxPyPzE4D(float))(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
+        met_vector = ROOT.Math.LorentzVector(ROOT.Math.PxPyPzE4D('double'))(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
+        d_lep_met = ev.lep_p4[0] - met_vector
+        dphi_lep_met = d_lep_met.Phi() # ev.lep_p4[0].Phi() - met_vector.Phi()
         cos_dphi_lep_met = TMath.Cos(dphi_lep_met)
         met_pt = TMath.Sqrt(met_x*met_x + met_y*met_y)
+
+        #float MTlep_met_pt_recoilcor(float lep_px, float lep_py,
+        #	float met_px, float met_py,
+        #	float gen_genPx, float gen_genPy, float gen_visPx, float gen_visPy,
+        #	int njets)
+        Mt_lep_met_cos = TMath.Sqrt(2*ev.lep_p4[0].pt() * met_vector.pt() * (1 - cos_dphi_lep_met))
+        Mt_lep_met_mth = abs((ev.lep_p4[0] - met_vector).Mt())
+        Mt_lep_met_cos_c = ROOT.transverse_mass(ev.lep_p4[0], met_vector)
 
         weight = 1. # common weight of event (1. for data)
         if isMC:
             try:
-                weight_pu    = pileup_ratio[ev.nvtx]
-                weight_pu_up = pileup_ratio_up[ev.nvtx]
-                weight_pu_dn = pileup_ratio_down[ev.nvtx]
+                weight_pu    = pileup_ratio[ev.nvtx_gen]
+                weight_pu_up = pileup_ratio_up[ev.nvtx_gen]
+                weight_pu_dn = pileup_ratio_down[ev.nvtx_gen]
                 control_hs['weight_pu']   .Fill(weight_pu)
                 control_hs['weight_pu_up'].Fill(weight_pu_up)
                 control_hs['weight_pu_dn'].Fill(weight_pu_dn)
@@ -1704,7 +1729,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     out_hs[(chan, proc, sys_name)]['bjet_pt']  .Fill(jets_b[0][0].pt() * jets_b[0][1],  sys_weight)
                     out_hs[(chan, proc, sys_name)]['bjet_eta'] .Fill(jets_b[0][0].eta(), sys_weight)
 
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f']  .Fill(Mt_lep_met, sys_weight)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_c']    .Fill(Mt_lep_met_c, sys_weight)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_test'] .Fill(Mt_lep_met_test, sys_weight)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_cos']  .Fill(Mt_lep_met_cos, sys_weight)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_cos_c'].Fill(Mt_lep_met_cos_c, sys_weight)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_mth']  .Fill(Mt_lep_met_mth, sys_weight)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f']      .Fill(Mt_lep_met, sys_weight)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, sys_weight)
                 out_hs[(chan, proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, sys_weight)
                 out_hs[(chan, proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, sys_weight)
