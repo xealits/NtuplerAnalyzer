@@ -4,6 +4,7 @@ plots_sel: mc_in=mc_mu_try2_split12.root
 plots_sel: out_dir=./
 plots_sel: sel=mu
 plots_sel:
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met -s TOPPTUp
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met -s bSFUp
@@ -39,6 +40,7 @@ plots_presel: mc_in=mc_mu_try2_split12.root
 plots_presel: out_dir=./
 plots_presel: sel=mu
 plots_presel:
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_presel -d Mt_lep_met_f
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_presel -d Mt_lep_met
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_presel -d Mt_lep_met -s TOPPTUp
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_presel -d dijet_mass
