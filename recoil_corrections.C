@@ -11,8 +11,6 @@
 
 #include "HTT-utilities/RecoilCorrections/interface/RecoilCorrector.h"
 
-const double b_Medium_WP = 0.8484;
-
 // the exact LorentzVector declaration
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
 

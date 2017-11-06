@@ -31,19 +31,26 @@ ssh fermi05 'screen -d -m bash -c "lscpu | grep ^CPU ; uptime ; bash" '
 ssh fermi04 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/merge_jobs_w4jets_wjetsamcatnlo_commands_4 "'
 ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/merge_jobs_w4jets_wjetsamcatnlo_commands_5 "'
 
+ssh fermi01 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands_wjets-dy_1 "'
+ssh fermi02 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands_wjets-dy_2 "'
+ssh fermi03 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands_wjets-dy_3 "'
+ssh fermi04 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands_wjets-dy_4 "'
+ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands_wjets-dy_5 "'
+
 hadd-ing
 
-foreach d (`cat jobs_hadd.dtags.small`)
-hadd try2_split12-1/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split12/$d/*.root &
+foreach d (`cat merge-sets/jobs_hadd.dtags.small`)
+hadd merge-sets/try2_split13-1/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split13/$d/*.root &
 end
 
-foreach d (`cat jobs_hadd.dtags.large_aa`)
-hadd try2_split12-1/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split12/$d/*.root &
+foreach d (`cat merge-sets/jobs_hadd.dtags.large_aa`)
+hadd merge-sets/try2_split13-1/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split13/$d/*.root &
 end
 
-foreach d (`cat jobs_hadd.dtags.large_ab`)
-hadd try2_split12-1/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split12/$d/*.root &
+foreach d (`cat merge-sets/jobs_hadd.dtags.large_ab`)
+hadd merge-sets/try2_split13-1/$d.root /lstore/cms/olek/outdirs/v13-0/run_2/split13/$d/*.root &
 end
 
 foreach d (SingleMuon SingleElectron)
+
 
