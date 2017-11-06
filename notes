@@ -3,22 +3,39 @@
 ## NLL scan
 
 combine -M MultiDimFit ttxsec/tt_el_2.txt --algo grid --points 2000 --rMax 2 --name El
-root -l higgsCombineEl.MultiDimFit.mH120.root
+combine -M MultiDimFit ttxsec/fit-stuff/fresh_mu.txt --algo grid --points 2000 --rMax 2 --name MuShapes
+root -l higgsCombineMuShapes.MultiDimFit.mH120.root
 limit->Draw("2*deltaNLL:r", "2*deltaNLL<10", "colz")
+
+trying to get some output, some nuisances included
+
+combine toy-hgg-125.root -M MultiDimFit --algo grid --points 2000 --setPhysicsModelParameterRanges JES=-2,2 -m 125 --fastScan
+Invalid options: unrecognised option '--setPhysicsModelParameterRanges'
+
+
 
 
 ## pulls in fit
 
 combine -M FitDiagnostics ttxsec/fit-stuff/tt_el_2.txt --name El
+combine -M FitDiagnostics ttxsec/fit-stuff/fresh_mu.txt --name MuShape
+combine -M FitDiagnostics ttxsec/fit-stuff/fresh_el.txt --name ElShape
 
 (corrected diffNuisances to output only s+b -- option "-o")
 
 python test/diffNuisances.py fitDiagnostics.root -g pulls_of_nuisances.root -o
 
-python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsMu.root -g pulls_of_nuisances_mu.root -o
-root -l pulls_of_nuisances_mu.root
+python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsMuShape.root -g pulls_of_nuisances_mu_shape.root -o
+root -l pulls_of_nuisances_mu_shape.root
 gStyle->SetOptStat(0)
 nuisancs->Draw()
+
+python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsElShape.root -g pulls_of_nuisances_el_shape.root -o
+root -l pulls_of_nuisances_el_shape.root
+
+TPaveText *pt = new TPaveText(.05,.1,.95,.8)
+pt->AddText("electron-tau channel")
+pt->Draw("same")
 
 
 -- now it crashes on electrons (!!!! worked yesterday fully all was done with electrons!!) with:
@@ -62,6 +79,7 @@ combine -M FitDiagnostics ttxsec/tt_mu_2.txt --plots --saveShapes
 required here and there by stuff
 
 ./scripts/text2workspace.py ttxsec/tt_el_2.txt
+./scripts/text2workspace.py ttxsec/fit-stuff/fresh_mu.txt
 
 
 
@@ -101,6 +119,19 @@ plotParametersFromToys("../fitDiagnosticsToys.root","../fitDiagnosticsData.root"
 ../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i mu_impacts.json -o mu_impacts
 
 it creates pdf
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_mu.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_mu.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_mu.root -m 125 -o mu_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i mu_impacts.json -o fresh_mu_impacts
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el.root -m 125 -o el_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i el_impacts.json -o fresh_el_impacts
+
 
 
 
