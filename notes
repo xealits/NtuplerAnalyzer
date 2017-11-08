@@ -5,7 +5,10 @@
 combine -M MultiDimFit ttxsec/tt_el_2.txt --algo grid --points 2000 --rMax 2 --name El
 combine -M MultiDimFit ttxsec/fit-stuff/fresh_mu.txt --algo grid --points 2000 --rMax 2 --name MuShapes
 root -l higgsCombineMuShapes.MultiDimFit.mH120.root
-limit->Draw("2*deltaNLL:r", "2*deltaNLL<10", "colz")
+limit->Draw("2*deltaNLL:r", "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+TLine* l = new TLine(0.7, 1, 1.15, 1)
+l->Draw("same")
 
 trying to get some output, some nuisances included
 
@@ -47,7 +50,7 @@ pt->AddText("electron-tau channel")
 pt->Draw("same")
 
 
-TPaveText *pt = new TPaveText(.05,.5,.95,.8)
+TPaveText *pt = new TPaveText(.05, 1.8, .95, 2.2)
 pt->AddText("muon-tau channel")
 pt->Draw("same")
 
@@ -153,14 +156,15 @@ muon fit investigation:
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_mu_just_fixed.root -m 125 --robustFit 1 --doInitialFit
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_mu_just_fixed.root -m 125 --robustFit 1 --doFits --parallel 5
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_mu_just_fixed.root -m 125 -o mu_impacts_just.json
-../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i mu_impacts_just.json -o fixed_mu_impacts_just
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i mu_impacts_just.json -o fixed_mu_impacts_just
 
 
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el_just.root -m 125 --robustFit 1 --doInitialFit
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el_just.root -m 125 --robustFit 1 --doFits --parallel 5
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el_just.root -m 125 -o el_impacts_just.json
-../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i el_impacts_just.json -o fixed_el_impacts_just
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i el_impacts_just.json -o fixed_el_impacts_just
 
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i el_impacts_just.json -o fixed_el_impacts_just
 
 
 
