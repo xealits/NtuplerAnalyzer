@@ -13,6 +13,15 @@ combine toy-hgg-125.root -M MultiDimFit --algo grid --points 2000 --setPhysicsMo
 Invalid options: unrecognised option '--setPhysicsModelParameterRanges'
 
 
+save some useful info and maybe useful RecreateNLL:
+
+combine -M MultiDimFit ttxsec/fit-stuff/fresh_el.txt --algo grid --points 2000 --rMax 2 --name ElShapes --forceRecreateNLL --saveSpecifiedNuis TOPPT,dy_norm
+combine -M MultiDimFit ttxsec/fit-stuff/fresh_mu.txt --algo grid --points 2000 --rMax 2 --name MuShapes --forceRecreateNLL --saveSpecifiedNuis TOPPT,dy_norm --parameters TOPPT
+
+this crashes:
+ --setParameterRanges TOPPT=-1.0,2.0
+
+
 
 
 ## pulls in fit
@@ -33,10 +42,14 @@ nuisancs->Draw()
 python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsElShape.root -g pulls_of_nuisances_el_shape.root -o
 root -l pulls_of_nuisances_el_shape.root
 
-TPaveText *pt = new TPaveText(.05,.1,.95,.8)
+TPaveText *pt = new TPaveText(.05,1.8,.95,2.2)
 pt->AddText("electron-tau channel")
 pt->Draw("same")
 
+
+TPaveText *pt = new TPaveText(.05,.5,.95,.8)
+pt->AddText("muon-tau channel")
+pt->Draw("same")
 
 -- now it crashes on electrons (!!!! worked yesterday fully all was done with electrons!!) with:
   File "ttxsec/fit-stuff/diffNuisances.py", line 50, in <module>
@@ -51,6 +64,7 @@ RuntimeError: File fitDiagnostics.root does not contain the output of the backgr
 combine -M MaxLikelihoodFit ttxsec/play_shapes_tt_mu.txt --saveShapes --saveWithUncertainties
 
 combine -M FitDiagnostics ttxsec/fit-stuff/tt_mu_2_spec.txt --saveShapes --saveWithUncertainties --name Mu
+combine -M FitDiagnostics ttxsec/fit-stuff/fresh_mu.txt --saveShapes --saveWithUncertainties --name MuShapes
 fitDiagnosticsMu.root
 
 -- saves post-fit uncertainty, and then additional stack-plot should put the distr-s together
@@ -103,6 +117,8 @@ plotParametersFromToys("../fitDiagnosticsToys.root","../fitDiagnosticsData.root"
                                 the specified signal strength.
 
 
+returns pdf tree_fit_sb.pdf
+
 
 
 ## impacts
@@ -124,13 +140,29 @@ it creates pdf
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_mu.root -m 125 --robustFit 1 --doInitialFit
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_mu.root -m 125 --robustFit 1 --doFits --parallel 5
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_mu.root -m 125 -o mu_impacts.json
-../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i mu_impacts.json -o fresh_mu_impacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i mu_impacts.json -o fixed_mu_impacts
 
 
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el.root -m 125 --robustFit 1 --doInitialFit
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el.root -m 125 --robustFit 1 --doFits --parallel 5
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el.root -m 125 -o el_impacts.json
-../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i el_impacts.json -o fresh_el_impacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i el_impacts.json -o fixed_el_impacts
+
+muon fit investigation:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_mu_just_fixed.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_mu_just_fixed.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_mu_just_fixed.root -m 125 -o mu_impacts_just.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i mu_impacts_just.json -o fixed_mu_impacts_just
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el_just.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el_just.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el_just.root -m 125 -o el_impacts_just.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i el_impacts_just.json -o fixed_el_impacts_just
+
+
+
 
 
 
