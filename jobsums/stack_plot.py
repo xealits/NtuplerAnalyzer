@@ -154,6 +154,12 @@ logging.info("mc sum = %f %f" % (hs_sum1.Integral(), hs_sum2.Integral()))
 
 out_dir = args.output_directory + '/' if args.output_directory else './'
 
+histo_data.GetXaxis().SetLabelFont(63)
+histo_data.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
+histo_data.GetYaxis().SetLabelFont(63)
+histo_data.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
+
+
 if not args.plot and not args.ratio:
     fout = TFile(out_dir + args.mc_file.split('.root')[0] + '_%s_%s_%s.root' % (distr_name, channel, sys_name), 'RECREATE')
     fout.cd()
@@ -243,6 +249,18 @@ else:
 
         histo_data_relative.Divide(hs_sum1)
         hs_sum1_relative.Divide(hs_sum1)
+
+        #h2.GetYaxis()->SetLabelOffset(0.01)
+
+        histo_data_relative.GetXaxis().SetLabelFont(63)
+        histo_data_relative.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
+        histo_data_relative.GetYaxis().SetLabelFont(63)
+        histo_data_relative.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
+
+        hs_sum1_relative.GetXaxis().SetLabelFont(63)
+        hs_sum1_relative.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
+        hs_sum1_relative.GetYaxis().SetLabelFont(63)
+        hs_sum1_relative.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
 
         hs_sum1_relative.Draw("e2")
         histo_data_relative.Draw("e p same")
