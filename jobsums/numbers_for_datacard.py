@@ -23,6 +23,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument("data_file",    help="full Data+MC file name")
 parser.add_argument("-c", "--channel",  type=str, help="if given then get the numbers from here")
+parser.add_argument("-d", "--distr",    type=str, default='Mt_lep_met', help="fitted distribution")
 parser.add_argument("-m", "--mu",  action = "store_true", help="muon channels: mu_lj, mu_lj_out")
 parser.add_argument("-e", "--el",  action = "store_true", help="electron channels: el_lj, el_lj_out")
 parser.add_argument("-v", "--verbose",  action = "store_true", help="log debug output")
@@ -44,10 +45,14 @@ from ROOT import TFile, THStack, TLegend, kGreen, kYellow, kOrange, kViolet, kAz
 import plotting_root
 
 
-if args.channel:
+if args.channel and 'mu' in args.channel:
     channels = [args.channel]
     processes = processes_mu
     processes_id = processes_mu_id
+elif args.channel and 'el' in args.channel:
+    channels = [args.channel]
+    processes = processes_el
+    processes_id = processes_el_id
 elif args.mu:
     channels = ['mu_lj', 'mu_lj_out']
     processes = processes_mu
@@ -62,7 +67,7 @@ else:
 fdata = TFile(args.data_file)
 
 sys_name = 'NOMINAL'
-distr_name = 'Mt_lep_met'
+distr_name = args.distr
 
 for channel in channels:
     chan = fdata.Get(channel)
@@ -70,6 +75,7 @@ for channel in channels:
     #    continue
     #if chan.GetName() != channel and chan.GetName() != shape_channel:
     #    continue
+    logging.info(channel)
 
     if not chan:
         logging.warning('no channel %s' % channel)

@@ -35,6 +35,58 @@ plots_sel:
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_sel -d nvtx -s PUUp
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_sel -d nvtx -s PUDown
 
+plots_sel_all_sys: data_in=try2_split12/SingleMuon.root
+plots_sel_all_sys: mc_in=mc_mu_try2_split12.root
+plots_sel_all_sys: out_dir=./
+plots_sel_all_sys: channel=mu_sel
+plots_sel_all_sys:
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s NOMINAL     
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s JESUp     
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s JESDown   
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s JERUp     
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s JERDown   
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s TauESUp   
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s TauESDown 
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s bSFUp     
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s bSFDown   
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s PUUp      
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s PUDown    
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s TOPPTUp      
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${channel} -d Mt_lep_met -s TOPPTDown    
+
+plots_sel_all_sys_fine: data_in=try2_split12/SingleMuon.root
+plots_sel_all_sys_fine: mc_in=mc_mu_try2_split12.root
+plots_sel_all_sys_fine: out_dir=./
+plots_sel_all_sys_fine: sel=mu
+plots_sel_all_sys_fine:
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s NOMINAL     
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s JESUp     
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s JESDown   
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s JERUp     
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s JERDown   
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s TauESUp   
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s TauESDown 
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s bSFUp     
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s bSFDown   
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s PUUp      
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s PUDown    
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s TOPPTUp      
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj -d Mt_lep_met_f -s TOPPTDown    
+	# out
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s NOMINAL     
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s JESUp     
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s JESDown   
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s JERUp     
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s JERDown   
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s TauESUp   
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s TauESDown 
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s bSFUp     
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s bSFDown   
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s PUUp      
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s PUDown    
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s TOPPTUp      
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ${sel}_lj_out -d Mt_lep_met_f -s TOPPTDown    
+
 plots_presel: data_in=try2_split12/SingleMuon.root
 plots_presel: mc_in=mc_mu_try2_split12.root
 plots_presel: out_dir=./

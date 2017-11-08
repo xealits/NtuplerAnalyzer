@@ -243,7 +243,7 @@ for fname in files:
         #try:
         for chan in list(proc.ReadObj().GetListOfKeys()):
             nick = chan.GetName()
-            if nick == 'tt_mutau':
+            if nick == 'none': #'tt_mutau':
                 tauIDSF_factor = 0.90
             elif nick in ('tt_mutau', 'tt_eltau', 'tt_taultauh', 'dy_tautau', 's_top_eltau', 's_top_mutau', 'dy_tautau'):
                 tauIDSF_factor = 0.95
@@ -252,12 +252,14 @@ for fname in files:
 
             for sys in list(chan.ReadObj().GetListOfKeys()):
                 sys_name = sys.GetName()
+                # there is this 3% of error in PU right now.. correcting ad-hoc, TODO: re-proc jobs with new PU (frist get the new PU, then re-proc.. and add PU-effect-meter distr and other meters on Mt)
+                cor = 0.965 if 'mu_' in process else 1. # muons and electrons are a bit different eras........
                 if 'PUUp' in sys_name:
-                    pu_factor = 1 / 0.97
+                    pu_factor = cor * 1. / 0.9979 # 0.97 # 1./ 0.9979
                 elif 'PUDown' in sys_name:
-                    pu_factor = 1 / 1.17
+                    pu_factor = cor * 1. / 1.0485 # 1.17 # 1./ 1.485
                 else:
-                    pu_factor = 1. / 1.06
+                    pu_factor = cor * 1. / 1.022 # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
 
                 for histo_key in list(sys.ReadObj().GetListOfKeys()):
                     h = histo_key.ReadObj()
