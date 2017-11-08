@@ -689,15 +689,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 'PUDown'    ,
                 ]
         systematic_names_pu = ['NOMINAL', 'PUUp', 'PUDown']
+        systematic_names_pu_toppt = ['NOMINAL', 'PUUp', 'PUDown']
     else:
         systematic_names_all = ['NOMINAL']
         systematic_names_pu  = ['NOMINAL']
+        systematic_names_pu_toppt  = ['NOMINAL']
     systematic_names_toppt = ['NOMINAL']
 
     if isTT:
         systematic_names_all.append('TOPPTUp')
         systematic_names_all.append('TOPPTDown')
         systematic_names_toppt = ['NOMINAL', 'TOPPTUp']
+        systematic_names_pu_toppt.append('TOPPTUp')
 
     if isMC:
         if isTT:
@@ -724,6 +727,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (tt_procs_el, systematic_names_pu),
                    'adv_mu_sel':     (tt_procs_mu, systematic_names_pu),
+                   'sel_mu_min':     (tt_procs_mu, systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
+                   'sel_mu_min_ss':  (tt_procs_mu, systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_wjet_old':(tt_procs_mu, ['NOMINAL']),
@@ -773,6 +778,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (wjets_procs, systematic_names_pu),
                    'adv_mu_sel':     (wjets_procs, systematic_names_pu),
+                   'sel_mu_min':     (wjets_procs, systematic_names_pu_toppt),
+                   'sel_mu_min_ss':  (wjets_procs, systematic_names_pu_toppt),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (wjets_procs, ['NOMINAL']),
                    'ctr_mu_wjet_old':(wjets_procs, ['NOMINAL']),
@@ -822,6 +829,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (dy_procs, systematic_names_pu),
                    'adv_mu_sel':     (dy_procs, systematic_names_pu),
+                   'sel_mu_min':     (dy_procs, systematic_names_pu_toppt),
+                   'sel_mu_min_ss':  (dy_procs, systematic_names_pu_toppt),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (dy_procs, ['NOMINAL']),
                    'ctr_mu_wjet_old':(dy_procs, ['NOMINAL']),
@@ -855,6 +864,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (s_top_procs_el, systematic_names_pu),
                    'adv_mu_sel':     (s_top_procs_mu, systematic_names_pu),
+                   'sel_mu_min':     (s_top_procs_mu, systematic_names_pu_toppt),
+                   'sel_mu_min_ss':  (s_top_procs_mu, systematic_names_pu_toppt),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_wjet_old':(s_top_procs_mu, ['NOMINAL']),
@@ -888,6 +899,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (qcd_procs, systematic_names_pu),
                    'adv_mu_sel':     (qcd_procs, systematic_names_pu),
+                   'sel_mu_min':     (qcd_procs, systematic_names_pu_toppt),
+                   'sel_mu_min_ss':  (qcd_procs, systematic_names_pu_toppt),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (qcd_procs, ['NOMINAL']),
                    'ctr_mu_wjet_old':(qcd_procs, ['NOMINAL']),
@@ -921,6 +934,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (dibosons_procs, systematic_names_pu),
                    'adv_mu_sel':     (dibosons_procs, systematic_names_pu),
+                   'sel_mu_min':     (dibosons_procs, systematic_names_pu_toppt),
+                   'sel_mu_min_ss':  (dibosons_procs, systematic_names_pu_toppt),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_wjet_old':(dibosons_procs, ['NOMINAL']),
@@ -954,6 +969,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (data_procs, systematic_names_pu),
                    'adv_mu_sel':     (data_procs, systematic_names_pu),
+                   'sel_mu_min':     (data_procs, systematic_names_pu_toppt),
+                   'sel_mu_min_ss':  (data_procs, systematic_names_pu_toppt),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (data_procs, ['NOMINAL']),
                    'ctr_mu_wjet_old':(data_procs, ['NOMINAL']),
@@ -992,12 +1009,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                #'Mt_lep_met_f_c':     TH1D('%s_%s_%s_Mt_lep_met_f_c'     % (chan, proc, sys), '', 20, 0, 250),
                                                #'Mt_lep_met_f_test':  TH1D('%s_%s_%s_Mt_lep_met_f_test'  % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_f':       TH1D('%s_%s_%s_Mt_lep_met_f'       % (chan, proc, sys), '', 20, 0, 250),
-					       # control distrs for effect of different weights
+                                               # control distrs for effect of different weights
                                                'Mt_lep_met_f_init':       TH1D('%s_%s_%s_Mt_lep_met_f_init'       % (chan, proc, sys), '', 20, 0, 250),
                                                #sys_weight = weight * weight_bSF * weight_PU * weight_top_pt
                                                'Mt_lep_met_f_w_in':       TH1D('%s_%s_%s_Mt_lep_met_f_w_in'       % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_f_w_pu':       TH1D('%s_%s_%s_Mt_lep_met_f_w_pu'       % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_f_w_bf':       TH1D('%s_%s_%s_Mt_lep_met_f_w_bf'       % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_w_bf_min':   TH1D('%s_%s_%s_Mt_lep_met_f_w_bf_min'   % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_f_w_tp':       TH1D('%s_%s_%s_Mt_lep_met_f_w_tp'       % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met':  TH1D('%s_%s_%s_Mt_lep_met' % (chan, proc, sys), '', 10, 0, 200),
                                                'Mt_tau_met':  TH1D('%s_%s_%s_Mt_tau_met' % (chan, proc, sys), '', 20, 0, 200),
@@ -1056,6 +1074,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
         # the lepton requirements for all 1-lepton channels:
         # TODO: is there relIso cut now?
+
         pass_mu = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 27 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 # lep_relIso[0]
         pass_el = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 # lep_relIso[0]
         pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and \
@@ -1066,8 +1085,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02)
 
+        # minimum possible pt threshold -- 24 GeV, = to HLT and recorded in Ntupler
+        pass_min_mu = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 24. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 # lep_relIso[0]
+
         # 1-lep channels, 2mu DY and el-mu ttbar
-        if not (pass_mu or pass_el or pass_mumu or pass_elmu): continue
+        if not (pass_min_mu or pass_mu or pass_el or pass_mumu or pass_elmu): continue
 
         # also at least some kind of tau in single-el:
         if (pass_mu or pass_el) and (not ev.tau_p4.size() > 0): continue # this is the only thing reduces computing
@@ -1127,9 +1149,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         met_pt = TMath.Sqrt(met_x*met_x + met_y*met_y)
 
         #float MTlep_met_pt_recoilcor(float lep_px, float lep_py,
-        #	float met_px, float met_py,
-        #	float gen_genPx, float gen_genPy, float gen_visPx, float gen_visPy,
-        #	int njets)
+        #        float met_px, float met_py,
+        #        float gen_genPx, float gen_genPy, float gen_visPx, float gen_visPy,
+        #        int njets)
         Mt_lep_met_cos = TMath.Sqrt(2*ev.lep_p4[0].pt() * met_vector.pt() * (1 - cos_dphi_lep_met))
         Mt_lep_met_mth = abs((ev.lep_p4[0] - met_vector).Mt())
         Mt_lep_met_cos_c = ROOT.transverse_mass(ev.lep_p4[0], met_vector)
@@ -1306,6 +1328,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         weight_bSF_jer_up, weight_bSF_jer_down = 1., 1.
         weight_bSF_jes_up, weight_bSF_jes_down = 1., 1.
 
+        jets_nominal_min = [] # nominal jet pts
+        jets_b_nominal_min = [] # nominal jet pts
+        weight_bSF_min = 1.
+
         for i in xrange(ev.jet_p4.size()):
             pfid, p4 = ev.jet_PFID[i], ev.jet_p4[i]
             if pfid < 1 or abs(p4.eta()) > 2.5: continue # Loose PFID and eta
@@ -1323,6 +1349,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     weight_bSF      *= calc_btag_sf_weight(b_tagged, flavId, p4.pt(), p4.eta())
                     weight_bSF_up   *= calc_btag_sf_weight(b_tagged, flavId, p4.pt(), p4.eta(), "up")
                     weight_bSF_down *= calc_btag_sf_weight(b_tagged, flavId, p4.pt(), p4.eta(), "down")
+
+            # also save "minimal" jets -- with minimal pt threshold
+            # make them only at NOMINAL systematics for now
+            if p4.pt() > 20: # nominal jet
+                if b_tagged:
+                    #nbjets_nominal += 1
+                    jets_b_nominal_min.append((p4, 1))
+                else:
+                    jets_nominal_min.append((p4, 1))
+                if isMC and with_bSF: # do the SF weights
+                    weight_bSF_min  *= calc_btag_sf_weight(b_tagged, flavId, p4.pt(), p4.eta())
+                    #weight_bSF_up   *= calc_btag_sf_weight(b_tagged, flavId, p4.pt(), p4.eta(), "up")
+                    #weight_bSF_down *= calc_btag_sf_weight(b_tagged, flavId, p4.pt(), p4.eta(), "down")
+
+            # TODO: probably these weights are better to be computed at channel recording?
 
             if isMC:
                 # vary the jets with systematics, save b-tagged and other
@@ -1425,12 +1466,20 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         #has_tau_es_down = False
 
         # p4 momenta of taus and the Energy Scale factor
+        taus_nominal_min = []
         taus_nominal = []
         taus_es_up   = []
         taus_es_down = []
 
         # only top pt tau is treated but that's fine
-        if ev.tau_p4.size() > 0 and ev.tau_IDlev[0] > 2 and abs(ev.tau_p4[0].eta()) < 2.4:
+        '''IDlev
+        1 VLoose
+        2 Loose
+        3 Medium
+        4 Tight
+        5 VTight
+        '''
+        if ev.tau_p4.size() > 0 and ev.tau_IDlev[0] > 1 and abs(ev.tau_p4[0].eta()) < 2.4:
             # it should work like Python does and not copy these objects! (cast)
             #p4, DM, IDlev = ev.tau_p4[0], ev.tau_decayMode[0], ev.tau_IDlev[0]
             #if IDlev < 3 or abs(p4.eta()) < 2.4: continue # only Medium taus
@@ -1439,36 +1488,41 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             tlep_p4 = TLorentzVector(ev.lep_p4[0].X(), ev.lep_p4[0].Y(), ev.lep_p4[0].Z(), ev.lep_p4[0].T())
             ttau_p4 = TLorentzVector(ev.tau_p4[0].X(), ev.tau_p4[0].Y(), ev.tau_p4[0].Z(), ev.tau_p4[0].T())
             if tlep_p4.DeltaR(ttau_p4) > 0.3:
-                DM = ev.tau_decayMode[0]
-                if DM == 0:
-                  factor = 0.995
-                  if isMC:
-                    factor_up   = 0.995 + 0.012
-                    factor_down = 0.995 - 0.012
-                elif DM < 10:
-                  factor = 1.011
-                  if isMC:
-                    factor_up   = 1.011 + 0.012
-                    factor_down = 1.011 - 0.012
+                if not isMC:
+                    if ev.tau_p4[0].pt() > 20.:
+                        taus_nominal_min.append(ev.tau_p4[0], 1.)
+                    if ev.tau_p4[0].pt() > 30. and ev.tau_IDlev[0] > 2:
+                        taus_nominal.append(ev.tau_p4[0], 1.)
                 else:
-                  factor = 1.006
-                  if isMC:
-                    factor_up   = 1.006 + 0.012
-                    factor_down = 1.006 - 0.012
+                    DM = ev.tau_decayMode[0]
+                    if DM == 0:
+                        factor = 0.995
+                        factor_up   = 0.995 + 0.012
+                        factor_down = 0.995 - 0.012
+                    elif DM < 10:
+                        factor = 1.011
+                        factor_up   = 1.011 + 0.012
+                        factor_down = 1.011 - 0.012
+                    else:
+                        factor = 1.006
+                        factor_up   = 1.006 + 0.012
+                        factor_down = 1.006 - 0.012
 
-                #has_tau = (ev.tau_p4[0].pt() * factor) > 30
-                if ev.tau_p4[0].pt() * factor > 30.:
-                    taus_nominal.append((ev.tau_p4[0], factor))
-                ## calculate it later, inplace of record
-                #if not Mt_tau_met_nominal:
-                #    Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px()*factor, ev.tau_p4[0].Py()*factor, met_x, met_y)
-                if isMC:
+                    # only nominal for min taus
+                    if ev.tau_p4[0].pt() * factor > 20.:
+                        taus_nominal_min.append((ev.tau_p4[0], factor))
+                    ## calculate it later, inplace of record
+                    #if not Mt_tau_met_nominal:
+                    #    Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px()*factor, ev.tau_p4[0].Py()*factor, met_x, met_y)
                     #has_tau_es_up   = (ev.tau_p4[0].pt() * factor_up  ) > 30
                     #has_tau_es_down = (ev.tau_p4[0].pt() * factor_down) > 30
-                    if ev.tau_p4[0].pt() * factor_up > 30.:
-                        taus_es_up.append((ev.tau_p4[0], factor_up))
-                    if ev.tau_p4[0].pt() * factor_down > 30.:
-                        taus_es_down.append((ev.tau_p4[0], factor_down))
+                    if ev.tau_IDlev[0] > 2:
+                        if ev.tau_p4[0].pt() * factor > 30.:
+                            taus_nominal.append((ev.tau_p4[0], factor))
+                        if ev.tau_p4[0].pt() * factor_up > 30.:
+                            taus_es_up.append((ev.tau_p4[0], factor_up))
+                        if ev.tau_p4[0].pt() * factor_down > 30.:
+                            taus_es_down.append((ev.tau_p4[0], factor_down))
                     #if not Mt_tau_met_up:
                     #    Mt_tau_met_up   = transverse_mass_pts(ev.tau_p4[0].Px()*factor_up, ev.tau_p4[0].Py()*factor_up, met_x, met_y)
                     #    Mt_tau_met_down = transverse_mass_pts(ev.tau_p4[0].Px()*factor_down, ev.tau_p4[0].Py()*factor_down, met_x, met_y)
@@ -1486,31 +1540,32 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # jet pts, tau pts, b weight (=1 for data), pu weight (=1 for data)
 
         if isMC:
-            systematics = {'NOMINAL'   : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF,          weight_pu,    1],
-                           'JESUp'     : [jets_jes_up,   jets_b_jes_up,   taus_nominal, weight_bSF_jes_up,   weight_pu,    1],
-                           'JESDown'   : [jets_jes_down, jets_b_jes_down, taus_nominal, weight_bSF_jes_down, weight_pu,    1],
-                           'JERUp'     : [jets_jer_up,   jets_b_jer_up,   taus_nominal, weight_bSF_jer_up,   weight_pu,    1],
-                           'JERDown'   : [jets_jer_down, jets_b_jer_down, taus_nominal, weight_bSF_jer_down, weight_pu,    1],
-                           'TauESUp'   : [jets_nominal,  jets_b_nominal,  taus_es_up  ,  weight_bSF,          weight_pu,    1],
-                           'TauESDown' : [jets_nominal,  jets_b_nominal,  taus_es_down,  weight_bSF,          weight_pu,    1],
-                           'bSFUp'     : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF_up  ,     weight_pu,    1],
-                           'bSFDown'   : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF_down,     weight_pu,    1],
-                           'PUUp'      : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF,          weight_pu_up, 1],
-                           'PUDown'    : [jets_nominal,  jets_b_nominal,  taus_nominal, weight_bSF,          weight_pu_dn, 1],
+            systematics = {'NOMINAL'   : [jets_nominal,  jets_b_nominal,  taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF,          weight_pu,    1],
+                           'JESUp'     : [jets_jes_up,   jets_b_jes_up,   taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF_jes_up,   weight_pu,    1],
+                           'JESDown'   : [jets_jes_down, jets_b_jes_down, taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF_jes_down, weight_pu,    1],
+                           'JERUp'     : [jets_jer_up,   jets_b_jer_up,   taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF_jer_up,   weight_pu,    1],
+                           'JERDown'   : [jets_jer_down, jets_b_jer_down, taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF_jer_down, weight_pu,    1],
+                           'TauESUp'   : [jets_nominal,  jets_b_nominal,  taus_es_up  , jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min,  weight_bSF,          weight_pu,    1],
+                           'TauESDown' : [jets_nominal,  jets_b_nominal,  taus_es_down, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min,  weight_bSF,          weight_pu,    1],
+                           'bSFUp'     : [jets_nominal,  jets_b_nominal,  taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF_up  ,     weight_pu,    1],
+                           'bSFDown'   : [jets_nominal,  jets_b_nominal,  taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF_down,     weight_pu,    1],
+                           'PUUp'      : [jets_nominal,  jets_b_nominal,  taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF,          weight_pu_up, 1],
+                           'PUDown'    : [jets_nominal,  jets_b_nominal,  taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF,          weight_pu_dn, 1],
                            }
             if isTT:
-                systematics['TOPPTUp']   = [jets_nominal, jets_b_nominal, taus_nominal, weight_bSF, weight_pu, weight_top_pt]
-                systematics['TOPPTDown'] = [jets_nominal, jets_b_nominal, taus_nominal, weight_bSF, weight_pu, 1.]
+                systematics['TOPPTUp']   = [jets_nominal, jets_b_nominal, taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF, weight_pu, weight_top_pt]
+                systematics['TOPPTDown'] = [jets_nominal, jets_b_nominal, taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF, weight_pu, 1.]
         else:
-            systematics = {'NOMINAL': [jets_nominal, jets_b_nominal, taus_nominal, 1., 1., 1.]}
+            systematics = {'NOMINAL': [jets_nominal, jets_b_nominal, taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, 1., 1., 1.]}
 
         # for each systematic
         # pass one of the reco selections
         # check the subprocess
         # store distr
 
-        for sys_name, (jets, jets_b, taus, weight_bSF, weight_PU, weight_top_pt) in systematics.items():
+        for sys_name, (jets, jets_b, taus, jets_min, jets_b_min, taus_min, weight_bSF_min, weight_bSF, weight_PU, weight_top_pt) in systematics.items():
             sys_weight = weight * weight_bSF * weight_PU * weight_top_pt
+            sys_weight_min = weight * weight_bSF_min * weight_PU * weight_top_pt
             # pass reco selections
 
             Mt_tau_met = 0
@@ -1571,9 +1626,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             has_3jets = njets > 2
             has_3jets_no_tau_match = njets_no_tau_match > 2
 
+            # the jets with minimum pt cut
+	    nbjets_min = len(jets_b_min)
+	    njets_min = nbjets_min + len(jets_min)
+            has_3jets_min = njets_min > 2
+            has_bjets_min = nbjets_min > 0
+
             #has_pre_tau = len(tau_pts) > 0
             #has_medium_tau = has_pre_tau and tau_pts[0] > 30 and ev.tau_IDlev[0] > 2
             has_medium_tau = len(taus) > 0
+            has_loose_tau = len(taus_min) > 0
 
             # these are for single-lepton
             os_lep_med_tau = has_medium_tau and ev.tau_id[0]*ev.lep_id[0] < 0
@@ -1581,6 +1643,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # dilep_mass is not TES corrected
             # it's used only in control regions and shouldn't be a big deal
             #dy_dilep_mass = has_pre_tau and (45 < (ev.lep_p4[0] + ev.tau_p4[0]).mass() < 85)
+
+            os_lep_loose_tau = has_loose_tau and ev.tau_id[0]*ev.lep_id[0] < 0
+            ss_lep_loose_tau = has_loose_tau and ev.tau_id[0]*ev.lep_id[0] > 0
 
             if has_medium_tau:
             #if len(ev.tau_p4) > 0:
@@ -1661,6 +1726,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 passed_channels.append('adv_mu_sel')
             # check the mass cut in distribution of lep+tau mass in usual selection
 
+            # the max efficiency requirements of our selection
+            if pass_min_mu and large_met and has_3jets_min and has_bjets_min and os_lep_loose_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
+                passed_channels.append('sel_mu_min')
+            if pass_min_mu and large_met and has_3jets_min and has_bjets_min and ss_lep_loose_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
+                passed_channels.append('sel_mu_min_ss')
+
             # control selections: WJets, DY mumu and tautau, tt elmu
             # WJets control
             #HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0] && abs(lep_p4[0].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02
@@ -1723,58 +1794,61 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     continue # TODO: so it doesn't change amount of computing, systematics are per event, not per channel
                     # but it does reduce the amount of output -- no geom progression
 
-                out_hs[(chan, proc, sys_name)]['met'].Fill(met_pt, sys_weight)
-                out_hs[(chan, proc, sys_name)]['init_met'].Fill(ev.met_corrected.pt(), sys_weight) # for control
-                out_hs[(chan, proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  sys_weight)
-                out_hs[(chan, proc, sys_name)]['lep_eta'] .Fill(ev.lep_p4[0].eta(), sys_weight)
+                record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss') else sys_weight_min
+
+                out_hs[(chan, proc, sys_name)]['met'].Fill(met_pt, record_weight)
+                out_hs[(chan, proc, sys_name)]['init_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
+                out_hs[(chan, proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  record_weight)
+                out_hs[(chan, proc, sys_name)]['lep_eta'] .Fill(ev.lep_p4[0].eta(), record_weight)
                 # not tagged jets
                 if jets:
-                    out_hs[(chan, proc, sys_name)]['jet_pt']  .Fill(jets[0][0].pt() * jets[0][1],  sys_weight)
-                    out_hs[(chan, proc, sys_name)]['jet_eta'] .Fill(jets[0][0].eta(), sys_weight)
+                    out_hs[(chan, proc, sys_name)]['jet_pt']  .Fill(jets[0][0].pt() * jets[0][1],  record_weight)
+                    out_hs[(chan, proc, sys_name)]['jet_eta'] .Fill(jets[0][0].eta(), record_weight)
                 # tagged jets
                 if jets_b:
-                    out_hs[(chan, proc, sys_name)]['bjet_pt']  .Fill(jets_b[0][0].pt() * jets_b[0][1],  sys_weight)
-                    out_hs[(chan, proc, sys_name)]['bjet_eta'] .Fill(jets_b[0][0].eta(), sys_weight)
+                    out_hs[(chan, proc, sys_name)]['bjet_pt']  .Fill(jets_b[0][0].pt() * jets_b[0][1],  record_weight)
+                    out_hs[(chan, proc, sys_name)]['bjet_eta'] .Fill(jets_b[0][0].eta(), record_weight)
 
-                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_c']    .Fill(Mt_lep_met_c, sys_weight)
-                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_test'] .Fill(Mt_lep_met_test, sys_weight)
-                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_cos']  .Fill(Mt_lep_met_cos, sys_weight)
-                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_cos_c'].Fill(Mt_lep_met_cos_c, sys_weight)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_mth']  .Fill(Mt_lep_met_mth, sys_weight)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f']      .Fill(Mt_lep_met, sys_weight)
-		# controls for effect from weights
+                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_c']    .Fill(Mt_lep_met_c, record_weight)
+                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_test'] .Fill(Mt_lep_met_test, record_weight)
+                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_cos']  .Fill(Mt_lep_met_cos, record_weight)
+                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_cos_c'].Fill(Mt_lep_met_cos_c, record_weight)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_mth']  .Fill(Mt_lep_met_mth, record_weight)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f']      .Fill(Mt_lep_met, record_weight)
+                # controls for effect from weights
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_init']      .Fill(Mt_lep_met)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_in']      .Fill(Mt_lep_met, weight)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_bf']      .Fill(Mt_lep_met, weight_bSF)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_bf_min']  .Fill(Mt_lep_met, weight_bSF_min)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_pu']      .Fill(Mt_lep_met, weight_PU)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_tp']      .Fill(Mt_lep_met, weight_top_pt)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, sys_weight)
-                out_hs[(chan, proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, sys_weight)
-                out_hs[(chan, proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, sys_weight)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, record_weight)
+                out_hs[(chan, proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, record_weight)
+                out_hs[(chan, proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, record_weight)
 
                 if pass_mumu or pass_elmu:
                     lep_lep = ev.lep_p4[0] + ev.lep_p4[1]
                     lep_lep_mass = lep_lep.mass()
-                    out_hs[(chan, proc, sys_name)]['M_lep_lep']  .Fill(lep_lep_mass, sys_weight)
+                    out_hs[(chan, proc, sys_name)]['M_lep_lep']  .Fill(lep_lep_mass, record_weight)
 
                 if has_medium_tau:
                 #if len(ev.tau_p4) > 0:
                     #lep_tau = ev.lep_p4[0] + taus[0][0] # done above
-                    #out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), sys_weight)
-                    out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(taus[0][0].pt() * taus[0][1],  sys_weight)
-                    out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(taus[0][0].eta(), sys_weight)
-                    out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, sys_weight)
-                    out_hs[(chan, proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, sys_weight)
+                    #out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), record_weight)
+                    out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(taus[0][0].pt() * taus[0][1],  record_weight)
+                    out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(taus[0][0].eta(), record_weight)
+                    out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
+                    out_hs[(chan, proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
 
-                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, sys_weight)
-                out_hs[(chan, proc, sys_name)]['dijet_mass']  .Fill(w_mass, sys_weight)
-                out_hs[(chan, proc, sys_name)]['trijet_mass'] .Fill(t_mass, sys_weight)
-                out_hs[(chan, proc, sys_name)]['2D_dijet_trijet'] .Fill(w_mass, t_mass, sys_weight)
-                out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(lj_var, sys_weight)
+                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, record_weight)
+                out_hs[(chan, proc, sys_name)]['dijet_mass']  .Fill(w_mass, record_weight)
+                out_hs[(chan, proc, sys_name)]['trijet_mass'] .Fill(t_mass, record_weight)
+                out_hs[(chan, proc, sys_name)]['2D_dijet_trijet'] .Fill(w_mass, t_mass, record_weight)
+                out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(lj_var, record_weight)
 
-                out_hs[(chan, proc, sys_name)]['njets'].Fill(njets, sys_weight)
-                out_hs[(chan, proc, sys_name)]['nbjets'].Fill(nbjets, sys_weight)
-                out_hs[(chan, proc, sys_name)]['nvtx'].Fill(ev.nvtx, sys_weight)
+                out_hs[(chan, proc, sys_name)]['njets'].Fill(njets, record_weight)
+                out_hs[(chan, proc, sys_name)]['nbjets'].Fill(nbjets, record_weight)
+                out_hs[(chan, proc, sys_name)]['nvtx'].Fill(ev.nvtx, record_weight)
 
         if save_weights:
           #weight_bSF = 1.
