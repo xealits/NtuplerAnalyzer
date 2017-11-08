@@ -735,6 +735,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(tt_procs_mu, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (tt_procs_mu, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt_ss':(tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_tt_em':   (tt_procs_mu, systematic_names_toppt),
                    }
             usual_process = 'tt_other'
@@ -786,6 +788,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(wjets_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (wjets_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt_ss':(wjets_procs, ['NOMINAL']),
                    'ctr_mu_tt_em':   (wjets_procs, systematic_names_toppt),
                    }
             usual_process = 'wjets'
@@ -837,6 +841,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(dy_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (dy_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt_ss':(dy_procs, ['NOMINAL']),
                    'ctr_mu_tt_em':   (dy_procs, systematic_names_toppt),
                    }
             usual_process = 'dy_other'
@@ -872,6 +878,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(s_top_procs_mu, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (s_top_procs_mu, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt_ss':(s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_tt_em':   (s_top_procs_mu, systematic_names_toppt),
                    }
             usual_process = 's_top_other'
@@ -907,6 +915,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(qcd_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (qcd_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt_ss':(qcd_procs, ['NOMINAL']),
                    'ctr_mu_tt_em':   (qcd_procs, systematic_names_toppt),
                    }
             usual_process = 'qcd'
@@ -942,6 +952,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(dibosons_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (dibosons_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt_ss':(dibosons_procs, ['NOMINAL']),
                    'ctr_mu_tt_em':   (dibosons_procs, systematic_names_toppt),
                    }
             usual_process = 'dibosons'
@@ -977,6 +989,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (data_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (data_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(data_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (data_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt_ss':(data_procs, ['NOMINAL']),
                    'ctr_mu_tt_em':   (data_procs, systematic_names_toppt),
                     }
         usual_process = 'data'
@@ -1627,8 +1641,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             has_3jets_no_tau_match = njets_no_tau_match > 2
 
             # the jets with minimum pt cut
-	    nbjets_min = len(jets_b_min)
-	    njets_min = nbjets_min + len(jets_min)
+            nbjets_min = len(jets_b_min)
+            njets_min = nbjets_min + len(jets_min)
             has_3jets_min = njets_min > 2
             has_bjets_min = nbjets_min > 0
 
@@ -1758,10 +1772,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # && tau_IDlev[0] > 2 && lep_id[0]*tau_id[0] < 0
             # && divector_mass(lep_p4[0].x(), lep_p4[0].y(), lep_p4[0].z(), lep_p4[0].t(), tau_p4[0].x(), tau_p4[0].y(), tau_p4[0].z(), tau_p4[0].t()) > 45 && divector_mass(lep_p4[0].x(), lep_p4[0].y(), lep_p4[0].z(), lep_p4[0].t(), tau_p4[0].x(), tau_p4[0].y(), tau_p4[0].z(), tau_p4[0].t()) < 85
             # && transverse_mass(lep_p4[0].pt(), met_corrected.pt(), lep_p4[0].phi(), met_corrected.phi()) < 40
-            if pass_mu and os_lep_med_tau and lep_tau_mass > 45 and lep_tau_mass < 85 and Mt_lep_met < 40:
+            tau_SV_cut = 4.
+            if pass_mu and os_lep_med_tau and lep_tau_mass > 25 and lep_tau_mass < 105 and Mt_lep_met < 40:
                 passed_channels.append('ctr_mu_dy_tt')
-            if pass_mu and ss_lep_med_tau and lep_tau_mass > 45 and lep_tau_mass < 85 and Mt_lep_met < 40:
+                if ev.tau_refited_index[0] > -1. and ev.tau_SV_geom_flightLenSign[ev.tau_refited_index[0]] > tau_SV_cut:
+                    passed_channels.append('ctr_mu_dy_SV_tt')
+            if pass_mu and ss_lep_med_tau and lep_tau_mass > 25 and lep_tau_mass < 105 and Mt_lep_met < 40:
                 passed_channels.append('ctr_mu_dy_tt_ss')
+                if ev.tau_refited_index[0] > -1. and ev.tau_SV_geom_flightLenSign[ev.tau_refited_index[0]] > tau_SV_cut:
+                    passed_channels.append('ctr_mu_dy_SV_tt')
+
             if pass_mumu:
                 passed_channels.append('ctr_mu_dy_mumu')
             if pass_elmu:
