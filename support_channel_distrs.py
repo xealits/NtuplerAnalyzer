@@ -1490,9 +1490,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             if tlep_p4.DeltaR(ttau_p4) > 0.3:
                 if not isMC:
                     if ev.tau_p4[0].pt() > 20.:
-                        taus_nominal_min.append(ev.tau_p4[0], 1.)
+                        taus_nominal_min.append((ev.tau_p4[0], 1.))
                     if ev.tau_p4[0].pt() > 30. and ev.tau_IDlev[0] > 2:
-                        taus_nominal.append(ev.tau_p4[0], 1.)
+                        taus_nominal.append((ev.tau_p4[0], 1.))
                 else:
                     DM = ev.tau_decayMode[0]
                     if DM == 0:
@@ -1813,7 +1813,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_test'] .Fill(Mt_lep_met_test, record_weight)
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_cos']  .Fill(Mt_lep_met_cos, record_weight)
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_cos_c'].Fill(Mt_lep_met_cos_c, record_weight)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_mth']  .Fill(Mt_lep_met_mth, record_weight)
+                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_mth']  .Fill(Mt_lep_met_mth, record_weight)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f']      .Fill(Mt_lep_met, record_weight)
                 # controls for effect from weights
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_init']      .Fill(Mt_lep_met)
