@@ -735,8 +735,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(tt_procs_mu, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt':   (tt_procs_mu, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt_ss':(tt_procs_mu, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (tt_procs_mu, systematic_names_all),
+                   'ctr_mu_dy_SV_tt_ss':(tt_procs_mu, systematic_names_all),
                    'ctr_mu_tt_em':   (tt_procs_mu, systematic_names_toppt),
                    }
             usual_process = 'tt_other'
@@ -788,8 +788,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (wjets_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(wjets_procs, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt':   (wjets_procs, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt_ss':(wjets_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (wjets_procs, systematic_names_all),
+                   'ctr_mu_dy_SV_tt_ss':(wjets_procs, systematic_names_all),
                    'ctr_mu_tt_em':   (wjets_procs, systematic_names_toppt),
                    }
             usual_process = 'wjets'
@@ -841,8 +841,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (dy_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(dy_procs, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt':   (dy_procs, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt_ss':(dy_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (dy_procs, systematic_names_all),
+                   'ctr_mu_dy_SV_tt_ss':(dy_procs, systematic_names_all),
                    'ctr_mu_tt_em':   (dy_procs, systematic_names_toppt),
                    }
             usual_process = 'dy_other'
@@ -878,8 +878,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(s_top_procs_mu, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt':   (s_top_procs_mu, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt_ss':(s_top_procs_mu, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (s_top_procs_mu, systematic_names_all),
+                   'ctr_mu_dy_SV_tt_ss':(s_top_procs_mu, systematic_names_all),
                    'ctr_mu_tt_em':   (s_top_procs_mu, systematic_names_toppt),
                    }
             usual_process = 's_top_other'
@@ -915,8 +915,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (qcd_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(qcd_procs, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt':   (qcd_procs, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt_ss':(qcd_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (qcd_procs, systematic_names_all),
+                   'ctr_mu_dy_SV_tt_ss':(qcd_procs, systematic_names_all),
                    'ctr_mu_tt_em':   (qcd_procs, systematic_names_toppt),
                    }
             usual_process = 'qcd'
@@ -952,8 +952,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(dibosons_procs, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt':   (dibosons_procs, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt_ss':(dibosons_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (dibosons_procs, systematic_names_all),
+                   'ctr_mu_dy_SV_tt_ss':(dibosons_procs, systematic_names_all),
                    'ctr_mu_tt_em':   (dibosons_procs, systematic_names_toppt),
                    }
             usual_process = 'dibosons'
@@ -989,8 +989,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_mumu': (data_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt':   (data_procs, ['NOMINAL']),
                    'ctr_mu_dy_tt_ss':(data_procs, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt':   (data_procs, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt_ss':(data_procs, ['NOMINAL']),
+                   'ctr_mu_dy_SV_tt':   (data_procs, systematic_names_all),
+                   'ctr_mu_dy_SV_tt_ss':(data_procs, systematic_names_all),
                    'ctr_mu_tt_em':   (data_procs, systematic_names_toppt),
                     }
         usual_process = 'data'
@@ -1036,6 +1036,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
                                                'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
                                                'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
+                                               'tau_SV_sign': TH1D('%s_%s_%s_tau_SV_sign'% (chan, proc, sys), '', 20, -1, 19),
+                                               'tau_jet_bdiscr': TH1D('%s_%s_%s_ tau_jet_bdiscr' % (chan, proc, sys), '', 20, -0.1, 1.1),
+                                               'tau_sign_bdiscr':TH2D('%s_%s_%s_tau_sign_bdiscr' % (chan, proc, sys), '', 20, -1, 19, 20, -0.1, 1.1),
                                                'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
                                                # TODO: add rho to ntuples
                                                'rho':         TH1D('%s_%s_%s_rho'        % (chan, proc, sys), '', 50, 0, 50),
@@ -1859,6 +1862,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(taus[0][0].eta(), record_weight)
                     out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
                     out_hs[(chan, proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
+                    tau_sv_sign    = ev.tau_SV_geom_flightLenSign[ev.tau_refited_index[0]]
+                    tau_jet_bdiscr = ev.jet_b_discr[ev.tau_dR_matched_jet[0]]
+                    out_hs[(chan, proc, sys_name)]['tau_SV_sign'] .Fill(tau_sv_sign, record_weight)
+                    out_hs[(chan, proc, sys_name)]['tau_jet_bdiscr'] .Fill(tau_jet_bdiscr, record_weight)
+                    out_hs[(chan, proc, sys_name)]['tau_sign_bdiscr'].Fill(tau_SV_sign, tau_jet_bdiscr, record_weight)
 
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, record_weight)
                 out_hs[(chan, proc, sys_name)]['dijet_mass']  .Fill(w_mass, record_weight)
