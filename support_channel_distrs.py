@@ -1041,6 +1041,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'tau_jet_bdiscr': TH1D('%s_%s_%s_tau_jet_bdiscr'  % (chan, proc, sys), '', 20, -0.1, 1.1),
                                                'tau_sign_bdiscr':TH2D('%s_%s_%s_tau_sign_bdiscr' % (chan, proc, sys), '', 20, -1, 19, 20, -0.1, 1.1),
                                                'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
+                                               'nvtx_gen':    TH1D('%s_%s_%s_nvtx_gen'   % (chan, proc, sys), '', 100, 0, 100),
                                                # TODO: add rho to ntuples
                                                'rho':         TH1D('%s_%s_%s_rho'        % (chan, proc, sys), '', 50, 0, 50),
                                                'njets':       TH1D('%s_%s_%s_njets'      % (chan, proc, sys), '', 10, 0, 10),
@@ -1884,6 +1885,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 out_hs[(chan, proc, sys_name)]['njets'].Fill(njets, record_weight)
                 out_hs[(chan, proc, sys_name)]['nbjets'].Fill(nbjets, record_weight)
                 out_hs[(chan, proc, sys_name)]['nvtx'].Fill(ev.nvtx, record_weight)
+		if isMC:
+                    out_hs[(chan, proc, sys_name)]['nvtx_gen'].Fill(ev.nvtx_gen, record_weight)
 
         if save_weights:
           #weight_bSF = 1.
