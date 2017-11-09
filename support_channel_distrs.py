@@ -1759,7 +1759,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 passed_channels.append('sel_mu_min_ss')
             # the minimum selection with Medium taus -- hopefully it reduces the QCD
             if pass_min_mu and large_met and has_3jets_min and has_bjets_min and os_lep_med_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
-                passed_channels.append('sel_mu_min')
+                passed_channels.append('sel_mu_min_medtau')
 
             # control selections: WJets, DY mumu and tautau, tt elmu
             # WJets control
@@ -1829,7 +1829,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     continue # TODO: so it doesn't change amount of computing, systematics are per event, not per channel
                     # but it does reduce the amount of output -- no geom progression
 
-                record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss') else sys_weight_min
+                record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
 
                 out_hs[(chan, proc, sys_name)]['met'].Fill(met_pt, record_weight)
                 out_hs[(chan, proc, sys_name)]['init_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
