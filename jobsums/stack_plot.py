@@ -11,14 +11,18 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument("mc_file",    help="MC file name")
 parser.add_argument("data_file",  help="Data file name")
-parser.add_argument("-c", "--channel",  type=str, default='mu_sel', help="selection of events")
+parser.add_argument("-c", "--channel",  type=str, default='mu_sel', help="selection channels of events to consider (can be a list of channels for shape evolution study)")
 parser.add_argument("-s", "--systematic",  type=str, default='NOMINAL', help="systematic variation")
 parser.add_argument("-d", "--distr",  type=str, default='Mt_lep_met', help="recorded distribution")
 parser.add_argument("-x", "--shape",  type=str, default='', help="selection for shape distributions of wjets and dy")
-parser.add_argument("-p", "--plot",  action = "store_true", help="don't save the root file, plot stacked histogram in png")
-parser.add_argument("-r", "--ratio", action = "store_true", help="don't save the root file, make ratio plot (in addition to stack or alone)")
-parser.add_argument("-f", "--form-shapes", type=str, default='', help="plot the shapes of distributions normalized to 1")
-parser.add_argument("-o", "--output-directory",  type=str, default='', help="optional output directory")
+parser.add_argument("-p", "--plot",  action='store_true', help="don't save the root file, plot stacked histogram in png")
+parser.add_argument("-r", "--ratio", action='store_true', help="don't save the root file, make ratio plot (in addition to stack or alone)")
+parser.add_argument("-o", "--output-directory", type=str, default='', help="optional output directory")
+
+#parser.add_argument("-f", "--form-shapes", type=str, default='usual', help="plot the shapes of distributions normalized to 1")
+parser.add_argument("-f", "--form-shapes", action='store_true', help="plot the shapes of distributions normalized to 1")
+#parser.add_argument("-e", "--shape-evolution", type=str, default='usual', help="plot the same distr in different channels normalized to 1")
+parser.add_argument("--processes", type=str, default='all', help="set processes to consider (all by default)")
 
 args = parser.parse_args()
 
@@ -32,7 +36,6 @@ import plotting_root
 #channel = "mu_sel"
 #channel = "mu_lj"
 #channel = "mu_lj_out"
-channel = args.channel
 
 #sys_name = "NOMINAL"
 sys_name = args.systematic
@@ -49,15 +52,33 @@ sys_name = args.systematic
 #distr_name = 'dijet_trijet_mass'
 distr_name = args.distr
 
+if args.processes == 'all':
+    processes_requirement = None
+else:
+    processes_requirement = args.processes.split(',')
+
+
+'''
+if args.shape_evolution:
+    if args.shape_evolution == 'usual':
+        channels = ['wjets', 'tt_mutau', 'tt_eltau', 'tt_lj']
+    else:
+        channels = args.shape_evolution.split(',')
+else:
+'''
+channels = args.channel.split(',')
+
+logging.info("channels, processes requirement = %s, %s" % (str(channels), processes_requirement))
+
 fdata = TFile(args.data_file)
 
 # only nominal in data
 #histo_data = fdata.Get(channel + '/data/' + sys_name + '/' + '_'.join([channel, sys_name, 'data', distr_name]))
-histo_data = fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', distr_name]))
-histo_data.Print()
+histos_data = [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', distr_name])), 'data', channel) for channel in channels]
+logging.info("# data histograms = %d" % len(histos_data))
+histos_data[0][0].Print()
 
-
-def get_histos(infile, channel, shape_channel, sys_name, distr_name):
+def get_histos(infile, channels, shape_channel, sys_name, distr_name):
     """get_histos(infile)
 
     the file contains usual structure
@@ -67,45 +88,52 @@ def get_histos(infile, channel, shape_channel, sys_name, distr_name):
     """
     used_histos = [] # (histo, nick)
 
-    chan = infile.Get(channel)
-    processes_keys = list(chan.GetListOfKeys())
-    sorted_pkeys = sorted(processes_keys, key=lambda pkey: pkey.GetName() if pkey.GetName() not in ('qcd') else 'z_' + pkey.GetName())
-    for process in sorted_pkeys:
-       nick = process.GetName()
-       #logging.info(nick)
+    for channel in channels:
+        chan = infile.Get(channel)
+        processes_keys = list(chan.GetListOfKeys())
+        #sorted_pkeys = sorted(processes_keys, key=lambda pkey: pkey.GetName() if pkey.GetName() not in ('qcd') else 'z_' + pkey.GetName())
+        #for process in sorted_pkeys:
+        for process in processes_keys:
+           nick = process.GetName()
+           if processes_requirement and nick not in processes_requirement:
+               continue
+           #logging.info(nick)
 
-       if nick == 'data':
-           continue
+           if nick == 'data':
+               continue
 
-       fixed_sys_name = sys_name
-       if 'TOPPT' in sys_name:
-           fixed_sys_name = sys_name if 'tt' in nick else 'NOMINAL'
+           fixed_sys_name = sys_name
+           if 'TOPPT' in sys_name:
+               fixed_sys_name = sys_name if 'tt' in nick else 'NOMINAL'
 
-       histo_name = '_'.join([channel, nick, fixed_sys_name, distr_name])
+           histo_name = '_'.join([channel, nick, fixed_sys_name, distr_name])
 
-       h_init = process.ReadObj().Get(fixed_sys_name + '/' + histo_name)
+           h_init = process.ReadObj().Get(fixed_sys_name + '/' + histo_name)
 
-       if shape_channel and nick in ('dy_other', 'dy_tautau', 'wjets'):
-           histo_name = '_'.join([shape_channel, nick, fixed_sys_name, distr_name])
-           h_shape_path = shape_channel + '/' + nick + '/' + fixed_sys_name + '/' + histo_name
-           logging.info("shape from %s" % h_shape_path)
+           if shape_channel and nick in ('dy_other', 'dy_tautau', 'wjets'):
+               histo_name = '_'.join([shape_channel, nick, fixed_sys_name, distr_name])
+               h_shape_path = shape_channel + '/' + nick + '/' + fixed_sys_name + '/' + histo_name
+               logging.info("shape from %s" % h_shape_path)
 
-           h_shape = infile.Get(h_shape_path)
-           histo = h_shape.Clone()
-           histo.Scale(h_init.Integral() / h_shape.Integral())
-       else:
-           histo = h_init
+               h_shape = infile.Get(h_shape_path)
+               histo = h_shape.Clone()
+               histo.Scale(h_init.Integral() / h_shape.Integral())
+           else:
+               histo = h_init
 
-       #histo = histo_key.ReadObj()
-       logging.info("%s   %s   %x = %f %f" % (histo_name, histo_name, histo_name == '_'.join([channel, nick, fixed_sys_name, distr_name]), histo.GetEntries(), histo.Integral()))
+           #histo = histo_key.ReadObj()
+           logging.info("%s   %s   %x = %f %f" % (histo_name, histo_name, histo_name == '_'.join([channel, nick, fixed_sys_name, distr_name]), histo.GetEntries(), histo.Integral()))
 
-       used_histos.append((histo, nick)) # hopefully root wont screw this up
+           used_histos.append((histo, nick, channel)) # hopefully root wont screw this up
 
     return used_histos
 
 
 f = TFile(args.mc_file)
-used_histos = get_histos(f, channel, args.shape, sys_name, distr_name)
+used_histos = get_histos(f, channels, args.shape, sys_name, distr_name)
+
+'''
+done more generally now
 
 if args.form_shapes:
     if args.form_shapes == 'usual':
@@ -113,14 +141,10 @@ if args.form_shapes:
     else:
         shape_nicks = args.form_shapes.split(',')
     used_histos = [i for i in used_histos if i[1] in shape_nicks]
+'''
 
 # get MC stack and legend for it
 hs, leg = plotting_root.stack_n_legend(used_histos)
-
-# set data histo styles and
-# add data to the legend
-histo_data.SetMarkerStyle(21)
-leg.AddEntry(histo_data, "data", "e1 p")
 
 # sum of MC to get the sum of errors
 
@@ -141,7 +165,7 @@ hs_sum1.SetMarkerColor(0)
 hs_sum2 = used_histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
 hs_sum2.SetName('mc_sum2')
 
-for h, _ in used_histos[1:]:
+for h, _, _ in used_histos[1:]:
     hs_sum2.Add(h)
 
 hs_sum2.SetFillStyle(3004);
@@ -149,22 +173,35 @@ hs_sum2.SetFillColor(1);
 hs_sum2.SetMarkerStyle(1)
 hs_sum2.SetMarkerColor(0)
 
-logging.info("data   = %f" % histo_data.Integral())
+histos_data_sum = histos_data[0][0].Clone()
+for h, _, _ in histos_data[1:]:
+    histos_data_sum.Add(h)
+
+logging.info("data   = %f" % histos_data_sum.Integral())
 logging.info("mc sum = %f %f" % (hs_sum1.Integral(), hs_sum2.Integral()))
+
+# set data histo styles and
+# add data to the legend
+#for histo_data in histos_data:
+#    histo_data.SetMarkerStyle(21)
+#    leg.AddEntry(histo_data, "data", "e1 p")
+# no, add just the data_sum entry
+histos_data_sum.SetMarkerStyle(21)
+leg.AddEntry(histos_data_sum, "data", "e1 p")
 
 out_dir = args.output_directory + '/' if args.output_directory else './'
 
-histo_data.GetXaxis().SetLabelFont(63)
-histo_data.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
-histo_data.GetYaxis().SetLabelFont(63)
-histo_data.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
+histos_data[0][0].GetXaxis().SetLabelFont(63)
+histos_data[0][0].GetXaxis().SetLabelSize(14) # labels will be 14 pixels
+histos_data[0][0].GetYaxis().SetLabelFont(63)
+histos_data[0][0].GetYaxis().SetLabelSize(14) # labels will be 14 pixels
 
 
 if not args.plot and not args.ratio:
     fout = TFile(out_dir + args.mc_file.split('.root')[0] + '_%s_%s_%s.root' % (distr_name, channel, sys_name), 'RECREATE')
     fout.cd()
-    histo_data.Write() #'data')
-    for h in histos:
+    #histo_data.Write() #'data')
+    for h in [h for h, _, _ in histos_data] + histos:
         h.Write()
     hs.Write()
     hs_sum1.Write()
@@ -182,35 +219,38 @@ elif args.form_shapes:
     pad.Draw()
 
     # normalize histograms to 1
-    histo_data.Sumw2(ROOT.kTRUE) # to correctly save the errors after scaling
-    histo_data.Scale(1/histo_data.Integral()) # but errors are not scaled here?
-    for histo, nick in used_histos:
+    for histo_data, _, _ in histos_data:
+        histo_data.Sumw2(ROOT.kTRUE) # to correctly save the errors after scaling
+        histo_data.Scale(1/histo_data.Integral()) # but errors are not scaled here?
+
+    for histo, nick, _ in used_histos:
         histo.Scale(1/histo.Integral())
 
     # find max Y for plot
-    max_y = max([h.GetMaximum() for h, _ in used_histos + [(histo_data, 'data')]])
+    max_y = max([h.GetMaximum() for h, _, _ in used_histos + histos_data])
 
     gStyle.SetHatchesSpacing(2)
 
     # plot stuff
     pad.cd()
-    histo_data.SetXTitle(distr_name)
-    histo_data.SetMaximum(max_y * 1.1)
-    histo_data.Draw('e1 p')
-    for i, (histo, nick) in enumerate(used_histos):
-	#histo.SetFillColor( # it shouldn't be needed with hist drawing option
+    histos_data[0][0].SetXTitle(distr_name)
+    histos_data[0][0].SetMaximum(max_y * 1.1)
+    histos_data[0][0].Draw('e1 p')
+    for i, (histo, nick, _) in enumerate(histos_data[1:] + used_histos):
+        #histo.SetFillColor( # it shouldn't be needed with hist drawing option
         # nope, it's needed...
         histo.SetLineColor(plotting_root.nick_colour[nick])
         histo.SetLineWidth(4)
         if i < 2:
             histo.SetFillStyle([3354, 3345][i])
-        #histo.SetFillColorAlpha(0, 0.0)
+        else:
+            histo.SetFillColorAlpha(0, 0.0)
         histo.Draw("hist same")
-    histo_data.Draw('same e1 p')
+    histos_data[0][0].Draw('same e1 p')
 
     leg.Draw("same")
 
-    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes.png')
+    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes_%d-channels.png' % len(channels))
 
 else:
     from ROOT import gStyle, gROOT, TCanvas, TPad
@@ -235,7 +275,7 @@ else:
         pad2.cd()
 
         # calculate ratios
-        histo_data_relative = histo_data.Clone()
+        histo_data_relative = histos_data_sum.Clone()
         hs_sum1_relative = hs_sum1.Clone()
         histo_data_relative.SetName("rel_data")
         hs_sum1_relative.SetName("rel_mc")
@@ -274,20 +314,20 @@ else:
     if args.plot:
         pad1.cd()
 
-        histo_data.SetMinimum(0)
+        histos_data_sum.SetMinimum(0)
         hs_sum1   .SetMinimum(0)
 
-        histo_data.SetTitle("%s %s" % (channel, sys_name))
+        histos_data_sum.SetTitle("%s %s" % (channel, sys_name))
         hs_sum1   .SetTitle("%s %s" % (channel, sys_name))
 
-        histo_data.SetXTitle(distr_name)
+        histos_data_sum.SetXTitle(distr_name)
         #hs        .SetXTitle(distr_name)
         hs_sum1   .SetXTitle(distr_name)
 
-        histo_data.Draw("e1 p")
+        histos_data_sum.Draw("e1 p")
         hs.Draw("same")
         hs_sum1.Draw("same e2")
-        histo_data.Draw("same e1p")
+        histos_data_sum.Draw("same e1p")
         leg.Draw("same")
 
     stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')

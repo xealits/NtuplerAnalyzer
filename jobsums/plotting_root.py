@@ -79,23 +79,43 @@ nick_order = {
 }
 
 def stack_n_legend(used_histos):
+    '''stack_n_legend(used_histos)
+
+    used_histos = [(histo, nick of process, channel), ...]
+    first check if there are different channels -- then add the channel name to the legend
+    also the line style changes for different channels of the same process for histograms
+    (not sure if it is a good hack)
+    '''
+
+    channels = [c for _, _, c in used_histos]
+    homogeneous_channels = all(c == channels[0] for c in channels)
+
     # build Stach and legend
     hs = THStack("mc_stack", "mc_stack")
-    leg = TLegend(0.75, 0.5, 0.89, 0.89)
+    leg = TLegend(0.75 - (0.15 if not homogeneous_channels else 0.), 0.5, 0.89, 0.89)
 
-    for histo, nick in sorted(used_histos, key=lambda h_n: nick_order.get(h_n[1], 1)):
+    process_counter = {} # for distinguishing processes in different channels
+
+    for histo, nick, channel in sorted(used_histos, key=lambda h_n: nick_order.get(h_n[1], 1)):
+        proc_ocurance = process_counter.setdefault(nick, 1)
+        process_counter[nick] += 1
+
         col = nick_colour[nick]
         histo.SetFillColor( col );
         #histo.SetLineColor( col ); # it's needed for shapes
         histo.SetMarkerStyle(20);
-        histo.SetLineStyle(0);
+        histo.SetLineStyle(proc_ocurance);
         histo.SetMarkerColor(col);
         #used_histos.append(histo) # hopefully root wont screw this up
         hs.Add(histo, "HIST")
 
     # to have legend in the same order
-    for histo, nick in sorted(used_histos, key=lambda h_n: -nick_order.get(h_n[1], 1)):
-        leg.AddEntry(histo, nick, "F")
+    for histo, nick, channel in sorted(used_histos, key=lambda h_n: -nick_order.get(h_n[1], 1)):
+        if homogeneous_channels:
+            leg.AddEntry(histo, nick, "F")
+        else:
+            leg.AddEntry(histo, "%s %s" % (nick, channel), "F")
+
     return hs, leg
 
 
