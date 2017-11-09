@@ -1037,7 +1037,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
                                                'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
                                                'tau_SV_sign': TH1D('%s_%s_%s_tau_SV_sign'% (chan, proc, sys), '', 20, -1, 19),
-                                               'tau_jet_bdiscr': TH1D('%s_%s_%s_ tau_jet_bdiscr' % (chan, proc, sys), '', 20, -0.1, 1.1),
+                                               'tau_SV_leng': TH1D('%s_%s_%s_tau_SV_leng'% (chan, proc, sys), '', 20, -0.1, 0.5),
+                                               'tau_jet_bdiscr': TH1D('%s_%s_%s_tau_jet_bdiscr'  % (chan, proc, sys), '', 20, -0.1, 1.1),
                                                'tau_sign_bdiscr':TH2D('%s_%s_%s_tau_sign_bdiscr' % (chan, proc, sys), '', 20, -1, 19, 20, -0.1, 1.1),
                                                'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
                                                # TODO: add rho to ntuples
@@ -1862,11 +1863,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(taus[0][0].eta(), record_weight)
                     out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
                     out_hs[(chan, proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
-                    tau_sv_sign    = ev.tau_SV_geom_flightLenSign[ev.tau_refited_index[0]]
-                    tau_jet_bdiscr = ev.jet_b_discr[ev.tau_dR_matched_jet[0]]
-                    out_hs[(chan, proc, sys_name)]['tau_SV_sign'] .Fill(tau_sv_sign, record_weight)
-                    out_hs[(chan, proc, sys_name)]['tau_jet_bdiscr'] .Fill(tau_jet_bdiscr, record_weight)
-                    out_hs[(chan, proc, sys_name)]['tau_sign_bdiscr'].Fill(tau_SV_sign, tau_jet_bdiscr, record_weight)
+                    tau_refit_index = ev.tau_refited_index[0]
+                    tau_jet_index   = ev.tau_dR_matched_jet[0]
+                    if tau_refit_index > -1:
+                        tau_SV_sign    = ev.tau_SV_geom_flightLenSign[tau_refit_index]
+                        out_hs[(chan, proc, sys_name)]['tau_SV_sign'] .Fill(tau_SV_sign, record_weight)
+                        out_hs[(chan, proc, sys_name)]['tau_SV_leng'] .Fill(ev.tau_SV_geom_flightLen[tau_refit_index], record_weight)
+                    if tau_jet_index > -1:
+                        tau_jet_bdiscr = ev.jet_b_discr[tau_jet_index]
+                        out_hs[(chan, proc, sys_name)]['tau_jet_bdiscr'] .Fill(tau_jet_bdiscr, record_weight)
+                    if tau_refit_index > -1 and tau_jet_index > -1:
+                        out_hs[(chan, proc, sys_name)]['tau_sign_bdiscr'].Fill(tau_SV_sign, tau_jet_bdiscr, record_weight)
 
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, record_weight)
                 out_hs[(chan, proc, sys_name)]['dijet_mass']  .Fill(w_mass, record_weight)
