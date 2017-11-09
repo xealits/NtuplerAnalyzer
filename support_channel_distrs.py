@@ -729,6 +729,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (tt_procs_mu, systematic_names_pu),
                    'sel_mu_min':     (tt_procs_mu, systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
                    'sel_mu_min_ss':  (tt_procs_mu, systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
+                   'sel_mu_min_medtau':     (tt_procs_mu, systematic_names_pu_toppt), # minimum selection with Medium taus -- hopefully it will reduce QCD
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_wjet_old':(tt_procs_mu, ['NOMINAL']),
@@ -782,6 +783,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (wjets_procs, systematic_names_pu),
                    'sel_mu_min':     (wjets_procs, systematic_names_pu_toppt),
                    'sel_mu_min_ss':  (wjets_procs, systematic_names_pu_toppt),
+                   'sel_mu_min_medtau':     (wjets_procs, systematic_names_pu_toppt),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (wjets_procs, ['NOMINAL']),
                    'ctr_mu_wjet_old':(wjets_procs, ['NOMINAL']),
@@ -835,6 +837,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (dy_procs, systematic_names_pu),
                    'sel_mu_min':     (dy_procs, systematic_names_pu_toppt),
                    'sel_mu_min_ss':  (dy_procs, systematic_names_pu_toppt),
+                   'sel_mu_min_medtau':     (dy_procs, systematic_names_pu_toppt),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (dy_procs, ['NOMINAL']),
                    'ctr_mu_wjet_old':(dy_procs, ['NOMINAL']),
@@ -872,6 +875,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (s_top_procs_mu, systematic_names_pu),
                    'sel_mu_min':     (s_top_procs_mu, systematic_names_pu_toppt),
                    'sel_mu_min_ss':  (s_top_procs_mu, systematic_names_pu_toppt),
+                   'sel_mu_min_medtau':     (s_top_procs_mu, systematic_names_pu_toppt),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_wjet_old':(s_top_procs_mu, ['NOMINAL']),
@@ -909,6 +913,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (qcd_procs, systematic_names_pu),
                    'sel_mu_min':     (qcd_procs, systematic_names_pu_toppt),
                    'sel_mu_min_ss':  (qcd_procs, systematic_names_pu_toppt),
+                   'sel_mu_min_medtau':     (qcd_procs, systematic_names_pu_toppt),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (qcd_procs, ['NOMINAL']),
                    'ctr_mu_wjet_old':(qcd_procs, ['NOMINAL']),
@@ -946,6 +951,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (dibosons_procs, systematic_names_pu),
                    'sel_mu_min':     (dibosons_procs, systematic_names_pu_toppt),
                    'sel_mu_min_ss':  (dibosons_procs, systematic_names_pu_toppt),
+                   'sel_mu_min_medtau':     (dibosons_procs, systematic_names_pu_toppt),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (dibosons_procs, ['NOMINAL']),
                    'ctr_mu_wjet_old':(dibosons_procs, ['NOMINAL']),
@@ -983,6 +989,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel':     (data_procs, systematic_names_pu),
                    'sel_mu_min':     (data_procs, systematic_names_pu_toppt),
                    'sel_mu_min_ss':  (data_procs, systematic_names_pu_toppt),
+                   'sel_mu_min_medtau':     (data_procs, systematic_names_pu_toppt),
                    # control selections: WJets, DY mumu and tautau, tt elmu
                    'ctr_mu_wjet':    (data_procs, ['NOMINAL']),
                    'ctr_mu_wjet_old':(data_procs, ['NOMINAL']),
@@ -1750,6 +1757,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 passed_channels.append('sel_mu_min')
             if pass_min_mu and large_met and has_3jets_min and has_bjets_min and ss_lep_loose_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
                 passed_channels.append('sel_mu_min_ss')
+            # the minimum selection with Medium taus -- hopefully it reduces the QCD
+            if pass_min_mu and large_met and has_3jets_min and has_bjets_min and os_lep_med_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
+                passed_channels.append('sel_mu_min')
 
             # control selections: WJets, DY mumu and tautau, tt elmu
             # WJets control
@@ -1885,7 +1895,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 out_hs[(chan, proc, sys_name)]['njets'].Fill(njets, record_weight)
                 out_hs[(chan, proc, sys_name)]['nbjets'].Fill(nbjets, record_weight)
                 out_hs[(chan, proc, sys_name)]['nvtx'].Fill(ev.nvtx, record_weight)
-		if isMC:
+                if isMC:
                     out_hs[(chan, proc, sys_name)]['nvtx_gen'].Fill(ev.nvtx_gen, record_weight)
 
         if save_weights:
