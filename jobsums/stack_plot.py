@@ -190,17 +190,23 @@ elif args.form_shapes:
     # find max Y for plot
     max_y = max([h.GetMaximum() for h, _ in used_histos + [(histo_data, 'data')]])
 
+    gStyle.SetHatchesSpacing(2)
+
     # plot stuff
     pad.cd()
+    histo_data.SetXTitle(distr_name)
     histo_data.SetMaximum(max_y * 1.1)
     histo_data.Draw('e1 p')
-    for histo, nick in used_histos:
+    for i, (histo, nick) in enumerate(used_histos):
 	#histo.SetFillColor( # it shouldn't be needed with hist drawing option
         # nope, it's needed...
         histo.SetLineColor(plotting_root.nick_colour[nick])
-        histo.SetLineWidth(2)
-        histo.SetFillColorAlpha(0, 0.0)
+        histo.SetLineWidth(4)
+        if i < 2:
+            histo.SetFillStyle([3354, 3345][i])
+        #histo.SetFillColorAlpha(0, 0.0)
         histo.Draw("hist same")
+    histo_data.Draw('same e1 p')
 
     leg.Draw("same")
 
