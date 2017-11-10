@@ -1,0 +1,30 @@
+Combination of htt_tt_0_8TeV=htt_tt_0_8TeV.txt  htt_tt_1_8TeV=htt_tt_1_8TeV.txt  htt_tt_2_8TeV=htt_tt_2_8TeV.txt
+imax 1 number of bins
+jmax 10 number of processes minus 1
+kmax 11 number of nuisance parameters
+----------------------------------------------------------------------------------------------------------------------------------
+shapes *         el_sel     ./split13-2_el_just.root   el_sel/$PROCESS/NOMINAL/el_sel_$PROCESS_NOMINAL_Mt_lep_met el_sel/$PROCESS/$SYSTEMATIC/el_sel_$PROCESS_$SYSTEMATIC_Mt_lep_met
+shapes data_obs  el_sel     ./split13-2_el_just.root   el_sel/data/NOMINAL/el_sel_data_NOMINAL_Mt_lep_met         el_sel/data/$SYSTEMATIC/el_sel_data_$SYSTEMATIC_Mt_lep_met
+----------------------------------------------------------------------------------------------------------------------------------
+bin          el_sel    
+observation  8350.00  
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+bin           el_sel         el_sel         el_sel         el_sel         el_sel         el_sel         el_sel         el_sel         el_sel         el_sel         el_sel         
+process       dy_tautau      dy_other       wjets          s_top_eltau    s_top_other    s_top_lj       dibosons       tt_taultauh    tt_lj          tt_other       tt_eltau       
+process       10             9              8              7              6              5              4              3              2              1              0              
+rate          183.501        34.216         266.208        270.707        31.172         193.079        35.531         275.973        2067.262       228.716        4818.288       
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+lumi_13TeV              lnN     1.026     1.026     1.026     1.026         1.026       1.026       1.026    1.026        1.026     1.026     1.026        
+tauID_eff               lnN     1.05      -         -         1.05          1.05        -           -        1.05         -         -         1.05         
+tau_fakes               lnN     -         1.15      1.15      -             -           1.15        1.15     -            1.15      1.15      -            
+dy_norm                 lnN     1.3       1.3       -         -             -           -           -        -            -         -         -            
+wjets_norm              lnN     -         -         1.3       -             -           -           -        -            -         -         -            
+JES           shape             1.0       1.0       1.0       1.0           1.0         1.0         1.0      1.0          1.0       1.0       1.0          
+JER           shape             1.0       1.0       1.0       1.0           1.0         1.0         1.0      1.0          1.0       1.0       1.0          
+TauES         shape             1.0       1.0       1.0       1.0           1.0         1.0         1.0      1.0          1.0       1.0       1.0          
+bSF           shape             1.0       1.0       1.0       1.0           1.0         1.0         1.0      1.0          1.0       1.0       1.0          
+PU            shape             1.0       1.0       1.0       1.0           1.0         1.0         1.0      1.0          1.0       1.0       1.0          
+TOPPT         shape             -         -         -         -             -           -           -        1.0          1.0       1.0       1.0          
