@@ -261,8 +261,18 @@ else:
     if args.ratio and args.plot:
         pad1 = TPad("pad1","This is pad1", 0., 0.3,  1., 1.)
         pad2 = TPad("pad2","This is pad2", 0., 0.05,  1., 0.3)
+        #pad2.SetTopMargin(0.01) # doesn't work
+        #gStyle.SetPadTopMargin(0.05) # nope
+        #ROOT.gPad.SetTopMargin(0.01) # nope
         pad1.Draw()
-        pad2.Draw()
+        pad2.Draw() # these have to be before cd()
+        # now set margins:
+        pad1.cd()
+        ROOT.gPad.SetBottomMargin(0.02)
+        #ROOT.gPad.SetTopMargin(0.01)
+        pad2.cd()
+        #ROOT.gPad.SetBottomMargin(0.001)
+        ROOT.gPad.SetTopMargin(0.02)
     elif args.ratio:
         pad2 = TPad("pad2","This is pad2", 0., 0.05,  1., 1.)
         pad2.Draw()
@@ -308,21 +318,46 @@ else:
         hs_sum1_relative.GetYaxis().SetLabelFont(63)
         hs_sum1_relative.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
 
+        hs_sum1_relative.GetXaxis().SetTitleFont(63)
+        hs_sum1_relative.GetXaxis().SetTitleSize(20)
+        histo_data_relative.GetXaxis().SetTitleFont(63)
+        histo_data_relative.GetXaxis().SetTitleSize(20)
+
+        # if there is stack plot
+        # removing the margin space to stack plot
+        # and add the X label to the ratio
+        if args.plot:
+            #hs_sum1_relative.GetYaxis().SetLabelOffset(0.01)
+            #histo_data_relative.GetYaxis().SetLabelOffset(0.01)
+            hs_sum1_relative.SetXTitle(distr_name)
+            histo_data_relative.SetXTitle(distr_name)
+            hs_sum1_relative.GetXaxis().SetTitleOffset(4.) # place the title not overlapping with labels...
+            histo_data_relative.GetXaxis().SetTitleOffset(4.)
+
         hs_sum1_relative.Draw("e2")
         histo_data_relative.Draw("e p same")
 
     if args.plot:
         pad1.cd()
 
+        # remove the label on stack plot if ratio is there
+        if args.ratio:
+            hs_sum1.GetXaxis().SetLabelOffset(999)
+            hs_sum1.GetXaxis().SetLabelSize(0)
+            histos_data_sum.GetXaxis().SetLabelOffset(999)
+            histos_data_sum.GetXaxis().SetLabelSize(0)
+            #hs.GetXaxis().SetLabelOffset(999)
+            #hs.GetXaxis().SetLabelSize(0)
+        else:
+            histos_data_sum.SetXTitle(distr_name)
+            #hs        .SetXTitle(distr_name)
+            hs_sum1   .SetXTitle(distr_name)
+
         histos_data_sum.SetMinimum(0)
         hs_sum1   .SetMinimum(0)
 
         histos_data_sum.SetTitle("%s %s" % (channel, sys_name))
         hs_sum1   .SetTitle("%s %s" % (channel, sys_name))
-
-        histos_data_sum.SetXTitle(distr_name)
-        #hs        .SetXTitle(distr_name)
-        hs_sum1   .SetXTitle(distr_name)
 
         histos_data_sum.Draw("e1 p")
         hs.Draw("same")

@@ -92,7 +92,7 @@ def stack_n_legend(used_histos):
 
     # build Stach and legend
     hs = THStack("mc_stack", "mc_stack")
-    leg = TLegend(0.75 - (0.15 if not homogeneous_channels else 0.), 0.5, 0.89, 0.89)
+    leg = TLegend(0.7 - (0.15 if not homogeneous_channels else 0.), 0.4, 0.89, 0.89)
 
     process_counter = {} # for distinguishing processes in different channels
 
