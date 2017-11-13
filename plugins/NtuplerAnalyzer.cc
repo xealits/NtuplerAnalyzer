@@ -2132,7 +2132,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				// find closest matches to general track
 				double dR_os  = sqrt(pow(track->eta() - NT_tau_SV_fit_track_OS_p4 .back().eta(), 2) + pow(track->phi() - NT_tau_SV_fit_track_OS_p4 .back().phi(), 2));
 				double dR_ss1 = sqrt(pow(track->eta() - NT_tau_SV_fit_track_SS1_p4.back().eta(), 2) + pow(track->phi() - NT_tau_SV_fit_track_SS1_p4.back().phi(), 2));
-				double dR_ss2 = sqrt(pow(track->eta() - NT_tau_SV_fit_track_SS1_p4.back().eta(), 2) + pow(track->phi() - NT_tau_SV_fit_track_SS1_p4.back().phi(), 2));
+				double dR_ss2 = sqrt(pow(track->eta() - NT_tau_SV_fit_track_SS2_p4.back().eta(), 2) + pow(track->phi() - NT_tau_SV_fit_track_SS2_p4.back().phi(), 2));
 				// there is no order in saving tracks
 				// in principle two sigCands can match to the same track
 				// but then dR should be large
