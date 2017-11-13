@@ -1062,6 +1062,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
                                                'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
                                                'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
+                                               'tau_pat_Sign': TH1D('%s_%s_%s_tau_pat_Sign'% (chan, proc, sys), '', 41, -1, 40),
                                                'tau_SV_sign': TH1D('%s_%s_%s_tau_SV_sign'% (chan, proc, sys), '', 21, -1, 20),
                                                'tau_SV_leng': TH1D('%s_%s_%s_tau_SV_leng'% (chan, proc, sys), '', 21, -0.1, 1.),
                                                'tau_jet_bdiscr': TH1D('%s_%s_%s_tau_jet_bdiscr'  % (chan, proc, sys), '', 20, -0.1, 1.1),
@@ -1641,9 +1642,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             has_medium_tau = len(taus) > 0
             has_loose_tau = len(taus_min) > 0
 
+            # TODO: user zero_tau more, make "if there is zero_tau, if it is loose, medium, refitted, jet-matched etc"
             zero_tau_b_discr = -1
             zero_tau_geom_SV = -1
+            zero_tau_pat_Sign = -1
+            #zero_tau_refit_Sign = -1 # nope, cannot do refitted now -- it's more involved procedure
             if len(ev.tau_p4) > 0:
+                zero_tau_pat_Sign = ev.tau_flightLengthSignificance[0] # PAT Significance, it is = -111 if there was no sign
                 if ev.tau_dR_matched_jet[0] > -1:
                     zero_tau_b_discr = ev.jet_b_discr[ev.tau_dR_matched_jet[0]]
                 zero_tau_refitted = ev.tau_refited_index[0] > -1 and ev.tau_SV_fit_track_OS_matched_track_dR[ev.tau_refited_index[0]] + ev.tau_SV_fit_track_SS1_matched_track_dR[ev.tau_refited_index[0]] + ev.tau_SV_fit_track_SS2_matched_track_dR[ev.tau_refited_index[0]] < 0.002
@@ -1874,6 +1879,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 #if len(ev.tau_p4) > 0:
                     #lep_tau = ev.lep_p4[0] + taus[0][0] # done above
                     #out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), record_weight)
+                    out_hs[(chan, proc, sys_name)]['tau_pat_Sign']  .Fill(zero_tau_pat_Sign,  record_weight)
                     out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(taus[0][0].pt() * taus[0][1],  record_weight)
                     out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(taus[0][0].eta(), record_weight)
                     out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
