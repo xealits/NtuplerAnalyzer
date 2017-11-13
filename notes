@@ -596,6 +596,35 @@ double b_track_plane_intersections_raw_SV(
 # new name:
 ((TTree*) tauMatch->Get("tauMatch_ttree"))->Draw(" optimal_directions_intersections_raw_SV( 0, track_b_x[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].phi(), tau_p4[0].pt(), tau_p4[0].eta(), tau_p4[0].phi() ) >>h(100,-5,5) ", "tau_IDlev[0]>1 && (gen_t_w_decay_id != 1 && gen_tb_w_decay_id != 1) && tau_SV_fit_track_OS_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS1_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS2_matched_track_dR[tau_refited_index[0]] < 0.002 ", "")
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # MISMATCH in NTUPLES
 # it seems optimal_directions_intersections_raw_SV 29 is used in ntuple
 # the tests were done in
@@ -618,6 +647,10 @@ double b_track_plane_intersections_raw_SV(
 # and same for l-jets
 # ...
 
+# 3 charged particles in simple_tau_id
+((TTree*) tauMatch->Get("tauMatch_ttree"))->Draw(" jet_b_discr[tau_dR_matched_jet[0]] : optimal_directions_intersections_raw_SV( 29, track_b_x[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].phi(), tau_p4[0].pt(), tau_p4[0].eta(), tau_p4[0].phi() ) >>h(21,-1,20, 20,0,1) ", "tau_IDlev[0]>1 && ((abs(gen_t_w_decay_id) == 13 && abs(gen_tb_w_decay_id) >= 15*30 ) || (abs(gen_tb_w_decay_id) == 13 && abs(gen_t_w_decay_id) >= 15*30 )) && tau_SV_fit_track_OS_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS1_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS2_matched_track_dR[tau_refited_index[0]] < 0.002 && tau_dR_matched_jet[0] > -1 ", "col")
+
+
 # len
 ((TTree*) tauMatch->Get("tauMatch_ttree"))->Draw(" jet_b_discr[tau_dR_matched_jet[0]] : optimal_directions_intersections_raw_SV( 39, track_b_x[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].phi(), tau_p4[0].pt(), tau_p4[0].eta(), tau_p4[0].phi() ) >>h(21,-0.1,1, 20,0,1) ", "tau_IDlev[0]>1 && (gen_t_w_decay_id == 1 || gen_tb_w_decay_id == 1) && tau_SV_fit_track_OS_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS1_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS2_matched_track_dR[tau_refited_index[0]] < 0.002 && tau_dR_matched_jet[0] > -1 ", "col")
 
@@ -626,6 +659,13 @@ double b_track_plane_intersections_raw_SV(
 
 # more 2 Sign
 ((TTree*) tauMatch->Get("tauMatch_ttree"))->Draw(" tau_p4[0].energy() : optimal_directions_intersections_raw_SV( 29, track_b_x[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].phi(), tau_p4[0].pt(), tau_p4[0].eta(), tau_p4[0].phi() ) >>h(16,4,20, 20,20,150) ", "tau_IDlev[0]>1 && (gen_t_w_decay_id != 1 && gen_tb_w_decay_id != 1) && tau_SV_fit_track_OS_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS1_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS2_matched_track_dR[tau_refited_index[0]] < 0.002 && tau_dR_matched_jet[0] > -1 ", "col")
+
+
+# redo cumulative ratios
+# real selection, Tight & anti-b-discr, for 3ch true tau and fake taus
+
+((TTree*) tauMatch->Get("tauMatch_ttree"))->Draw(" optimal_directions_intersections_raw_SV( 29, track_b_x[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].phi(), tau_p4[0].pt(), tau_p4[0].eta(), tau_p4[0].phi() ) >>h(100,-1,20) ", "tau_IDlev[0]>3 && ((abs(gen_t_w_decay_id) == 13 && abs(gen_tb_w_decay_id) >= 15*30 ) || (abs(gen_tb_w_decay_id) == 13 && abs(gen_t_w_decay_id) >= 15*30 )) && tau_SV_fit_track_OS_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS1_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS2_matched_track_dR[tau_refited_index[0]] < 0.002 && tau_dR_matched_jet[0] > -1 && jet_b_discr[tau_dR_matched_jet[0]] < 0.9 ", "")
+
 
 
 
