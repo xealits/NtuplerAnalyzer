@@ -15,7 +15,7 @@
 <use name="TrackingTools/Records"/>
 <use name="RecoVertex/AdaptiveVertexFit"/>
 
-<use name="HTT-utilities/RecoilCorrections"/>
+<!-- <use name="HTT-utilities/RecoilCorrections"/> -->
 
 <use name="UserCode/llvv_fwk"/>
 <use name="UserCode/ttbar-leptons-80X"/>

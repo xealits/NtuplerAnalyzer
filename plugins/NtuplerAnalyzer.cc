@@ -470,7 +470,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//jetsHandle.getByLabel(ev, "slimmedJets");
 
 	//RecoilCorrector* recoilPFMetCorrector;
-	TH2D* zPtMass_histo;
+	//TH2D* zPtMass_histo;
 
 	bool record_tauID, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep;
 
