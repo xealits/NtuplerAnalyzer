@@ -1022,6 +1022,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'jet_eta':    TH1D('%s_%s_%s_jet_eta'    % (chan, proc, sys), '', 20, -2.5, 2.5),
                                                'bjet_pt':    TH1D('%s_%s_%s_bjet_pt'    % (chan, proc, sys), '', 30, 0, 300),
                                                'bjet_eta':   TH1D('%s_%s_%s_bjet_eta'   % (chan, proc, sys), '', 20, -2.5, 2.5),
+                                               'b_discr_all_jets':  TH1D('%s_%s_%s_b_discr_all_jets' % (chan, proc, sys), '', 30, 0., 1.),
+                                               'b_discr_lead_jet':  TH1D('%s_%s_%s_b_discr_lead_jet' % (chan, proc, sys), '', 30, 0., 1.),
+                                               #'bdiscr_max':       TH1D('%s_%s_%s_b_discr_max'      % (chan, proc, sys), '', 30, 0, 300),
                                                'dphi_lep_met': TH1D('%s_%s_%s_dphi_lep_met' % (chan, proc, sys), '', 20, -3.2, 3.2),
                                                'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
                                                #'Mt_lep_met_f_mth':   TH1D('%s_%s_%s_Mt_lep_met_f_mth'   % (chan, proc, sys), '', 20, 0, 250),
@@ -1277,65 +1280,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 weight *= el_trg_sf * el_sfs[0] * el_sfs[1]
 
-        #    #JES corrections
-        #    # TODO: save only 30 pt 2.5 eta jets
-        #    #[((1-f)*j.pt(), (1+f)*j.pt()) for f,j in zip(ev.jet_jes_correction_relShift, ev.jet_p4)]
-        #    jet_pts_jes_up, jet_pts_jes_down = [], []
-        #    #for f,j in zip(ev.jet_jes_correction_relShift, ev.jet_p4):
-        #    #    jet_pts_jes_up  .append(j.pt()*(1-f))
-        #    #    jet_pts_jes_down.append(j.pt()*(1+f))
-        #    #JER
-        #    #[(j.pt()*(down/factor), j.pt()*(up/factor)) for j, factor, up, down in zip(ev.jet_p4, ev.jet_jer_factor, ev.jet_jer_factor_up, ev.jet_jer_factor_down)]
-        #    jet_pts_jer_up, jet_pts_jer_down = [], []
-        #    #for j, factor, up, down in zip(ev.jet_p4, ev.jet_jer_factor, ev.jet_jer_factor_up, ev.jet_jer_factor_down):
-        #    for i in range(ev.jet_p4.size()):
-        #        j, factor, up, down = ev.jet_p4[i], ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
-        #        jet_pts_jer_up  .append(j.pt()*(up/factor))
-        #        jet_pts_jer_down.append(j.pt()*(down/factor))
-        #        jes_shift = ev.jet_jes_correction_relShift[i]
-        #        jet_pts_jes_up  .append(j.pt()*(1-jes_shift))
-        #        jet_pts_jes_down.append(j.pt()*(1+jes_shift))
-        ## implement lj_var?
+        #JETS
 
-        #jet_pts = [] # nominal jet pts
-        #for j in ev.jet_p4:
-        #    jet_pts.append(j.pt())
+        all_jets_b_discrs = []
+        lead_jet_b_discr = -1.
 
-        ## number of b-tagged jets is not varied, it's the same for given jets
-        ## TODO: however, the N b jets should be calculated for JER/JES varied jets
-        ##       also the variation should be propagated to MET
-        #N_bjets = 0
-        #weight_bSF, weight_bSF_up, weight_bSF_down = 1., 1., 1.
-        ##for i, (p4, flavId, b_discr) in enumerate(zip(ev.jet_p4, ev.jet_hadronFlavour, ev.jet_b_discr)):
-        #for i in range(ev.jet_p4.size()):
-        #    p4, flavId, b_discr = ev.jet_p4[i], ev.jet_hadronFlavour[i], ev.jet_b_discr[i]
-        #    # calc_btag_sf_weight(hasCSVtag: bool, flavId: int, pt: float, eta: float) -> float:
-        #    if p4.pt() < 30: continue
-        #    N_bjets += b_discr > 0.8484
-        #    if isMC and with_bSF:
-        #        weight_bSF      *= calc_btag_sf_weight(b_discr > 0.8484, flavId, p4.pt(), p4.eta())
-        #        weight_bSF_up   *= calc_btag_sf_weight(b_discr > 0.8484, flavId, p4.pt(), p4.eta(), "up")
-        #        weight_bSF_down *= calc_btag_sf_weight(b_discr > 0.8484, flavId, p4.pt(), p4.eta(), "down")
-
-        # I need from jets:
-        #    cut [pt?], eta and PFID == Loose
-        #    save jes/jer factors (if MC) <---- needed later only for lj_var
-        #    find b tags for these jets
-        #    and b SF factors (if MC)
-        #
-        #    get N jets passing selection for diff syst!
-        #    N corresp b jets
-        #    and b SF weights
-        #    build lj_var for every variation of N jets (N b jets doesn't change)
-        #
-        # -- does pyROOT store pointers for everything, like Python, or it copies stuff?
-        # test with TLorentzVector shows that it copies, as it should
-        # therefore append stuff
-        #
-        # for each jet syst make ([p4-s], [sys_factors]) for jets passing eta, ID, pt
-        # find N b-jets and SF weight
-        # and for nominal collection of jets -- b SF up/down weight
-        # build lj only for events passing the selection -- it's expensive
+        if len(ev.jet_b_discr) > 0:
+            lead_jet_b_discr = ev.jet_b_discr[0]
 
         b_tag_wp = 0.8484
 
@@ -1365,8 +1316,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             pfid, p4 = ev.jet_PFID[i], ev.jet_p4[i]
             if pfid < 1 or abs(p4.eta()) > 2.5: continue # Loose PFID and eta
 
+            jet_b_discr = ev.jet_b_discr[i]
+            all_jets_b_discrs.append(jet_b_discr)
+            b_tagged = jet_b_discr > b_tag_wp
             flavId = ev.jet_hadronFlavour[i]
-            b_tagged = ev.jet_b_discr[i] > b_tag_wp
 
             if p4.pt() > 30: # nominal jet
                 if b_tagged:
@@ -1846,6 +1799,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 if jets_b:
                     out_hs[(chan, proc, sys_name)]['bjet_pt']  .Fill(jets_b[0][0].pt() * jets_b[0][1],  record_weight)
                     out_hs[(chan, proc, sys_name)]['bjet_eta'] .Fill(jets_b[0][0].eta(), record_weight)
+
+                # b-discr control
+                out_hs[(chan, proc, sys_name)]['b_discr_lead_jet']  .Fill(lead_jet_b_discr,  record_weight)
+                for discr in all_jets_b_discrs:
+                    out_hs[(chan, proc, sys_name)]['b_discr_all_jets']  .Fill(discr,  record_weight)
 
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_c']    .Fill(Mt_lep_met_c, record_weight)
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_test'] .Fill(Mt_lep_met_test, record_weight)
