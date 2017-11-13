@@ -17,6 +17,7 @@ parser.add_argument("-d", "--distr",  type=str, default='Mt_lep_met', help="reco
 parser.add_argument("-x", "--shape",  type=str, default='', help="selection for shape distributions of wjets and dy")
 parser.add_argument("-p", "--plot",  action='store_true', help="don't save the root file, plot stacked histogram in png")
 parser.add_argument("-r", "--ratio", action='store_true', help="don't save the root file, make ratio plot (in addition to stack or alone)")
+parser.add_argument("-l", "--logy", action='store_true', help="set logarithmic scale for Y axis of stack plot")
 parser.add_argument("-o", "--output-directory", type=str, default='', help="optional output directory")
 
 #parser.add_argument("-f", "--form-shapes", type=str, default='usual', help="plot the shapes of distributions normalized to 1")
@@ -264,6 +265,8 @@ else:
         #pad2.SetTopMargin(0.01) # doesn't work
         #gStyle.SetPadTopMargin(0.05) # nope
         #ROOT.gPad.SetTopMargin(0.01) # nope
+        if args.logy:
+            pad1.SetLogy()
         pad1.Draw()
         pad2.Draw() # these have to be before cd()
         # now set margins:
@@ -353,8 +356,9 @@ else:
             #hs        .SetXTitle(distr_name)
             hs_sum1   .SetXTitle(distr_name)
 
-        histos_data_sum.SetMinimum(0)
-        hs_sum1   .SetMinimum(0)
+        if not args.logy:
+            histos_data_sum.SetMinimum(0)
+            hs_sum1   .SetMinimum(0)
 
         histos_data_sum.SetTitle("%s %s" % (channel, sys_name))
         hs_sum1   .SetTitle("%s %s" % (channel, sys_name))
