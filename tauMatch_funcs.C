@@ -1451,6 +1451,9 @@ double optimal_directions_intersections_raw_SV(
 			return (conv_frac1/conv_frac_sum) * (conv_frac2/conv_frac_sum) * (conv_frac3/conv_frac_sum);
 		case 29: // SV out of all penalties
 			// by relative convergence volume
+			/* MISMATCH IN NTUPLES
+			 * this is the SV Sign in ntuples..
+			 */
 			convergence_factor *= 1 / (1 + ((bp12 - bp21).Mag()/dB1.Mag()) * ((bp23 - bp32).Mag()/dB2.Mag()) * ((bp31 - bp13).Mag()/dB3.Mag()) / 0.027);
 			// by fraction sum-s, extracting correlation of divergences
 			convergence_factor *= 1 / (1 + (conv_frac1/conv_frac_sum) * (conv_frac2/conv_frac_sum) * (conv_frac3/conv_frac_sum));

@@ -1043,10 +1043,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
                                                'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
                                                'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
-                                               'tau_SV_sign': TH1D('%s_%s_%s_tau_SV_sign'% (chan, proc, sys), '', 20, -1, 19),
-                                               'tau_SV_leng': TH1D('%s_%s_%s_tau_SV_leng'% (chan, proc, sys), '', 20, -0.1, 0.5),
+                                               'tau_SV_sign': TH1D('%s_%s_%s_tau_SV_sign'% (chan, proc, sys), '', 21, -1, 20),
+                                               'tau_SV_leng': TH1D('%s_%s_%s_tau_SV_leng'% (chan, proc, sys), '', 21, -0.1, 1.),
                                                'tau_jet_bdiscr': TH1D('%s_%s_%s_tau_jet_bdiscr'  % (chan, proc, sys), '', 20, -0.1, 1.1),
-                                               'tau_sign_bdiscr':TH2D('%s_%s_%s_tau_sign_bdiscr' % (chan, proc, sys), '', 20, -1, 19, 20, -0.1, 1.1),
+                                               'tau_sign_bdiscr':TH2D('%s_%s_%s_tau_sign_bdiscr' % (chan, proc, sys), '', 21, -1, 20, 20, 0., 1.),
+                                               'tau_leng_bdiscr':TH2D('%s_%s_%s_tau_leng_bdiscr' % (chan, proc, sys), '', 21, -0.1, 1., 20, 0., 1.),
+                                               'tau_sign_energy':TH2D('%s_%s_%s_tau_sign_energy' % (chan, proc, sys), '', 21, -1,  20., 20, 20., 150.),
+                                               'tau_leng_energy':TH2D('%s_%s_%s_tau_leng_energy' % (chan, proc, sys), '', 21, -0.1, 1., 20, 20., 150.),
                                                'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
                                                'nvtx_gen':    TH1D('%s_%s_%s_nvtx_gen'   % (chan, proc, sys), '', 100, 0, 100),
                                                # TODO: add rho to ntuples
@@ -1874,17 +1877,25 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(taus[0][0].eta(), record_weight)
                     out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
                     out_hs[(chan, proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
+                    # we only work with 0th tau (highest pt)
                     tau_refit_index = ev.tau_refited_index[0]
                     tau_jet_index   = ev.tau_dR_matched_jet[0]
-                    if tau_refit_index > -1:
+                    # require refit and dR quality of refit
+                    refitted = tau_refit_index > -1 and ev.tau_SV_fit_track_OS_matched_track_dR[ev.tau_refited_index[0]] + ev.tau_SV_fit_track_SS1_matched_track_dR[ev.tau_refited_index[0]] + ev.tau_SV_fit_track_SS2_matched_track_dR[ev.tau_refited_index[0]] < 0.002
+                    if refitted:
                         tau_SV_sign    = ev.tau_SV_geom_flightLenSign[tau_refit_index]
+                        tau_SV_leng    = ev.tau_SV_geom_flightLen[tau_refit_index]
                         out_hs[(chan, proc, sys_name)]['tau_SV_sign'] .Fill(tau_SV_sign, record_weight)
                         out_hs[(chan, proc, sys_name)]['tau_SV_leng'] .Fill(ev.tau_SV_geom_flightLen[tau_refit_index], record_weight)
                     if tau_jet_index > -1:
                         tau_jet_bdiscr = ev.jet_b_discr[tau_jet_index]
                         out_hs[(chan, proc, sys_name)]['tau_jet_bdiscr'] .Fill(tau_jet_bdiscr, record_weight)
-                    if tau_refit_index > -1 and tau_jet_index > -1:
+                    if refitted and tau_jet_index > -1:
                         out_hs[(chan, proc, sys_name)]['tau_sign_bdiscr'].Fill(tau_SV_sign, tau_jet_bdiscr, record_weight)
+                        out_hs[(chan, proc, sys_name)]['tau_leng_bdiscr'].Fill(tau_SV_leng, tau_jet_bdiscr, record_weight)
+                        tau_energy = taus[0][0].energy() * taus[0][1]
+                        out_hs[(chan, proc, sys_name)]['tau_sign_energy'].Fill(tau_SV_sign, tau_energy, record_weight)
+                        out_hs[(chan, proc, sys_name)]['tau_leng_energy'].Fill(tau_SV_leng, tau_energy, record_weight)
 
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, record_weight)
                 out_hs[(chan, proc, sys_name)]['dijet_mass']  .Fill(w_mass, record_weight)
