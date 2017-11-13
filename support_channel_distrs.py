@@ -706,6 +706,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         if isTT:
             tt_procs_el =  (['tt_eltau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             tt_procs_mu =  (['tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
+            tt_procs_el_3ch =  (['tt_eltau3ch', 'tt_eltau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
+            tt_procs_mu_3ch =  (['tt_mutau3ch', 'tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             channels = {'el_presel': (tt_procs_el, systematic_names_all),
                    'el_sel':         (tt_procs_el, systematic_names_all),
                    'el_lj':          (tt_procs_el, systematic_names_all),
@@ -725,8 +727,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'pog_mu_pass_ss': (tt_procs_mu, systematic_names_toppt),
                    'pog_mu_fail':    (tt_procs_mu, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
-                   'adv_el_sel':     (tt_procs_el, systematic_names_pu),
-                   'adv_mu_sel':     (tt_procs_mu, systematic_names_pu),
+                   'adv_el_sel':       (tt_procs_el_3ch, systematic_names_pu),
+                   'adv_mu_sel':       (tt_procs_mu_3ch, systematic_names_pu),
+                   'adv_el_sel_Sign4': (tt_procs_el_3ch, systematic_names_pu), # this is done with a hack in the following, watch closely
+                   'adv_mu_sel_Sign4': (tt_procs_mu_3ch, systematic_names_pu),
                    'sel_mu_min':     (tt_procs_mu, systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
                    'sel_mu_min_ss':  (tt_procs_mu, systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
                    'sel_mu_min_medtau':     (tt_procs_mu, systematic_names_pu_toppt), # minimum selection with Medium taus -- hopefully it will reduce QCD
@@ -780,7 +784,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'pog_mu_fail':    (wjets_procs, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (wjets_procs, systematic_names_pu),
+                   'adv_el_sel_Sign4':     (wjets_procs, systematic_names_pu),
                    'adv_mu_sel':     (wjets_procs, systematic_names_pu),
+                   'adv_mu_sel_Sign4':     (wjets_procs, systematic_names_pu),
                    'sel_mu_min':     (wjets_procs, systematic_names_pu_toppt),
                    'sel_mu_min_ss':  (wjets_procs, systematic_names_pu_toppt),
                    'sel_mu_min_medtau':     (wjets_procs, systematic_names_pu_toppt),
@@ -834,7 +840,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'pog_mu_fail':    (dy_procs, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (dy_procs, systematic_names_pu),
+                   'adv_el_sel_Sign4':     (dy_procs, systematic_names_pu),
                    'adv_mu_sel':     (dy_procs, systematic_names_pu),
+                   'adv_mu_sel_Sign4':     (dy_procs, systematic_names_pu),
                    'sel_mu_min':     (dy_procs, systematic_names_pu_toppt),
                    'sel_mu_min_ss':  (dy_procs, systematic_names_pu_toppt),
                    'sel_mu_min_medtau':     (dy_procs, systematic_names_pu_toppt),
@@ -872,7 +880,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'pog_mu_fail':    (s_top_procs_mu, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (s_top_procs_el, systematic_names_pu),
+                   'adv_el_sel_Sign4':     (s_top_procs_el, systematic_names_pu),
                    'adv_mu_sel':     (s_top_procs_mu, systematic_names_pu),
+                   'adv_mu_sel_Sign4':     (s_top_procs_mu, systematic_names_pu),
                    'sel_mu_min':     (s_top_procs_mu, systematic_names_pu_toppt),
                    'sel_mu_min_ss':  (s_top_procs_mu, systematic_names_pu_toppt),
                    'sel_mu_min_medtau':     (s_top_procs_mu, systematic_names_pu_toppt),
@@ -910,7 +920,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'pog_mu_fail':    (qcd_procs, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (qcd_procs, systematic_names_pu),
+                   'adv_el_sel_Sign4':     (qcd_procs, systematic_names_pu),
                    'adv_mu_sel':     (qcd_procs, systematic_names_pu),
+                   'adv_mu_sel_Sign4':     (qcd_procs, systematic_names_pu),
                    'sel_mu_min':     (qcd_procs, systematic_names_pu_toppt),
                    'sel_mu_min_ss':  (qcd_procs, systematic_names_pu_toppt),
                    'sel_mu_min_medtau':     (qcd_procs, systematic_names_pu_toppt),
@@ -948,7 +960,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'pog_mu_fail':    (dibosons_procs, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (dibosons_procs, systematic_names_pu),
+                   'adv_el_sel_Sign4':     (dibosons_procs, systematic_names_pu),
                    'adv_mu_sel':     (dibosons_procs, systematic_names_pu),
+                   'adv_mu_sel_Sign4':     (dibosons_procs, systematic_names_pu),
                    'sel_mu_min':     (dibosons_procs, systematic_names_pu_toppt),
                    'sel_mu_min_ss':  (dibosons_procs, systematic_names_pu_toppt),
                    'sel_mu_min_medtau':     (dibosons_procs, systematic_names_pu_toppt),
@@ -986,7 +1000,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'pog_mu_fail':    (data_procs, systematic_names_toppt),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    'adv_el_sel':     (data_procs, systematic_names_pu),
+                   'adv_el_sel_Sign4':     (data_procs, systematic_names_pu),
                    'adv_mu_sel':     (data_procs, systematic_names_pu),
+                   'adv_mu_sel_Sign4':     (data_procs, systematic_names_pu),
                    'sel_mu_min':     (data_procs, systematic_names_pu_toppt),
                    'sel_mu_min_ss':  (data_procs, systematic_names_pu_toppt),
                    'sel_mu_min_medtau':     (data_procs, systematic_names_pu_toppt),
@@ -1231,6 +1247,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             weight_top_pt = 1.
             # "Only top quarks in SM ttbar events must be reweighted, not single tops or tops from BSM production mechanisms."
             # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting
+            micro_proc = '' # hack for tt_leptau->3ch subchannel of hadronic taus
             if isTT:
                 weight_top_pt = ttbar_pT_SF(ev.gen_t_pt, ev.gen_tb_pt)
                 #weight *= weight_top_pt # to sys
@@ -1240,8 +1257,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 tb_wid = abs(ev.gen_tb_w_decay_id)
                 if (t_wid > 15*15 and tb_wid == 13) or (t_wid == 13 and tb_wid > 15*15): # lt
                     proc = 'tt_mutau'
+                    # check if tau decayed in 3 charged particles
+                    if (t_wid >= 15*30 and tb_wid == 13) or (t_wid == 13 and tb_wid >= 15*30): # lt
+                        micro_proc = 'tt_mutau3ch'
                 elif (t_wid > 15*15 and tb_wid == 11) or (t_wid == 11 and tb_wid > 15*15): # lt
                     proc = 'tt_eltau'
+                    if (t_wid >= 15*30 and tb_wid == 11) or (t_wid == 11 and tb_wid >= 15*30): # lt
+                        micro_proc = 'tt_eltau3ch'
                 elif t_wid * tb_wid == 13 or t_wid * tb_wid == 11: # lj
                     proc = 'tt_lj'
                 elif (t_wid > 15*15 and (tb_wid == 11*15 or tb_wid == 13*15)) or \
@@ -1619,6 +1641,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             has_medium_tau = len(taus) > 0
             has_loose_tau = len(taus_min) > 0
 
+            zero_tau_b_discr = -1
+            zero_tau_geom_SV = -1
+            if len(ev.tau_p4) > 0:
+                if ev.tau_dR_matched_jet[0] > -1:
+                    zero_tau_b_discr = ev.jet_b_discr[ev.tau_dR_matched_jet[0]]
+                zero_tau_refitted = ev.tau_refited_index[0] > -1 and ev.tau_SV_fit_track_OS_matched_track_dR[ev.tau_refited_index[0]] + ev.tau_SV_fit_track_SS1_matched_track_dR[ev.tau_refited_index[0]] + ev.tau_SV_fit_track_SS2_matched_track_dR[ev.tau_refited_index[0]] < 0.002
+                if refitted:
+                    zero_tau_geom_SV = ev.tau_SV_geom_flightLenSign[ev.tau_refited_index[0]]
+
             # these are for single-lepton
             os_lep_med_tau = has_medium_tau and ev.tau_id[0]*ev.lep_id[0] < 0
             ss_lep_med_tau = has_medium_tau and ev.tau_id[0]*ev.lep_id[0] > 0
@@ -1702,10 +1733,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 passed_channels.append('pog_mu_fail')
 
             # with addition of no DY mass, no tau match to b-tag (could add a cut on small MT)
-            if pass_el and large_met and has_3jets and has_bjets_no_tau_match and os_lep_med_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
+            #if pass_el and large_met and has_3jets and has_bjets_no_tau_match and os_lep_med_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
+            # selection for SV cut
+            if pass_el and large_met and has_3jets and has_bjets and os_lep_med_tau and zero_tau_b_discr < 0.9: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
                 passed_channels.append('adv_el_sel')
-            if pass_mu and large_met and has_3jets and has_bjets_no_tau_match and os_lep_med_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
+                # and selection with SV cut
+                if zero_tau_geom_SV > 4.:
+                    passed_channels.append('adv_el_sel_Sign4')
+            #if pass_mu and large_met and has_3jets and has_bjets_no_tau_match and os_lep_med_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
+            if pass_mu and large_met and has_3jets and has_bjets and os_lep_med_tau and zero_tau_b_discr < 0.9: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
                 passed_channels.append('adv_mu_sel')
+                if zero_tau_geom_SV > 4.:
+                    passed_channels.append('adv_mu_sel_Sign4')
             # check the mass cut in distribution of lep+tau mass in usual selection
 
             # the max efficiency requirements of our selection
@@ -1784,6 +1823,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 if (chan, proc, sys_name) not in out_hs:
                     continue # TODO: so it doesn't change amount of computing, systematics are per event, not per channel
                     # but it does reduce the amount of output -- no geom progression
+
+		# some channels have micro_proc (tt->lep+tau->3charged)
+		if chan in ('adv_el_sel', 'adv_mu_sel', 'adv_el_sel_Sign4', 'adv_mu_sel_Sign4') and micro_proc:
+                    proc = micro_proc
 
                 record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
 
