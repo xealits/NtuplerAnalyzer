@@ -49,6 +49,9 @@ nick_colour = {
 #"tt_lj": kRed+1, #kOrange+4,
 #"tt_other": kOrange+5,
 
+"tt_mutau3ch":    rgb(255, 255, 178),
+"tt_eltau3ch":    rgb(254,204,92),
+
 "tt_mutau":    rgb(255, 255, 178),
 "tt_eltau":    rgb(254,204,92),
 "tt_taultauh": rgb(253,141,60),

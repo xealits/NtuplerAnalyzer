@@ -1019,6 +1019,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         usual_process = 'data'
 
     proc = usual_process
+    micro_proc = '' # hack for tt_leptau->3ch subchannel of hadronic taus
 
     # test
     logger.write('%s\n' % '\n'.join('%s_%s_%s' % (chan, proc, sys[0]) for chan, ((procs, _), sys) in channels.items() for proc in procs))
@@ -1143,6 +1144,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # also at least some kind of tau in single-el:
         if (pass_mu or pass_el) and (not ev.tau_p4.size() > 0): continue # this is the only thing reduces computing
 
+        micro_proc = ''
+
         # expensive calls and they don't depend on systematics now
         if doRecoilCorrections:
             #def transverse_mass_pts(v1_x, v1_y, v2_x, v2_y):
@@ -1248,7 +1251,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             weight_top_pt = 1.
             # "Only top quarks in SM ttbar events must be reweighted, not single tops or tops from BSM production mechanisms."
             # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting
-            micro_proc = '' # hack for tt_leptau->3ch subchannel of hadronic taus
             if isTT:
                 weight_top_pt = ttbar_pT_SF(ev.gen_t_pt, ev.gen_tb_pt)
                 #weight *= weight_top_pt # to sys
@@ -1652,7 +1654,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 if ev.tau_dR_matched_jet[0] > -1:
                     zero_tau_b_discr = ev.jet_b_discr[ev.tau_dR_matched_jet[0]]
                 zero_tau_refitted = ev.tau_refited_index[0] > -1 and ev.tau_SV_fit_track_OS_matched_track_dR[ev.tau_refited_index[0]] + ev.tau_SV_fit_track_SS1_matched_track_dR[ev.tau_refited_index[0]] + ev.tau_SV_fit_track_SS2_matched_track_dR[ev.tau_refited_index[0]] < 0.002
-                if refitted:
+                if zero_tau_refitted:
                     zero_tau_geom_SV = ev.tau_SV_geom_flightLenSign[ev.tau_refited_index[0]]
 
             # these are for single-lepton

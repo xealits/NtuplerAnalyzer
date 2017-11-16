@@ -245,7 +245,7 @@ for fname in files:
             nick = chan.GetName()
             if nick == 'none': #'tt_mutau':
                 tauIDSF_factor = 0.90
-            elif nick in ('tt_mutau', 'tt_eltau', 'tt_taultauh', 'dy_tautau', 's_top_eltau', 's_top_mutau', 'dy_tautau'):
+            elif nick in ('tt_mutau3ch', 'tt_eltau3ch', 'tt_mutau', 'tt_eltau', 'tt_taultauh', 'dy_tautau', 's_top_eltau', 's_top_mutau', 'dy_tautau'):
                 tauIDSF_factor = 0.95
             else:
                 tauIDSF_factor = 1.
