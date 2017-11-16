@@ -1891,11 +1891,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # OS/SS for QCD control
             if pass_mu and nbjets == 0 and len(ev.tau_p4) > 0:
                 passed_channels.append('ctr_mu_wjet_old')
-            if pass_mu and nbjets == 0 and len(ev.tau_p4) > 0:
-                if ev.tau_id[0]*ev.lep_id[0] < 0:
-                    passed_channels.append('ctr_mu_wjet_old_os')
-                elif ev.tau_id[0]*ev.lep_id[0] > 0:
-                    passed_channels.append('ctr_mu_wjet_old_ss')
+            #if pass_mu and nbjets == 0 and len(ev.tau_p4) > 0:
+            #    if ev.tau_id[0]*ev.lep_id[0] < 0:
+            #        passed_channels.append('ctr_mu_wjet_old_os')
+            #    elif ev.tau_id[0]*ev.lep_id[0] > 0:
+            #        passed_channels.append('ctr_mu_wjet_old_ss')
 
             # DY -> taumu tauh
             # HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0] && abs(lep_p4[0].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02
@@ -1940,7 +1940,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             #    out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(25, weight)
             for chan in passed_channels:
                 # check for default proc
-                procs, default_proc = channels[chan]
+                if chan not in channels:
+                    continue
+                procs, default_proc = channels[chan][0]
                 if proc not in procs:
                     proc = default_proc
 
