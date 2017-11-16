@@ -545,6 +545,8 @@ def calc_lj_var(light_jets, b_jets):
 
 #def PFTau_FlightLength_significance(TVector3 pv,TMatrixTSym<double> PVcov, TVector3 sv, TMatrixTSym<double> SVcov ){
 def PFTau_FlightLength_significance(pv,  PVcov, sv, SVcov):
+   run_test = False # option to print contents of some of the structures during calculation
+
    SVPV = sv - pv
    FD = ROOT.TVectorF()
    FD.ResizeTo(3);
@@ -618,7 +620,7 @@ def PFTau_FlightLength_significance(pv,  PVcov, sv, SVcov):
    if run_test:
        lambda2.Print()
 
-   sigmaabs = Sqrt(lambda2(0,0))/SVPV.Mag()
+   sigmaabs = TMath.Sqrt(lambda2(0,0))/SVPV.Mag()
    sign = SVPV.Mag()/sigmaabs
 
    return SVPV.Mag(), sigmaabs, sign
@@ -1783,7 +1785,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
             if has_loose_tau: #has_medium_tau:
             #if len(ev.tau_p4) > 0:
-                lep_tau = ev.lep_p4[0] + taus[0][0] * taus[0][1]
+                #lep_tau = ev.lep_p4[0] + taus[0][0] * taus[0][1]
+                lep_tau = ev.lep_p4[0] + taus_min[0][0] * taus_min[0][1]
                 lep_tau_mass = lep_tau.mass()
 
             pass_single_lep_presel = large_met and has_3jets and has_bjets and (pass_el or pass_mu) #and os_lep_med_tau
@@ -2011,9 +2014,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 #if len(ev.tau_p4) > 0:
                     #lep_tau = ev.lep_p4[0] + taus[0][0] # done above
                     #out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), record_weight)
+                    tau_pt  = taus_min[0][0].pt() * taus_min[0][1] # taus[0][0].pt() * taus[0][1]
+                    tau_eta = taus_min[0][0].eta()             # taus[0][0].eta()
+                    tau_energy = taus_min[0][0].energy() * taus_min[0][1] # taus[0][0].energy() * taus[0][1]
                     out_hs[(chan, proc, sys_name)]['tau_pat_Sign']  .Fill(zero_tau_pat_Sign,  record_weight)
-                    out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(taus[0][0].pt() * taus[0][1],  record_weight)
-                    out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(taus[0][0].eta(), record_weight)
+                    out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(tau_pt,  record_weight)
+                    out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(tau_eta, record_weight)
                     out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
                     out_hs[(chan, proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
                     # we only work with 0th tau (highest pt)
@@ -2045,7 +2051,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     if refitted and tau_jet_index > -1:
                         out_hs[(chan, proc, sys_name)]['tau_sign_bdiscr'].Fill(tau_SV_sign, tau_jet_bdiscr, record_weight)
                         out_hs[(chan, proc, sys_name)]['tau_leng_bdiscr'].Fill(tau_SV_leng, tau_jet_bdiscr, record_weight)
-                        tau_energy = taus[0][0].energy() * taus[0][1]
                         out_hs[(chan, proc, sys_name)]['tau_sign_energy'].Fill(tau_SV_sign, tau_energy, record_weight)
                         out_hs[(chan, proc, sys_name)]['tau_leng_energy'].Fill(tau_SV_leng, tau_energy, record_weight)
 			# for PAT and refit only sign-b and len-energy
