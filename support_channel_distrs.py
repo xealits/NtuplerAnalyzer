@@ -4,6 +4,7 @@ from array import array
 from collections import OrderedDict
 import cProfile
 import logging as Logging
+import ctypes
 
 
 logging = Logging.getLogger("common")
@@ -791,6 +792,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             tt_procs_mu =  (['tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             tt_procs_el_3ch =  (['tt_eltau3ch', 'tt_eltau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             tt_procs_mu_3ch =  (['tt_mutau3ch', 'tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
+            tt_procs_elmu =  (['tt_elmu', 'tt_taueltaumu', 'tt_other'], 'tt_other')
             channels = {'el_presel': (tt_procs_el_3ch, systematic_names_toppt), #systematic_names_all),
                    'el_sel':         (tt_procs_el_3ch, systematic_names_toppt), #systematic_names_all),
                    'el_lj':          (tt_procs_el_3ch, systematic_names_toppt), #systematic_names_all),
@@ -827,7 +829,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_tt_ss':   (tt_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_SV_tt':   (tt_procs_mu, ['NOMINAL']), #systematic_names_all),
                    'ctr_mu_dy_SV_tt_ss':(tt_procs_mu, ['NOMINAL']), #systematic_names_all),
-                   'ctr_mu_tt_em':      (tt_procs_mu, systematic_names_toppt),
+                   'ctr_mu_tt_em':      (tt_procs_elmu, systematic_names_toppt),
                    }
             usual_process = 'tt_other'
 
@@ -946,6 +948,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         if isSTop:
             s_top_procs_el = (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other')
             s_top_procs_mu = (['s_top_mutau', 's_top_lj', 's_top_other'], 's_top_other')
+            s_top_procs_elmu = (['s_top_elmu', 's_top_other'], 's_top_other')
             channels = {'el_presel': (s_top_procs_el, systematic_names_toppt), #systematic_names_all),
                    'el_sel':         (s_top_procs_el, systematic_names_toppt), #systematic_names_all),
                    'el_lj':          (s_top_procs_el, systematic_names_toppt), #systematic_names_all),
@@ -979,7 +982,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'ctr_mu_dy_tt_ss':(s_top_procs_mu, ['NOMINAL']),
                    'ctr_mu_dy_SV_tt':   (s_top_procs_mu, ['NOMINAL']), #systematic_names_all),
                    'ctr_mu_dy_SV_tt_ss':(s_top_procs_mu, ['NOMINAL']), #systematic_names_all),
-                   'ctr_mu_tt_em':   (s_top_procs_mu, systematic_names_toppt),
+                   'ctr_mu_tt_em':   (s_top_procs_elmu, systematic_names_toppt),
                    }
             usual_process = 's_top_other'
 
@@ -1109,6 +1112,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     # test
     logger.write('%s\n' % '\n'.join('%s_%s_%s' % (chan, proc, sys[0]) for chan, ((procs, _), sys) in channels.items() for proc in procs))
 
+    tau_fakerate_pts  = (ctypes.c_double * 10)(* [20, 30, 40, 50, 70, 90, 120, 150, 200, 300])
+    tau_fakerate_pts_n  = 9
+    tau_fakerate_etas = (ctypes.c_double * 13)(* [-2.4, -2, -1.6, -1.2, -0.8, -0.4, 0, 0.4, 0.8, 1.2, 1.6, 2, 2.4])
+    tau_fakerate_etas_n = 12
     # channel -- reco selection
     # proc    -- MC gen info, like inclusive tt VS tt->mutau and others,
     #            choice of subprocesses depends on channel (sadly),
@@ -1126,6 +1133,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'bjet_eta':   TH1D('%s_%s_%s_bjet_eta'   % (chan, proc, sys), '', 20, -2.5, 2.5),
                                                'b_discr_all_jets':  TH1D('%s_%s_%s_b_discr_all_jets' % (chan, proc, sys), '', 30, 0., 1.),
                                                'b_discr_lead_jet':  TH1D('%s_%s_%s_b_discr_lead_jet' % (chan, proc, sys), '', 30, 0., 1.),
+                                               # for tt->elmu fake rates
+                                               'all_jet_pt':     TH1D('%s_%s_%s_all_jet_pt'     % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               'all_jet_eta':    TH1D('%s_%s_%s_all_jet_eta'    % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+                                               'candidate_tau_jet_pt':  TH1D('%s_%s_%s_candidate_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               'candidate_tau_jet_eta': TH1D('%s_%s_%s_candidate_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+                                               'vloose_tau_jet_pt':  TH1D('%s_%s_%s_vloose_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               'vloose_tau_jet_eta': TH1D('%s_%s_%s_vloose_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+                                               'loose_tau_jet_pt':   TH1D('%s_%s_%s_loose_tau_jet_pt'   % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               'loose_tau_jet_eta':  TH1D('%s_%s_%s_loose_tau_jet_eta'  % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+                                               'medium_tau_jet_pt':  TH1D('%s_%s_%s_medium_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               'medium_tau_jet_eta': TH1D('%s_%s_%s_medium_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+                                               'tight_tau_jet_pt':   TH1D('%s_%s_%s_tight_tau_jet_pt'   % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               'tight_tau_jet_eta':  TH1D('%s_%s_%s_tight_tau_jet_eta'  % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+                                               'vtight_tau_jet_pt':  TH1D('%s_%s_%s_vtight_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               'vtight_tau_jet_eta': TH1D('%s_%s_%s_vtight_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
                                                #'bdiscr_max':       TH1D('%s_%s_%s_b_discr_max'      % (chan, proc, sys), '', 30, 0, 300),
                                                'dphi_lep_met': TH1D('%s_%s_%s_dphi_lep_met' % (chan, proc, sys), '', 20, -3.2, 3.2),
                                                'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
@@ -1360,6 +1382,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     proc = 'tt_eltau'
                     if (t_wid >= 15*30 and tb_wid == 11) or (t_wid == 11 and tb_wid >= 15*30): # lt
                         micro_proc = 'tt_eltau3ch'
+                elif t_wid * tb_wid == 13*11:
+                    proc = 'tt_elmu'
+                #elif t_wid * tb_wid == 15*13*15*11: # this should work, but:
+                elif (t_wid == 15*13 and tb_wid == 15*11) or (t_wid == 15*11 and tb_wid == 15*13):
+                    proc = 'tt_taueltaumu'
                 elif t_wid * tb_wid == 13 or t_wid * tb_wid == 11: # lj
                     proc = 'tt_lj'
                 elif (t_wid > 15*15 and (tb_wid == 11*15 or tb_wid == 13*15)) or \
@@ -1379,6 +1406,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     proc = 's_top_mutau'
                 elif (w1_id > 15*15 and w2_id == 11) or (w1_id == 11 and w2_id > 15*15): # lt
                     proc = 's_top_eltau'
+                elif (w1_id == 11 and w2_id == 13) or (w1_id == 13 and w2_id == 11): # is it faster than comparing to product?
+                    proc = 's_top_elmu'
                 elif w1_id * w2_id == 13 or w1_id * w2_id == 11: # lj
                     proc = 's_top_lj'
                 #elif (w1_id > 15*15 and (w2_id == 11*15 or w2_id == 13*15)) or
@@ -1527,6 +1556,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         jets_b_nominal_min = [] # nominal jet pts
         weight_bSF_min = 1.
 
+	# for tt->elmu fake rates
+	all_jets_for_fakes = []
+
         for i in xrange(ev.jet_p4.size()):
             pfid, p4 = ev.jet_PFID[i], ev.jet_p4[i]
             if pfid < 1 or abs(p4.eta()) > 2.5: continue # Loose PFID and eta
@@ -1564,6 +1596,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # also save "minimal" jets -- with minimal pt threshold
             # make them only at NOMINAL systematics for now
             if p4.pt() > 20: # nominal jet
+	        if abs(p4.eta()) < 2.3:
+		    all_jets_for_fakes.append(p4) # nominal corrections already applied in ntupler
                 if b_tagged:
                     #nbjets_nominal += 1
                     jets_b_nominal_min.append((p4, 1))
@@ -1626,6 +1660,51 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # count b jets
             # how to calc b SF weight? <---- just calc them, only for nominal jets
             #
+
+	# for tau fake rates loop over all jets and taus
+	# matching them in dR
+	# and if matched adding into according collection
+        tau_jets_candidates = []
+        tau_jets_vloose = []
+        tau_jets_loose  = []
+        tau_jets_medium = []
+        tau_jets_tight  = []
+        tau_jets_vtight = []
+        for jet_p4 in all_jets_for_fakes:
+            for tau_cand_p4, cand_IDlev in zip(ev.tau_p4, ev.tau_IDlev):
+	        #if tau_cand_p4.eta() < 2.3 and tau_cand_p4.pt() > 20: was done in ntupler
+                tj_p4   = TLorentzVector(jet_p4.X(), jet_p4.Y(), jet_p4.Z(), jet_p4.T())
+                ttau_p4 = TLorentzVector(tau_cand_p4.X(), tau_cand_p4.Y(), tau_cand_p4.Z(), tau_cand_p4.T())
+                if tj_p4.DeltaR(ttau_p4) < 0.3:
+		    # add the jet p4 into collection according to IDlev
+		    #Int_t IDlev = 0;
+		    #if (tau.tauID(tau_VTight_ID)) IDlev = 5;
+		    #else if (tau.tauID(tau_Tight_ID))  IDlev = 4;
+		    #else if (tau.tauID(tau_Medium_ID)) IDlev = 3;
+		    #else if (tau.tauID(tau_Loose_ID))  IDlev = 2;
+		    #else if (tau.tauID(tau_VLoose_ID)) IDlev = 1;
+		    tau_jets_candidates.append(jet_p4)
+		    if cand_IDlev > 0:
+		        tau_jets_vtight.append(jet_p4)
+		        tau_jets_tight .append(jet_p4)
+		        tau_jets_medium.append(jet_p4)
+		        tau_jets_loose .append(jet_p4)
+		        tau_jets_vloose.append(jet_p4)
+		    elif cand_IDlev > 1:
+		        tau_jets_vtight.append(jet_p4)
+		        tau_jets_tight .append(jet_p4)
+		        tau_jets_medium.append(jet_p4)
+		        tau_jets_loose .append(jet_p4)
+		    elif cand_IDlev > 2:
+		        tau_jets_vtight.append(jet_p4)
+		        tau_jets_tight .append(jet_p4)
+		        tau_jets_medium.append(jet_p4)
+		    elif cand_IDlev > 3:
+		        tau_jets_vtight.append(jet_p4)
+		        tau_jets_tight .append(jet_p4)
+		    elif cand_IDlev > 4:
+		        tau_jets_vtight.append(jet_p4)
+
 
 
         # shape systematics are:
@@ -1958,6 +2037,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     proc = micro_proc
 
                 record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
+
+                # tt->elmu fake rates
+                fakerate_working_points = [(all_jets_for_fakes, 'all_jet'), (tau_jets_candidates, 'candidate_tau_jet'),
+                    (tau_jets_vloose, 'vloose_tau_jet'), (tau_jets_loose , 'loose_tau_jet'),
+                    (tau_jets_medium, 'medium_tau_jet'), (tau_jets_tight , 'tight_tau_jet'), (tau_jets_vtight, 'vtight_tau_jet')]
+                for jet_p4_s, wp_name in fakerate_working_points:
+                    for jet_p4 in jet_p4_s:
+                        out_hs[(chan, proc, sys_name)][wp_name + '_pt']  .Fill(jet_p4.pt() , record_weight)
+                        out_hs[(chan, proc, sys_name)][wp_name + '_eta'] .Fill(jet_p4.eta(), record_weight)
 
                 out_hs[(chan, proc, sys_name)]['met'].Fill(met_pt, record_weight)
                 out_hs[(chan, proc, sys_name)]['init_met'].Fill(ev.met_corrected.pt(), record_weight) # for control

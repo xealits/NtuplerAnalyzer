@@ -42,6 +42,6 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer',
     jet_kino_cuts_pt  = cms.double( 20.),
     jet_kino_cuts_eta = cms.double( 2.5),
     tau_kino_cuts_pt  = cms.double( 20.),
-    tau_kino_cuts_eta = cms.double( 2.3)
+    tau_kino_cuts_eta = cms.double( 2.4)
 )
 
