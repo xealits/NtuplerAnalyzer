@@ -646,6 +646,20 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     save_weights = True and isMC
     aMCatNLO = 'amcatnlo' in dtag
     isTT = 'TT' in dtag
+
+    # fix the naming in dtag-dset info files
+    tt_systematic_datasets = {'fsrup': 'FSRUp', 'fsrdown': 'FSRDown',
+        'TuneCUETP8M2T4down': 'TuneCUETP8M2T4Down', 'TuneCUETP8M2T4up': 'TuneCUETP8M2T4Up',
+        'isrup': 'ISRUp', 'isrdown': 'ISRDown',
+        'hdampUP': 'HDAMPUp', 'hdampDOWN': 'HDAMPDown',
+        'GluonMoveCRTune': 'GluonMoveCRTuneUp', 'QCDbasedCRTune': 'QCDbasedCRTuneUp'}
+    def which_sys(dtag, systematics=tt_systematic_datasets):
+        for sys_name in systematics.keys():
+            if sys_name in dtag:
+                return systematics[sys_name]
+        return None
+    isTT_systematic = isTT and which_sys(dtag)
+
     isSTop = 'SingleT' in dtag or 'tchannel' in dtag or 'schannel' in dtag
     isSTopTSchannels = 'tchannel' in dtag or 'schannel' in dtag
     isDY = 'DY' in dtag
@@ -1556,8 +1570,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         jets_b_nominal_min = [] # nominal jet pts
         weight_bSF_min = 1.
 
-	# for tt->elmu fake rates
-	all_jets_for_fakes = []
+        # for tt->elmu fake rates
+        all_jets_for_fakes = []
 
         for i in xrange(ev.jet_p4.size()):
             pfid, p4 = ev.jet_PFID[i], ev.jet_p4[i]
@@ -1596,8 +1610,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # also save "minimal" jets -- with minimal pt threshold
             # make them only at NOMINAL systematics for now
             if p4.pt() > 20: # nominal jet
-	        if abs(p4.eta()) < 2.3:
-		    all_jets_for_fakes.append(p4) # nominal corrections already applied in ntupler
+                if abs(p4.eta()) < 2.3:
+                    all_jets_for_fakes.append(p4) # nominal corrections already applied in ntupler
                 if b_tagged:
                     #nbjets_nominal += 1
                     jets_b_nominal_min.append((p4, 1))
@@ -1661,9 +1675,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # how to calc b SF weight? <---- just calc them, only for nominal jets
             #
 
-	# for tau fake rates loop over all jets and taus
-	# matching them in dR
-	# and if matched adding into according collection
+        # for tau fake rates loop over all jets and taus
+        # matching them in dR
+        # and if matched adding into according collection
         tau_jets_candidates = []
         tau_jets_vloose = []
         tau_jets_loose  = []
@@ -1672,38 +1686,38 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         tau_jets_vtight = []
         for jet_p4 in all_jets_for_fakes:
             for tau_cand_p4, cand_IDlev in zip(ev.tau_p4, ev.tau_IDlev):
-	        #if tau_cand_p4.eta() < 2.3 and tau_cand_p4.pt() > 20: was done in ntupler
+                #if tau_cand_p4.eta() < 2.3 and tau_cand_p4.pt() > 20: was done in ntupler
                 tj_p4   = TLorentzVector(jet_p4.X(), jet_p4.Y(), jet_p4.Z(), jet_p4.T())
                 ttau_p4 = TLorentzVector(tau_cand_p4.X(), tau_cand_p4.Y(), tau_cand_p4.Z(), tau_cand_p4.T())
                 if tj_p4.DeltaR(ttau_p4) < 0.3:
-		    # add the jet p4 into collection according to IDlev
-		    #Int_t IDlev = 0;
-		    #if (tau.tauID(tau_VTight_ID)) IDlev = 5;
-		    #else if (tau.tauID(tau_Tight_ID))  IDlev = 4;
-		    #else if (tau.tauID(tau_Medium_ID)) IDlev = 3;
-		    #else if (tau.tauID(tau_Loose_ID))  IDlev = 2;
-		    #else if (tau.tauID(tau_VLoose_ID)) IDlev = 1;
-		    tau_jets_candidates.append(jet_p4)
-		    if cand_IDlev > 0:
-		        tau_jets_vtight.append(jet_p4)
-		        tau_jets_tight .append(jet_p4)
-		        tau_jets_medium.append(jet_p4)
-		        tau_jets_loose .append(jet_p4)
-		        tau_jets_vloose.append(jet_p4)
-		    elif cand_IDlev > 1:
-		        tau_jets_vtight.append(jet_p4)
-		        tau_jets_tight .append(jet_p4)
-		        tau_jets_medium.append(jet_p4)
-		        tau_jets_loose .append(jet_p4)
-		    elif cand_IDlev > 2:
-		        tau_jets_vtight.append(jet_p4)
-		        tau_jets_tight .append(jet_p4)
-		        tau_jets_medium.append(jet_p4)
-		    elif cand_IDlev > 3:
-		        tau_jets_vtight.append(jet_p4)
-		        tau_jets_tight .append(jet_p4)
-		    elif cand_IDlev > 4:
-		        tau_jets_vtight.append(jet_p4)
+                    # add the jet p4 into collection according to IDlev
+                    #Int_t IDlev = 0;
+                    #if (tau.tauID(tau_VTight_ID)) IDlev = 5;
+                    #else if (tau.tauID(tau_Tight_ID))  IDlev = 4;
+                    #else if (tau.tauID(tau_Medium_ID)) IDlev = 3;
+                    #else if (tau.tauID(tau_Loose_ID))  IDlev = 2;
+                    #else if (tau.tauID(tau_VLoose_ID)) IDlev = 1;
+                    tau_jets_candidates.append(jet_p4)
+                    if cand_IDlev > 0:
+                        tau_jets_vtight.append(jet_p4)
+                        tau_jets_tight .append(jet_p4)
+                        tau_jets_medium.append(jet_p4)
+                        tau_jets_loose .append(jet_p4)
+                        tau_jets_vloose.append(jet_p4)
+                    elif cand_IDlev > 1:
+                        tau_jets_vtight.append(jet_p4)
+                        tau_jets_tight .append(jet_p4)
+                        tau_jets_medium.append(jet_p4)
+                        tau_jets_loose .append(jet_p4)
+                    elif cand_IDlev > 2:
+                        tau_jets_vtight.append(jet_p4)
+                        tau_jets_tight .append(jet_p4)
+                        tau_jets_medium.append(jet_p4)
+                    elif cand_IDlev > 3:
+                        tau_jets_vtight.append(jet_p4)
+                        tau_jets_tight .append(jet_p4)
+                    elif cand_IDlev > 4:
+                        tau_jets_vtight.append(jet_p4)
 
 
 
@@ -1713,7 +1727,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         #nominal systematics
         # jet pts, tau pts, b weight (=1 for data), pu weight (=1 for data)
 
-        if isMC:
+        if isTT_systematic: # tt systematic datasets have all nominal experimental systematic variations -- they are a systematic themselves
+            systematics = {isTT_systematic: [jets_nominal,  jets_b_nominal,  taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF,       weight_pu,    1]}
+        elif isMC:
             systematics = {'NOMINAL'   : [jets_nominal,  jets_b_nominal,  taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF,          weight_pu,    1],
                            'JESUp'     : [jets_jes_up,   jets_b_jes_up,   taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF_jes_up,   weight_pu,    1],
                            'JESDown'   : [jets_jes_down, jets_b_jes_down, taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF_jes_down, weight_pu,    1],
@@ -1730,7 +1746,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 systematics['TOPPTUp']   = [jets_nominal, jets_b_nominal, taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF, weight_pu, weight_top_pt]
                 systematics['TOPPTDown'] = [jets_nominal, jets_b_nominal, taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, weight_bSF, weight_pu, 1.]
         else:
-            systematics = {'NOMINAL': [jets_nominal, jets_b_nominal, taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, weight_bSF_min, 1., 1., 1.]}
+            systematics = {'NOMINAL': [jets_nominal, jets_b_nominal, taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, 1., 1., 1., 1.]}
 
         # for each systematic
         # pass one of the reco selections
