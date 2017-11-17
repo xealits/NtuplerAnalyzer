@@ -20,6 +20,8 @@ parser.add_argument("-r", "--ratio", action='store_true', help="don't save the r
 parser.add_argument("-l", "--logy", action='store_true', help="set logarithmic scale for Y axis of stack plot")
 parser.add_argument("-o", "--output-directory", type=str, default='', help="optional output directory")
 
+parser.add_argument("--cumulative", action='store_true', help="plot stack of cumulative distribution (from right)")
+
 #parser.add_argument("-f", "--form-shapes", type=str, default='usual', help="plot the shapes of distributions normalized to 1")
 parser.add_argument("-f", "--form-shapes", action='store_true', help="plot the shapes of distributions normalized to 1")
 #parser.add_argument("-e", "--shape-evolution", type=str, default='usual', help="plot the same distr in different channels normalized to 1")
@@ -75,7 +77,11 @@ fdata = TFile(args.data_file)
 
 # only nominal in data
 #histo_data = fdata.Get(channel + '/data/' + sys_name + '/' + '_'.join([channel, sys_name, 'data', distr_name]))
-histos_data = [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', distr_name])), 'data', channel) for channel in channels]
+histos_data_distrs = [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', distr_name])), 'data', channel) for channel in channels]
+if args.cumulative:
+    histos_data = [(histo.GetCumulative(False), n, c) for histo, n, c in histos_data_distrs]
+else:
+    histos_data = histos_data_distrs
 logging.info("# data histograms = %d" % len(histos_data))
 histos_data[0][0].Print()
 
@@ -130,7 +136,10 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
            #histo = histo_key.ReadObj()
            logging.info("%s   %s   %x = %f %f" % (histo_name, histo_name, histo_name == '_'.join([channel, nick, fixed_sys_name, distr_name]), histo.GetEntries(), histo.Integral()))
 
-           used_histos.append((histo, nick, channel)) # hopefully root wont screw this up
+           if args.cumulative:
+               used_histos.append((histo.GetCumulative(False), nick, channel)) # hopefully root wont screw this up
+           else:
+               used_histos.append((histo, nick, channel)) # hopefully root wont screw this up
 
     return used_histos
 
@@ -232,15 +241,15 @@ elif args.form_shapes:
     for histo, nick, _ in used_histos:
         histo.Scale(1/histo.Integral())
 
-    # find max Y for plot
-    max_y = max([h.GetMaximum() for h, _, _ in used_histos + histos_data])
-
     gStyle.SetHatchesSpacing(2)
 
     # plot stuff
     pad.cd()
-    histos_data[0][0].SetXTitle(distr_name)
+
+    # find max Y for plot
+    max_y = max([h.GetMaximum() for h, _, _ in used_histos + histos_data])
     histos_data[0][0].SetMaximum(max_y * 1.1)
+    histos_data[0][0].SetXTitle(distr_name)
     histos_data[0][0].Draw('e1 p')
     for i, (histo, nick, _) in enumerate(histos_data[1:] + used_histos):
         #histo.SetFillColor( # it shouldn't be needed with hist drawing option
@@ -348,6 +357,9 @@ else:
     if args.plot:
         pad1.cd()
 
+        max_y = max([h.GetMaximum() for h in (hs_sum1, histos_data_sum)])
+        histos_data_sum.SetMaximum(max_y * 1.1)
+
         # remove the label on stack plot if ratio is there
         if args.ratio:
             hs_sum1.GetXaxis().SetLabelOffset(999)
@@ -376,6 +388,6 @@ else:
 
     stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
     shape_chan = ('_x_' + args.shape) if args.shape else ''
-    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + stack_or_ratio + shape_chan + ('_logy' if args.logy else '') + ".png")
+    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + stack_or_ratio + shape_chan + ('_cumulative' if args.cumulative else '') + ('_logy' if args.logy else '') + ".png")
 
 
