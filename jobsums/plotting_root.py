@@ -22,8 +22,9 @@ nick_colour = {
 "singletop": kAzure,
 "s_top_eltau": kAzure,
 "s_top_mutau": kAzure,
-"s_top_lj": kAzure+1,
-"s_top_other": kAzure+2,
+"s_top_elmu": kAzure+1,
+"s_top_lj": kAzure+2,
+"s_top_other": kAzure+3,
 
 #"tt_taultauh" : kCyan-3,
 #"tt_jj": kGreen+4,
@@ -54,7 +55,9 @@ nick_colour = {
 
 "tt_mutau":    rgb(255, 255, 178),
 "tt_eltau":    rgb(254,204,92),
+"tt_elmu":     rgb(254,224,210),
 "tt_taultauh": rgb(253,141,60),
+"tt_taueltaumu": rgb(252,146,114),
 "tt_lj":       rgb(240,59,32),
 "tt_other":    rgb(189,0,38),
 
@@ -64,11 +67,15 @@ nick_colour = {
 nick_order = {
 "qcd": 0,
 
+"tt_mutau3ch":  -1,
+"tt_eltau3ch":  -2,
 "tt_mutau": -1,
 "tt_eltau": -2,
-"tt_taultauh": -3,
-"tt_lj": -4,
-"tt_other": -5,
+"tt_elmu":  -3,
+"tt_taueltaumu": -4,
+"tt_taultauh": -4,
+"tt_lj": -5,
+"tt_other": -6,
 
 "wjets": -10,
 "dy_tautau": -11,
@@ -76,8 +83,9 @@ nick_order = {
 
 "s_top_eltau": -20,
 "s_top_mutau": -21,
-"s_top_lj": -22,
-"s_top_other": -23,
+"s_top_elmu": -22,
+"s_top_lj": -23,
+"s_top_other": -24,
 "dibosons": -30,
 }
 

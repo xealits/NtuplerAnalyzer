@@ -668,7 +668,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     isDibosons = 'WW' in dtag or 'ZZ' in dtag or 'WZ' in dtag
 
     logger.write(' '.join(name + '=' + str(setting) for name, setting in
-        [('isMC', isMC), ('save_weights', save_weights), ('aMCatNLO', aMCatNLO), ('isTT', isTT), ('isSTop', isSTop), ('isSTopTSchannels', isSTopTSchannels), ('isDY', isDY), ('isWJets', isWJets), ('isQCD', isQCD), ('isDibosons', isDibosons)]) + '\n')
+        [('isMC', isMC), ('save_weights', save_weights), ('aMCatNLO', aMCatNLO), ('isTT', isTT), ('isTT_systematic', isTT_systematic), ('isSTop', isSTop), ('isSTopTSchannels', isSTopTSchannels), ('isDY', isDY), ('isWJets', isWJets), ('isQCD', isQCD), ('isDibosons', isDibosons)]) + '\n')
 
 
     logging.info("load root_funcs")
@@ -802,6 +802,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
     if isMC:
         if isTT:
+            # TODO: probably can clarify this
+            if isTT_systematic:
+                systematic_names_toppt    = [isTT_systematic]
+                systematic_names_pu_toppt = [isTT_systematic]
+                systematic_names_pu       = [isTT_systematic]
+                systematic_names_all      = [isTT_systematic]
+                systematic_names_nominal  = [isTT_systematic]
+
             tt_procs_el =  (['tt_eltau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             tt_procs_mu =  (['tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             tt_procs_el_3ch =  (['tt_eltau3ch', 'tt_eltau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
@@ -816,15 +824,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'mu_lj':          (tt_procs_mu_3ch, systematic_names_toppt), #systematic_names_all),
                    'mu_lj_out':      (tt_procs_mu_3ch, systematic_names_toppt), #systematic_names_all),
                    # same sign for some QCD control
-                   'el_sel_ss':      (tt_procs_el, ['NOMINAL']),
-                   'mu_sel_ss':      (tt_procs_mu, ['NOMINAL']),
-                   'el_presel_ss':   (tt_procs_el, ['NOMINAL']),
-                   'mu_presel_ss':   (tt_procs_mu, ['NOMINAL']),
+                   'el_sel_ss':      (tt_procs_el, systematic_names_nominal),
+                   'mu_sel_ss':      (tt_procs_mu, systematic_names_nominal),
+                   'el_presel_ss':   (tt_procs_el, systematic_names_nominal),
+                   'mu_presel_ss':   (tt_procs_mu, systematic_names_nominal),
                    # with tau POG selection
-                   'pog_mu_presel':  (tt_procs_mu, ['NOMINAL']),
-                   'pog_mu_pass':    (tt_procs_mu, ['NOMINAL']),
-                   'pog_mu_pass_ss': (tt_procs_mu, ['NOMINAL']),
-                   'pog_mu_fail':    (tt_procs_mu, ['NOMINAL']),
+                   'pog_mu_presel':  (tt_procs_mu, systematic_names_nominal),
+                   'pog_mu_pass':    (tt_procs_mu, systematic_names_nominal),
+                   'pog_mu_pass_ss': (tt_procs_mu, systematic_names_nominal),
+                   'pog_mu_fail':    (tt_procs_mu, systematic_names_nominal),
                    # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                    #'adv_el_sel':       (tt_procs_el_3ch, systematic_names_toppt), #systematic_names_pu),
                    #'adv_el_sel_Sign4': (tt_procs_el_3ch, systematic_names_toppt), #systematic_names_pu), # this is done with a hack in the following, watch closely
@@ -832,17 +840,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                    'adv_mu_sel_Tight':    (tt_procs_mu_3ch, systematic_names_toppt), #systematic_names_pu), # this is done with a hack in the following, watch closely
                    'adv_mu_sel_Loose_ss': (tt_procs_mu_3ch, systematic_names_toppt), #systematic_names_pu),
                    'adv_mu_sel_Tight_ss': (tt_procs_mu_3ch, systematic_names_toppt), #systematic_names_pu),
-                   'sel_mu_min':        (tt_procs_mu, ['NOMINAL']), #systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
-                   'sel_mu_min_ss':     (tt_procs_mu, ['NOMINAL']), #systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
-                   'sel_mu_min_medtau': (tt_procs_mu, ['NOMINAL']), #systematic_names_pu_toppt), # minimum selection with Medium taus -- hopefully it will reduce QCD
+                   'sel_mu_min':        (tt_procs_mu, systematic_names_nominal), #systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
+                   'sel_mu_min_ss':     (tt_procs_mu, systematic_names_nominal), #systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
+                   'sel_mu_min_medtau': (tt_procs_mu, systematic_names_nominal), #systematic_names_pu_toppt), # minimum selection with Medium taus -- hopefully it will reduce QCD
                    # control selections: WJets, DY mumu and tautau, tt elmu
-                   'ctr_mu_wjet':       (tt_procs_mu, ['NOMINAL']),
-                   'ctr_mu_wjet_old':   (tt_procs_mu, ['NOMINAL']),
-                   'ctr_mu_dy_mumu':    (tt_procs_mu, ['NOMINAL']),
-                   'ctr_mu_dy_tt':      (tt_procs_mu, ['NOMINAL']),
-                   'ctr_mu_dy_tt_ss':   (tt_procs_mu, ['NOMINAL']),
-                   'ctr_mu_dy_SV_tt':   (tt_procs_mu, ['NOMINAL']), #systematic_names_all),
-                   'ctr_mu_dy_SV_tt_ss':(tt_procs_mu, ['NOMINAL']), #systematic_names_all),
+                   'ctr_mu_wjet':       (tt_procs_mu, systematic_names_nominal),
+                   'ctr_mu_wjet_old':   (tt_procs_mu, systematic_names_nominal),
+                   'ctr_mu_dy_mumu':    (tt_procs_mu, systematic_names_nominal),
+                   'ctr_mu_dy_tt':      (tt_procs_mu, systematic_names_nominal),
+                   'ctr_mu_dy_tt_ss':   (tt_procs_mu, systematic_names_nominal),
+                   'ctr_mu_dy_SV_tt':   (tt_procs_mu, systematic_names_nominal), #systematic_names_all),
+                   'ctr_mu_dy_SV_tt_ss':(tt_procs_mu, systematic_names_nominal), #systematic_names_all),
                    'ctr_mu_tt_em':      (tt_procs_elmu, systematic_names_toppt),
                    }
             usual_process = 'tt_other'
@@ -1754,6 +1762,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # store distr
 
         for sys_name, (jets, jets_b, taus, jets_min, jets_b_min, taus_min, weight_bSF_min, weight_bSF, weight_PU, weight_top_pt) in systematics.items():
+            # TODO: add here only possible systematics
             sys_weight = weight * weight_bSF * weight_PU * weight_top_pt
             sys_weight_min = weight * weight_bSF_min * weight_PU * weight_top_pt
             # pass reco selections
@@ -2037,6 +2046,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 # check for default proc
                 if chan not in channels:
                     continue
+
+                # some channels have micro_proc (tt->lep+tau->3charged)
+                #if chan in ('adv_el_sel', 'adv_mu_sel', 'adv_el_sel_Sign4', 'adv_mu_sel_Sign4') and micro_proc:
+                if chan in ('adv_mu_sel_Loose', 'adv_mu_sel_Tight', 'adv_mu_sel_Loose_ss', 'adv_mu_sel_Tight_ss',
+                   'mu_presel', 'mu_sel', 'mu_lj', 'mu_lj_out', 'el_presel', 'el_sel', 'el_lj', 'el_lj_out') and micro_proc:
+                    proc = micro_proc
+
                 procs, default_proc = channels[chan][0]
                 if proc not in procs:
                     proc = default_proc
@@ -2045,12 +2061,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 if (chan, proc, sys_name) not in out_hs:
                     continue # TODO: so it doesn't change amount of computing, systematics are per event, not per channel
                     # but it does reduce the amount of output -- no geom progression
-
-                # some channels have micro_proc (tt->lep+tau->3charged)
-                #if chan in ('adv_el_sel', 'adv_mu_sel', 'adv_el_sel_Sign4', 'adv_mu_sel_Sign4') and micro_proc:
-                if chan in ('adv_mu_sel_Loose', 'adv_mu_sel_Tight', 'adv_mu_sel_Loose_ss', 'adv_mu_sel_Tight_ss',
-                   'mu_presel', 'mu_sel', 'mu_lj', 'mu_lj_out', 'el_presel', 'el_sel', 'el_lj', 'el_lj_out') and micro_proc:
-                    proc = micro_proc
 
                 record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
 
