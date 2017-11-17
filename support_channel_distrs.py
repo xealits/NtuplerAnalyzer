@@ -1708,25 +1708,26 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     #else if (tau.tauID(tau_VLoose_ID)) IDlev = 1;
                     tau_jets_candidates.append(jet_p4)
                     if cand_IDlev > 0:
-                        tau_jets_vtight.append(jet_p4)
-                        tau_jets_tight .append(jet_p4)
-                        tau_jets_medium.append(jet_p4)
-                        tau_jets_loose .append(jet_p4)
-                        tau_jets_vloose.append(jet_p4)
-                    elif cand_IDlev > 1:
-                        tau_jets_vtight.append(jet_p4)
-                        tau_jets_tight .append(jet_p4)
-                        tau_jets_medium.append(jet_p4)
-                        tau_jets_loose .append(jet_p4)
-                    elif cand_IDlev > 2:
-                        tau_jets_vtight.append(jet_p4)
-                        tau_jets_tight .append(jet_p4)
-                        tau_jets_medium.append(jet_p4)
-                    elif cand_IDlev > 3:
-                        tau_jets_vtight.append(jet_p4)
-                        tau_jets_tight .append(jet_p4)
-                    elif cand_IDlev > 4:
-                        tau_jets_vtight.append(jet_p4)
+                        if cand_IDlev == 1:
+                            tau_jets_vloose.append(jet_p4)
+                        elif cand_IDlev == 2:
+                            tau_jets_vloose.append(jet_p4)
+                            tau_jets_loose .append(jet_p4)
+                        elif cand_IDlev == 3:
+                            tau_jets_vloose.append(jet_p4)
+                            tau_jets_loose .append(jet_p4)
+                            tau_jets_medium.append(jet_p4)
+                        elif cand_IDlev == 4:
+                            tau_jets_vloose.append(jet_p4)
+                            tau_jets_loose .append(jet_p4)
+                            tau_jets_medium.append(jet_p4)
+                            tau_jets_tight .append(jet_p4)
+                        elif cand_IDlev == 5:
+                            tau_jets_vloose.append(jet_p4)
+                            tau_jets_loose .append(jet_p4)
+                            tau_jets_medium.append(jet_p4)
+                            tau_jets_tight .append(jet_p4)
+                            tau_jets_vtight.append(jet_p4)
 
 
 

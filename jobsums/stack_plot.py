@@ -104,12 +104,17 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
                continue
 
            fixed_sys_name = sys_name
-           if 'TOPPT' in sys_name:
+           if any(sn in sys_name for sn in ['TOPPT', 'FSR', 'ISR', 'HDAMP', 'TuneCUETP8M2T4', 'QCDbasedCRTune', 'GluonMoveCRTune']):
                fixed_sys_name = sys_name if 'tt' in nick else 'NOMINAL'
 
            histo_name = '_'.join([channel, nick, fixed_sys_name, distr_name])
+           logging.debug("%s" % histo_name)
 
            h_init = process.ReadObj().Get(fixed_sys_name + '/' + histo_name)
+
+           if not h_init:
+               logging.debug("absent %s" % histo_name)
+               continue
 
            if shape_channel and nick in ('dy_other', 'dy_tautau', 'wjets'):
                histo_name = '_'.join([shape_channel, nick, fixed_sys_name, distr_name])
