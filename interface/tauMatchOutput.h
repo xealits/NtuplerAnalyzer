@@ -436,6 +436,10 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_b_x) // closest point position
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_b_y)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, track_b_z)
 
+// finally, the geometrical SV
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_geom_flightLen)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_geom_flightLenSign)
+
 
 // Primary Vertices
 // the very good PV is first in the vectors
