@@ -21,6 +21,12 @@ ssh fermi03 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW
 ssh fermi04 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands4 "'
 ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands5 "'
 
+merge-sets/queue_commands_tt_fsr_1  merge-sets/queue_commands_tt_fsr_2  merge-sets/queue_commands_tt_fsr_5
+queue_commands_tt_only_1
+queue_commands_tt_only_2
+queue_commands_tt_only_3
+queue_commands_tt_only_5
+
 test on resources
 ssh fermi01 'screen -d -m bash -c "lscpu | grep ^CPU ; uptime ; bash" '
 ssh fermi02 'screen -d -m bash -c "lscpu | grep ^CPU ; uptime ; bash" '
