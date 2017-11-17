@@ -803,6 +803,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     if isMC:
         if isTT:
             # TODO: probably can clarify this
+            systematic_names_nominal = ['NOMINAL']
             if isTT_systematic:
                 systematic_names_toppt    = [isTT_systematic]
                 systematic_names_pu_toppt = [isTT_systematic]
