@@ -132,6 +132,7 @@ process.ntupler.lumisToProcess = LumiList.LumiList(filename = theLumiMask).getVL
 record_scheme = '{record_scheme}' # PARAMETER
 if record_scheme:
     process.ntupler.record_tauID         = cms.bool('tauID'         in record_scheme)
+    process.ntupler.record_tauIDantiIso  = cms.bool('tauIDantiIso'  in record_scheme)
     process.ntupler.record_bPreselection = cms.bool('bPreselection' in record_scheme)
     process.ntupler.record_MonitorHLT    = cms.bool('MonitorHLT'    in record_scheme)
     process.ntupler.record_ElMu          = cms.bool('ElMu'          in record_scheme)

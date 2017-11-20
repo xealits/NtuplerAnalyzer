@@ -472,7 +472,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//RecoilCorrector* recoilPFMetCorrector;
 	//TH2D* zPtMass_histo;
 
-	bool record_tauID, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep;
+	bool record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep;
 
 	TString dtag;
 	bool isMC, aMCatNLO, isWJets, isDY;
@@ -540,6 +540,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 //
 NtuplerAnalyzer::NtuplerAnalyzer(const edm::ParameterSet& iConfig) :
 record_tauID         (iConfig.getParameter<bool>("record_tauID"))         ,
+record_tauIDantiIso  (iConfig.getParameter<bool>("record_tauIDantiIso"))  ,
 record_bPreselection (iConfig.getParameter<bool>("record_bPreselection")) ,
 record_MonitorHLT    (iConfig.getParameter<bool>("record_MonitorHLT"))    ,
 record_ElMu          (iConfig.getParameter<bool>("record_ElMu"))          ,
@@ -1422,6 +1423,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	//nVetoE += processElectrons_MatchHLT(selIDElectrons, el_trig_objs, 0.4, selElectrons);
 
+	bool leps_passed_relIso = true;
 	for(size_t l=0; l<selMuons.size(); ++l)
 		{
 		NT_lep_p4.push_back(selMuons[l].p4());
@@ -1431,7 +1433,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_dz  .push_back(selMuons[l].muonBestTrack()->dz (goodPV.position()));
 		NT_lep_dxy .push_back(selMuons[l].muonBestTrack()->dxy (goodPV.position()));
 		NT_lep_dB.push_back(selMuons[l].dB());
-		NT_lep_relIso.push_back(relIso(selMuons[l], NT_fixedGridRhoFastjetAll));
+		float rel_iso = relIso(selMuons[l], NT_fixedGridRhoFastjetAll);
+		NT_lep_relIso.push_back(rel_iso);
+		// using old procedures for now
+		bool passIso = patUtils::passIso(selMuons[l], patUtils::llvvMuonIso::Tight, patUtils::CutVersion::Moriond17Cut);
+		leps_passed_relIso &= passIso;
 		}
 
 	for(size_t l=0; l<selElectrons.size(); ++l)
@@ -1443,7 +1449,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_dz  .push_back(selElectrons[l].gsfTrack()->dz (goodPV.position()));
 		NT_lep_dxy .push_back(selElectrons[l].gsfTrack()->dxy (goodPV.position()));
 		NT_lep_dB.push_back(selElectrons[l].dB());
-		NT_lep_relIso.push_back(relIso(selElectrons[l], NT_fixedGridRhoFastjetAll));
+		float rel_iso = relIso(selElectrons[l], NT_fixedGridRhoFastjetAll);
+		NT_lep_relIso.push_back(rel_iso);
+		//bool passIso = patUtils::passIso(selMuons[l], el_ISO, patUtils::CutVersion::Moriond17Cut, rho);
+		bool passIso = patUtils::passIso(selElectrons[l], patUtils::llvvElecIso::Tight, patUtils::CutVersion::Moriond17Cut, NT_fixedGridRhoFastjetAll);
+		leps_passed_relIso &= passIso;
 		}
 
 	std::vector<patUtils::GenericLepton> selLeptons;
@@ -2308,7 +2318,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	LogInfo ("Demo") << "all particles/objects are selected, nbjets = " << NT_nbjets;
 
 	//bool record_ntuple = (isSingleMu || isSingleE || pass_dileptons) && NT_nbjets > 0 && NT_tau_IDlev.size() > 0; // at least 1 b jet and 1 loose tau
-	bool pass_leptons = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3;
+	bool pass_leptons = clean_lep_conditions && leps_passed_relIso && selLeptons.size() > 0 && selLeptons.size() < 3;
+	bool pass_leptons_all_iso = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3;
 	bool record_ntuple = false;
 
 	if (record_tauID)
@@ -2320,6 +2331,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		 * should contain good WJets control sample
 		 */
 		record_ntuple |= pass_leptons && NT_ntaus > 0;
+		}
+	if (record_tauIDantiIso)
+		{
+		record_ntuple |= pass_leptons_all_iso && NT_ntaus > 0;
 		}
 	if (record_bPreselection)
 		{
