@@ -1404,21 +1404,21 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	// MUONS
 	LorentzVector muDiff(0., 0., 0., 0.);
-	unsigned int nVetoMu(0);
+	unsigned int nVetoMu = 0, nVetoMu_all = 0;
 	//pat::MuonCollection selIDMuons, selMuons;
 	pat::MuonCollection selMuons;
 	processMuons_ID_ISO_Kinematics(muons, goodPV, weight, patUtils::llvvMuonId::StdTight, patUtils::llvvMuonId::StdLoose, patUtils::llvvMuonIso::Tight, patUtils::llvvMuonIso::Loose,               
-		mu_kino_cuts_pt, mu_kino_cuts_eta, mu_veto_kino_cuts_pt, mu_veto_kino_cuts_eta, selMuons, muDiff, nVetoMu, false, false);
+		mu_kino_cuts_pt, mu_kino_cuts_eta, mu_veto_kino_cuts_pt, mu_veto_kino_cuts_eta, selMuons, muDiff, nVetoMu, nVetoMu_all, false, false);
 
 	//nVetoMu += processMuons_MatchHLT(selIDMuons, mu_trig_objs, 0.4, selMuons);
 
 	// ELECTRONS
 	//pat::ElectronCollection selIDElectrons, selElectrons;
 	pat::ElectronCollection selElectrons;
-	unsigned int nVetoE(0);
+	unsigned int nVetoE = 0, nVetoE_all = 0;
 	LorentzVector elDiff(0., 0., 0., 0.);
 	processElectrons_ID_ISO_Kinematics(electrons, goodPV, NT_fixedGridRhoFastjetAll, weight, patUtils::llvvElecId::Tight, patUtils::llvvElecId::Loose, patUtils::llvvElecIso::Tight, patUtils::llvvElecIso::Loose,
-		el_kino_cuts_pt, el_kino_cuts_eta, el_veto_kino_cuts_pt, el_veto_kino_cuts_eta, selElectrons, elDiff, nVetoE, false, false);
+		el_kino_cuts_pt, el_kino_cuts_eta, el_veto_kino_cuts_pt, el_veto_kino_cuts_eta, selElectrons, elDiff, nVetoE, nVetoE_all, false, false);
 
 	//nVetoE += processElectrons_MatchHLT(selIDElectrons, el_trig_objs, 0.4, selElectrons);
 
@@ -1454,7 +1454,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//LogInfo ("Demo") << "selected leptons: " << '(' << selIDElectrons.size() << ',' << selIDMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
 	LogInfo ("Demo") << "selected leptons: " << '(' << selElectrons.size() << ',' << selMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
 
-	bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0;
+	//bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0;
+	bool clean_lep_conditions = nVetoE_all==0 && nVetoMu_all==0 && nGoodPV != 0; // veto on any iso veto leptons
 	if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return;
 	// exit now to reduce computation -- all record schemes have this requirement
 
@@ -1464,6 +1465,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	LogInfo ("Demo") << "passed lepton conditions ";
 
 	NT_nleps = selLeptons.size();
+	/* discarding events with any veto leptons now
+	NT_nleps_veto_el     = nVetoE;
+	NT_nleps_veto_el_all = nVetoE_all;
+	NT_nleps_veto_mu     = nVetoMu;
+	NT_nleps_veto_mu_all = nVetoMu_all;
+	*/
 
 	NT_leps_ID = 1;
 	for (unsigned int i = 0; i<selLeptons.size(); i++)
