@@ -243,7 +243,7 @@ for fname in files:
                             err_scaled += h.GetBinError(i)
                         #print proc.GetName(), chan.GetName(), sys.GetName(), histo_key.GetName()
                         #logging.debug("%s %s %10.f %5.5f %5.5f" % (h.GetName(), nick, event_weight, integral_init, h.Integral()))
-                        logging.debug("%s\t%s %2.6f %10.f  %3.3f / %5.5f  %3.3f / %5.5f %3.3f %3.3f %3.3f %3.3f, %5.5f  %5.5f" % (fname, nick, scale, event_weight, err_init, integral_init, err_scaled, h.Integral(), err_init/integral_init if integral_init > 0 else err_init, err_scaled/h.Integral() if h.Integral() > 0 else err_scaled, h.GetSumOfWeights(), sum_of_weights_init, integral_init, h.Integral()))
+                        logging.debug("%s\t%s %2.6f %3.2f %10.f  %3.3f / %5.5f  %3.3f / %5.5f %3.3f %3.3f %3.3f %3.3f, %5.5f  %5.5f" % (fname, nick, scale, (scale*35000), event_weight, err_init, integral_init, err_scaled, h.Integral(), err_init/integral_init if integral_init > 0 else err_init, err_scaled/h.Integral() if h.Integral() > 0 else err_scaled, h.GetSumOfWeights(), sum_of_weights_init, integral_init, h.Integral()))
 
                     # root Update doesn't actually update but makes new clone of the object...
                     #h.Write(h.GetName(), TFile.kOverwrite)
