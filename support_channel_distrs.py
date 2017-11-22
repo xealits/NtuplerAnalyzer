@@ -18,6 +18,36 @@ from ROOT import TFile, TTree, TH1D, TH2D, TLorentzVector, TVector3, gROOT, gSys
 ROOT.gROOT.Reset()
 ROOT.gSystem.Load("libUserCodettbar-leptons-80X.so")
 
+pileup_ratio_h2 = array('d',
+[             0.,              0., 5.2880843860098, 1.9057428051882, 0.8279489845062, 1.0183017803649, 0.8886546873859, 0.4586617471559, 0.4516527021066,
+ 0.6156808676490, 0.1704361822954, 0.3242275168011, 0.5576231467578, 0.6113064296958, 0.6618982312954, 0.7238796620111, 0.7496036493902, 0.7527610638253,
+ 0.7469665061269, 0.7399984493388, 0.7465103664963, 0.7983735170584, 0.8590931105313, 0.9034039953181, 0.9130886924812, 0.9080208719211, 0.9319379163103,
+ 0.9829435013036, 1.0322224123557, 1.1140955233618, 1.2058248250755, 1.2824965710179, 1.4313360174361, 1.5303677831147, 1.6810938978350, 1.8448654681967,
+ 1.9861677547885, 2.1231190233093, 2.2767850875912, 2.3717805455775, 2.4839160504037, 2.5332424087905, 2.4972378057180, 2.5549035019904, 2.5646400146497,
+ 2.5977594311101, 2.5410596186181, 2.4380019788525, 2.4582931794916, 2.4394333130376, 2.4135104510863, 2.3435484251709, 2.3026709406522, 2.2808207974466,
+ 2.1519700764652, 2.0425342255892, 1.5440178702333, 0.8925931999325, 0.4286677365298, 0.2057304468250, 0.0757408709610, 0.0356223199915, 0.0133823865731,
+ 0.0044643816760, 0.0021957442680, 0.0006438366822, 0.0002663753765, 0.0001247116374, 0.0000712745971, 0.0000307860041, 0.0000294100598, 0.0000103247078,
+ 0.0000055513056, 0.0000033501883, 0.0000035220198, 0.0000009221242])
+
+pileup_ratio_b = array('d',
+[           0.,            0.,  1.1931990788,  1.1075569611,  1.0661905165,  1.6281619271,  1.5759491716,  1.1654388423,  1.9665149072,  6.4816307673,  4.6824471835,
+  3.5057573726,  2.7367422100,  2.0880922033,  1.8309627522,  1.7165427917,  1.6325677435,  1.5679104982,  1.5226132395,  1.4786172115,  1.4187556193,  1.3584199443,
+  1.2535044794,  1.1332899913,  0.9984288822,  0.8518945520,  0.7154925510,  0.5827665258,  0.4457781053,  0.3302472894,  0.2310463295,  0.1498402182,  0.0965442096,
+  0.0567106928,  0.0327699725,  0.0182363853,  0.0096751297,  0.0050124552,  0.0026185972,  0.0013947431,  0.0008483666,  0.0006315445,  0.0005978998,  0.0007339426,
+  0.0010207996,  0.0015749231,  0.0025230767,  0.0042221245,  0.0078659845,  0.0152193676,  0.0308807634,  0.0644886301,  0.1423880343,  0.3304052121,  0.7589089584,
+  1.8143503956,  3.5544006370,  5.4397543208,  7.0034023639,  9.0337430924,  8.8675115583, 10.9147825813, 10.4253507840,  8.5070481287,  9.7647211573,  6.3458905766,
+  5.5327398483,  5.2282218781,  5.8413138671,  4.8338755929,  8.7575484032,  5.8155542511,  5.9275685169,  6.8122980083, 13.7528845721,  6.9540203430,  ])
+
+pileup_ratio_sum = array('d',
+[       0.,        0., 2.7084899, 1.2387248, 0.8567540, 1.1319902, 1.0625620, 0.6788884, 0.6404915, 1.5813397, 1.2265823, 1.1225145, 1.1346217, 1.0804378, 1.0719238,
+ 1.0481945, 1.0210914, 1.0035636, 0.9938051, 0.9824541, 0.9712776, 0.9866336, 0.9979909, 1.0111960, 1.0147509, 1.0078850, 1.0150851, 1.0273812, 1.0179873, 1.0242233,
+ 1.0233836, 0.9961096, 1.0091713, 0.9729596, 0.9599715, 0.9457656, 0.9168015, 0.8878596, 0.8702436, 0.8374816, 0.8195456, 0.7897366, 0.7430977, 0.7321259, 0.7130387,
+ 0.7051140, 0.6768290, 0.6399811, 0.6383632, 0.6289537, 0.6205741, 0.6051458, 0.6053456, 0.6291184, 0.6658740, 0.8105650, 0.9697623, 1.1145130, 1.2538530, 1.5301977,
+ 1.4704201, 1.7955171, 1.7098770, 1.3936616, 1.5989832, 1.0389566, 0.9057558, 0.8558735, 0.9562222, 0.7912980, 1.4335911, 0.9519911, 0.9703263, 1.1151534, 2.2513064,
+ 1.1383523])
+
+
+
 pileup_ratio = array('d', [0, 0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
 0.884048630953726, 0.964813189764159, 1.07045369167689, 1.12497267309738, 1.17367530613108, 1.20239808206413, 1.20815108390021, 1.20049333094509, 1.18284686347315, 1.14408796655615,
 1.0962284704313, 1.06549162803223, 1.05151011089581, 1.05159666626121, 1.05064452078328, 1.0491726301522, 1.05772537082991, 1.07279673875566, 1.0837536468865, 1.09536667397119,
@@ -719,6 +749,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     ('weight_pu', TH1D("weight_pu", "", 50, 0, 2)),
     ('weight_pu_up', TH1D("weight_pu_up", "", 50, 0, 2)),
     ('weight_pu_dn', TH1D("weight_pu_dn", "", 50, 0, 2)),
+    ('weight_pu_sum', TH1D("weight_pu_sum", "", 50, 0, 2)),
+    ('weight_pu_b',   TH1D("weight_pu_b", "", 50, 0, 2)),
+    ('weight_pu_h2',  TH1D("weight_pu_h2", "", 50, 0, 2)),
     ('weight_top_pt', TH1D("weight_top_pt", "", 50, 0, 2)),
 
     ('weight_z_mass_pt', TH1D("weight_z_mass_pt", "", 50, 0, 2)),
@@ -1179,12 +1212,25 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                #'Mt_lep_met_f_cos_c': TH1D('%s_%s_%s_Mt_lep_met_f_cos_c' % (chan, proc, sys), '', 20, 0, 250),
                                                #'Mt_lep_met_f_c':     TH1D('%s_%s_%s_Mt_lep_met_f_c'     % (chan, proc, sys), '', 20, 0, 250),
                                                #'Mt_lep_met_f_test':  TH1D('%s_%s_%s_Mt_lep_met_f_test'  % (chan, proc, sys), '', 20, 0, 250),
-                                               'Mt_lep_met_f':       TH1D('%s_%s_%s_Mt_lep_met_f'       % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f':      TH1D('%s_%s_%s_Mt_lep_met_f'       % (chan, proc, sys), '', 20, 0, 250),
+					       # PU tests
+                                               'lep_pt_pu_sum':     TH1D('%s_%s_%s_lep_pt_pu_sum'     % (chan, proc, sys), '', 20, 0, 200),
+                                               'lep_pt_pu_b'  :     TH1D('%s_%s_%s_lep_pt_pu_b'       % (chan, proc, sys), '', 20, 0, 200),
+                                               'lep_pt_pu_h2' :     TH1D('%s_%s_%s_lep_pt_pu_h2'      % (chan, proc, sys), '', 20, 0, 200),
+                                               'met_pu_sum'   :     TH1D('%s_%s_%s_met_pu_sum'      % (chan, proc, sys), '', 20, 0, 200),
+                                               'met_pu_b'     :     TH1D('%s_%s_%s_met_pu_b'        % (chan, proc, sys), '', 20, 0, 200),
+                                               'met_pu_h2'    :     TH1D('%s_%s_%s_met_pu_h2'       % (chan, proc, sys), '', 20, 0, 200),
+                                               'Mt_lep_met_f_pu_sum':     TH1D('%s_%s_%s_Mt_lep_met_f_pu_sum'       % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_pu_b'  :     TH1D('%s_%s_%s_Mt_lep_met_f_pu_b'       % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_pu_h2' :     TH1D('%s_%s_%s_Mt_lep_met_f_pu_h2'       % (chan, proc, sys), '', 20, 0, 250),
                                                # control distrs for effect of different weights
                                                'Mt_lep_met_f_init':       TH1D('%s_%s_%s_Mt_lep_met_f_init'       % (chan, proc, sys), '', 20, 0, 250),
                                                #sys_weight = weight * weight_bSF * weight_PU * weight_top_pt
                                                'Mt_lep_met_f_w_in':       TH1D('%s_%s_%s_Mt_lep_met_f_w_in'       % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_f_w_pu':       TH1D('%s_%s_%s_Mt_lep_met_f_w_pu'       % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_w_pu_sum':   TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_sum'   % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_w_pu_b':     TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_b'     % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_w_pu_h2':    TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_h2'    % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_f_w_bf':       TH1D('%s_%s_%s_Mt_lep_met_f_w_bf'       % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_f_w_bf_min':   TH1D('%s_%s_%s_Mt_lep_met_f_w_bf_min'   % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_f_w_tp':       TH1D('%s_%s_%s_Mt_lep_met_f_w_tp'       % (chan, proc, sys), '', 20, 0, 250),
@@ -1352,9 +1398,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 weight_pu    = pileup_ratio[ev.nvtx_gen]
                 weight_pu_up = pileup_ratio_up[ev.nvtx_gen]
                 weight_pu_dn = pileup_ratio_down[ev.nvtx_gen]
+		# and the new PU-s
+                weight_pu_sum  = pileup_ratio_sum[ev.nvtx_gen]
+                weight_pu_b    = pileup_ratio_b[ev.nvtx_gen]
+                weight_pu_h2   = pileup_ratio_h2[ev.nvtx_gen]
                 control_hs['weight_pu']   .Fill(weight_pu)
                 control_hs['weight_pu_up'].Fill(weight_pu_up)
                 control_hs['weight_pu_dn'].Fill(weight_pu_dn)
+                control_hs['weight_pu_sum'] .Fill(weight_pu_sum)
+                control_hs['weight_pu_b']   .Fill(weight_pu_b)
+                control_hs['weight_pu_h2']  .Fill(weight_pu_h2)
             except:
                 #print i, ev.nvtx
                 continue
@@ -1766,6 +1819,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         for sys_name, (jets, jets_b, taus, jets_min, jets_b_min, taus_min, weight_bSF_min, weight_bSF, weight_PU, weight_top_pt) in systematics.items():
             # TODO: add here only possible systematics
             sys_weight = weight * weight_bSF * weight_PU * weight_top_pt
+            sys_weight_without_PU = weight * weight_bSF * weight_top_pt # for PU tests
             sys_weight_min = weight * weight_bSF_min * weight_PU * weight_top_pt
             # pass reco selections
 
@@ -2105,10 +2159,24 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_bf']      .Fill(Mt_lep_met, weight_bSF)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_bf_min']  .Fill(Mt_lep_met, weight_bSF_min)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_pu']      .Fill(Mt_lep_met, weight_PU)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_pu_sum']  .Fill(Mt_lep_met, weight_pu_sum)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_pu_b']    .Fill(Mt_lep_met, weight_pu_b)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_pu_h2']   .Fill(Mt_lep_met, weight_pu_h2)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_tp']      .Fill(Mt_lep_met, weight_top_pt)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, record_weight)
                 out_hs[(chan, proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, record_weight)
                 out_hs[(chan, proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, record_weight)
+
+		# for PU tests
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_pu_sum']    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_sum)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_pu_b'  ]    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_b  )
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_pu_h2' ]    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_h2 )
+                out_hs[(chan, proc, sys_name)]['met_pu_sum'].Fill(met_pt, sys_weight_without_PU * weight_pu_sum)
+                out_hs[(chan, proc, sys_name)]['met_pu_b'  ].Fill(met_pt, sys_weight_without_PU * weight_pu_b  )
+                out_hs[(chan, proc, sys_name)]['met_pu_h2' ].Fill(met_pt, sys_weight_without_PU * weight_pu_h2 )
+                out_hs[(chan, proc, sys_name)]['lep_pt_pu_sum']  .Fill(ev.lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_sum)
+                out_hs[(chan, proc, sys_name)]['lep_pt_pu_b'  ]  .Fill(ev.lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_b  )
+                out_hs[(chan, proc, sys_name)]['lep_pt_pu_h2' ]  .Fill(ev.lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_h2 )
 
                 if pass_mumu or pass_elmu:
                     lep_lep = ev.lep_p4[0] + ev.lep_p4[1]
