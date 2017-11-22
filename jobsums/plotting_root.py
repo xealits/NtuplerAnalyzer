@@ -68,8 +68,8 @@ nick_order = {
 "qcd": 0,
 
 "tt_mutau3ch":  -1,
-"tt_eltau3ch":  -2,
-"tt_mutau": -1,
+"tt_eltau3ch":  -1,
+"tt_mutau": -2,
 "tt_eltau": -2,
 "tt_elmu":  -3,
 "tt_taueltaumu": -4,

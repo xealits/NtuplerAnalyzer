@@ -1,5 +1,7 @@
 import argparse
 import logging
+from os.path import isfile
+
 logging.basicConfig(level=logging.DEBUG)
 
 
@@ -21,10 +23,12 @@ parser.add_argument("-l", "--logy", action='store_true', help="set logarithmic s
 parser.add_argument("--normalize", action='store_true', help="normalize the integral to data")
 parser.add_argument("-o", "--output-directory", type=str, default='', help="optional output directory")
 
+parser.add_argument("--y-max", type=float, help="set the maximum on Y axis")
+
 parser.add_argument("--fake-rate", action='store_true', help='(ad-hocish) the fake rate in MC and data, i.e. ratio of whatever two distributions given as "nominator/denominator"')
 
 parser.add_argument("--cumulative", action='store_true', help="plot stack of cumulative distribution (from right)")
-parser.add_argument("--cumulative-fractions", action='store_true', help="not implemented yet (cumulative distributions, each bin normalized to 1)")
+parser.add_argument("--cumulative-fractions", action='store_true', help="cumulative distributions, each bin normalized to 1")
 
 #parser.add_argument("-f", "--form-shapes", type=str, default='usual', help="plot the shapes of distributions normalized to 1")
 parser.add_argument("-f", "--form-shapes", action='store_true', help="plot the shapes of distributions normalized to 1")
@@ -32,6 +36,9 @@ parser.add_argument("-f", "--form-shapes", action='store_true', help="plot the s
 parser.add_argument("--processes", type=str, default='all', help="set processes to consider (all by default)")
 
 args = parser.parse_args()
+
+assert isfile(args.mc_file)
+assert isfile(args.data_file)
 
 logging.info("import ROOT")
 
@@ -95,15 +102,6 @@ else:
     histos_data_per_distr = histos_data_distrs
 
 logging.info("# data histograms = %d" % len(histos_data_per_distr))
-
-histos_data_sums_per_distr = []
-for distr_name, histos_per_channel in histos_data_per_distr:
-    histos_data_sum = histos_per_channel[0][0].Clone()
-    histos_data_sum.Sumw2(ROOT.kTRUE) # are errors saved here?
-    for h, _, _ in histos_per_channel[1:]:
-        histos_data_sum.Add(h)
-    histos_data_sums_per_distr.append(histos_data_sum)
-histos_data_sum = histos_data_sums_per_distr[0]
 
 def get_histos(infile, channels, shape_channel, sys_name, distr_name):
     """get_histos(infile)
@@ -185,12 +183,45 @@ for _, histos in used_histos_per_distr:
     hs_sums2.append(hs_sum2)
 hs_sum2 = hs_sums2[0]
 
+# normalize MC processes and data to MC sum bin-by-bin
+if args.cumulative_fractions:
+    for (name, histos), mc_sum in zip(used_histos_per_distr, hs_sums2):
+        for bin_n in range(mc_sum.GetXaxis().GetNbins() + 1):
+            mc_sum_bin = mc_sum.GetBinContent(bin_n)
+            if mc_sum_bin != 0:
+                # all the mc processes
+                for h, nick, channel in histos:
+                    mc_bin = h.GetBinContent(bin_n)
+                    ratio = mc_bin/mc_sum_bin
+                    h.SetBinContent(bin_n, ratio)
+                    h.SetBinError(bin_n, h.GetBinError(bin_n)/mc_sum_bin)
+                # data
+                for distr_name, histos_per_channel in histos_data_per_distr:
+                    for h, _, _ in histos_per_channel:
+                        data_bin = h.GetBinContent(bin_n)
+                        ratio = data_bin/mc_sum_bin
+                        h.SetBinContent(bin_n, ratio)
+                        h.SetBinError(bin_n, h.GetBinError(bin_n)/mc_sum_bin)
+            # the sum
+            mc_sum.SetBinContent(bin_n, 1.)
+            if mc_sum_bin != 0:
+                mc_sum.SetBinError(bin_n, mc_sum.GetBinError(bin_n)/mc_sum_bin)
+
+# ??
+histos_data_sums_per_distr = []
+for distr_name, histos_per_channel in histos_data_per_distr:
+    histos_data_sum = histos_per_channel[0][0].Clone()
+    histos_data_sum.Sumw2(ROOT.kTRUE) # are errors saved here?
+    for h, _, _ in histos_per_channel[1:]:
+        histos_data_sum.Add(h)
+    histos_data_sums_per_distr.append(histos_data_sum)
+histos_data_sum = histos_data_sums_per_distr[0]
+
 if args.normalize:
     ratio = histos_data_sum.Integral() / hs_sum2.Integral()
     for name, histos in used_histos_per_distr:
         for h, nick, channel in histos:
             h.Scale(ratio)
-
 
 '''
 done more generally now
@@ -302,6 +333,9 @@ elif args.form_shapes:
 
     # find max Y for plot
     max_y = max([h.GetMaximum() for h, _, _ in used_histos + histos_data])
+    if args.y_max:
+        max_y = args.y_max
+
     histos_data[0][0].SetMaximum(max_y * 1.1)
     histos_data[0][0].SetXTitle(distr_name)
     histos_data[0][0].Draw('e1 p')
@@ -419,6 +453,8 @@ else:
         pad1.cd()
 
         max_y = max([h.GetMaximum() for h in (hs_sum1, histos_data_sum)])
+        if args.y_max:
+            max_y = args.y_max
         min_y = max([h.GetMinimum() for h in (hs_sum1, histos_data_sum)])
 
         # remove the label on stack plot if ratio is there
@@ -471,6 +507,6 @@ else:
 
     stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
     shape_chan = ('_x_' + args.shape) if args.shape else ''
-    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ".png")
+    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ".png")
 
 
