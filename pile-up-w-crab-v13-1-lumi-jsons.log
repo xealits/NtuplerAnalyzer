@@ -1,0 +1,34 @@
+old:
+
+> PU shifts by 4.6%:
+> 
+> pileupCalc.py -i ../Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt  --calcMode true --minBiasXsec 66017 --maxPileupBin 100 --numPileupBins 100  MyDataPileupHistogram_minbias-69200-down-66017_3-4-2017_FullJsonLumies.root
+> pileupCalc.py -i ../Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt  --calcMode true --minBiasXsec 72383 --maxPileupBin 100 --numPileupBins 100  MyDataPileupHistogram_minbias-69200-up-72383_3-4-2017_FullJsonLumies.root
+
+recommended 69200:
+pileupCalc.py -i MyAnalysisJSON.txt --inputLumiJSON pileup_latest.txt  --calcMode true --minBiasXsec 69200 --maxPileupBin 50 --numPileupBins 50  MyDataPileupHistogram.root
+
+now:
+
+$ ls /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/ -tl                                                                                         
+total 52310
+-rw-r--r--. 1 lumipro zh 9942473 Dec  6  2016 pileup_latest.txt
+-rw-r--r--. 1 lumipro zh 9929911 Nov  6  2016 pileup_latest.txt.backup2016.11.06
+-rw-r--r--. 1 lumipro zh 9723960 Oct 31  2016 pileup_latest.txt.backup2016.10.31
+-rw-r--r--. 1 lumipro zh 8696371 Oct 23  2016 pileup_latest.txt.backup2016.10.23
+-rw-r--r--. 1 lumipro zh 8587866 Oct 16  2016 pileup_latest.txt.backup2016.10.16
+-rw-r--r--. 1 lumipro zh 6681335 Sep 22  2016 pileup_latest.txt.backup2016.09.22
+
+for j in SingleMuon2016B_03Feb2017_ver2 SingleMuon2016C_03Feb2017_v1 SingleMuon2016D_03Feb2017_v1 SingleMuon2016E_03Feb2017_v1 SingleMuon2016F_03Feb2017_v1 SingleMuon2016G_03Feb2017_v1 SingleMuon2016H_03Feb2017_ver2 SingleMuon2016H_03Feb2017_ver3
+do
+   pileupCalc.py -i crab_projects/crab_Ntupler_v13-1_Data13TeV_$j/results/lumisToProcess.json --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt --calcMode true --minBiasXsec 69200 --maxPileupBin 100 --numPileupBins 100  MyDataPileupHistogram_$j.root &
+done
+
+then to get .C macro with text:
+
+for f in `ls MyDataPileupHistogram_SingleMuon2016*.root`                                                                                                                      
+do
+  python dump_pileup_histo.py $f > `echo $f | sed 's/.root/.csv/'` &
+done
+
+
