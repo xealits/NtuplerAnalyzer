@@ -1,5 +1,6 @@
 import argparse
 import logging
+from os.path import isfile
 
 
 parser = argparse.ArgumentParser(
@@ -29,6 +30,7 @@ logging.info("import ROOT")
 import ROOT
 from ROOT import TFile
 
+assert isfile(args.pu_file)
 pu_file = TFile(args.pu_file)
 
 histo = pu_file.Get(args.th_name)
