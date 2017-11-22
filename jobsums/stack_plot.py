@@ -95,7 +95,8 @@ fdata = TFile(args.data_file)
 # only nominal in data
 #histo_data = fdata.Get(channel + '/data/' + sys_name + '/' + '_'.join([channel, sys_name, 'data', distr_name]))
 
-histos_data_distrs = [(distr_name, [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', distr_name])), 'data', channel) for channel in channels]) for distr_name in distr_names]
+# TODO: remove ad-hoc of PU tests
+histos_data_distrs = [(distr_name, [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', distr_name.replace('_w_pu_sum', '_w_pu').replace('_w_pu_b', '_w_pu').replace('_w_pu_h2', '_w_pu').replace('_pu_h2', '').replace('_pu_b', '').replace('_pu_sum', '')])), 'data', channel) for channel in channels]) for distr_name in distr_names]
 if args.cumulative:
     histos_data_per_distr = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs]
 else:
@@ -131,7 +132,13 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
            if any(sn in sys_name for sn in ['TOPPT', 'FSR', 'ISR', 'HDAMP', 'TuneCUETP8M2T4', 'QCDbasedCRTune', 'GluonMoveCRTune']):
                fixed_sys_name = sys_name if 'tt' in nick else 'NOMINAL'
 
-           histo_name = '_'.join([channel, nick, fixed_sys_name, distr_name])
+           # TODO: PU test hack, remove it
+           if nick not in ('wjets', 'dy_other', 'dy_tautau') and distr_name in ('lep_pt_pu_h2', 'lep_pt_pu_b', 'lep_pt_pu_sum',
+                'met_pu_h2', 'met_pu_b', 'met_pu_sum',
+                'Mt_lep_met_f_pu_h2', 'Mt_lep_met_f_pu_b', 'Mt_lep_met_f_pu_sum',):
+               histo_name = '_'.join([channel, nick, fixed_sys_name, distr_name.replace('_pu_h2', '').replace('_pu_b', '').replace('_pu_sum', '')])
+           else:
+               histo_name = '_'.join([channel, nick, fixed_sys_name, distr_name])
            logging.debug("%s" % histo_name)
 
            h_init = process.ReadObj().Get(fixed_sys_name + '/' + histo_name)
