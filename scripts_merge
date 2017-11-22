@@ -59,6 +59,14 @@ end
 
 foreach d (SingleMuon SingleElectron)
 
+hadd merge-sets/v14/raw2/SingleMuon2016H.root /lstore/cms/olek/outdirs/v14/proc-raw/SingleMuon/Data13TeV_SingleMuon2016H_03Feb2017_ver*root
+hadd merge-sets/v14/raw2/SingleMuon2016D.root /lstore/cms/olek/outdirs/v14/proc-raw/SingleMuon/Data13TeV_SingleMuon2016D*root  &
+hadd merge-sets/v14/raw2/SingleMuon2016E.root /lstore/cms/olek/outdirs/v14/proc-raw/SingleMuon/Data13TeV_SingleMuon2016E*root  &
+hadd merge-sets/v14/raw2/SingleMuon2016F.root /lstore/cms/olek/outdirs/v14/proc-raw/SingleMuon/Data13TeV_SingleMuon2016F*root  &
+
 hadd merge-sets/v13-0/run_2/tt_systs/MC2016_Summer16_TTJets_powheg_FSRDown.root /lstore/cms/olek/outdirs/v13-0/run_2/tt_systs/MC2016_Summer16_TTJets_powheg_FSRDown/*root &
 hadd merge-sets/v13-0/run_2/tt_systs/MC2016_Summer16_TTJets_powheg_FSRUp.root   /lstore/cms/olek/outdirs/v13-0/run_2/tt_systs/MC2016_Summer16_TTJets_powheg_FSRUp/*root &
+
+hadd merge-sets/v13-0/run_2/tt_systs/MC2016_Summer16_TTJets_powheg_ISRDown.root /lstore/cms/olek/outdirs/v13-0/run_2/tt_systs/MC2016_Summer16_TTJets_powheg_ISRDown/*root &
+hadd merge-sets/v13-0/run_2/tt_systs/MC2016_Summer16_TTJets_powheg_ISRUp.root   /lstore/cms/olek/outdirs/v13-0/run_2/tt_systs/MC2016_Summer16_TTJets_powheg_ISRUp/*root &
 

@@ -18,6 +18,7 @@ parser.add_argument("-x", "--shape",  type=str, default='', help="selection for 
 parser.add_argument("-p", "--plot",  action='store_true', help="don't save the root file, plot stacked histogram in png")
 parser.add_argument("-r", "--ratio", action='store_true', help="don't save the root file, make ratio plot (in addition to stack or alone)")
 parser.add_argument("-l", "--logy", action='store_true', help="set logarithmic scale for Y axis of stack plot")
+parser.add_argument("--normalize", action='store_true', help="normalize the integral to data")
 parser.add_argument("-o", "--output-directory", type=str, default='', help="optional output directory")
 
 parser.add_argument("--fake-rate", action='store_true', help='(ad-hocish) the fake rate in MC and data, i.e. ratio of whatever two distributions given as "nominator/denominator"')
@@ -95,6 +96,15 @@ else:
 
 logging.info("# data histograms = %d" % len(histos_data_per_distr))
 
+histos_data_sums_per_distr = []
+for distr_name, histos_per_channel in histos_data_per_distr:
+    histos_data_sum = histos_per_channel[0][0].Clone()
+    histos_data_sum.Sumw2(ROOT.kTRUE) # are errors saved here?
+    for h, _, _ in histos_per_channel[1:]:
+        histos_data_sum.Add(h)
+    histos_data_sums_per_distr.append(histos_data_sum)
+histos_data_sum = histos_data_sums_per_distr[0]
+
 def get_histos(infile, channels, shape_channel, sys_name, distr_name):
     """get_histos(infile)
 
@@ -157,6 +167,30 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
 f = TFile(args.mc_file)
 used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_name, distr_name)) for distr_name in distr_names]
 
+hs_sums2 = []
+
+for _, histos in used_histos_per_distr:
+    # loop through normal list
+    hs_sum2 = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
+    hs_sum2.SetName('mc_sum2')
+
+    for h, _, _ in histos[1:]:
+        hs_sum2.Add(h)
+
+    hs_sum2.SetFillStyle(3004);
+    hs_sum2.SetFillColor(1);
+    hs_sum2.SetMarkerStyle(1)
+    hs_sum2.SetMarkerColor(0)
+
+    hs_sums2.append(hs_sum2)
+hs_sum2 = hs_sums2[0]
+
+if args.normalize:
+    ratio = histos_data_sum.Integral() / hs_sum2.Integral()
+    for name, histos in used_histos_per_distr:
+        for h, nick, channel in histos:
+            h.Scale(ratio)
+
 
 '''
 done more generally now
@@ -177,7 +211,6 @@ hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos)) for dist
 
 # loop through TList
 hs_sums1 = []
-hs_sums2 = []
 
 for _, (hs, _) in hs_legs_per_distr:
     histos = hs.GetHists() # TList
@@ -194,43 +227,18 @@ for _, (hs, _) in hs_legs_per_distr:
 
     hs_sums1.append(hs_sum1)
 
-for _, histos in used_histos_per_distr:
-    # loop through normal list
-    hs_sum2 = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
-    hs_sum2.SetName('mc_sum2')
-
-    for h, _, _ in histos[1:]:
-        hs_sum2.Add(h)
-
-    hs_sum2.SetFillStyle(3004);
-    hs_sum2.SetFillColor(1);
-    hs_sum2.SetMarkerStyle(1)
-    hs_sum2.SetMarkerColor(0)
-
-    hs_sums2.append(hs_sum2)
-
-histos_data_sums_per_distr = []
-for distr_name, histos_per_channel in histos_data_per_distr:
-    histos_data_sum = histos_per_channel[0][0].Clone()
-    histos_data_sum.Sumw2(ROOT.kTRUE) # are errors saved here?
-    for h, _, _ in histos_per_channel[1:]:
-        histos_data_sum.Add(h)
-    histos_data_sums_per_distr.append(histos_data_sum)
-
 '''
 Plot ratio of first two distrs for fake rate.
 Otherwise plot just the 0th distr.
 TODO: somehow improve/simplify/make useful this system.
 '''
 
-histos_data_sum = histos_data_sums_per_distr[0]
 hs_sum1 = hs_sums1[0]
 if len(histos_data_sums_per_distr) > 1:
     histos_data_sum2 = histos_data_sums_per_distr[1]
     hs_sum1_2 = hs_sums1[1]
-hs_sum2 = hs_sums2[0]
 hs, leg =  hs_legs_per_distr[0][1]
-used_histos = used_histos_per_distr[0]
+used_histos = used_histos_per_distr[0][1]
 #histos_data_per_distr[0][0][0].Print()
 
 logging.info("data   = %f" % histos_data_sum.Integral())
@@ -256,10 +264,13 @@ histos_data[0][0].GetYaxis().SetLabelSize(14) # labels will be 14 pixels
 
 
 if not args.plot and not args.ratio:
-    fout = TFile(out_dir + args.mc_file.split('.root')[0] + '_%s_%s_%s.root' % (distr_name, channel, sys_name), 'RECREATE')
+    filename = out_dir + args.mc_file.split('.root')[0] + '_%s_%s_%s.root' % (distr_name, channel, sys_name)
+    logging.info('saving root %s' % filename)
+    fout = TFile(filename, 'RECREATE')
     fout.cd()
     #histo_data.Write() #'data')
-    for h in [h for h, _, _ in histos_data] + histos:
+    for h, nick, _ in histos_data + used_histos:
+        logging.info(nick)
         h.Write()
     hs.Write()
     hs_sum1.Write()
@@ -439,13 +450,27 @@ else:
         histos_data_sum.Draw("e1 p")
         if not args.fake_rate:
             hs.Draw("same")
-        hs_sum1.Draw("same e2")
+
+        # MC sum plot
+        if args.fake_rate:
+            hs_sum1.SetFillStyle(3004);
+            hs_sum1.SetFillColor(1);
+            #hs_sum1.SetMarkerColorAlpha(0, 0.1);
+            hs_sum1.SetMarkerStyle(25);
+            hs_sum1.SetMarkerColor(kRed);
+            hs_sum1.SetLineColor(kRed);
+            #hs_sum1.Draw("same e2")
+            hs_sum1.Draw("same e")
+        else:
+            # only error band in usual case
+            hs_sum1.Draw("same e2")
+
         histos_data_sum.Draw("same e1p")
         if not args.fake_rate:
             leg.Draw("same")
 
     stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
     shape_chan = ('_x_' + args.shape) if args.shape else ''
-    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_logy' if args.logy else '') + ".png")
+    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ".png")
 
 

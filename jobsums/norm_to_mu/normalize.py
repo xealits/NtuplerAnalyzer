@@ -195,6 +195,8 @@ files = [
 "MC2016_Summer16_TTJets_powheg",
 "MC2016_Summer16_TTJets_powheg_FSRDown",
 "MC2016_Summer16_TTJets_powheg_FSRUp",
+"MC2016_Summer16_TTJets_powheg_ISRDown",
+"MC2016_Summer16_TTJets_powheg_ISRUp",
 "MC2016_Summer16_W1Jets_madgraph",
 "MC2016_Summer16_W2Jets_madgraph",
 "MC2016_Summer16_W3Jets_madgraph",

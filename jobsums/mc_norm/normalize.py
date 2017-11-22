@@ -51,6 +51,8 @@ xsecs = {
 
 "MC2016_Summer16_TTJets_powheg_FSRDown": ttbar_xsec,
 "MC2016_Summer16_TTJets_powheg_FSRUp":   ttbar_xsec,
+"MC2016_Summer16_TTJets_powheg_ISRDown": ttbar_xsec,
+"MC2016_Summer16_TTJets_powheg_ISRUp":   ttbar_xsec,
  "MC2016_Summer16_TTJets_powheg"     : ttbar_xsec ,
  "MC2016_Summer16_TTJets_powheg_1"   : ttbar_xsec ,
  "MC2016_Summer16_TTJets_powheg_2"   : ttbar_xsec ,
@@ -172,6 +174,8 @@ files = [
 "MC2016_Summer16_TTJets_powheg",
 "MC2016_Summer16_TTJets_powheg_FSRDown",
 "MC2016_Summer16_TTJets_powheg_FSRUp",
+"MC2016_Summer16_TTJets_powheg_ISRDown",
+"MC2016_Summer16_TTJets_powheg_ISRUp",
 "MC2016_Summer16_W1Jets_madgraph",
 "MC2016_Summer16_W2Jets_madgraph",
 "MC2016_Summer16_W3Jets_madgraph",
