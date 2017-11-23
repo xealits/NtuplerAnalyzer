@@ -1445,6 +1445,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         Mt_lep_met_mth = abs((ev.lep_p4[0] - met_vector).Mt())
         Mt_lep_met_cos_c = ROOT.transverse_mass(ev.lep_p4[0], met_vector)
 
+        # from PU tests, leaving it here for now
+        if not isMC:
+            weight_pu_sum = 1.
+            weight_pu_b = 1.
+            weight_pu_h2 = 1.
+
         weight = 1. # common weight of event (1. for data)
         if isMC:
             try:
@@ -1872,8 +1878,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         for sys_name, (jets, jets_b, taus, jets_min, jets_b_min, taus_min, weight_bSF_min, weight_bSF, weight_PU, weight_top_pt) in systematics.items():
             # TODO: add here only possible systematics
             sys_weight = weight * weight_bSF * weight_PU * weight_top_pt
-            sys_weight_without_PU = weight * weight_bSF * weight_top_pt # for PU tests
             sys_weight_min = weight * weight_bSF_min * weight_PU * weight_top_pt
+            sys_weight_without_PU = weight * weight_bSF * weight_top_pt # for PU tests
             # pass reco selections
 
             Mt_tau_met = 0

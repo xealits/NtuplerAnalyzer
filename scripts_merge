@@ -43,18 +43,20 @@ ssh fermi03 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW
 ssh fermi04 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands_wjets-dy_4 "'
 ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands_wjets-dy_5 "'
 
+ls /lstore/cms/olek/outdirs/v14/proc-2/*/*root | wc -l
+
 hadd-ing
 
 foreach d (`cat merge-sets/jobs_hadd.dtags.small`)
-hadd merge-sets/v14/raw2/$d.root /lstore/cms/olek/outdirs/v14/proc-raw/$d/*.root &
+hadd merge-sets/v14/proc-2/$d.root /lstore/cms/olek/outdirs/v14/proc-2/$d/*.root &
 end
 
 foreach d (`cat merge-sets/jobs_hadd.dtags.large_aa`)
-hadd merge-sets/v14/raw2/$d.root /lstore/cms/olek/outdirs/v14/proc-raw/$d/*.root &
+hadd merge-sets/v14/proc-2/$d.root /lstore/cms/olek/outdirs/v14/proc-2/$d/*.root &
 end
 
 foreach d (`cat merge-sets/jobs_hadd.dtags.large_ab`)
-hadd merge-sets/v14/raw2/$d.root /lstore/cms/olek/outdirs/v14/proc-raw/$d/*.root &
+hadd merge-sets/v14/proc-2/$d.root /lstore/cms/olek/outdirs/v14/proc-2/$d/*.root &
 end
 
 foreach d (SingleMuon SingleElectron)
