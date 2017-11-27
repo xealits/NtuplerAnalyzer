@@ -105,7 +105,10 @@ logging.info("muon SFs from " + muon_effs_dirname)
 muon_effs_tracking_BCDEF_file  = TFile(muon_effs_dirname + "/2016_23Sep_tracking_more_BCDEF_fits.root" )
 muon_effs_tracking_GH_file     = TFile(muon_effs_dirname + "/2016_23Sep_tracking_more_GH_fits.root" )
 muon_effs_tracking_BCDEF_graph = muon_effs_tracking_BCDEF_file.Get("ratio_eff_aeta_dr030e030_corr")
-muon_effs_tracking_GH_graph    = muon_effs_tracking_GH_file.Get("ratio_eff_aeta_dr030e030_corr")
+muon_effs_tracking_GH_graph    = muon_effs_tracking_GH_file   .Get("ratio_eff_aeta_dr030e030_corr")
+
+muon_effs_tracking_BCDEF_graph_vtx = muon_effs_tracking_BCDEF_file.Get("ratio_eff_vtx_dr030e030_corr")
+muon_effs_tracking_GH_graph_vtx    = muon_effs_tracking_GH_file   .Get("ratio_eff_vtx_dr030e030_corr")
 
 print type(muon_effs_tracking_BCDEF_graph)
 
@@ -163,7 +166,7 @@ h_weight_mu_trg_bcdef_eta = TH1D("weight_mu_trg_bcdef_eta", "", 50, 0, 3)
 #
 #h_weight_mu_idd_bcdef_nbins = TH2D("weight_mu_idd_bcdef_nbins", "", 100, 0, muon_effs_id_BCDEF_histo.GetSize(), 100, 0, muon_effs_id_BCDEF_histo.GetSize())
 
-def lepton_muon_SF(abs_eta, pt): #, SingleMuon_data_bcdef_fraction, SingleMuon_data_gh_fraction):
+def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction, SingleMuon_data_gh_fraction):
     #weight *= 0.98; // average mu trig SF
     #weight *= 0.97; // average mu ID
     weight_muon_sfs = 1
@@ -183,7 +186,9 @@ def lepton_muon_SF(abs_eta, pt): #, SingleMuon_data_bcdef_fraction, SingleMuon_d
     #        gh_weight_trk, gh_weight_id, gh_weight_iso;
 
     # hopefully tracking won't overflow in eta range:
-    bcdef_weight_trk = muon_effs_tracking_BCDEF_graph.Eval(abs_eta)
+    bcdef_weight_trk     = muon_effs_tracking_BCDEF_graph    .Eval(abs_eta)
+    bcdef_weight_trk_vtx = muon_effs_tracking_BCDEF_graph_vtx.Eval(vtx)
+    bcdef_weight_trk_vtx_gen = muon_effs_tracking_BCDEF_graph_vtx.Eval(vtx_gen)
     #h_weight_mu_trk_bcdef_pt = TH1D("weight_mu_trk_bcdef_pt", "", 50, 0, 200),
     h_weight_mu_trk_bcdef_eta.Fill(abs_eta)
     # the id-s totally can overflow:
@@ -208,7 +213,9 @@ def lepton_muon_SF(abs_eta, pt): #, SingleMuon_data_bcdef_fraction, SingleMuon_d
     #fill_1d(string("weight_muon_effs_BCDEF_iso"),  200, 0., 1.1,   bcdef_weight_iso, 1);
     #bcdef_weight *= bcdef_weight_trk * bcdef_weight_id * bcdef_weight_iso;
 
-    gh_weight_trk = muon_effs_tracking_GH_graph.Eval(abs_eta)
+    gh_weight_trk     = muon_effs_tracking_GH_graph    .Eval(abs_eta)
+    gh_weight_trk_vtx = muon_effs_tracking_GH_graph_vtx.Eval(vtx)
+    gh_weight_trk_vtx_gen = muon_effs_tracking_GH_graph_vtx.Eval(vtx_gen)
     #h_weight_mu_trk_gh_eta.Fill(abs_eta)
     # the id-s totally can overflow:
     bin_x = pt      if pt < muon_effs_id_GH_histo_max_x      else muon_effs_id_GH_histo_max_x - 1
@@ -223,7 +230,7 @@ def lepton_muon_SF(abs_eta, pt): #, SingleMuon_data_bcdef_fraction, SingleMuon_d
     #h_weight_mu_iso_gh_pt .Fill(bin_x)
     #h_weight_mu_iso_gh_eta.Fill(bin_y)
 
-    return bcdef_weight_trk, bcdef_weight_id, bcdef_weight_iso, gh_weight_trk, gh_weight_id, gh_weight_iso
+    return (bcdef_weight_trk, bcdef_weight_trk_vtx, bcdef_weight_id, bcdef_weight_iso, bcdef_weight_trk_vtx_gen), (gh_weight_trk, gh_weight_trk_vtx, gh_weight_id, gh_weight_iso, gh_weight_trk_vtx_gen)
 
 
 muon_effs_trg_BCDEF_histo_max_x = muon_effs_trg_BCDEF_histo.GetXaxis().GetXmax()
@@ -758,12 +765,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     ('weight_bSF',       TH1D("weight_bSF", "", 50, 0, 2)),
 
     ('weight_mu_trk_bcdef', TH1D("weight_mu_trk_bcdef", "", 50, 0, 2)),
+    ('weight_mu_trk_bcdef_vtx', TH1D("weight_mu_trk_bcdef_vtx", "", 50, 0, 2)),
+    ('weight_mu_trk_bcdef_vtx_gen', TH1D("weight_mu_trk_bcdef_vtx_gen", "", 50, 0, 2)),
     ('weight_mu_id_bcdef' , TH1D("weight_mu_id_bcdef", "", 50, 0, 2)),
     ('weight_mu_iso_bcdef', TH1D("weight_mu_iso_bcdef", "", 50, 0, 2)),
     ('weight_mu_trg_bcdef', TH1D("weight_mu_trg_bcdef", "", 50, 0, 2)),
     ('weight_mu_all_bcdef', TH1D("weight_mu_all_bcdef", "", 50, 0, 2)),
 
     ('weight_mu_trk_gh', TH1D("weight_mu_trk_gh", "", 50, 0, 2)),
+    ('weight_mu_trk_gh_vtx', TH1D("weight_mu_trk_gh_vtx", "", 50, 0, 2)),
+    ('weight_mu_trk_gh_vtx_gen', TH1D("weight_mu_trk_gh_vtx_gen", "", 50, 0, 2)),
     ('weight_mu_id_gh' , TH1D("weight_mu_id_gh", "", 50, 0, 2)),
     ('weight_mu_iso_gh', TH1D("weight_mu_iso_gh", "", 50, 0, 2)),
     ('weight_mu_trg_gh', TH1D("weight_mu_trg_gh", "", 50, 0, 2)),
@@ -1263,6 +1274,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                #'Mt_lep_met_f_c':     TH1D('%s_%s_%s_Mt_lep_met_f_c'     % (chan, proc, sys), '', 20, 0, 250),
                                                #'Mt_lep_met_f_test':  TH1D('%s_%s_%s_Mt_lep_met_f_test'  % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_f':      TH1D('%s_%s_%s_Mt_lep_met_f'       % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_VS_nvtx':      TH2D('%s_%s_%s_Mt_lep_met_f_VS_nvtx' % (chan, proc, sys), '', 20, 0, 250, 50, 0, 50),
+                                               'Mt_lep_met_f_VS_nvtx_gen':  TH2D('%s_%s_%s_Mt_lep_met_f_VS_nvtx_gen' % (chan, proc, sys), '', 20, 0, 250, 50, 0, 50),
                                                # PU tests
                                                'lep_pt_pu_sum':     TH1D('%s_%s_%s_lep_pt_pu_sum'     % (chan, proc, sys), '', 20, 0, 200),
                                                'lep_pt_pu_b'  :     TH1D('%s_%s_%s_lep_pt_pu_b'       % (chan, proc, sys), '', 20, 0, 200),
@@ -1277,6 +1290,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'Mt_lep_met_f_init':       TH1D('%s_%s_%s_Mt_lep_met_f_init'       % (chan, proc, sys), '', 20, 0, 250),
                                                #sys_weight = weight * weight_bSF * weight_PU * weight_top_pt
                                                'Mt_lep_met_f_w_in':       TH1D('%s_%s_%s_Mt_lep_met_f_w_in'       % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_w_mu_trk_b': TH1D('%s_%s_%s_Mt_lep_met_f_w_mu_trk_b' % (chan, proc, sys), '', 20, 0, 250),
+                                               'Mt_lep_met_f_w_mu_trk_h': TH1D('%s_%s_%s_Mt_lep_met_f_w_mu_trk_h' % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_f_w_pu':       TH1D('%s_%s_%s_Mt_lep_met_f_w_pu'       % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_f_w_pu_sum':   TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_sum'   % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_f_w_pu_b':     TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_b'     % (chan, proc, sys), '', 20, 0, 250),
@@ -1552,10 +1567,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     proc = 's_top_other'
 
             if (pass_mu or pass_elmu or pass_mumu or pass_mumu_ss) and isMC:
-                mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
+                #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt()) # old
+                mu_sfs_b, mu_sfs_h = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt(), ev.nvtx, ev.nvtx_gen) # running tracking SF on reco nvtx and output on nvtx_gen for control
                 mu_trg_sf = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 # bcdef gh eras
-                weight *= ratio_bcdef * mu_trg_sf[0] * mu_sfs[0] * mu_sfs[1] * mu_sfs[2] + ratio_gh * mu_trg_sf[1] * mu_sfs[3] * mu_sfs[4] * mu_sfs[5]
+                #weight *= ratio_bcdef * mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[1] * mu_sfs_b[2] * mu_sfs_b[3] + ratio_gh * mu_trg_sf[1] * mu_sfs_h[0] * mu_sfs_h[1] * mu_sfs_h[2] * mu_sfs_h[3]
+                # with gen_nvtx for tracking eff
+                weight *= ratio_bcdef * mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[4] * mu_sfs_b[2] * mu_sfs_b[3] + ratio_gh * mu_trg_sf[1] * mu_sfs_h[0] * mu_sfs_h[4] * mu_sfs_h[2] * mu_sfs_h[3]
+
 
             if pass_el and isMC:
                 el_sfs = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
@@ -2231,9 +2250,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_cos_c'].Fill(Mt_lep_met_cos_c, record_weight)
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_mth']  .Fill(Mt_lep_met_mth, record_weight)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f']      .Fill(Mt_lep_met, record_weight)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_VS_nvtx']      .Fill(Mt_lep_met, ev.nvtx, 1.)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_VS_nvtx_gen']      .Fill(Mt_lep_met, ev.nvtx_gen, 1.)
                 # controls for effect from weights
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_init']      .Fill(Mt_lep_met)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_in']      .Fill(Mt_lep_met, weight)
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_mu_trk_b'].Fill(Mt_lep_met, mu_sfs_b[4])
+                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_mu_trk_h'].Fill(Mt_lep_met, mu_sfs_h[4])
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_bf']      .Fill(Mt_lep_met, weight_bSF)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_bf_min']  .Fill(Mt_lep_met, weight_bSF_min)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_pu']      .Fill(Mt_lep_met, weight_PU)
@@ -2336,17 +2359,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
             #mu_trg_sf = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
 
-            control_hs['weight_mu_trk_bcdef'].Fill(mu_sfs[0])
-            control_hs['weight_mu_id_bcdef'] .Fill(mu_sfs[1])
-            control_hs['weight_mu_iso_bcdef'].Fill(mu_sfs[2])
+            control_hs['weight_mu_trk_bcdef']    .Fill(mu_sfs_b[0])
+            control_hs['weight_mu_trk_bcdef_vtx'].Fill(mu_sfs_b[1])
+            control_hs['weight_mu_id_bcdef']     .Fill(mu_sfs_b[2])
+            control_hs['weight_mu_iso_bcdef']    .Fill(mu_sfs_b[3])
+            control_hs['weight_mu_trk_bcdef_vtx_gen'].Fill(mu_sfs_b[4])
             control_hs['weight_mu_trg_bcdef'].Fill(mu_trg_sf[0])
-            control_hs['weight_mu_all_bcdef'].Fill(mu_trg_sf[0] * mu_sfs[0] * mu_sfs[1] * mu_sfs[2])
+            control_hs['weight_mu_all_bcdef'].Fill(mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[1] * mu_sfs_b[2] * mu_sfs_b[3])
 
-            control_hs['weight_mu_trk_gh'].Fill(mu_sfs[3])
-            control_hs['weight_mu_id_gh'] .Fill(mu_sfs[4])
-            control_hs['weight_mu_iso_gh'].Fill(mu_sfs[5])
+            control_hs['weight_mu_trk_gh']    .Fill(mu_sfs_h[0])
+            control_hs['weight_mu_trk_gh_vtx'].Fill(mu_sfs_h[1])
+            control_hs['weight_mu_id_gh']     .Fill(mu_sfs_h[2])
+            control_hs['weight_mu_iso_gh']    .Fill(mu_sfs_h[3])
+            control_hs['weight_mu_trk_gh_vtx_gen'].Fill(mu_sfs_h[4])
             control_hs['weight_mu_trg_gh'].Fill(mu_trg_sf[1])
-            control_hs['weight_mu_all_gh'].Fill(mu_trg_sf[1] * mu_sfs[3] * mu_sfs[4] * mu_sfs[5])
+            control_hs['weight_mu_all_gh']   .Fill(mu_trg_sf[1] * mu_sfs_h[0] * mu_sfs_h[1] * mu_sfs_h[2] * mu_sfs_h[3])
 
             control_hs['weight_mu_bSF'].Fill(weight_bSF)
             control_hs['weight_mu_bSF_up']  .Fill(weight_bSF_up)
