@@ -625,7 +625,66 @@ double b_track_plane_intersections_raw_SV(
 
 
 
-# MISMATCH in NTUPLES
+# TESTING angle-sum in true and fake
+# and as a penalty for Sign
+# SV loose taus, no cuts, for shape
+
+# a "canv-starter" call
+((TTree*) tauMatch->Get("tauMatch_ttree"))->Draw("  lep_p4[0].pt() ", "tau_IDlev[0]>1 && (gen_t_w_decay_id != 1 && gen_tb_w_decay_id != 1) && tau_SV_fit_track_OS_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS1_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS2_matched_track_dR[tau_refited_index[0]] < 0.002 ", "")
+
+# angle sum is 5
+((TTree*) tauMatch->Get("tauMatch_ttree"))->Draw(" optimal_directions_intersections_raw_SV( 5, track_b_x[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].phi(), tau_p4[0].pt(), tau_p4[0].eta(), tau_p4[0].phi() )  ", "tau_IDlev[0]>1 && (gen_t_w_decay_id != 1 && gen_tb_w_decay_id != 1) && tau_SV_fit_track_OS_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS1_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS2_matched_track_dR[tau_refited_index[0]] < 0.002 ", "")
+
+((TTree*) tauMatch->Get("tauMatch_ttree"))->Draw(" optimal_directions_intersections_raw_SV( 5, track_b_x[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].phi(), tau_p4[0].pt(), tau_p4[0].eta(), tau_p4[0].phi() )  ", "tau_IDlev[0]>1 && (gen_t_w_decay_id == 1 || gen_tb_w_decay_id == 1) && tau_SV_fit_track_OS_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS1_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS2_matched_track_dR[tau_refited_index[0]] < 0.002 ", "")
+
+TH1D* h_ = (TH1D*) ((TTree*) tauMatch->Get("tauMatch_ttree"))->GetHistogram()
+TH1D* h_lt = (TH1D*) h_->Clone()
+h_lt->SetDirectory(0)
+h_lt->SetName("lt")
+
+h_ = (TH1D*) ((TTree*) tauMatch->Get("tauMatch_ttree"))->GetHistogram()
+TH1D* h_lj = (TH1D*) h_->Clone()
+h_lj->SetDirectory(0)
+h_lj->SetName("lt")
+h_lj->SetLineColor(kRed)
+
+h_lt->Scale(1/h_lt->Integral())
+h_lj->Scale(1/h_lj->Integral())
+
+# SV with anglesum penalty is 49
+((TTree*) tauMatch->Get("tauMatch_ttree"))->Draw(" optimal_directions_intersections_raw_SV( 49, track_b_x[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].phi(), tau_p4[0].pt(), tau_p4[0].eta(), tau_p4[0].phi() ) >>h(66,-1,10)", "tau_IDlev[0]>1 && (gen_t_w_decay_id != 1 && gen_tb_w_decay_id != 1) && tau_SV_fit_track_OS_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS1_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS2_matched_track_dR[tau_refited_index[0]] < 0.002 ", "")
+
+((TTree*) tauMatch->Get("tauMatch_ttree"))->Draw(" optimal_directions_intersections_raw_SV( 49, track_b_x[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]], track_b_x[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_y[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_b_z[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]], track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS1_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_OS_matched_track[tau_refited_index[0]]].phi(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].pt(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].eta(), track_p4[tau_SV_fit_track_SS2_matched_track[tau_refited_index[0]]].phi(), tau_p4[0].pt(), tau_p4[0].eta(), tau_p4[0].phi() ) >>h(66,-1,10) ", "tau_IDlev[0]>1 && (gen_t_w_decay_id == 1 || gen_tb_w_decay_id == 1) && tau_SV_fit_track_OS_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS1_matched_track_dR[tau_refited_index[0]] + tau_SV_fit_track_SS2_matched_track_dR[tau_refited_index[0]] < 0.002 ", "")
+
+
+h_ = (TH1D*) ((TTree*) tauMatch->Get("tauMatch_ttree"))->GetHistogram()
+TH1D* h_lt_sign = (TH1D*) h_->Clone()
+h_lt_sign->SetDirectory(0)
+h_lt_sign->SetName("lt_sign")
+
+h_ = (TH1D*) ((TTree*) tauMatch->Get("tauMatch_ttree"))->GetHistogram()
+TH1D* h_lj_sign = (TH1D*) h_->Clone()
+h_lj_sign->SetDirectory(0)
+h_lj_sign->SetName("lt_sign")
+h_lj_sign->SetLineColor(kRed)
+
+
+h_lt_sign->Scale(1/h_lt_sign->Integral())
+h_lj_sign->Scale(1/h_lj_sign->Integral())
+
+h_lj_sign->Draw()
+h_lt_sign->Draw("same")
+
+# --- looks like the same as without angle
+# the angle ~= other penalties, which are already there
+
+
+
+
+
+
+
+# MISMATCH in NTUPLES (FIXED -- had a typo in dR match sigCands - tracks)
 # it seems optimal_directions_intersections_raw_SV 29 is used in ntuple
 # the tests were done in
 # ~/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/ttbar-leptons-80X/outdir/tauMatch-1/merged-sets
