@@ -96,7 +96,16 @@ fdata = TFile(args.data_file)
 #histo_data = fdata.Get(channel + '/data/' + sys_name + '/' + '_'.join([channel, sys_name, 'data', distr_name]))
 
 # TODO: remove ad-hoc of PU tests
-histos_data_distrs = [(distr_name, [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', distr_name.replace('_w_pu_sum', '_w_pu').replace('_w_pu_b', '_w_pu').replace('_w_pu_h2', '_w_pu').replace('_pu_h2', '').replace('_pu_b', '').replace('_pu_sum', '')])), 'data', channel) for channel in channels]) for distr_name in distr_names]
+# Mt_lep_met_f_w_mu_trk_b
+#histos_data_distrs = [(distr_name, )
+histos_data_distrs = []
+for distr_name in distr_names:
+    data_distr_name = distr_name[:]
+    if data_distr_name in ('Mt_lep_met_f_w_mu_trk_b', 'Mt_lep_met_f_w_mu_trk_h'):
+        data_distr_name = 'Mt_lep_met_f'
+    data_distr_name.replace('_w_pu_sum', '_w_pu').replace('_w_pu_b', '_w_pu').replace('_w_pu_h2', '_w_pu').replace('_pu_h2', '').replace('_pu_b', '').replace('_pu_sum', '')
+    histos_data_distrs.append((data_distr_name, [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
+
 if args.cumulative:
     histos_data_per_distr = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs]
 else:
@@ -360,7 +369,7 @@ elif args.form_shapes:
 
     leg.Draw("same")
 
-    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes_%d-channels.png' % len(channels))
+    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes_%d-channels_%s-processes.png' % (len(channels), '-'.join(processes_requirement)))
 
 else:
     from ROOT import gStyle, gROOT, TCanvas, TPad
