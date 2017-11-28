@@ -2255,8 +2255,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 # controls for effect from weights
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_init']      .Fill(Mt_lep_met)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_in']      .Fill(Mt_lep_met, weight)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_mu_trk_b'].Fill(Mt_lep_met, mu_sfs_b[4])
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_mu_trk_h'].Fill(Mt_lep_met, mu_sfs_h[4])
+                if isMC:
+                    out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_mu_trk_b'].Fill(Mt_lep_met, mu_sfs_b[4])
+                    out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_mu_trk_h'].Fill(Mt_lep_met, mu_sfs_h[4])
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_bf']      .Fill(Mt_lep_met, weight_bSF)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_bf_min']  .Fill(Mt_lep_met, weight_bSF_min)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_pu']      .Fill(Mt_lep_met, weight_PU)
