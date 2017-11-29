@@ -817,6 +817,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     tt_el_procs = ['tt_eltau', 'tt_lj', 'tt_taultauh', 'tt_other']
     tt_mu_procs = ['tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other']
 
+    systematic_names_nominal = ['NOMINAL']
+
     if isMC:
         systematic_names_all = ['NOMINAL',
                 'JESUp'     ,
@@ -847,7 +849,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     if isMC:
         if isTT:
             # TODO: probably can clarify this
-            systematic_names_nominal = ['NOMINAL']
             if isTT_systematic:
                 systematic_names_toppt    = [isTT_systematic]
                 systematic_names_pu_toppt = [isTT_systematic]
@@ -1002,7 +1003,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'dphi_lep_met': TH1D('%s_%s_%s_dphi_lep_met' % (chan, proc, sys), '', 20, -3.2, 3.2),
                                                'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
                                                # relIso for the QCD anti-iso region
-                                               'lep_relIso':  TH1D('%s_%s_%s_lep_relIso' % (chan, proc, sys), '', lep_relIso_bins, lep_relIso_bins_n),
+                                               'lep_relIso':  TH1D('%s_%s_%s_lep_relIso' % (chan, proc, sys), '', lep_relIso_bins_n, lep_relIso_bins),
                                                #'Mt_lep_met_f_mth':   TH1D('%s_%s_%s_Mt_lep_met_f_mth'   % (chan, proc, sys), '', 20, 0, 250),
                                                #'Mt_lep_met_f_cos':   TH1D('%s_%s_%s_Mt_lep_met_f_cos'   % (chan, proc, sys), '', 20, 0, 250),
                                                #'Mt_lep_met_f_cos_c': TH1D('%s_%s_%s_Mt_lep_met_f_cos_c' % (chan, proc, sys), '', 20, 0, 250),
