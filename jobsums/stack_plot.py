@@ -25,6 +25,8 @@ parser.add_argument("-o", "--output-directory", type=str, default='', help="opti
 
 parser.add_argument("--y-max", type=float, help="set the maximum on Y axis")
 
+parser.add_argument("--qcd",   type=float, default=0., help="get QCD from corresponding _ss channel and transfer it with the given factor (try --qcd 1)")
+
 parser.add_argument("--fake-rate", action='store_true', help='(ad-hocish) the fake rate in MC and data, i.e. ratio of whatever two distributions given as "nominator/denominator"')
 
 parser.add_argument("--cumulative", action='store_true', help="plot stack of cumulative distribution (from right)")
@@ -98,18 +100,23 @@ fdata = TFile(args.data_file)
 # TODO: remove ad-hoc of PU tests
 # Mt_lep_met_f_w_mu_trk_b
 #histos_data_distrs = [(distr_name, )
-histos_data_distrs = []
+histos_data_distrs    = []
+histos_data_distrs_ss = []
 for distr_name in distr_names:
     data_distr_name = distr_name[:]
     if data_distr_name in ('Mt_lep_met_f_w_mu_trk_b', 'Mt_lep_met_f_w_mu_trk_h'):
         data_distr_name = 'Mt_lep_met_f'
     data_distr_name.replace('_w_pu_sum', '_w_pu').replace('_w_pu_b', '_w_pu').replace('_w_pu_h2', '_w_pu').replace('_pu_h2', '').replace('_pu_b', '').replace('_pu_sum', '')
     histos_data_distrs.append((data_distr_name, [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
+    if args.qcd > 0.:
+        histos_data_distrs_ss.append((data_distr_name, [(fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
 
 if args.cumulative:
     histos_data_per_distr = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs]
+    histos_data_per_distr_ss = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs_ss]
 else:
     histos_data_per_distr = histos_data_distrs
+    histos_data_per_distr_ss = histos_data_distrs_ss
 
 logging.info("# data histograms = %d" % len(histos_data_per_distr))
 
@@ -181,14 +188,59 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
 f = TFile(args.mc_file)
 used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_name, distr_name)) for distr_name in distr_names]
 
+# for ss channels I need data - MC sum
+# and I substitute QCD with this difference everywhere
+if args.qcd > 0.:
+    # get all the same distributions for _ss channel
+    used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, sys_name, distr_name)) for distr_name in distr_names]
+
+    hs_sums2_ss = []
+    for distr, histos in used_histos_per_distr_ss:
+        # loop through normal list
+        hs_sum2 = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
+        hs_sum2.SetName('mc_sum2_ss')
+
+        for h, nick, channel in histos[1:]: # I sum different channels?... the old hacked not fixed yet
+            if nick == 'qcd': continue # don't include QCD MC
+            hs_sum2.Add(h)
+
+        hs_sum2.SetFillStyle(3004);
+        hs_sum2.SetFillColor(1);
+        hs_sum2.SetMarkerStyle(1)
+        hs_sum2.SetMarkerColor(0)
+
+        # TODO: it turns messy, need to fix the channels
+        hs_sums2_ss.append((distr, [(hs_sum2, "mc_sum", channel)]))
+    hs_sum2_ss = hs_sums2_ss[0]
+
+    # find difference and substitute QCD
+    # histos_data_per_distr_ss = (distr, hists = [(histo, nick=data, channel)...])
+    # I need the same structure for the sums
+    qcd_hists = {} # distr, channel: qcd hist
+    for (distr, mc_sums), (_, datas) in zip(hs_sums2_ss, histos_data_per_distr_ss):
+        for (mc_hist, _, channel), (data_hist, _, _) in zip(mc_sums, datas):
+            qcd_hist = data_hist - mc_hist
+            qcd_hist.SetName("qcd")
+            qcd_hist.Scale(args.qcd)
+            qcd_hists[(distr, channel)] = qcd_hist
+            logging.debug('data qcd for (%s, %s)' % (distr, channel))
+
+
+
 hs_sums2 = []
 
-for _, histos in used_histos_per_distr:
+for distr, histos in used_histos_per_distr:
     # loop through normal list
     hs_sum2 = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
     hs_sum2.SetName('mc_sum2')
+    hs_sum2.Reset()
 
-    for h, _, _ in histos[1:]:
+    for i, (h, nick, channel) in enumerate(histos[0:]):
+        if args.qcd > 0. and nick == 'qcd':
+            # then take the qcd from the differences in ss region
+            h = qcd_hists[(distr, channel + '_ss')]
+            # and substitute it in the list (if it won't brak everything)
+            histos[i] = (h, nick, channel) # h is new here!
         hs_sum2.Add(h)
 
     hs_sum2.SetFillStyle(3004);
@@ -198,6 +250,7 @@ for _, histos in used_histos_per_distr:
 
     hs_sums2.append(hs_sum2)
 hs_sum2 = hs_sums2[0]
+
 
 # normalize MC processes and data to MC sum bin-by-bin
 if args.cumulative_fractions:
@@ -523,6 +576,6 @@ else:
 
     stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
     shape_chan = ('_x_' + args.shape) if args.shape else ''
-    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ".png")
+    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ".png")
 
 

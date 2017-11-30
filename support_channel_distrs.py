@@ -938,17 +938,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
                 # data-driven QCD only on "loose" selections
                 'adv_mu_sel_Loose_alliso':          (procs_mu_3ch, systematic_names_toppt),
-                'adv_mu_sel_Loose_ss_alliso':       (procs_mu_3ch, systematic_names_toppt),
-                'adv_mu_sel_Loose_lj_alliso':       (procs_mu_3ch, systematic_names_toppt),
-                'adv_mu_sel_Loose_lj_ss_alliso':    (procs_mu_3ch, systematic_names_toppt),
-                'adv_mu_sel_Loose_ljout_alliso':    (procs_mu_3ch, systematic_names_toppt),
-                'adv_mu_sel_Loose_ljout_ss_alliso': (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_alliso_ss':       (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_alliso_lj':       (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_alliso_lj_ss':    (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_alliso_ljout':    (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_alliso_ljout_ss': (procs_mu_3ch, systematic_names_toppt),
                 'sel_mu_min_alliso':                (procs_mu,     systematic_names_toppt),
-                'sel_mu_min_ss_alliso':             (procs_mu,     systematic_names_toppt),
-                'sel_mu_min_lj_alliso':             (procs_mu,     systematic_names_toppt),
-                'sel_mu_min_lj_ss_alliso':          (procs_mu,     systematic_names_toppt),
-                'sel_mu_min_ljout_alliso':          (procs_mu,     systematic_names_toppt),
-                'sel_mu_min_ljout_ss_alliso':       (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_alliso_ss':             (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_alliso_lj':             (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_alliso_lj_ss':          (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_alliso_ljout':          (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_alliso_ljout_ss':       (procs_mu,     systematic_names_toppt),
 
                 'sel_mu_min_medtau':  (procs_mu, systematic_names_nominal), #systematic_names_pu_toppt), # minimum selection with Medium taus -- hopefully it will reduce QCD
                 # control selections: WJets, DY mumu and tautau, tt elmu
@@ -1882,15 +1882,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 if os_lep_loose_tau:
                     passed_channels.append('adv_mu_sel_Loose_alliso')
                     if not large_lj:
-                        passed_channels.append('adv_mu_sel_Loose_lj_alliso')
+                        passed_channels.append('adv_mu_sel_Loose_alliso_lj')
                     else:
-                        passed_channels.append('adv_mu_sel_Loose_ljout_alliso')
+                        passed_channels.append('adv_mu_sel_Loose_alliso_ljout')
                 if ss_lep_loose_tau:
-                    passed_channels.append('adv_mu_sel_Loose_ss_alliso')
+                    passed_channels.append('adv_mu_sel_Loose_alliso_ss')
                     if not large_lj:
-                        passed_channels.append('adv_mu_sel_Loose_lj_ss_alliso')
+                        passed_channels.append('adv_mu_sel_Loose_alliso_lj_ss')
                     else:
-                        passed_channels.append('adv_mu_sel_Loose_ljout_ss_alliso')
+                        passed_channels.append('adv_mu_sel_Loose_alliso_ljout_ss')
 
             if pass_mu and has_2_tight_bjets:
                 if os_lep_tight_tau:
@@ -1913,18 +1913,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     passed_channels.append('sel_mu_min_ljout_ss')
 
             # same with anti-iso for qcd
-            if pass_min_mu and large_met and has_3jets_min and has_bjets_min and os_lep_loose_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
+            if pass_min_mu_all and large_met and has_3jets_min and has_bjets_min and os_lep_loose_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
                 passed_channels.append('sel_mu_min_alliso')
                 if not large_lj:
-                    passed_channels.append('sel_mu_min_lj_alliso')
+                    passed_channels.append('sel_mu_min_alliso_lj')
                 else:
-                    passed_channels.append('sel_mu_min_ljout_alliso')
-            if pass_min_mu and large_met and has_3jets_min and has_bjets_min and ss_lep_loose_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
-                passed_channels.append('sel_mu_min_ss_alliso')
+                    passed_channels.append('sel_mu_min_alliso_ljout')
+            if pass_min_mu_all and large_met and has_3jets_min and has_bjets_min and ss_lep_loose_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
+                passed_channels.append('sel_mu_min_alliso_ss')
                 if not large_lj:
-                    passed_channels.append('sel_mu_min_lj_ss_alliso')
+                    passed_channels.append('sel_mu_min_alliso_lj_ss')
                 else:
-                    passed_channels.append('sel_mu_min_ljout_ss_alliso')
+                    passed_channels.append('sel_mu_min_alliso_ljout_ss')
 
             # the minimum selection with Medium taus -- hopefully it reduces the QCD
             if pass_min_mu and large_met and has_3jets_min and has_bjets_min and os_lep_med_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
