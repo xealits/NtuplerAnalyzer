@@ -903,10 +903,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 'el_lj_out':      (procs_el_3ch, systematic_names_pu_toppt), #systematic_names_all),
                 'mu_presel':      (procs_mu_3ch, systematic_names_pu_toppt), #systematic_names_all),
                 'mu_sel':         (procs_mu_3ch, systematic_names_pu_toppt), #systematic_names_all),
-                'mu_lj':          (procs_mu_3ch, systematic_names_pu_toppt), #systematic_names_all),
-                'mu_lj_out':      (procs_mu_3ch, systematic_names_pu_toppt), #systematic_names_all),
-                'mu_lj_ss':       (procs_mu_3ch, systematic_names_pu_toppt), #systematic_names_all),
-                'mu_lj_out_ss':   (procs_mu_3ch, systematic_names_pu_toppt), #systematic_names_all),
+                'mu_lj':          (procs_mu_3ch, systematic_names_pu_toppt),
+                'mu_lj_out':      (procs_mu_3ch, systematic_names_pu_toppt),
+                'mu_lj_ss':       (procs_mu_3ch, systematic_names_pu_toppt),
+                'mu_lj_out_ss':   (procs_mu_3ch, systematic_names_pu_toppt),
                 # same sign for some QCD control
                 'el_sel_ss':      (procs_el, systematic_names_nominal),
                 'mu_sel_ss':      (procs_mu, systematic_names_nominal),
@@ -920,16 +920,36 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 # with addition of no DY mass, no match to b-tag (could add a cut on small MT)
                 #'adv_el_sel':       (procs_el_3ch, systematic_names_toppt), #systematic_names_pu),
                 #'adv_el_sel_Sign4': (procs_el_3ch, systematic_names_toppt), #systematic_names_pu), # this is done with a hack in the following, watch closely
-                'adv_mu_sel_Loose':       (procs_mu_3ch, systematic_names_toppt), #systematic_names_pu),
-                'adv_mu_sel_Loose_ss':    (procs_mu_3ch, systematic_names_toppt), #systematic_names_pu),
-                'adv_mu_sel_Loose_lj':    (procs_mu_3ch, systematic_names_toppt), #systematic_names_pu),
-                'adv_mu_sel_Loose_lj_ss': (procs_mu_3ch, systematic_names_toppt), #systematic_names_pu),
-                'adv_mu_sel_Tight':       (procs_mu_3ch, systematic_names_toppt), #systematic_names_pu), # this is done with a hack in the following, watch closely
-                'adv_mu_sel_Tight_ss':    (procs_mu_3ch, systematic_names_toppt), #systematic_names_pu),
-                'sel_mu_min':             (procs_mu,     systematic_names_toppt), #systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
-                'sel_mu_min_ss':          (procs_mu,     systematic_names_toppt), #systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
-                'sel_mu_min_lj':          (procs_mu,     systematic_names_toppt), #systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
-                'sel_mu_min_lj_ss':       (procs_mu,     systematic_names_toppt), #systematic_names_pu_toppt), # minumum muon/el thresholds, loose b, loose tau
+                'adv_mu_sel_Tight':          (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Tight_ss':       (procs_mu_3ch, systematic_names_toppt),
+
+                'adv_mu_sel_Loose':          (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_ss':       (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_lj':       (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_lj_ss':    (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_ljout':    (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_ljout_ss': (procs_mu_3ch, systematic_names_toppt),
+                'sel_mu_min':                (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_ss':             (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_lj':             (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_lj_ss':          (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_ljout':          (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_ljout_ss':       (procs_mu,     systematic_names_toppt),
+
+                # data-driven QCD only on "loose" selections
+                'adv_mu_sel_Loose_alliso':          (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_ss_alliso':       (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_lj_alliso':       (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_lj_ss_alliso':    (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_ljout_alliso':    (procs_mu_3ch, systematic_names_toppt),
+                'adv_mu_sel_Loose_ljout_ss_alliso': (procs_mu_3ch, systematic_names_toppt),
+                'sel_mu_min_alliso':                (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_ss_alliso':             (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_lj_alliso':             (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_lj_ss_alliso':          (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_ljout_alliso':          (procs_mu,     systematic_names_toppt),
+                'sel_mu_min_ljout_ss_alliso':       (procs_mu,     systematic_names_toppt),
+
                 'sel_mu_min_medtau':  (procs_mu, systematic_names_nominal), #systematic_names_pu_toppt), # minimum selection with Medium taus -- hopefully it will reduce QCD
                 # control selections: WJets, DY mumu and tautau, tt elmu
                 'ctr_mu_wjet':        (procs_mu, systematic_names_nominal),
@@ -1111,8 +1131,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # do relIso on 1/8 = 0.125, and "all iso" for QCD anti-iso factor
 
         # I'll make the iso distribution and get the factor over whole range
-        pass_mu_all = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 27 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 # lep_relIso[0]
-        pass_el_all = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 # lep_relIso[0]
+        pass_mu_all = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 27 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 and ev.lep_relIso[0] >= 0.125
+        pass_el_all = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 and ev.lep_relIso[0] >= 0.125
 
         pass_mu = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 27 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 and ev.lep_relIso[0] < 0.125
         pass_el = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 and ev.lep_relIso[0] < 0.125
@@ -1128,11 +1148,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
 
         # minimum possible pt threshold -- 24 GeV, = to HLT and recorded in Ntupler
-        pass_min_mu = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 24. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 # lep_relIso[0]
+        pass_min_mu     = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 24. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 and ev.lep_relIso[0] < 0.125
+        pass_min_mu_all = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.lep_p4[0].pt() > 24. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02 and ev.lep_relIso[0] >= 0.125
 
         # 1-lep channels, 2mu DY and el-mu ttbar, and anti-iso
-        if not (pass_min_mu or pass_mu_all or pass_el_all or pass_mu or pass_el or pass_mumu or pass_mumu_ss or pass_elmu): continue
-
+        #if not (pass_min_mu or pass_min_mu_all or pass_mu_all or pass_mu or pass_el_all or pass_el or pass_mumu or pass_mumu_ss or pass_elmu): continue
+        if not (pass_min_mu or pass_min_mu_all or pass_mu_all or pass_mu or pass_el or pass_mumu or pass_mumu_ss or pass_elmu): continue
+        pass_mus = pass_mu_all or pass_mu or pass_elmu or pass_mumu or pass_mumu_ss
         # also at least some kind of tau in single-el:
         if (pass_mu or pass_el) and (not ev.tau_p4.size() > 0): continue # this is the only thing reduces computing
 
@@ -1306,7 +1328,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 else:
                     proc = 's_top_other'
 
-            if (pass_mu or pass_elmu or pass_mumu or pass_mumu_ss) and isMC:
+            if (pass_mu_all or pass_mu or pass_elmu or pass_mumu or pass_mumu_ss) and isMC:
                 #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt()) # old
                 mu_sfs_b, mu_sfs_h = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt(), ev.nvtx, ev.nvtx_gen) # running tracking SF on reco nvtx and output on nvtx_gen for control
                 mu_trg_sf = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
@@ -1316,7 +1338,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 weight *= ratio_bcdef * mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[4] * mu_sfs_b[2] * mu_sfs_b[3] + ratio_gh * mu_trg_sf[1] * mu_sfs_h[0] * mu_sfs_h[4] * mu_sfs_h[2] * mu_sfs_h[3]
 
 
-            if pass_el and isMC:
+            if (pass_el_all or pass_el) and isMC:
                 el_sfs = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 weight *= el_trg_sf * el_sfs[0] * el_sfs[1]
@@ -1772,7 +1794,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             lj_var, w_mass, t_mass = -11., -11., -11.
             lj_cut = 50
             # lep_sel and mu_lj_ss or adv Loose or min
-            if pass_single_lep_sel or (pass_mu and pass_single_lep_presel and ss_lep_med_tau) or (pass_mu and has_2_loose_bjets and has_loose_tau) or (pass_min_mu and large_met and has_3jets_min and has_bjets_min and has_loose_tau):
+            if pass_single_lep_sel or ((pass_mu or pass_mu_all) and pass_single_lep_presel and ss_lep_med_tau) or ((pass_mu or pass_mu_all) and has_2_loose_bjets and has_loose_tau) or ((pass_min_mu or pass_min_mu_all) and large_met and has_3jets_min and has_bjets_min and has_loose_tau):
                 # calc lj_var
                 lj_var, w_mass, t_mass = calc_lj_var(jets, jets_b)
                 large_lj = lj_var > lj_cut
@@ -1841,15 +1863,35 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # these are just jets passing 30 pt, standard PF loose and eta<2.5 jet requirements and corresponding b-discr WP-s
             # no b-discr SF is applied for them -- using the SF weight calculated for medium b-jets
             # UP: only 2 b jets and not overlapping with tau (try >=2 too...)
+
             if pass_mu and has_2_loose_bjets:
                 if os_lep_loose_tau:
                     passed_channels.append('adv_mu_sel_Loose')
                     if not large_lj:
                         passed_channels.append('adv_mu_sel_Loose_lj')
+                    else:
+                        passed_channels.append('adv_mu_sel_Loose_ljout')
                 if ss_lep_loose_tau:
                     passed_channels.append('adv_mu_sel_Loose_ss')
                     if not large_lj:
                         passed_channels.append('adv_mu_sel_Loose_lj_ss')
+                    else:
+                        passed_channels.append('adv_mu_sel_Loose_ljout_ss')
+            # same with anti-iso muons
+            if pass_mu_all and has_2_loose_bjets:
+                if os_lep_loose_tau:
+                    passed_channels.append('adv_mu_sel_Loose_alliso')
+                    if not large_lj:
+                        passed_channels.append('adv_mu_sel_Loose_lj_alliso')
+                    else:
+                        passed_channels.append('adv_mu_sel_Loose_ljout_alliso')
+                if ss_lep_loose_tau:
+                    passed_channels.append('adv_mu_sel_Loose_ss_alliso')
+                    if not large_lj:
+                        passed_channels.append('adv_mu_sel_Loose_lj_ss_alliso')
+                    else:
+                        passed_channels.append('adv_mu_sel_Loose_ljout_ss_alliso')
+
             if pass_mu and has_2_tight_bjets:
                 if os_lep_tight_tau:
                     passed_channels.append('adv_mu_sel_Tight')
@@ -1861,10 +1903,29 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 passed_channels.append('sel_mu_min')
                 if not large_lj:
                     passed_channels.append('sel_mu_min_lj')
+                else:
+                    passed_channels.append('sel_mu_min_ljout')
             if pass_min_mu and large_met and has_3jets_min and has_bjets_min and ss_lep_loose_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
                 passed_channels.append('sel_mu_min_ss')
                 if not large_lj:
                     passed_channels.append('sel_mu_min_lj_ss')
+                else:
+                    passed_channels.append('sel_mu_min_ljout_ss')
+
+            # same with anti-iso for qcd
+            if pass_min_mu and large_met and has_3jets_min and has_bjets_min and os_lep_loose_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
+                passed_channels.append('sel_mu_min_alliso')
+                if not large_lj:
+                    passed_channels.append('sel_mu_min_lj_alliso')
+                else:
+                    passed_channels.append('sel_mu_min_ljout_alliso')
+            if pass_min_mu and large_met and has_3jets_min and has_bjets_min and ss_lep_loose_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
+                passed_channels.append('sel_mu_min_ss_alliso')
+                if not large_lj:
+                    passed_channels.append('sel_mu_min_lj_ss_alliso')
+                else:
+                    passed_channels.append('sel_mu_min_ljout_ss_alliso')
+
             # the minimum selection with Medium taus -- hopefully it reduces the QCD
             if pass_min_mu and large_met and has_3jets_min and has_bjets_min and os_lep_med_tau: # and (lep_tau_mass < 45 or lep_tau_mass > 85):
                 passed_channels.append('sel_mu_min_medtau')
@@ -1999,7 +2060,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 # controls for effect from weights
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_init']      .Fill(Mt_lep_met)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_in']      .Fill(Mt_lep_met, weight)
-                if isMC:
+                if isMC and pass_mus:
                     out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_mu_trk_b'].Fill(Mt_lep_met, mu_sfs_b[4])
                     out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_mu_trk_h'].Fill(Mt_lep_met, mu_sfs_h[4])
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_bf']      .Fill(Mt_lep_met, weight_bSF)
