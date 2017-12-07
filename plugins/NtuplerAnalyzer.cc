@@ -471,6 +471,10 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//genJetsHandle.getByLabel(ev, "slimmedGenJets");
 	edm::EDGetTokenT<pat::JetCollection> jets_;
 	//jetsHandle.getByLabel(ev, "slimmedJets");
+	edm::EDGetTokenT<std::vector<reco::GenJet>  > genJetsToken_; // there is a twist why
+
+	//edm::EDGetTokenT<edm::ValueMap<float> > petersonFragToken_;
+	edm::EDGetTokenT<edm::ValueMap<float> > upFragToken_, centralFragToken_, downFragToken_, PetersonFragToken_, semilepbrUpToken_, semilepbrDownToken_;
 
 	//RecoilCorrector* recoilPFMetCorrector;
 	//TH2D* zPtMass_histo;
@@ -613,7 +617,17 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	mets_uncorrected_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETsUncorrected"));
 
 	genJets_ = consumes<vector<reco::GenJet>>(edm::InputTag("slimmedGenJets"));
+	genJetsToken_ = consumes<std::vector<reco::GenJet> >(edm::InputTag("particleLevel:jets")); // not sure if it is different from previous one
 	jets_    = consumes<pat::JetCollection>(edm::InputTag("slimmedJets"));
+
+	//petersonFragToken_(consumes<edm::ValueMap<float> >(edm::InputTag("bfragWgtProducer:PetersonFrag"))),
+	upFragToken_        = consumes<edm::ValueMap<float> >(edm::InputTag("bfragWgtProducer:upFrag"));
+	centralFragToken_   = consumes<edm::ValueMap<float> >(edm::InputTag("bfragWgtProducer:centralFrag"));
+	downFragToken_      = consumes<edm::ValueMap<float> >(edm::InputTag("bfragWgtProducer:downFrag"));
+	PetersonFragToken_  = consumes<edm::ValueMap<float> >(edm::InputTag("bfragWgtProducer:PetersonFrag"));
+	semilepbrUpToken_   = consumes<edm::ValueMap<float> >(edm::InputTag("bfragWgtProducer:semilepbrUp"));
+	semilepbrDownToken_ = consumes<edm::ValueMap<float> >(edm::InputTag("bfragWgtProducer:semilepbrDown"));
+
 
 	//BadChCandFilterToken_ = consumes<bool>(iConfig.getParameter<edm::InputTag>("BadChargedCandidateFilter"));
 	//BadPFMuonFilterToken_ = consumes<bool>(iConfig.getParameter<edm::InputTag>("BadPFMuonFilter"));
@@ -1626,7 +1640,45 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	edm::Handle<std::vector<reco::GenJet>> genJetsHandle;
 	//genJetsHandle.getByLabel(ev, "slimmedGenJets");
 	iEvent.getByToken( genJets_, genJetsHandle); // twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#GenJets
-	if(genJetsHandle.isValid() ) genJets = *genJetsHandle;
+	if (genJetsHandle.isValid() ) genJets = *genJetsHandle;
+
+	// fragmentation and decay tables (of b->hadron) systematics
+	edm::Handle<std::vector<reco::GenJet>> genJets2;
+	iEvent.getByToken( genJetsToken_, genJets2); // https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer
+
+	edm::Handle<edm::ValueMap<float> > petersonFrag;
+	iEvent.getByToken(PetersonFragToken_, petersonFrag);
+	edm::Handle<edm::ValueMap<float> > centralFrag;
+	iEvent.getByToken(centralFragToken_, centralFrag);
+	edm::Handle<edm::ValueMap<float> > upFrag;
+	iEvent.getByToken(upFragToken_, upFrag);
+	edm::Handle<edm::ValueMap<float> > downFrag;
+	iEvent.getByToken(downFragToken_, downFrag);
+
+	edm::Handle<edm::ValueMap<float> > semilepbrUp;
+	iEvent.getByToken(semilepbrUpToken_, semilepbrUp);
+	edm::Handle<edm::ValueMap<float> > semilepbrDown;
+	iEvent.getByToken(semilepbrDownToken_, semilepbrDown);
+
+	double weight_upFrag = 1, weight_centralFrag = 1, weight_downFrag = 1, weight_PetersonFrag = 1, weight_semilepbrUp = 1, weight_semilepbrDown = 1;
+	for(auto genJet=genJets2->begin(); genJet!=genJets2->end(); ++genJet)
+		{
+		edm::Ref<std::vector<reco::GenJet> > genJetRef(genJets2, genJet - genJets2->begin()); // this looks really weird
+		//cout << "pt=" << genJet->pt() << " id=" << genJet->pdgId() << " petersonFragWeight=" << (*petersonFrag)[genJetRef] << endl;
+		//...
+		weight_centralFrag   *= (*petersonFrag)[genJetRef];
+		weight_upFrag        *= (*upFrag)[genJetRef];
+		weight_downFrag      *= (*downFrag)[genJetRef];
+		weight_PetersonFrag  *= (*petersonFrag)[genJetRef];
+		weight_semilepbrUp   *= (*semilepbrUp)[genJetRef];
+		weight_semilepbrDown *= (*semilepbrDown)[genJetRef];
+		}
+	NT_gen_weight_centralFrag   = weight_centralFrag  ;
+	NT_gen_weight_upFrag        = weight_upFrag       ;
+	NT_gen_weight_downFrag      = weight_downFrag     ;
+	NT_gen_weight_PetersonFrag  = weight_PetersonFrag ;
+	NT_gen_weight_semilepbrUp   = weight_semilepbrUp  ;
+	NT_gen_weight_semilepbrDown = weight_semilepbrDown;
 
 	LorentzVector full_jet_corr(0., 0., 0., 0.);
 	//pat::JetCollection IDjets;

@@ -101,6 +101,20 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(ivar
 ## it's not clear how to get the output from this: which LumiSecs have actually been processed (and which were not due to job crashes etc)
 ## maybe should use the old utility from llvv_fwk
 
+
+# the fragmentation systematics calculator
+process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
+process.mergedGenParticles = cms.EDProducer("MergedGenParticleProducer",
+                    inputPruned = cms.InputTag("prunedGenParticles"),
+                        inputPacked = cms.InputTag("packedGenParticles"),
+)
+from GeneratorInterface.RivetInterface.genParticles2HepMC_cfi import genParticles2HepMC
+process.genParticles2HepMC = genParticles2HepMC.clone( genParticles = cms.InputTag("mergedGenParticles") )
+process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
+process.particleLevel.excludeNeutrinosFromJetClustering = False
+process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
+
+
 # NTUPLER
 process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 process.ntupler.isMC = cms.bool(isMC)

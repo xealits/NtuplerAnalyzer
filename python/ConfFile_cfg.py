@@ -106,6 +106,21 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(ivars.inputFiles)
 )
 
+
+# the fragmentation systematics calculator
+process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
+process.mergedGenParticles = cms.EDProducer("MergedGenParticleProducer",
+                    inputPruned = cms.InputTag("prunedGenParticles"),
+                        inputPacked = cms.InputTag("packedGenParticles"),
+)
+from GeneratorInterface.RivetInterface.genParticles2HepMC_cfi import genParticles2HepMC
+process.genParticles2HepMC = genParticles2HepMC.clone( genParticles = cms.InputTag("mergedGenParticles") )
+process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
+process.particleLevel.excludeNeutrinosFromJetClustering = False
+process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
+
+
+
 process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 #process.demo.minTracks=1000
 
@@ -168,6 +183,8 @@ process.p = cms.Path(
  #process.TransientTrackBuilderESProducer +
  process.BadPFMuonFilter *
  process.BadChargedCandidateFilter *
+ # the calculators for b->hadron fragmentation systematic weights
+ process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
  process.ntupler)
 
 #process.p = cms.Path(
