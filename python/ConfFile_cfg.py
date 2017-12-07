@@ -133,7 +133,7 @@ process.ntupler.dtag = cms.string(dtag)
 process.ntupler.input = cms.untracked.vstring(input_files)
 process.ntupler.outfile = cms.string(output_file)
 
-record_scheme = 'tauID Dilep MonitorHLT tauIDantiIso'
+record_scheme = 'tauID Dilep MonitorHLT tauIDantiIso jets'
 if record_scheme:
     process.ntupler.record_tauID         = cms.bool('tauID'         in record_scheme)
     process.ntupler.record_tauIDantiIso  = cms.bool('tauIDantiIso'  in record_scheme)
@@ -141,6 +141,7 @@ if record_scheme:
     process.ntupler.record_MonitorHLT    = cms.bool('MonitorHLT'    in record_scheme)
     process.ntupler.record_ElMu          = cms.bool('ElMu'          in record_scheme)
     process.ntupler.record_Dilep         = cms.bool('Dilep'         in record_scheme)
+    process.ntupler.record_jets          = cms.bool('jets'          in record_scheme)
 
 #process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.Tracer = cms.Service("Tracer")

@@ -479,7 +479,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//RecoilCorrector* recoilPFMetCorrector;
 	//TH2D* zPtMass_histo;
 
-	bool record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep;
+	bool record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets;
 
 	TString dtag;
 	bool isMC, aMCatNLO, isWJets, isDY;
@@ -552,6 +552,7 @@ record_bPreselection (iConfig.getParameter<bool>("record_bPreselection")) ,
 record_MonitorHLT    (iConfig.getParameter<bool>("record_MonitorHLT"))    ,
 record_ElMu          (iConfig.getParameter<bool>("record_ElMu"))          ,
 record_Dilep         (iConfig.getParameter<bool>("record_Dilep"))         ,
+record_jets          (iConfig.getParameter<bool>("record_jets"))         ,
 dtag       (iConfig.getParameter<std::string>("dtag")),
 isMC       (iConfig.getParameter<bool>("isMC")),
 isLocal    (iConfig.getParameter<bool>("isLocal")),
@@ -1379,6 +1380,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	bool lepMonitorTrigger = false;
 	bool eTrigger = false;
 	bool muTrigger1, muTrigger2, muTrigger = false;
+	bool jetsHLT140 = false, jetsHLT400 = false, jetsHLT = false;
 
 	// TriggerNames for TriggerObjects --------------------
 	edm::Handle<edm::TriggerResults> trigResults; //our trigger result object
@@ -1409,9 +1411,17 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		muTrigger1 = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_MC1) : utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_Data1));
 		muTrigger2 = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName2, muHLT_MC2) : utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName2, muHLT_Data2));
 		muTrigger = muTrigger1 || muTrigger2;
+
+		jetsHLT140 = utils::passTriggerPatterns(tr, "HLT_PFJet140_v*");
+		jetsHLT400 = utils::passTriggerPatterns(tr, "HLT_PFJet400_v*");
 		}
 
-	if (!(eTrigger || muTrigger || lepMonitorTrigger)) return; // orthogonalization is done afterwards
+	if (record_jets)
+		{
+		jetsHLT = jetsHLT140 || jetsHLT400;
+		}
+
+	if (!(eTrigger || muTrigger || lepMonitorTrigger || jetsHLT)) return; // orthogonalization is done afterwards
 	event_counter ->Fill(event_checkpoint++);
 	weight_counter->Fill(event_checkpoint, weight);
 
@@ -1440,6 +1450,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	vector<pat::TriggerObjectStandAlone> mu_trig_objs, mu_trig_objs2;
 
 	NT_HLT_lepMonitor = lepMonitorTrigger;
+	NT_HLT_jets140 = jetsHLT140;
+	NT_HLT_jets400 = jetsHLT400;
 	if (eTrigger)
 		{
 		NT_HLT_el = true;
@@ -1703,8 +1715,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	for (unsigned int ijet=0; ijet<jets.size(); ijet++)
 		{
 		pat::Jet& jet = jets[ijet];
-		// the only requirements are pt and no-leptons in dR:
-		if (jet.pt() < jet_kino_cuts_pt) continue;
+		// the only requirements are pt 111 and no-leptons 222 in dR and Loose Jet ID 333
+		// (it is not a subject of systematic variations - right?)
+		// maybe later remove the Loose ID requirement in ntuple for further studies
+		// but I've never used it yet -- thus applying it for speed & size
+
+		if (jet.pt() < jet_kino_cuts_pt) continue; // 111
 		// all eta pass -- forward jets too, usefull for WJets control region
 
 		//crossClean_in_dR(selJets, selLeptons, 0.4, selJetsNoLep, weight, string("selJetsNoLep"), false, false);
@@ -1715,24 +1731,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	                if (reco::deltaR(jet, selLeptons[l])<min_dR)
 	                        { overlapWithLepton=true; break; }
 	                }
-	        if (overlapWithLepton) continue;
-
-		NT_jet_id.push_back(jet.pdgId());
-		NT_jet_p4.push_back(jet.p4());
-
-		LorentzVector jet_initial_p4 = jet.p4();
-
-		//NT_jet_rad.push_back(jet_radius(jet));
-		NT_jet_etaetaMoment.push_back(jet.etaetaMoment());
-		NT_jet_phiphiMoment.push_back(jet.phiphiMoment());
-		NT_jet_pu_discr.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
-		//NT_jet_pu_discr_updated.push_back(ijet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant") ? ijet->userFloat("pileupJetIdUpdated:fullDiscriminant") : -999);
-		float b_discriminator = jet.bDiscriminator(btagger_label);
-		NT_jet_b_discr.push_back(b_discriminator);
-		if (b_discriminator > btag_threshold) NT_nallbjets += 1;
-
-		NT_jet_hadronFlavour.push_back(jet.hadronFlavour());
-		NT_jet_partonFlavour.push_back(jet.partonFlavour());
+	        if (overlapWithLepton) continue; // 222
 
 		// PF jet ID
 	        // from the twiki:
@@ -1778,6 +1777,25 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			looseJetID = (NEMF<0.90 && NumNeutralParticles>10);
 			tightJetID = looseJetID;
 			}
+
+		if (!looseJetID) continue; // 333
+
+		NT_jet_id.push_back(jet.pdgId());
+		NT_jet_p4.push_back(jet.p4());
+
+		LorentzVector jet_initial_p4 = jet.p4();
+
+		//NT_jet_rad.push_back(jet_radius(jet));
+		NT_jet_etaetaMoment.push_back(jet.etaetaMoment());
+		NT_jet_phiphiMoment.push_back(jet.phiphiMoment());
+		NT_jet_pu_discr.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
+		//NT_jet_pu_discr_updated.push_back(ijet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant") ? ijet->userFloat("pileupJetIdUpdated:fullDiscriminant") : -999);
+		float b_discriminator = jet.bDiscriminator(btagger_label);
+		NT_jet_b_discr.push_back(b_discriminator);
+		if (b_discriminator > btag_threshold) NT_nallbjets += 1;
+
+		NT_jet_hadronFlavour.push_back(jet.hadronFlavour());
+		NT_jet_partonFlavour.push_back(jet.partonFlavour());
 
 		int jetid = 0;
 		if (looseJetID)
@@ -2489,6 +2507,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		 * about = to tau ID preselection
 		 */
 		record_ntuple |= clean_lep_conditions && selLeptons.size() == 2;
+		}
+	if (record_jets)
+		{
+		record_ntuple |= jetsHLT && selJetsNoLep.size() > 0; // these are all-eta jets with pt-cut, anti-lep dR and Loose ID..
 		}
 
 	if (record_ntuple)

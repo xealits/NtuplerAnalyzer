@@ -151,6 +151,7 @@ if record_scheme:
     process.ntupler.record_MonitorHLT    = cms.bool('MonitorHLT'    in record_scheme)
     process.ntupler.record_ElMu          = cms.bool('ElMu'          in record_scheme)
     process.ntupler.record_Dilep         = cms.bool('Dilep'         in record_scheme)
+    process.ntupler.record_jets          = cms.bool('jets'          in record_scheme)
 
 
 

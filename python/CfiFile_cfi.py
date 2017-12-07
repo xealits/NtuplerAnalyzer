@@ -11,6 +11,7 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer',
     record_MonitorHLT    = cms.bool(False) ,
     record_ElMu          = cms.bool(False) ,
     record_Dilep         = cms.bool(False) ,
+    record_jets          = cms.bool(False) ,
 
     isMC = cms.bool(False),
     isLocal = cms.bool(False),

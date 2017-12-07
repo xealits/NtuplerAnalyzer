@@ -306,6 +306,8 @@ Bool_t_in_NTuple(OUTNTUPLE, pass_basic_METfilters)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_lepMonitor)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_el)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_mu)
+Bool_t_in_NTuple(OUTNTUPLE, HLT_jets140)
+Bool_t_in_NTuple(OUTNTUPLE, HLT_jets400)
 
 Int_t_in_NTuple(OUTNTUPLE, leps_ID)
 Int_t_in_NTuple(OUTNTUPLE, nleps)
