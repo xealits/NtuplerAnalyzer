@@ -278,10 +278,18 @@ Float_t_in_NTuple(OUTNTUPLE, genPt)
 Float_t_in_NTuple(OUTNTUPLE, genMass)
 
 
-Int_t_in_NTuple(OUTNTUPLE, NUP_gen) // TODO: add gen info from TTbar
+Int_t_in_NTuple(OUTNTUPLE, gen_NUP) // TODO: add gen info from TTbar
+Int_t_in_NTuple(OUTNTUPLE, gen_n_PUP)
 Int_t_in_NTuple(OUTNTUPLE, nvtx)
 Int_t_in_NTuple(OUTNTUPLE, nvtx_gen)
 Float_t_in_NTuple(OUTNTUPLE, fixedGridRhoFastjetAll)
+
+// renormalization/factorization scale weights (normalized already)
+Float_t_in_NTuple(OUTNTUPLE, gen_weight_norm)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, gen_weights_renorm_fact)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, gen_weights_pdf_hessians)
+Float_t_in_NTuple(OUTNTUPLE, gen_weight_alphas_1)
+Float_t_in_NTuple(OUTNTUPLE, gen_weight_alphas_2)
 
 Bool_t_in_NTuple(OUTNTUPLE, METfilterbadChCand)
 Bool_t_in_NTuple(OUTNTUPLE, METfilterbadPFMuon)
