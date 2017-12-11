@@ -13,6 +13,7 @@ ivars = VarParsing.VarParsing('analysis')
 
 ivars.inputFiles=(
  'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root',
+ #'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00B474D3-ADEA-E611-9E30-D067E5F910F5.root',
 #'root://cms-xrd-global.cern.ch///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/0693E0E7-97BE-E611-B32F-0CC47A78A3D8.root',
 #'root://cms-xrd-global.cern.ch///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/0806AB92-99BE-E611-9ECD-0025905A6138.root',
 #'root://cms-xrd-global.cern.ch///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root',
@@ -137,7 +138,7 @@ process.ntupler.input = cms.untracked.vstring(
 #'root://cms-xrd-global.cern.ch///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/3CCF34DF-9DBE-E611-9512-0025905B858E.root',
 #'root://cms-xrd-global.cern.ch///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/3E18521B-A4BE-E611-8843-0025905A607E.root'
 )
-process.ntupler.outfile = cms.string('/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_25/src/UserCode/ttbar-leptons-80X/outdir/v12.7//MC2016_Summer16_TTJets_powheg_0.root')
+process.ntupler.outfile = cms.string('/afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/MC2016_Summer16_TTJets_powheg_test.root')
 
 
 theLumiMask = path.expandvars("") # -- lumi should be handled via CRAB3, but for now I leave this config option available in Ntupler for local runs
@@ -165,7 +166,7 @@ process.TFileService = cms.Service("TFileService",
 
 
 # and this is supposedly met filters
-#process.load("RecoMET.METFilters.metFilters_cff") # this loads the recommended (hopefully) metFilters sequence, together with BadPFMuon and BadChHadron
+process.load("RecoMET.METFilters.metFilters_cff") # this loads the recommended (hopefully) metFilters sequence, together with BadPFMuon and BadChHadron
 
 #process.p = cms.Path(process.metFilters * process.ntupler)
 #process.p = cms.Path(process.ntupler)
@@ -182,11 +183,19 @@ process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidate
 process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 
 
-process.p = cms.Path(
- process.BadPFMuonFilter *
- process.BadChargedCandidateFilter *
- process.ntupler)
+if isMC:
+    print "MC"
+    process.p = cms.Path(
+     process.BadPFMuonFilter *
+     process.BadChargedCandidateFilter *
+     process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
+     process.ntupler)
 
-
+else:
+    print "data"
+    process.p = cms.Path(
+     process.BadPFMuonFilter *
+     process.BadChargedCandidateFilter *
+     process.ntupler)
 
 
