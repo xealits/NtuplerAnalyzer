@@ -299,9 +299,15 @@ Float_t_in_NTuple(OUTNTUPLE, gen_weight_PetersonFrag  )
 Float_t_in_NTuple(OUTNTUPLE, gen_weight_semilepbrUp   )
 Float_t_in_NTuple(OUTNTUPLE, gen_weight_semilepbrDown )
 
-Bool_t_in_NTuple(OUTNTUPLE, METfilterbadChCand)
+Bool_t_in_NTuple(OUTNTUPLE, METfilterbadChCand) // these two seem to not work
 Bool_t_in_NTuple(OUTNTUPLE, METfilterbadPFMuon)
 Bool_t_in_NTuple(OUTNTUPLE, pass_basic_METfilters)
+Bool_t_in_NTuple(OUTNTUPLE, filters_hbhe             )
+Bool_t_in_NTuple(OUTNTUPLE, filters_ecalDeadCellTrig )
+Bool_t_in_NTuple(OUTNTUPLE, filters_good_vertices    )
+Bool_t_in_NTuple(OUTNTUPLE, filters_eebad            )
+Bool_t_in_NTuple(OUTNTUPLE, filters_halo             )
+Bool_t_in_NTuple(OUTNTUPLE, filters_halo_super       )
 
 Bool_t_in_NTuple(OUTNTUPLE, HLT_lepMonitor)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_el)

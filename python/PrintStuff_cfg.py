@@ -19,11 +19,15 @@ input_files, isMC, dtag = ('root://eoscms//eos/cms///store/mc/RunIISummer16MiniA
 # testing MET filters
 input_files, isMC, dtag = ('root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00B474D3-ADEA-E611-9E30-D067E5F910F5.root',), False, 'Data13TeV_SingleMuon2016H_03Feb2017_ver2'
 
- # TT for tau-rich events
-input_files, isMC, dtag = ('file:165F54A0-A3BE-E611-B3F7-0025905A606A.root',), True, 'TTJets'
+# 07Aug2017 rereco
+input_files, isMC, dtag = ('root://eoscms//eos/cms///store/data/Run2016B/SingleMuon/MINIAOD/07Aug17_ver2-v1/70000/82271F6B-F781-E711-B618-0242AC130002.root',), False, 'Data13TeV_SingleMuon2016B_07Aug2017_ver1'
 
+# 03Feb2017 rereco
 # RunB: 'root://eoscms//eos/cms///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver1-v1/50000/3AFB9551-E6EB-E611-8EDA-0025905C3D98.root'
 input_files, isMC, dtag = ('root://eoscms//eos/cms///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver1-v1/50000/3AFB9551-E6EB-E611-8EDA-0025905C3D98.root',), False, 'Data13TeV_SingleMuon2016B_03Feb2017_ver1'
+
+ # TT for tau-rich events
+input_files, isMC, dtag = ('file:165F54A0-A3BE-E611-B3F7-0025905A606A.root',), True, 'TTJets'
 
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/26ABF488-A0BE-E611-BEEB-0CC47A4D7640.root'
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root'
@@ -45,7 +49,7 @@ ivars.inputFiles = input_files
 
 to_tag = True
 
-output_file = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/NtuplerAnalyzer_test_METfilters%s_%s.root' % ('OFF' if to_tag else 'ON', dtag)
+output_file = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/printStuff_%s.root' % dtag
 print output_file
 ivars.outputFile = output_file
 # get and parse the command line arguments
@@ -100,9 +104,9 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
 
 
 
@@ -130,29 +134,6 @@ process.particleLevel.excludeNeutrinosFromJetClustering = False
 process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
 
 
-
-process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
-#process.demo.minTracks=1000
-
-#process.ntupler.dtag = cms.string('MC2016_TT_powheg')
-process.ntupler.isMC = cms.bool(isMC)
-process.ntupler.isLocal = cms.bool(True)
-process.ntupler.dtag = cms.string(dtag)
-
-# for LumiDump:
-process.ntupler.input = cms.untracked.vstring(input_files)
-process.ntupler.outfile = cms.string(output_file)
-
-record_scheme = 'tauID Dilep MonitorHLT tauIDantiIso jets'
-if record_scheme:
-    process.ntupler.record_tauID         = cms.bool('tauID'         in record_scheme)
-    process.ntupler.record_tauIDantiIso  = cms.bool('tauIDantiIso'  in record_scheme)
-    process.ntupler.record_bPreselection = cms.bool('bPreselection' in record_scheme)
-    process.ntupler.record_MonitorHLT    = cms.bool('MonitorHLT'    in record_scheme)
-    process.ntupler.record_ElMu          = cms.bool('ElMu'          in record_scheme)
-    process.ntupler.record_Dilep         = cms.bool('Dilep'         in record_scheme)
-    process.ntupler.record_jets          = cms.bool('jets'          in record_scheme)
-
 #process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.Tracer = cms.Service("Tracer")
 
@@ -173,12 +154,6 @@ process.load('Configuration.StandardSequences.Services_cff')
 #from PhysicsTools.PatAlgos.slimming.metFilterPaths_cff import *
 process.load("RecoMET.METFilters.metFilters_cff") # back to this
 
-#process.p = cms.Path(Flag_BadChargedCandidateFilter * Flag_BadPFMuonFilter * process.ntupler)
-#process.p = cms.Path(BadChargedCandidateFilter * BadPFMuonFilter * process.ntupler)
-#process.p = cms.Path(process.BadChargedCandidateFilter * process.BadPFMuonFilter * process.ntupler)
-#process.p = cms.Sequence(process.BadChargedCandidateFilter * process.BadPFMuonFilter * process.ntupler)
-#process.p = cms.Sequence(process.metFilters * process.ntupler)
-
 # another way:
 #https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#How_to_run_the_Bad_Charged_Hadro
 
@@ -195,20 +170,22 @@ process.BadChargedCandidateFilter.taggingMode = cms.bool(to_tag)
 process.BadChargedCandidateFilter.filter = cms.bool(not to_tag)
 
 
+
+process.load("UserCode.NtuplerAnalyzer.PrintStuff_cfi")
+process.printer.isMC = cms.bool(isMC)
+
 if isMC:
     print "MC"
     process.p = cms.Path(
      process.BadPFMuonFilter *
      process.BadChargedCandidateFilter *
      process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
-     process.ntupler)
+     process.printer)
 
 else:
     print "data"
     process.p = cms.Path(
      process.BadPFMuonFilter *
      process.BadChargedCandidateFilter *
-     process.ntupler)
-
-
+     process.printer)
 

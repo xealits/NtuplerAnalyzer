@@ -507,12 +507,12 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	double jet_kino_cuts_pt, jet_kino_cuts_eta;
 	double btag_threshold;
 
-	edm::EDGetTokenT<bool> BadChCandFilterToken_;
-	edm::EDGetTokenT<bool> BadPFMuonFilterToken_;
-
 	lumiUtils::GoodLumiFilter goodLumiFilter;
 	std::vector < std::string > urls; // = runProcess.getUntrackedParameter < std::vector < std::string > >("input");
 	TString outUrl;
+
+	edm::EDGetTokenT<bool> BadChCandFilterToken_;
+	edm::EDGetTokenT<bool> BadPFMuonFilterToken_;
 
 	// random numbers for corrections & uncertainties
 	TRandom3 *r3;
@@ -582,6 +582,10 @@ btag_threshold   (iConfig.getParameter<double>("btag_threshold")),
 goodLumiFilter   (iConfig.getUntrackedParameter<std::vector<edm::LuminosityBlockRange>>("lumisToProcess", std::vector<edm::LuminosityBlockRange>())),
 urls   (iConfig.getUntrackedParameter <std::vector <std::string> >("input")),
 outUrl (iConfig.getParameter<std::string>("outfile"))
+//BadChCandFilterToken_(consumes<bool>(iConfig.getParameter<edm::InputTag>("BadChargedCandidateFilter"))),
+//BadPFMuonFilterToken_(consumes<bool>(iConfig.getParameter<edm::InputTag>("BadPFMuonFilter")))
+// here it breaks with
+// MissingParameter: Parameter 'BadChargedCandidateFilter' not found.
 
 {
 	r3 = new TRandom3();
@@ -630,9 +634,18 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	semilepbrDownToken_ = consumes<edm::ValueMap<float> >(edm::InputTag("bfragWgtProducer:semilepbrDown"));
 
 
+	//BadChCandFilterToken_ (consumes<bool>(iConfig.getParameter<edm::InputTag>("BadChargedCandidateFilter")));
+	//BadPFMuonFilterToken_ (consumes<bool>(iConfig.getParameter<edm::InputTag>("BadPFMuonFilter")));
+	// these break with no match for call to '(edm::EDGetTokenT<bool>) (edm::EDGetTokenT<bool>)'
 	//BadChCandFilterToken_ = consumes<bool>(iConfig.getParameter<edm::InputTag>("BadChargedCandidateFilter"));
 	//BadPFMuonFilterToken_ = consumes<bool>(iConfig.getParameter<edm::InputTag>("BadPFMuonFilter"));
+	// still MissingParameter: Parameter 'BadChargedCandidateFilter' not found.
+	// this thing worked, not sure is it is correct:
 	//BadChCandFilterToken_ = consumes<bool>(edm::InputTag("BadChargedCandidate"));
+	//BadPFMuonFilterToken_ = consumes<bool>(edm::InputTag("BadPFMuon"));
+	// these are not found
+	BadPFMuonFilterToken_ = consumes<bool>(edm::InputTag("BadPFMuonFilter"));
+	BadChCandFilterToken_ = consumes<bool>(edm::InputTag("BadChargedCandidateFilter"));
 	/* try one of these strings:
 	 * "BadParticleFilter",
 	 *  PFCandidates  = cms.InputTag("particleFlow"),   # Collection to test
@@ -665,9 +678,6 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	 *
 	 * -- there is no filter = True option!!
 	 */
-	//BadPFMuonFilterToken_ = consumes<bool>(edm::InputTag("BadPFMuon"));
-	BadPFMuonFilterToken_ = consumes<bool>(edm::InputTag("BadPFMuonFilter"));
-	BadChCandFilterToken_ = consumes<bool>(edm::InputTag("BadChargedCandidateFilter"));
 
 	// dtag configs
 	bool period_BCD = !isMC && (dtag.Contains("2016B") || dtag.Contains("2016C") || dtag.Contains("2016D"));
@@ -913,7 +923,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		// and PDF uncertainties
 		//get the original mc replica weights
-		unsigned int nPdfWeights_ = 100, pdfWeightOffset_ = 10, nPdfEigWeights_ = 60; // as in example
+		//unsigned int nNNPPDF3Weights_ = 100, pdfWeightOffset_ = 9, nPdfEigWeights_ = 60; // as in example
+		// -- for NNPDF3
+		unsigned int nPdfWeights_ = 56, pdfWeightOffset_ = 9 + 100 + 2; // already, nPdfEigWeights_ = 60; // as in example
+		// -- for CT pdf
 		// pdf offset skips the renorm/fact weights
 		// there are 100 replicas of NNPDF3.0
 		// convert them into hessian matrix represenation of a 60-dim function (which covers all the correlations/deviations of the pdf uncretainty)
@@ -925,9 +938,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			//this is the weight to be used for evaluating uncertainties with mc replica weights
 			//pdfweights_[ipdf] = lheInfo->weights()[iwgt].wgt*weight_/nomlheweight;
 			//this is the raw weight to be fed to the mc2hessian convertor
-			inpdfweights[ipdf] = lheEPHandle->weights()[iwgt].wgt;
+			double wgtval = lheEPHandle->weights()[iwgt].wgt;
+			inpdfweights[ipdf] = wgtval;
+			//NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
+			// for CT pdf hessians are stored
+			NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
 			}
 
+		/* the CT pdfs are already hessian
 		std::vector<double> outpdfweights(nPdfEigWeights_);
 		//do the actual conversion, where the nominal lhe weight is needed as the reference point for the linearization
 		pdfweightshelper_.DoMC2Hessian(nomlheweight,inpdfweights.data(),outpdfweights.data());
@@ -942,10 +960,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// I'll add the multiplication in the processing if needed
 			NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
 			}    
+		*/
 
 		// and alpha strong variation
-		NT_gen_weight_alphas_1 = lheEPHandle->weights()[pdfWeightOffset_+101].wgt;
-		NT_gen_weight_alphas_2 = lheEPHandle->weights()[pdfWeightOffset_+102].wgt;
+		NT_gen_weight_alphas_1 = lheEPHandle->weights()[pdfWeightOffset_+ nPdfWeights_ + 0].wgt;
+		NT_gen_weight_alphas_2 = lheEPHandle->weights()[pdfWeightOffset_+ nPdfWeights_ + 1].wgt;
 
 		// fragmentation and decay tables (of b->hadron) systematics
 		edm::Handle<std::vector<reco::GenJet>> genJets2;
@@ -1251,6 +1270,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	// ------------------------------------------------- Apply MET FILTERS
 
+	/* it seems the tagging mode is broken in these filters,
+	 * thus trying to see if they work in just filtering mode
+	 * --- the tests didn't work, all events in selected data files passed,
+	 *     a couple of ~100k events files were used
+	 */
 	edm::Handle<bool> ifilterbadChCand;
 	edm::Handle<bool> ifilterbadPFMuon;
 
@@ -1291,22 +1315,29 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 *   https://hypernews.cern.ch/HyperNews/CMS/get/met.html
 	 */
 
-	edm::TriggerResultsByName metFilters = iEvent.triggerResultsByName("RECO"); //is present only if PAT (and miniAOD) is not run simultaniously with RECO
-	if(!isMC && !metFilters.isValid()){metFilters = iEvent.triggerResultsByName("PAT");} //if not present, then it's part of RECO
-	if(!isMC && !metFilters.isValid()){       
-		LogInfo("Demo") << "TriggerResultsByName for MET filters is not found in the process, as a consequence the MET filter is disabled for this event";
-		return;
-		}
-	if (!isMC && metFilters.isValid())
+	//edm::TriggerResultsByName recoFilters = iEvent.triggerResultsByName("RECO"); //is present only if PAT (and miniAOD) is not run simultaniously with RECO
+	edm::TriggerResultsByName patFilters  = iEvent.triggerResultsByName("PAT"); //is present only if PAT (and miniAOD) is not run simultaniously with RECO
+	//if(!isMC && !metFilters.isValid()){metFilters = iEvent.triggerResultsByName("PAT");} //if not present, then it's part of RECO
+	//if(!isMC && !metFilters.isValid()){       
+	//	LogInfo("Demo") << "TriggerResultsByName for MET filters is not found in the process, as a consequence the MET filter is disabled for this event";
+	//	return;
+	//	}
+
+	//if (!isMC && metFilters.isValid())
+	// apparently MET POG suggests trying and looking at filters in MC
+	// and they are there, in patFilters
+	if (patFilters.isValid())
 		{
 		// event is good if all filters ar true
-		bool filters1 = utils::passTriggerPatterns(metFilters, "Flag_HBHENoiseFilter*", "Flag_HBHENoiseIsoFilter*", "Flag_EcalDeadCellTriggerPrimitiveFilter*");
-		bool good_vertices = utils::passTriggerPatterns(metFilters, "Flag_goodVertices");
-		bool eebad = utils::passTriggerPatterns(metFilters, "Flag_eeBadScFilter");
-		bool halo  = utils::passTriggerPatterns(metFilters, "Flag_globalTightHalo2016Filter");
+		NT_filters_hbhe             = utils::passTriggerPatterns(patFilters, "Flag_HBHENoiseFilter*", "Flag_HBHENoiseIsoFilter*");
+		NT_filters_ecalDeadCellTrig = utils::passTriggerPatterns(patFilters, "Flag_EcalDeadCellTriggerPrimitiveFilter*");
+		NT_filters_good_vertices    = utils::passTriggerPatterns(patFilters, "Flag_goodVertices");
+		NT_filters_eebad            = utils::passTriggerPatterns(patFilters, "Flag_eeBadScFilter");
+		NT_filters_halo             = utils::passTriggerPatterns(patFilters, "Flag_globalTightHalo2016Filter");
+		NT_filters_halo_super       = utils::passTriggerPatterns(patFilters, "Flag_globalSuperTightHalo2016Filter");
 		// 2016 thing: bad muons
-		//bool flag_noBadMuons = utils::passTriggerPatterns(metFilters, "Flag_noBadMuons"); // <---- the bad muons are done on the fly with cfg.py thingy
-		//bool flag_duplicateMuons = utils::passTriggerPatterns(metFilters, "Flag_duplicateMuons");
+		//bool flag_noBadMuons = utils::passTriggerPatterns(patFilters, "Flag_noBadMuons"); // <---- the bad muons are done on the fly with cfg.py thingy
+		//bool flag_duplicateMuons = utils::passTriggerPatterns(patFilters, "Flag_duplicateMuons");
 		// from
 		// https://twiki.cern.ch/twiki/bin/view/CMSPublic/ReMiniAOD03Feb2017Notes#Event_flags
 		// Three flags are saved in the event:
@@ -1316,10 +1347,20 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		// --- thus the Flag_noBadMuons should be enough
 		///
+		// --- there is no such flag in Feb03 rereco
+		//     they also don't exist in 07Aug rereco,
+		//     but the Flag_BadPFMuon and the ChHadron do exist
+		// --- they are in PAT filters, not in RECO
+		//     apparently PAT should be used first -- it seems to have all needed flags
+		//     and RECO if something is missing...
+		//     also PAT is filled with stuff for MC
+		//     the "on the fly" stuff I didn't manage to get working with their receipts
+		//     and their test also doesn't filter anything in 100k events of SingleMuon RunB
+		//     ...
 
 		//if (! (filters1 & good_vertices & eebad & halo & flag_noBadMuons)) return;
 		// save for study
-		NT_pass_basic_METfilters = filters1 & good_vertices & eebad & halo;
+		NT_pass_basic_METfilters = NT_filters_hbhe & NT_filters_ecalDeadCellTrig & NT_filters_good_vertices & NT_filters_eebad & NT_filters_halo;
 		// these Flag_noBadMuons/Flag_duplicateMuons are MET flags (the issue with bad muons in 2016),
 		// they are true if the MET got corrected and event is fine
 
