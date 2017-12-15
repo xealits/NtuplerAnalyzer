@@ -21,6 +21,14 @@ ssh fermi03 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW
 ssh fermi04 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands4 "'
 ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/queue_commands5 "'
 
+ssh fermi01 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/old-queues/queue_commands1 "'
+ssh fermi02 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/old-queues/queue_commands2 "'
+ssh fermi03 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/old-queues/queue_commands3 "'
+ssh fermi04 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/old-queues/queue_commands4 "'
+ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/old-queues/queue_commands5 "'
+
+old-queues
+
 merge-sets/queue_commands_tt_fsr_1  merge-sets/queue_commands_tt_fsr_2  merge-sets/queue_commands_tt_fsr_5
 queue_commands_tt_only_1
 queue_commands_tt_only_2
@@ -48,23 +56,27 @@ ls /lstore/cms/olek/outdirs/v14/proc-2/*/*root | wc -l
 hadd-ing
 
 foreach d (`cat merge-sets/jobs_hadd.dtags.small`)
-hadd merge-sets/v14/proc-2/$d.root /lstore/cms/olek/outdirs/v14/proc-2/$d/*.root &
-end
-
-foreach d (`cat merge-sets/jobs_hadd.dtags.large_aa`)
-hadd merge-sets/v14/proc-2/$d.root /lstore/cms/olek/outdirs/v14/proc-2/$d/*.root &
+hadd merge-sets/v14/proc-Full/$d.root /lstore/cms/olek/outdirs/v14/proc-Full/$d/*.root &
 end
 
 foreach d (`cat merge-sets/jobs_hadd.dtags.large_ab`)
-hadd merge-sets/v14/proc-2/$d.root /lstore/cms/olek/outdirs/v14/proc-2/$d/*.root &
+hadd merge-sets/v14/proc-Full/$d.root /lstore/cms/olek/outdirs/v14/proc-Full/$d/*.root &
+end
+
+foreach d (`cat merge-sets/jobs_hadd.dtags.large_aa`)
+hadd merge-sets/v14/proc-Full/$d.root /lstore/cms/olek/outdirs/v14/proc-Full/$d/*.root &
 end
 
 foreach d (SingleMuon SingleElectron)
-hadd merge-sets/v14/proc-2/$d.root /lstore/cms/olek/outdirs/v14/proc-2/$d/*.root &
+hadd merge-sets/v14/proc-Full/$d.root /lstore/cms/olek/outdirs/v14/proc-Full/$d/*.root &
 end
 
 foreach d (2016B 2016C 2016D 2016E 2016F 2016G 2016H)
-hadd merge-sets/v14/proc-2/SingleMuon$d.root /lstore/cms/olek/outdirs/v14/proc-2/SingleMuon/Data13TeV_SingleMuon$d*.root &
+hadd merge-sets/v14/proc-Full/SingleMuon$d.root /lstore/cms/olek/outdirs/v14/proc-Full/SingleMuon/Data13TeV_SingleMuon$d*.root &
+end
+
+foreach d (`cat merge-sets/jobs_hadd.dtags.tt-systs`)
+hadd merge-sets/v14/proc-Full/$d.root /lstore/cms/olek/outdirs/v14/proc-Full/$d/*.root &
 end
 
 

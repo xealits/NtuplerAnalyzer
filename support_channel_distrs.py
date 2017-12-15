@@ -865,39 +865,39 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
         if isWJets:
             wjets_procs = (['wjets'], 'wjets')
-	    procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = wjets_procs
+            procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = wjets_procs
             usual_process = 'wjets'
 
         if isDY:
             dy_procs = (['dy_tautau', 'dy_other'], 'dy_other')
-	    procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = dy_procs
+            procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = dy_procs
             usual_process = 'dy_other'
 
         if isSTop:
             s_top_procs_el = (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other')
             s_top_procs_mu = (['s_top_mutau', 's_top_lj', 's_top_other'], 's_top_other')
             s_top_procs_elmu = (['s_top_elmu', 's_top_other'], 's_top_other')
-	    procs_el_3ch = procs_el = s_top_procs_el
-	    procs_mu_3ch = procs_mu = s_top_procs_mu
-	    procs_elmu = s_top_procs_elmu
+            procs_el_3ch = procs_el = s_top_procs_el
+            procs_mu_3ch = procs_mu = s_top_procs_mu
+            procs_elmu = s_top_procs_elmu
             usual_process = 's_top_other'
 
         if isQCD:
             qcd_procs = (['qcd'], 'qcd')
-	    procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = qcd_procs
+            procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = qcd_procs
             usual_process = 'qcd'
 
         if isDibosons:
             dibosons_procs = (['dibosons'], 'dibosons')
-	    procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = dibosons_procs
+            procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = dibosons_procs
             usual_process = 'dibosons'
 
     else:
         data_procs = (['data'], 'data')
-	procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = data_procs
+        procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = data_procs
         usual_process = 'data'
 
-    channels = {'el_presel':      (procs_el_3ch, systematic_names_pu_toppt), #systematic_names_all),
+    channels_usual = {'el_presel':      (procs_el_3ch, systematic_names_pu_toppt), #systematic_names_all),
                 'el_sel':         (procs_el_3ch, systematic_names_pu_toppt), #systematic_names_all),
                 'el_lj':          (procs_el_3ch, systematic_names_all), #systematic_names_all),
                 'el_lj_out':      (procs_el_3ch, systematic_names_all), #systematic_names_all),
@@ -966,14 +966,31 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
     # for the special shape study of backgrounds
     if isWJets or isDY:
-        channels.update({
+        channels_usual.update({
                    'mu_sel_nomet':         (procs_mu, ['NOMINAL']),
                    'mu_sel_onlymet':       (procs_mu, ['NOMINAL']),
                    'mu_sel_nobtag':        (procs_mu, ['NOMINAL']),
                    'mu_sel_onlybtag':      (procs_mu, ['NOMINAL']),
                    'mu_sel_no3jets':       (procs_mu, ['NOMINAL']),
                    'mu_sel_only3jets':     (procs_mu, ['NOMINAL'])
-		   })
+                   })
+
+    channels_mu_only = {
+                'mu_presel':      (procs_mu_3ch, systematic_names_nominal),
+                'mu_sel':         (procs_mu_3ch, systematic_names_nominal),
+                'mu_lj':          (procs_mu_3ch, systematic_names_nominal),
+                'mu_lj_out':      (procs_mu_3ch, systematic_names_nominal),
+                'mu_lj_ss':       (procs_mu_3ch, systematic_names_nominal),
+                'mu_lj_out_ss':   (procs_mu_3ch, systematic_names_nominal),
+                }
+
+    channels = channels_mu_only # channels_usual
+
+    # find all requested systematics
+    requested_systematics = set()
+    for k, (ch_name, systematic_names) in channels.items():
+      for systematic_name in systematic_names:
+        requested_systematics.add(systematic_name)
 
     proc = usual_process
     micro_proc = '' # hack for tt_leptau->3ch subchannel of hadronic taus
@@ -1205,6 +1222,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
         # TODO: pass jet systematics to met?
         Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x, met_y)
+        # test on Mt fluctuation in mu_sel
+        if Mt_lep_met < 1.:
+            continue
+
         #met_vector = TLorentzVector(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
         #met_vector = ROOT.Math.LorentzVector(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
         #met_vector = ROOT.Math.LorentzVector(ROOT.Math.PxPyPzE4D(float))(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
@@ -1651,6 +1672,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         else:
             systematics = {'NOMINAL': [jets_nominal, jets_b_nominal, taus_nominal, jets_nominal_min, jets_b_nominal_min, taus_nominal_min, 1., 1., 1., 1.]}
 
+        # remove not requested systematics to reduce the loop:
+        for name, _ in systematics.items():
+            if name not in requested_systematics:
+                systematics.pop(name)
+
         # for each systematic
         # pass one of the reco selections
         # check the subprocess
@@ -1996,10 +2022,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             #    out_hs[(chan, proc, sys_name)]['Mt_lep_met'].Fill(Mt_lep_met, weight)
             #    out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, weight)
             #    out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(25, weight)
-            for chan in passed_channels:
+            for chan in [ch for ch in passed_channels if ch in channels]:
                 # check for default proc
-                if chan not in channels:
-                    continue
+                #if chan not in channels:
+                    #continue
 
                 # some channels have micro_proc (tt->lep+tau->3charged)
                 #if chan in ('adv_el_sel', 'adv_mu_sel', 'adv_el_sel_Sign4', 'adv_mu_sel_Sign4') and micro_proc:

@@ -244,6 +244,12 @@ for fname in files:
         if process == 'weight_counter' or process == 'events_counter':
             continue
 
+        # mu tracking factor
+        mu_factor = 1.
+        if 'mu' in process:
+            mu_factor = 0.975
+            logging.debug('mu channel, multiplying by %f for mu tracking' % mu_factor)
+
         #try:
         for chan in list(proc.ReadObj().GetListOfKeys()):
             nick = chan.GetName()
@@ -265,7 +271,7 @@ for fname in files:
                 elif 'PUDown' in sys_name:
                     pu_factor = cor * 1. / 1.0485 # 1.17 # 1./ 1.485
                 else:
-                    pu_factor = cor * 1. / 1.022 # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
+                    pu_factor = cor * 1. / 1.022  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
 
                 for histo_key in list(sys.ReadObj().GetListOfKeys()):
                     h = histo_key.ReadObj()
@@ -283,7 +289,7 @@ for fname in files:
                     h.Sumw2(ROOT.kTRUE) # to correctly save the errors after scaling
                     # it will raise Warnin for histograms which already have this -- have to filter it offline
                     if isMC:
-                        h.Scale(scale * tauIDSF_factor * pu_factor)
+                        h.Scale(scale * tauIDSF_factor * pu_factor * mu_factor)
                         if h.Integral() < 0:
                             h.Scale(-1.)
 
