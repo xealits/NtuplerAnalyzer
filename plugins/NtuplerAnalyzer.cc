@@ -482,7 +482,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	bool record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets;
 
 	TString dtag;
-	bool isMC, aMCatNLO, isWJets, isDY;
+	bool isMC, aMCatNLO, isWJets, isDY, isTT;
 	bool isLocal;
 	string  muHLT_MC1  , muHLT_MC2  ,
 		muHLT_Data1, muHLT_Data2,
@@ -688,6 +688,7 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	aMCatNLO = dtag.Contains("amcatnlo");
 	isWJets = dtag.Contains("WJet") || dtag.Contains("W0Jet") || dtag.Contains("W1Jet") || dtag.Contains("W2Jet") || dtag.Contains("W3Jet") || dtag.Contains("W4Jet");
 	isDY = dtag.Contains("DYJet");
+	isTT = dtag.Contains("TT");
 
 	/* do it offline
 	// recoil corrector
@@ -884,6 +885,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			if (it->getBunchCrossing () == 0) ngenITpu += it->getTrueNumInteractions();
 			}
 		NT_nvtx_gen = ngenITpu;
+		LogInfo("Demo") << "nvtx gen is stored";
 
 		// ----------------------- gen NUP and n of PUP
 		edm::Handle < LHEEventProduct > lheEPHandle;
@@ -895,76 +897,87 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_gen_n_PUP = lheEPHandle->hepeup().PUP.size();
 			}
 
+		LogInfo("Demo") << "NUP, PUP";
 
-		double nomlheweight = lheEPHandle->weights()[0].wgt; // the norm weight
-		NT_gen_weight_norm = nomlheweight;
-
-		// scale weights
-		double  muf_nom_mur_nom_weight  = (fabs(lheEPHandle->weights()[0].wgt))/(fabs(nomlheweight));
-		double   muf_up_mur_nom_weight  = (fabs(lheEPHandle->weights()[1].wgt))/(fabs(nomlheweight));
-		double muf_down_mur_nom_weight  = (fabs(lheEPHandle->weights()[2].wgt))/(fabs(nomlheweight));
-		double  muf_nom_mur_up_weight   = (fabs(lheEPHandle->weights()[3].wgt))/(fabs(nomlheweight));
-		double   muf_up_mur_up_weight   = (fabs(lheEPHandle->weights()[4].wgt))/(fabs(nomlheweight));
-		double muf_down_mur_up_weight   = (fabs(lheEPHandle->weights()[5].wgt))/(fabs(nomlheweight));
-		double  muf_nom_mur_down_weight = (fabs(lheEPHandle->weights()[6].wgt))/(fabs(nomlheweight));
-		double   muf_up_mur_down_weight = (fabs(lheEPHandle->weights()[7].wgt))/(fabs(nomlheweight));
-		double muf_down_mur_down_weight = (fabs(lheEPHandle->weights()[8].wgt))/(fabs(nomlheweight));
-
-		NT_gen_weights_renorm_fact.push_back(muf_down_mur_down_weight);
-		NT_gen_weights_renorm_fact.push_back(muf_down_mur_nom_weight );
-		NT_gen_weights_renorm_fact.push_back(muf_down_mur_up_weight  );
-		NT_gen_weights_renorm_fact.push_back(muf_nom_mur_down_weight );
-		NT_gen_weights_renorm_fact.push_back(muf_nom_mur_nom_weight  );
-		NT_gen_weights_renorm_fact.push_back(muf_nom_mur_up_weight   );
-		NT_gen_weights_renorm_fact.push_back(muf_up_mur_down_weight  );
-		NT_gen_weights_renorm_fact.push_back(muf_up_mur_nom_weight   );
-		NT_gen_weights_renorm_fact.push_back(muf_up_mur_up_weight    );
-
-
-		// and PDF uncertainties
-		//get the original mc replica weights
-		//unsigned int nNNPPDF3Weights_ = 100, pdfWeightOffset_ = 9, nPdfEigWeights_ = 60; // as in example
-		// -- for NNPDF3
-		unsigned int nPdfWeights_ = 56, pdfWeightOffset_ = 9 + 100 + 2; // already, nPdfEigWeights_ = 60; // as in example
-		// -- for CT pdf
-		// pdf offset skips the renorm/fact weights
-		// there are 100 replicas of NNPDF3.0
-		// convert them into hessian matrix represenation of a 60-dim function (which covers all the correlations/deviations of the pdf uncretainty)
-		// varying the hessian parameters we get systematic on the shape and everything
-		std::vector<double> inpdfweights(nPdfWeights_);
-		for (unsigned int ipdf=0; ipdf<nPdfWeights_; ++ipdf)
+		if (isTT)
 			{
-			unsigned int iwgt = ipdf + pdfWeightOffset_;
-			//this is the weight to be used for evaluating uncertainties with mc replica weights
-			//pdfweights_[ipdf] = lheInfo->weights()[iwgt].wgt*weight_/nomlheweight;
-			//this is the raw weight to be fed to the mc2hessian convertor
-			double wgtval = lheEPHandle->weights()[iwgt].wgt;
-			inpdfweights[ipdf] = wgtval;
-			//NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
-			// for CT pdf hessians are stored
-			NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
+			// I don't see this nominal weight and others in ST_tW powheg-pythia CUETP8M1 sample
+			// but DY, WJets, QCD and s/t-channel all pass well
+			// before figuring put what's going on I lave the waits only for TT
+			double nomlheweight = lheEPHandle->weights()[0].wgt; // the norm weight
+			NT_gen_weight_norm = nomlheweight;
+			LogInfo("Demo") << "nominal weight";
+
+			// scale weights
+			double  muf_nom_mur_nom_weight  = (fabs(lheEPHandle->weights()[0].wgt))/(fabs(nomlheweight));
+			double   muf_up_mur_nom_weight  = (fabs(lheEPHandle->weights()[1].wgt))/(fabs(nomlheweight));
+			double muf_down_mur_nom_weight  = (fabs(lheEPHandle->weights()[2].wgt))/(fabs(nomlheweight));
+			double  muf_nom_mur_up_weight   = (fabs(lheEPHandle->weights()[3].wgt))/(fabs(nomlheweight));
+			double   muf_up_mur_up_weight   = (fabs(lheEPHandle->weights()[4].wgt))/(fabs(nomlheweight));
+			double muf_down_mur_up_weight   = (fabs(lheEPHandle->weights()[5].wgt))/(fabs(nomlheweight));
+			double  muf_nom_mur_down_weight = (fabs(lheEPHandle->weights()[6].wgt))/(fabs(nomlheweight));
+			double   muf_up_mur_down_weight = (fabs(lheEPHandle->weights()[7].wgt))/(fabs(nomlheweight));
+			double muf_down_mur_down_weight = (fabs(lheEPHandle->weights()[8].wgt))/(fabs(nomlheweight));
+
+			NT_gen_weights_renorm_fact.push_back(muf_down_mur_down_weight);
+			NT_gen_weights_renorm_fact.push_back(muf_down_mur_nom_weight );
+			NT_gen_weights_renorm_fact.push_back(muf_down_mur_up_weight  );
+			NT_gen_weights_renorm_fact.push_back(muf_nom_mur_down_weight );
+			NT_gen_weights_renorm_fact.push_back(muf_nom_mur_nom_weight  );
+			NT_gen_weights_renorm_fact.push_back(muf_nom_mur_up_weight   );
+			NT_gen_weights_renorm_fact.push_back(muf_up_mur_down_weight  );
+			NT_gen_weights_renorm_fact.push_back(muf_up_mur_nom_weight   );
+			NT_gen_weights_renorm_fact.push_back(muf_up_mur_up_weight    );
+			LogInfo("Demo") << "scale weights";
+
+
+			// and PDF uncertainties
+			//get the original mc replica weights
+			//unsigned int nNNPPDF3Weights_ = 100, pdfWeightOffset_ = 9, nPdfEigWeights_ = 60; // as in example
+			// -- for NNPDF3
+			unsigned int nPdfWeights_ = 56, pdfWeightOffset_ = 9 + 100 + 2; // already, nPdfEigWeights_ = 60; // as in example
+			// -- for CT pdf
+			// pdf offset skips the renorm/fact weights
+			// there are 100 replicas of NNPDF3.0
+			// convert them into hessian matrix represenation of a 60-dim function (which covers all the correlations/deviations of the pdf uncretainty)
+			// varying the hessian parameters we get systematic on the shape and everything
+			std::vector<double> inpdfweights(nPdfWeights_);
+			for (unsigned int ipdf=0; ipdf<nPdfWeights_; ++ipdf)
+				{
+				unsigned int iwgt = ipdf + pdfWeightOffset_;
+				//this is the weight to be used for evaluating uncertainties with mc replica weights
+				//pdfweights_[ipdf] = lheInfo->weights()[iwgt].wgt*weight_/nomlheweight;
+				//this is the raw weight to be fed to the mc2hessian convertor
+				double wgtval = lheEPHandle->weights()[iwgt].wgt;
+				inpdfweights[ipdf] = wgtval;
+				//NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
+				// for CT pdf hessians are stored
+				NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
+				}
+
+			/* the CT pdfs are already hessian
+			std::vector<double> outpdfweights(nPdfEigWeights_);
+			//do the actual conversion, where the nominal lhe weight is needed as the reference point for the linearization
+			pdfweightshelper_.DoMC2Hessian(nomlheweight,inpdfweights.data(),outpdfweights.data());
+
+			for (unsigned int iwgt=0; iwgt<nPdfEigWeights_; ++iwgt)
+				{
+				double wgtval = outpdfweights[iwgt];
+				//the is the weight to be used for evaluating uncertainties with hessian weights
+				//pdfeigweights_[iwgt] = wgtval*weight_/nomlheweight;
+				//NT_pdf_hessians.push_back(wgtval*NT_aMCatNLO_weight/nomlheweight);
+				// it seem like an outdated formula to multiply by this weight
+				// I'll add the multiplication in the processing if needed
+				NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
+				}    
+			*/
+
+			// and alpha strong variation
+			NT_gen_weight_alphas_1 = lheEPHandle->weights()[pdfWeightOffset_+ nPdfWeights_ + 0].wgt;
+			NT_gen_weight_alphas_2 = lheEPHandle->weights()[pdfWeightOffset_+ nPdfWeights_ + 1].wgt;
+
+			LogInfo("Demo") << "MC systematic weights";
 			}
-
-		/* the CT pdfs are already hessian
-		std::vector<double> outpdfweights(nPdfEigWeights_);
-		//do the actual conversion, where the nominal lhe weight is needed as the reference point for the linearization
-		pdfweightshelper_.DoMC2Hessian(nomlheweight,inpdfweights.data(),outpdfweights.data());
-
-		for (unsigned int iwgt=0; iwgt<nPdfEigWeights_; ++iwgt)
-			{
-			double wgtval = outpdfweights[iwgt];
-			//the is the weight to be used for evaluating uncertainties with hessian weights
-			//pdfeigweights_[iwgt] = wgtval*weight_/nomlheweight;
-			//NT_pdf_hessians.push_back(wgtval*NT_aMCatNLO_weight/nomlheweight);
-			// it seem like an outdated formula to multiply by this weight
-			// I'll add the multiplication in the processing if needed
-			NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
-			}    
-		*/
-
-		// and alpha strong variation
-		NT_gen_weight_alphas_1 = lheEPHandle->weights()[pdfWeightOffset_+ nPdfWeights_ + 0].wgt;
-		NT_gen_weight_alphas_2 = lheEPHandle->weights()[pdfWeightOffset_+ nPdfWeights_ + 1].wgt;
 
 		// fragmentation and decay tables (of b->hadron) systematics
 		edm::Handle<std::vector<reco::GenJet>> genJets2;
@@ -1005,6 +1018,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_gen_weight_semilepbrDown = weight_semilepbrDown;
 
 
+		LogInfo("Demo") << "MC systematic weights for jet fragmentation";
 
 		LogInfo ("Demo") << "Processing MC, gen particles";
 		// ----------------------- GENERATED PARTICLES
