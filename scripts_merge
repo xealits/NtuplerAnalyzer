@@ -56,38 +56,38 @@ ls /lstore/cms/olek/outdirs/v14/proc-2/*/*root | wc -l
 hadd-ing
 
 foreach d (`cat merge-sets/jobs_hadd.dtags.small`)
-hadd merge-sets/v14/proc-Full/$d.root /lstore/cms/olek/outdirs/v14/proc-Full/$d/*.root &
+hadd merge-sets/v17/1/$d.root /lstore/cms/olek/outdirs/v17/1/$d/*.root &
 end
 
 foreach d (`cat merge-sets/jobs_hadd.dtags.large_ab`)
-hadd merge-sets/v14/proc-Full/$d.root /lstore/cms/olek/outdirs/v14/proc-Full/$d/*.root &
+hadd merge-sets/v17/1/$d.root /lstore/cms/olek/outdirs/v17/1/$d/*.root &
 end
 
 foreach d (`cat merge-sets/jobs_hadd.dtags.large_aa`)
-hadd merge-sets/v14/proc-Full/$d.root /lstore/cms/olek/outdirs/v14/proc-Full/$d/*.root &
+hadd merge-sets/v17/1/$d.root /lstore/cms/olek/outdirs/v17/1/$d/*.root &
 end
 
 foreach d (SingleMuon SingleElectron)
-hadd merge-sets/v14/proc-Full/$d.root /lstore/cms/olek/outdirs/v14/proc-Full/$d/*.root &
+hadd merge-sets/v17/1/$d.root /lstore/cms/olek/outdirs/v17/1/$d/*.root &
 end
 
 foreach d (2016B 2016C 2016D 2016E 2016F 2016G 2016H)
-hadd merge-sets/v14/proc-Full/SingleMuon$d.root /lstore/cms/olek/outdirs/v14/proc-Full/SingleMuon/Data13TeV_SingleMuon$d*.root &
+hadd merge-sets/v17/1/SingleMuon$d.root /lstore/cms/olek/outdirs/v17/1/SingleMuon/Data13TeV_SingleMuon$d*.root &
 end
 
 foreach d (`cat merge-sets/jobs_hadd.dtags.tt-systs`)
-hadd merge-sets/v14/proc-Full/$d.root /lstore/cms/olek/outdirs/v14/proc-Full/$d/*.root &
+hadd merge-sets/v17/1/$d.root /lstore/cms/olek/outdirs/v17/1/$d/*.root &
 end
 
 
 rm MC2016_Summer16_DYJetsToLL_10to50_amcatnlo*.root MC2016_Summer16_DYJetsToLL_50toInf_madgraph*.root MC2016_Summer16_WJets_amcatnlo*.root MC2016_Summer16_WJets_madgraph*.root MC2016_Summer16_W[234]Jets_madgraph*.root
 
-hadd MC2016_Summer16_DYJetsToLL_10to50_amcatnlo.root init/MC2016_Summer16_DYJetsToLL_10to50_amcatnlo*root &
-hadd MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root init/MC2016_Summer16_DYJetsToLL_50toInf_madgraph*root &
-hadd MC2016_Summer16_WJets_madgraph.root init/MC2016_Summer16_WJets_madgraph*root &
-hadd MC2016_Summer16_W2Jets_madgraph.root init/MC2016_Summer16_W2Jets_madgraph*root &
-hadd MC2016_Summer16_W3Jets_madgraph.root init/MC2016_Summer16_W3Jets_madgraph*root &
-hadd MC2016_Summer16_W4Jets_madgraph.root init/MC2016_Summer16_W4Jets_madgraph*root &
+hadd MC2016_Summer16_DYJetsToLL_10to50_amcatnlo.root ../MC2016_Summer16_DYJetsToLL_10to50_amcatnlo*root &
+hadd MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root ../MC2016_Summer16_DYJetsToLL_50toInf_madgraph*root &
+hadd MC2016_Summer16_WJets_madgraph.root ../MC2016_Summer16_WJets_madgraph*root &
+hadd MC2016_Summer16_W2Jets_madgraph.root ../MC2016_Summer16_W2Jets_madgraph*root &
+hadd MC2016_Summer16_W3Jets_madgraph.root ../MC2016_Summer16_W3Jets_madgraph*root &
+hadd MC2016_Summer16_W4Jets_madgraph.root ../MC2016_Summer16_W4Jets_madgraph*root &
 
 
 
