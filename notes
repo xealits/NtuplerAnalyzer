@@ -4,11 +4,16 @@
 
 combine -M MultiDimFit ttxsec/tt_el_2.txt --algo grid --points 2000 --rMax 2 --name El
 combine -M MultiDimFit ttxsec/fit-stuff/fresh_mu.txt --algo grid --points 2000 --rMax 2 --name MuShapes
+combine -M MultiDimFit ttxsec/fit-stuff/fresh_mu_mixed.txt --algo grid --points 2000 --rMax 2 --name MuShapes
 root -l higgsCombineMuShapes.MultiDimFit.mH120.root
 limit->Draw("2*deltaNLL:r", "deltaNLL>0 && 2*deltaNLL<10", "L")
 
 TLine* l = new TLine(0.7, 1, 1.15, 1)
 l->Draw("same")
+
+
+combine -M MultiDimFit ttxsec/fit-stuff/fresh_el_mixed.txt --algo grid --points 2000 --rMax 2 --name ElShapes
+
 
 trying to get some output, some nuisances included
 
@@ -149,6 +154,11 @@ it creates pdf
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el.root -m 125 --robustFit 1 --doInitialFit
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el.root -m 125 --robustFit 1 --doFits --parallel 5
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el.root -m 125 -o el_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i el_impacts.json -o fixed_el_impacts
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el_mixed.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el_mixed.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/fresh_el_mixed.root -m 125 -o el_impacts.json
 ../../CombineHarvester/CombineTools/scripts/plotImpacts.py -i el_impacts.json -o fixed_el_impacts
 
 muon fit investigation:
