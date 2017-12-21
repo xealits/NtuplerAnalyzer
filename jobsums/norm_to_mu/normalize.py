@@ -248,7 +248,7 @@ for fname in files:
         mu_factor = 1.
         if 'mu' in process:
             mu_factor = 0.975
-            logging.debug('mu channel, multiplying by %f for mu tracking' % mu_factor)
+            #logging.debug('mu channel, multiplying by %f for mu tracking' % mu_factor)
 
         #try:
         for chan in list(proc.ReadObj().GetListOfKeys()):

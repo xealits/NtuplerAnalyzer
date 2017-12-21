@@ -137,18 +137,30 @@ muon_effs_trg_GH_file     = TFile(muon_effs_dirname + "/2016_23Sep_SingleMuonTri
 muon_effs_trg_BCDEF_histo = muon_effs_trg_BCDEF_file.Get("IsoMu24_OR_IsoTkMu24_PtEtaBins").Get("pt_abseta_ratio")
 muon_effs_trg_GH_histo    = muon_effs_trg_GH_file   .Get("IsoMu24_OR_IsoTkMu24_PtEtaBins").Get("pt_abseta_ratio")
 
+# somehow mu trig sets weight to 0 up to 26 pt
+# testing it:
+print 'testing mu trg on 25 25.5 26 26.5 GeV pt and 0 eta'
+print 'B', muon_effs_trg_BCDEF_histo.GetBinContent(muon_effs_trg_BCDEF_histo.FindBin(25, 0)), muon_effs_trg_BCDEF_histo.GetBinContent(muon_effs_trg_BCDEF_histo.FindBin(25.5, 0)), muon_effs_trg_BCDEF_histo.GetBinContent(muon_effs_trg_BCDEF_histo.FindBin(26, 0)), muon_effs_trg_BCDEF_histo.GetBinContent(muon_effs_trg_BCDEF_histo.FindBin(26.5, 0))
+print 'H', muon_effs_trg_GH_histo.GetBinContent(muon_effs_trg_GH_histo.FindBin(25, 0)), muon_effs_trg_GH_histo.GetBinContent(muon_effs_trg_GH_histo.FindBin(25.5, 0)), muon_effs_trg_GH_histo.GetBinContent(muon_effs_trg_GH_histo.FindBin(26, 0)), muon_effs_trg_GH_histo.GetBinContent(muon_effs_trg_GH_histo.FindBin(26.5, 0))
+
 print type(muon_effs_trg_BCDEF_file)
 
 muon_effs_id_BCDEF_histo_max_x = muon_effs_id_BCDEF_histo.GetXaxis().GetXmax()
-muon_effs_id_BCDEF_histo_max_y = muon_effs_id_BCDEF_histo.GetYaxis().GetXmax()
 muon_effs_iso_BCDEF_histo_max_x = muon_effs_iso_BCDEF_histo.GetXaxis().GetXmax()
+muon_effs_id_BCDEF_histo_min_x = muon_effs_id_BCDEF_histo.GetXaxis().GetXmin()
+muon_effs_iso_BCDEF_histo_min_x = muon_effs_iso_BCDEF_histo.GetXaxis().GetXmin()
+
+muon_effs_id_BCDEF_histo_max_y = muon_effs_id_BCDEF_histo.GetYaxis().GetXmax()
 muon_effs_iso_BCDEF_histo_max_y = muon_effs_iso_BCDEF_histo.GetYaxis().GetXmax()
 
 print muon_effs_id_BCDEF_histo_max_x, muon_effs_id_BCDEF_histo_max_y, muon_effs_iso_BCDEF_histo_max_x, muon_effs_iso_BCDEF_histo_max_y
 
 muon_effs_id_GH_histo_max_x = muon_effs_id_GH_histo.GetXaxis().GetXmax()
-muon_effs_id_GH_histo_max_y = muon_effs_id_GH_histo.GetYaxis().GetXmax()
 muon_effs_iso_GH_histo_max_x = muon_effs_iso_GH_histo.GetXaxis().GetXmax()
+muon_effs_id_GH_histo_min_x = muon_effs_id_GH_histo.GetXaxis().GetXmin()
+muon_effs_iso_GH_histo_min_x = muon_effs_iso_GH_histo.GetXaxis().GetXmin()
+
+muon_effs_id_GH_histo_max_y = muon_effs_id_GH_histo.GetYaxis().GetXmax()
 muon_effs_iso_GH_histo_max_y = muon_effs_iso_GH_histo.GetYaxis().GetXmax()
 
 print muon_effs_id_GH_histo_max_x, muon_effs_id_GH_histo_max_y, muon_effs_iso_GH_histo_max_x, muon_effs_iso_GH_histo_max_y
@@ -193,6 +205,7 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     h_weight_mu_trk_bcdef_eta.Fill(abs_eta)
     # the id-s totally can overflow:
     bin_x = pt      if pt < muon_effs_id_BCDEF_histo_max_x      else muon_effs_id_BCDEF_histo_max_x - 1
+    bin_x = pt      if pt > muon_effs_id_BCDEF_histo_min_x      else muon_effs_id_BCDEF_histo_min_x + 0.01
     bin_y = abs_eta if abs_eta < muon_effs_id_BCDEF_histo_max_y else muon_effs_id_BCDEF_histo_max_y - 0.01 # checked. the binnint is about 0.2 there
     bcdef_weight_id = muon_effs_id_BCDEF_histo.GetBinContent(muon_effs_id_BCDEF_histo.FindBin(bin_x, bin_y))
     h_weight_mu_idd_bcdef_pt .Fill(bin_x)
@@ -200,6 +213,7 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
 
     # these too:
     bin_x = pt      if pt      < muon_effs_iso_BCDEF_histo_max_x else muon_effs_iso_BCDEF_histo_max_x - 1
+    bin_x = pt      if pt      > muon_effs_iso_BCDEF_histo_min_x else muon_effs_iso_BCDEF_histo_min_x + 0.01
     bin_y = abs_eta if abs_eta < muon_effs_iso_BCDEF_histo_max_y else muon_effs_iso_BCDEF_histo_max_y - 0.01
     bcdef_weight_iso = muon_effs_iso_BCDEF_histo.GetBinContent(muon_effs_iso_BCDEF_histo.FindBin(bin_x, bin_y))
     h_weight_mu_iso_bcdef_pt .Fill(bin_x)
@@ -219,12 +233,14 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     #h_weight_mu_trk_gh_eta.Fill(abs_eta)
     # the id-s totally can overflow:
     bin_x = pt      if pt < muon_effs_id_GH_histo_max_x      else muon_effs_id_GH_histo_max_x - 1
+    bin_x = pt      if pt > muon_effs_id_GH_histo_min_x      else muon_effs_id_GH_histo_min_x + 0.01
     bin_y = abs_eta if abs_eta < muon_effs_id_GH_histo_max_y else muon_effs_id_GH_histo_max_y - 0.01
     gh_weight_id = muon_effs_id_GH_histo.GetBinContent(muon_effs_id_GH_histo.FindBin(bin_x, bin_y))
     #h_weight_mu_idd_gh_pt .Fill(bin_x)
     #h_weight_mu_idd_gh_eta.Fill(bin_y)
     # these too:
     bin_x = pt      if pt < muon_effs_iso_GH_histo_max_x      else muon_effs_iso_GH_histo_max_x - 1
+    bin_x = pt      if pt > muon_effs_iso_GH_histo_min_x      else muon_effs_iso_GH_histo_min_x + 0.01
     bin_y = abs_eta if abs_eta < muon_effs_iso_GH_histo_max_y else muon_effs_iso_GH_histo_max_y - 0.01
     gh_weight_iso = muon_effs_iso_GH_histo.GetBinContent(muon_effs_iso_GH_histo.FindBin(bin_x, bin_y))
     #h_weight_mu_iso_gh_pt .Fill(bin_x)
@@ -235,6 +251,8 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
 
 muon_effs_trg_BCDEF_histo_max_x = muon_effs_trg_BCDEF_histo.GetXaxis().GetXmax()
 muon_effs_trg_BCDEF_histo_max_y = muon_effs_trg_BCDEF_histo.GetYaxis().GetXmax()
+muon_effs_trg_BCDEF_histo_min_x = muon_effs_trg_BCDEF_histo.GetXaxis().GetXmin()
+muon_effs_trg_BCDEF_histo_min_y = muon_effs_trg_BCDEF_histo.GetYaxis().GetXmin()
 
 print muon_effs_trg_BCDEF_histo_max_x, muon_effs_trg_BCDEF_histo_max_y
 
@@ -246,8 +264,10 @@ def lepton_muon_trigger_SF(abs_eta, pt): #, double SingleMuon_data_bcdef_fractio
     # calculate it the inverse-probbility way
     #double abs_eta = abs(NT_lep_eta_0);
     #double pt = NT_lep_pt_0;
-    bin_x = pt      if pt      < muon_effs_trg_BCDEF_histo_max_x else  muon_effs_trg_BCDEF_histo_max_x - 1
+    bin_x = pt      if pt      < muon_effs_trg_BCDEF_histo_max_x else  muon_effs_trg_BCDEF_histo_max_x - 0.01
     bin_y = abs_eta if abs_eta < muon_effs_trg_BCDEF_histo_max_y else  muon_effs_trg_BCDEF_histo_max_y - 0.01
+    bin_x = pt      if pt      > muon_effs_trg_BCDEF_histo_min_x else  muon_effs_trg_BCDEF_histo_min_x + 0.01
+    bin_y = abs_eta if abs_eta > muon_effs_trg_BCDEF_histo_min_y else  muon_effs_trg_BCDEF_histo_min_y + 0.01
     #no_mu_trig *= SingleMuon_data_bcdef_fraction * (1 - muon_effs_trg_BCDEF_histo->GetBinContent( muon_effs_trg_BCDEF_histo->FindBin(bin_x, bin_y) )) +
     #        SingleMuon_data_gh_fraction * (1 - muon_effs_trg_GH_histo->GetBinContent( muon_effs_trg_GH_histo->FindBin(bin_x, bin_y) ));
     #mu_trig_weight = 1 - no_trig; // so for 1 muon it will = to the SF, for 2 there will be a mix
@@ -293,7 +313,9 @@ logging.info("Y trigger")
 # --- these SFs will be applied to the selected leptons independently
 
 electron_effs_tracking_all_histo_max_y = electron_effs_tracking_all_histo.GetYaxis().GetXmax()
+electron_effs_tracking_all_histo_min_y = electron_effs_tracking_all_histo.GetYaxis().GetXmin()
 electron_effs_id_all_histo_max_y = electron_effs_id_all_histo.GetYaxis().GetXmax()
+electron_effs_id_all_histo_min_y = electron_effs_id_all_histo.GetYaxis().GetXmin()
 
 h_weight_el_trk_pt = TH1D("weight_mu_trk_bcdef_pt", "", 50, 0, 200)
 h_weight_el_idd_pt = TH1D("weight_mu_idd_bcdef_pt", "", 50, 0, 200)
@@ -307,17 +329,20 @@ def lepton_electron_SF(eta, pt):
     # X is from -2.5 to 2.5 -- our eta is up to 2.4 (2.5 in wide ntuples), should be ok
     #double bin_x = (pt < electron_effs_tracking_all_histo->GetXaxis()->GetXmax()      ? pt : muon_effs_id_BCDEF_histo->GetXaxis()->GetXmax() - 1);
     bin_x = eta;
-    bin_y = pt if pt < electron_effs_tracking_all_histo_max_y else electron_effs_tracking_all_histo_max_y - 1
+    bin_y = pt if pt < electron_effs_tracking_all_histo_max_y else electron_effs_tracking_all_histo_max_y - 0.01
+    bin_y = pt if pt > electron_effs_tracking_all_histo_min_y else electron_effs_tracking_all_histo_min_y + 0.01
     sf_reco = electron_effs_tracking_all_histo.GetBinContent (electron_effs_tracking_all_histo.FindBin(bin_x, bin_y))
 
     #bin_x = eta;
-    bin_y = pt if pt < electron_effs_id_all_histo_max_y else electron_effs_id_all_histo_max_y - 1
+    bin_y = pt if pt < electron_effs_id_all_histo_max_y else electron_effs_id_all_histo_max_y - 0.01
+    bin_y = pt if pt > electron_effs_id_all_histo_min_y else electron_effs_id_all_histo_min_y + 0.01
     sf_id = electron_effs_id_all_histo.GetBinContent (electron_effs_id_all_histo.FindBin(bin_x, bin_y))
 
     return sf_reco, sf_id
 
 electron_effs_trg_all_histo_max_x = electron_effs_trg_all_histo.GetXaxis().GetXmax()
 electron_effs_trg_all_histo_max_y = electron_effs_trg_all_histo.GetYaxis().GetXmax()
+electron_effs_trg_all_histo_min_x = electron_effs_trg_all_histo.GetXaxis().GetXmin()
 
 def lepton_electron_trigger_SF(eta, pt):
     #double no_ele_trig = 1;
@@ -328,6 +353,7 @@ def lepton_electron_trigger_SF(eta, pt):
     #double pt = el.pt();
     # here X axis is pt, Y axis is eta (from -2.5 to 2.5)
     bin_x = pt  if pt  < electron_effs_trg_all_histo_max_x else electron_effs_trg_all_histo_max_x - 1
+    bin_x = pt  if pt  > electron_effs_trg_all_histo_min_x else electron_effs_trg_all_histo_min_x + 0.01
 
     bin_y = eta
     if eta > electron_effs_trg_all_histo_max_y:
@@ -999,7 +1025,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     # jets are cross-dR from tau
     # tau is OS to lep -- in principle need SS for QCD estimation... but works very well now (shape-wise) so skipping it here
     channels_mutau_optimization_scan = {
-                'optmu_presel_os':      (procs_mu, systematic_names_nominal),
+                'optmu_presel':         (procs_mu, systematic_names_nominal),
                 'optmu_presel_ss':      (procs_mu, systematic_names_nominal),
 
                 'optmu_presel_1L0M':      (procs_mu, systematic_names_nominal),
@@ -1092,6 +1118,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'init_met':   TH1D('%s_%s_%s_init_met'   % (chan, proc, sys), '', 30, 0, 300),
                                                'lep_pt':     TH1D('%s_%s_%s_lep_pt'     % (chan, proc, sys), '', 40, 0, 200),
                                                'lep_pt_turn':TH1D('%s_%s_%s_lep_pt_turn'% (chan, proc, sys), '', 40, 20, 40),
+                                               'lep_pt_turn_raw':TH1D('%s_%s_%s_lep_pt_turn_raw' % (chan, proc, sys), '', 40, 20, 40),
+                                               ## debuging the cut on MC lep pt from weights at 26 GeV
+                                               #'lep_pt_turn_raw_w_b_trk':          TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_trk'     % (chan, proc, sys), '', 40, 20, 40),
+                                               #'lep_pt_turn_raw_w_b_trk_vtx':      TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_trk_vtx' % (chan, proc, sys), '', 40, 20, 40),
+                                               #'lep_pt_turn_raw_w_b_id':           TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_id'      % (chan, proc, sys), '', 40, 20, 40),
+                                               #'lep_pt_turn_raw_w_b_iso':          TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_iso'     % (chan, proc, sys), '', 40, 20, 40),
+                                               #'lep_pt_turn_raw_w_b_trk_vtxgen':   TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_trk_vtxgen' % (chan, proc, sys), '', 40, 20, 40),
+                                               #'lep_pt_turn_raw_w_b_trg':          TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_trg'     % (chan, proc, sys), '', 40, 20, 40), # <--- this one is 0
+
                                                'lep_eta':    TH1D('%s_%s_%s_lep_eta'    % (chan, proc, sys), '', 20, -2.5, 2.5),
                                                'tau_pt':     TH1D('%s_%s_%s_tau_pt'     % (chan, proc, sys), '', 30, 0, 150),
                                                'tau_eta':    TH1D('%s_%s_%s_tau_eta'    % (chan, proc, sys), '', 20, -2.5, 2.5),
@@ -1112,6 +1147,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'opt_bjet_categories':      TH1D('%s_%s_%s_opt_bjet_categories'     % (chan, proc, sys), '', 5, 0., 5.),
                                                #'opt_tau_categories':       TH1D('%s_%s_%s_opt_tau_categories'      % (chan, proc, sys), '', 5, 0., 5.),
                                                'opt_tau_bjet_categories':  TH1D('%s_%s_%s_opt_tau_bjet_categories' % (chan, proc, sys), '', 4*5, 0., 4*5.),
+                                               'opt_bjet_categories_incl':      TH1D('%s_%s_%s_opt_bjet_categories_incl'     % (chan, proc, sys), '', 5, 0., 5.),
+                                               'opt_tau_bjet_categories_incl':  TH1D('%s_%s_%s_opt_tau_bjet_categories_incl' % (chan, proc, sys), '', 4*5, 0., 4*5.),
                                                'opt_tau_index_loose':      TH1D('%s_%s_%s_opt_tau_index_loose'     % (chan, proc, sys), '', 10, 0., 10.),
                                                'opt_tau_index_medium':     TH1D('%s_%s_%s_opt_tau_index_medium'    % (chan, proc, sys), '', 10, 0., 10.),
                                                'opt_tau_index_tight':      TH1D('%s_%s_%s_opt_tau_index_tight'     % (chan, proc, sys), '', 10, 0., 10.),
@@ -1146,6 +1183,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
                                                # relIso for the QCD anti-iso region
                                                'lep_relIso':  TH1D('%s_%s_%s_lep_relIso' % (chan, proc, sys), '', lep_relIso_bins_n, lep_relIso_bins),
+                                               'lep_relIso_precise':  TH1D('%s_%s_%s_lep_relIso_precise' % (chan, proc, sys), '', 300, 0., 3.),
                                                #'Mt_lep_met_f_mth':   TH1D('%s_%s_%s_Mt_lep_met_f_mth'   % (chan, proc, sys), '', 20, 0, 250),
                                                #'Mt_lep_met_f_cos':   TH1D('%s_%s_%s_Mt_lep_met_f_cos'   % (chan, proc, sys), '', 20, 0, 250),
                                                #'Mt_lep_met_f_cos_c': TH1D('%s_%s_%s_Mt_lep_met_f_cos_c' % (chan, proc, sys), '', 20, 0, 250),
@@ -2088,7 +2126,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             # OPTIMIZATION
             if pass_mu:
                 if pass_tau_presel:
-                        passed_channels.append('optmu_presel_os')
+                        passed_channels.append('optmu_presel')
                 if pass_tau_ss_presel:
                         passed_channels.append('optmu_presel_ss')
 
@@ -2459,8 +2497,24 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 out_hs[(chan, proc, sys_name)]['met'].Fill(met_pt, record_weight)
                 out_hs[(chan, proc, sys_name)]['init_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
                 out_hs[(chan, proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  record_weight)
-                out_hs[(chan, proc, sys_name)]['lep_pt_turn'].Fill(ev.lep_p4[0].pt(),  record_weight)
                 out_hs[(chan, proc, sys_name)]['lep_eta'] .Fill(ev.lep_p4[0].eta(), record_weight)
+                out_hs[(chan, proc, sys_name)]['lep_pt_turn'].Fill(ev.lep_p4[0].pt(),  record_weight)
+                out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw'].Fill(ev.lep_p4[0].pt())
+
+                ## debuging the cut of lep_pt at 26 for all MC -- it is in one of the weights
+                # -- found the weight from trigger cut at 26 -- somehow the histo of SF for trigger 24 starts at 26
+                #    extended the SFs to pt outside the histo
+                #   [need to check the source for new histos?]
+                #if pass_mu:
+                #    #out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw'].Fill(ev.lep_p4[0].pt())
+                #    out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw_w_b_trk']    .Fill(ev.lep_p4[0].pt(), mu_sfs_b[0])
+                #    out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw_w_b_trk_vtx'].Fill(ev.lep_p4[0].pt(), mu_sfs_b[1])
+                #    out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw_w_b_id']     .Fill(ev.lep_p4[0].pt(), mu_sfs_b[2])
+                #    out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw_w_b_iso']    .Fill(ev.lep_p4[0].pt(), mu_sfs_b[3])
+                #    out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw_w_b_trk_vtxgen'].Fill(ev.lep_p4[0].pt(), mu_sfs_b[4])
+                #    out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw_w_b_trg']    .Fill(ev.lep_p4[0].pt(), mu_trg_sf[0]) # <--- this one is 0
+                #    #control_hs['weight_mu_trg_bcdef'].Fill(mu_trg_sf[0])
+                #    #control_hs['weight_mu_all_bcdef'].Fill(mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[1] * mu_sfs_b[2] * mu_sfs_b[3])
 
                 # OPTIMIZATION controls
                 out_hs[(chan, proc, sys_name)]['opt_bjet_categories']     .Fill(opt_bjet_category, record_weight)
@@ -2474,12 +2528,24 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
                 out_hs[(chan, proc, sys_name)]['opt_tau_bjet_categories'] .Fill(opt_tau_bjet_category, record_weight)
 
+                # inclusive categories show the flow of events through cuts,
+                # not the distribution of events among the selections
+                for b_cat, b_pass in enumerate((pass_b_1L0M, pass_b_1L1M, pass_b_2L0M, pass_b_2L1M, pass_b_2L2M)):
+                    if b_pass:
+                        out_hs[(chan, proc, sys_name)]['opt_bjet_categories_incl']     .Fill(b_cat, record_weight)
+                for tau_cat, tau_pass in enumerate((pass_tau_presel, pass_tau_loose, pass_tau_medium, pass_tau_tight)):
+                    for b_cat, b_pass in enumerate((pass_b_1L0M, pass_b_1L1M, pass_b_2L0M, pass_b_2L1M, pass_b_2L2M)):
+                        if tau_pass and b_pass:
+                            catn = tau_cat*5 + b_cat
+                            out_hs[(chan, proc, sys_name)]['opt_tau_bjet_categories_incl'] .Fill(catn, record_weight)
+
                 out_hs[(chan, proc, sys_name)]['opt_tau_index_loose']     .Fill(n_loose_tau_i  , record_weight)
                 out_hs[(chan, proc, sys_name)]['opt_tau_index_medium']    .Fill(n_medium_tau_i , record_weight)
                 out_hs[(chan, proc, sys_name)]['opt_tau_index_tight']     .Fill(n_tight_tau_i  , record_weight)
 
                 # for anti-iso and overall
                 out_hs[(chan, proc, sys_name)]['lep_relIso']  .Fill(ev.lep_relIso[0],  record_weight)
+                out_hs[(chan, proc, sys_name)]['lep_relIso_precise']  .Fill(ev.lep_relIso[0],  record_weight)
 
                 # not tagged jets
                 if jets:

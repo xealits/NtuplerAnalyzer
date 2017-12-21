@@ -37,6 +37,8 @@ parser.add_argument("-f", "--form-shapes", action='store_true', help="plot the s
 #parser.add_argument("-e", "--shape-evolution", type=str, default='usual', help="plot the same distr in different channels normalized to 1")
 parser.add_argument("--processes", type=str, default='all', help="set processes to consider (all by default)")
 
+parser.add_argument("--skip-legend", action='store_true', help="don't plot the legend (full view of distribution)")
+
 args = parser.parse_args()
 
 assert isfile(args.mc_file)
@@ -132,6 +134,9 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
 
     for channel in channels:
         chan = infile.Get(channel)
+        if not chan:
+            logging.info('no channel %s' % channel)
+            continue
         processes_keys = list(chan.GetListOfKeys())
         #sorted_pkeys = sorted(processes_keys, key=lambda pkey: pkey.GetName() if pkey.GetName() not in ('qcd') else 'z_' + pkey.GetName())
         #for process in sorted_pkeys:
@@ -420,7 +425,8 @@ elif args.form_shapes:
         histo.Draw("hist same")
     histos_data[0][0].Draw('same e1 p')
 
-    leg.Draw("same")
+    if not args.skip_legend:
+        leg.Draw("same")
 
     cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes_%d-channels_%s-processes.png' % (len(channels), '-'.join(processes_requirement)))
 
@@ -571,11 +577,11 @@ else:
             hs_sum1.Draw("same e2")
 
         histos_data_sum.Draw("same e1p")
-        if not args.fake_rate:
+        if not args.fake_rate and not args.skip_legend:
             leg.Draw("same")
 
     stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
     shape_chan = ('_x_' + args.shape) if args.shape else ''
-    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ".png")
+    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ".png")
 
 

@@ -33,6 +33,7 @@ parser.add_argument("-e", "--el",  action = "store_true", help="electron channel
 parser.add_argument("-v", "--verbose",  action = "store_true", help="log debug output")
 #parser.add_argument("-y", "--event-yields", type=str, default='text', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-y", "--event-yields", action='store_true', help="output in the form of event yield table (set -y latex for latex table output)")
+parser.add_argument("-r", "--ratios",       action='store_true', help="output ratios to data")
 
 
 args = parser.parse_args()
@@ -126,9 +127,13 @@ for channel in channels:
        histo_name = '_'.join([channel, process, sys_name, distr_name])
 
        logging.debug(histo_name)
-       logging.debug('%s/%s/%s' % (process, sys_name, histo_name))
+       histo_name = '%s/%s/%s' % (process, sys_name, histo_name)
+       logging.debug(histo_name)
 
-       histo = chan.Get('%s/%s/%s' % (process, sys_name, histo_name))
+       histo = chan.Get(histo_name)
+       if not histo:
+           logging.info('no %s' % histo_name)
+           continue
        logging.debug(histo.Integral())
 
        histos.append(histo)
@@ -154,20 +159,31 @@ for channel in channels:
 
 def string_yield(integral):
     if integral is None:
-        return '%10s' % ''
+        return '%17s' % ''
     else:
-        return '%10.1f' % integral
+        if args.ratios:
+            return '%17.3f' % integral
+        else:
+            return '%17.1f' % integral
 
 separator = ' $ & $ ' if args.event_yields == 'latex' else ''
 
 if args.event_yields:
-    print '%15s' % 'process' + separator.join(['%10s' % channel for channel in channels])
+    print '%15s' % 'process' + separator.join(['%17s' % channel for channel in channels])
     #for process, chan_d in proc_yields.items():
     mc_sums = {} # channel: sum of integrals
     for process in all_known_sorted_processes:
         if process in proc_yields:
             chan_d = proc_yields[process]
-            print '%15s' % process + separator.join([string_yield(chan_d.get(channel)) for channel in channels])
+            line = '%15s' % process
+            for channel in channels:
+                #
+                integral = chan_d.get(channel)
+                data_yield = data_yields[channel]
+                if integral and args.ratios:
+                    integral = integral / data_yield
+                line += separator + string_yield(integral)
+            print line
             # also calc sum
             for channel in channels:
                 mc_sums.setdefault(channel, 0)
@@ -175,8 +191,11 @@ if args.event_yields:
         else:
             continue
 
-    print '%15s' % 'mc_sum' + separator.join(['%10.1f' % mc_sums[channel] for channel in channels])
-    print '%15s' % 'data'   + separator.join(['%10.1f' % data_yields[channel] for channel in channels])
+    if args.ratios:
+        print '%15s' % 'mc_sum_ratio' + separator.join(['%17.3f' % (mc_sums[channel]/data_yields[channel]) for channel in channels])
+    else:
+        print '%15s' % 'mc_sum' + separator.join(['%17.1f' % mc_sums[channel] for channel in channels])
+    print '%15s' % 'data'   + separator.join(['%17.1f' % data_yields[channel] for channel in channels])
 
 
 
