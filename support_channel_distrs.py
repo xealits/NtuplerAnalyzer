@@ -1,7 +1,7 @@
 import os
 from os import environ
 from array import array
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 import cProfile
 import logging as Logging
 import ctypes
@@ -1125,9 +1125,124 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 'optmu_tight_2L2M_ss':      (procs_mu, systematic_names_nominal),
                }
 
+    '''
+    optimization shows 2L1M as best choice for ttbar
+    Tight tau ID gives about the same as old event yield ratios
+    but about x2 more events
+       14.5k signal VS 8.6k old signal
+       27.4k all events VS 14.7k old events
+       of which 8% is QCD, which is due to low pt cuts
+
+    loose and medium WP don't give much more signal:
+       18.8k with loose, 16.6k with medium
+
+    but increase various backgrounds:
+       50.5k all events with loose, 36.6k with medium
+
+    2M1L has a bit more involved b-tagging correction, which I won't do right now [TODO]
+
+    run a test to show the improved performance in the fit
+    use 2L1M+tight for that, for mutau and eltau,
+    add 2L1M+tight+pt cuts selection [should reduce QCD without cutting the signal too much]
+    just in case add 2L1M+loose/tight for mutau only -- main computation is lj parameter, which is done only for events passing main selection (OS and SS tau)
+    hence recomputing should not be that big
+
+    also I need to run WJets and DY controls with PU systematics -- for WJets normalization and QCD OS/SS estimation
+    and I need anti-iso region for QCD estimation
+    -- I'll add a complete all_iso selection for each target selection,
+       hopefully there are not so many anti-iso events (it seems so from the tests)
+
+    thus there are:
+        2L1M presel + (loose + medium) + tight * (1+2lj + 1cut) = 7 selections for mu-tau
+        2L1M presel + tight * (1+2lj)                    = 4 for el-tau
+                                        * 2ss * 2 all iso
+                                                         = 44 selections
+        WJets * 2ss * 2all iso + DY control              = 5
+                                                         = 49 selections
+
+    -- I do * 2ss * 2 all iso where I want to check QCD         (all main selections and WJets for QCD-WJets estimation)
+       1 + 2lj only for the target selections for fit -- tight
+       also only they will have all systematics (lj bins and all events for fit without lj)
+       el has only the target                (for full fit)
+       mutau has selection with cuts         (without lj, to see event yield posibilities)
+       WJets and DY have PU systematics      (for WJets-DY estimation -- to cover the issue with bend at high Mt)
+
+    I had 42 selections for optimization
+    (with nominal only systematics and no all iso)
+    let's hope it'll fly
+
+    only tight selections have all systematics
+    the rest are nominal,
+    except DY and WJets os iso -- with PU Up/Down
+    '''
+
+    channels_optimized = {
+                'optmu_presel_2L1M':         (procs_mu, systematic_names_nominal),
+                'optmu_presel_2L1M_ss':      (procs_mu, systematic_names_nominal),
+                'optmu_loose_2L1M':          (procs_mu, systematic_names_nominal),
+                'optmu_loose_2L1M_ss':       (procs_mu, systematic_names_nominal),
+                'optmu_medium_2L1M':         (procs_mu, systematic_names_nominal),
+                'optmu_medium_2L1M_ss':      (procs_mu, systematic_names_nominal),
+                'optmu_tight_2L1M_cuts':     (procs_mu, systematic_names_nominal),
+                'optmu_tight_2L1M_cuts_ss':  (procs_mu, systematic_names_nominal),
+                'optmu_tight_2L1M':          (procs_mu, systematic_names_all),
+                'optmu_tight_2L1M_ss':       (procs_mu, systematic_names_all),
+                'optmu_tight_2L1M_lj':       (procs_mu, systematic_names_all),
+                'optmu_tight_2L1M_lj_ss':    (procs_mu, systematic_names_all),
+                'optmu_tight_2L1M_ljout':    (procs_mu, systematic_names_all),
+                'optmu_tight_2L1M_ljout_ss': (procs_mu, systematic_names_all),
+
+                'optmu_alliso_presel_2L1M':         (procs_mu, systematic_names_nominal),
+                'optmu_alliso_presel_2L1M_ss':      (procs_mu, systematic_names_nominal),
+                'optmu_alliso_loose_2L1M':          (procs_mu, systematic_names_nominal),
+                'optmu_alliso_loose_2L1M_ss':       (procs_mu, systematic_names_nominal),
+                'optmu_alliso_medium_2L1M':         (procs_mu, systematic_names_nominal),
+                'optmu_alliso_medium_2L1M_ss':      (procs_mu, systematic_names_nominal),
+                'optmu_alliso_tight_2L1M_cuts':     (procs_mu, systematic_names_nominal),
+                'optmu_alliso_tight_2L1M_cuts_ss':  (procs_mu, systematic_names_nominal),
+                'optmu_alliso_tight_2L1M':          (procs_mu, systematic_names_all),
+                'optmu_alliso_tight_2L1M_ss':       (procs_mu, systematic_names_all),
+                'optmu_alliso_tight_2L1M_lj':       (procs_mu, systematic_names_all),
+                'optmu_alliso_tight_2L1M_lj_ss':    (procs_mu, systematic_names_all),
+                'optmu_alliso_tight_2L1M_ljout':    (procs_mu, systematic_names_all),
+                'optmu_alliso_tight_2L1M_ljout_ss': (procs_mu, systematic_names_all),
+
+                'optel_presel_2L1M':         (procs_el, systematic_names_nominal),
+                'optel_presel_2L1M_ss':      (procs_el, systematic_names_nominal),
+                'optel_tight_2L1M':          (procs_el, systematic_names_all),
+                'optel_tight_2L1M_ss':       (procs_el, systematic_names_all),
+                'optel_tight_2L1M_lj':       (procs_el, systematic_names_all),
+                'optel_tight_2L1M_lj_ss':    (procs_el, systematic_names_all),
+                'optel_tight_2L1M_ljout':    (procs_el, systematic_names_all),
+                'optel_tight_2L1M_ljout_ss': (procs_el, systematic_names_all),
+
+                'optel_alliso_presel_2L1M':         (procs_el, systematic_names_nominal),
+                'optel_alliso_presel_2L1M_ss':      (procs_el, systematic_names_nominal),
+                'optel_alliso_tight_2L1M':          (procs_el, systematic_names_all),
+                'optel_alliso_tight_2L1M_ss':       (procs_el, systematic_names_all),
+                'optel_alliso_tight_2L1M_lj':       (procs_el, systematic_names_all),
+                'optel_alliso_tight_2L1M_lj_ss':    (procs_el, systematic_names_all),
+                'optel_alliso_tight_2L1M_ljout':    (procs_el, systematic_names_all),
+                'optel_alliso_tight_2L1M_ljout_ss': (procs_el, systematic_names_all),
+
+                'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
+                'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
+                'ctr_alliso_mu_wjet':       (procs_mu, systematic_names_pu),
+                'ctr_alliso_mu_wjet_ss':    (procs_mu, systematic_names_pu),
+                'ctr_mu_dy_mumu':           (procs_mu, systematic_names_pu),
+
+                'ctr_tt_elmu':              (procs_elmu, systematic_names_nominal),
+                'ctr_old_mu_sel':           (procs_mu, systematic_names_nominal),     # testing issue with event yield advantage
+    }
+
     #channels = channels_mu_only
     #channels = channels_usual
-    channels, with_bSF = channels_mutau_optimization_scan, False
+    #channels, with_bSF = channels_mutau_optimization_scan, False
+    channels, with_bSF = channels_optimized, isMC and True
+
+    with_JER   = isMC and True
+    with_JES   = isMC and True
+    with_TauES = isMC and True
 
     # find all requested systematics
     requested_systematics = set()
@@ -1136,6 +1251,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         requested_systematics.add(systematic_name)
 
     with_bSF_sys = with_bSF and ('bSFUp' in requested_systematics or 'bSFDown' in requested_systematics)
+    with_JER_sys = with_JER and ('JERUp' in requested_systematics or 'JERDown' in requested_systematics)
+    with_JES_sys = with_JES and ('JESUp' in requested_systematics or 'JESDown' in requested_systematics)
+    with_TauES_sys = with_TauES and ('TauESUp' in requested_systematics or 'TauESDown' in requested_systematics)
+
+    #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
+    # all requested jet cuts
+    JetCutsPerSystematic = namedtuple('Jets', 'lowest cuts old')
+    TauCutsPerSystematic = namedtuple('Taus', 'presel loose medium tight')
 
     proc = usual_process
     micro_proc = '' # hack for tt_leptau->3ch subchannel of hadronic taus
@@ -1196,44 +1319,44 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                                                'b_discr_lead_jet':  TH1D('%s_%s_%s_b_discr_lead_jet' % (chan, proc, sys), '', 30, 0., 1.),
                                                'b_discr_second_jet':TH1D('%s_%s_%s_b_discr_second_jet' % (chan, proc, sys), '', 30, 0., 1.),
 
-                                               # OPTIMIZATION
-                                               # control the b-jet categories
-                                               # tau-b-jet categories
-                                               # tau index in tau arrays (should always be 0)
-                                               'opt_bjet_categories':      TH1D('%s_%s_%s_opt_bjet_categories'     % (chan, proc, sys), '', 5, 0., 5.),
-                                               #'opt_tau_categories':       TH1D('%s_%s_%s_opt_tau_categories'      % (chan, proc, sys), '', 5, 0., 5.),
-                                               'opt_tau_bjet_categories':  TH1D('%s_%s_%s_opt_tau_bjet_categories' % (chan, proc, sys), '', 4*5, 0., 4*5.),
-                                               'opt_bjet_categories_incl':      TH1D('%s_%s_%s_opt_bjet_categories_incl'     % (chan, proc, sys), '', 5, 0., 5.),
-                                               'opt_tau_bjet_categories_incl':  TH1D('%s_%s_%s_opt_tau_bjet_categories_incl' % (chan, proc, sys), '', 4*5, 0., 4*5.),
-                                               'opt_tau_index_loose':      TH1D('%s_%s_%s_opt_tau_index_loose'     % (chan, proc, sys), '', 10, 0., 10.),
-                                               'opt_tau_index_medium':     TH1D('%s_%s_%s_opt_tau_index_medium'    % (chan, proc, sys), '', 10, 0., 10.),
-                                               'opt_tau_index_tight':      TH1D('%s_%s_%s_opt_tau_index_tight'     % (chan, proc, sys), '', 10, 0., 10.),
-                                               'opt_lep_tau_pt':           TH2D('%s_%s_%s_opt_lep_tau_pt'          % (chan, proc, sys), '', 20, 0, 200, 30, 0, 300),
-                                               'opt_lep_bjet_pt':          TH2D('%s_%s_%s_opt_lep_bjet_pt'         % (chan, proc, sys), '', 20, 0, 200, 30, 0, 300),
-                                               'opt_bjet_bjet2_pt':        TH2D('%s_%s_%s_opt_bjet_bjet2_pt'       % (chan, proc, sys), '', 20, 0, 250, 20, 0, 250),
+                                               ## OPTIMIZATION
+                                               ## control the b-jet categories
+                                               ## tau-b-jet categories
+                                               ## tau index in tau arrays (should always be 0)
+                                               #'opt_bjet_categories':      TH1D('%s_%s_%s_opt_bjet_categories'     % (chan, proc, sys), '', 5, 0., 5.),
+                                               ##'opt_tau_categories':       TH1D('%s_%s_%s_opt_tau_categories'      % (chan, proc, sys), '', 5, 0., 5.),
+                                               #'opt_tau_bjet_categories':  TH1D('%s_%s_%s_opt_tau_bjet_categories' % (chan, proc, sys), '', 4*5, 0., 4*5.),
+                                               #'opt_bjet_categories_incl':      TH1D('%s_%s_%s_opt_bjet_categories_incl'     % (chan, proc, sys), '', 5, 0., 5.),
+                                               #'opt_tau_bjet_categories_incl':  TH1D('%s_%s_%s_opt_tau_bjet_categories_incl' % (chan, proc, sys), '', 4*5, 0., 4*5.),
+                                               #'opt_tau_index_loose':      TH1D('%s_%s_%s_opt_tau_index_loose'     % (chan, proc, sys), '', 10, 0., 10.),
+                                               #'opt_tau_index_medium':     TH1D('%s_%s_%s_opt_tau_index_medium'    % (chan, proc, sys), '', 10, 0., 10.),
+                                               #'opt_tau_index_tight':      TH1D('%s_%s_%s_opt_tau_index_tight'     % (chan, proc, sys), '', 10, 0., 10.),
+                                               #'opt_lep_tau_pt':           TH2D('%s_%s_%s_opt_lep_tau_pt'          % (chan, proc, sys), '', 20, 0, 200, 30, 0, 300),
+                                               #'opt_lep_bjet_pt':          TH2D('%s_%s_%s_opt_lep_bjet_pt'         % (chan, proc, sys), '', 20, 0, 200, 30, 0, 300),
+                                               #'opt_bjet_bjet2_pt':        TH2D('%s_%s_%s_opt_bjet_bjet2_pt'       % (chan, proc, sys), '', 20, 0, 250, 20, 0, 250),
+                                               #'opt_n_presel_tau':  TH1D('%s_%s_%s_opt_n_presel_tau'    % (chan, proc, sys), '', 5, 0., 5.),
+                                               #'opt_n_loose_tau':   TH1D('%s_%s_%s_opt_n_loose_tau'     % (chan, proc, sys), '', 5, 0., 5.),
+                                               #'opt_n_medium_tau':  TH1D('%s_%s_%s_opt_n_medium_tau'    % (chan, proc, sys), '', 5, 0., 5.),
+                                               #'opt_n_tight_tau':   TH1D('%s_%s_%s_opt_n_tight_tau'     % (chan, proc, sys), '', 5, 0., 5.),
+                                               #'opt_n_loose_bjet':  TH1D('%s_%s_%s_opt_n_loose_bjet'    % (chan, proc, sys), '', 5, 0., 5.),
+                                               #'opt_n_medium_bjet': TH1D('%s_%s_%s_opt_n_medium_bjet'   % (chan, proc, sys), '', 5, 0., 5.),
 
-                                               'opt_n_presel_tau':  TH1D('%s_%s_%s_opt_n_presel_tau'    % (chan, proc, sys), '', 5, 0., 5.),
-                                               'opt_n_loose_tau':   TH1D('%s_%s_%s_opt_n_loose_tau'     % (chan, proc, sys), '', 5, 0., 5.),
-                                               'opt_n_medium_tau':  TH1D('%s_%s_%s_opt_n_medium_tau'    % (chan, proc, sys), '', 5, 0., 5.),
-                                               'opt_n_tight_tau':   TH1D('%s_%s_%s_opt_n_tight_tau'     % (chan, proc, sys), '', 5, 0., 5.),
-                                               'opt_n_loose_bjet':  TH1D('%s_%s_%s_opt_n_loose_bjet'    % (chan, proc, sys), '', 5, 0., 5.),
-                                               'opt_n_medium_bjet': TH1D('%s_%s_%s_opt_n_medium_bjet'   % (chan, proc, sys), '', 5, 0., 5.),
+                                               ## for tt->elmu FAKERATES
+                                               #'all_jet_pt':     TH1D('%s_%s_%s_all_jet_pt'     % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               #'all_jet_eta':    TH1D('%s_%s_%s_all_jet_eta'    % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+                                               #'candidate_tau_jet_pt':  TH1D('%s_%s_%s_candidate_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               #'candidate_tau_jet_eta': TH1D('%s_%s_%s_candidate_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+                                               #'vloose_tau_jet_pt':  TH1D('%s_%s_%s_vloose_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               #'vloose_tau_jet_eta': TH1D('%s_%s_%s_vloose_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+                                               #'loose_tau_jet_pt':   TH1D('%s_%s_%s_loose_tau_jet_pt'   % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               #'loose_tau_jet_eta':  TH1D('%s_%s_%s_loose_tau_jet_eta'  % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+                                               #'medium_tau_jet_pt':  TH1D('%s_%s_%s_medium_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               #'medium_tau_jet_eta': TH1D('%s_%s_%s_medium_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+                                               #'tight_tau_jet_pt':   TH1D('%s_%s_%s_tight_tau_jet_pt'   % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               #'tight_tau_jet_eta':  TH1D('%s_%s_%s_tight_tau_jet_eta'  % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+                                               #'vtight_tau_jet_pt':  TH1D('%s_%s_%s_vtight_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+                                               #'vtight_tau_jet_eta': TH1D('%s_%s_%s_vtight_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
 
-                                               # for tt->elmu fake rates
-                                               'all_jet_pt':     TH1D('%s_%s_%s_all_jet_pt'     % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-                                               'all_jet_eta':    TH1D('%s_%s_%s_all_jet_eta'    % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-                                               'candidate_tau_jet_pt':  TH1D('%s_%s_%s_candidate_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-                                               'candidate_tau_jet_eta': TH1D('%s_%s_%s_candidate_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-                                               'vloose_tau_jet_pt':  TH1D('%s_%s_%s_vloose_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-                                               'vloose_tau_jet_eta': TH1D('%s_%s_%s_vloose_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-                                               'loose_tau_jet_pt':   TH1D('%s_%s_%s_loose_tau_jet_pt'   % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-                                               'loose_tau_jet_eta':  TH1D('%s_%s_%s_loose_tau_jet_eta'  % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-                                               'medium_tau_jet_pt':  TH1D('%s_%s_%s_medium_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-                                               'medium_tau_jet_eta': TH1D('%s_%s_%s_medium_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-                                               'tight_tau_jet_pt':   TH1D('%s_%s_%s_tight_tau_jet_pt'   % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-                                               'tight_tau_jet_eta':  TH1D('%s_%s_%s_tight_tau_jet_eta'  % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-                                               'vtight_tau_jet_pt':  TH1D('%s_%s_%s_vtight_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-                                               'vtight_tau_jet_eta': TH1D('%s_%s_%s_vtight_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
                                                #'bdiscr_max':       TH1D('%s_%s_%s_b_discr_max'      % (chan, proc, sys), '', 30, 0, 300),
                                                'dphi_lep_met': TH1D('%s_%s_%s_dphi_lep_met' % (chan, proc, sys), '', 20, -3.2, 3.2),
                                                'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
@@ -1371,13 +1494,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # TODO: for optimization testing minimum pt cut --- review it after test results
         #    -- significant discrepancy at lowest lep pt bin -> UP 1 GeV from HLT and added a detailed distr of the trun on curve
         #    -- it seems the discrepancy were comming from trigger SF going down to 26 only -- fixed that, testing now
-        pass_mu_all = pass_mu_id and ev.lep_p4[0].pt() > 24. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] >= 0.125
+        pass_mu_all = pass_mu_id and ev.lep_p4[0].pt() > 24. and abs(ev.lep_p4[0].eta()) < 2.4 # and ev.lep_relIso[0] >= 0.125
         pass_mu     = pass_mu_id and ev.lep_p4[0].pt() > 24. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] < 0.125
+
+        # do this in place for the required selection
+        #pass_mu_cuts = pass_mu and ev.lep_p4[0].pt() > 25. # so, it's smaller than the old cut 27 GeV
+
         #pass_mu_all = pass_mu_id_kino and ev.lep_relIso[0] >= 0.125
-        pass_el_all = pass_el_id_kino and ev.lep_relIso[0] >= 0.125
+        pass_el_all = pass_el_id_kino # and ev.lep_relIso[0] >= 0.125
 
         #pass_mu = pass_mu_id_kino and ev.lep_relIso[0] < 0.125
-        pass_el = pass_el_id_kino and ev.lep_relIso[0] < 0.125
+        pass_el_all = pass_el_id and ev.lep_p4[0].pt() > 27. and abs(ev.lep_p4[0].eta()) < 2.4
+        pass_el     = pass_el_id and ev.lep_p4[0].pt() > 27. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] < 0.125
 
         pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
@@ -1398,9 +1526,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         #if not (pass_min_mu or pass_min_mu_all or pass_mu_all or pass_mu or pass_el_all or pass_el or pass_mumu or pass_mumu_ss or pass_elmu): continue
         #passes = pass_min_mu or pass_min_mu_all or pass_mu_all or pass_mu or pass_el or pass_mumu or pass_mumu_ss or pass_elmu or pass_mu_id_iso
         # OPTIMIZATION tests are done only on pass_mu
-        passes = pass_mu
+        passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
+        passes = passes_optimized
         if not passes: continue
-        pass_mus = pass_mu_all or pass_mu or pass_elmu or pass_mumu or pass_mumu_ss
+        pass_mus = pass_mu_all or pass_mu or pass_elmu or pass_mumu # or pass_mumu_ss
         # also at least some kind of tau in single-el:
         #if (pass_mu or pass_el) and (not ev.tau_p4.size() > 0): continue # this is the only thing reduces computing
 
@@ -1593,7 +1722,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 weight *= el_trg_sf * el_sfs[0] * el_sfs[1]
 
-        # TAUS
+        # -------------------- TAUS
+
         # tau pt-s
         # ES correction
         # modes have different correction but the same uncertainty = +- 1.2% = 0.012
@@ -1610,6 +1740,25 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # usually it is the tau on first position (0)
         # should I really loop?
 
+        tausP_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+        tausL_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+        tausM_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+        tausT_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+
+        tausP_ESUp   = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+        tausL_ESUp   = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+        tausM_ESUp   = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+        tausT_ESUp   = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+
+        tausP_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+        tausL_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+        tausM_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+        tausT_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+
+        # each tau is
+        # p4, ES factor (ID lev is per collection
+
+        """
         # p4 momenta of taus and the Energy Scale factor
         taus_nominal_min = []
         taus_nominal = []
@@ -1625,6 +1774,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         #   ..also my ES variations are for Medium WP only?
         #     and I don't really need it for optimization tests....
         taus_all_foropt = []
+        """
 
         # only top pt tau is treated but that's fine
         '''IDlev
@@ -1648,16 +1798,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             #if not tlep_p4.DeltaR(ttau_p4) > 0.3:
             #    continue
 
-            usual_pt_cut = 20. # TODO: cut for optimization study, review it after results
             tau_pt = tau_p4.pt()
-            if not isMC:
-                if tau_pt > usual_pt_cut:
-                    taus_all_foropt.append((tau_p4, 1., tau_ID, tau_pdgID))
-                    if tau_ID > 2:
-                        taus_nominal.append((tau_p4, 1.))
-                if tau_pt > 20. and tau_ID > 1: # Loose taus
-                    taus_nominal_min.append((tau_p4, 1.))
-            else:
+            TES_factor = 1. # this factor exists for nominal taus
+
+            pt_cut_cuts = 22.
+            pt_cut_old  = 30.
+
+            #if tau_pt < 20.: continue # no need to check -- it's default in ntupler
+
+            if isMC: # and with_TauES_sys:
                 if tau_DM == 0:
                     factor = 0.995
                     factor_up   = 0.995 + 0.012
@@ -1670,6 +1819,74 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     factor = 1.006
                     factor_up   = 1.006 + 0.012
                     factor_down = 1.006 - 0.012
+                tau_pt_up   = tau_pt * factor_up
+                tau_pt_down = tau_pt * factor_down
+                tau_pt     *= factor
+
+            # nominals
+            if tau_pt > 20.:
+                tausP_nom               .lowest.append((p4, TES_factor))
+                if tau_ID > 1: tausL_nom.lowest.append((p4, TES_factor))
+                if tau_ID > 2: tausM_nom.lowest.append((p4, TES_factor))
+                if tau_ID > 3: tausT_nom.lowest.append((p4, TES_factor))
+            if tau_pt > pt_cut_cuts:
+                tausP_nom               .cuts.append((p4, TES_factor))
+                if tau_ID > 1: tausL_nom.cuts.append((p4, TES_factor))
+                if tau_ID > 2: tausM_nom.cuts.append((p4, TES_factor))
+                if tau_ID > 3: tausT_nom.cuts.append((p4, TES_factor))
+            if tau_pt > pt_cut_old:
+                tausP_nom               .cuts.append((p4, TES_factor))
+                if tau_ID > 1: tausL_nom.cuts.append((p4, TES_factor))
+                if tau_ID > 2: tausM_nom.cuts.append((p4, TES_factor))
+                if tau_ID > 3: tausT_nom.cuts.append((p4, TES_factor))
+
+            # TES
+            if isMC and with_TauES_sys:
+
+                TES_factor = factor_up
+                if tau_pt_up > 20.:
+                    tausP_ESUp               .lowest.append((p4, TES_factor))
+                    if tau_ID > 1: tausL_ESUp.lowest.append((p4, TES_factor))
+                    if tau_ID > 2: tausM_ESUp.lowest.append((p4, TES_factor))
+                    if tau_ID > 3: tausT_ESUp.lowest.append((p4, TES_factor))
+                if tau_pt_up > pt_cut_cuts:
+                    tausP_ESUp               .cuts.append((p4, TES_factor))
+                    if tau_ID > 1: tausL_ESUp.cuts.append((p4, TES_factor))
+                    if tau_ID > 2: tausM_ESUp.cuts.append((p4, TES_factor))
+                    if tau_ID > 3: tausT_ESUp.cuts.append((p4, TES_factor))
+                if tau_pt_up > pt_cut_old:
+                    tausP_ESUp               .cuts.append((p4, TES_factor))
+                    if tau_ID > 1: tausL_ESUp.cuts.append((p4, TES_factor))
+                    if tau_ID > 2: tausM_ESUp.cuts.append((p4, TES_factor))
+                    if tau_ID > 3: tausT_ESUp.cuts.append((p4, TES_factor))
+
+                TES_factor = factor_down
+                if tau_pt_down > 20.:
+                    tausP_ESDown               .lowest.append((p4, TES_factor))
+                    if tau_ID > 1: tausL_ESDown.lowest.append((p4, TES_factor))
+                    if tau_ID > 2: tausM_ESDown.lowest.append((p4, TES_factor))
+                    if tau_ID > 3: tausT_ESDown.lowest.append((p4, TES_factor))
+                if tau_pt_down > pt_cut_cuts:
+                    tausP_ESDown               .cuts.append((p4, TES_factor))
+                    if tau_ID > 1: tausL_ESDown.cuts.append((p4, TES_factor))
+                    if tau_ID > 2: tausM_ESDown.cuts.append((p4, TES_factor))
+                    if tau_ID > 3: tausT_ESDown.cuts.append((p4, TES_factor))
+                if tau_pt_down > pt_cut_old:
+                    tausP_ESDown               .cuts.append((p4, TES_factor))
+                    if tau_ID > 1: tausL_ESDown.cuts.append((p4, TES_factor))
+                    if tau_ID > 2: tausM_ESDown.cuts.append((p4, TES_factor))
+                    if tau_ID > 3: tausT_ESDown.cuts.append((p4, TES_factor))
+
+            """
+            usual_pt_cut = 20. # TODO: cut for optimization study, review it after results
+            if not isMC:
+                if tau_pt > usual_pt_cut:
+                    taus_all_foropt.append((tau_p4, 1., tau_ID, tau_pdgID))
+                    if tau_ID > 2:
+                        taus_nominal.append((tau_p4, 1.))
+                if tau_pt > 20. and tau_ID > 1: # Loose taus
+                    taus_nominal_min.append((tau_p4, 1.))
+            else:
 
                 # only nominal for min taus
                 if tau_p4 * factor > usual_pt_cut:
@@ -1724,6 +1941,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             if n_tight_taus == 1:
                 n_tight_tau_i = i
                 n_tight_tau_pdg = pdgID
+            """
 
 
         #has_medium_tau = any(IDlev > 2 and p4.pt() > 30 for IDlev, p4 in zip(ev.tau_IDlev, ev.tau_p4))
@@ -1732,16 +1950,64 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         #TODO: propagate TES to MET?
 
 
-        #JETS
+        # ---------- JETS
+
         # jets save (p4, factor) and (..., dR_far_of_tau) for adv selection -- counting tau-cleaned jets for Loose2
         # TODO: add jet b-discr or b-ID, also consider adding dR to tau (to which tau? loose? medium? save the ID of dR-ed tau?)
 
+        """
         all_jets_b_discrs = []
         lead_jet_b_discr = -1.
 
         # OPTIMIZATION
         # similar procedure for bjets as in tau
         bjets_all_foropt = []
+        """
+
+        ##SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
+        #jets_all_optimized          = SystematicJets('nom'=[], sys_JERUp=[], sys_JERDown=[], sys_JESUp=[], sys_JESDown=[], sys_bUp=[], sys_bDown=[])
+        #jets_all_optimized_cuts     = SystematicJets('nom'=[], sys_JERUp=[], sys_JERDown=[], sys_JESUp=[], sys_JESDown=[], sys_bUp=[], sys_bDown=[])
+        #jets_all_optimized_old_cuts = SystematicJets('nom'=[], sys_JERUp=[], sys_JERDown=[], sys_JESUp=[], sys_JESDown=[], sys_bUp=[], sys_bDown=[])
+        ## each systematic is a list of jets with
+        ## p4, energy factor, b SF weight, b ID level
+
+        #JetCutsPerSystematic = namedtuple('Jets', 'lowest cuts old')
+        # collection holds jet info per 1 systematic
+        # for each of the requested cuts
+        # -- so that I still can loop over systematics
+        #    and keep it extendable
+        # each jet collection holds:
+        #    p4, energy factor, b SF weight, b ID level
+
+        jets_nom     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        jets_JERUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        jets_JERDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        jets_JESUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        jets_JESDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        jets_bUp     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        jets_bDown   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+
+        bjetsL_nom     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        bjetsL_JERUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        bjetsL_JERDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        bjetsL_JESUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        bjetsL_JESDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        bjetsL_bUp     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        bjetsL_bDown   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+
+        bjetsM_nom     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        bjetsM_JERUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        bjetsM_JERDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        bjetsM_JESUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        bjetsM_JESDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        bjetsM_bUp     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        bjetsM_bDown   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        # I forgot about the needed b-jet splitting (for lj and easy 1M, 2L1M selections)
+        # and it got out of hand
+        # I don't want to use dict-s of strings for performance sake
+        # and trying to operate on direct pointers with named tuples (hopefully that's how it is implemented TODO check speed)
+        # macro would be nice here
+        # TODO is there another way?
 
         if len(ev.jet_b_discr) > 0:
             lead_jet_b_discr = ev.jet_b_discr[0]
@@ -1751,6 +2017,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         b_tag_wp_tight  = 0.935
         b_tag_wp = b_tag_wp_medium
 
+        """
         # lists of "light jets", not passing b-tag
         jets_nominal = [] # nominal jet pts
         jets_jer_up, jets_jer_down = [], []
@@ -1765,10 +2032,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         jets_b_nominal_tight = [] # nominal jet pts
         jets_not_loose_b = [] # nominal jet pts
         jets_not_tight_b = [] # nominal jet pts
-        # these collections should be cross-cleaned from loose+ tau
-        if taus_nominal_min:
-            tau_p4 = taus_nominal_min[0][0]
-            ttau_p4 = TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T())
 
         #nbjets_nominal = 0
         #nbjets_jer_up, nbjets_jer_down = 0, 0
@@ -1783,8 +2046,28 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         jets_b_nominal_min = [] # nominal jet pts
         weight_bSF_min = 1.
 
-        # for tt->elmu fake rates
-        all_jets_for_fakes = []
+        ## for tt->elmu FAKERATES [TODO: add this as some ifs]
+        #all_jets_for_fakes = []
+        """
+
+        # these collections should be cross-cleaned from loose+ tau
+        #if taus_nominal_min:
+        #    tau_p4 = taus_nominal_min[0][0]
+        #    ttau_p4 = TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T())
+        # I'll do cross-clean with nominal loose taus
+        #tausL_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+        # of lowest cuts? -- no, of the same as in the selection
+        #                 -- and this again messes up the code.......
+        taus_nom_TLorentz    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+        # just lists of tlorentz vectors
+        # in lowest and cuts we use tight tau
+        for tau_p4, _ in tausT_nom.lowest:
+            taus_nom_TLorentz.lowest.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
+        for tau_p4, _ in tausT_nom.cuts:
+            taus_nom_TLorentz.cuts.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
+        # in old we use medium tau
+        for tau_p4, _ in tausM_nom.old:
+            taus_nom_TLorentz.old.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
 
         for i in xrange(ev.jet_p4.size()):
             pfid, p4 = ev.jet_PFID[i], ev.jet_p4[i]
@@ -1792,36 +2075,279 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
             jet_b_discr = ev.jet_b_discr[i]
             all_jets_b_discrs.append(jet_b_discr)
-            b_tagged = b_tagged_medium = jet_b_discr > b_tag_wp_medium
-            flavId = ev.jet_hadronFlavour[i]
 
-            b_tagged_loose = jet_b_discr > b_tag_wp_loose
-            b_tagged_tight = jet_b_discr > b_tag_wp_tight
+            jet_pt  = p4.pt()
+            jet_eta = p4.eta()
 
             #if p4.pt() > 30: # nominal jet
             # TODO: for optimization tests I reduced the cut, review it with the test results
-            if p4.pt() > 20: # nominal jet
+            if jet_pt > 20: # nominal jet
                 # loose and tight b jet collections are cross cleaned from loose zero tau
-                far_from_tau = True
-                if taus_nominal_min: # this is an at least loose tau on 0 position...
-                    tj_p4 = TLorentzVector(p4.X(), p4.Y(), p4.Z(), p4.T())
+                tau_match_lowest, tau_match_cuts, tau_match_old = False, False, False
+                matched_tau = False
+                tj_p4 = TLorentzVector(p4.X(), p4.Y(), p4.Z(), p4.T())
+                for ttau_p4 in taus_nom_TLorentz.lowest:
                     if tj_p4.DeltaR(ttau_p4) < 0.3:
-                        far_from_tau = False
-                if far_from_tau:
-                    # OPTIMIZATION
-                    # so, these are jets, passing pt, eta, ID and cross-dR from tau
-                    # I set jet correction multiplier = 1
-                    # and set b tag IDlev
-                    bjets_all_foropt.append((p4, 1, b_tagged_loose + b_tagged_medium + b_tagged_tight))
+                        tau_match_lowest = True
+                        break
 
-                    if b_tagged_loose: # no SF and so on
-                        jets_b_nominal_loose.append((p4, 1))
+                for ttau_p4 in taus_nom_TLorentz.cuts:
+                    if tj_p4.DeltaR(ttau_p4) < 0.3:
+                        tau_match_cuts = True
+                        break
+
+                for ttau_p4 in taus_nom_TLorentz.old:
+                    if tj_p4.DeltaR(ttau_p4) < 0.3:
+                        tau_match_old = True
+                        break
+
+                if tau_match_lowest and tau_match_cuts and tau_match_old:
+                    continue
+
+                #if taus_nominal_min: # this is an at least loose tau on 0 position...
+                #    # TODO: make loop over loose taus
+                #    if tj_p4.DeltaR(ttau_p4) < 0.3:
+                #        matched_tau = True
+                #if matched_tau:
+                #    continue
+
+                # jet passed ID, eta, lowest pt threshold and doesn't match to a Loose tau
+                # now find its' systematic corrections and save
+                flavId = ev.jet_hadronFlavour[i]
+                b_tagged = b_tagged_medium = jet_b_discr > b_tag_wp_medium
+                b_tagged_loose = jet_b_discr > b_tag_wp_loose
+                b_tagged_tight = jet_b_discr > b_tag_wp_tight
+
+                bID_lev = sum((b_tagged_loose, b_tagged_medium, b_tagged_tight))
+
+                # jet at given systematic and selection is defined by p4, energy factor, bSF weight and b ID lev
+                # JER and JES are already nominally corrected -- only Up/Down are needed
+                jet_factor_JERUp = 1.
+                jet_factor_JESUp = 1.
+                jet_factor_JERDown = 1.
+                jet_factor_JESDown = 1.
+                # b SF needs to be calculated
+                jet_weight_bSF_nom = 1.     # there might be several schemes for b SF weights
+                jet_weight_bSFUp   = 1.
+                jet_weight_bSFDown = 1.
+
+                # so, for nominal jets I just need to check is bSF needs to be calculated and add it if so
+
+                if isMC:
+                    if with_bSF:
+                        # for now I calculate only the old b SF scheme with only medium b WP
+                        # TODO: add the 2L1M b SF scheme
+                        jet_weight_bSF_nom = calc_btag_sf_weight(b_tagged_medium, flavId, jet_pt, jet_eta)
+                        if with_bSF_sys:
+                            # again only old scheme
+                            jet_weight_bSFUp   = calc_btag_sf_weight(b_tagged, flavId, jet_pt, jet_eta, "up")
+                            jet_weight_bSFDown = calc_btag_sf_weight(b_tagged, flavId, jet_pt, jet_eta, "down")
+
+                    if with_JER_sys:
+                        factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
+                        jet_factor_JERUp   = (up/factor) if factor > 0 else 0
+                        jet_factor_JERDown = (down/factor) if factor > 0 else 0
+
+                        jet_pt_jer_up   = jet_pt * jet_factor_JERUp
+                        jet_pt_jer_down = jet_pt * jet_factor_JERDown
+
+                    if with_JES_sys:
+                        #jes_shift = ev.jet_jes_correction_relShift[i]
+                        jes_shift = ev.jet_jes_uncertainty[i]
+                        jet_factor_JESUp   = 1 + jes_shift
+                        jet_factor_JESDown = 1 - jes_shift
+
+                        jet_pt_jes_up   = jet_pt * jet_factor_JESUp
+                        jet_pt_jes_down = jet_pt * jet_factor_JESDown
+
+                # I'll do this per selection cut, since I tau-match
+                if not tau_match_lowest:
+                    # jet is p4, jet energy factor (which is 1 for nominal), b SF factor and bID lev
+                    # nominals
+                    if b_tagged_loose:
+                        bjetsL_nom.lowest.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                        if with_bSF_sys:
+                            bjetsL_bUp  .lowest.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                            bjetsL_bDown.lowest.append((p4, 1., jet_weight_bSFDown, bID_lev))
+
+                        if with_JER_sys:
+                            if jet_pt_jer_up > 20.:   bjetsL_JERUp  .lowest.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_down > 20.: bjetsL_JERDown.lowest.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+
+                        if with_JES_sys:
+                            if jet_pt_jes_up   > 20.: bjetsL_JESUp  .lowest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_down > 20.: bjetsL_JESDown.lowest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+
+                        if b_tagged_medium:
+                            bjetsM_nom.lowest.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            if with_bSF_sys:
+                                bjetsM_bUp  .lowest.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                bjetsM_bDown.lowest.append((p4, 1., jet_weight_bSFDown, bID_lev))
+
+                            if with_JER_sys:
+                                if jet_pt_jer_up   > 20.: bjetsM_JERUp  .lowest.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jer_down > 20.: bjetsM_JERDown.lowest.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+
+                            if with_JES_sys:
+                                if jet_pt_jes_up   > 20.: bjetsM_JESUp  .lowest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jes_down > 20.: bjetsM_JESDown.lowest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+
                     else:
-                        jets_not_loose_b.append((p4, 1))
-                    if b_tagged_tight:
-                        jets_b_nominal_tight.append((p4, 1))
+                        jets_nom.lowest.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                        if with_bSF_sys:
+                            jets_bUp  .lowest.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                            jets_bDown.lowest.append((p4, 1., jet_weight_bSFDown, bID_lev))
+
+                        if with_JER_sys:
+                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+
+                        if with_JES_sys:
+                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+
+                    if pt_up > 20.:
+                        if b_tagged_loose:
+                            bjetsL_JESUp  .lowest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if b_tagged_medium:
+                                bjetsM_JESUp  .lowest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                        else:
+                            jets_JESUp  .lowest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                    if pt_down > 20.:
+                        if b_tagged_loose:
+                            bjetsL_JESDown.lowest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+                            if b_tagged_medium:
+                                bjetsM_JESDown.lowest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+                        else:
+                            jets_JESDown.lowest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+
+
+                if not tau_match_cuts:
+                    pt_cut = 22.
+                    # the same, but the cuts and lowest -> cuts
+                    # nominals
+                    if b_tagged_loose:
+                        if jet_pt > pt_cut:
+                            bjetsL_nom.cuts.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            if with_bSF_sys:
+                                bjetsL_bUp  .cuts.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                bjetsL_bDown.cuts.append((p4, 1., jet_weight_bSFDown, bID_lev))
+
+                        if with_JER_sys:
+                            if jet_pt_jer_up   > pt_cut: bjetsL_JERUp  .cuts.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_down > pt_cut: bjetsL_JERDown.cuts.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+
+                        if with_JES_sys:
+                            if jet_pt_jes_up   > pt_cut: bjetsL_JESUp  .cuts.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_down > pt_cut: bjetsL_JESDown.cuts.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+
+                        if b_tagged_medium:
+                            if jet_pt > pt_cut:
+                                bjetsM_nom.cuts.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                                if with_bSF_sys:
+                                    bjetsM_bUp  .cuts.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                    bjetsM_bDown.cuts.append((p4, 1., jet_weight_bSFDown, bID_lev))
+
+                            if with_JER_sys:
+                                if jet_pt_jer_up   > pt_cut: bjetsM_JERUp  .cuts.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jer_down > pt_cut: bjetsM_JERDown.cuts.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+
+                            if with_JES_sys:
+                                if jet_pt_jes_up   > pt_cut: bjetsM_JESUp  .cuts.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jes_down > pt_cut: bjetsM_JESDown.cuts.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+
                     else:
-                        jets_not_tight_b.append((p4, 1))
+                        if jet_pt > pt_cut:
+                            jets_nom.cuts.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            if with_bSF_sys:
+                                jets_bUp  .cuts.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.cuts.append((p4, 1., jet_weight_bSFDown, bID_lev))
+
+                        if with_JER_sys:
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+
+                        if with_JES_sys:
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+
+
+                if not tau_match_old:
+                    pt_cut = 30.
+                    # the same, but the cuts and lowest -> cuts
+                    # nominals
+                    if b_tagged_loose:
+                        if jet_pt > pt_cut:
+                            bjetsL_nom.cuts.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            if with_bSF_sys:
+                                bjetsL_bUp  .cuts.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                bjetsL_bDown.cuts.append((p4, 1., jet_weight_bSFDown, bID_lev))
+
+                        if with_JER_sys:
+                            if jet_pt_jer_up   > pt_cut: bjetsL_JERUp  .cuts.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_down > pt_cut: bjetsL_JERDown.cuts.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+
+                        if with_JES_sys:
+                            if jet_pt_jes_up   > pt_cut: bjetsL_JESUp  .cuts.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_down > pt_cut: bjetsL_JESDown.cuts.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+
+                        if b_tagged_medium:
+                            if jet_pt > pt_cut:
+                                bjetsM_nom.cuts.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                                if with_bSF_sys:
+                                    bjetsM_bUp  .cuts.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                    bjetsM_bDown.cuts.append((p4, 1., jet_weight_bSFDown, bID_lev))
+
+                            if with_JER_sys:
+                                if jet_pt_jer_up   > pt_cut: bjetsM_JERUp  .cuts.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jer_down > pt_cut: bjetsM_JERDown.cuts.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+
+                            if with_JES_sys:
+                                if jet_pt_jes_up   > pt_cut: bjetsM_JESUp  .cuts.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jes_down > pt_cut: bjetsM_JESDown.cuts.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+
+                    else:
+                        if jet_pt > pt_cut:
+                            jets_nom.cuts.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            if with_bSF_sys:
+                                jets_bUp  .cuts.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.cuts.append((p4, 1., jet_weight_bSFDown, bID_lev))
+
+                        if with_JER_sys:
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+
+                        if with_JES_sys:
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+
+
+
+
+
+
+
+
+                # just commenting the old jet procedure,
+                # this one seems cleaner in every way
+                """
+                # OPTIMIZATION
+                # so, these are jets, passing pt, eta, ID and cross-dR from tau
+                # I set jet correction multiplier = 1
+                # and set b tag IDlev
+
+                # jet corrections for MC
+
+                bjets_all_foropt.append((p4, 1, b_tagged_loose + b_tagged_medium + b_tagged_tight))
+
+                if b_tagged_loose: # no SF and so on
+                    jets_b_nominal_loose.append((p4, 1))
+                else:
+                    jets_not_loose_b.append((p4, 1))
+                if b_tagged_tight:
+                    jets_b_nominal_tight.append((p4, 1))
+                else:
+                    jets_not_tight_b.append((p4, 1))
 
                 if b_tagged:
                     #nbjets_nominal += 1
@@ -1837,8 +2363,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 ## also save "minimal" jets -- with minimal pt threshold
                 ## make them only at NOMINAL systematics for now
                 #if p4.pt() > 20: # nominal jet
-                if abs(p4.eta()) < 2.3:
-                    all_jets_for_fakes.append(p4) # nominal corrections already applied in ntupler
+                #if abs(p4.eta()) < 2.3: # for FAKERATES
+                #    all_jets_for_fakes.append(p4) # nominal corrections already applied in ntupler
                 if b_tagged:
                     #nbjets_nominal += 1
                     jets_b_nominal_min.append((p4, 1))
@@ -1848,9 +2374,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     weight_bSF_min  *= calc_btag_sf_weight(b_tagged, flavId, p4.pt(), p4.eta())
                     #weight_bSF_up   *= calc_btag_sf_weight(b_tagged, flavId, p4.pt(), p4.eta(), "up")
                     #weight_bSF_down *= calc_btag_sf_weight(b_tagged, flavId, p4.pt(), p4.eta(), "down")
+                """
 
             # TODO: probably these weights are better to be computed at channel recording?
+            #    -- the point is that a channel might not require a systematic
+            #       but at the same time it is easier and cleaner to compute systematics per jet
+            #       probably the only reasonable improvement would be to add a check and _store_ systematic only if required for this cut
+            #       not sure if it is significant
+            #       thus leaving it as is now -- systematics per event, loop over them and channels do discard
+            #       the systematics change only the edge-of-cut events thus there should be few of them and optimization gains are small
+            #       the only waste is the channel logic is checked for each systematic -- TODO: is it significant?
 
+            """
             if isMC:
                 # vary the jets with systematics, save b-tagged and other
                 factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
@@ -1896,28 +2431,54 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                         jets_jes_down.append((p4, mult))
                     if isMC and with_bSF:
                         weight_bSF_jes_down *= calc_btag_sf_weight(b_tagged, flavId, p4.pt() * mult, p4.eta())
+            """
 
             # save jets and factors for lj_var
             # count b jets
             # how to calc b SF weight? <---- just calc them, only for nominal jets
             #
 
+        """
         # OPTIMIZATION
         bjets_all_foropt.sort(key=lambda bjet: bjet[2], reverse=True) # sort by IDlev
-        n_loose_bjets = n_medium_bjets = 0
-        for _, _, IDlev in bjets_all_foropt:
-            if IDlev > 1:
-                n_loose_bjets  += 1
-                n_medium_bjets += 1
-            elif IDlev == 1:
-                n_loose_bjets  += 1
+        bjets_cuts_loose  = []
+        bjets_cuts_medium = []
+        jets_cuts = []
+        bjets_old_cuts = []
+        jets_old_cuts = []
+
+        #n_loose_bjets = n_medium_bjets = 0
+        for p4, _, IDlev in bjets_all_foropt:
+            #if IDlev > 1:
+            #    n_loose_bjets  += 1
+            #    n_medium_bjets += 1
+            #elif IDlev == 1:
+            #    n_loose_bjets  += 1
+
+            #
+            if p4.pt() > 25.:
+                if IDlev == 1:
+                    bjets_cuts_loose.append(p4)
+                elif IDlev > 1:
+                    bjets_cuts_medium.append(p4)
+                else:
+                    jets_cuts.append(p4)
+
+            if p4.pt() > 30.:
+                if IDlev > 1:
+                    bjets_old_cuts.append(p4)
+                elif IDlev < 1:
+                    jets_old_cuts.append(p4)
+        """
 
         #has_medium_tau = any(IDlev > 2 and p4.pt() > 30 for IDlev, p4 in zip(ev.tau_IDlev, ev.tau_p4))
         #has_medium_tau = ev.tau_IDlev.size() > 0 and ev.tau_IDlev[0] > 2 and ev.tau_p4[0].pt() > 30
         #has_medium_tau = bool(tau_pts_corrected)
         #TODO: propagate TES to MET?
 
-        # for tau fake rates loop over all jets and taus
+        '''
+        # for tau FAKERATES
+        # loop over all jets and taus
         # matching them in dR
         # and if matched adding into according collection
         tau_jets_candidates = []
@@ -1961,6 +2522,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                             tau_jets_medium.append(jet_p4)
                             tau_jets_tight .append(jet_p4)
                             tau_jets_vtight.append(jet_p4)
+        '''
 
 
 
@@ -2126,6 +2688,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 lep_tau = ev.lep_p4[0] + taus_min[0][0] * taus_min[0][1]
                 lep_tau_mass = lep_tau.mass()
 
+
+            # all the channel selections follow
+            passed_channels = []
+
+
+            """
             # OPTIMIZATION
             # TODO: I need to propagate these tau/b-jet lists and zero tau to main procedure
             #       but don't know how to deal with systematics
@@ -2175,10 +2743,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             pass_single_lep_sel = pass_single_lep_presel and os_lep_med_tau
             pass_single_lep_sel_ss = pass_single_lep_presel and ss_lep_med_tau
 
-
-            # all the channel selections follow
-
-            passed_channels = []
 
             # OPTIMIZATION
             if pass_mu:
@@ -2275,6 +2839,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                         passed_channels.append('optmu_tight_2L1M_ss')
                 if pass_tau_ss_tight and pass_b_2L2M:
                         passed_channels.append('optmu_tight_2L2M_ss')
+            """
 
 
             # and these are not optimization...
@@ -2542,7 +3107,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
                 record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
 
-                # tt->elmu fake rates
+                '''
+                # tt->elmu FAKERATES
                 fakerate_working_points = [(all_jets_for_fakes, 'all_jet'), (tau_jets_candidates, 'candidate_tau_jet'),
                     (tau_jets_vloose, 'vloose_tau_jet'), (tau_jets_loose , 'loose_tau_jet'),
                     (tau_jets_medium, 'medium_tau_jet'), (tau_jets_tight , 'tight_tau_jet'), (tau_jets_vtight, 'vtight_tau_jet')]
@@ -2550,6 +3116,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     for jet_p4 in jet_p4_s:
                         out_hs[(chan, proc, sys_name)][wp_name + '_pt']  .Fill(jet_p4.pt() , record_weight)
                         out_hs[(chan, proc, sys_name)][wp_name + '_eta'] .Fill(jet_p4.eta(), record_weight)
+                '''
 
                 out_hs[(chan, proc, sys_name)]['met'].Fill(met_pt, record_weight)
                 out_hs[(chan, proc, sys_name)]['init_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
