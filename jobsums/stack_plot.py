@@ -443,6 +443,7 @@ else:
         #gStyle.SetPadTopMargin(0.05) # nope
         #ROOT.gPad.SetTopMargin(0.01) # nope
         if args.logy:
+            logging.info("setting Pad logy")
             pad1.SetLogy()
         pad1.Draw()
         pad2.Draw() # these have to be before cd()
@@ -547,6 +548,7 @@ else:
 
         histos_data_sum.SetMaximum(max_y * 1.1)
         if args.logy: # and args.fake_rate:
+            logging.info("setting histos logy") # some bug 
             histos_data_sum.SetMaximum(max_y * 10.)
             hs_sum1        .SetMaximum(max_y * 10.)
             histos_data_sum.SetMinimum(min_y / 10.)

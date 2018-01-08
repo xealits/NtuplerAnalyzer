@@ -129,7 +129,7 @@ xsecs = {
 "MC2016_Summer16_W3Jets_madgraph_": 942.3,
 "MC2016_Summer16_W4Jets_madgraph_perc":  354.83,
 "MC2016_Summer16_W4Jets_madgraph_": 524.2,
-"MC2016_Summer16_WJets_amcatnlo": 61526.7 - 9493 - 3120 - 942.3 - 524.2,
+"MC2016_Summer16_WJets_amcatnlo": 49143.25,# norm study in madgraph gives about 49k x-sec # 61526.7 - 9493 - 3120 - 942.3 - 524.2, # = 47447.2
 "MC2016_Summer16_WJets_amcatnlo_full": 61526.7,
 "MC2016_Summer16_WJets_amcatnlo_": 61526.7,
 "MC2016_Summer16_WJets_madgraph_075": 50690 - 9493 - 3120 - 942.3 - 524.2,
