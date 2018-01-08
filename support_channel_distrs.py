@@ -1257,8 +1257,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
     # all requested jet cuts
+    JetBSplit = namedtuple('BJets', 'medium loose rest')
     JetCutsPerSystematic = namedtuple('Jets', 'lowest cuts old')
-    TauCutsPerSystematic = namedtuple('Taus', 'presel loose medium tight')
+    TauCutsPerSystematic = namedtuple('Taus', 'lowest cuts old presel')
 
     proc = usual_process
     micro_proc = '' # hack for tt_leptau->3ch subchannel of hadronic taus
@@ -1740,6 +1741,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # usually it is the tau on first position (0)
         # should I really loop?
 
+        # each selection requires only 1 ID level of tau:
+	# lowest and cuts -- tight
+	# old -- medium
+	# I also need preselection for WJets SS and preselection SS (for QCD)
+        taus_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[], presel=[])
+        taus_ESUp   = TauCutsPerSystematic(lowest=[], cuts=[], old=[], presel=[])
+        taus_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[], presel=[])
+
+        """
         tausP_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
         tausL_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
         tausM_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
@@ -1754,6 +1764,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         tausL_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
         tausM_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
         tausT_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+        """
 
         # each tau is
         # p4, ES factor (ID lev is per collection
@@ -1806,6 +1817,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
             #if tau_pt < 20.: continue # no need to check -- it's default in ntupler
 
+            # MC corrections
             if isMC: # and with_TauES_sys:
                 if tau_DM == 0:
                     factor = 0.995
@@ -1823,59 +1835,42 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 tau_pt_down = tau_pt * factor_down
                 tau_pt     *= factor
 
+            # I store only 1 ID per selection
+	    # tight for lowest and cuts
+	    # medium for old
+	    # presel for presel
+
             # nominals
             if tau_pt > 20.:
-                tausP_nom               .lowest.append((p4, TES_factor))
-                if tau_ID > 1: tausL_nom.lowest.append((p4, TES_factor))
-                if tau_ID > 2: tausM_nom.lowest.append((p4, TES_factor))
-                if tau_ID > 3: tausT_nom.lowest.append((p4, TES_factor))
+                taus_nom               .presel.append((p4, TES_factor))
+                #if tau_ID > 1: tausL_nom.lowest.append((p4, TES_factor))
+                #if tau_ID > 2: tausM_nom.lowest.append((p4, TES_factor))
+                if tau_ID > 3: taus_nom.lowest.append((p4, TES_factor))
             if tau_pt > pt_cut_cuts:
-                tausP_nom               .cuts.append((p4, TES_factor))
-                if tau_ID > 1: tausL_nom.cuts.append((p4, TES_factor))
-                if tau_ID > 2: tausM_nom.cuts.append((p4, TES_factor))
-                if tau_ID > 3: tausT_nom.cuts.append((p4, TES_factor))
+                if tau_ID > 3: taus_nom.cuts.append((p4, TES_factor))
             if tau_pt > pt_cut_old:
-                tausP_nom               .cuts.append((p4, TES_factor))
-                if tau_ID > 1: tausL_nom.cuts.append((p4, TES_factor))
-                if tau_ID > 2: tausM_nom.cuts.append((p4, TES_factor))
-                if tau_ID > 3: tausT_nom.cuts.append((p4, TES_factor))
+                if tau_ID > 2: taus_nom.old .append((p4, TES_factor))
 
             # TES
             if isMC and with_TauES_sys:
 
                 TES_factor = factor_up
                 if tau_pt_up > 20.:
-                    tausP_ESUp               .lowest.append((p4, TES_factor))
-                    if tau_ID > 1: tausL_ESUp.lowest.append((p4, TES_factor))
-                    if tau_ID > 2: tausM_ESUp.lowest.append((p4, TES_factor))
-                    if tau_ID > 3: tausT_ESUp.lowest.append((p4, TES_factor))
+                    taus_ESUp               .presel.append((p4, TES_factor))
+                    if tau_ID > 3: taus_ESUp.lowest.append((p4, TES_factor))
                 if tau_pt_up > pt_cut_cuts:
-                    tausP_ESUp               .cuts.append((p4, TES_factor))
-                    if tau_ID > 1: tausL_ESUp.cuts.append((p4, TES_factor))
-                    if tau_ID > 2: tausM_ESUp.cuts.append((p4, TES_factor))
-                    if tau_ID > 3: tausT_ESUp.cuts.append((p4, TES_factor))
+                    if tau_ID > 3: taus_ESUp.cuts.append((p4, TES_factor))
                 if tau_pt_up > pt_cut_old:
-                    tausP_ESUp               .cuts.append((p4, TES_factor))
-                    if tau_ID > 1: tausL_ESUp.cuts.append((p4, TES_factor))
-                    if tau_ID > 2: tausM_ESUp.cuts.append((p4, TES_factor))
-                    if tau_ID > 3: tausT_ESUp.cuts.append((p4, TES_factor))
+                    if tau_ID > 2: taus_ESUp.old.append((p4, TES_factor))
 
                 TES_factor = factor_down
                 if tau_pt_down > 20.:
-                    tausP_ESDown               .lowest.append((p4, TES_factor))
-                    if tau_ID > 1: tausL_ESDown.lowest.append((p4, TES_factor))
-                    if tau_ID > 2: tausM_ESDown.lowest.append((p4, TES_factor))
-                    if tau_ID > 3: tausT_ESDown.lowest.append((p4, TES_factor))
+                    taus_ESDown               .presel.append((p4, TES_factor))
+                    if tau_ID > 3: taus_ESDown.lowest.append((p4, TES_factor))
                 if tau_pt_down > pt_cut_cuts:
-                    tausP_ESDown               .cuts.append((p4, TES_factor))
-                    if tau_ID > 1: tausL_ESDown.cuts.append((p4, TES_factor))
-                    if tau_ID > 2: tausM_ESDown.cuts.append((p4, TES_factor))
-                    if tau_ID > 3: tausT_ESDown.cuts.append((p4, TES_factor))
+                    if tau_ID > 3: taus_ESDown.cuts.append((p4, TES_factor))
                 if tau_pt_down > pt_cut_old:
-                    tausP_ESDown               .cuts.append((p4, TES_factor))
-                    if tau_ID > 1: tausL_ESDown.cuts.append((p4, TES_factor))
-                    if tau_ID > 2: tausM_ESDown.cuts.append((p4, TES_factor))
-                    if tau_ID > 3: tausT_ESDown.cuts.append((p4, TES_factor))
+                    if tau_ID > 2: taus_ESDown.old.append((p4, TES_factor))
 
             """
             usual_pt_cut = 20. # TODO: cut for optimization study, review it after results
@@ -1944,6 +1939,23 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             """
 
 
+        # sort by pt
+        taus_nom    .lowest.sort(key=lambda p4, f: f*p4.pt(), reverse=True)
+        taus_nom    .cuts  .sort(key=lambda p4, f: f*p4.pt(), reverse=True)
+        taus_nom    .old   .sort(key=lambda p4, f: f*p4.pt(), reverse=True)
+        taus_nom    .presel.sort(key=lambda p4, f: f*p4.pt(), reverse=True)
+
+        # TES
+        if isMC and with_TauES_sys:
+            taus_ESUp   .lowest.sort(key=lambda p4, f: f*p4.pt(), reverse=True)
+            taus_ESDown .lowest.sort(key=lambda p4, f: f*p4.pt(), reverse=True)
+            taus_ESUp   .cuts  .sort(key=lambda p4, f: f*p4.pt(), reverse=True)
+            taus_ESDown .cuts  .sort(key=lambda p4, f: f*p4.pt(), reverse=True)
+            taus_ESUp   .old   .sort(key=lambda p4, f: f*p4.pt(), reverse=True)
+            taus_ESDown .old   .sort(key=lambda p4, f: f*p4.pt(), reverse=True)
+            taus_ESUp   .presel.sort(key=lambda p4, f: f*p4.pt(), reverse=True)
+            taus_ESDown .presel.sort(key=lambda p4, f: f*p4.pt(), reverse=True)
+
         #has_medium_tau = any(IDlev > 2 and p4.pt() > 30 for IDlev, p4 in zip(ev.tau_IDlev, ev.tau_p4))
         #has_medium_tau = ev.tau_IDlev.size() > 0 and ev.tau_IDlev[0] > 2 and ev.tau_p4[0].pt() > 30
         #has_medium_tau = bool(tau_pts_corrected)
@@ -1979,29 +1991,46 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # each jet collection holds:
         #    p4, energy factor, b SF weight, b ID level
 
-        jets_nom     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        jets_JERUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        jets_JERDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        jets_JESUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        jets_JESDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        jets_bUp     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        jets_bDown   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        # each selection needs b-jets (loose and medium) and other jets
+	# -- for lj calculations and b-jet control
+        jets_nom     = JetCutsPerSystematic(lowest=JetBSplit(medium=[], loose=[], rest=[]),
+	                                      cuts=JetBSplit(medium=[], loose=[], rest=[]),
+					       old=JetBSplit(medium=[], loose=[], rest=[]))
+        jets_JERUp   = JetCutsPerSystematic(lowest=JetBSplit(medium=[], loose=[], rest=[]),
+	                                      cuts=JetBSplit(medium=[], loose=[], rest=[]),
+	                                       old=JetBSplit(medium=[], loose=[], rest=[]))
+        jets_JERDown = JetCutsPerSystematic(lowest=JetBSplit(medium=[], loose=[], rest=[]),
+                                              cuts=JetBSplit(medium=[], loose=[], rest=[]), 
+                                               old=JetBSplit(medium=[], loose=[], rest=[]))
+        jets_JESUp   = JetCutsPerSystematic(lowest=JetBSplit(medium=[], loose=[], rest=[]),
+                                              cuts=JetBSplit(medium=[], loose=[], rest=[]), 
+                                               old=JetBSplit(medium=[], loose=[], rest=[]))
+        jets_JESDown = JetCutsPerSystematic(lowest=JetBSplit(medium=[], loose=[], rest=[]),
+                                              cuts=JetBSplit(medium=[], loose=[], rest=[]), 
+                                               old=JetBSplit(medium=[], loose=[], rest=[]))
+        jets_bUp     = JetCutsPerSystematic(lowest=JetBSplit(medium=[], loose=[], rest=[]),
+                                              cuts=JetBSplit(medium=[], loose=[], rest=[]), 
+                                               old=JetBSplit(medium=[], loose=[], rest=[]))
+        jets_bDown   = JetCutsPerSystematic(lowest=JetBSplit(medium=[], loose=[], rest=[]),
+                                              cuts=JetBSplit(medium=[], loose=[], rest=[]), 
+                                               old=JetBSplit(medium=[], loose=[], rest=[]))
+        # maybe it's worthwhile to make a custom object with propper defaults and fancy initialization without code
 
-        bjetsL_nom     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        bjetsL_JERUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        bjetsL_JERDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        bjetsL_JESUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        bjetsL_JESDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        bjetsL_bUp     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        bjetsL_bDown   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsL_nom     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsL_JERUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsL_JERDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsL_JESUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsL_JESDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsL_bUp     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsL_bDown   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsM_nom     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsM_JERUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsM_JERDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsM_JESUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsM_JESDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsM_bUp     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
+        #bjetsM_bDown   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
 
-        bjetsM_nom     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        bjetsM_JERUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        bjetsM_JERDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        bjetsM_JESUp   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        bjetsM_JESDown = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        bjetsM_bUp     = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
-        bjetsM_bDown   = JetCutsPerSystematic(lowest=[], cuts=[], old=[])
         # I forgot about the needed b-jet splitting (for lj and easy 1M, 2L1M selections)
         # and it got out of hand
         # I don't want to use dict-s of strings for performance sake
@@ -2058,16 +2087,23 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         #tausL_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
         # of lowest cuts? -- no, of the same as in the selection
         #                 -- and this again messes up the code.......
-        taus_nom_TLorentz    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
+
+        taus_nom_TLorentz    = TauCutsPerSystematic(lowest=[], cuts=[], old=[], presel=[]) # presel won't be needed
+	# presel should also be cleaned of the tau -- of the one I do SS with
+	# in fact the cross-cleaning should be done only from the used tau
+	# I can sort the taus by pt and use the first one
+
         # just lists of tlorentz vectors
         # in lowest and cuts we use tight tau
-        for tau_p4, _ in tausT_nom.lowest:
+	# -- using only the first tau in the list -- the target one!
+        for tau_p4, _ in taus_nom.lowest[:1]:
             taus_nom_TLorentz.lowest.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
-        for tau_p4, _ in tausT_nom.cuts:
+        for tau_p4, _ in taus_nom.cuts[:1]:
             taus_nom_TLorentz.cuts.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         # in old we use medium tau
-        for tau_p4, _ in tausM_nom.old:
+        for tau_p4, _ in taus_nom.old[:1]:
             taus_nom_TLorentz.old.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
+        # in principle I should also change TES -- but this effect is very second order
 
         for i in xrange(ev.jet_p4.size()):
             pfid, p4 = ev.jet_PFID[i], ev.jet_p4[i]
@@ -2165,61 +2201,46 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     # jet is p4, jet energy factor (which is 1 for nominal), b SF factor and bID lev
                     # nominals
                     if b_tagged_loose:
-                        bjetsL_nom.lowest.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                        jets_nom.lowest.loose.append((p4, 1., jet_weight_bSF_nom, bID_lev))
                         if with_bSF_sys:
-                            bjetsL_bUp  .lowest.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                            bjetsL_bDown.lowest.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                            jets_bUp  .lowest.loose.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                            jets_bDown.lowest.loose.append((p4, 1., jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up > 20.:   bjetsL_JERUp  .lowest.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
-                            if jet_pt_jer_down > 20.: bjetsL_JERDown.lowest.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.loose.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.loose.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > 20.: bjetsL_JESUp  .lowest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
-                            if jet_pt_jes_down > 20.: bjetsL_JESDown.lowest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.loose.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.loose.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
 
                         if b_tagged_medium:
-                            bjetsM_nom.lowest.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            jets_nom.lowest.medium.append((p4, 1., jet_weight_bSF_nom, bID_lev))
                             if with_bSF_sys:
-                                bjetsM_bUp  .lowest.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                bjetsM_bDown.lowest.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                jets_bUp  .lowest.medium.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.lowest.medium.append((p4, 1., jet_weight_bSFDown, bID_lev))
 
                             if with_JER_sys:
-                                if jet_pt_jer_up   > 20.: bjetsM_JERUp  .lowest.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
-                                if jet_pt_jer_down > 20.: bjetsM_JERDown.lowest.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.medium.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jer_down > 20.: jets_JERDown.lowest.medium.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
 
                             if with_JES_sys:
-                                if jet_pt_jes_up   > 20.: bjetsM_JESUp  .lowest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
-                                if jet_pt_jes_down > 20.: bjetsM_JESDown.lowest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.medium.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jes_down > 20.: jets_JESDown.lowest.medium.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
 
                     else:
-                        jets_nom.lowest.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                        jets_nom.lowest.rest.append((p4, 1., jet_weight_bSF_nom, bID_lev))
                         if with_bSF_sys:
-                            jets_bUp  .lowest.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                            jets_bDown.lowest.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                            jets_bUp  .lowest.rest.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                            jets_bDown.lowest.rest.append((p4, 1., jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
-                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.rest.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.rest.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
-                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
-
-                    if pt_up > 20.:
-                        if b_tagged_loose:
-                            bjetsL_JESUp  .lowest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
-                            if b_tagged_medium:
-                                bjetsM_JESUp  .lowest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
-                        else:
-                            jets_JESUp  .lowest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
-                    if pt_down > 20.:
-                        if b_tagged_loose:
-                            bjetsL_JESDown.lowest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
-                            if b_tagged_medium:
-                                bjetsM_JESDown.lowest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
-                        else:
-                            jets_JESDown.lowest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.rest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.rest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
 
 
                 if not tau_match_cuts:
@@ -2228,48 +2249,48 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     # nominals
                     if b_tagged_loose:
                         if jet_pt > pt_cut:
-                            bjetsL_nom.cuts.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            jets_nom.cuts.loose.append((p4, 1., jet_weight_bSF_nom, bID_lev))
                             if with_bSF_sys:
-                                bjetsL_bUp  .cuts.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                bjetsL_bDown.cuts.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                jets_bUp  .cuts.loose.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.cuts.loose.append((p4, 1., jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: bjetsL_JERUp  .cuts.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
-                            if jet_pt_jer_down > pt_cut: bjetsL_JERDown.cuts.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.loose.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.loose.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: bjetsL_JESUp  .cuts.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
-                            if jet_pt_jes_down > pt_cut: bjetsL_JESDown.cuts.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.loose.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.loose.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
 
                         if b_tagged_medium:
                             if jet_pt > pt_cut:
-                                bjetsM_nom.cuts.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                                jets_nom.cuts.medium.append((p4, 1., jet_weight_bSF_nom, bID_lev))
                                 if with_bSF_sys:
-                                    bjetsM_bUp  .cuts.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                    bjetsM_bDown.cuts.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                    jets_bUp  .cuts.medium.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                    jets_bDown.cuts.medium.append((p4, 1., jet_weight_bSFDown, bID_lev))
 
                             if with_JER_sys:
-                                if jet_pt_jer_up   > pt_cut: bjetsM_JERUp  .cuts.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
-                                if jet_pt_jer_down > pt_cut: bjetsM_JERDown.cuts.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.medium.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.medium.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
 
                             if with_JES_sys:
-                                if jet_pt_jes_up   > pt_cut: bjetsM_JESUp  .cuts.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
-                                if jet_pt_jes_down > pt_cut: bjetsM_JESDown.cuts.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.medium.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.medium.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
 
                     else:
                         if jet_pt > pt_cut:
-                            jets_nom.cuts.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            jets_nom.cuts.rest.append((p4, 1., jet_weight_bSF_nom, bID_lev))
                             if with_bSF_sys:
-                                jets_bUp  .cuts.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                jets_bDown.cuts.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                jets_bUp  .cuts.rest.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.cuts.rest.append((p4, 1., jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
-                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.rest.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.rest.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
-                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.rest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.rest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
 
 
                 if not tau_match_old:
@@ -2278,49 +2299,48 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     # nominals
                     if b_tagged_loose:
                         if jet_pt > pt_cut:
-                            bjetsL_nom.cuts.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            jets_nom.old.loose.append((p4, 1., jet_weight_bSF_nom, bID_lev))
                             if with_bSF_sys:
-                                bjetsL_bUp  .cuts.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                bjetsL_bDown.cuts.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                jets_bUp  .old.loose.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.old.loose.append((p4, 1., jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: bjetsL_JERUp  .cuts.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
-                            if jet_pt_jer_down > pt_cut: bjetsL_JERDown.cuts.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.loose.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.old.loose.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: bjetsL_JESUp  .cuts.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
-                            if jet_pt_jes_down > pt_cut: bjetsL_JESDown.cuts.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.loose.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.old.loose.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
 
                         if b_tagged_medium:
                             if jet_pt > pt_cut:
-                                bjetsM_nom.cuts.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                                jets_nom.old.medium.append((p4, 1., jet_weight_bSF_nom, bID_lev))
                                 if with_bSF_sys:
-                                    bjetsM_bUp  .cuts.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                    bjetsM_bDown.cuts.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                    jets_bUp  .old.medium.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                    jets_bDown.old.medium.append((p4, 1., jet_weight_bSFDown, bID_lev))
 
                             if with_JER_sys:
-                                if jet_pt_jer_up   > pt_cut: bjetsM_JERUp  .cuts.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
-                                if jet_pt_jer_down > pt_cut: bjetsM_JERDown.cuts.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.medium.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jer_down > pt_cut: jets_JERDown.old.medium.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
 
                             if with_JES_sys:
-                                if jet_pt_jes_up   > pt_cut: bjetsM_JESUp  .cuts.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
-                                if jet_pt_jes_down > pt_cut: bjetsM_JESDown.cuts.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.medium.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                                if jet_pt_jes_down > pt_cut: jets_JESDown.old.medium.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
 
                     else:
                         if jet_pt > pt_cut:
-                            jets_nom.cuts.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            jets_nom.old.rest.append((p4, 1., jet_weight_bSF_nom, bID_lev))
                             if with_bSF_sys:
-                                jets_bUp  .cuts.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                jets_bDown.cuts.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                jets_bUp  .old.rest.append((p4, 1., jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.old.rest.append((p4, 1., jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
-                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.rest.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.old.rest.append((p4, jet_factor_JERDown, jet_weight_bSF_nom, bID_lev))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
-                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
-
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.rest.append((p4, jet_factor_JESUp,   jet_weight_bSF_nom, bID_lev))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.old.rest.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
 
 
 
@@ -2470,6 +2490,39 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 elif IDlev < 1:
                     jets_old_cuts.append(p4)
         """
+
+        # sort jets by pt
+        # mainly to record various "leading blah jet"
+	# TODO: not sure if it is worthwhile -- shouldn't all this be already sorted in ntupler?
+
+        jets_nom .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+        jets_nom   .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+        jets_nom    .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+
+        if isMC:
+            if with_bSF_sys:
+                jets_bUp   .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_bUp     .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_bUp      .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_bDown .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_bDown   .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_bDown    .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+
+            if with_JER_sys:
+                jets_JERUp   .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_JERUp     .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_JERUp      .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_JERDown .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_JERDown   .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_JERDown    .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+
+            if with_JES_sys:
+                jets_JESUp   .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_JESUp     .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_JESUp      .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_JESDown .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_JESDown   .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_JESDown    .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
 
         #has_medium_tau = any(IDlev > 2 and p4.pt() > 30 for IDlev, p4 in zip(ev.tau_IDlev, ev.tau_p4))
         #has_medium_tau = ev.tau_IDlev.size() > 0 and ev.tau_IDlev[0] > 2 and ev.tau_p4[0].pt() > 30
