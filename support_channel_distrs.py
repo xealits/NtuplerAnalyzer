@@ -739,7 +739,7 @@ def PFTau_FlightLength_significance(pv,  PVcov, sv, SVcov):
 
 
 # no data types/protocols in ROOT -- looping has to be done manually
-def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
+def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     '''full_loop(tree, dtag)
 
     TTree tree
@@ -1460,8 +1460,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     '''
 
     logger.write("N entries: %d\n" % tree.GetEntries())
-    if not range_max or range_max > tree.GetEntries():
-        range_mas = tree.GetEntries()
+    #if not range_max or range_max > tree.GetEntries():
+        #range_mas = tree.GetEntries()
 
     profile = cProfile.Profile()
     profile.enable()
@@ -1482,8 +1482,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 record distr-s for each
         '''
 
-        if iev <  range_min: continue
-        if iev >= range_max: break
+        #if iev <  range_min: continue
+        #if iev >= range_max: break
         #ev = tree.GetEntry(iev)
 
         # the lepton requirements for all 1-lepton channels:
@@ -3245,7 +3245,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
 
 #def main(input_dir, dtag, outdir, range_min, range_max):
-def main(input_filename, outdir, range_min, range_max, lumi_bcdef=20263.3, lumi_gh=16518.588):
+def main(input_filename, fout_name, outdir, lumi_bcdef=20263.3, lumi_gh=16518.588):
     '''main(input_filename, outdir, range_min, range_max, lumi_bcdef=20263.3, lumi_gh=16518.588)
 
     lumi defaults are from _full_ golden json for muon
@@ -3253,11 +3253,19 @@ def main(input_filename, outdir, range_min, range_max, lumi_bcdef=20263.3, lumi_
     '''
 
 
-    f = TFile(input_filename)
-    tree = f.Get('ntupler/reduced_ttree')
+    input_tfile = TFile(input_filename)
+    tree = input_tfile.Get('ntupler/reduced_ttree')
+
+    """
     if not range_max: range_max = tree.GetEntries()
 
     fout_name = input_filename.split('/')[-1].split('.root')[0] + "_%d-%d.root" % (range_min, range_max)
+
+    if isfile(outdir + '/' + fout_name):
+        print "output file exists: %s" % (outdir + '/' + fout_name)
+        return None
+    """
+
     logger_file = outdir + '/logs/' + fout_name.split('.root')[0] + '.log'
 
     # this dir should be made at spawning the threads
@@ -3298,19 +3306,19 @@ def main(input_filename, outdir, range_min, range_max, lumi_bcdef=20263.3, lumi_
 
     logger.write("N entries = %s\n" % tree.GetEntries())
 
-    logger.write("range = %d, %d\n" % (range_min, range_max))
+    #logger.write("range = %d, %d\n" % (range_min, range_max))
 
     logger.write("lumi BCDEF GH = %f %f\n" % (lumi_bcdef, lumi_gh))
-    out_hs, c_hs, perf_profile = full_loop(tree, input_filename, lumi_bcdef, lumi_gh, range_min, range_max, logger)
+    out_hs, c_hs, perf_profile = full_loop(tree, input_filename, lumi_bcdef, lumi_gh, logger)
 
     perf_profile.dump_stats(logger_file.split('.log')[0] + '.cprof')
 
-    events_counter = f.Get('ntupler/events_counter')
-    weight_counter = f.Get('ntupler/weight_counter')
+    events_counter = input_tfile.Get('ntupler/events_counter')
+    weight_counter = input_tfile.Get('ntupler/weight_counter')
     events_counter.SetDirectory(0)
     weight_counter.SetDirectory(0)
 
-    f.Close()
+    input_tfile.Close()
 
     for name, h in c_hs.items():
         try:

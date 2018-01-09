@@ -1,5 +1,6 @@
 from sys import argv
 import os
+from os.path import isfile
 import logging
 import threading
 
@@ -22,8 +23,8 @@ if __name__ == '__main__':
     #parser.add_argument("dtag",      help="basically it's the filename with the TTree from jobs")
     parser.add_argument("outdir",    help="where to store the output")
     parser.add_argument("-l", "--log-file",  type=str, default='', help="if given the log of the process will go to this file under outdir/log/<log_file>")
-    parser.add_argument("-s", "--range-min", type=int, default=0,    help="number of event to start processing from")
-    parser.add_argument("-e", "--range-max",   type=int, default=None, help="number of event to end processing")
+    #parser.add_argument("-s", "--range-min", type=int, default=0,    help="number of event to start processing from")
+    #parser.add_argument("-e", "--range-max",   type=int, default=None, help="number of event to end processing")
     parser.add_argument("-i", "--input-files", nargs='+', help='files to process (each is run in a thread)')
 
     args = parser.parse_args()
@@ -48,12 +49,24 @@ if __name__ == '__main__':
 
     log_common.info('running threads on %d files' % len(args.input_files))
 
-    from support_channel_distrs import main # ROOT stuff is loaded here
 
-    for input_file in args.input_files:
+    for input_filename in args.input_files:
         #main(args.input_file, args.outdir, args.range_min, args.range_max)
-        t = threading.Thread(target=main, args=(input_file, args.outdir, args.range_min, args.range_max))
+
+        # check if output file already exists to not import ROOT
+        #input_tfile = TFile(input_filename)
+        #tree = input_tfile.Get('ntupler/reduced_ttree')
+        #if not range_max: range_max = tree.GetEntries()
+
+        fout_name = input_filename.split('/')[-1].split('.root')[0] + ".root" # no ranges anymore
+
+        if isfile(args.outdir + '/' + fout_name):
+            print "output file exists: %s" % (args.outdir + '/' + fout_name)
+            continue
+
+        from support_channel_distrs import main # ROOT stuff is loaded here
+        t = threading.Thread(target=main, args=(input_filename, fout_name, args.outdir))
         t.start()
-        log_common.info('started thread on %s' % input_file)
+        log_common.info('started thread on %s' % input_filename)
 
 
