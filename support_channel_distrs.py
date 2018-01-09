@@ -1239,7 +1239,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
     #channels = channels_mu_only
     #channels = channels_usual
     #channels, with_bSF = channels_mutau_optimization_scan, False
-    channels, with_bSF = channels_optimized, isMC and True
+    channels = channels_optimized
 
     with_JER   = isMC and True
     with_JES   = isMC and True
@@ -1804,8 +1804,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         '''
         #tlep_p4 = TLorentzVector(ev.lep_p4[0].X(), ev.lep_p4[0].Y(), ev.lep_p4[0].Z(), ev.lep_p4[0].T())
         #if ev.tau_p4.size() > 0 and ev.tau_IDlev[0] > 1 and abs(ev.tau_p4[0].eta()) < 2.4:
-        for tau_p4, tau_ID, tau_DM, tau_pdgID in zip(ev.tau_p4, ev.tau_IDlev, ev.tau_decayMode, ev.tau_id):
-            if abs(tau_p4.eta()) > 2.4: continue
+        for p4, tau_ID, tau_DM, tau_pdgID in zip(ev.tau_p4, ev.tau_IDlev, ev.tau_decayMode, ev.tau_id):
+            if abs(p4.eta()) > 2.4: continue
             # it should work like Python does and not copy these objects! (cast)
             #p4, DM, IDlev = ev.tau_p4[0], ev.tau_decayMode[0], ev.tau_IDlev[0]
             #if IDlev < 3 or abs(p4.eta()) < 2.4: continue # only Medium taus
@@ -1816,7 +1816,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             #if not tlep_p4.DeltaR(ttau_p4) > 0.3:
             #    continue
 
-            tau_pt = tau_p4.pt()
+            tau_pt = p4.pt()
             TES_factor = 1. # this factor exists for nominal taus
 
             pt_cut_cuts = 22.
@@ -1947,21 +1947,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
 
         # sort by pt
-        taus_nom    .lowest.sort(key=lambda p4, f, _: f*p4.pt(), reverse=True)
-        taus_nom    .cuts  .sort(key=lambda p4, f, _: f*p4.pt(), reverse=True)
-        taus_nom    .old   .sort(key=lambda p4, f, _: f*p4.pt(), reverse=True)
-        taus_nom    .presel.sort(key=lambda p4, f, _: f*p4.pt(), reverse=True)
+        taus_nom    .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        taus_nom    .cuts  .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        taus_nom    .old   .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        taus_nom    .presel.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
 
         # TES
         if isMC and with_TauES_sys:
-            taus_ESUp   .lowest.sort(key=lambda p4, f, _: f*p4.pt(), reverse=True)
-            taus_ESDown .lowest.sort(key=lambda p4, f, _: f*p4.pt(), reverse=True)
-            taus_ESUp   .cuts  .sort(key=lambda p4, f, _: f*p4.pt(), reverse=True)
-            taus_ESDown .cuts  .sort(key=lambda p4, f, _: f*p4.pt(), reverse=True)
-            taus_ESUp   .old   .sort(key=lambda p4, f, _: f*p4.pt(), reverse=True)
-            taus_ESDown .old   .sort(key=lambda p4, f, _: f*p4.pt(), reverse=True)
-            taus_ESUp   .presel.sort(key=lambda p4, f, _: f*p4.pt(), reverse=True)
-            taus_ESDown .presel.sort(key=lambda p4, f, _: f*p4.pt(), reverse=True)
+            taus_ESUp   .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+            taus_ESDown .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+            taus_ESUp   .cuts  .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+            taus_ESDown .cuts  .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+            taus_ESUp   .old   .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+            taus_ESDown .old   .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+            taus_ESUp   .presel.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+            taus_ESDown .presel.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
 
         #has_medium_tau = any(IDlev > 2 and p4.pt() > 30 for IDlev, p4 in zip(ev.tau_IDlev, ev.tau_p4))
         #has_medium_tau = ev.tau_IDlev.size() > 0 and ev.tau_IDlev[0] > 2 and ev.tau_p4[0].pt() > 30
@@ -2103,12 +2103,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # just lists of tlorentz vectors
         # in lowest and cuts we use tight tau
         # -- using only the first tau in the list -- the target one!
-        for tau_p4, _ in taus_nom.lowest[:1]:
+        for tau_p4, _, _ in taus_nom.lowest[:1]:
             taus_nom_TLorentz.lowest.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
-        for tau_p4, _ in taus_nom.cuts[:1]:
+        for tau_p4, _, _ in taus_nom.cuts[:1]:
             taus_nom_TLorentz.cuts.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         # in old we use medium tau
-        for tau_p4, _ in taus_nom.old[:1]:
+        for tau_p4, _, _ in taus_nom.old[:1]:
             taus_nom_TLorentz.old.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         # in principle I should also change TES -- but this effect is very second order
 
@@ -2117,7 +2117,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
             if pfid < 1 or abs(p4.eta()) > 2.5: continue # Loose PFID and eta
 
             jet_b_discr = ev.jet_b_discr[i]
-            all_jets_b_discrs.append(jet_b_discr)
+            #all_jets_b_discrs.append(jet_b_discr)
 
             jet_pt  = p4.pt()
             jet_eta = p4.eta()
@@ -2502,34 +2502,58 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
         # mainly to record various "leading blah jet"
         # TODO: not sure if it is worthwhile -- shouldn't all this be already sorted in ntupler?
 
-        jets_nom .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-        jets_nom   .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-        jets_nom    .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+        """ trying without sort
+        jets_nom .lowest.rest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        jets_nom   .cuts.rest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        jets_nom    .old.rest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+
+        jets_nom .lowest.loose.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        jets_nom   .cuts.loose.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        jets_nom    .old.loose.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+
+        jets_nom .lowest.medium.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        jets_nom   .cuts.medium.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        jets_nom    .old.medium.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
 
         if isMC:
             if with_bSF_sys:
-                jets_bUp   .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_bUp     .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_bUp      .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_bDown .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_bDown   .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_bDown    .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_bUp   .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bUp     .cuts.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bUp      .old.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bDown .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bDown   .cuts.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bDown    .old.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+
+                jets_bUp   .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bUp     .cuts.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bUp      .old.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bDown .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bDown   .cuts.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bDown    .old.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+
+                jets_bUp   .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bUp     .cuts.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bUp      .old.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bDown .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bDown   .cuts.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_bDown    .old.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
 
             if with_JER_sys:
-                jets_JERUp   .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_JERUp     .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_JERUp      .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_JERDown .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_JERDown   .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_JERDown    .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_JERUp   .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_JERUp     .cuts.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_JERUp      .old.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_JERDown .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_JERDown   .cuts.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_JERDown    .old.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
 
             if with_JES_sys:
-                jets_JESUp   .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_JESUp     .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_JESUp      .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_JESDown .lowest.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_JESDown   .cuts.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
-                jets_JESDown    .old.sort(key=lambda p4, f, _, _: f*p4.pt(), reverse=True)
+                jets_JESUp   .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_JESUp     .cuts.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_JESUp      .old.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_JESDown .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_JESDown   .cuts.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+                jets_JESDown    .old.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        """ # trying without sort
 
         #has_medium_tau = any(IDlev > 2 and p4.pt() > 30 for IDlev, p4 in zip(ev.tau_IDlev, ev.tau_p4))
         #has_medium_tau = ev.tau_IDlev.size() > 0 and ev.tau_IDlev[0] > 2 and ev.tau_p4[0].pt() > 30
@@ -2701,7 +2725,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                         else:
                             passed_channels.append(('optel_tight_2L1M_lj_ss', sel_b_weight, sel_jets, sel_taus))
 
-            if pass_el_all and has_lowest_2L1M and len(taus.presel) > 0::
+            if pass_el_all and has_lowest_2L1M and len(taus.presel) > 0:
                 # for all iso don't add passed channel
                 # just save the relIso and ?
                 # -- whatever.. just save everything too
@@ -2832,15 +2856,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
 
             #if pass_mu and nbjets == 0 and (Mt_lep_met > 50 or met_pt > 40): # skipped lep+tau mass -- hopefuly DY will be small (-- it became larger than tt)
             #    passed_channels.append('ctr_mu_wjet')
-            if pass_mu_all and len(jets.lowest.medium) == 0 and (Mt_lep_met > 50 or met_pt > 40):
-                lowest_os = taus.lowest[0][2] * ev.lep_id[0] < 0
+            if pass_mu_all and len(jets.lowest.medium) == 0 and (Mt_lep_met > 50 or met_pt > 40) and taus.presel:
+                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
 	        sel_b_weight = weight_bSF_lowest
-                if lowest_os:
+                if presel_os:
                     passed_channels.append(('ctr_alliso_mu_wjet', sel_b_weight, jets.lowest, taus.presel))
                 else:
-                    passed_channels.append(('ctr_alliso_mu_wjet_ss'. sel_b_weight, jets.lowest, taus.presel))
+                    passed_channels.append(('ctr_alliso_mu_wjet_ss', sel_b_weight, jets.lowest, taus.presel))
                 if pass_mu:
-                    if lowest_os:
+                    if presel_os:
                         passed_channels.append(('ctr_mu_wjet', sel_b_weight, jets.lowest, taus.presel))
                     else:
                         passed_channels.append(('ctr_mu_wjet_ss', sel_b_weight, jets.lowest, taus.presel))
@@ -3071,13 +3095,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                 #if len(ev.tau_p4) > 0:
                     #lep_tau = ev.lep_p4[0] + taus[0][0] # done above
                     #out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), record_weight)
-                    tau_pt  = sel_taus[0][0].pt() * sel_taus[0][1] # taus[0][0].pt() * taus[0][1]
-                    tau_eta = sel_taus[0][0].eta()             # taus[0][0].eta()
-                    tau_energy = sel_taus[0][0].energy() * sel_taus[0][1] # taus[0][0].energy() * taus[0][1]
+                    corrected_tau = sel_taus[0][0] * sel_taus[0][1]
+
+                    tau_pt     = corrected_tau.pt()
+                    tau_eta    = corrected_tau.eta()
+                    tau_energy = corrected_tau.energy()
 
                     # TODO: not fully corrected met
-                    Mt_tau_met = transverse_mass(sel_taus[0][0], ev.met_corrected)
-                    lep_tau = ev.lep_p4[0] + sel_taus[0][0] * sel_taus[0][0]
+                    Mt_tau_met = transverse_mass(corrected_tau, ev.met_corrected)
+                    lep_tau = ev.lep_p4[0] + corrected_tau
                     lep_tau_mass = lep_tau.mass()
 
                     # testing dependency of Mt shape on tau pt (has to be none)
@@ -3097,8 +3123,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, range_min, range_max, logger):
                     out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
                     out_hs[(chan, proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
 
-                    out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(sel_taus[0].pt() * sel_taus[1],  record_weight)
-                    out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(sel_taus[0].eta(), record_weight)
+                    out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(corrected_tau.pt(),  record_weight)
+                    out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(corrected_tau.eta(), record_weight)
 
                     # don't do these in OPTIMIZATION
                     ##out_hs[(chan, proc, sys_name)]['tau_pat_Sign']  .Fill(zero_tau_pat_Sign,  record_weight)
