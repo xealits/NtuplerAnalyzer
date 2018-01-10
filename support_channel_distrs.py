@@ -457,7 +457,7 @@ yup:
 '''
 
 
-with_bSF = True
+with_bSF = False
 
 if with_bSF:
     logging.info("loading b-tagging SF stuff")

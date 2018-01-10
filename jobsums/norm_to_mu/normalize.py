@@ -237,7 +237,7 @@ for fname in files:
     # norm to lumi mu+tau
     scale = lumi
 
-    #logging.info("%s %f" % (fname, scale))
+    logging.info("%s %f" % (fname, scale))
 
     for proc in list(f.GetListOfKeys()):
         process = proc.GetName()
@@ -262,6 +262,11 @@ for fname in files:
 
             for sys in list(chan.ReadObj().GetListOfKeys()):
                 sys_name = sys.GetName()
+
+                #if 'alliso' in process and sys_name != 'NOMINAL':
+                if sys_name != 'NOMINAL':
+                    continue # it takes forever
+
                 # there is this 3% of error in PU right now.. correcting ad-hoc, TODO: re-proc jobs with new PU (frist get the new PU, then re-proc.. and add PU-effect-meter distr and other meters on Mt)
 
                 #cor = 0.965 if 'mu_' in process else 1. # muons and electrons are a bit different eras........

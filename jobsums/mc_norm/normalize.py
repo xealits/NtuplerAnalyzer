@@ -210,7 +210,7 @@ for fname in files:
     event_weight = weight_counter.GetBinContent(2)
     scale = xsecs[fname] / event_weight
 
-    #logging.info("%s %f %f" % (fname, scale, xsecs[fname]))
+    logging.info("%s %f %f" % (fname, scale, xsecs[fname]))
 
     for proc in list(f.GetListOfKeys()):
         process = proc.GetName()
@@ -223,6 +223,11 @@ for fname in files:
             nick = chan.GetName()
             for sys in list(chan.ReadObj().GetListOfKeys()):
                 sys_name = sys.GetName()
+
+                #if 'alliso' in process and sys_name != 'NOMINAL':
+                if sys_name != 'NOMINAL':
+                    continue # it takes forever
+
                 for histo_key in list(sys.ReadObj().GetListOfKeys()):
                     h = histo_key.ReadObj()
                     integral_init = h.Integral()

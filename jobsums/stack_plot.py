@@ -26,6 +26,7 @@ parser.add_argument("-o", "--output-directory", type=str, default='', help="opti
 parser.add_argument("--y-max", type=float, help="set the maximum on Y axis")
 
 parser.add_argument("--qcd",   type=float, default=0., help="get QCD from corresponding _ss channel and transfer it with the given factor (try --qcd 1)")
+parser.add_argument("--osss",  action='store_true', help="plot the ratio in OS/SS of data-other bkcg")
 
 parser.add_argument("--fake-rate", action='store_true', help='(ad-hocish) the fake rate in MC and data, i.e. ratio of whatever two distributions given as "nominator/denominator"')
 
@@ -101,7 +102,7 @@ fdata = TFile(args.data_file)
 
 # TODO: remove ad-hoc of PU tests
 # Mt_lep_met_f_w_mu_trk_b
-#histos_data_distrs = [(distr_name, )
+#histos_data_distrs = [(distr_name, [(histo, 'data', channel)]]
 histos_data_distrs    = []
 histos_data_distrs_ss = []
 for distr_name in distr_names:
@@ -110,14 +111,14 @@ for distr_name in distr_names:
         data_distr_name = 'Mt_lep_met_f'
     data_distr_name.replace('_w_pu_sum', '_w_pu').replace('_w_pu_b', '_w_pu').replace('_w_pu_h2', '_w_pu').replace('_pu_h2', '').replace('_pu_b', '').replace('_pu_sum', '')
     histos_data_distrs.append((data_distr_name, [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
-    if args.qcd > 0.:
+    if args.qcd > 0. or args.osss:
         histos_data_distrs_ss.append((data_distr_name, [(fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
 
 if args.cumulative:
-    histos_data_per_distr = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs]
+    histos_data_per_distr    = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs]
     histos_data_per_distr_ss = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs_ss]
 else:
-    histos_data_per_distr = histos_data_distrs
+    histos_data_per_distr    = histos_data_distrs
     histos_data_per_distr_ss = histos_data_distrs_ss
 
 logging.info("# data histograms = %d" % len(histos_data_per_distr))
@@ -195,18 +196,19 @@ used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_na
 
 # for ss channels I need data - MC sum
 # and I substitute QCD with this difference everywhere
-if args.qcd > 0.:
+hs_sums2_ss = [] # these will be sums of no-QCD MC in SS region
+
+if args.qcd > 0. or args.osss:
     # get all the same distributions for _ss channel
     used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, sys_name, distr_name)) for distr_name in distr_names]
 
-    hs_sums2_ss = []
     for distr, histos in used_histos_per_distr_ss:
         # loop through normal list
         hs_sum2 = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
         hs_sum2.SetName('mc_sum2_ss')
 
         for h, nick, channel in histos[1:]: # I sum different channels?... the old hacked not fixed yet
-            if nick == 'qcd': continue # don't include QCD MC
+            if nick == 'qcd': continue # don't include QCD MC -- its sum of no-QCD MC
             hs_sum2.Add(h)
 
         hs_sum2.SetFillStyle(3004);
@@ -216,8 +218,8 @@ if args.qcd > 0.:
 
         # TODO: it turns messy, need to fix the channels
         hs_sums2_ss.append((distr, [(hs_sum2, "mc_sum", channel)]))
-    hs_sum2_ss = hs_sums2_ss[0]
 
+if args.qcd > 0.:
     # find difference and substitute QCD
     # histos_data_per_distr_ss = (distr, hists = [(histo, nick=data, channel)...])
     # I need the same structure for the sums
@@ -234,19 +236,28 @@ if args.qcd > 0.:
 
 hs_sums2 = []
 
+hs_sums_noqcd = []
+
 for distr, histos in used_histos_per_distr:
     # loop through normal list
     hs_sum2 = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
     hs_sum2.SetName('mc_sum2')
     hs_sum2.Reset()
 
+    hs_sum_noqcd = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
+    hs_sum_noqcd.SetName('mc_sum_noqcd')
+    hs_sum_noqcd.Reset()
+
     for i, (h, nick, channel) in enumerate(histos[0:]):
+        # substitute QCD
         if args.qcd > 0. and nick == 'qcd':
             # then take the qcd from the differences in ss region
             h = qcd_hists[(distr, channel + '_ss')]
             # and substitute it in the list (if it won't brak everything)
             histos[i] = (h, nick, channel) # h is new here!
         hs_sum2.Add(h)
+        if nick != 'qcd':
+            hs_sum_noqcd.Add(h)
 
     hs_sum2.SetFillStyle(3004);
     hs_sum2.SetFillColor(1);
@@ -254,7 +265,13 @@ for distr, histos in used_histos_per_distr:
     hs_sum2.SetMarkerColor(0)
 
     hs_sums2.append(hs_sum2)
+    hs_sums_noqcd.append(hs_sum_noqcd)
+
 hs_sum2 = hs_sums2[0]
+hs_sum_noqcd    = hs_sums_noqcd[0]
+#hs_sum_noqcd_ss = hs_sums2_ss[0]
+#hs_sums2_ss.append((distr, [(hs_sum2, "mc_sum", channel)]))
+hs_sum_noqcd_ss = hs_sums2_ss[0][1][0][0]
 
 
 # normalize MC processes and data to MC sum bin-by-bin
@@ -429,6 +446,34 @@ elif args.form_shapes:
         leg.Draw("same")
 
     cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes_%d-channels_%s-processes.png' % (len(channels), '-'.join(processes_requirement)))
+
+elif args.osss:
+    from ROOT import gStyle, gROOT, TCanvas, TPad
+    gROOT.SetBatch()
+    gStyle.SetOptStat(0)
+    cst = TCanvas("cst","stacked hists",10,10,700,700)
+
+    # the no-qcd MC sum is in
+    # hs_sum_noqcd and hs_sum_noqcd_ss
+    # the data is in
+    # histos_data_per_distr and histos_data_per_distr_ss
+    #histos_data_distrs = [(distr_name, [(histo, 'data', channel)]]
+
+    histo_diff_os = histos_data_per_distr   [0][1][0][0] - hs_sum_noqcd
+    histo_diff_ss = histos_data_per_distr_ss[0][1][0][0] - hs_sum_noqcd_ss
+
+    histo_diff_os.Divide(histo_diff_ss)
+
+    pad1 = TPad("pad1","This is pad1", 0., 0.,  1., 1.)
+    pad1.Draw()
+
+    pad1.cd()
+    histo_diff_os.SetXTitle(args.distr_name)
+    histo_diff_os.SetYTitle("OS/SS")
+    histo_diff_os.SetTitle("%s %s" % (channel, sys_name))
+    histo_diff_os.Draw()
+
+    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_osss-factor.png')
 
 else:
     from ROOT import gStyle, gROOT, TCanvas, TPad
