@@ -28,6 +28,8 @@ parser.add_argument("--y-max", type=float, help="set the maximum on Y axis")
 parser.add_argument("--qcd",   type=float, default=0., help="get QCD from corresponding _ss channel and transfer it with the given factor (try --qcd 1)")
 parser.add_argument("--osss",  action='store_true', help="plot the ratio in OS/SS of data-other bkcg")
 
+parser.add_argument("--wjets", type=float, default=0., help="scale factor for wjets (from the control region)")
+
 parser.add_argument("--fake-rate", action='store_true', help='(ad-hocish) the fake rate in MC and data, i.e. ratio of whatever two distributions given as "nominator/denominator"')
 
 parser.add_argument("--cumulative", action='store_true', help="plot stack of cumulative distribution (from right)")
@@ -180,6 +182,10 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
            else:
                histo = h_init
 
+           # wjets normalization
+           if args.wjets > 0 and nick == 'wjets':
+               histo.Scale(args.wjets)
+
            #histo = histo_key.ReadObj()
            logging.info("%s   %s   %x = %f %f" % (histo_name, histo_name, histo_name == '_'.join([channel, nick, fixed_sys_name, distr_name]), histo.GetEntries(), histo.Integral()))
 
@@ -268,10 +274,11 @@ for distr, histos in used_histos_per_distr:
     hs_sums_noqcd.append(hs_sum_noqcd)
 
 hs_sum2 = hs_sums2[0]
-hs_sum_noqcd    = hs_sums_noqcd[0]
-#hs_sum_noqcd_ss = hs_sums2_ss[0]
-#hs_sums2_ss.append((distr, [(hs_sum2, "mc_sum", channel)]))
-hs_sum_noqcd_ss = hs_sums2_ss[0][1][0][0]
+if args.qcd > 0. or args.osss:
+    hs_sum_noqcd    = hs_sums_noqcd[0]
+    #hs_sum_noqcd_ss = hs_sums2_ss[0]
+    #hs_sums2_ss.append((distr, [(hs_sum2, "mc_sum", channel)]))
+    hs_sum_noqcd_ss = hs_sums2_ss[0][1][0][0]
 
 
 # normalize MC processes and data to MC sum bin-by-bin
