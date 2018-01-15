@@ -67,7 +67,7 @@ foreach d (`cat merge-sets/jobs_hadd.dtags.large_aa`)
 hadd merge-sets/v17/1/$d.root /lstore/cms/olek/outdirs/v17/1/$d/*.root &
 end
 
-foreach d (SingleMuon SingleElectron)
+foreach d (SingleMuon SingleElectron MC2016_Summer16_TTJets_powheg)
 hadd merge-sets/v17/1/$d.root /lstore/cms/olek/outdirs/v17/1/$d/*.root &
 end
 

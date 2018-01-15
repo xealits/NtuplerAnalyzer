@@ -15,6 +15,38 @@ processes_el = ['dy_tautau', 'dy_other',  'wjets',     's_top_eltau',   's_top_o
 #processes_el = set(['dy_tautau', 'dy_other',  'wjets',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau'])
 processes_el_id = {'dy_tautau':10, 'dy_other': 9,  'wjets': 8,     's_top_eltau': 7,   's_top_other': 6, 's_top_lj': 5,    'dibosons': 4, 'tt_taultauh': 3,  'tt_lj': 2,     'tt_other': 1,  'tt_eltau':0}
 
+"""
+\text{dy}\rightarrow{\tau\tau}
+\text{dy}\rightarrow{other}
+\text{wjets}
+\text{dibosons}
+\text{top}^{single}\rightarrow{other}
+\text{top}^{single}\rightarrow{\ell j}
+\text{top}^{single}\rightarrow{\mu\tau}
+t\bar{t}\rightarrow{other}
+t\bar{t}\rightarrow{\tau_{l}\tau_{h}}
+t\bar{t}\rightarrow{\ell j}
+t\bar{t}\rightarrow{\mu\tau}
+\text{mc}_{\text{sum}}
+\text{data}
+"""
+
+process_latex_strings = {'dy_tautau': '\\text{dy}\\rightarrow{\\tau_{l}\\tau_{h}}',
+    'dy_other':                       '\\text{dy}\\rightarrow{other}',
+    'wjets':                          '\\text{wjets}',
+    's_top_eltau':                    '\\text{top}^{single}\\rightarrow{e   \\tau}',
+    's_top_mutau':                    '\\text{top}^{single}\\rightarrow{\\mu\\tau}',
+    's_top_other':                    '\\text{top}^{single}\\rightarrow{other}',
+    's_top_lj':                       '\\text{top}^{single}\\rightarrow{\\ell j}',
+    'dibosons':                       '\\text{dibosons}',
+    'tt_taultauh':                    't\\bar{t}\\rightarrow{\\tau_{l}\\tau_{h}}',
+    'tt_lj':                          't\\bar{t}\\rightarrow{\\ell j}',
+    'tt_other':                       't\\bar{t}\\rightarrow{other}',
+    'tt_mutau':                       't\\bar{t}\\rightarrow{\\mu\\tau}',
+    'tt_eltau':                       't\\bar{t}\\rightarrow{e\\tau}',
+}
+
+
 
 import argparse
 
@@ -34,6 +66,8 @@ parser.add_argument("-v", "--verbose",  action = "store_true", help="log debug o
 #parser.add_argument("-y", "--event-yields", type=str, default='text', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-y", "--event-yields", action='store_true', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-r", "--ratios",       action='store_true', help="output ratios to data")
+
+parser.add_argument("--latex",       action='store_true', help="output in latex")
 
 
 args = parser.parse_args()
@@ -157,25 +191,29 @@ for channel in channels:
         print 'mc sum = %f' % sum(h.Integral() for h in histos)
 
 
+proc_s = '%40s'
+item_s = '%20'
+
 def string_yield(integral):
     if integral is None:
-        return '%17s' % ''
+        return (item_s + 's') % ''
     else:
         if args.ratios:
-            return '%17.3f' % integral
+            return (item_s + '.3f') % integral
         else:
-            return '%17.1f' % integral
+            return (item_s + '.1f') % integral
 
-separator = ' $ & $ ' if args.event_yields == 'latex' else ''
+separator = ' & ' if args.latex else ''
+line_end = ' \\\\' if args.latex else ''
 
 if args.event_yields:
-    print '%15s' % 'process' + separator.join(['%17s' % channel for channel in channels])
+    print proc_s % 'process' + separator + separator.join([(item_s + 's') % channel for channel in channels]) + line_end
     #for process, chan_d in proc_yields.items():
     mc_sums = {} # channel: sum of integrals
     for process in all_known_sorted_processes:
         if process in proc_yields:
             chan_d = proc_yields[process]
-            line = '%15s' % process
+            line = proc_s % (process_latex_strings[process] if args.latex else process)
             for channel in channels:
                 #
                 integral = chan_d.get(channel)
@@ -183,7 +221,7 @@ if args.event_yields:
                 if integral and args.ratios:
                     integral = integral / data_yield
                 line += separator + string_yield(integral)
-            print line
+            print line + line_end
             # also calc sum
             for channel in channels:
                 mc_sums.setdefault(channel, 0)
@@ -192,10 +230,10 @@ if args.event_yields:
             continue
 
     if args.ratios:
-        print '%15s' % 'mc_sum_ratio' + separator.join(['%17.3f' % (mc_sums[channel]/data_yields[channel]) for channel in channels])
+        print proc_s % 'mc_sum_ratio' + separator + separator.join([(item_s + '.3f') % (mc_sums[channel]/data_yields[channel]) for channel in channels]) + line_end
     else:
-        print '%15s' % 'mc_sum' + separator.join(['%17.1f' % mc_sums[channel] for channel in channels])
-    print '%15s' % 'data'   + separator.join(['%17.1f' % data_yields[channel] for channel in channels])
+        print proc_s % 'mc_sum' + separator + separator.join([(item_s + '.1f') % mc_sums[channel] for channel in channels]) + line_end
+    print proc_s % 'data' + separator + separator.join([(item_s + '.1f') % data_yields[channel] for channel in channels]) + line_end
 
 
 

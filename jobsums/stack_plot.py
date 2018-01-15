@@ -236,7 +236,7 @@ if args.qcd > 0.:
             qcd_hist.SetName("qcd")
             qcd_hist.Scale(args.qcd)
             qcd_hists[(distr, channel)] = qcd_hist
-            logging.debug('data qcd for (%s, %s)' % (distr, channel))
+            logging.debug('data qcd for (%s, %s) Integral = %f' % (distr, channel, qcd_hist.Integral()))
 
 
 
@@ -317,6 +317,7 @@ histos_data_sum = histos_data_sums_per_distr[0]
 
 if args.normalize:
     ratio = histos_data_sum.Integral() / hs_sum2.Integral()
+    hs_sum2.Scale(ratio)
     for name, histos in used_histos_per_distr:
         for h, nick, channel in histos:
             h.Scale(ratio)

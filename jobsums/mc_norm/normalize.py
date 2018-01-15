@@ -25,7 +25,8 @@ ttbar_xsec = 831.76;
 xsecs = {
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo": 18610,
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_": 18610,
-"MC2016_Summer16_DYJetsToLL_50toInf_madgraph": 5765.4, # but McM shows 4970
+#"MC2016_Summer16_DYJetsToLL_50toInf_madgraph": 5765.4, # but McM shows 4970
+"MC2016_Summer16_DYJetsToLL_50toInf_madgraph": 6025.2, # KIT TauTau uses this one FIXME: the DY x-section was updated by about 5%
 #"MC2016_Summer16_DYJetsToLL_50toInf_madgraph_": 6025.2, // FIXME: the DY x-section was updated by about 5%
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph_": 4970, # FIXME: the DY x-section was updated by about 5%
 "MC2016_Summer16_QCD_HT-100-200":  27540000,
@@ -135,6 +136,7 @@ xsecs = {
 "MC2016_Summer16_WJets_madgraph_075": 50690 - 9493 - 3120 - 942.3 - 524.2,
 "MC2016_Summer16_WJets_madgraph_perc": 37713.4 ,
 
+# TODO: need to replay this study..
 "MC2016_Summer16_WJets_madgraph":  0.65 * 61526.7, # 50690 - 9493 - 3120 - 942.3 - 524.2},
 "MC2016_Summer16_W1Jets_madgraph": 0.65 *  9493,
 "MC2016_Summer16_W2Jets_madgraph": 0.65 *  3120,
@@ -224,8 +226,8 @@ for fname in files:
             for sys in list(chan.ReadObj().GetListOfKeys()):
                 sys_name = sys.GetName()
 
-                #if 'alliso' in process and sys_name != 'NOMINAL':
-                if sys_name != 'NOMINAL':
+                if 'alliso' in process and sys_name != 'NOMINAL':
+                #if sys_name != 'NOMINAL':
                     continue # it takes forever
 
                 for histo_key in list(sys.ReadObj().GetListOfKeys()):
