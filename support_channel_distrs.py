@@ -1269,8 +1269,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
     # all requested jet cuts
     JetBSplit = namedtuple('BJets', 'medium loose rest')
-    JetCutsPerSystematic = namedtuple('Jets', 'lowest cuts old')
-    TauCutsPerSystematic = namedtuple('Taus', 'lowest cuts old presel')
+    JetCutsPerSystematic = namedtuple('Jets', 'lowest cuts old') # TODO add jets loose
+    TauCutsPerSystematic = namedtuple('Taus', 'lowest loose cuts old presel')
 
     proc = usual_process
     micro_proc = '' # hack for tt_leptau->3ch subchannel of hadronic taus
@@ -1858,7 +1858,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #if tau_ID > 1: tausL_nom.lowest.append((p4, TES_factor))
                 #if tau_ID > 2: tausM_nom.lowest.append((p4, TES_factor))
                 if tau_ID > 1: taus_nom.loose.append((p4, TES_factor, tau_pdgID))
-                elif tau_ID > 3: taus_nom.lowest.append((p4, TES_factor, tau_pdgID))
+                if tau_ID > 3: taus_nom.lowest.append((p4, TES_factor, tau_pdgID))
             if tau_pt > pt_cut_cuts:
                 if tau_ID > 3: taus_nom.cuts.append((p4, TES_factor, tau_pdgID))
             if tau_pt > pt_cut_old:
@@ -1871,7 +1871,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 if tau_pt_up > 20.:
                     taus_ESUp               .presel.append((p4, TES_factor, tau_pdgID))
                     if tau_ID > 1: taus_ESUp.loose.append((p4, TES_factor, tau_pdgID))
-                    elif tau_ID > 3: taus_ESUp.lowest.append((p4, TES_factor, tau_pdgID))
+                    if tau_ID > 3: taus_ESUp.lowest.append((p4, TES_factor, tau_pdgID))
                 if tau_pt_up > pt_cut_cuts:
                     if tau_ID > 3: taus_ESUp.cuts.append((p4, TES_factor, tau_pdgID))
                 if tau_pt_up > pt_cut_old:
@@ -1881,7 +1881,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 if tau_pt_down > 20.:
                     taus_ESDown               .presel.append((p4, TES_factor, tau_pdgID))
                     if tau_ID > 1: taus_ESDown.loose.append((p4, TES_factor, tau_pdgID))
-                    elif tau_ID > 3: taus_ESDown.lowest.append((p4, TES_factor, tau_pdgID))
+                    if tau_ID > 3: taus_ESDown.lowest.append((p4, TES_factor, tau_pdgID))
                 if tau_pt_down > pt_cut_cuts:
                     if tau_ID > 3: taus_ESDown.cuts.append((p4, TES_factor, tau_pdgID))
                 if tau_pt_down > pt_cut_old:
@@ -2674,22 +2674,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             sys_weight_without_PU = weight * weight_top_pt # for PU tests
             # pass reco selections
 
-            # PROPAGATE tau and jet factors to met
-            # for now only tau -- the jets usually add up to 0 (because there are many jets)
-            # taus = (p4, TES_factor, tau_pdgID)
-            tau_cor = (1. - taus[0][1]) * taus[0][0]
-            for tau in taus:
-                tau_cor = (1. - tau[1]) * tau[0]
-
-            met_x_prop = met_x + tau_cor.X()
-            met_y_prop = met_y + tau_cor.Y()
-            Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x_prop, met_y_prop)
-            # test on Mt fluctuation in mu_sel
-            if Mt_lep_met < 1.:
-                continue
-
-            met_pt = TMath.Sqrt(met_x_prop*met_x_prop + met_y_prop*met_y_prop)
-
             # all the channel selections follow
             passed_channels = []
 
@@ -2959,6 +2943,32 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
 
                 record_weight = sys_weight * weight_bSF
+
+                met_x_prop = met_x
+                met_y_prop = met_y
+
+                # PROPAGATE tau and jet factors to met
+                # for now only tau -- the jets usually add up to 0 (because there are many jets)
+                # taus = [(p4, TES_factor, tau_pdgID)]
+                if sel_taus:
+                    #try:
+                    tau_cor = sel_taus[0][0] * (1. - sel_taus[0][1])
+                    for tau in sel_taus[1:]:
+                        tau_cor = tau[0] * (1. - tau[1])
+                    #except IndexError:
+                    #    print len(sel_taus), type(sel_taus)
+                    #    print sel_taus
+                    #    print len(sel_taus[0])
+                    #    raise IndexError
+                    met_x_prop += tau_cor.X()
+                    met_y_prop += tau_cor.Y()
+
+                Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x_prop, met_y_prop)
+                # test on Mt fluctuation in mu_sel
+                if Mt_lep_met < 1.:
+                    continue
+
+                met_pt = TMath.Sqrt(met_x_prop*met_x_prop + met_y_prop*met_y_prop)
 
                 '''
                 # tt->elmu FAKERATES
