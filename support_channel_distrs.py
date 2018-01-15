@@ -1176,6 +1176,32 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     except DY and WJets os iso -- with PU Up/Down
     '''
 
+    channels_optimized_alliso = {
+                'optmu_alliso_presel_2L1M':         (procs_mu, systematic_names_nominal),
+                'optmu_alliso_presel_2L1M_ss':      (procs_mu, systematic_names_nominal),
+                #'optmu_alliso_loose_2L1M':          (procs_mu, systematic_names_nominal),
+                #'optmu_alliso_loose_2L1M_ss':       (procs_mu, systematic_names_nominal),
+                #'optmu_alliso_medium_2L1M':         (procs_mu, systematic_names_nominal),
+                #'optmu_alliso_medium_2L1M_ss':      (procs_mu, systematic_names_nominal),
+                'optmu_alliso_tight_2L1M_cuts':     (procs_mu, systematic_names_nominal),
+                'optmu_alliso_tight_2L1M_cuts_ss':  (procs_mu, systematic_names_nominal),
+                'optmu_alliso_tight_2L1M':          (procs_mu, systematic_names_nominal),
+                'optmu_alliso_tight_2L1M_ss':       (procs_mu, systematic_names_nominal),
+                'optmu_alliso_tight_2L1M_lj':       (procs_mu, systematic_names_nominal),
+                'optmu_alliso_tight_2L1M_lj_ss':    (procs_mu, systematic_names_nominal),
+                'optmu_alliso_tight_2L1M_ljout':    (procs_mu, systematic_names_nominal),
+                'optmu_alliso_tight_2L1M_ljout_ss': (procs_mu, systematic_names_nominal),
+
+                'optel_alliso_presel_2L1M':         (procs_el, systematic_names_nominal),
+                'optel_alliso_presel_2L1M_ss':      (procs_el, systematic_names_nominal),
+                'optel_alliso_tight_2L1M':          (procs_el, systematic_names_nominal),
+                'optel_alliso_tight_2L1M_ss':       (procs_el, systematic_names_nominal),
+                'optel_alliso_tight_2L1M_lj':       (procs_el, systematic_names_nominal),
+                'optel_alliso_tight_2L1M_lj_ss':    (procs_el, systematic_names_nominal),
+                'optel_alliso_tight_2L1M_ljout':    (procs_el, systematic_names_nominal),
+                'optel_alliso_tight_2L1M_ljout_ss': (procs_el, systematic_names_nominal),
+    }
+
     channels_optimized = {
                 'optmu_presel_2L1M':         (procs_mu, systematic_names_nominal),
                 'optmu_presel_2L1M_ss':      (procs_mu, systematic_names_nominal),
@@ -1192,21 +1218,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'optmu_tight_2L1M_ljout':    (procs_mu, systematic_names_all),
                 'optmu_tight_2L1M_ljout_ss': (procs_mu, systematic_names_all),
 
-                'optmu_alliso_presel_2L1M':         (procs_mu, systematic_names_nominal),
-                'optmu_alliso_presel_2L1M_ss':      (procs_mu, systematic_names_nominal),
-                #'optmu_alliso_loose_2L1M':          (procs_mu, systematic_names_nominal),
-                #'optmu_alliso_loose_2L1M_ss':       (procs_mu, systematic_names_nominal),
-                #'optmu_alliso_medium_2L1M':         (procs_mu, systematic_names_nominal),
-                #'optmu_alliso_medium_2L1M_ss':      (procs_mu, systematic_names_nominal),
-                'optmu_alliso_tight_2L1M_cuts':     (procs_mu, systematic_names_nominal),
-                'optmu_alliso_tight_2L1M_cuts_ss':  (procs_mu, systematic_names_nominal),
-                'optmu_alliso_tight_2L1M':          (procs_mu, systematic_names_nominal),
-                'optmu_alliso_tight_2L1M_ss':       (procs_mu, systematic_names_nominal),
-                'optmu_alliso_tight_2L1M_lj':       (procs_mu, systematic_names_nominal),
-                'optmu_alliso_tight_2L1M_lj_ss':    (procs_mu, systematic_names_nominal),
-                'optmu_alliso_tight_2L1M_ljout':    (procs_mu, systematic_names_nominal),
-                'optmu_alliso_tight_2L1M_ljout_ss': (procs_mu, systematic_names_nominal),
-
                 'optel_presel_2L1M':         (procs_el, systematic_names_nominal),
                 'optel_presel_2L1M_ss':      (procs_el, systematic_names_nominal),
                 'optel_tight_2L1M':          (procs_el, systematic_names_all),
@@ -1215,15 +1226,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'optel_tight_2L1M_lj_ss':    (procs_el, systematic_names_all),
                 'optel_tight_2L1M_ljout':    (procs_el, systematic_names_all),
                 'optel_tight_2L1M_ljout_ss': (procs_el, systematic_names_all),
-
-                'optel_alliso_presel_2L1M':         (procs_el, systematic_names_nominal),
-                'optel_alliso_presel_2L1M_ss':      (procs_el, systematic_names_nominal),
-                'optel_alliso_tight_2L1M':          (procs_el, systematic_names_nominal),
-                'optel_alliso_tight_2L1M_ss':       (procs_el, systematic_names_nominal),
-                'optel_alliso_tight_2L1M_lj':       (procs_el, systematic_names_nominal),
-                'optel_alliso_tight_2L1M_lj_ss':    (procs_el, systematic_names_nominal),
-                'optel_alliso_tight_2L1M_ljout':    (procs_el, systematic_names_nominal),
-                'optel_alliso_tight_2L1M_ljout_ss': (procs_el, systematic_names_nominal),
 
                 'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
                 'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
@@ -1534,7 +1536,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #if not (pass_min_mu or pass_min_mu_all or pass_mu_all or pass_mu or pass_el_all or pass_el or pass_mumu or pass_mumu_ss or pass_elmu): continue
         #passes = pass_min_mu or pass_min_mu_all or pass_mu_all or pass_mu or pass_el or pass_mumu or pass_mumu_ss or pass_elmu or pass_mu_id_iso
         # OPTIMIZATION tests are done only on pass_mu
-        passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
+        #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
+        passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu
         passes = passes_optimized
         if not passes: continue
         pass_mus = pass_mu_all or pass_mu or pass_elmu or pass_mumu # or pass_mumu_ss
@@ -1586,12 +1589,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #Mt_lep_met_d = (ev.lep_p4[0] + ev.met_corrected).Mt()
 
 
-        # TODO: pass jet systematics to met?
-        Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x, met_y)
-        # test on Mt fluctuation in mu_sel
-        if Mt_lep_met < 1.:
-            continue
-
         #met_vector = TLorentzVector(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
         #met_vector = ROOT.Math.LorentzVector(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
         #met_vector = ROOT.Math.LorentzVector(ROOT.Math.PxPyPzE4D(float))(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
@@ -1599,7 +1596,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         d_lep_met = ev.lep_p4[0] - met_vector
         dphi_lep_met = d_lep_met.Phi() # ev.lep_p4[0].Phi() - met_vector.Phi()
         cos_dphi_lep_met = TMath.Cos(dphi_lep_met)
-        met_pt = TMath.Sqrt(met_x*met_x + met_y*met_y)
+        #met_pt = TMath.Sqrt(met_x*met_x + met_y*met_y)
 
         #float MTlep_met_pt_recoilcor(float lep_px, float lep_py,
         #        float met_px, float met_py,
@@ -2660,6 +2657,22 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             sys_weight_without_PU = weight * weight_top_pt # for PU tests
             # pass reco selections
 
+            # PROPAGATE tau and jet factors to met
+            # for now only tau -- the jets usually add up to 0 (because there are many jets)
+            # taus = (p4, TES_factor, tau_pdgID)
+            tau_cor = (1. - taus[0][1]) * taus[0][0]
+            for tau in taus:
+                tau_cor = (1. - tau[1]) * tau[0]
+
+            met_x_prop = met_x + tau_cor.X()
+            met_y_prop = met_y + tau_cor.Y()
+            Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x_prop, met_y_prop)
+            # test on Mt fluctuation in mu_sel
+            if Mt_lep_met < 1.:
+                continue
+
+            met_pt = TMath.Sqrt(met_x_prop*met_x_prop + met_y_prop*met_y_prop)
+
             # all the channel selections follow
             passed_channels = []
 
@@ -2667,18 +2680,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             # for each lowest tight 2L1M
             #lj_memo = {} # (jets, )
             #lj_var, w_mass, t_mass = calc_lj_var(jets, jets_b)
-            #
 
             has_lowest_2L1M = len(jets.lowest.medium) > 0 and (len(jets.lowest.medium) + len(jets.lowest.loose)) > 1 
 
-	    weight_bSF_lowest = 1.
-	    # p4, energy factor, b SF weight, ID lev
-	    for _, _, jet_weight, _ in jets.lowest.medium + jets.lowest.loose + jets.lowest.rest:
-	        weight_bSF_lowest *= jet_weight
+            weight_bSF_lowest = 1.
+            # p4, energy factor, b SF weight, ID lev
+            for _, _, jet_weight, _ in jets.lowest.medium + jets.lowest.loose + jets.lowest.rest:
+                weight_bSF_lowest *= jet_weight
 
-	    weight_bSF_old = 1.
-	    for _, _, jet_weight, _ in jets.old.medium + jets.old.loose + jets.old.rest:
-	        weight_bSF_old *= jet_weight
+            weight_bSF_old = 1.
+            for _, _, jet_weight, _ in jets.old.medium + jets.old.loose + jets.old.rest:
+                weight_bSF_old *= jet_weight
 
             has_tight_lowest_taus = len(taus.lowest) > 0
 
@@ -2700,9 +2712,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             if pass_el and has_lowest_2L1M and len(taus.presel) > 0:
                 presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
-		sel_b_weight = weight_bSF_lowest
-		sel_jets = jets.lowest
-		sel_taus = taus.presel
+                sel_b_weight = weight_bSF_lowest
+                sel_jets = jets.lowest
+                sel_taus = taus.presel
 
                 if presel_os:
                     passed_channels.append(('optel_presel_2L1M', sel_b_weight, sel_jets, sel_taus))
@@ -2711,7 +2723,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 if has_tight_lowest_taus: # these are tight taus
                     lowest_os = taus.lowest[0][2] * ev.lep_id[0] < 0
-		    sel_taus = taus.lowest
+                    sel_taus = taus.lowest
                     if lowest_os:
                         passed_channels.append(('optel_tight_2L1M', sel_b_weight, sel_jets, sel_taus))
                         if large_lj:
@@ -2730,9 +2742,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # just save the relIso and ?
                 # -- whatever.. just save everything too
                 presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
-		sel_b_weight = weight_bSF_lowest
-		sel_jets = jets.lowest
-		sel_taus = taus.presel
+                sel_b_weight = weight_bSF_lowest
+                sel_jets = jets.lowest
+                sel_taus = taus.presel
 
                 if presel_os:
                     passed_channels.append(('optel_alliso_presel_2L1M', sel_b_weight, sel_jets, sel_taus))
@@ -2741,7 +2753,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 if has_tight_lowest_taus: # these are tight taus
                     lowest_os = taus.lowest[0][2] * ev.lep_id[0] < 0
-		    sel_taus = taus.lowest
+                    sel_taus = taus.lowest
                     if lowest_os:
                         passed_channels.append(('optel_alliso_tight_2L1M', sel_b_weight, sel_jets, sel_taus))
                         if large_lj:
@@ -2765,9 +2777,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             if pass_mu and has_lowest_2L1M and len(taus.presel) > 0:
                 presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
-		sel_b_weight = weight_bSF_lowest
-		sel_jets = jets.lowest
-		sel_taus = taus.presel
+                sel_b_weight = weight_bSF_lowest
+                sel_jets = jets.lowest
+                sel_taus = taus.presel
 
                 if presel_os:
                     passed_channels.append(('optmu_presel_2L1M', sel_b_weight, sel_jets, sel_taus))
@@ -2776,7 +2788,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 if has_tight_lowest_taus: # these are tight taus
                     lowest_os = taus.lowest[0][2] * ev.lep_id[0] < 0
-		    sel_taus = taus.lowest
+                    sel_taus = taus.lowest
                     if lowest_os:
                         passed_channels.append(('optmu_tight_2L1M', sel_b_weight, sel_jets, sel_taus))
                         if large_lj:
@@ -2793,7 +2805,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # cuts selection
                 if has_tight_cuts_taus and has_cuts_2L1M: # these are tight taus
                     cuts_os = taus.cuts[0][2] * ev.lep_id[0] < 0
-		    sel_taus = taus.cuts
+                    sel_taus = taus.cuts
                     if cuts_os:
                         passed_channels.append(('optmu_tight_2L1M_cuts', sel_b_weight, sel_jets, sel_taus))
                     else:
@@ -2802,9 +2814,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             # whatever just save all
             if pass_mu_all and has_lowest_2L1M and len(taus.presel) > 0:
                 presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
-		sel_b_weight = weight_bSF_lowest
-		sel_jets = jets.lowest
-		sel_taus = taus.presel
+                sel_b_weight = weight_bSF_lowest
+                sel_jets = jets.lowest
+                sel_taus = taus.presel
 
                 if presel_os:
                     passed_channels.append(('optmu_alliso_presel_2L1M', sel_b_weight, sel_jets, sel_taus))
@@ -2813,7 +2825,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 if has_tight_lowest_taus: # these are tight taus
                     lowest_os = taus.lowest[0][2] * ev.lep_id[0] < 0
-		    sel_taus = taus.lowest
+                    sel_taus = taus.lowest
                     if lowest_os:
                         passed_channels.append(('optmu_alliso_tight_2L1M', sel_b_weight, sel_jets, sel_taus))
                         if large_lj:
@@ -2830,7 +2842,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # cuts selection
                 if has_tight_cuts_taus and has_cuts_2L1M: # these are tight taus
                     cuts_os = taus.cuts[0][2] * ev.lep_id[0] < 0
-		    sel_taus = taus.cuts
+                    sel_taus = taus.cuts
                     if cuts_os:
                         passed_channels.append(('optmu_alliso_tight_2L1M_cuts', sel_b_weight, sel_jets, sel_taus))
                     else:
@@ -2858,7 +2870,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             #    passed_channels.append('ctr_mu_wjet')
             if pass_mu_all and len(jets.lowest.medium) == 0 and (Mt_lep_met > 50 or met_pt > 40) and taus.presel:
                 presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
-	        sel_b_weight = weight_bSF_lowest
+                sel_b_weight = weight_bSF_lowest
                 if presel_os:
                     passed_channels.append(('ctr_alliso_mu_wjet', sel_b_weight, jets.lowest, taus.presel))
                 else:
@@ -2873,9 +2885,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             #pass_single_lep_presel = large_met and has_3jets and has_bjets and (pass_el or pass_mu) #and os_lep_med_tau
             #pass_single_lep_sel = pass_single_lep_presel and os_lep_med_tau
             old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1
-            if pass_mu and old_jet_sel and met_pt > 40 and len(taus.old) > 0:
+            #if pass_mu and old_jet_sel and met_pt > 40 and len(taus.old) > 0:
+            if pass_mu and old_jet_sel and len(taus.old) > 0:
+                # actually I should add ev.lep_p4[0].pt() > 27
                 old_os = taus.old[0][2] * ev.lep_id[0] < 0
-	        sel_b_weight = weight_bSF_old
+                sel_b_weight = weight_bSF_old
                 if old_os:
                     passed_channels.append(('ctr_old_mu_sel', sel_b_weight, jets.old, taus.old))
                 else:
@@ -2954,7 +2968,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #    out_hs[(chan, proc, sys_name)]['lep_pt_raw_w_b_trg']         .Fill(ev.lep_p4[0].pt(), mu_trg_sf[0]) # <--- this one is 0
 
                 # OPTIMIZATION controls
-		"""
+                """
                 out_hs[(chan, proc, sys_name)]['opt_bjet_categories']     .Fill(opt_bjet_category, record_weight)
 
                 out_hs[(chan, proc, sys_name)]['opt_n_presel_tau']        .Fill(n_presel_taus, record_weight)
@@ -2980,7 +2994,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, proc, sys_name)]['opt_tau_index_loose']     .Fill(n_loose_tau_i  , record_weight)
                 out_hs[(chan, proc, sys_name)]['opt_tau_index_medium']    .Fill(n_medium_tau_i , record_weight)
                 out_hs[(chan, proc, sys_name)]['opt_tau_index_tight']     .Fill(n_tight_tau_i  , record_weight)
-		"""
+                """
 
                 # for anti-iso and overall
                 out_hs[(chan, proc, sys_name)]['lep_relIso']  .Fill(ev.lep_relIso[0],  record_weight)
@@ -3014,7 +3028,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #        out_hs[(chan, proc, sys_name)]['bjet2_pt']  .Fill(jets_b[1][0].pt() * jets_b[1][1],  record_weight)
                 #        out_hs[(chan, proc, sys_name)]['bjet2_eta']  .Fill(jets_b[1][0].eta() * jets_b[1][1],  record_weight)
 
-		"""
+                """
                 # tagged jets OPTIMIZATION
                 if bjets_all_foropt:
                     out_hs[(chan, proc, sys_name)]['bjet_pt']  .Fill(bjets_all_foropt[0][0].pt() * bjets_all_foropt[0][1],  record_weight)
@@ -3029,7 +3043,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, proc, sys_name)]['b_discr_lead_jet']  .Fill(lead_jet_b_discr,  record_weight)
                 for discr in all_jets_b_discrs:
                     out_hs[(chan, proc, sys_name)]['b_discr_all_jets']  .Fill(discr,  record_weight)
-		"""
+                """
 
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_c']    .Fill(Mt_lep_met_c, record_weight)
                 #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_test'] .Fill(Mt_lep_met_test, record_weight)
@@ -3081,7 +3095,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     lep_lep_mass = lep_lep.mass()
                     out_hs[(chan, proc, sys_name)]['M_lep_lep']  .Fill(lep_lep_mass, record_weight)
 
-		"""
+                """
                 # taus OPTIMIZATION
                 if taus_all_foropt:
                     # again assuming the 0 tau is the one
@@ -3089,7 +3103,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(taus_all_foropt[0][0].pt() * taus_all_foropt[0][1],  record_weight)
                     out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(taus_all_foropt[0][0].eta(), record_weight)
                     out_hs[(chan, proc, sys_name)]['opt_lep_tau_pt']  .Fill(ev.lep_p4[0].pt(), taus_all_foropt[0][0].pt() * taus_all_foropt[0][1],  record_weight)
-		"""
+                """
 
                 if sel_taus: #has_medium_tau:
                 #if len(ev.tau_p4) > 0:
