@@ -1211,12 +1211,20 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #'optmu_medium_2L1M_ss':      (procs_mu, systematic_names_nominal),
                 'optmu_tight_2L1M_cuts':     (procs_mu, systematic_names_nominal),
                 'optmu_tight_2L1M_cuts_ss':  (procs_mu, systematic_names_nominal),
+
                 'optmu_tight_2L1M':          (procs_mu, systematic_names_all),
                 'optmu_tight_2L1M_ss':       (procs_mu, systematic_names_all),
                 'optmu_tight_2L1M_lj':       (procs_mu, systematic_names_all),
                 'optmu_tight_2L1M_lj_ss':    (procs_mu, systematic_names_all),
                 'optmu_tight_2L1M_ljout':    (procs_mu, systematic_names_all),
                 'optmu_tight_2L1M_ljout_ss': (procs_mu, systematic_names_all),
+
+                'optmu_loose_2L1M':          (procs_mu, systematic_names_nominal),
+                'optmu_loose_2L1M_ss':       (procs_mu, systematic_names_nominal),
+                'optmu_loose_2L1M_lj':       (procs_mu, systematic_names_nominal),
+                'optmu_loose_2L1M_lj_ss':    (procs_mu, systematic_names_nominal),
+                'optmu_loose_2L1M_ljout':    (procs_mu, systematic_names_nominal),
+                'optmu_loose_2L1M_ljout_ss': (procs_mu, systematic_names_nominal),
 
                 'optel_presel_2L1M':         (procs_el, systematic_names_nominal),
                 'optel_presel_2L1M_ss':      (procs_el, systematic_names_nominal),
@@ -1749,9 +1757,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # lowest and cuts -- tight
         # old -- medium
         # I also need preselection for WJets SS and preselection SS (for QCD)
-        taus_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[], presel=[])
-        taus_ESUp   = TauCutsPerSystematic(lowest=[], cuts=[], old=[], presel=[])
-        taus_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[], presel=[])
+        taus_nom    = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], presel=[])
+        taus_ESUp   = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], presel=[])
+        taus_ESDown = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], presel=[])
 
         # each tau is
         # p4, ES factor (ID lev is per collection), pdg ID (for OS, SS)
@@ -1849,7 +1857,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 taus_nom               .presel.append((p4, TES_factor, tau_pdgID))
                 #if tau_ID > 1: tausL_nom.lowest.append((p4, TES_factor))
                 #if tau_ID > 2: tausM_nom.lowest.append((p4, TES_factor))
-                if tau_ID > 3: taus_nom.lowest.append((p4, TES_factor, tau_pdgID))
+                if tau_ID > 1: taus_nom.loose.append((p4, TES_factor, tau_pdgID))
+                elif tau_ID > 3: taus_nom.lowest.append((p4, TES_factor, tau_pdgID))
             if tau_pt > pt_cut_cuts:
                 if tau_ID > 3: taus_nom.cuts.append((p4, TES_factor, tau_pdgID))
             if tau_pt > pt_cut_old:
@@ -1861,7 +1870,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 TES_factor = factor_up
                 if tau_pt_up > 20.:
                     taus_ESUp               .presel.append((p4, TES_factor, tau_pdgID))
-                    if tau_ID > 3: taus_ESUp.lowest.append((p4, TES_factor, tau_pdgID))
+                    if tau_ID > 1: taus_ESUp.loose.append((p4, TES_factor, tau_pdgID))
+                    elif tau_ID > 3: taus_ESUp.lowest.append((p4, TES_factor, tau_pdgID))
                 if tau_pt_up > pt_cut_cuts:
                     if tau_ID > 3: taus_ESUp.cuts.append((p4, TES_factor, tau_pdgID))
                 if tau_pt_up > pt_cut_old:
@@ -1870,7 +1880,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 TES_factor = factor_down
                 if tau_pt_down > 20.:
                     taus_ESDown               .presel.append((p4, TES_factor, tau_pdgID))
-                    if tau_ID > 3: taus_ESDown.lowest.append((p4, TES_factor, tau_pdgID))
+                    if tau_ID > 1: taus_ESDown.loose.append((p4, TES_factor, tau_pdgID))
+                    elif tau_ID > 3: taus_ESDown.lowest.append((p4, TES_factor, tau_pdgID))
                 if tau_pt_down > pt_cut_cuts:
                     if tau_ID > 3: taus_ESDown.cuts.append((p4, TES_factor, tau_pdgID))
                 if tau_pt_down > pt_cut_old:
@@ -1945,6 +1956,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         # sort by pt
         taus_nom    .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        taus_nom    .loose .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
         taus_nom    .cuts  .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
         taus_nom    .old   .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
         taus_nom    .presel.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
@@ -1953,6 +1965,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         if isMC and with_TauES_sys:
             taus_ESUp   .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
             taus_ESDown .lowest.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+            taus_ESUp   .loose .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+            taus_ESDown .loose .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
             taus_ESUp   .cuts  .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
             taus_ESDown .cuts  .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
             taus_ESUp   .old   .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
@@ -2092,7 +2106,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # of lowest cuts? -- no, of the same as in the selection
         #                 -- and this again messes up the code.......
 
-        taus_nom_TLorentz    = TauCutsPerSystematic(lowest=[], cuts=[], old=[], presel=[]) # presel won't be needed
+        taus_nom_TLorentz    = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], presel=[]) # presel won't be needed
         # presel should also be cleaned of the tau -- of the one I do SS with
         # in fact the cross-cleaning should be done only from the used tau
         # I can sort the taus by pt and use the first one
@@ -2102,6 +2116,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # -- using only the first tau in the list -- the target one!
         for tau_p4, _, _ in taus_nom.lowest[:1]:
             taus_nom_TLorentz.lowest.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
+	# TODO: loose taus for 2L1M + loose tau selection -- I'll do it quickly here, re-using the lowest jets (with tight tau)
+        #for tau_p4, _, _ in taus_nom.loose[:1]:
+            #taus_nom_TLorentz.loose.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         for tau_p4, _, _ in taus_nom.cuts[:1]:
             taus_nom_TLorentz.cuts.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         # in old we use medium tau
@@ -2693,8 +2710,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 weight_bSF_old *= jet_weight
 
             has_tight_lowest_taus = len(taus.lowest) > 0
+            has_loose_lowest_taus = len(taus.loose) > 0
 
-            if (pass_el_all or pass_mu_all) and has_lowest_2L1M and has_tight_lowest_taus:
+            if (pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus):
                 lj_var, w_mass, t_mass = calc_lj_var(jets.lowest.rest, jets.lowest.medium + jets.lowest.loose)
                 lj_cut = 50.
                 large_lj = lj_var > lj_cut
@@ -2810,6 +2828,22 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         passed_channels.append(('optmu_tight_2L1M_cuts', sel_b_weight, sel_jets, sel_taus))
                     else:
                         passed_channels.append(('optmu_tight_2L1M_cuts_ss', sel_b_weight, sel_jets, sel_taus))
+
+                if has_loose_lowest_taus: # these are loose taus with lowest cuts
+                    lep_os = taus.loose[0][2] * ev.lep_id[0] < 0
+                    sel_taus = taus.loose
+                    if lep_os:
+                        passed_channels.append(('optmu_loose_2L1M', sel_b_weight, sel_jets, sel_taus))
+                        if large_lj:
+                            passed_channels.append(('optmu_loose_2L1M_ljout', sel_b_weight, sel_jets, sel_taus))
+                        else:
+                            passed_channels.append(('optmu_loose_2L1M_lj', sel_b_weight, sel_jets, sel_taus))
+                    else:
+                        passed_channels.append(('optmu_loose_2L1M_ss', sel_b_weight, sel_jets, sel_taus))
+                        if large_lj:
+                            passed_channels.append(('optmu_loose_2L1M_ljout_ss', sel_b_weight, sel_jets, sel_taus))
+                        else:
+                            passed_channels.append(('optmu_loose_2L1M_lj_ss', sel_b_weight, sel_jets, sel_taus))
 
             # whatever just save all
             if pass_mu_all and has_lowest_2L1M and len(taus.presel) > 0:
