@@ -1,6 +1,21 @@
 from os.path import isfile
+import argparse
 import logging
 logging.basicConfig(level=logging.DEBUG)
+
+
+
+parser = argparse.ArgumentParser(
+    formatter_class = argparse.RawDescriptionHelpFormatter,
+    description = "normalize histograms to the cross sections of processes",
+    #epilog = "Example:\n$ python job_submit.py ttbarleps80_eventSelection jobing/my_runAnalysis_cfg_NEWSUBMIT.templ.py bin/ttbar-leptons-80X/analysis/dsets_testing_noHLT_TTbar.json test/tests/outdir_test_v11_ttbar_v8.40/"
+    )
+
+parser.add_argument('-f', '--files', type=str, default=None, help="list of filesnames to process, without .root separated by coma, if not given the default batch is used")
+
+args = parser.parse_args()
+
+
 
 logging.info("import ROOT")
 
@@ -160,7 +175,7 @@ xsecs = {
 "MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg": 136.02, #70.69/2},
 }
 
-files = [
+files_default = [
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo",
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph",
 "MC2016_Summer16_QCD_HT-100-200",
@@ -197,6 +212,9 @@ files = [
 "MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg"]
 
 
+files = args.files.split(',') if args.files else files_default
+
+print files
 
 for fname in files:
     # check if file exists

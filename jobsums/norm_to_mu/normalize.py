@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-l', '--lumi', type=float, default=None, help="luminosity in pb to use instead of defaults")
 parser.add_argument('-m', '--mu', action = "store_true", help="use SingleMuon full json lumi = 35867.060")
 parser.add_argument('-e', '--el', action = "store_true", help="use SingleElectron reduced json lumi = 31341.774")
+parser.add_argument('-f', '--files', type=str, default=None, help="list of filesnames to process, without .root separated by coma, if not given the default batch is used")
 
 args = parser.parse_args()
 
@@ -179,7 +180,7 @@ xsecs = {
 "MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg": 136.02, #70.69/2},
 }
 
-files = [
+files_default = [
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo",
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph",
 "MC2016_Summer16_QCD_HT-100-200",
@@ -218,6 +219,10 @@ files = [
 "SingleMuon",
 "SingleElectron",
 ]
+
+files = args.files.split(',') if args.files else files_default
+
+print files
 
 
 

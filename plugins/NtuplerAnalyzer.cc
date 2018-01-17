@@ -1883,7 +1883,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// save FactorizedCorrector factor
 		//double toRawSF=jet.correctedJet("Uncorrected").pt()/jet.pt();
 		//LorentzVector rawJet(jet*toRawSF);
-		// FactorizedCorrector with all jet correction files
+		// FactorizedJetCorrector *jesCor; with all jet correction files
 		jesCor->setJetEta(rawJet.eta());
 		jesCor->setJetPt(rawJet.pt());
 		jesCor->setJetA(jet.jetArea());
