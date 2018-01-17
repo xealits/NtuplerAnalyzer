@@ -1302,7 +1302,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     #            (find most precise subprocess ones, then store accordingly for channels)
     # sys     -- shape systematics
     out_hs = OrderedDict([((chan, proc, sys), {'met':        TH1D('%s_%s_%s_met'        % (chan, proc, sys), '', 30, 0, 300),
+                                               # control the tau/jet prop to met
+                                               'met_prop_taus':      TH2D('%s_%s_%s_met_prop_taus'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
+                                               'met_prop_jets':      TH2D('%s_%s_%s_met_prop_jets'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
                                                'init_met':   TH1D('%s_%s_%s_init_met'   % (chan, proc, sys), '', 30, 0, 300),
+                                               'corr_met':   TH1D('%s_%s_%s_corr_met'   % (chan, proc, sys), '', 30, 0, 300),
                                                'lep_pt':     TH1D('%s_%s_%s_lep_pt'     % (chan, proc, sys), '', 40, 0, 200),
                                                'lep_pt_turn':TH1D('%s_%s_%s_lep_pt_turn'% (chan, proc, sys), '', 270, 23, 50),
                                                'lep_pt_turn_raw':TH1D('%s_%s_%s_lep_pt_turn_raw' % (chan, proc, sys), '', 40, 20, 40),
@@ -1450,7 +1454,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                # TODO: add rho to ntuples
                                                'rho':         TH1D('%s_%s_%s_rho'        % (chan, proc, sys), '', 50, 0, 50),
 
-                                               'njets':       TH1D('%s_%s_%s_njets'     % (chan, proc, sys), '', 5, 0, 5),
+                                               'njets':       TH1D('%s_%s_%s_njets'     % (chan, proc, sys), '', 10, 0, 10),
+                                               'nRjets':      TH1D('%s_%s_%s_nRjets'    % (chan, proc, sys), '', 5, 0, 5),
                                                'nMbjets':     TH1D('%s_%s_%s_nMbjets'   % (chan, proc, sys), '', 5, 0, 5),
                                                'nLbjets':     TH1D('%s_%s_%s_nLbjets'   % (chan, proc, sys), '', 5, 0, 5),
                                                'ntaus':       TH1D('%s_%s_%s_ntaus'     % (chan, proc, sys), '', 5, 0, 5),
@@ -1565,8 +1570,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             #met_y = ev.pfmetcorr_ey
             # no, recalculated them
             met_x = ROOT.met_pt_recoilcor_x(
-                ev.met_corrected.Px(), # uncorrected type I pf met px (float)
-                ev.met_corrected.Py(), # uncorrected type I pf met py (float)
+                #ev.met_corrected.Px(), # uncorrected type I pf met px (float)
+                #ev.met_corrected.Py(), # uncorrected type I pf met py (float)
+                # RECORRECTED
+                ev.met_init.Px(), # uncorrected type I pf met px (float)
+                ev.met_init.Py(), # uncorrected type I pf met py (float)
                 ev.gen_genPx, # generator Z/W/Higgs px (float)
                 ev.gen_genPy, # generator Z/W/Higgs py (float)
                 ev.gen_visPx, # generator visible Z/W/Higgs px (float)
@@ -1575,8 +1583,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #ev.nalljets  # number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
                 )
             met_y = ROOT.met_pt_recoilcor_y(
-                ev.met_corrected.Px(), # uncorrected type I pf met px (float)
-                ev.met_corrected.Py(), # uncorrected type I pf met py (float)
+                #ev.met_corrected.Px(), # uncorrected type I pf met px (float)
+                #ev.met_corrected.Py(), # uncorrected type I pf met py (float)
+                ev.met_init.Px(), # uncorrected type I pf met px (float)
+                ev.met_init.Py(), # uncorrected type I pf met py (float)
                 ev.gen_genPx, # generator Z/W/Higgs px (float)
                 ev.gen_genPy, # generator Z/W/Higgs py (float)
                 ev.gen_visPx, # generator visible Z/W/Higgs px (float)
@@ -1590,8 +1600,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             #Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px(), ev.tau_p4[0].Py(), ev.pfmetcorr_ex, ev.pfmetcorr_ey)
             # TODO: tau is corrected with systematic ES
         else:
-            met_x = ev.met_corrected.Px()
-            met_y = ev.met_corrected.Py()
+            #met_x = ev.met_corrected.Px()
+            #met_y = ev.met_corrected.Py()
+            # RECORRECTED
+            met_x = ev.met_init.Px()
+            met_y = ev.met_init.Py()
             Mt_lep_met_c   = ROOT.MTlep_c(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
             #Mt_lep_met_test = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x, met_y)
             #Mt_lep_met = transverse_mass(ev.lep_p4[0], ev.met_corrected)
@@ -2068,6 +2081,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         b_tag_wp_tight  = 0.935
         b_tag_wp = b_tag_wp_medium
 
+        tau_dR_jet_min = 0.4 # ak4 jets
+
         """
         # lists of "light jets", not passing b-tag
         jets_nominal = [] # nominal jet pts
@@ -2131,13 +2146,24 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # in principle I should also change TES -- but this effect is very second order
 
         for i in xrange(ev.jet_p4.size()):
-            pfid, p4 = ev.jet_PFID[i], ev.jet_p4[i]
+            #pfid, p4 = ev.jet_PFID[i], ev.jet_p4[i]
+            # RECORRECTED jets
+            pfid, p4 = ev.jet_PFID[i], ev.jet_uncorrected_p4[i]
+            # but now I need full factor for MC
             if pfid < 1 or abs(p4.eta()) > 2.5: continue # Loose PFID and eta
 
             jet_b_discr = ev.jet_b_discr[i]
             #all_jets_b_discrs.append(jet_b_discr)
 
-            jet_pt  = p4.pt()
+            # jet energy scale factor = JES factor * JER
+            if isMC:
+                jer_factor = ev.jet_jer_factor[i]
+                jes_factor = ev.jet_jes_recorrection[i]
+                en_factor = jer_factor * jes_factor
+            else:
+                en_factor = 1.
+
+            jet_pt  = p4.pt() * en_factor
             jet_eta = p4.eta()
 
             #if p4.pt() > 30: # nominal jet
@@ -2147,20 +2173,23 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 tau_match_lowest, tau_match_cuts, tau_match_old = False, False, False
                 matched_tau = False
                 tj_p4 = TLorentzVector(p4.X(), p4.Y(), p4.Z(), p4.T())
-                for ttau_p4 in taus_nom_TLorentz.lowest:
-                    if tj_p4.DeltaR(ttau_p4) < 0.3:
-                        tau_match_lowest = True
-                        break
+                #for ttau_p4 in taus_nom_TLorentz.lowest:
+                #    if tj_p4.DeltaR(ttau_p4) < 0.3:
+                #        tau_match_lowest = True
+                #        break
+                tau_match_lowest = all(tj_p4.DeltaR(ttau_p4) > tau_dR_jet_min for ttau_p4 in taus_nom_TLorentz.lowest)
 
-                for ttau_p4 in taus_nom_TLorentz.cuts:
-                    if tj_p4.DeltaR(ttau_p4) < 0.3:
-                        tau_match_cuts = True
-                        break
+                #for ttau_p4 in taus_nom_TLorentz.cuts:
+                #    if tj_p4.DeltaR(ttau_p4) < 0.3:
+                #        tau_match_cuts = True
+                #        break
 
-                for ttau_p4 in taus_nom_TLorentz.old:
-                    if tj_p4.DeltaR(ttau_p4) < 0.3:
-                        tau_match_old = True
-                        break
+                #for ttau_p4 in taus_nom_TLorentz.old:
+                #    if tj_p4.DeltaR(ttau_p4) < 0.3:
+                #        tau_match_old = True
+                #        break
+                tau_match_cuts = all(tj_p4.DeltaR(ttau_p4) > tau_dR_jet_min for ttau_p4 in taus_nom_TLorentz.cuts)
+                tau_match_old  = all(tj_p4.DeltaR(ttau_p4) > tau_dR_jet_min for ttau_p4 in taus_nom_TLorentz.old)
 
                 if tau_match_lowest and tau_match_cuts and tau_match_old:
                     continue
@@ -2205,9 +2234,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                             jet_weight_bSFDown = calc_btag_sf_weight(b_tagged, flavId, jet_pt, jet_eta, "down")
 
                     if with_JER_sys:
-                        factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
-                        jet_factor_JERUp   = (up/factor) if factor > 0 else 0
-                        jet_factor_JERDown = (down/factor) if factor > 0 else 0
+                        #jer_factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
+                        up, down = ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
+                        jet_factor_JERUp   = (up   / jer_factor) if jer_factor > 0 else 0
+                        jet_factor_JERDown = (down / jer_factor) if jer_factor > 0 else 0
 
                         jet_pt_jer_up   = jet_pt * jet_factor_JERUp
                         jet_pt_jer_down = jet_pt * jet_factor_JERDown
@@ -2224,12 +2254,56 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # I'll do this per selection cut, since I tau-match
                 if not tau_match_lowest:
                     # jet is p4, jet energy factor (which is 1 for nominal), b SF factor and bID lev
+                    # the jet energy factor was corrected in ntuple but what's with MET?
+                    # met comes from met_x = ev.met_corrected.Px()
+                    # which:
+                    #     LorentzVector MET_corrected = NT_met_init - full_jet_corr; // checked: this is really negligible correction
+                    #     const pat::MET& MET = metsHandle_slimmedMETs->front();
+                    #     NT_met_slimmedMets = MET.p4();
+                    #     NT_met_init = MET.p4();
+                    # and full cor is:
+                    #     full_jet_corr += jet.p4() - jet_initial_p4; // initial jet + this difference = corrected jet
+                    # MET init + jet init = MET cor + jet cor
+                    # but these jets are from loop over all jets with Loose ID and pt cut at 20
+                    # -- all eta pass
+
+                    # jets are corrected with:
+                    # jet.setP4(jet.p4()*jer_factor); // same as scaleEnergy in the Jet POG example
+                    # but JES correction was not applied as in:
+                    #//jet.setP4(rawJet*jes_correction);
+                    # -- I rely on the correction in miniaod and put the JES shift on top of it
+                    # I wanted to compare the miniaod jets with re-corrected ones but didn't do it
+                    # and I save it in
+                    # NT_jet_jes_recorrection.push_back(jes_correction);
+
+                    # if I re-correct JES:
+                    # - take rawJet
+                    # - *jes_cor*jes_factor
+                    # - compare to usual jet? save full correction?
+                    # -- the easiest is to save rawJet() lists with the propper jes*jer factors for MC
+                    #    the MET propagation will work on its own in the following
+                    # RECORRECTED jets
+
+                    # there is also this crap
+                    # float jecFactor = jet.jecFactor("Uncorrected") ;
+                    # which should be the same the other way
+
+                    # AND a question for $100: is slimmed_met calculated with Uncorrected jets or default miniaod jets?
+                    # what exactly should I propagate to met?
+                    # -- let's try this and that separately? some control distrs?
+                    # I saved the met with JER propagated from miniaod jet, not jes and jer from uncor jet...
+                    # the initial met is in
+                    # met_init
+                    # and there is also uncorrected -- but that's only for latest data
+                    # it's late, trying init met and re-correction from raw jets
+
+
                     # nominals
                     if b_tagged_medium:
-                        jets_nom.lowest.medium.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                        jets_nom.lowest.medium.append((p4, en_factor, jet_weight_bSF_nom, bID_lev))
                         if with_bSF_sys:
-                            jets_bUp  .lowest.medium.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                            jets_bDown.lowest.medium.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                            jets_bUp  .lowest.medium.append((p4, en_factor, jet_weight_bSFUp,   bID_lev))
+                            jets_bDown.lowest.medium.append((p4, en_factor, jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
                             if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.medium.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
@@ -2240,10 +2314,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                             if jet_pt_jes_down > 20.: jets_JESDown.lowest.medium.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
 
                     elif b_tagged_loose:
-                        jets_nom.lowest.loose.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                        jets_nom.lowest.loose.append((p4, en_factor, jet_weight_bSF_nom, bID_lev))
                         if with_bSF_sys:
-                            jets_bUp  .lowest.loose.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                            jets_bDown.lowest.loose.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                            jets_bUp  .lowest.loose.append((p4, en_factor, jet_weight_bSFUp,   bID_lev))
+                            jets_bDown.lowest.loose.append((p4, en_factor, jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
                             if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.loose.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
@@ -2254,10 +2328,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                             if jet_pt_jes_down > 20.: jets_JESDown.lowest.loose.append((p4, jet_factor_JESDown, jet_weight_bSF_nom, bID_lev))
 
                     else:
-                        jets_nom.lowest.rest.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                        jets_nom.lowest.rest.append((p4, en_factor, jet_weight_bSF_nom, bID_lev))
                         if with_bSF_sys:
-                            jets_bUp  .lowest.rest.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                            jets_bDown.lowest.rest.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                            jets_bUp  .lowest.rest.append((p4, en_factor, jet_weight_bSFUp,   bID_lev))
+                            jets_bDown.lowest.rest.append((p4, en_factor, jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
                             if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.rest.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
@@ -2274,10 +2348,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # nominals
                     if b_tagged_medium:
                         if jet_pt > pt_cut:
-                            jets_nom.cuts.medium.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            jets_nom.cuts.medium.append((p4, en_factor, jet_weight_bSF_nom, bID_lev))
                             if with_bSF_sys:
-                                jets_bUp  .cuts.medium.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                jets_bDown.cuts.medium.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                jets_bUp  .cuts.medium.append((p4, en_factor, jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.cuts.medium.append((p4, en_factor, jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
                             if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.medium.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
@@ -2289,10 +2363,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                     elif b_tagged_loose:
                         if jet_pt > pt_cut:
-                            jets_nom.cuts.loose.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            jets_nom.cuts.loose.append((p4, en_factor, jet_weight_bSF_nom, bID_lev))
                             if with_bSF_sys:
-                                jets_bUp  .cuts.loose.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                jets_bDown.cuts.loose.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                jets_bUp  .cuts.loose.append((p4, en_factor, jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.cuts.loose.append((p4, en_factor, jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
                             if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.loose.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
@@ -2304,10 +2378,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                     else:
                         if jet_pt > pt_cut:
-                            jets_nom.cuts.rest.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            jets_nom.cuts.rest.append((p4, en_factor, jet_weight_bSF_nom, bID_lev))
                             if with_bSF_sys:
-                                jets_bUp  .cuts.rest.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                jets_bDown.cuts.rest.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                jets_bUp  .cuts.rest.append((p4, en_factor, jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.cuts.rest.append((p4, en_factor, jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
                             if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.rest.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
@@ -2324,10 +2398,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # nominals
                     if b_tagged_medium:
                         if jet_pt > pt_cut:
-                            jets_nom.old.medium.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            jets_nom.old.medium.append((p4, en_factor, jet_weight_bSF_nom, bID_lev))
                             if with_bSF_sys:
-                                jets_bUp  .old.medium.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                jets_bDown.old.medium.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                jets_bUp  .old.medium.append((p4, en_factor, jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.old.medium.append((p4, en_factor, jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
                             if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.medium.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
@@ -2339,10 +2413,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                     elif b_tagged_loose:
                         if jet_pt > pt_cut:
-                            jets_nom.old.loose.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            jets_nom.old.loose.append((p4, en_factor, jet_weight_bSF_nom, bID_lev))
                             if with_bSF_sys:
-                                jets_bUp  .old.loose.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                jets_bDown.old.loose.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                jets_bUp  .old.loose.append((p4, en_factor, jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.old.loose.append((p4, en_factor, jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
                             if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.loose.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
@@ -2354,10 +2428,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                     else:
                         if jet_pt > pt_cut:
-                            jets_nom.old.rest.append((p4, 1., jet_weight_bSF_nom, bID_lev))
+                            jets_nom.old.rest.append((p4, en_factor, jet_weight_bSF_nom, bID_lev))
                             if with_bSF_sys:
-                                jets_bUp  .old.rest.append((p4, 1., jet_weight_bSFUp,   bID_lev))
-                                jets_bDown.old.rest.append((p4, 1., jet_weight_bSFDown, bID_lev))
+                                jets_bUp  .old.rest.append((p4, en_factor, jet_weight_bSFUp,   bID_lev))
+                                jets_bDown.old.rest.append((p4, en_factor, jet_weight_bSFDown, bID_lev))
 
                         if with_JER_sys:
                             if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.rest.append((p4, jet_factor_JERUp,   jet_weight_bSF_nom, bID_lev))
@@ -2959,6 +3033,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 record_weight = sys_weight * weight_bSF
 
+                met_x_prop_taus = met_x
+                met_y_prop_taus = met_y
+
+                met_x_prop_jets = met_x
+                met_y_prop_jets = met_y
+
                 met_x_prop = met_x
                 met_y_prop = met_y
 
@@ -2969,14 +3049,31 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     #try:
                     tau_cor = sel_taus[0][0] * (1. - sel_taus[0][1])
                     for tau in sel_taus[1:]:
-                        tau_cor = tau[0] * (1. - tau[1])
+                        tau_cor += tau[0] * (1. - tau[1])
                     #except IndexError:
                     #    print len(sel_taus), type(sel_taus)
                     #    print sel_taus
                     #    print len(sel_taus[0])
                     #    raise IndexError
+                    met_x_prop_taus += tau_cor.X()
+                    met_y_prop_taus += tau_cor.Y()
                     met_x_prop += tau_cor.X()
                     met_y_prop += tau_cor.Y()
+
+                # PROPAGATE jet correcions
+                all_sel_jets = sel_jets.medium + sel_jets.loose + sel_jets.rest
+                if all_sel_jets:
+                    #try:
+                    jet_cor = all_sel_jets[0][0] * (1. - all_sel_jets[0][1])
+                    for jet in all_sel_jets[1:]:
+                        jet_cor += jet[0] * (1. - jet[1])
+
+                    met_x_prop_jets += jet_cor.X()
+                    met_y_prop_jets += jet_cor.Y()
+                    met_x_prop += jet_cor.X()
+                    met_y_prop += jet_cor.Y()
+                    # met prop = met nom + nom - factor
+                    # met prop + factor = met nom + nom
 
                 Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x_prop, met_y_prop)
                 # test on Mt fluctuation in mu_sel
@@ -2984,6 +3081,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     continue
 
                 met_pt = TMath.Sqrt(met_x_prop*met_x_prop + met_y_prop*met_y_prop)
+                met_pt_taus = TMath.Sqrt(met_x_prop_taus*met_x_prop_taus + met_y_prop_taus*met_y_prop_taus)
+                met_pt_jets = TMath.Sqrt(met_x_prop_jets*met_x_prop_jets + met_y_prop_jets*met_y_prop_jets)
+                met_pt_init = TMath.Sqrt(met_x*met_x + met_y*met_y)
 
                 '''
                 # tt->elmu FAKERATES
@@ -2997,6 +3097,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 '''
 
                 out_hs[(chan, proc, sys_name)]['met'].Fill(met_pt, record_weight)
+                out_hs[(chan, proc, sys_name)]['met_prop_taus'].Fill(met_pt_init, met_pt_taus - met_pt_init, record_weight)
+                out_hs[(chan, proc, sys_name)]['met_prop_jets'].Fill(met_pt_init, met_pt_jets - met_pt_init, record_weight)
+                out_hs[(chan, proc, sys_name)]['corr_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
                 out_hs[(chan, proc, sys_name)]['init_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
                 out_hs[(chan, proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  record_weight)
                 out_hs[(chan, proc, sys_name)]['lep_eta'] .Fill(ev.lep_p4[0].eta(), record_weight)
@@ -3250,7 +3353,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #'nLbjets':     TH1D('%s_%s_%s_nLbjets'   % (chan, proc, sys), '', 5, 0, 5),
                 #'ntaus':       TH1D('%s_%s_%s_ntaus'     % (chan, proc, sys), '', 5, 0, 5),
 
-                out_hs[(chan, proc, sys_name)]['njets']  .Fill(len(sel_jets.rest),   record_weight)
+                out_hs[(chan, proc, sys_name)]['njets']  .Fill(len(all_sel_jets),   record_weight)
+                out_hs[(chan, proc, sys_name)]['nRjets'] .Fill(len(sel_jets.rest),   record_weight)
                 out_hs[(chan, proc, sys_name)]['nMbjets'].Fill(len(sel_jets.medium), record_weight)
                 out_hs[(chan, proc, sys_name)]['nLbjets'].Fill(len(sel_jets.loose),  record_weight)
                 out_hs[(chan, proc, sys_name)]['ntaus']  .Fill(len(sel_taus),  record_weight)
