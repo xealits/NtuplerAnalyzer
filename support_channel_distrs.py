@@ -3274,7 +3274,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, proc, sys_name)]['met_prop_taus'].Fill(met_pt_init, met_pt_taus - met_pt_init, record_weight)
                 out_hs[(chan, proc, sys_name)]['met_prop_jets'].Fill(met_pt_init, met_pt_jets - met_pt_init, record_weight)
                 out_hs[(chan, proc, sys_name)]['corr_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
-                out_hs[(chan, proc, sys_name)]['init_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
+                out_hs[(chan, proc, sys_name)]['init_met'].Fill(ev.met_init.pt(),      record_weight) # for control
                 out_hs[(chan, proc, sys_name)]['all_sum_control'].Fill(all_sum_control_pt, record_weight) # for control
                 out_hs[(chan, proc, sys_name)]['all_sum_control_init'].Fill(all_sum_control_init_pt, record_weight) # for control
                 out_hs[(chan, proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  record_weight)
