@@ -3583,8 +3583,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     out_hs[(chan, proc, sys_name)]['nvtx_gen'].Fill(ev.nvtx_gen, record_weight)
                     for jet in all_sel_jets + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
                         out_hs[(chan, proc, sys_name)]['jet_bID_lev']        .Fill(jet[3], record_weight)
-                        out_hs[(chan, proc, sys_name)]['jet_flavours_hadron'].Fill(jet[4], record_weight)
-                        out_hs[(chan, proc, sys_name)]['jet_flavours_parton'].Fill(jet[5], record_weight)
+                        out_hs[(chan, proc, sys_name)]['jet_flavours_hadron'].Fill(abs(jet[4]), record_weight)
+                        out_hs[(chan, proc, sys_name)]['jet_flavours_parton'].Fill(abs(jet[5]), record_weight)
 
         if save_weights:
           #weight_bSF = 1.
