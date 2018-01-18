@@ -2269,7 +2269,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         jet_pt_jes_down = jet_pt * jet_factor_JESDown
 
                 # I'll do this per selection cut, since I tau-match
-                if not tau_match_lowest:
+                if not jet_tau_match_lowest:
                     # jet is p4, jet energy factor (which is 1 for nominal), b SF factor and bID lev
                     # the jet energy factor was corrected in ntuple but what's with MET?
                     # met comes from met_x = ev.met_corrected.Px()
@@ -2393,7 +2393,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
 
                 pt_cut = 22.
-                if not tau_match_cuts:
+                if not jet_tau_match_cuts:
                     # the same, but the cuts and lowest -> cuts
                     # nominals
                     if b_tagged_medium:
@@ -2475,7 +2475,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
 
                 pt_cut = 30.
-                if not tau_match_old:
+                if not jet_tau_match_old:
                     # the same, but the cuts and lowest -> cuts
                     # nominals
                     if b_tagged_medium:
