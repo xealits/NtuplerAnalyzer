@@ -3275,7 +3275,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, proc, sys_name)]['met_prop_jets'].Fill(met_pt_init, met_pt_jets - met_pt_init, record_weight)
                 out_hs[(chan, proc, sys_name)]['corr_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
                 out_hs[(chan, proc, sys_name)]['init_met'].Fill(ev.met_init.pt(),      record_weight) # for control
-                out_hs[(chan, proc, sys_name)]['all_sum_control'].Fill(all_sum_control_pt, record_weight) # for control
+                out_hs[(chan, proc, sys_name)]['all_sum_control']     .Fill(all_sum_control_pt, record_weight) # for control
                 out_hs[(chan, proc, sys_name)]['all_sum_control_init'].Fill(all_sum_control_init_pt, record_weight) # for control
                 out_hs[(chan, proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  record_weight)
                 out_hs[(chan, proc, sys_name)]['lep_eta'] .Fill(ev.lep_p4[0].eta(), record_weight)
@@ -3392,7 +3392,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f']      .Fill(Mt_lep_met, record_weight)
                 if not ev.pass_basic_METfilters:
                     out_hs[(chan, proc, sys_name)]['Mt_lep_met_METfilters'].Fill(Mt_lep_met, record_weight)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f']      .Fill(Mt_lep_met, record_weight)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_VS_nvtx']      .Fill(Mt_lep_met, ev.nvtx, 1.)
                 out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_VS_nvtx_gen']      .Fill(Mt_lep_met, ev.nvtx_gen, 1.)
                 # controls for effect from weights
