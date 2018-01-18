@@ -1470,7 +1470,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'nRjets':      TH1D('%s_%s_%s_nRjets'     % (chan, proc, sys), '', 10, 0, 10),
                                                'nMbjets':     TH1D('%s_%s_%s_nMbjets'    % (chan, proc, sys), '', 5, 0, 5),
                                                'nLbjets':     TH1D('%s_%s_%s_nLbjets'    % (chan, proc, sys), '', 5, 0, 5),
-                                               'njets_cats':  TH1D('%s_%s_%s_njets_cats' % (chan, proc, sys), '', 10, 0, 10),
+                                               'njets_cats':  TH1D('%s_%s_%s_njets_cats' % (chan, proc, sys), '', 45, 0, 45),
                                                'ntaus':       TH1D('%s_%s_%s_ntaus'      % (chan, proc, sys), '', 5, 0, 5),
 
                                                'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', 20, 0, 200),
@@ -3552,10 +3552,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #'nLbjets':     TH1D('%s_%s_%s_nLbjets'   % (chan, proc, sys), '', 5, 0, 5),
                 #'ntaus':       TH1D('%s_%s_%s_ntaus'     % (chan, proc, sys), '', 5, 0, 5),
 
+                n_rest_jets   = len(sel_jets.rest) 
+                n_medium_jets = len(sel_jets.medium)
+                n_loose_jets  = len(sel_jets.loose)
+
                 out_hs[(chan, proc, sys_name)]['njets']  .Fill(len(all_sel_jets),   record_weight)
-                out_hs[(chan, proc, sys_name)]['nRjets'] .Fill(len(sel_jets.rest),   record_weight)
-                out_hs[(chan, proc, sys_name)]['nMbjets'].Fill(len(sel_jets.medium), record_weight)
-                out_hs[(chan, proc, sys_name)]['nLbjets'].Fill(len(sel_jets.loose),  record_weight)
+                out_hs[(chan, proc, sys_name)]['nRjets'] .Fill(n_rest_jets   , record_weight)
+                out_hs[(chan, proc, sys_name)]['nMbjets'].Fill(n_medium_jets , record_weight)
+                out_hs[(chan, proc, sys_name)]['nLbjets'].Fill(n_loose_jets  , record_weight)
+
+                jets_category = 0
+                jets_category += n_rest_jets if n_rest_jets < 5 else 4
+                jets_category += 5 *   (n_medium_jets if n_medium_jets < 3 else 2)
+                jets_category += 3*5 * (n_loose_jets  if n_loose_jets  < 3 else 2)
+                out_hs[(chan, proc, sys_name)]['njets_cats'].Fill(jets_category,  record_weight)
+
                 out_hs[(chan, proc, sys_name)]['ntaus']  .Fill(len(sel_taus),  record_weight)
 
                 out_hs[(chan, proc, sys_name)]['nvtx'].Fill(ev.nvtx, record_weight)
