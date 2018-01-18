@@ -27,6 +27,28 @@ ssh fermi03 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW
 ssh fermi04 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/old-queues/queue_commands4 "'
 ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/old-queues/queue_commands5 "'
 
+
+fast 2 files per queue TT
+
+ssh fermi01 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/tt-only/by-2/commands_tt_powheg_only_1 "'
+ssh fermi02 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/tt-only/by-2/commands_tt_powheg_only_2 "'
+ssh fermi03 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/tt-only/by-2/commands_tt_powheg_only_3 "'
+ssh fermi04 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/tt-only/by-2/commands_tt_powheg_only_4 "'
+ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/tt-only/by-2/commands_tt_powheg_only_5 "'
+
+fast dy50
+
+ssh fermi04 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/dy50/by-10/commands_4 "'
+
+fst wjets merge-sets/wjets/by-20
+
+ssh fermi01 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/wjets/by-20/commands_1 "'
+ssh fermi02 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/wjets/by-20/commands_2 "'
+ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/wjets/by-20/commands_5 "'
+
+
+
+
 old-queues
 
 merge-sets/queue_commands_tt_fsr_1  merge-sets/queue_commands_tt_fsr_2  merge-sets/queue_commands_tt_fsr_5
