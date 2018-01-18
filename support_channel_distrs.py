@@ -457,7 +457,7 @@ yup:
 '''
 
 
-with_bSF = False
+with_bSF = True # 0L2M issue seems to be real
 
 if with_bSF:
     logging.info("loading b-tagging SF stuff")
