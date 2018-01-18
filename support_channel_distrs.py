@@ -1301,7 +1301,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     #            choice of subprocesses depends on channel (sadly),
     #            (find most precise subprocess ones, then store accordingly for channels)
     # sys     -- shape systematics
-    out_hs = OrderedDict([((chan, proc, sys), {'met':        TH1D('%s_%s_%s_met'        % (chan, proc, sys), '', 30, 0, 300),
+    out_hs = OrderedDict([((chan, proc, sys), {
+                                               'met':        TH1D('%s_%s_%s_met'        % (chan, proc, sys), '', 30, 0, 300),
                                                # control the tau/jet prop to met
                                                'met_prop_taus':      TH2D('%s_%s_%s_met_prop_taus'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
                                                'met_prop_jets':      TH2D('%s_%s_%s_met_prop_jets'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
@@ -1405,6 +1406,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'Mt_lep_met_lessjets':       TH1D('%s_%s_%s_Mt_lep_met_lessjets'   % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_0L2M':           TH1D('%s_%s_%s_Mt_lep_met_0L2M'       % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_0L2Mnot':        TH1D('%s_%s_%s_Mt_lep_met_0L2Mnot'    % (chan, proc, sys), '', 20, 0, 250),
+                                               'met_0L2M':           TH1D('%s_%s_%s_met_0L2M'          % (chan, proc, sys), '', 30, 0, 300),
+                                               'met_0L2Mnot':        TH1D('%s_%s_%s_met_0L2Mnot'       % (chan, proc, sys), '', 30, 0, 300),
+                                               'met_lessjets':       TH1D('%s_%s_%s_met_lessjets'      % (chan, proc, sys), '', 30, 0, 300),
+                                               'met_lessjets_init':  TH1D('%s_%s_%s_met_lessjets_init' % (chan, proc, sys), '', 30, 0, 300),
+
                                                'Mt_lep_met_f_VS_nvtx':      TH2D('%s_%s_%s_Mt_lep_met_f_VS_nvtx'  % (chan, proc, sys), '', 20, 0, 250, 50, 0, 50),
                                                'Mt_lep_met_f_VS_nvtx_gen':  TH2D('%s_%s_%s_Mt_lep_met_f_VS_nvtx_gen' % (chan, proc, sys), '', 20, 0, 250, 50, 0, 50),
 
@@ -1460,11 +1466,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                # TODO: add rho to ntuples
                                                'rho':         TH1D('%s_%s_%s_rho'        % (chan, proc, sys), '', 50, 0, 50),
 
-                                               'njets':       TH1D('%s_%s_%s_njets'     % (chan, proc, sys), '', 10, 0, 10),
-                                               'nRjets':      TH1D('%s_%s_%s_nRjets'    % (chan, proc, sys), '', 5, 0, 5),
-                                               'nMbjets':     TH1D('%s_%s_%s_nMbjets'   % (chan, proc, sys), '', 5, 0, 5),
-                                               'nLbjets':     TH1D('%s_%s_%s_nLbjets'   % (chan, proc, sys), '', 5, 0, 5),
-                                               'ntaus':       TH1D('%s_%s_%s_ntaus'     % (chan, proc, sys), '', 5, 0, 5),
+                                               'njets':       TH1D('%s_%s_%s_njets'      % (chan, proc, sys), '', 10, 0, 10),
+                                               'nRjets':      TH1D('%s_%s_%s_nRjets'     % (chan, proc, sys), '', 10, 0, 10),
+                                               'nMbjets':     TH1D('%s_%s_%s_nMbjets'    % (chan, proc, sys), '', 5, 0, 5),
+                                               'nLbjets':     TH1D('%s_%s_%s_nLbjets'    % (chan, proc, sys), '', 5, 0, 5),
+                                               'njets_cats':  TH1D('%s_%s_%s_njets_cats' % (chan, proc, sys), '', 10, 0, 10),
+                                               'ntaus':       TH1D('%s_%s_%s_ntaus'      % (chan, proc, sys), '', 5, 0, 5),
 
                                                'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', 20, 0, 200),
                                                'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
@@ -3442,6 +3449,23 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     out_hs[(chan, proc, sys_name)]['opt_lep_tau_pt']  .Fill(ev.lep_p4[0].pt(), taus_all_foropt[0][0].pt() * taus_all_foropt[0][1],  record_weight)
                 """
 
+                # test the Mt shape deviation on njets in event:
+                # small amount of jets (tau selection) -> large deviation, due to correction
+                if len(all_sel_jets) < 4:
+                    out_hs[(chan, proc, sys_name)]['Mt_lep_met_lessjets'] .Fill(Mt_lep_met,   record_weight)
+                    out_hs[(chan, proc, sys_name)]['met_lessjets']        .Fill(met_pt,     record_weight)
+                    out_hs[(chan, proc, sys_name)]['met_lessjets_init']   .Fill(met_pt_init,     record_weight)
+
+                # most deviation was found for 0 loose 2 medium b jets in tau selections
+                # is it connected with Mt?
+                if len(sel_jets.loose) == 0 and len(sel_jets.medium) == 2:
+                    out_hs[(chan, proc, sys_name)]['Mt_lep_met_0L2M'] .Fill(Mt_lep_met, record_weight)
+                    out_hs[(chan, proc, sys_name)]['met_0L2M']        .Fill(met_pt,     record_weight)
+                else:
+                    out_hs[(chan, proc, sys_name)]['Mt_lep_met_0L2Mnot'] .Fill(Mt_lep_met, record_weight)
+                    out_hs[(chan, proc, sys_name)]['met_0L2Mnot']        .Fill(met_pt,     record_weight)
+
+
                 if sel_taus: #has_medium_tau:
                 #if len(ev.tau_p4) > 0:
                     #lep_tau = ev.lep_p4[0] + taus[0][0] # done above
@@ -3470,18 +3494,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         out_hs[(chan, proc, sys_name)]['Mt_lep_met_t5']      .Fill(Mt_lep_met, record_weight)
                     else:
                         out_hs[(chan, proc, sys_name)]['Mt_lep_met_t6']      .Fill(Mt_lep_met, record_weight)
-
-                    # test the Mt shape deviation on njets in event:
-                    # small amount of jets (tau selection) -> large deviation, due to correction
-                    if len(all_sel_jets) < 4:
-                        out_hs[(chan, proc, sys_name)]['Mt_lep_met_lessjets']  .Fill(Mt_lep_met,   record_weight)
-
-                    # most deviation was found for 0 loose 2 medium b jets in tau selections
-                    # is it connected with Mt?
-                    if len(sel_jets.loose) == 0 and len(sel_jets.medium) == 2:
-                        out_hs[(chan, proc, sys_name)]['Mt_lep_met_0L2M']  .Fill(Mt_lep_met,   record_weight)
-                    else:
-                        out_hs[(chan, proc, sys_name)]['Mt_lep_met_0L2Mnot']  .Fill(Mt_lep_met,   record_weight)
 
                     out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
                     out_hs[(chan, proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
