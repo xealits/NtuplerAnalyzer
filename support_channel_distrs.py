@@ -635,8 +635,8 @@ def calc_lj_var(light_jets, b_jets):
     # pairs of light jets
     for i in range(len(light_jets)):
       for u in range(i):
-        ji, multi, _, _ = light_jets[i]
-        ju, multu, _, _ = light_jets[u]
+        ji, multi, _, _, _, _ = light_jets[i]
+        ju, multu, _, _, _, _ = light_jets[u]
         pair = ji * multi + ju * multu
         new_dist = abs(pair.mass() - 80)
         if new_dist < dist_W:
@@ -645,7 +645,7 @@ def calc_lj_var(light_jets, b_jets):
 
     # closest to 173
     dist_t = 99999.
-    for j, mult, _, _ in b_jets:
+    for j, mult, _, _, _, _ in b_jets:
         pair = j * mult + closest_to_W
         new_dist = abs(pair.mass() - 173)
         if new_dist < dist_t:
@@ -2893,11 +2893,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             weight_bSF_lowest = 1.
             # p4, energy factor, b SF weight, ID lev
-            for _, _, jet_weight, _ in jets.lowest.medium + jets.lowest.loose + jets.lowest.rest:
+            for _, _, jet_weight, _, _, _ in jets.lowest.medium + jets.lowest.loose + jets.lowest.rest:
                 weight_bSF_lowest *= jet_weight
 
             weight_bSF_old = 1.
-            for _, _, jet_weight, _ in jets.old.medium + jets.old.loose + jets.old.rest:
+            for _, _, jet_weight, _, _, _ in jets.old.medium + jets.old.loose + jets.old.rest:
                 weight_bSF_old *= jet_weight
 
             has_tight_lowest_taus = len(taus.lowest) > 0
