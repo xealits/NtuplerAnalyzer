@@ -3144,6 +3144,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
 
             if pass_mu and old_jet_sel:
+                sel_b_weight = weight_bSF_old
                 passed_channels.append(('ctr_old_mu_presel', sel_b_weight, jets.old, taus.old))
 
             #pass_single_lep_presel = large_met and has_3jets and has_bjets and (pass_el or pass_mu) #and os_lep_med_tau
@@ -3167,6 +3168,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         passed_channels.append(('ctr_old_mu_sel_lj_ss', sel_b_weight, jets.old, taus.old))
 
             if pass_el and old_jet_sel:
+                sel_b_weight = weight_bSF_old
                 passed_channels.append(('ctr_old_el_presel', sel_b_weight, jets.old, taus.old))
 
             if pass_old_el_sel:

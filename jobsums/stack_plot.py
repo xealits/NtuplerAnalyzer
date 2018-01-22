@@ -233,7 +233,11 @@ if args.qcd > 0.:
     for (distr, mc_sums), (_, datas) in zip(hs_sums2_ss, histos_data_per_distr_ss):
         for (mc_hist, _, channel), (data_hist, _, _) in zip(mc_sums, datas):
             qcd_hist = data_hist - mc_hist
-            qcd_hist.SetName("qcd")
+            #datadriven_qcd_name = "qcd"
+            # optmu_tight_2L1M_wjets_NOMINAL_Mt_lep_met
+            # I remove _ss from channel name
+            datadriven_qcd_name = '%s_%s_%s_%s' % (channel[:-3], 'qcd', args.systematic, distr)
+            qcd_hist.SetName(datadriven_qcd_name)
             qcd_hist.Scale(args.qcd)
             qcd_hists[(distr, channel)] = qcd_hist
             logging.debug('data qcd for (%s, %s) Integral = %f' % (distr, channel, qcd_hist.Integral()))
@@ -394,20 +398,57 @@ histos_data[0][0].GetYaxis().SetLabelSize(14) # labels will be 14 pixels
 
 
 if not args.plot and not args.ratio:
+    '''
+    For given channel, systematic and distribution
+    save the selected distributions, a THStack of them,
+    their sum, data distribution and legend.
+
+    Save it in TDirs:
+    distr/
+      channel/
+             sys/
+                distrs
+    '''
+
     filename = out_dir + args.mc_file.split('.root')[0] + '_%s_%s_%s.root' % (distr_name, channel, sys_name)
     logging.info('saving root %s' % filename)
-    fout = TFile(filename, 'RECREATE')
+    #fout = TFile(filename, 'RECREATE')
+    fout = TFile(filename, 'CREATE')
     fout.cd()
+
+    # create the channel/sys/ TDir
+    #out_dir = fout.mkdir('%s/%s/%s' % (distr_name, channel, sys_name))
+    # this doesn't work
+    out_dir = fout.mkdir(distr_name)
+    out_dir.cd()
+    out_dir = out_dir.mkdir(channel)
+    out_dir.cd()
+    out_dir = out_dir.mkdir(sys_name)
+    out_dir.cd()
+
     #histo_data.Write() #'data')
     for h, nick, _ in histos_data + used_histos:
         logging.info(nick)
+        h.SetDirectory(out_dir)
         h.Write()
-    hs.Write()
-    hs_sum1.Write()
-    hs_sum2.Write()
-    leg.Write('leg')
+
+    # AttributeError: 'THStack' object has no attribute 'SetDirectory'
+    # therefore no THStack in the output
+    for stuff in [hs_sum1, hs_sum2]:
+        stuff.SetDirectory(out_dir)
+        stuff.Write()
+    #hs.Write()
+    #hs_sum1.Write()
+    #hs_sum2.Write()
+    # also
+    # AttributeError: 'TLegend' object has no attribute 'SetDirectory'
+    #leg.SetDirectory(out_dir)
+    #leg.Write('leg')
+
     fout.Write()
     fout.Close()
+
+    logging.info("no segfault here")
 
 elif args.form_shapes:
     from ROOT import gStyle, gROOT, TCanvas, TPad
@@ -639,4 +680,6 @@ else:
     shape_chan = ('_x_' + args.shape) if args.shape else ''
     cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ".png")
 
+
+logging.info("segfault after here")
 

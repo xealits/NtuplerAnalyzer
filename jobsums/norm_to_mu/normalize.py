@@ -251,9 +251,9 @@ for fname in files:
 
         # mu tracking factor
         mu_factor = 1.
-        if 'mu' in process:
-            mu_factor = 0.975
-            #logging.debug('mu channel, multiplying by %f for mu tracking' % mu_factor)
+        #if 'mu' in process:
+        #    mu_factor = 0.975
+        #    #logging.debug('mu channel, multiplying by %f for mu tracking' % mu_factor)
 
         #try:
         for chan in list(proc.ReadObj().GetListOfKeys()):
@@ -261,6 +261,8 @@ for fname in files:
             if nick == 'none': #'tt_mutau':
                 tauIDSF_factor = 0.90
             elif nick in ('tt_mutau3ch', 'tt_eltau3ch', 'tt_mutau', 'tt_eltau', 'tt_taultauh', 'dy_tautau', 's_top_eltau', 's_top_mutau', 'dy_tautau'):
+                tauIDSF_factor = 0.95
+            elif any(ch in nick for ch in ('ctr_old_mu_sel', 'ctr_old_mu_sel', 'ctr_old_el_sel', 'optel_tight_2L1M', 'optmu_tight_2L1M')):
                 tauIDSF_factor = 0.95
             else:
                 tauIDSF_factor = 1.
