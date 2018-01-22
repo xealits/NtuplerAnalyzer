@@ -1475,8 +1475,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                                                # jet flavours exist only for mc
                                                # do them up to 30 -- check overflows if there are many
-                                               'jet_flavours_hadron': TH1D('%s_%s_%s_jet_flavours_hadron' % (chan, proc, sys), '', 30, 0, 30),
-                                               'jet_flavours_parton': TH1D('%s_%s_%s_jet_flavours_parton' % (chan, proc, sys), '', 30, 0, 30),
+                                               'jet_flavours_hadron': TH1D('%s_%s_%s_jet_flavours_hadron' % (chan, proc, sys), '', 35, -5, 30),
+                                               'jet_flavours_parton': TH1D('%s_%s_%s_jet_flavours_parton' % (chan, proc, sys), '', 35, -5, 30),
                                                'jet_bID_lev':         TH1D('%s_%s_%s_jet_bID_lev'         % (chan, proc, sys), '', 5, 0, 5),
 
                                                'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', 20, 0, 200),
@@ -2192,6 +2192,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             # But the JES is re-correction
             # Thus also * UncorFactor
             en_factor = 1.
+            HF = -1
+            PF = -1
             if isMC:
                 jer_factor = ev.jet_jer_factor[i]
                 jes_factor = ev.jet_jes_recorrection[i]
