@@ -1506,6 +1506,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'jet_flavours_parton': TH1D('%s_%s_%s_jet_flavours_parton' % (chan, proc, sys), '', 35, -5, 30),
                                                'jet_bID_lev':         TH1D('%s_%s_%s_jet_bID_lev'         % (chan, proc, sys), '', 5, 0, 5),
 
+                                               'control_bSF_weight':  TH1D('%s_%s_%s_control_bSF_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
+                                               'control_PU_weight':   TH1D('%s_%s_%s_control_PU_weight'   % (chan, proc, sys), '', 150, 0., 1.5),
+                                               'control_rec_weight':  TH1D('%s_%s_%s_control_rec_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
+
                                                'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', 20, 0, 200),
                                                'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
                                                '2D_dijet_trijet':   TH2D('%s_%s_%s_2D_dijet_trijet'   % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
@@ -3640,6 +3644,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         out_hs[(chan, proc, sys_name)]['jet_bID_lev']        .Fill(jet[3], record_weight)
                         out_hs[(chan, proc, sys_name)]['jet_flavours_hadron'].Fill(abs(jet[4]), record_weight)
                         out_hs[(chan, proc, sys_name)]['jet_flavours_parton'].Fill(abs(jet[5]), record_weight)
+
+                out_hs[(chan, proc, sys_name)]['control_bSF_weight'].Fill(weight_bSF)
+                out_hs[(chan, proc, sys_name)]['control_PU_weight'] .Fill(weight_PU)
+                out_hs[(chan, proc, sys_name)]['control_rec_weight'].Fill(record_weight)
 
         if save_weights:
           #weight_bSF = 1.
