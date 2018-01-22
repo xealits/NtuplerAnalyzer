@@ -1250,10 +1250,37 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_nominal),
     }
 
+    channels_optimized_old_full_sys = {
+                'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
+                'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
+                'ctr_alliso_mu_wjet':       (procs_mu, systematic_names_nominal),
+                'ctr_alliso_mu_wjet_ss':    (procs_mu, systematic_names_nominal),
+
+                'ctr_mu_dy_mumu':           (procs_mu, systematic_names_pu),
+                'ctr_mu_tt_em':             (procs_elmu, systematic_names_pu_toppt),
+
+                'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                # testing issue with event yield advantage
+                'ctr_old_mu_sel':           (procs_mu, systematic_names_all),
+                'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_all),
+                'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_all),
+                'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_all),
+                'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_all),
+                'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_all),
+
+                'ctr_old_el_presel':        (procs_el, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                'ctr_old_el_sel':           (procs_el, systematic_names_all),
+                'ctr_old_el_sel_ss':        (procs_el, systematic_names_all),
+                'ctr_old_el_sel_lj':        (procs_el, systematic_names_all),
+                'ctr_old_el_sel_lj_ss':     (procs_el, systematic_names_all),
+                'ctr_old_el_sel_ljout':     (procs_el, systematic_names_all),
+                'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_all),
+    }
+
     #channels = channels_mu_only
     #channels = channels_usual
     #channels, with_bSF = channels_mutau_optimization_scan, False
-    channels = channels_optimized
+    channels = channels_optimized_old_full_sys
 
     with_JER   = isMC and True
     with_JES   = isMC and True
@@ -2907,12 +2934,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1
             pass_old_mu_sel = pass_mu and old_jet_sel and len(taus.old) > 0 # and no met cut
+            pass_old_el_sel = pass_el and old_jet_sel and len(taus.old) > 0 # and no met cut
 
-            if pass_old_mu_sel or ((pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus)):
+            if pass_old_mu_sel or pass_old_el_sel or ((pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus)):
                 # all jets, without regard to tau in the event go into the calculation
                 # (taumatched jets go too)
                 lj_var, w_mass, t_mass = calc_lj_var(jets.lowest.rest + jets.lowest.taumatched[1], jets.lowest.medium + jets.lowest.loose + jets.lowest.taumatched[0])
-                lj_cut = 80.
+                lj_cut = 60.
                 large_lj = lj_var > lj_cut
 
             '''
@@ -3115,6 +3143,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         passed_channels.append(('ctr_mu_wjet_ss', sel_b_weight, jets.lowest, taus.presel))
 
 
+            if pass_mu and old_jet_sel:
+                passed_channels.append(('ctr_old_mu_presel', sel_b_weight, jets.old, taus.old))
+
             #pass_single_lep_presel = large_met and has_3jets and has_bjets and (pass_el or pass_mu) #and os_lep_med_tau
             #pass_single_lep_sel = pass_single_lep_presel and os_lep_med_tau
             #if pass_mu and old_jet_sel and met_pt > 40 and len(taus.old) > 0:
@@ -3125,15 +3156,35 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 if old_os:
                     passed_channels.append(('ctr_old_mu_sel', sel_b_weight, jets.old, taus.old))
                     if large_lj:
-                        passed_channels.append(('ctr_old_mu_sel_lj', sel_b_weight, jets.old, taus.old))
-                    else:
                         passed_channels.append(('ctr_old_mu_sel_ljout', sel_b_weight, jets.old, taus.old))
+                    else:
+                        passed_channels.append(('ctr_old_mu_sel_lj', sel_b_weight, jets.old, taus.old))
                 else:
                     passed_channels.append(('ctr_old_mu_sel_ss', sel_b_weight, jets.old, taus.old))
                     if large_lj:
-                        passed_channels.append(('ctr_old_mu_sel_lj_ss', sel_b_weight, jets.old, taus.old))
-                    else:
                         passed_channels.append(('ctr_old_mu_sel_ljout_ss', sel_b_weight, jets.old, taus.old))
+                    else:
+                        passed_channels.append(('ctr_old_mu_sel_lj_ss', sel_b_weight, jets.old, taus.old))
+
+            if pass_el and old_jet_sel:
+                passed_channels.append(('ctr_old_el_presel', sel_b_weight, jets.old, taus.old))
+
+            if pass_old_el_sel:
+                # actually I should add ev.lep_p4[0].pt() > 27
+                old_os = taus.old[0][2] * ev.lep_id[0] < 0
+                sel_b_weight = weight_bSF_old
+                if old_os:
+                    passed_channels.append(('ctr_old_el_sel', sel_b_weight, jets.old, taus.old))
+                    if large_lj:
+                        passed_channels.append(('ctr_old_el_sel_ljout', sel_b_weight, jets.old, taus.old))
+                    else:
+                        passed_channels.append(('ctr_old_el_sel_lj', sel_b_weight, jets.old, taus.old))
+                else:
+                    passed_channels.append(('ctr_old_el_sel_ss', sel_b_weight, jets.old, taus.old))
+                    if large_lj:
+                        passed_channels.append(('ctr_old_el_sel_ljout_ss', sel_b_weight, jets.old, taus.old))
+                    else:
+                        passed_channels.append(('ctr_old_el_sel_lj_ss', sel_b_weight, jets.old, taus.old))
 
             ## save distrs
             #for chan, proc in chan_subproc_pairs:
