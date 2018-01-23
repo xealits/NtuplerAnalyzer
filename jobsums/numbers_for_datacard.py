@@ -5,15 +5,15 @@ process     10        9         8         7             6           5           
 rate        117.997   10.96     417.34    169.45        29.42       205.302     25.73    228.08       3523.18   328.59    3750.46     ------------------------------------------------------------------------------------------------------------------------------------------------------------
 '''
 
-all_known_sorted_processes = [ 'dy_tautau', 'dy_other',  'wjets', 'dibosons',  's_top_mutau',   's_top_other', 's_top_lj',    'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'tt_eltau']
+all_known_sorted_processes = [ 'dy_tautau', 'dy_other',  'wjets', 'dibosons',  's_top_mutau',   's_top_other', 's_top_lj',    'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'tt_eltau', 'qcd']
 
-processes_mu = ['dy_tautau', 'dy_other',  'wjets',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau']
+processes_mu = ['dy_tautau', 'dy_other',  'wjets',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'qcd']
 #processes_mu = set(['dy_tautau', 'dy_other',  'wjets',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau'])
-processes_mu_id = {'dy_tautau':10, 'dy_other': 9,  'wjets': 8,     's_top_mutau': 7,   's_top_other': 6, 's_top_lj': 5,    'dibosons': 4, 'tt_taultauh': 3,  'tt_lj': 2,     'tt_other': 1,  'tt_mutau':0}
+processes_mu_id = {'qcd': 11, 'dy_tautau':10, 'dy_other': 9,  'wjets': 8,     's_top_mutau': 7,   's_top_other': 6, 's_top_lj': 5,    'dibosons': 4, 'tt_taultauh': 3,  'tt_lj': 2,     'tt_other': 1,  'tt_mutau':0}
 
-processes_el = ['dy_tautau', 'dy_other',  'wjets',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau']
+processes_el = ['dy_tautau', 'dy_other',  'wjets',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau', 'qcd']
 #processes_el = set(['dy_tautau', 'dy_other',  'wjets',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau'])
-processes_el_id = {'dy_tautau':10, 'dy_other': 9,  'wjets': 8,     's_top_eltau': 7,   's_top_other': 6, 's_top_lj': 5,    'dibosons': 4, 'tt_taultauh': 3,  'tt_lj': 2,     'tt_other': 1,  'tt_eltau':0}
+processes_el_id = {'qcd': 11, 'dy_tautau':10, 'dy_other': 9,  'wjets': 8,     's_top_eltau': 7,   's_top_other': 6, 's_top_lj': 5,    'dibosons': 4, 'tt_taultauh': 3,  'tt_lj': 2,     'tt_other': 1,  'tt_eltau':0}
 
 """
 \text{dy}\rightarrow{\tau\tau}
@@ -181,10 +181,10 @@ for channel in channels:
     data_yields[channel] = data_histo.Integral()
 
     if not args.event_yields:
-        print 'bin           ' + ''.join('%-15s' % channel for _ in processes)
-        print 'process       ' + ''.join('%-15s' % proc for proc in processes)
-        print 'process       ' + ''.join('%-15d' % processes_id[proc] for proc in processes)
-        print 'rate          ' + ''.join('%-15.3f' % histo.Integral() for histo in histos)
+        print 'bin           ' + ''.join('%-25s' % channel for _ in processes)
+        print 'process       ' + ''.join('%-25s' % proc for proc in processes)
+        print 'process       ' + ''.join('%-25d' % processes_id[proc] for proc in processes)
+        print 'rate          ' + ''.join('%-25.3f' % histo.Integral() for histo in histos)
 
         print full_path
         print 'obs %f' % data_histo.Integral()

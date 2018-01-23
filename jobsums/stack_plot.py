@@ -403,14 +403,14 @@ if not args.plot and not args.ratio:
     save the selected distributions, a THStack of them,
     their sum, data distribution and legend.
 
-    Save it in TDirs:
-    distr/
-      channel/
-             sys/
+    Save as usual in TDirs:
+    channel/
+         proc/
+            sys/
                 distrs
     '''
 
-    filename = out_dir + args.mc_file.split('.root')[0] + '_%s_%s_%s.root' % (distr_name, channel, sys_name)
+    filename = out_dir + args.mc_file.split('.root')[0] + '_HISTOSEL_%s_%s_%s.root' % (distr_name, channel, sys_name)
     logging.info('saving root %s' % filename)
     #fout = TFile(filename, 'RECREATE')
     fout = TFile(filename, 'CREATE')
@@ -419,31 +419,36 @@ if not args.plot and not args.ratio:
     # create the channel/sys/ TDir
     #out_dir = fout.mkdir('%s/%s/%s' % (distr_name, channel, sys_name))
     # this doesn't work
-    out_dir = fout.mkdir(distr_name)
-    out_dir.cd()
-    out_dir = out_dir.mkdir(channel)
-    out_dir.cd()
-    out_dir = out_dir.mkdir(sys_name)
-    out_dir.cd()
+    #out_dir = fout.mkdir(distr_name)
+    #out_dir.cd()
+    chan_dir = fout.mkdir(channel)
+    chan_dir.cd()
+    #out_dir = out_dir.mkdir(sys_name)
+    #out_dir.cd()
 
     #histo_data.Write() #'data')
     for h, nick, _ in histos_data + used_histos:
         logging.info(nick)
-        h.SetDirectory(out_dir)
+        proc_dir = chan_dir.mkdir(nick)
+        proc_dir.cd()
+        syst_dir = proc_dir.mkdir(sys_name)
+        syst_dir.cd()
+
+        h.SetDirectory(syst_dir)
         h.Write()
 
-    # AttributeError: 'THStack' object has no attribute 'SetDirectory'
-    # therefore no THStack in the output
-    for stuff in [hs_sum1, hs_sum2]:
-        stuff.SetDirectory(out_dir)
-        stuff.Write()
-    #hs.Write()
-    #hs_sum1.Write()
-    #hs_sum2.Write()
-    # also
-    # AttributeError: 'TLegend' object has no attribute 'SetDirectory'
-    #leg.SetDirectory(out_dir)
-    #leg.Write('leg')
+    ## AttributeError: 'THStack' object has no attribute 'SetDirectory'
+    ## therefore no THStack in the output
+    #for stuff in [hs_sum1, hs_sum2]:
+    #    stuff.SetDirectory(out_dir)
+    #    stuff.Write()
+    ##hs.Write()
+    ##hs_sum1.Write()
+    ##hs_sum2.Write()
+    ## also
+    ## AttributeError: 'TLegend' object has no attribute 'SetDirectory'
+    ##leg.SetDirectory(out_dir)
+    ##leg.Write('leg')
 
     fout.Write()
     fout.Close()

@@ -30,6 +30,25 @@ this crashes:
  --setParameterRanges TOPPT=-1.0,2.0
 
 
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_mu.txt --algo grid --points 2000 --rMax 2 --name MuShapes
+root -l higgsCombineMuShapes.MultiDimFit.mH120.root
+limit->Draw("2*deltaNLL:r", "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+
+### Expected NLL
+
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_mu.txt --algo grid --points 2000 --rMax 2 --name ExpectedMu -t -1 --expectSignal 1
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_mu_inclusive.txt --algo grid --points 2000 --rMax 2 --name ExpectedInclusiveMu -t -1 --expectSignal 1
+
+freeze tau uncert:
+
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_mu.txt --algo grid --points 2000 --rMax 2 --name ExpectedMu -t -1 --expectSignal 1 --freezeNuisanceGroup=tau
+
+
+### Bias band plot
+
+
+
 
 
 ## pulls in fit
@@ -37,6 +56,8 @@ this crashes:
 combine -M FitDiagnostics ttxsec/fit-stuff/tt_el_2.txt --name El
 combine -M FitDiagnostics ttxsec/fit-stuff/fresh_mu.txt --name MuShape
 combine -M FitDiagnostics ttxsec/fit-stuff/fresh_el.txt --name ElShape
+
+combine -M FitDiagnostics ttxsec/fit-stuff/optimized5_mu.txt --name MuShape
 
 (corrected diffNuisances to output only s+b -- option "-o")
 
@@ -95,6 +116,13 @@ more plots with:
 combine -M FitDiagnostics ttxsec/tt_mu_2.txt --plots --saveShapes
 
 
+Overall:
+
+combine -M FitDiagnostics ttxsec/fit-stuff/optimized5_mu.txt --plots --saveShapes --saveWithUncertainties --name MuShapes
+
+
+
+
 
 ## datacard to "workspace"
 
@@ -102,6 +130,8 @@ required here and there by stuff
 
 ./scripts/text2workspace.py ttxsec/tt_el_2.txt
 ./scripts/text2workspace.py ttxsec/fit-stuff/fresh_mu.txt
+
+./scripts/text2workspace.py ttxsec/fit-stuff/optimized5_mu.txt
 
 
 
@@ -175,6 +205,20 @@ muon fit investigation:
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i el_impacts_just.json -o fixed_el_impacts_just
 
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i el_impacts_just.json -o fixed_el_impacts_just
+
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_mu.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_mu.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_mu.root -m 125 -o mu_impacts_opt5.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i mu_impacts_opt5.json -o fixed_mu_impacts_opt5
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_mu_inclusive.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_mu_inclusive.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_mu_inclusive.root -m 125 -o mu_impacts_opt5incl.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i mu_impacts_opt5incl.json -o fixed_mu_impacts_opt5incl
+
+
 
 
 
