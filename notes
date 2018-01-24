@@ -34,18 +34,43 @@ combine -M MultiDimFit ttxsec/fit-stuff/optimized5_mu.txt --algo grid --points 2
 root -l higgsCombineMuShapes.MultiDimFit.mH120.root
 limit->Draw("2*deltaNLL:r", "deltaNLL>0 && 2*deltaNLL<10", "L")
 
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_freefrate_mu.txt --algo grid --points 2000 --rMax 2 --name MuShapesFreeFrate
+root -l higgsCombineMuShapesFreeFrate.MultiDimFit.mH120.root
+limit->Draw("2*deltaNLL:r", "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+
+
+
+
+
+
 
 ### Expected NLL
 
-combine -M MultiDimFit ttxsec/fit-stuff/optimized5_mu.txt --algo grid --points 2000 --rMax 2 --name ExpectedMu -t -1 --expectSignal 1
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_mu.txt           --algo grid --points 2000 --rMax 2 --name ExpectedMu -t -1 --expectSignal 1
 combine -M MultiDimFit ttxsec/fit-stuff/optimized5_mu_inclusive.txt --algo grid --points 2000 --rMax 2 --name ExpectedInclusiveMu -t -1 --expectSignal 1
+
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_freefrate_mu.txt           --algo grid --points 2000 --rMax 2 --name FFrateExpectedMu -t -1 --expectSignal 1
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_freefrate_mu_inclusive.txt --algo grid --points 2000 --rMax 2 --name FFrateExpectedInclusiveMu -t -1 --expectSignal 1
 
 freeze tau uncert:
 
 combine -M MultiDimFit ttxsec/fit-stuff/optimized5_mu.txt --algo grid --points 2000 --rMax 2 --name ExpectedMu -t -1 --expectSignal 1 --freezeNuisanceGroup=tau
 
+to freeze all systs:
+(none run must find only the best fit point)
+
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_freefrate_mu.txt --algo none --rMax 2 --name ExpectedMuBest -t -1 --expectSignal 1 --saveWorkspace
+combine -M MultiDimFit higgsCombineExpectedMuBest.MultiDimFit.mH120.root --algo grid --points 200 --rMax 2 --name ExpectedMuStats -t -1 --expectSignal 1 --snapshotName MultiDimFit --freezeNuisances all
+
+
 
 ### Bias band plot
+
+separate script with hard-codes
+
+
+
 
 
 
