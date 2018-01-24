@@ -1614,14 +1614,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         pass_mu_id_iso = pass_mu_id and ev.lep_relIso[0] < 0.125
         pass_el_id_iso = pass_el_id and ev.lep_relIso[0] < 0.125
 
-        pass_mu_id_kino = pass_mu_id and ev.lep_p4[0].pt() > 27 and abs(ev.lep_p4[0].eta()) < 2.4
-        pass_el_id_kino = pass_el_id and ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4
+        # 1GeV above HLT pt
+        # ele eta gap
+        pass_mu_id_kino = pass_mu_id and ev.lep_p4[0].pt() > 25. and abs(ev.lep_p4[0].eta()) < 2.4
+        pass_el_id_kino = pass_el_id and ev.lep_p4[0].pt() > 28. and abs(ev.lep_p4[0].eta()) < 2.4 and (abs(ev.lep_p4[0].eta()) < 1.4442 or abs(ev.lep_p4[0].eta()) > 1.5660)
 
         # TODO: for optimization testing minimum pt cut --- review it after test results
         #    -- significant discrepancy at lowest lep pt bin -> UP 1 GeV from HLT and added a detailed distr of the trun on curve
         #    -- it seems the discrepancy were comming from trigger SF going down to 26 only -- fixed that, testing now
         pass_mu_all = pass_mu_id and ev.lep_p4[0].pt() > 24. and abs(ev.lep_p4[0].eta()) < 2.4 # and ev.lep_relIso[0] >= 0.125
-        pass_mu     = pass_mu_id and ev.lep_p4[0].pt() > 24. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] < 0.125
+        #pass_mu     = pass_mu_id and ev.lep_p4[0].pt() > 24. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] < 0.125
+        pass_mu     = pass_mu_id_kino and ev.lep_relIso[0] < 0.125
 
         # do this in place for the required selection
         #pass_mu_cuts = pass_mu and ev.lep_p4[0].pt() > 25. # so, it's smaller than the old cut 27 GeV
@@ -1631,7 +1634,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         #pass_mu = pass_mu_id_kino and ev.lep_relIso[0] < 0.125
         pass_el_all = pass_el_id and ev.lep_p4[0].pt() > 27. and abs(ev.lep_p4[0].eta()) < 2.4
-        pass_el     = pass_el_id and ev.lep_p4[0].pt() > 27. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] < 0.125
+        #pass_el     = pass_el_id and ev.lep_p4[0].pt() > 27. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] < 0.125
+        pass_el     = pass_el_id_kino and ev.lep_relIso[0] < 0.125
 
         pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
