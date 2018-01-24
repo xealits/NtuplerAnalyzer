@@ -39,6 +39,35 @@ root -l higgsCombineMuShapesFreeFrate.MultiDimFit.mH120.root
 limit->Draw("2*deltaNLL:r", "deltaNLL>0 && 2*deltaNLL<10", "L")
 
 
+#### Break down of the uncertainties
+
+muons
+
+./scripts/text2workspace.py ttxsec/fit-stuff/optimized5_freefrate_mu.txt
+combine -M MultiDimFit --algo none --rMin 0.1 --rMax 2.0 ttxsec/fit-stuff/optimized5_freefrate_mu.root --saveWorkspace -n MuBestfit
+
+combine -M MultiDimFit --algo grid --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JES,JER,TauES,bSF,PU" -n MuNoSysButTOPPT
+combine -M MultiDimFit --algo grid --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeNuisanceGroup "tau" -n MuNoTau
+combine -M MultiDimFit --algo grid --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit -n MuFullUncertainty
+
+also:
+
+combine -M MultiDimFit --algo grid --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JES,JER,bSF,PU,TOPPT" -n MuNoSysButTauES
+combine -M MultiDimFit --algo grid --points 2000 --rMin 0.1 --rMax 2.0 -n MuNoSysButTauFakes higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,tauID_eff,dy_norm,wjets_norm,qcd_norm,JES,JER,TauES,bSF,PU,TOPPT"
+
+
+
+
+electrons
+
+./scripts/text2workspace.py ttxsec/fit-stuff/optimized5_freefrate_el.txt
+combine -M MultiDimFit --algo none --rMin 0.1 --rMax 2.0 ttxsec/fit-stuff/optimized5_freefrate_el.root --saveWorkspace -n ElBestfit
+
+combine -M MultiDimFit --algo grid --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JES,JER,TauES,bSF,PU" -n ElNoSysButTOPPT
+combine -M MultiDimFit --algo grid --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeNuisanceGroup "tau" -n ElNoTau
+combine -M MultiDimFit --algo grid --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit -n ElFullUncertainty
+
+
 
 
 
@@ -63,11 +92,61 @@ to freeze all systs:
 combine -M MultiDimFit ttxsec/fit-stuff/optimized5_freefrate_mu.txt --algo none --rMax 2 --name ExpectedMuBest -t -1 --expectSignal 1 --saveWorkspace
 combine -M MultiDimFit higgsCombineExpectedMuBest.MultiDimFit.mH120.root --algo grid --points 200 --rMax 2 --name ExpectedMuStats -t -1 --expectSignal 1 --snapshotName MultiDimFit --freezeNuisances all
 
+-- old syntax doesn't work
+
+still nothing works
+
+
+Expected uncertainties
+
+I keep 1 week systematic on to emulate statistical uncertainty.
+
+./scripts/text2workspace.py ttxsec/fit-stuff/optimized5_freefrate_mu.txt
+combine -M MultiDimFit --algo none -t -1 --expectSignal 1 --rMin 0.1 --rMax 2.0 ttxsec/fit-stuff/optimized5_freefrate_mu.root --saveWorkspace -n ExpectedMuBestfit
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineExpectedMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JES,JER,TauES,bSF,PU" -n ExpectedMuNoSysButTOPPT
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineExpectedMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeNuisanceGroup "tau" -n ExpectedMuNoTau
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineExpectedMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit -n ExpectedMuFullUncertainty
+
+
+
+
+electrons:
+
+./scripts/text2workspace.py ttxsec/fit-stuff/optimized5_freefrate_el.txt
+combine -M MultiDimFit --algo none -t -1 --expectSignal 1 --rMin 0.1 --rMax 2.0 ttxsec/fit-stuff/optimized5_freefrate_el.root --saveWorkspace -n ExpectedElBestfit
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineExpectedElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JES,JER,TauES,bSF,PU" -n ExpectedElNoSysButTOPPT
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineExpectedElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeNuisanceGroup "tau" -n ExpectedElNoTau
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.1 --rMax 2.0 higgsCombineExpectedElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit -n ExpectedElFullUncertainty
+
+
+
+
 
 
 ### Bias band plot
 
 separate script with hard-codes
+
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_freefrate_el.txt           --algo grid --points 2000 --rMax 2 --name ExpectedElForSig09 -t -1 --expectSignal 0.9 &
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_freefrate_el.txt           --algo grid --points 2000 --rMax 2 --name ExpectedElForSig10 -t -1 --expectSignal 1.0 &
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_freefrate_el.txt           --algo grid --points 2000 --rMax 2 --name ExpectedElForSig11 -t -1 --expectSignal 1.1 &
+
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_freefrate_mu.txt           --algo grid --points 2000 --rMax 2 --name ExpectedMuForSig09 -t -1 --expectSignal 0.9 &
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_freefrate_mu.txt           --algo grid --points 2000 --rMax 2 --name ExpectedMuForSig10 -t -1 --expectSignal 1.0 &
+combine -M MultiDimFit ttxsec/fit-stuff/optimized5_freefrate_mu.txt           --algo grid --points 2000 --rMax 2 --name ExpectedMuForSig11 -t -1 --expectSignal 1.1 &
+
+
+((TTree*) _file0->Get("limit"))->Scan("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL<0.01")
+((TTree*) _file1->Get("limit"))->Scan("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL<0.01")
+((TTree*) _file2->Get("limit"))->Scan("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL<0.01")
+
+((TTree*) _file0->Get("limit"))->Scan("2*deltaNLL:r", "2*deltaNLL>0.9 && 2*deltaNLL<1.1")
+((TTree*) _file1->Get("limit"))->Scan("2*deltaNLL:r", "2*deltaNLL>0.9 && 2*deltaNLL<1.1")
+((TTree*) _file2->Get("limit"))->Scan("2*deltaNLL:r", "2*deltaNLL>0.9 && 2*deltaNLL<1.1")
+
+((TTree*) _file0->Get("limit"))->Scan("2*deltaNLL:r", "2*deltaNLL>3.9 && 2*deltaNLL<4.1")
+((TTree*) _file1->Get("limit"))->Scan("2*deltaNLL:r", "2*deltaNLL>3.9 && 2*deltaNLL<4.1")
+((TTree*) _file2->Get("limit"))->Scan("2*deltaNLL:r", "2*deltaNLL>3.9 && 2*deltaNLL<4.1")
 
 
 
@@ -82,11 +161,15 @@ combine -M FitDiagnostics ttxsec/fit-stuff/tt_el_2.txt --name El
 combine -M FitDiagnostics ttxsec/fit-stuff/fresh_mu.txt --name MuShape
 combine -M FitDiagnostics ttxsec/fit-stuff/fresh_el.txt --name ElShape
 
-combine -M FitDiagnostics ttxsec/fit-stuff/optimized5_mu.txt --name MuShape
+combine -M FitDiagnostics ttxsec/fit-stuff/optimized5_freefrate_mu.txt --name MuShape  --noMCbonly 0
+combine -M FitDiagnostics ttxsec/fit-stuff/optimized5_freefrate_el.txt --name ElShape  --noMCbonly 0
+
 
 (corrected diffNuisances to output only s+b -- option "-o")
 
 python test/diffNuisances.py fitDiagnostics.root -g pulls_of_nuisances.root -o
+
+(no need now with --noMCbonly -- no, it seems to not work)
 
 python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsMuShape.root -g pulls_of_nuisances_mu_shape.root -o
 root -l pulls_of_nuisances_mu_shape.root
@@ -157,6 +240,7 @@ required here and there by stuff
 ./scripts/text2workspace.py ttxsec/fit-stuff/fresh_mu.txt
 
 ./scripts/text2workspace.py ttxsec/fit-stuff/optimized5_mu.txt
+./scripts/text2workspace.py ttxsec/fit-stuff/optimized5_freefrate_mu.txt
 
 
 
@@ -243,6 +327,16 @@ muon fit investigation:
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_mu_inclusive.root -m 125 -o mu_impacts_opt5incl.json
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i mu_impacts_opt5incl.json -o fixed_mu_impacts_opt5incl
 
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_freefrate_mu.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_freefrate_mu.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_freefrate_mu.root -m 125 -o mu_impacts_opt5.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i mu_impacts_opt5.json -o mu_impacts_opt5
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_freefrate_el.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_freefrate_el.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/optimized5_freefrate_el.root -m 125 -o el_impacts_opt5.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i el_impacts_opt5.json -o el_impacts_opt5
 
 
 
