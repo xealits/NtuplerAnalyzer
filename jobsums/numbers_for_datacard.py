@@ -5,7 +5,7 @@ process     10        9         8         7             6           5           
 rate        117.997   10.96     417.34    169.45        29.42       205.302     25.73    228.08       3523.18   328.59    3750.46     ------------------------------------------------------------------------------------------------------------------------------------------------------------
 '''
 
-all_known_sorted_processes = [ 'dy_tautau', 'dy_other',  'wjets', 'dibosons',  's_top_mutau',   's_top_other', 's_top_lj',    'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'tt_eltau', 'qcd']
+all_known_sorted_processes = [ 'dy_tautau', 'dy_other',  'wjets', 'dibosons',  's_top_eltau',  's_top_mutau',   's_top_other', 's_top_lj',    'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'tt_eltau', 'qcd']
 
 processes_mu = ['dy_tautau', 'dy_other',  'wjets',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'qcd']
 #processes_mu = set(['dy_tautau', 'dy_other',  'wjets',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau'])
@@ -44,6 +44,7 @@ process_latex_strings = {'dy_tautau': '\\text{dy}\\rightarrow{\\tau_{l}\\tau_{h}
     'tt_other':                       't\\bar{t}\\rightarrow{other}',
     'tt_mutau':                       't\\bar{t}\\rightarrow{\\mu\\tau}',
     'tt_eltau':                       't\\bar{t}\\rightarrow{e\\tau}',
+    'qcd':                            '\\text{qcd}'
 }
 
 
