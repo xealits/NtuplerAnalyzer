@@ -1,0 +1,41 @@
+Combination of htt_tt_0_8TeV=htt_tt_0_8TeV.txt  htt_tt_1_8TeV=htt_tt_1_8TeV.txt  htt_tt_2_8TeV=htt_tt_2_8TeV.txt
+imax 2 number of bins
+jmax 11 number of processes minus 1
+kmax 12 number of nuisance parameters
+
+* autoMCStats 
+
+----------------------------------------------------------------------------------------------------------------------------------
+shapes *         optmu_tight_2L1M_lj     ./optimized5_mu_all-lj.root optmu_tight_2L1M_lj/$PROCESS/NOMINAL/optmu_tight_2L1M_lj_$PROCESS_NOMINAL_Mt_lep_met       optmu_tight_2L1M_lj/$PROCESS/$SYSTEMATIC/optmu_tight_2L1M_lj_$PROCESS_$SYSTEMATIC_Mt_lep_met
+shapes data_obs  optmu_tight_2L1M_lj     ./optimized5_mu_all-lj.root optmu_tight_2L1M_lj/data/NOMINAL/optmu_tight_2L1M_lj_data_NOMINAL_Mt_lep_met               optmu_tight_2L1M_lj/data/$SYSTEMATIC/optmu_tight_2L1M_lj_data_$SYSTEMATIC_Mt_lep_met
+shapes *         optmu_tight_2L1M_ljout  ./optimized5_mu_all-lj.root optmu_tight_2L1M_ljout/$PROCESS/NOMINAL/optmu_tight_2L1M_ljout_$PROCESS_NOMINAL_Mt_lep_met optmu_tight_2L1M_ljout/$PROCESS/$SYSTEMATIC/optmu_tight_2L1M_ljout_$PROCESS_$SYSTEMATIC_Mt_lep_met
+shapes data_obs  optmu_tight_2L1M_ljout  ./optimized5_mu_all-lj.root optmu_tight_2L1M_ljout/data/NOMINAL/optmu_tight_2L1M_ljout_data_NOMINAL_Mt_lep_met         optmu_tight_2L1M_ljout/data/$SYSTEMATIC/optmu_tight_2L1M_ljout_data_$SYSTEMATIC_Mt_lep_met
+----------------------------------------------------------------------------------------------------------------------------------
+bin          optmu_tight_2L1M_lj   optmu_tight_2L1M_ljout
+observation  11986.00              15487.00
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+bin           optmu_tight_2L1M_lj      optmu_tight_2L1M_lj      optmu_tight_2L1M_lj      optmu_tight_2L1M_lj      optmu_tight_2L1M_lj      optmu_tight_2L1M_lj      optmu_tight_2L1M_lj      optmu_tight_2L1M_lj      optmu_tight_2L1M_lj      optmu_tight_2L1M_lj      optmu_tight_2L1M_lj      optmu_tight_2L1M_lj          optmu_tight_2L1M_ljout   optmu_tight_2L1M_ljout   optmu_tight_2L1M_ljout   optmu_tight_2L1M_ljout   optmu_tight_2L1M_ljout   optmu_tight_2L1M_ljout   optmu_tight_2L1M_ljout   optmu_tight_2L1M_ljout   optmu_tight_2L1M_ljout   optmu_tight_2L1M_ljout   optmu_tight_2L1M_ljout   optmu_tight_2L1M_ljout   
+process       dy_tautau                dy_other                 wjets                    s_top_mutau              s_top_other              s_top_lj                 dibosons                 tt_taultauh              tt_lj                    tt_other                 tt_mutau                 qcd                          dy_tautau                dy_other                 wjets                    s_top_mutau              s_top_other              s_top_lj                 dibosons                 tt_taultauh              tt_lj                    tt_other                 tt_mutau                 qcd                      
+process       10                       9                        8                        7                        6                        5                        4                        3                        2                        1                        0                        11                           10                       9                        8                        7                        6                        5                        4                        3                        2                        1                        0                        11                       
+rate          297.292                  21.407                   406.009                  192.323                  36.632                   231.317                  27.554                   333.309                  4141.650                 384.967                  4984.985                 790.016                      643.345                  84.435                   1098.404                 425.672                  57.856                   305.566                  58.604                   560.201                  2276.938                 314.888                  8760.085                 1105.314                 
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+lumi_13TeV              lnN     1.026       1.026       1.026       1.026         1.026       1.026       1.026       1.026        1.026     1.026     1.026   1.026   1.026       1.026     1.026       1.026        1.026       1.026       1.026      1.026        1.026     1.026     1.026       1.026
+tauID_eff               lnN     1.05        -           -           1.05          1.05        -           -           1.05         -         -         1.05    -       1.05        -         -           1.05         1.05        -           -          1.05         -         -         1.05        -    
+tau_fakes               lnU     -           -           -           -             -           1.5         1.5         -            1.5       1.5       -       -       -           -         -           -            -           1.5         1.5        -            1.5       1.5       -           -    
+dy_norm                 lnN     1.3         1.3         -           -             -           -           -           -            -         -         -       -       1.3         1.3       -           -            -           -           -          -            -         -         -           -    
+wjets_norm              lnN     -           -           1.3         -             -           -           -           -            -         -         -       -       -           -         1.3         -            -           -           -          -            -         -         -           -    
+qcd_norm                lnN     -           -           -           -             -           -           -           -            -         -         -       1.3     -           -         -           -            -           -           -          -            -         -         -           1.3  
+JES           shape             1.0         1.0         1.0         1.0           1.0         1.0         1.0         1.0          1.0       1.0       1.0     1.0     1.0         1.0       1.0         1.0          1.0         1.0         1.0        1.0          1.0       1.0       1.0         1.0  
+JER           shape             1.0         1.0         1.0         1.0           1.0         1.0         1.0         1.0          1.0       1.0       1.0     1.0     1.0         1.0       1.0         1.0          1.0         1.0         1.0        1.0          1.0       1.0       1.0         1.0  
+TauES         shape             1.0         1.0         1.0         1.0           1.0         1.0         1.0         1.0          1.0       1.0       1.0     -       1.0         1.0       1.0         1.0          1.0         1.0         1.0        1.0          1.0       1.0       1.0         -    
+bSF           shape             1.0         1.0         1.0         1.0           1.0         1.0         1.0         1.0          1.0       1.0       1.0     1.0     1.0         1.0       1.0         1.0          1.0         1.0         1.0        1.0          1.0       1.0       1.0         1.0  
+PU            shape             1.0         1.0         1.0         1.0           1.0         1.0         1.0         1.0          1.0       1.0       1.0     1.0     1.0         1.0       1.0         1.0          1.0         1.0         1.0        1.0          1.0       1.0       1.0         1.0  
+TOPPT         shape             -           -           -           -             -           -           -           1.0          1.0       1.0       1.0     -       -           -         -           -            -           -           -          1.0          1.0       1.0       1.0         -    
+
+sys group = lumi_13TeV tauID_eff tau_fakes dy_norm wjets_norm qcd_norm JES JER TauES bSF PU TOPPT
+exp group = lumi_13TeV tauID_eff tau_fakes dy_norm wjets_norm qcd_norm JES JER TauES bSF PU TOPPT
+tau group = tauID_eff tau_fakes
