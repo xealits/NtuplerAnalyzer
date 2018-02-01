@@ -233,7 +233,8 @@ for fname in files:
         logging.warning("file doesn't exist: %s" % filename)
         continue
 
-    isMC = 'MC' in fname
+    isMC = 'MC' in fname or fname[:3] == 'TT_'
+    logging.info("isMC %d" % isMC)
 
     f = TFile(fname + '.root', "UPDATE")
     #weight_counter = f.Get('weight_counter')
@@ -269,6 +270,8 @@ for fname in files:
 
             for sys in list(chan.ReadObj().GetListOfKeys()):
                 sys_name = sys.GetName()
+
+                #logging.debug(sys_name)
 
                 if 'alliso' in process and sys_name != 'NOMINAL':
                 #if sys_name != 'NOMINAL':

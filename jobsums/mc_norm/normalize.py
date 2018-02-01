@@ -65,6 +65,15 @@ xsecs = {
 "MC2016_Summer16_SingleTbar_tW_5FS_powheg_": 35.6,
 "MC2016_Summer16_SingleTbar_tW_5FS_powheg": 35.6,
 
+'TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8'     : ttbar_xsec,
+'TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8'       : ttbar_xsec,
+'TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8'     : ttbar_xsec,
+'TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8'       : ttbar_xsec,
+'TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8'         : ttbar_xsec,
+'TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8'           : ttbar_xsec,
+'TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8'   : ttbar_xsec,
+'TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8'     : ttbar_xsec,
+
 "MC2016_Summer16_TTJets_powheg_FSRDown": ttbar_xsec,
 "MC2016_Summer16_TTJets_powheg_FSRUp":   ttbar_xsec,
 "MC2016_Summer16_TTJets_powheg_ISRDown": ttbar_xsec,
