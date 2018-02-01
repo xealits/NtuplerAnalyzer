@@ -2999,7 +2999,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             pass_old_mu_sel = pass_mu and old_jet_sel and len(taus.old) > 0 # and no met cut
             pass_old_el_sel = pass_el and old_jet_sel and len(taus.old) > 0 # and no met cut
 
-            if pass_old_mu_sel or pass_old_el_sel or ((pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus)):
+            requires_lj = pass_old_mu_sel or pass_old_el_sel or ((pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus))
+            if requires_lj:
                 # all jets, without regard to tau in the event go into the calculation
                 # (taumatched jets go too)
                 lj_var, w_mass, t_mass = calc_lj_var(jets.lowest.rest + jets.lowest.taumatched[1], jets.lowest.medium + jets.lowest.loose + jets.lowest.taumatched[0])
@@ -3669,10 +3670,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 # OPTIMIZATION don't make these
                 ##out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, record_weight)
-                #out_hs[(chan, proc, sys_name)]['dijet_mass']  .Fill(w_mass, record_weight)
-                #out_hs[(chan, proc, sys_name)]['trijet_mass'] .Fill(t_mass, record_weight)
-                #out_hs[(chan, proc, sys_name)]['2D_dijet_trijet'] .Fill(w_mass, t_mass, record_weight)
-                #out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(lj_var, record_weight)
+                if requires_lj:
+                    out_hs[(chan, proc, sys_name)]['dijet_mass']       .Fill(w_mass, record_weight)
+                    out_hs[(chan, proc, sys_name)]['trijet_mass']      .Fill(t_mass, record_weight)
+                    out_hs[(chan, proc, sys_name)]['2D_dijet_trijet']  .Fill(w_mass, t_mass, record_weight)
+                    out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(lj_var, record_weight)
 
                 #'njets':       TH1D('%s_%s_%s_njets'     % (chan, proc, sys), '', 5, 0, 5),
                 #'nMbjets':     TH1D('%s_%s_%s_nMbjets'   % (chan, proc, sys), '', 5, 0, 5),
