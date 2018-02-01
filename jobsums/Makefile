@@ -1,47 +1,49 @@
 
 plots_sel: out_dir=./
 plots_sel: sel=mu
-plots_sel: tag=mu
+plots_sel: tag=mu_sel
 plots_sel: qcd=1.
 plots_sel:
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_Mt_lep_met_f -p -r --qcd ${qcd} --title "" --title-x "M_{T}(l, MET)"  -c ${sel} -d Mt_lep_met_f
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_Mt_lep_met -p -r --qcd ${qcd} --title "" --title-x "M_{T}(l, MET)"  -c ${sel} -d Mt_lep_met
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_lep_pt     -p -r --qcd ${qcd} --title "" --title-x "lepton p_{T}"  -c ${sel} -d lep_pt
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_lep_eta    -p -r --qcd ${qcd} --title "" --title-x "lepton #eta"  -c ${sel} -d lep_eta
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_lep_pt_toppt  -p -r --qcd ${qcd} --title-x "lepton p_{T}"  -c ${sel} -d lep_pt -s TOPPTUp
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_met        -p -r --qcd ${qcd} --title "" --title-x "MET"  -c ${sel} -d met
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_met_toppt  -p -r --qcd ${qcd} --title-x "MET"  -c ${sel} -d met -s TOPPTUp
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_bMjet_pt   -p -r --qcd ${qcd} --title "" --title-x "leading M b-jet p_{T}"  -c ${sel} -d bMjet_pt
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_bMjet_eta  -p -r --qcd ${qcd} --title "" --title-x "leading M b-jet #eta"   -c ${sel} -d bMjet_eta
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_bLjet_pt   -p -r --qcd ${qcd} --title "" --title-x "leading L b-jet p_{T}"  -c ${sel} -d bLjet_pt
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_bLjet_eta  -p -r --qcd ${qcd} --title "" --title-x "leading L b-jet #eta"   -c ${sel} -d bLjet_eta
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_jet_pt     -p -r --qcd ${qcd} --title "" --title-x "leading non-b jet p_{T}"  -c ${sel} -d jet_pt
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_jet_eta    -p -r --qcd ${qcd} --title "" --title-x "leading non-b jet #eta"   -c ${sel} -d jet_eta
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_bMjet_pt_toppt -p -r --qcd ${qcd} --title-x "leading M b-jet p_{T}"  -c ${sel} -d bMjet_pt -s TOPPTUp
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_b_discr_med    -p -r --qcd ${qcd} --title "" --title-x "leading M b-jet CSVv2 b discr"  -c ${sel} -d b_discr_med
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_b_discr_loose  -p -r --qcd ${qcd} --title "" --title-x "leading L b-jet CSVv2 b discr"  -c ${sel} -d b_discr_loose
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_b_discr_rest   -p -r --qcd ${qcd} --title "" --title-x "leading non-b-jet CSVv2 b discr"  -c ${sel} -d b_discr_rest
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_nvtx       -p -r --qcd ${qcd} --title "" --title-x "N vtx"  -c ${sel} -d nvtx
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_nvtx_up    -p -r --qcd ${qcd} --title "" --title-x "PU Up N vtx"   -c ${sel} -d nvtx -s PUUp
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_nvtx_down  -p -r --qcd ${qcd} --title "" --title-x "PU Down N vtx" -c ${sel} -d nvtx -s PUDown
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_nvtx_init  -p -r --qcd ${qcd} --title "" --title-x "init N vtx"  -c ${sel} -d nvtx_init
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_tau_pt     -p -r --qcd ${qcd} --title "" --title-x "tau candidate p_{T}" -c ${sel} -d tau_pt
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_tau_pt     -p -r --qcd ${qcd} --title "" --title-x "tau candidate #eta"  -c ${sel} -d tau_eta
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_m_lep_tau  -p -r --qcd ${qcd} --title "" --title-x "lepton-tau candidate mass"  -c ${sel} -d M_lep_tau
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_Mt_tau_met -p -r --qcd ${qcd} --title "" --title-x "M_{T}(#tau, MET)"  -c ${sel} -d Mt_tau_met
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_njets_m    -p -r --qcd ${qcd} --title "" --title-x "N M b-tags"  -c ${sel} -d nMbjets
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_njets_l    -p -r --qcd ${qcd} --title "" --title-x "N L b-tags"  -c ${sel} -d nLbjets
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_njets_r    -p -r --qcd ${qcd} --title "" --title-x "N non-b-taged jets"  -c ${sel} -d nRjets
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_njets_a    -p -r --qcd ${qcd} --title "" --title-x "N all jets"  -c ${sel} -d njets
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_jet_cats   -p -r --qcd ${qcd} --title "" --title-x "jet categories"  -c ${sel} -d njets_cats
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_ntaus      -p -r --qcd ${qcd} --title "" --title-x "N tau candidates"  -c ${sel} -d ntaus
-	#python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_dijet_m    -p -r --qcd ${qcd} --title "" --title-x "di-jet mass"  -c ${sel} -d dijet_mass
-	#python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_trijet_m   -p -r --qcd ${qcd} --title "" --title-x "tri-jet mass" -c ${sel} -d trijet_mass
-	#python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_dijet_trijet_d -p -r --qcd ${qcd} --title "" --title-x "di-tri-jet mass distance" -c ${sel} -d dijet_trijet_mass
-	# met control
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r --qcd ${qcd} --title-x "miniaod met"   -c ${sel} -d init_met
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r --qcd ${qcd} --title-x "corrected met" -c ${sel} -d corr_met
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r --qcd ${qcd} -c ${sel} -d all_sum_control
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_Mt-lep-met_f -p -r --qcd ${qcd} --title "" --title-x "M_{T}(l, MET)"  -c ${sel} -d Mt_lep_met_f   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_Mt-lep-met -p -r --qcd ${qcd} --title "" --title-x "M_{T}(l, MET)"  -c ${sel} -d Mt_lep_met   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_lep-pt     -p -r --qcd ${qcd} --title "" --title-x "lepton p_{T}"  -c ${sel} -d lep_pt   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_lep-eta    -p -r --qcd ${qcd} --title "" --title-x "lepton #eta"  -c ${sel} -d lep_eta   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_lep-pt_toppt  -p -r --qcd ${qcd} --title-x "lepton p_{T}"  -c ${sel} -d lep_pt -s TOPPTUp   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_met        -p -r --qcd ${qcd} --title "" --title-x "MET"  -c ${sel} -d met   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_met_toppt  -p -r --qcd ${qcd} --title-x "MET"  -c ${sel} -d met -s TOPPTUp   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_bjet-pt    -p -r --qcd ${qcd} --title "" --title-x "leading M b-jet p_{T}"  -c ${sel} -d bMjet_pt   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_bjet-eta   -p -r --qcd ${qcd} --title "" --title-x "leading M b-jet #eta"   -c ${sel} -d bMjet_eta   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_bLjet-pt   -p -r --qcd ${qcd} --title "" --title-x "leading L b-jet p_{T}"  -c ${sel} -d bLjet_pt   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_bLjet-eta  -p -r --qcd ${qcd} --title "" --title-x "leading L b-jet #eta"   -c ${sel} -d bLjet_eta   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_Rjet-pt    -p -r --qcd ${qcd} --title "" --title-x "leading non-b jet p_{T}"  -c ${sel} -d jet_pt   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_Rjet-eta   -p -r --qcd ${qcd} --title "" --title-x "leading non-b jet #eta"   -c ${sel} -d jet_eta   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_jet-pt     -p -r --qcd ${qcd} --title "" --title-x "leading non-b jet p_{T}"  -c ${sel} -d jet_pt   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_jet-eta    -p -r --qcd ${qcd} --title "" --title-x "leading non-b jet #eta"   -c ${sel} -d jet_eta   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_bMjet-pt_toppt -p -r --qcd ${qcd} --title-x "leading M b-jet p_{T}"  -c ${sel} -d bMjet_pt -s TOPPTUp   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_b_discr_med    -p -r --qcd ${qcd} --title "" --title-x "leading M b-jet CSVv2 b discr"  -c ${sel} -d b_discr_med   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_b_discr_loose  -p -r --qcd ${qcd} --title "" --title-x "leading L b-jet CSVv2 b discr"  -c ${sel} -d b_discr_loose   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_b_discr_rest   -p -r --qcd ${qcd} --title "" --title-x "leading non-b-jet CSVv2 b discr"  -c ${sel} -d b_discr_rest   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_nvtx       -p -r --qcd ${qcd} --title "" --title-x "N vtx"  -c ${sel} -d nvtx   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_nvtx_up    -p -r --qcd ${qcd} --title "" --title-x "PU Up N vtx"   -c ${sel} -d nvtx -s PUUp   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_nvtx_down  -p -r --qcd ${qcd} --title "" --title-x "PU Down N vtx" -c ${sel} -d nvtx -s PUDown   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_nvtx_init  -p -r --qcd ${qcd} --title "" --title-x "init N vtx"  -c ${sel} -d nvtx_init   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_tau-pt     -p -r --qcd ${qcd} --title "" --title-x "tau candidate p_{T}" -c ${sel} -d tau_pt   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_tau-pt     -p -r --qcd ${qcd} --title "" --title-x "tau candidate #eta"  -c ${sel} -d tau_eta   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_M-lep-tau  -p -r --qcd ${qcd} --title "" --title-x "lepton-tau candidate mass"  -c ${sel} -d M_lep_tau   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_Mt-tau-met -p -r --qcd ${qcd} --title "" --title-x "M_{T}(#tau, MET)"  -c ${sel} -d Mt_tau_met   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_njets_m    -p -r --qcd ${qcd} --title "" --title-x "N M b-tags"  -c ${sel} -d nMbjets   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_njets_l    -p -r --qcd ${qcd} --title "" --title-x "N L b-tags"  -c ${sel} -d nLbjets   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_njets_r    -p -r --qcd ${qcd} --title "" --title-x "N non-b-taged jets"  -c ${sel} -d nRjets   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_njets_a    -p -r --qcd ${qcd} --title "" --title-x "N all jets"  -c ${sel} -d njets   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_jet_cats   -p -r --qcd ${qcd} --title "" --title-x "jet categories"  -c ${sel} -d njets_cats   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_ntaus      -p -r --qcd ${qcd} --title "" --title-x "N tau candidates"  -c ${sel} -d ntaus   || true
+	#python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_dijet_m    -p -r --qcd ${qcd} --title "" --title-x "di-jet mass"  -c ${sel} -d dijet_mass   || true
+	#python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_trijet_m   -p -r --qcd ${qcd} --title "" --title-x "tri-jet mass" -c ${sel} -d trijet_mass   || true
+	#python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name ${tag}_dijet_trijet_d -p -r --qcd ${qcd} --title "" --title-x "di-tri-jet mass distance" -c ${sel} -d dijet_trijet_mass   || true
+	# met control   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r --qcd ${qcd} --title-x "miniaod met"   -c ${sel} -d init_met   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r --qcd ${qcd} --title-x "corrected met" -c ${sel} -d corr_met   || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r --qcd ${qcd} -c ${sel} -d all_sum_control   || true
 
 
 plots_sel_old: data_in=try2_split12/SingleMuon.root

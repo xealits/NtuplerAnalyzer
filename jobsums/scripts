@@ -1,0 +1,6 @@
+make plots_sel sel=ctr_old_mu_sel mc_in=v17oldrun2_mu_mc.root data_in=v17/SingleMuon.root     tag=mu_sel out_dir=test
+make plots_sel sel=ctr_old_el_sel mc_in=v17oldrun2_el_mc.root data_in=v17/SingleElectron.root tag=el_sel out_dir=test
+
+make plots_sel sel=optmu_presel_2L1M mc_in=v17optimized5_mu_mc.root data_in=actual-v17/optimized5/SingleMuon.root     tag=mu_presel out_dir=test
+make plots_sel sel=optel_presel_2L1M mc_in=v17optimized5_el_mc.root data_in=actual-v17/optimized5/SingleElectron.root tag=el_presel out_dir=test
+

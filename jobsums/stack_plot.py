@@ -756,7 +756,7 @@ else:
     right_title.Draw("same")
 
     if args.output_name:
-        cst.SaveAs(args.output_name + '.png')
+        cst.SaveAs(out_dir + args.output_name + '.png')
     else:
         stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
         shape_chan = ('_x_' + args.shape) if args.shape else ''
