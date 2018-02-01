@@ -1309,6 +1309,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_mu_tt_em':             (procs_elmu, systematic_names_pu_toppt),
 
                 'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
                 # testing issue with event yield advantage
                 'ctr_old_mu_sel':           (procs_mu, systematic_names_all),
                 'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_all),
@@ -1318,6 +1319,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_all),
 
                 'ctr_old_el_presel':        (procs_el, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                'ctr_old_el_presel_ss':     (procs_el, systematic_names_pu_toppt),
                 'ctr_old_el_sel':           (procs_el, systematic_names_all),
                 'ctr_old_el_sel_ss':        (procs_el, systematic_names_all),
                 'ctr_old_el_sel_lj':        (procs_el, systematic_names_all),
@@ -2999,7 +3001,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             pass_old_mu_sel = pass_mu and old_jet_sel and len(taus.old) > 0 # and no met cut
             pass_old_el_sel = pass_el and old_jet_sel and len(taus.old) > 0 # and no met cut
 
-            requires_lj = pass_old_mu_sel or pass_old_el_sel or ((pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus))
+            pass_old_mu_presel = pass_mu and old_jet_sel
+            pass_old_el_presel = pass_el and old_jet_sel
+            pass_old_lep_presel = pass_old_mu_presel or pass_old_el_presel
+            requires_lj = pass_old_lep_presel or pass_old_mu_sel or pass_old_el_sel or ((pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus))
             if requires_lj:
                 # all jets, without regard to tau in the event go into the calculation
                 # (taumatched jets go too)
@@ -3208,8 +3213,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
 
             if pass_mu and old_jet_sel:
+                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_old
-                passed_channels.append(('ctr_old_mu_presel', sel_b_weight, jets.old, taus.old))
+                if presel_os:
+                    passed_channels.append(('ctr_old_mu_presel', sel_b_weight, jets.old, taus.presel))
+                else:
+                    passed_channels.append(('ctr_old_mu_presel_ss', sel_b_weight, jets.old, taus.presel))
 
             #pass_single_lep_presel = large_met and has_3jets and has_bjets and (pass_el or pass_mu) #and os_lep_med_tau
             #pass_single_lep_sel = pass_single_lep_presel and os_lep_med_tau
@@ -3232,8 +3241,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         passed_channels.append(('ctr_old_mu_sel_lj_ss', sel_b_weight, jets.old, taus.old))
 
             if pass_el and old_jet_sel:
+                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_old
-                passed_channels.append(('ctr_old_el_presel', sel_b_weight, jets.old, taus.old))
+                if presel_os:
+                    passed_channels.append(('ctr_old_el_presel', sel_b_weight, jets.old, taus.presel))
+                else:
+                    passed_channels.append(('ctr_old_el_presel_ss', sel_b_weight, jets.old, taus.presel))
 
             if pass_old_el_sel:
                 # actually I should add ev.lep_p4[0].pt() > 27
