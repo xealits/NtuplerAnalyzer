@@ -1307,6 +1307,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 'ctr_mu_dy_mumu':           (procs_mu, systematic_names_pu),
                 'ctr_mu_tt_em':             (procs_elmu, systematic_names_pu_toppt),
+                'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_pu_toppt),
 
                 'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
                 'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
@@ -3001,14 +3002,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             has_tight_lowest_taus = len(taus.lowest) > 0
             has_loose_lowest_taus = len(taus.loose) > 0
 
-            old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1
+            old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
+            # 3 jets (2b and 1 tau) and 1 b-tagged
+            # TODO: compare with previous result with only 2 jets and 1 b-tagged -- check njets distrs
             pass_old_mu_sel = pass_mu and old_jet_sel and len(taus.old) > 0 # and no met cut
             pass_old_el_sel = pass_el and old_jet_sel and len(taus.old) > 0 # and no met cut
 
             pass_old_mu_presel = pass_mu and old_jet_sel and len(taus.presel) > 0
             pass_old_el_presel = pass_el and old_jet_sel and len(taus.presel) > 0
             pass_old_lep_presel = pass_old_mu_presel or pass_old_el_presel
-            requires_lj = pass_old_lep_presel or pass_old_mu_sel or pass_old_el_sel or ((pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus))
+
+            pass_elmu_close = pass_elmu and len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1
+            requires_lj = pass_elmu_close or pass_old_lep_presel or pass_old_mu_sel or pass_old_el_sel or ((pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus))
             if requires_lj:
                 # all jets, without regard to tau in the event go into the calculation
                 # (taumatched jets go too)
@@ -3198,6 +3203,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 passed_channels.append(('ctr_mu_dy_mumu', 1., jets.lowest, taus.presel))
             if pass_elmu:
                 passed_channels.append(('ctr_mu_tt_em', 1., jets.lowest, taus.presel))
+                # elmu selection with almost main jet requirements
+                #old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
+                # at least 2 jets (3-1 for missing tau jet) and 1 b-tagged
+                # the selection should be close to lep+tau but there is another lepton instead of tau
+                #if len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1:
+                if pass_elmu_close:
+                    passed_channels.append(('ctr_mu_tt_em_close', 1., jets.old, taus.presel))
 
             #if pass_mu and nbjets == 0 and (Mt_lep_met > 50 or met_pt > 40): # skipped lep+tau mass -- hopefuly DY will be small (-- it became larger than tt)
             #    passed_channels.append('ctr_mu_wjet')
