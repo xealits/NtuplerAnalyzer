@@ -47,6 +47,8 @@ parser.add_argument("--title-x", type=str, default="", help="set title of X axis
 parser.add_argument("--title-y", type=str, default="", help="set title of Y axis on the plot")
 parser.add_argument("--title",   type=str, default="default", help="set title of the plot")
 
+parser.add_argument("--output-name",   type=str, help="name for the output file")
+
 args = parser.parse_args()
 
 assert isfile(args.mc_file)
@@ -753,9 +755,12 @@ else:
     left_title .Draw("same")
     right_title.Draw("same")
 
-    stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
-    shape_chan = ('_x_' + args.shape) if args.shape else ''
-    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ".png")
+    if args.output_name:
+        cst.SaveAs(args.output_name + '.png')
+    else:
+        stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
+        shape_chan = ('_x_' + args.shape) if args.shape else ''
+        cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ".png")
 
 
 logging.info("segfault after here")
