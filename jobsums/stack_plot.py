@@ -42,6 +42,11 @@ parser.add_argument("--processes", type=str, default='all', help="set processes 
 
 parser.add_argument("--skip-legend", action='store_true', help="don't plot the legend (full view of distribution)")
 
+parser.add_argument("--lumi", type=float, default=35.6, help="set lumi label on the plot")
+parser.add_argument("--title-x", type=str, default="", help="set title of X axis on the plot")
+parser.add_argument("--title-y", type=str, default="", help="set title of Y axis on the plot")
+parser.add_argument("--title",   type=str, default="default", help="set title of the plot")
+
 args = parser.parse_args()
 
 assert isfile(args.mc_file)
@@ -50,7 +55,7 @@ assert isfile(args.data_file)
 logging.info("import ROOT")
 
 import ROOT
-from ROOT import TFile, THStack, TLegend, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan
+from ROOT import TFile, THStack, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan
 import plotting_root
 
 #channel = "mu_presel"
@@ -530,10 +535,22 @@ elif args.osss:
     cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_osss-factor.png')
 
 else:
+    '''
+    plot stack plot and/or ratio plot
+    '''
+
     from ROOT import gStyle, gROOT, TCanvas, TPad
     gROOT.SetBatch()
     gStyle.SetOptStat(0)
     cst = TCanvas("cst","stacked hists",10,10,700,700)
+
+    if args.title == 'default':
+        title_plot = "%s %s" % (channel, sys_name)
+    else:
+        title_plot = args.title
+
+    title_x = args.title_x if args.title_x else args.distr_name
+    title_y = args.title_y if args.title_y else "events/bin"
 
     if args.ratio and args.plot:
         pad1 = TPad("pad1","This is pad1", 0., 0.3,  1., 1.)
@@ -610,16 +627,27 @@ else:
         histo_data_relative.GetXaxis().SetTitleFont(63)
         histo_data_relative.GetXaxis().SetTitleSize(20)
 
+        hs_sum1_relative.GetYaxis().SetTitleFont(63)
+        hs_sum1_relative.GetYaxis().SetTitleSize(20)
+        histo_data_relative.GetYaxis().SetTitleFont(63)
+        histo_data_relative.GetYaxis().SetTitleSize(20)
+
         # if there is stack plot
         # removing the margin space to stack plot
         # and add the X label to the ratio
         if args.plot:
             #hs_sum1_relative.GetYaxis().SetLabelOffset(0.01)
             #histo_data_relative.GetYaxis().SetLabelOffset(0.01)
-            hs_sum1_relative.SetXTitle(args.distr_name)
-            histo_data_relative.SetXTitle(args.distr_name)
-            hs_sum1_relative.GetXaxis().SetTitleOffset(4.) # place the title not overlapping with labels...
+            hs_sum1_relative   .SetXTitle(title_x)
+            histo_data_relative.SetXTitle(title_x)
+            hs_sum1_relative   .GetXaxis().SetTitleOffset(4.) # place the title not overlapping with labels...
             histo_data_relative.GetXaxis().SetTitleOffset(4.)
+
+        hs_sum1_relative   .GetYaxis().SetTitleOffset(1.4) # place the title not overlapping with labels...
+        histo_data_relative.GetYaxis().SetTitleOffset(1.4)
+
+        hs_sum1_relative   .SetYTitle("Data/MC")
+        histo_data_relative.SetYTitle("Data/MC")
 
         hs_sum1_relative.Draw("e2")
         histo_data_relative.Draw("e p same")
@@ -641,9 +669,9 @@ else:
             #hs.GetXaxis().SetLabelOffset(999)
             #hs.GetXaxis().SetLabelSize(0)
         else:
-            histos_data_sum.SetXTitle(args.distr_name)
-            #hs        .SetXTitle(distr_name)
-            hs_sum1   .SetXTitle(args.distr_name)
+            histos_data_sum.SetXTitle(title_x)
+            #hs            .SetXTitle(title_x)
+            hs_sum1        .SetXTitle(title_x)
 
         histos_data_sum.SetMaximum(max_y * 1.1)
         if args.logy: # and args.fake_rate:
@@ -656,8 +684,19 @@ else:
             histos_data_sum.SetMinimum(0)
             hs_sum1   .SetMinimum(0)
 
-        histos_data_sum.SetTitle("%s %s" % (channel, sys_name))
-        hs_sum1   .SetTitle("%s %s" % (channel, sys_name))
+        hs_sum1.GetYaxis().SetTitleFont(63)
+        hs_sum1.GetYaxis().SetTitleSize(20)
+        histos_data_sum.GetYaxis().SetTitleFont(63)
+        histos_data_sum.GetYaxis().SetTitleSize(20)
+
+        hs_sum1        .GetYaxis().SetTitleOffset(1.4) # place the title not overlapping with labels...
+        histos_data_sum.GetYaxis().SetTitleOffset(1.4)
+
+        histos_data_sum.SetYTitle(title_y)
+        hs_sum1        .SetYTitle(title_y)
+
+        histos_data_sum.SetTitle(title_plot)
+        hs_sum1        .SetTitle(title_plot)
 
         histos_data_sum.Draw("e1 p")
         if not args.fake_rate:
@@ -680,6 +719,39 @@ else:
         histos_data_sum.Draw("same e1p")
         if not args.fake_rate and not args.skip_legend:
             leg.Draw("same")
+
+    '''
+    cout << "setting title" << endl;
+    // title for the plot
+    TPaveText* left_title = new TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC");
+    left_title->AddText("CMS preliminary at 13 TeV");
+    left_title->SetTextFont(1);
+    left_title->SetFillColor(0);
+    cout << "drawing left title" << endl;
+    left_title->Draw("same");
+    '''
+
+    left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
+    left_title.AddText("CMS preliminary at 13 TeV")
+    left_title.SetTextFont(1)
+
+    '''
+    TPaveText* right_title = new TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC");
+    TString s_title(""); s_title.Form("L = %.1f fb^{-1}", lumi/1000);
+    right_title->AddText(s_title);
+    right_title->SetTextFont(132);
+    right_title->SetFillColor(0);
+    cout << "drawing right title" << endl;
+    right_title->Draw("same");
+    '''
+
+    right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
+    right_title.AddText("L = %s fb^{-1}" % args.lumi)
+    right_title.SetTextFont(132)
+    right_title.SetFillColor(0)
+
+    left_title .Draw("same")
+    right_title.Draw("same")
 
     stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
     shape_chan = ('_x_' + args.shape) if args.shape else ''
