@@ -529,10 +529,37 @@ elif args.osss:
     pad1.Draw()
 
     pad1.cd()
-    histo_diff_os.SetXTitle(args.distr_name)
-    histo_diff_os.SetYTitle("OS/SS")
-    histo_diff_os.SetTitle("%s %s" % (channel, sys_name))
+
+    if args.title == 'default':
+        title_plot = "%s %s" % (channel, sys_name)
+    else:
+        title_plot = args.title
+
+    title_x = args.title_x if args.title_x else args.distr_name
+    title_y = args.title_y if args.title_y else "OS/SS"
+
+    histo_diff_os.SetXTitle(title_x)
+    histo_diff_os.SetYTitle(title_y)
+    histo_diff_os.SetTitle(title_plot)
     histo_diff_os.Draw()
+
+    left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
+    left_title.AddText("CMS preliminary at 13 TeV")
+    left_title.SetTextFont(1)
+
+    right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
+    right_title.AddText("L = %s fb^{-1}" % args.lumi)
+    right_title.SetTextFont(132)
+    right_title.SetFillColor(0)
+
+    left_title .Draw("same")
+    right_title.Draw("same")
+
+    label = TPaveText(0.2, 0.2, 0.5, 0.3, "brNDC")
+    label.AddText("anti-iso region")
+    label.SetTextFont(132)
+    label.SetFillColor(0)
+    label.Draw("same")
 
     cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_osss-factor.png')
 
