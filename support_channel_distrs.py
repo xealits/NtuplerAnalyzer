@@ -1647,7 +1647,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         # TODO: need to check the trigger SF-s then......
         # for now I'm just trying to get rid of el-mu mix in MC
-        pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el \
+        pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el and \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125

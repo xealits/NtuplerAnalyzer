@@ -42,7 +42,7 @@ parser.add_argument("--processes", type=str, default='all', help="set processes 
 
 parser.add_argument("--skip-legend", action='store_true', help="don't plot the legend (full view of distribution)")
 
-parser.add_argument("--lumi", type=float, default=35.6, help="set lumi label on the plot")
+parser.add_argument("--lumi", type=float, default=35.8, help="set lumi label on the plot")
 parser.add_argument("--title-x", type=str, default="", help="set title of X axis on the plot")
 parser.add_argument("--title-y", type=str, default="", help="set title of Y axis on the plot")
 parser.add_argument("--title",   type=str, default="default", help="set title of the plot")

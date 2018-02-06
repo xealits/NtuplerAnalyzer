@@ -1,5 +1,5 @@
 import ROOT
-from ROOT import TCanvas, TGraph, TLine, gStyle, gROOT, gPad
+from ROOT import TCanvas, TGraph, TLine, gStyle, gROOT, gPad, TPaveText, TPad
 #include "TGraph.h"
 #include "TAxis.h"
 #include "TH1.h"
@@ -28,10 +28,15 @@ def grshade(channel_mu):
    gROOT.SetBatch();
    gStyle.SetOptStat(0);
 
-   c1 = TCanvas("c1","Expected Bias Band Graph",200,10,800,800);
+   c1 = TCanvas("c1","Expected Bias Band Graph",10,10,800,800);
 
    #c1.SetGrid();
-   c1.DrawFrame(0.85,0.75,1.15,1.25);
+   c1.DrawFrame(0.85,0.75,1.15,1.25) # for some reason it draws the graph outside the canvas without this optin
+   # I've never had to use this option when drawing histograms or stacks of histograms
+
+   #pad1 = TPad("pad1","This is pad1", 0., 0.,  1., 1.)
+   #pad1.Draw()
+   #pad1.cd()
 
 
    '''
@@ -112,6 +117,12 @@ def grshade(channel_mu):
    grshade  = TGraph(2*n);
    grshade2 = TGraph(2*n);
 
+   for i in range(n): #(i=0;i<n;i++) {
+      grshade.SetPoint(i,x[i],ymax[i]);
+      grshade.SetPoint(n+i,x[n-i-1],ymin[n-i-1]);
+      grshade2.SetPoint(i,x[i],ymax2[i]);
+      grshade2.SetPoint(n+i,x[n-i-1],ymin2[n-i-1]);
+
    #gr.SetTitle("median;generated \\mu;fitted \\mu");
    gr      .SetTitle("median;generated;fitted");
    grmin   .SetTitle("median;generated;fitted");
@@ -119,26 +130,21 @@ def grshade(channel_mu):
    grshade .SetTitle("median;generated;fitted");
    grshade2.SetTitle("median;generated;fitted");
 
-   gr.GetYaxis().SetTitle("fitted \\mu");
-   gr.GetXaxis().SetTitle("generated \\mu");
-   grmin.GetYaxis().SetTitle("fitted \\mu");
-   grmin.GetXaxis().SetTitle("generated \\mu");
-   grmax.GetYaxis().SetTitle("fitted \\mu");
-   grmax.GetXaxis().SetTitle("generated \\mu");
+   gr      .GetYaxis().SetTitle("fitted \\mu");
+   gr      .GetXaxis().SetTitle("generated \\mu");
+   grmin   .GetYaxis().SetTitle("fitted \\mu");
+   grmin   .GetXaxis().SetTitle("generated \\mu");
+   grmax   .GetYaxis().SetTitle("fitted \\mu");
+   grmax   .GetXaxis().SetTitle("generated \\mu");
    grshade .GetYaxis().SetTitle("fitted \\mu");
    grshade .GetXaxis().SetTitle("generated \\mu");
    grshade2.GetYaxis().SetTitle("fitted \\mu");
    grshade2.GetXaxis().SetTitle("generated \\mu");
+
    grshade2.GetHistogram().GetYaxis().SetTitle("fitted \\mu");
    grshade2.GetHistogram().GetXaxis().SetTitle("generated \\mu");
 
-   gPad.Modified();
-
-   for i in range(n): #(i=0;i<n;i++) {
-      grshade.SetPoint(i,x[i],ymax[i]);
-      grshade.SetPoint(n+i,x[n-i-1],ymin[n-i-1]);
-      grshade2.SetPoint(i,x[i],ymax2[i]);
-      grshade2.SetPoint(n+i,x[n-i-1],ymin2[n-i-1]);
+   ##gPad.Modified();
 
    #grshade.SetFillStyle(3013);
    #grshade2.SetFillColor(20);
@@ -166,7 +172,40 @@ def grshade(channel_mu):
    #l.GetYaxis.SetTitle("fitted");
    l.Draw("same");
 
-   gPad.Modified();
+   left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
+   left_title.AddText("CMS preliminary at 13 TeV")
+   left_title.SetTextFont(1)
+
+   right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
+   right_title.AddText("L = %s fb^{-1}" % (35.8 if channel_mu else 31.3))
+   right_title.SetTextFont(132)
+   right_title.SetFillColor(0)
+
+   left_title .Draw("same")
+   right_title.Draw("same")
+
+   #gPad.Modified();
+
+   # root has some absolutely different protocol
+   # hence the axis titles are done manually
+   title_x = TPaveText(0.7,0.12,0.9,.18, "brNDC")
+   text_x = title_x.AddText("generated #mu")
+   text_x.SetTextAlign(22)
+   text_x.SetTextFont(43)
+   text_x.SetTextSize(30)
+   title_x.SetFillStyle(0)
+   title_x.SetBorderSize(0)
+   title_x.Draw('same')
+
+   title_y = TPaveText(0.12,0.7,0.18,.9, "brNDC")
+   text_y = title_y.AddText("fitted #mu")
+   text_y.SetTextAlign(22)
+   text_y.SetTextFont(43)
+   text_y.SetTextSize(30)
+   text_y.SetTextAngle(90.)
+   title_y.SetFillStyle(0)
+   title_y.SetBorderSize(0)
+   title_y.Draw('same')
 
    c1.Update();
    gr.GetHistogram().GetXaxis().SetTitle("layer No");
