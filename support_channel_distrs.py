@@ -975,7 +975,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             procs_mu     = tt_procs_mu     =  (['tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             procs_el_3ch = tt_procs_el_3ch =  (['tt_eltau3ch', 'tt_eltau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             procs_mu_3ch = tt_procs_mu_3ch =  (['tt_mutau3ch', 'tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
-            procs_elmu   = tt_procs_elmu   =  (['tt_elmu', 'tt_taueltaumu', 'tt_other'], 'tt_other')
+            #procs_elmu   = tt_procs_elmu   =  (['tt_elmu', 'tt_taueltaumu', 'tt_other'], 'tt_other')
+            procs_elmu   = tt_procs_elmu   =  (['tt_elmu', 'tt_ltaul', 'tt_other'], 'tt_other')
             usual_process   = 'tt_other'
 
         if isWJets:
@@ -1644,10 +1645,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #pass_el     = pass_el_id and ev.lep_p4[0].pt() > 27. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] < 0.125
         pass_el     = pass_el_id_kino and ev.lep_relIso[0] < 0.125
 
-        pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and \
+        # TODO: need to check the trigger SF-s then......
+        # for now I'm just trying to get rid of el-mu mix in MC
+        pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
+
         pass_mumu = ev.leps_ID == -13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
@@ -1824,6 +1828,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #elif t_wid * tb_wid == 15*13*15*11: # this should work, but:
                 elif (t_wid == 15*13 and tb_wid == 15*11) or (t_wid == 15*11 and tb_wid == 15*13):
                     proc = 'tt_taueltaumu'
+                elif (t_wid == 13 and tb_wid == 15*11) or (t_wid == 11 and tb_wid == 15*13):
+                    proc = 'tt_ltaul' # opposite leptons -- el-taumu etc
                 elif t_wid * tb_wid == 13 or t_wid * tb_wid == 11: # lj
                     proc = 'tt_lj'
                 elif (t_wid > 15*15 and (tb_wid == 11*15 or tb_wid == 13*15)) or \
@@ -3002,7 +3008,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             has_tight_lowest_taus = len(taus.lowest) > 0
             has_loose_lowest_taus = len(taus.loose) > 0
 
-            old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
+            old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
             # 3 jets (2b and 1 tau) and 1 b-tagged
             # TODO: compare with previous result with only 2 jets and 1 b-tagged -- check njets distrs
             pass_old_mu_sel = pass_mu and old_jet_sel and len(taus.old) > 0 # and no met cut
@@ -3012,7 +3018,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             pass_old_el_presel = pass_el and old_jet_sel and len(taus.presel) > 0
             pass_old_lep_presel = pass_old_mu_presel or pass_old_el_presel
 
-            pass_elmu_close = pass_elmu and len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1
+            pass_elmu_close = pass_elmu and len(jets.old.medium) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1
             requires_lj = pass_elmu_close or pass_old_lep_presel or pass_old_mu_sel or pass_old_el_sel or ((pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus))
             if requires_lj:
                 # all jets, without regard to tau in the event go into the calculation
