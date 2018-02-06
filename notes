@@ -339,6 +339,18 @@ muon fit investigation:
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i el_impacts_opt5.json -o el_impacts_opt5
 
 
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/oldrun2_freefrate_el.root -m 125 --robustFit 1 --doInitialFit --freezeParameters "FSR"
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/oldrun2_freefrate_el.root -m 125 --robustFit 1 --doFits --parallel 5 --freezeParameters "FSR"
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/oldrun2_freefrate_el.root -m 125 -o el_impacts_old2.json --freezeParameters "FSR"
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i el_impacts_old2.json -o el_impacts_old2
+
+ttxsec/fit-stuff/oldrun2_freefrate_el_fine.root
+ttxsec/fit-stuff/oldrun2_freefrate_el.root
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/oldrun2_freefrate_el_fine.root -m 125 --robustFit 1 --doInitialFit  --freezeParameters "TauES"
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/oldrun2_freefrate_el_fine.root -m 125 --robustFit 1 --doFits --parallel 5  --freezeParameters "TauES"
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/oldrun2_freefrate_el_fine.root -m 125 -o el_impacts_old2_fine.json  --freezeParameters "TauES"
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i el_impacts_old2_fine.json -o el_impacts_old2_fine
 
 
 
