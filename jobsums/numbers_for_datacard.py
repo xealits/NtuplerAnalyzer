@@ -61,6 +61,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument("data_file",    help="full Data+MC file name")
 parser.add_argument("-c", "--channels",  type=str, help="if given then get the numbers from here, enter multiple channels with 'mu_presel,mu_sel'")
 parser.add_argument("-d", "--distr",    type=str, default='Mt_lep_met', help="fitted distribution")
+parser.add_argument("-s", "--sys",    type=str, default='NOMINAL', help="systematic shift to consider")
 parser.add_argument("-m", "--mu",  action = "store_true", help="muon channels: mu_lj, mu_lj_out")
 parser.add_argument("-e", "--el",  action = "store_true", help="electron channels: el_lj, el_lj_out")
 parser.add_argument("-v", "--verbose",  action = "store_true", help="log debug output")
@@ -117,7 +118,7 @@ elif args.channels:
 
 fdata = TFile(args.data_file)
 
-sys_name = 'NOMINAL'
+sys_name = args.sys # 'NOMINAL'
 distr_name = args.distr
 
 #if args.event_yields:
@@ -176,8 +177,8 @@ for channel in channels:
        #proc_yields[-1][1].append((process, histo.Integral()))
        proc_yields.setdefault(process, {})[channel] = histo.Integral()
 
-    histo_name = '_'.join([channel, 'data', sys_name, distr_name])
-    full_path = '%s/%s/%s/%s' % (channel, 'data', sys_name, histo_name)
+    histo_name = '_'.join([channel, 'data', 'NOMINAL', distr_name])
+    full_path = '%s/%s/%s/%s' % (channel, 'data', 'NOMINAL', histo_name)
     data_histo = fdata.Get(full_path)
     data_yields[channel] = data_histo.Integral()
 

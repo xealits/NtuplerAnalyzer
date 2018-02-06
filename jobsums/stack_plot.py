@@ -159,6 +159,9 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
            if nick == 'data':
                continue
 
+           # handlinn=g the tt systematics:
+           # all other channels get their nominal distr
+           # but it must be renamed
            fixed_sys_name = sys_name
            if any(sn in sys_name for sn in ['TOPPT', 'FSR', 'ISR', 'HDAMP', 'TuneCUETP8M2T4', 'QCDbasedCRTune', 'GluonMoveCRTune']):
                fixed_sys_name = sys_name if 'tt' in nick else 'NOMINAL'
@@ -193,8 +196,12 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
            if args.wjets > 0 and nick == 'wjets':
                histo.Scale(args.wjets)
 
+           # rename the histo for the correct systematic name in case of TT systematics
+           histo_name = '_'.join([channel, nick, sys_name, distr_name])
+           histo.SetName(histo_name)
+
            #histo = histo_key.ReadObj()
-           logging.info("%s   %s   %x = %f %f" % (histo_name, histo_name, histo_name == '_'.join([channel, nick, fixed_sys_name, distr_name]), histo.GetEntries(), histo.Integral()))
+           logging.info("%s   %s   %x = %f %f" % (histo.GetName(), histo_name, histo_name == '_'.join([channel, nick, fixed_sys_name, distr_name]), histo.GetEntries(), histo.Integral()))
 
            if args.cumulative:
                used_histos.append((histo.GetCumulative(False), nick, channel)) # hopefully root wont screw this up
@@ -240,6 +247,22 @@ if args.qcd > 0.:
     for (distr, mc_sums), (_, datas) in zip(hs_sums2_ss, histos_data_per_distr_ss):
         for (mc_hist, _, channel), (data_hist, _, _) in zip(mc_sums, datas):
             qcd_hist = data_hist - mc_hist
+            # negative qcd bins are equalized to zero:
+            '''
+            for (Int_t i=0; i<=histo->GetSize(); i++)
+                    {
+                    //yAxis->GetBinLowEdge(3)
+                    double content = histo->GetBinContent(i);
+                    double error   = histo->GetBinError(i);
+                    double width   = histo->GetXaxis()->GetBinUpEdge(i) - histo->GetXaxis()->GetBinLowEdge(i);
+                    histo->SetBinContent(i, content/width);
+                    histo->SetBinError(i, error/width);
+                    }
+            '''
+            for bini in range(qcd_hist.GetSize()):
+                if qcd_hist.GetBinContent(bini) < 0:
+                    qcd_hist.SetBinContent(bini, 0)
+
             #datadriven_qcd_name = "qcd"
             # optmu_tight_2L1M_wjets_NOMINAL_Mt_lep_met
             # I remove _ss from channel name
