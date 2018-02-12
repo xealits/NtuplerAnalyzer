@@ -61,11 +61,13 @@ plots_sel:
 
 plots_ctr: out_dir=./
 plots_ctr: qcd=1.
+plots_ctr: wjets=1.
 plots_ctr: lumi=35.8
 plots_ctr:
 	# wjets
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name wjets_lep_pt     --lumi ${lumi} -p -r --qcd ${qcd} --title "" --title-x "muon p_{T}"    -c ctr_mu_wjet -d lep_pt       || true
-	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name wjets_Mt_lep_met --lumi ${lumi} -p -r --qcd ${qcd} --title "" --title-x "M_{T}(l, MET)" -c ctr_mu_wjet -d Mt_lep_met_f || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name wjets_lep_pt     --lumi ${lumi} -p -r --qcd ${qcd} --wjets ${wjets} --title "" --title-x "muon p_{T}"    -c ctr_mu_wjet -d lep_pt       || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name wjets_Mt_lep_met --lumi ${lumi} -p -r --qcd ${qcd} --wjets ${wjets} --title "" --title-x "M_{T}(l, MET)" -c ctr_mu_wjet -d Mt_lep_met_f || true
+	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} --output-name wjets_met        --lumi ${lumi} -p -r --qcd ${qcd} --wjets ${wjets} --title "" --title-x "MET"    -c ctr_mu_wjet -d met       || true
 
 
 plots_sel_old: data_in=try2_split12/SingleMuon.root

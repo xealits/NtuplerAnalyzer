@@ -161,11 +161,13 @@ xsecs = {
 "MC2016_Summer16_WJets_madgraph_perc": 37713.4 ,
 
 # TODO: need to replay this study..
-"MC2016_Summer16_WJets_madgraph":  0.65 * 61526.7, # 50690 - 9493 - 3120 - 942.3 - 524.2},
-"MC2016_Summer16_W1Jets_madgraph": 0.65 *  9493,
-"MC2016_Summer16_W2Jets_madgraph": 0.65 *  3120,
-"MC2016_Summer16_W3Jets_madgraph": 0.65 *  942.3,
-"MC2016_Summer16_W4Jets_madgraph": 0.65 *  524.2,
+# o.65 factor
+#"MC2016_Summer16_WJets_madgraph":  61526.7 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
+"MC2016_Summer16_WJets_madgraph":  50690 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
+"MC2016_Summer16_W1Jets_madgraph":  9493,
+"MC2016_Summer16_W2Jets_madgraph":  3120,
+"MC2016_Summer16_W3Jets_madgraph":   942.3,
+"MC2016_Summer16_W4Jets_madgraph":   524.2,
 
  "MC2016_Summer16_WWTo2L2Nu_powheg"               :  12.178  ,
  "MC2016_Summer16_WWToLNuQQ_powheg"               :  49.997  ,
