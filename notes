@@ -76,8 +76,9 @@ mv scan.pdf mu_uncert-break-scan.pdf
 
 for proper stat uncertainty:
 
-combine -M MultiDimFit --algo grid --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all  -n MuNoSysButTOPPT
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.7 --rMax 1.3 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan  -n MuNoSys
 
+plot1DScan.py higgsCombineMuFullUncertainty.MultiDimFit.mH120.root --others 'higgsCombineMuNoLumi.MultiDimFit.mH120.root:lumi:4' 'higgsCombineMuNoSys.MultiDimFit.mH120.root:stat:2' --breakdown lumi,syst,stat
 
 
 
@@ -94,6 +95,7 @@ combine -M MultiDimFit --algo none               --rMin 0.7 --rMax 1.3 ttxsec/fi
 combine -M MultiDimFit --algo grid --points 1000 --rMin 0.7 --rMax 1.3 higgsCombineElBestfit.MultiDimFit.mH120.root -m 120 --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JES,JER,TauES,bSF,PU" -n ElNoSysButTOPPT
 combine -M MultiDimFit --algo grid --points 1000 --rMin 0.7 --rMax 1.3 higgsCombineElBestfit.MultiDimFit.mH120.root -m 120 --snapshotName MultiDimFit --freezeNuisanceGroup "tau" -n ElNoTau
 combine -M MultiDimFit --algo grid --points 1000 --rMin 0.7 --rMax 1.3 higgsCombineElBestfit.MultiDimFit.mH120.root -m 120 --snapshotName MultiDimFit --freezeParameters "lumi_13TeV" -n ElNoLumi
+combine -M MultiDimFit --algo grid --points 1000 --rMin 0.7 --rMax 1.3 higgsCombineElBestfit.MultiDimFit.mH120.root -m 120 --snapshotName MultiDimFit --freezeParameters all --fastScan -n ElNoSys
 combine -M MultiDimFit --algo grid --points 1000 --rMin 0.7 --rMax 1.3 higgsCombineElBestfit.MultiDimFit.mH120.root -m 120 --snapshotName MultiDimFit -n ElFullUncertainty
 
 mv scan.png el_uncert-break-scan.png
@@ -106,6 +108,7 @@ combine -M MultiDimFit --algo grid --points 2000 --rMin 0.5 --rMax 1.5 higgsComb
 plot1DScan.py higgsCombineElFullUncertainty.MultiDimFit.mH120.root
 
 plot1DScan.py higgsCombineElFullUncertainty.MultiDimFit.mH120.root --others 'higgsCombineElNoLumi.MultiDimFit.mH120.root:lumi:4' 'higgsCombineElNoSysButTOPPT.MultiDimFit.mH120.root:stat:2' --breakdown lumi,syst,stat
+plot1DScan.py higgsCombineElFullUncertainty.MultiDimFit.mH120.root --others 'higgsCombineElNoLumi.MultiDimFit.mH120.root:lumi:4' 'higgsCombineElNoSys.MultiDimFit.mH120.root:stat:2' --breakdown lumi,syst,stat
 
 
 
@@ -128,11 +131,12 @@ both
 ./scripts/text2workspace.py ttxsec/fit-stuff/oldrun2_freefrate_both.txt
 combine -M MultiDimFit --algo none               --rMin 0.7 --rMax 1.3 ttxsec/fit-stuff/oldrun2_freefrate_both.root --saveWorkspace -n BothBestfit
 combine -M MultiDimFit --algo grid --points  100 --rMin 0.7 --rMax 1.3 higgsCombineBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JES,JER,TauES,bSF,PU" --freezeNuisanceGroup "th_tt" -n BothNoSysButTOPPT
+combine -M MultiDimFit --algo grid --points  100 --rMin 0.7 --rMax 1.3 higgsCombineBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan -n BothNoSys
 combine -M MultiDimFit --algo grid --points  100 --rMin 0.7 --rMax 1.3 higgsCombineBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff" -n BothNoTau
 combine -M MultiDimFit --algo grid --points  100 --rMin 0.7 --rMax 1.3 higgsCombineBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV" -n BothNoLumi
 combine -M MultiDimFit --algo grid --points  100 --rMin 0.7 --rMax 1.3 higgsCombineBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit -n BothFullUncertainty
 
-plot1DScan.py higgsCombineBothFullUncertainty.MultiDimFit.mH120.root --others 'higgsCombineBothNoLumi.MultiDimFit.mH120.root:lumi:4' 'higgsCombineBothNoSysButTOPPT.MultiDimFit.mH120.root:stat:2' --breakdown lumi,syst,stat
+plot1DScan.py higgsCombineBothFullUncertainty.MultiDimFit.mH120.root --others 'higgsCombineBothNoLumi.MultiDimFit.mH120.root:lumi:4' 'higgsCombineBothNoSys.MultiDimFit.mH120.root:stat:2' --breakdown lumi,syst,stat
 
 mv scan.png both_uncert-break-scan.png
 mv scan.pdf both_uncert-break-scan.pdf
@@ -184,6 +188,7 @@ combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0
 combine -M MultiDimFit --algo none -t -1 --expectSignal 1               --rMin 0.5 --rMax 1.5 ttxsec/fit-stuff/oldrun2_freefrate_mu.root --saveWorkspace -n ExpectedMuBestfit
 combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineExpectedMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JES,JER,TauES,bSF,PU" --freezeNuisanceGroup "th_tt" -n ExpectedMuNoSysButTOPPT
 combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineExpectedMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff" -n ExpectedMuNoTau
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineExpectedMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan -n ExpectedMuNoSys
 combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineExpectedMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit -n ExpectedMuFullUncertainty
 
 
@@ -202,6 +207,7 @@ combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0
 combine -M MultiDimFit --algo none -t -1 --expectSignal 1 --rMin 0.5 --rMax 1.5 ttxsec/fit-stuff/oldrun2_freefrate_el_fine.root --saveWorkspace -n ExpectedElBestfit
 combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineExpectedElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JES,JER,TauES,bSF,PU" --freezeNuisanceGroup "th_tt" -n ExpectedElNoSysButTOPPT
 combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineExpectedElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff" -n ExpectedElNoTau
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineExpectedElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan -n ExpectedElNoSys
 combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineExpectedElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit -n ExpectedElFullUncertainty
 
 
@@ -209,6 +215,7 @@ combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0
 combine -M MultiDimFit --algo none -t -1 --expectSignal 1               --rMin 0.5 --rMax 1.5 ttxsec/fit-stuff/oldrun2_freefrate_both.root --saveWorkspace -n ExpectedBothBestfit
 combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineExpectedBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JES,JER,TauES,bSF,PU" --freezeNuisanceGroup "th_tt" -n ExpectedBothNoSysButTOPPT
 combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineExpectedBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff" -n ExpectedBothNoTau
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineExpectedBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan -n ExpectedBothNoSys
 combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 2000 --rMin 0.5 --rMax 1.5 higgsCombineExpectedBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit -n ExpectedBothFullUncertainty
 
 
