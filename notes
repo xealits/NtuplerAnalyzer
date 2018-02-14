@@ -302,12 +302,12 @@ nuisancs->Draw()
 python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsElShape.root -g pulls_of_nuisances_el_shape.root -o
 root -l pulls_of_nuisances_el_shape.root
 
-TPaveText *pt = new TPaveText(.05,1.8,.95,2.2)
+TPaveText *pt = new TPaveText(.5, 1.5, 3.5, 2.5)
 pt->AddText("electron-tau channel")
 pt->Draw("same")
 
 
-TPaveText *pt = new TPaveText(.05, 1.8, .95, 2.2)
+TPaveText *pt = new TPaveText(.5, 1.5, 3.5, 2.5)
 pt->AddText("muon-tau channel")
 pt->Draw("same")
 
