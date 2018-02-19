@@ -25,6 +25,8 @@ parser.add_argument("-o", "--output-directory", type=str, default='', help="opti
 
 parser.add_argument("--y-max", type=float, help="set the maximum on Y axis")
 
+parser.add_argument("--no-data",   action='store_true', help="don't draw data")
+
 parser.add_argument("--qcd",   type=float, default=0., help="get QCD from corresponding _ss channel and transfer it with the given factor (try --qcd 1)")
 parser.add_argument("--osss",  action='store_true', help="plot the ratio in OS/SS of data-other bkcg")
 
@@ -415,7 +417,8 @@ logging.info("mc sum = %f %f" % (hs_sum1.Integral(), hs_sum2.Integral()))
 #    leg.AddEntry(histo_data, "data", "e1 p")
 # no, add just the data_sum entry
 histos_data_sum.SetMarkerStyle(21)
-leg.AddEntry(histos_data_sum, "data", "e1 p")
+if not args.no_data:
+    leg.AddEntry(histos_data_sum, "data", "e1 p")
 
 out_dir = args.output_directory + '/' if args.output_directory else './'
 
@@ -513,18 +516,24 @@ elif args.form_shapes:
 
     histos_data[0][0].SetMaximum(max_y * 1.1)
     histos_data[0][0].SetXTitle(distr_name)
-    histos_data[0][0].Draw('e1 p')
+
+    if not args.no_data:
+        histos_data[0][0].Draw('e1 p')
     for i, (histo, nick, _) in enumerate(histos_data[1:] + used_histos):
         #histo.SetFillColor( # it shouldn't be needed with hist drawing option
         # nope, it's needed...
         histo.SetLineColor(plotting_root.nick_colour[nick])
         histo.SetLineWidth(4)
+        histo.SetMaximum(max_y * 1.1)
+        histo.SetXTitle(distr_name)
+
         if i < 2:
             histo.SetFillStyle([3354, 3345][i])
         else:
             histo.SetFillColorAlpha(0, 0.0)
-        histo.Draw("hist same")
-    histos_data[0][0].Draw('same e1 p')
+        histo.Draw("hist" if args.no_data and i<=len(histos_data[1:]) else "hist same")
+    if not args.no_data:
+        histos_data[0][0].Draw('same e1 p')
 
     if not args.skip_legend:
         leg.Draw("same")
@@ -702,7 +711,8 @@ else:
         histo_data_relative.SetYTitle("Data/MC")
 
         hs_sum1_relative.Draw("e2")
-        histo_data_relative.Draw("e p same")
+        if not args.no_data:
+            histo_data_relative.Draw("e p same")
 
     if args.plot:
         pad1.cd()
@@ -736,41 +746,82 @@ else:
             histos_data_sum.SetMinimum(0)
             hs_sum1   .SetMinimum(0)
 
+        #hs.GetYaxis().SetTitleFont(63)
+        #hs.GetYaxis().SetTitleSize(20)
         hs_sum1.GetYaxis().SetTitleFont(63)
         hs_sum1.GetYaxis().SetTitleSize(20)
         histos_data_sum.GetYaxis().SetTitleFont(63)
         histos_data_sum.GetYaxis().SetTitleSize(20)
 
-        hs_sum1        .GetYaxis().SetTitleOffset(1.4) # place the title not overlapping with labels...
-        histos_data_sum.GetYaxis().SetTitleOffset(1.4)
+        # axis labels
+        hs_sum1.GetYaxis().SetLabelSize(0.02)
+        hs_sum1.GetXaxis().SetLabelSize(0.02)
+        histos_data_sum.GetYaxis().SetLabelSize(0.02)
+        histos_data_sum.GetXaxis().SetLabelSize(0.02)
 
-        histos_data_sum.SetYTitle(title_y)
+        #hs             .GetYaxis().SetTitleOffset(1.4)
+        hs_sum1        .GetYaxis().SetTitleOffset(1.5) # place the title not overlapping with labels...
+        histos_data_sum.GetYaxis().SetTitleOffset(1.5)
+
+        #hs             .SetYTitle(title_y)
         hs_sum1        .SetYTitle(title_y)
+        histos_data_sum.SetYTitle(title_y)
 
-        histos_data_sum.SetTitle(title_plot)
+        #hs             .SetTitle(title_plot)
         hs_sum1        .SetTitle(title_plot)
+        histos_data_sum.SetTitle(title_plot)
 
-        histos_data_sum.Draw("e1 p")
-        if not args.fake_rate:
-            hs.Draw("same")
+        # damn root's inability to adjust maxima and all these workarounds...
+        if not args.no_data:
+            histos_data_sum.Draw("e1 p")
+            if not args.fake_rate:
+                hs.Draw("same")
 
-        # MC sum plot
-        if args.fake_rate:
-            hs_sum1.SetFillStyle(3004);
-            hs_sum1.SetFillColor(1);
-            #hs_sum1.SetMarkerColorAlpha(0, 0.1);
-            hs_sum1.SetMarkerStyle(25);
-            hs_sum1.SetMarkerColor(kRed);
-            hs_sum1.SetLineColor(kRed);
-            #hs_sum1.Draw("same e2")
-            hs_sum1.Draw("same e")
+            # MC sum plot
+            if args.fake_rate:
+                hs_sum1.SetFillStyle(3004);
+                hs_sum1.SetFillColor(1);
+                #hs_sum1.SetMarkerColorAlpha(0, 0.1);
+                hs_sum1.SetMarkerStyle(25);
+                hs_sum1.SetMarkerColor(kRed);
+                hs_sum1.SetLineColor(kRed);
+                #hs_sum1.Draw("same e2")
+                hs_sum1.Draw("same e")
+            else:
+                # only error band in usual case
+                hs_sum1.Draw("same e2")
+
+            histos_data_sum.Draw("same e1p")
+            if not args.fake_rate and not args.skip_legend:
+                leg.Draw("same")
         else:
-            # only error band in usual case
-            hs_sum1.Draw("same e2")
+            # the histogramStack cannot have title in root... therefore it cannot be plotted first..
+            # thus I have to plot sum of MC first to get the titles right..
+            if args.fake_rate:
+                hs_sum1.Draw("e")
+            else:
+                # only error band in usual case
+                hs_sum1.Draw("e2")
 
-        histos_data_sum.Draw("same e1p")
-        if not args.fake_rate and not args.skip_legend:
-            leg.Draw("same")
+            if not args.fake_rate:
+                hs.Draw("same")
+
+            # MC sum plot
+            if args.fake_rate:
+                hs_sum1.SetFillStyle(3004);
+                hs_sum1.SetFillColor(1);
+                #hs_sum1.SetMarkerColorAlpha(0, 0.1);
+                hs_sum1.SetMarkerStyle(25);
+                hs_sum1.SetMarkerColor(kRed);
+                hs_sum1.SetLineColor(kRed);
+                #hs_sum1.Draw("same e2")
+                hs_sum1.Draw("same e")
+            else:
+                # only error band in usual case
+                hs_sum1.Draw("same e2")
+
+            if not args.fake_rate and not args.skip_legend:
+                leg.Draw("same")
 
     '''
     cout << "setting title" << endl;

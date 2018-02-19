@@ -2,6 +2,10 @@
 import re
 from sys import argv, stdout, stderr, exit
 from optparse import OptionParser
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
 
 # tool to compare fitted nuisance parameters to prefit values.
 #
@@ -95,7 +99,7 @@ for i in range(fpf_s.getSize()):
         # nuisance parameter
         mean_p, sigma_p = (nuis_p.getVal(), nuis_p.getError())
 
-	if not sigma_p > 0: sigma_p = (nuis_p.getMax()-nuis_p.getMin())/2
+        if not sigma_p > 0: sigma_p = (nuis_p.getMax()-nuis_p.getMin())/2
         if options.abs: row += [ "%.6f +/- %.6f" % (nuis_p.getVal(), nuis_p.getError()) ]
 
     for fit_name, nuis_x in [('b', nuis_b), ('s',nuis_s)]:
@@ -103,37 +107,60 @@ for i in range(fpf_s.getSize()):
             row += [ " n/a " ]
         else:
             row += [ "%+.2f +/- %.2f" % (nuis_x.getVal(), nuis_x.getError()) ]
-	
+        
             if nuis_p != None:
-	        if options.plotfile: 
-	          if fit_name=='b':
-	    	    nuis_p_i+=1
-	      	    hist_fit_b.SetBinContent(nuis_p_i,nuis_x.getVal())
-	      	    hist_fit_b.SetBinError(nuis_p_i,nuis_x.getError())
-	      	    hist_fit_b.GetXaxis().SetBinLabel(nuis_p_i,name)
-	          if fit_name=='s':
-	      	    hist_fit_s.SetBinContent(nuis_p_i,nuis_x.getVal())
-	      	    hist_fit_s.SetBinError(nuis_p_i,nuis_x.getError())
-	      	    hist_fit_s.GetXaxis().SetBinLabel(nuis_p_i,name)
-		  hist_prefit.SetBinContent(nuis_p_i,mean_p)
-		  hist_prefit.SetBinError(nuis_p_i,sigma_p)
-	      	  hist_prefit.GetXaxis().SetBinLabel(nuis_p_i,name)
+                if options.plotfile: 
+                  # I don't how this C++ looking nonsense works
+                  # but in the top loop i is the index of range() over the nuisance parameters
+                  # and the name of the parameter is taken according to that i
+                  # and I care only about signal+bckg fit
+                  # so let's try to fix it
+                  # ... and it almost worked
+
+                  #logging.debug('enter b only')
+                  #if fit_name=='b':
+                  #  #nuis_p_i+=1
+                  #  hist_fit_b.SetBinContent(nuis_p_i,nuis_x.getVal())
+                  #  hist_fit_b.SetBinError(nuis_p_i,nuis_x.getError())
+                  #  logging.debug('foobar b')
+                  #  hist_fit_b.GetXaxis().SetBinLabel(nuis_p_i,name)
+
+                  nuis_i = i
+                  logging.info('nuis %s %d %d' % (name, nuis_i, nuis_p_i))
+                  if fit_name=='s':
+                    nuis_p_i+=1
+                    logging.debug('nuis_i %d s %d' % (nuis_i, nuis_p_i))
+                    hist_fit_s.SetBinContent(nuis_p_i, nuis_x.getVal())
+                    hist_fit_s.SetBinError  (nuis_p_i, nuis_x.getError())
+                    hist_fit_s.GetXaxis().SetBinLabel(nuis_p_i,name)
+                    #hist_fit_s.SetBinContent         (nuis_i + 1, nuis_x.getVal())
+                    #hist_fit_s.SetBinError           (nuis_i + 1, nuis_x.getError())
+                    #hist_fit_s.GetXaxis().SetBinLabel(nuis_i + 1, name)
+
+                    logging.debug('enter prefit')
+                    hist_prefit.SetBinContent(nuis_p_i, mean_p)
+                    hist_prefit.SetBinError  (nuis_p_i, sigma_p)
+                    hist_prefit.GetXaxis().SetBinLabel(nuis_p_i,name)
+                    #hist_prefit.SetBinContent         (nuis_i + 1, mean_p)
+                    #hist_prefit.SetBinError           (nuis_i + 1, sigma_p)
+                    #hist_prefit.GetXaxis().SetBinLabel(nuis_i + 1, name)
+                    logging.info('nuis %s %d %d' % (name, nuis_i, nuis_p_i))
 
                 if sigma_p>0: 
 
                         # calculate the difference of the nuisance parameter
                         # w.r.t to the prefit value in terms of the uncertainty
                         # on the prefit value
-			valShift = (nuis_x.getVal() - mean_p)/sigma_p
+                        valShift = (nuis_x.getVal() - mean_p)/sigma_p
 
                         # ratio of the nuisance parameter's uncertainty
                         # w.r.t the prefit uncertainty
-                	sigShift = nuis_x.getError()/sigma_p
+                        sigShift = nuis_x.getError()/sigma_p
 
-		else :
-			print "No definition for prefit uncertainty %s. Printing absolute shifts"%(nuis_p.GetName())
-			valShift = (nuis_x.getVal() - mean_p)
-                	sigShift = nuis_x.getError()
+                else :
+                        print "No definition for prefit uncertainty %s. Printing absolute shifts"%(nuis_p.GetName())
+                        valShift = (nuis_x.getVal() - mean_p)
+                        sigShift = nuis_x.getError()
                 if fit_name == 'b':
                     pulls.append(valShift)
                 if options.abs:
@@ -331,8 +358,12 @@ if options.plotfile:
 
     canvas_pferrs = ROOT.TCanvas("post_fit_errs", "post_fit_errs", 900, 600)
     for b in range(1,hist_fit_e_s.GetNbinsX()+1): 
-      hist_fit_e_s.SetBinContent(b,hist_fit_s.GetBinError(b)/hist_prefit.GetBinError(b))
-      hist_fit_e_b.SetBinContent(b,hist_fit_b.GetBinError(b)/hist_prefit.GetBinError(b))
+      prefit_bin_error = hist_prefit.GetBinError(b)
+      if not prefit_bin_error > 0:
+          prefit_bin_error = 0.01
+          print b, hist_prefit.GetXaxis().GetBinLabel(b)
+      hist_fit_e_s.SetBinContent(b,hist_fit_s.GetBinError(b)/prefit_bin_error)
+      hist_fit_e_b.SetBinContent(b,hist_fit_b.GetBinError(b)/prefit_bin_error)
       hist_fit_e_s.SetBinError(b,0)
       hist_fit_e_b.SetBinError(b,0)
     hist_fit_e_s.SetFillColor(ROOT.kRed)
