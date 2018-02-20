@@ -2,10 +2,9 @@ import argparse
 import logging
 from yaml import load
 
-from os import listdir, mkdir
-from os.path import isdir, isfile, join
-
-logging.basicConfig(level=logging.INFO)
+import glob
+from os import listdir, mkdir, makedirs
+from os.path import isdir, isfile, join, getmtime
 
 
 '''
@@ -49,11 +48,16 @@ parser.add_argument("-p", "--processing-dir", type=str, default='/lstore/cms/ole
 parser.add_argument("--dtags", type=str, default='std',
         help='dtags or groups of dtags to submit, separated by coma like "std,updowns" (default std)')
 
-# example of true-storing options
-#parser.add_argument("-p", "--plot",  action='store_true', help="don't save the root file, plot stacked histogram in png")
+parser.add_argument("-d", "--debug",  action='store_true', help="DEBUG level of logging")
 
 
 args = parser.parse_args()
+
+if args.debug:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.INFO)
+
 logging.debug("parsed args: %s" % repr(args))
 
 assert all(isdir(d) for d in [args.queue_dir, args.ntupler_dir, args.processing_dir])
@@ -77,7 +81,7 @@ def get_dset(dtag):
 
     for dset, info in dsets_info.items():
         if info['dtag'] == dtag:
-            return info['dtag'].split('/')[1]
+            return dset.split('/')[1]
 
     return None
 
@@ -178,13 +182,14 @@ logging.info("got %d requested dtags" % len(requested_dtags))
 
 
 # make the jobs
-job_dir_template = args.ntupler_dir + "/{vntupler}/{dset}/Ntupler_{vntupler}_{dtag}/*/0000/"
+job_dir_template = args.ntupler_dir + "/{vntupler}/{dset}/Ntupler_{vntupler}_{dtag}/" #*/0000/"
 # list this dir to get the available files
 job_template = "python channel_distrs_full_loop.py -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ -i {job_file}   || true"
 
 # make just flat list of jobs commands
 job_commands = []
 for dtag in requested_dtags:
+    logging.debug(dtag)
     # get first-name of the dataset corresponding to this dtag
     dset = get_dset(dtag)
 
@@ -193,9 +198,29 @@ for dtag in requested_dtags:
         continue
 
     job_dirname = job_dir_template.format(vntupler=args.vNtupler, dset=dset, dtag=dtag)
+    logging.debug(job_dirname)
+
+    # there might be several submisions
+    # pick up the last one
+
+    job_submisions = [join(job_dirname, d) for d in listdir(job_dirname)]
+    if len(job_submisions) != 1:
+        logging.warning('not 1 dir: %d picking up the last one' % len(job_submisions))
+    job_dirname = job_submisions[0]
+    logging.debug(job_dirname)
+
+    job_dirname = max(job_submisions, key=getmtime)
+
+    # need to check if I should use all subdirs here
+    # then I'll just glob everything, including .root
+    if len(listdir(job_dirname)) > 1:
+        logging.error("many out dirs: %s" % job_dirname)
+
+    job_dirname = job_dirname + '/0000/'
 
     # available .root files:
-    rootfiles = [f for f in listdir(job_dirname) if isfile(join(job_dirname, f)) and f[-5:] == '.root']
+    rootfiles = [f for f in glob.glob(job_dirname + '/*.root') if isfile(f)]
+    logging.debug("%d .root files" % len(rootfiles))
 
     for job_file in rootfiles:
         job_commands.append(job_template.format(vntupler=args.vNtupler, vproc=args.vProc, dtag=dtag, job_file=job_file))
@@ -218,12 +243,14 @@ logging.info("made %d queues" % n_queues)
 
 
 # make the job directory of the processing and write the queues
-proc_queues_dir = join(args.queue_dir, args.vProc)
-mkdir(proc_queues_dir)
+proc_queues_dir = join(args.queue_dir, args.vNtupler, args.vProc)
+if not isdir(proc_queues_dir):
+    makedirs(proc_queues_dir)
 
 for nod, n_queues in scheme.items():
-    nod_queues_dir = join(proc_queues_dir, nod)
-    mkdir(nod_queues_dir)
+    nod_queues_dir = join(proc_queues_dir, str(nod))
+    if not isdir(nod_queues_dir):
+        mkdir(nod_queues_dir)
     nod_queues, queues = queues[:n_queues], queues[n_queues:]
 
     for i, nod_queue in enumerate(nod_queues):
