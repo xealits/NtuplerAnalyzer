@@ -813,11 +813,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         'isrup': 'ISRUp', 'isrdown': 'ISRDown',
         'hdampUP': 'HDAMPUp', 'hdampDOWN': 'HDAMPDown',
         'GluonMoveCRTune': 'GluonMoveCRTuneUp', 'QCDbasedCRTune': 'QCDbasedCRTuneUp'}
+
     def which_sys(dtag, systematics=tt_systematic_datasets):
+        # if the name is already fixed return it as is
+        if sys_name in systematics.values():
+            if sys_name in dtag:
+                return sys_name
+        # else try to translate the old name
         for sys_name in systematics.keys():
             if sys_name in dtag:
                 return systematics[sys_name]
         return None
+
     isTT_systematic = isTT and which_sys(dtag)
 
     isSTop = 'SingleT' in dtag or 'tchannel' in dtag or 'schannel' in dtag
