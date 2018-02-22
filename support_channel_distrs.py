@@ -815,8 +815,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         'GluonMoveCRTune': 'GluonMoveCRTuneUp', 'QCDbasedCRTune': 'QCDbasedCRTuneUp'}
 
     def which_sys(dtag, systematics=tt_systematic_datasets):
-        # if the name is already fixed return it as is
-        if sys_name in systematics.values():
+        # if the dtag name is already fixed return it as is
+        for sys_name in systematics.values():
             if sys_name in dtag:
                 return sys_name
         # else try to translate the old name
@@ -883,10 +883,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     ('weight_pu_h2',  TH1D("weight_pu_h2", "", 50, 0, 2)),
     ('weight_top_pt', TH1D("weight_top_pt", "", 50, 0, 2)),
 
-    ('weights_gen_norm',    TH1D("weights_gen_norm", "", 50, 0, 2)),
-    ('weights_AlphaSUp',    TH1D("weights_AlphaSUp", "", 50, 0, 2)),
-    ('weights_AlphaSDown',  TH1D("weights_AlphaSDown", "", 50, 0, 2)),
-    ('weights_CentralFrag', TH1D("weights_CentralFrag", "", 50, 0, 2)),
+    ('weights_gen_weight_norm',    TH1D("weights_gen_weight_norm", "", 50, 0, 2)),
+    ('weights_gen_weight_alphasUp',    TH1D("weights_gen_weight_alphasUp", "", 50, 0, 2)),
+    ('weights_gen_weight_alphasDown',  TH1D("weights_gen_weight_alphasDown", "", 50, 0, 2)),
+    ('weights_gen_weight_centralFrag', TH1D("weights_gen_weight_centralFrag", "", 50, 0, 2)),
     ('weights_FragUp',      TH1D("weights_FragUp", "", 50, 0, 2)),
     ('weights_FragDown',    TH1D("weights_FragDown", "", 50, 0, 2)),
 
@@ -1776,9 +1776,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         weight = 1. # common weight of event (1. for data)
         #weights_th = namedtuple('th_weights', 'AlphaSUp AlphaSDown FragUp FragDown')
         #weights_th = (1., 1., 1., 1.)
-        weights_AlphaS = (1., 1.)
+        weights_gen_weight_alphas = (1., 1.)
         weights_Frag   = (1., 1.)
-        weights_CentralFrag   = 1.
+        weights_gen_weight_centralFrag   = 1.
         if isMC:
             try:
                 if passed_ele_event:
@@ -1836,18 +1836,20 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             if isTT:
                 # th weights if needed
                 if with_AlphaS_sys:
-                    weights_gen_norm = ev.gen_weight_norm
-                    weights_AlphaS = (ev.gen_weight_alphas_1, ev.gen_weight_alphas_2)
-                    control_hs['weights_gen_norm']   .Fill(weights_gen_norm)
-                    control_hs['weights_AlphaSUp']   .Fill(weights_AlphaS[0])
-                    control_hs['weights_AlphaSDown'] .Fill(weights_AlphaS[1])
+                    weights_gen_weight_norm = ev.gen_weight_norm
+                    weights_gen_weight_alphas = (ev.gen_weight_alphas_1, ev.gen_weight_alphas_2)
+                    control_hs['weights_gen_weight_norm']   .Fill(weights_gen_weight_norm)
+                    control_hs['weights_gen_weight_alphasUp']   .Fill(weights_gen_weight_alphas[0])
+                    control_hs['weights_gen_weight_alphasDown'] .Fill(weights_gen_weight_alphas[1])
 
                 if with_Frag_sys:
-                    weights_CentralFrag = ev.gen_weight_centralFrag
-                    weights_Frag = (ev.gen_weight_upFrag, ev.gen_weight_downFrag)
-                    control_hs['weights_CentralFrag']   .Fill(weights_CentralFrag)
-                    control_hs['weights_FragUp']   .Fill(weights_Frag[0])
-                    control_hs['weights_FragDown'] .Fill(weights_Frag[1])
+                    weights_gen_weight_centralFrag = ev.gen_weight_centralFrag
+                    weights_gen_weight_Frag = (ev.gen_weight_upFrag, ev.gen_weight_downFrag)
+                    # sub to this naming in the following ntuple runs:
+                    #weights_gen_weight_Frag = (ev.gen_weight_FragUp, ev.gen_weight_FragDown)
+                    control_hs['weights_gen_weight_centralFrag']   .Fill(weights_gen_weight_centralFrag)
+                    control_hs['weights_gen_weight_FragUp']   .Fill(weights_gen_weight_Frag[0])
+                    control_hs['weights_gen_weight_FragDown'] .Fill(weights_gen_weight_Frag[1])
 
                 weight_top_pt = ttbar_pT_SF(ev.gen_t_pt, ev.gen_tb_pt)
                 #weight *= weight_top_pt # to sys
@@ -3002,11 +3004,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 systematics['TOPPTUp']    = [jets_nom,   taus_nom, weight_pu, weight_top_pt, 1.]
                 systematics['TOPPTDown']  = [jets_nom,   taus_nom, weight_pu, 1.,            1.]
 		if with_AlphaS_sys:
-                    systematics['AlphaSUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_AlphaSUp   / weights_gen_norm]
-                    systematics['AlphaSDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_AlphaSDown / weights_gen_norm]
+                    systematics['AlphaSUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_alphas[0] / weights_gen_weight_norm]
+                    systematics['AlphaSDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_alphas[1] / weights_gen_weight_norm]
 		if with_Frag_sys:
-                    systematics['FragUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_FragUp   / weights_CentralFrag]
-                    systematics['FragDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_FragDown / weights_CentralFrag]
+                    systematics['FragUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_Frag[0] / weights_gen_weight_centralFrag]
+                    systematics['FragDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_Frag[1] / weights_gen_weight_centralFrag]
         else:
             systematics = {'NOMINAL': [jets_nom, taus_nom, 1., 1., 1.]}
 

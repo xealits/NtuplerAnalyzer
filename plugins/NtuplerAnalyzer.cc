@@ -941,7 +941,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// there are 100 replicas of NNPDF3.0
 			// convert them into hessian matrix represenation of a 60-dim function (which covers all the correlations/deviations of the pdf uncretainty)
 			// varying the hessian parameters we get systematic on the shape and everything
-			std::vector<double> inpdfweights(nPdfWeights_);
+			//std::vector<double> inpdfweights(nPdfWeights_);
 			for (unsigned int ipdf=0; ipdf<nPdfWeights_; ++ipdf)
 				{
 				unsigned int iwgt = ipdf + pdfWeightOffset_;
@@ -949,7 +949,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				//pdfweights_[ipdf] = lheInfo->weights()[iwgt].wgt*weight_/nomlheweight;
 				//this is the raw weight to be fed to the mc2hessian convertor
 				double wgtval = lheEPHandle->weights()[iwgt].wgt;
-				inpdfweights[ipdf] = wgtval;
+				//inpdfweights[ipdf] = wgtval;
 				// for CT pdf hessians are stored
 				NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
 				}
@@ -984,14 +984,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer/blob/master/plugins/BFragmentationWeightProducer.cc
 		// TODO: check the genJet info checks
 
-		edm::Handle<edm::ValueMap<float> > petersonFrag;
-		iEvent.getByToken(PetersonFragToken_, petersonFrag);
 		edm::Handle<edm::ValueMap<float> > centralFrag;
 		iEvent.getByToken(centralFragToken_, centralFrag);
 		edm::Handle<edm::ValueMap<float> > upFrag;
 		iEvent.getByToken(upFragToken_, upFrag);
 		edm::Handle<edm::ValueMap<float> > downFrag;
 		iEvent.getByToken(downFragToken_, downFrag);
+		edm::Handle<edm::ValueMap<float> > petersonFrag;
+		iEvent.getByToken(PetersonFragToken_, petersonFrag);
 
 		edm::Handle<edm::ValueMap<float> > semilepbrUp;
 		iEvent.getByToken(semilepbrUpToken_, semilepbrUp);
@@ -1004,7 +1004,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			edm::Ref<std::vector<reco::GenJet> > genJetRef(genJets2, genJet - genJets2->begin()); // this looks really weird
 			//cout << "pt=" << genJet->pt() << " id=" << genJet->pdgId() << " petersonFragWeight=" << (*petersonFrag)[genJetRef] << endl;
 			//...
-			weight_centralFrag   *= (*petersonFrag)[genJetRef];
+			weight_centralFrag   *= (*centralFrag)[genJetRef];
 			weight_upFrag        *= (*upFrag)[genJetRef];
 			weight_downFrag      *= (*downFrag)[genJetRef];
 			weight_PetersonFrag  *= (*petersonFrag)[genJetRef];
@@ -1012,8 +1012,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			weight_semilepbrDown *= (*semilepbrDown)[genJetRef];
 			}
 		NT_gen_weight_centralFrag   = weight_centralFrag  ;
-		NT_gen_weight_upFrag        = weight_upFrag       ;
-		NT_gen_weight_downFrag      = weight_downFrag     ;
+		NT_gen_weight_FragUp        = weight_upFrag       ;
+		NT_gen_weight_FragDown      = weight_downFrag     ;
 		NT_gen_weight_PetersonFrag  = weight_PetersonFrag ;
 		NT_gen_weight_semilepbrUp   = weight_semilepbrUp  ;
 		NT_gen_weight_semilepbrDown = weight_semilepbrDown;
