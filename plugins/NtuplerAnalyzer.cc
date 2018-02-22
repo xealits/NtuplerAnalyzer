@@ -950,7 +950,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				//this is the raw weight to be fed to the mc2hessian convertor
 				double wgtval = lheEPHandle->weights()[iwgt].wgt;
 				inpdfweights[ipdf] = wgtval;
-				//NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
 				// for CT pdf hessians are stored
 				NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
 				}
@@ -982,6 +981,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// fragmentation and decay tables (of b->hadron) systematics
 		edm::Handle<std::vector<reco::GenJet>> genJets2;
 		iEvent.getByToken( genJetsToken_, genJets2); // https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer
+		// https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer/blob/master/plugins/BFragmentationWeightProducer.cc
+		// TODO: check the genJet info checks
 
 		edm::Handle<edm::ValueMap<float> > petersonFrag;
 		iEvent.getByToken(PetersonFragToken_, petersonFrag);

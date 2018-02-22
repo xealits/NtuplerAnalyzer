@@ -883,6 +883,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     ('weight_pu_h2',  TH1D("weight_pu_h2", "", 50, 0, 2)),
     ('weight_top_pt', TH1D("weight_top_pt", "", 50, 0, 2)),
 
+    ('weights_gen_norm',    TH1D("weights_gen_norm", "", 50, 0, 2)),
+    ('weights_AlphaSUp',    TH1D("weights_AlphaSUp", "", 50, 0, 2)),
+    ('weights_AlphaSDown',  TH1D("weights_AlphaSDown", "", 50, 0, 2)),
+    ('weights_CentralFrag', TH1D("weights_CentralFrag", "", 50, 0, 2)),
+    ('weights_FragUp',      TH1D("weights_FragUp", "", 50, 0, 2)),
+    ('weights_FragDown',    TH1D("weights_FragDown", "", 50, 0, 2)),
+
     ('weight_z_mass_pt', TH1D("weight_z_mass_pt", "", 50, 0, 2)),
     #('weight_bSF',       TH1D("weight_bSF", "", 50, 0, 2)),
 
@@ -963,10 +970,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     systematic_names_toppt = ['NOMINAL']
 
     if isTT:
-        systematic_names_all.append('TOPPTUp')
-        systematic_names_all.append('TOPPTDown')
+        systematic_names_all.extend(('TOPPTUp', 'TOPPTDown'))
         systematic_names_toppt = ['NOMINAL', 'TOPPTUp']
         systematic_names_pu_toppt.append('TOPPTUp')
+        systematic_names_all_with_th.extend(('AlphaSUp', 'AlphaSDown', 'FragUp', 'FragDown'))
 
     if isMC:
         if isTT:
@@ -1319,8 +1326,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
                 'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
+
                 # testing issue with event yield advantage
-                'ctr_old_mu_sel':           (procs_mu, systematic_names_all),
+                'ctr_old_mu_sel':           (procs_mu, systematic_names_all_with_th),
                 'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_all),
                 'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_all),
                 'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_all),
@@ -1356,6 +1364,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     with_JER_sys = with_JER and ('JERUp' in requested_systematics or 'JERDown' in requested_systematics)
     with_JES_sys = with_JES and ('JESUp' in requested_systematics or 'JESDown' in requested_systematics)
     with_TauES_sys = with_TauES and ('TauESUp' in requested_systematics or 'TauESDown' in requested_systematics)
+
+    with_AlphaS_sys = with_bSF and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
+    with_Frag_sys   = with_bSF and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
 
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
     # all requested jet cuts
@@ -1572,6 +1583,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                                                'control_bSF_weight':  TH1D('%s_%s_%s_control_bSF_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
                                                'control_PU_weight':   TH1D('%s_%s_%s_control_PU_weight'   % (chan, proc, sys), '', 150, 0., 1.5),
+                                               'control_th_weight':   TH1D('%s_%s_%s_control_th_weight'   % (chan, proc, sys), '', 150, 0., 1.5),
                                                'control_rec_weight':  TH1D('%s_%s_%s_control_rec_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
 
                                                'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', 20, 0, 200),
@@ -1760,6 +1772,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             weight_pu_h2 = 1.
 
         weight = 1. # common weight of event (1. for data)
+        #weights_th = namedtuple('th_weights', 'AlphaSUp AlphaSDown FragUp FragDown')
+        #weights_th = (1., 1., 1., 1.)
+        weights_AlphaS = (1., 1.)
+        weights_Frag   = (1., 1.)
+        weights_CentralFrag   = 1.
         if isMC:
             try:
                 if passed_ele_event:
@@ -1815,6 +1832,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             # "Only top quarks in SM ttbar events must be reweighted, not single tops or tops from BSM production mechanisms."
             # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting
             if isTT:
+                # th weights if needed
+                if with_AlphaS_sys:
+                    weights_gen_norm = ev.gen_weight_norm
+                    weights_AlphaS = (ev.gen_weight_alphas_1, ev.gen_weight_alphas_2)
+                    control_hs['weights_gen_norm']   .Fill(weights_gen_norm)
+                    control_hs['weights_AlphaSUp']   .Fill(weights_AlphaS[0])
+                    control_hs['weights_AlphaSDown'] .Fill(weights_AlphaS[1])
+
+                if with_Frag_sys:
+                    weights_CentralFrag = ev.gen_weight_centralFrag
+                    weights_Frag = (ev.gen_weight_upFrag, ev.gen_weight_downFrag)
+                    control_hs['weights_CentralFrag']   .Fill(weights_CentralFrag)
+                    control_hs['weights_FragUp']   .Fill(weights_Frag[0])
+                    control_hs['weights_FragDown'] .Fill(weights_Frag[1])
+
                 weight_top_pt = ttbar_pT_SF(ev.gen_t_pt, ev.gen_tb_pt)
                 #weight *= weight_top_pt # to sys
                 control_hs['weight_top_pt']   .Fill(weight_top_pt)
@@ -2950,25 +2982,31 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # jet pts, tau pts, b weight (=1 for data), pu weight (=1 for data)
 
         if isTT_systematic: # tt systematic datasets have all nominal experimental systematic variations -- they are a systematic themselves
-            systematics = {isTT_systematic: [jets_nom, taus_nom, weight_pu, 1]}
+            systematics = {isTT_systematic: [jets_nom, taus_nom, weight_pu, 1, 1.]}
         elif isMC:
-            systematics = {'NOMINAL'   : [jets_nom,     taus_nom, weight_pu,    1],
-                           'JESUp'     : [jets_JESUp,   taus_nom, weight_pu,    1],
-                           'JESDown'   : [jets_JESDown, taus_nom, weight_pu,    1],
-                           'JERUp'     : [jets_JERUp,   taus_nom, weight_pu,    1],
-                           'JERDown'   : [jets_JERDown, taus_nom, weight_pu,    1],
-                           'TauESUp'   : [jets_nom,     taus_ESUp  , weight_pu,    1],
-                           'TauESDown' : [jets_nom,     taus_ESDown, weight_pu,    1],
-                           'bSFUp'     : [jets_bUp,     taus_nom, weight_pu,    1],
-                           'bSFDown'   : [jets_bDown,   taus_nom, weight_pu,    1],
-                           'PUUp'      : [jets_nom,     taus_nom, weight_pu_up, 1],
-                           'PUDown'    : [jets_nom,     taus_nom, weight_pu_dn, 1],
+            systematics = {'NOMINAL'   : [jets_nom,     taus_nom,    weight_pu,    1, 1.],
+                           'JESUp'     : [jets_JESUp,   taus_nom,    weight_pu,    1, 1.],
+                           'JESDown'   : [jets_JESDown, taus_nom,    weight_pu,    1, 1.],
+                           'JERUp'     : [jets_JERUp,   taus_nom,    weight_pu,    1, 1.],
+                           'JERDown'   : [jets_JERDown, taus_nom,    weight_pu,    1, 1.],
+                           'TauESUp'   : [jets_nom,     taus_ESUp  , weight_pu,    1, 1.],
+                           'TauESDown' : [jets_nom,     taus_ESDown, weight_pu,    1, 1.],
+                           'bSFUp'     : [jets_bUp,     taus_nom,    weight_pu,    1, 1.],
+                           'bSFDown'   : [jets_bDown,   taus_nom,    weight_pu,    1, 1.],
+                           'PUUp'      : [jets_nom,     taus_nom,    weight_pu_up, 1, 1.],
+                           'PUDown'    : [jets_nom,     taus_nom,    weight_pu_dn, 1, 1.],
                            }
             if isTT:
-                systematics['TOPPTUp']   = [jets_nom,   taus_nom, weight_pu, weight_top_pt]
-                systematics['TOPPTDown'] = [jets_nom,   taus_nom, weight_pu, 1.]
+                systematics['TOPPTUp']    = [jets_nom,   taus_nom, weight_pu, weight_top_pt, 1.]
+                systematics['TOPPTDown']  = [jets_nom,   taus_nom, weight_pu, 1.,            1.]
+		if with_AlphaS_sys:
+                    systematics['AlphaSUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_AlphaSUp   / weights_gen_norm]
+                    systematics['AlphaSDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_AlphaSDown / weights_gen_norm]
+		if with_Frag_sys:
+                    systematics['FragUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_FragUp   / weights_CentralFrag]
+                    systematics['FragDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_FragDown / weights_CentralFrag]
         else:
-            systematics = {'NOMINAL': [jets_nom, taus_nom, 1., 1.]}
+            systematics = {'NOMINAL': [jets_nom, taus_nom, 1., 1., 1.]}
 
         # remove not requested systematics to reduce the loop:
         for name, _ in systematics.items():
@@ -2981,10 +3019,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # check the subprocess
         # store distr
 
-        for sys_name, (jets, taus, weight_PU, weight_top_pt) in systematics.items():
+        for sys_name, (jets, taus, weight_PU, weight_top_pt, weight_th) in systematics.items():
             # TODO: add here only possible systematics
-            sys_weight            = weight * weight_PU * weight_top_pt
-            sys_weight_without_PU = weight * weight_top_pt # for PU tests
+            sys_weight            = weight * weight_th * weight_PU * weight_top_pt
+            sys_weight_without_PU = weight * weight_th * weight_top_pt # for PU tests
             # -- I miss the bSF weight
             # TODO: in principle it should be added according to the b-s used in the selection and passed down to the channel
             #       notice the b SF are calculated in old scheme, for medium jets only
@@ -3767,6 +3805,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 out_hs[(chan, proc, sys_name)]['control_bSF_weight'].Fill(weight_bSF)
                 out_hs[(chan, proc, sys_name)]['control_PU_weight'] .Fill(weight_PU)
+                out_hs[(chan, proc, sys_name)]['control_th_weight'] .Fill(weight_th)
                 out_hs[(chan, proc, sys_name)]['control_rec_weight'].Fill(record_weight)
 
         if save_weights:
