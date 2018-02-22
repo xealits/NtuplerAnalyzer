@@ -904,11 +904,27 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// I don't see this nominal weight and others in ST_tW powheg-pythia CUETP8M1 sample
 			// but DY, WJets, QCD and s/t-channel all pass well
 			// before figuring put what's going on I lave the waits only for TT
-			double nomlheweight = lheEPHandle->weights()[0].wgt; // the norm weight
+
+			// the howto is from
+
+			// what he says about
+			// > For such samples (and good practice in general),
+			// > must
+			// > use weight from
+			// > GenEventInfoProduct::weight() to fill histograms, compute yields, train
+			// > MVA’s, etc
+			// I save as NT_aMCatNLO_weight
+			//double nomlheweight = lheEPHandle->weights()[0].wgt; // the norm weight
+			// it's not the norm weight
+			// and on 1/100th of TT it always = 1.
+			double nomlheweight    = lheEPHandle->originalXWGTUP();
 			NT_gen_weight_norm = nomlheweight;
-			LogInfo("Demo") << "nominal weight";
+			LogInfo("Demo") << "PDFs, alphaS and nominal weight";
 
 			// scale weights
+			// got howto from
+			// https://indico.cern.ch/event/494682/contributions/1172505/attachments/1223578/1800218/mcaod-Feb15-2016.pdf
+			// printouts of weight labels should be in the git
 			double  muf_nom_mur_nom_weight  = (fabs(lheEPHandle->weights()[0].wgt))/(fabs(nomlheweight));
 			double   muf_up_mur_nom_weight  = (fabs(lheEPHandle->weights()[1].wgt))/(fabs(nomlheweight));
 			double muf_down_mur_nom_weight  = (fabs(lheEPHandle->weights()[2].wgt))/(fabs(nomlheweight));
@@ -932,10 +948,59 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 
 			// and PDF uncertainties
+			// also from https://indico.cern.ch/event/494682/contributions/1172505/attachments/1223578/1800218/mcaod-Feb15-2016.pdf
+			// the labels in printouts correspond to one of NN
+			// from the presentation:
+			// > LHAID 260000, pdf uncertainties:  260001-260100,
+			// > as uncertainties 265000,266000
+			// issues:
+			// 1) not sure if they do linearly map to the weights() array (assume they do)
+			// 2) 13100 -- what are these?
+			// from twiki:
+			// https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopSystematics#PDF_uncertainties
+			// talks only about NNPDF3
+			// but there is an error in NNPDF3 which interferes with converting them to hessian form
+			// and makes the systematic variations inconvenient,
+			// which was noted by Till Arndt, and also that CT14 PDFs are stored in hessian form
+			// https://indico.cern.ch/event/560833/contributions/2268181/attachments/1319955/1982168/Arndt_PDF.pdf
+			// ...
+			// did I just assume that the following weights are PDF CT14?
+			// they have IDs [3001, 3060] and PDF set label [13100, 13156]+{13164, 13166, 11000}
+			// looks like it could be 57 PDFs, 2 alphaS variations and nominal weight?
+			// ...
+			// aha!
+			// no, I didn't guess, I noticed this bit here:
+			// https://twiki.cern.ch/twiki/bin/viewauth/CMS/LHEReaderCMSSW#How_to_use_weights
+			// You can see that the CT10 weight is the last in the truncated list (ID: 3001) and that there are other 109 weights before.
+			// So in this case, CT10 will be weight number 109 (numbering starts from 0 as in C++) and ID = "3001". 
+			// and the alphaS were assumed,
+			// but I didn't save the last one 3060 with label 11000
+			// they also suggest this:
+			// > In the event loop, do: 
+			// > int whichWeight = XXX;
+			// > theWeight *= EvtHandle->weights()[whichWeight].wgt/EvtHandle->originalXWGTUP(); 
+			// -- that's way the envelope weights are divided by it
+			// and in PDF example it was also used?..
+			// aha!
+			// these are PDF label IDs:
+			// https://lhapdf.hepforge.org/pdfsets.html
+			// -- the guess on alphaS was right!
+			//
+			// last question:
+			// should I divide them by that nominal weight?
+			// aha! the pdf example is
+			// PhysicsTools/HepMCCandAlgos/plugins/PDFWeightsTest.cc
+			// -- I saved it in info-examples-notes/
+			// it divides the weights by the value os weights()[0]
+			// which is strange
+			// -- let's not divide them now and see later?
+			// the twiki page does suggest to divide everything though...
+			// -- keeping the division after all, seems like a good guess
+
 			//get the original mc replica weights
 			//unsigned int nNNPPDF3Weights_ = 100, pdfWeightOffset_ = 9, nPdfEigWeights_ = 60; // as in example
 			// -- for NNPDF3
-			unsigned int nPdfWeights_ = 56, pdfWeightOffset_ = 9 + 100 + 2; // already, nPdfEigWeights_ = 60; // as in example
+			unsigned int nPdfWeights_ = 57, pdfWeightOffset_ = 9 + 100 + 2; // already, nPdfEigWeights_ = 60; // as in example
 			// -- for CT pdf
 			// pdf offset skips the renorm/fact weights
 			// there are 100 replicas of NNPDF3.0
@@ -952,6 +1017,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				//inpdfweights[ipdf] = wgtval;
 				// for CT pdf hessians are stored
 				NT_gen_weights_pdf_hessians.push_back(wgtval/nomlheweight);
+				//NT_gen_weights_pdf_hessians.push_back(wgtval); // raw value
 				}
 
 			/* the CT pdfs are already hessian
@@ -971,9 +1037,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				}    
 			*/
 
+
 			// and alpha strong variation
 			NT_gen_weight_alphas_1 = lheEPHandle->weights()[pdfWeightOffset_+ nPdfWeights_ + 0].wgt;
 			NT_gen_weight_alphas_2 = lheEPHandle->weights()[pdfWeightOffset_+ nPdfWeights_ + 1].wgt;
+			// some additional weight with label 11000, stored within the same index range 3001-3060
+			NT_gen_weight_too      = lheEPHandle->weights()[pdfWeightOffset_+ nPdfWeights_ + 3].wgt;
 
 			LogInfo("Demo") << "MC systematic weights";
 			}

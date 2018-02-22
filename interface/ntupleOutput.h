@@ -286,10 +286,11 @@ Float_t_in_NTuple(OUTNTUPLE, fixedGridRhoFastjetAll)
 
 // renormalization/factorization scale weights (normalized already)
 Float_t_in_NTuple(OUTNTUPLE, gen_weight_norm)
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, gen_weights_renorm_fact)
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, gen_weights_pdf_hessians)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, gen_weights_renorm_fact)   // the envelope weights
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, gen_weights_pdf_hessians)  // the PDF weights
 Float_t_in_NTuple(OUTNTUPLE, gen_weight_alphas_1)
 Float_t_in_NTuple(OUTNTUPLE, gen_weight_alphas_2)
+Float_t_in_NTuple(OUTNTUPLE, gen_weight_too)
 
 // fragmentation and lepton decay tables (for b->hadron processes)
 Float_t_in_NTuple(OUTNTUPLE, gen_weight_centralFrag   )
