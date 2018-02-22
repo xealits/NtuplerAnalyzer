@@ -969,10 +969,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         systematic_names_pu_toppt  = ['NOMINAL']
     systematic_names_toppt = ['NOMINAL']
 
+    systematic_names_all_with_th = systematic_names_all
     if isTT:
         systematic_names_all.extend(('TOPPTUp', 'TOPPTDown'))
         systematic_names_toppt = ['NOMINAL', 'TOPPTUp']
         systematic_names_pu_toppt.append('TOPPTUp')
+
         systematic_names_all_with_th.extend(('AlphaSUp', 'AlphaSDown', 'FragUp', 'FragDown'))
 
     if isMC:
