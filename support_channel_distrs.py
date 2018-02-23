@@ -506,7 +506,7 @@ yup:
 '''
 
 
-with_bSF = True # 0L2M issue seems to be real
+with_bSF = False # 0L2M issue seems to be real
 
 if with_bSF:
     logging.info("loading b-tagging SF stuff")
@@ -999,36 +999,36 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         if isWJets:
             wjets_procs = (['wjets'], 'wjets')
-            procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = wjets_procs
+            procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = procs_mu_3ch_fbw = procs_el_3ch_fbw = wjets_procs
             usual_process = 'wjets'
 
         if isDY:
             dy_procs = (['dy_tautau', 'dy_other'], 'dy_other')
-            procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = dy_procs
+            procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = procs_mu_3ch_fbw = procs_el_3ch_fbw = dy_procs
             usual_process = 'dy_other'
 
         if isSTop:
             s_top_procs_el = (['s_top_eltau', 's_top_lj', 's_top_other'], 's_top_other')
             s_top_procs_mu = (['s_top_mutau', 's_top_lj', 's_top_other'], 's_top_other')
             s_top_procs_elmu = (['s_top_elmu', 's_top_other'], 's_top_other')
-            procs_el_3ch = procs_el = s_top_procs_el
-            procs_mu_3ch = procs_mu = s_top_procs_mu
+            procs_el_3ch = procs_el = procs_el_3ch_fbw = s_top_procs_el
+            procs_mu_3ch = procs_mu = procs_mu_3ch_fbw = s_top_procs_mu
             procs_elmu = s_top_procs_elmu
             usual_process = 's_top_other'
 
         if isQCD:
             qcd_procs = (['qcd'], 'qcd')
-            procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = qcd_procs
+            procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = procs_mu_3ch_fbw = procs_el_3ch_fbw = qcd_procs
             usual_process = 'qcd'
 
         if isDibosons:
             dibosons_procs = (['dibosons'], 'dibosons')
-            procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = dibosons_procs
+            procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = procs_mu_3ch_fbw = procs_el_3ch_fbw = dibosons_procs
             usual_process = 'dibosons'
 
     else:
         data_procs = (['data'], 'data')
-        procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = data_procs
+        procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = procs_mu_3ch_fbw = procs_el_3ch_fbw = data_procs
         usual_process = 'data'
 
     channels_usual = {'el_presel':      (procs_el_3ch, systematic_names_pu_toppt), #systematic_names_all),
@@ -3367,7 +3367,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 # also if there are taus and it's tt_lj than try to specify the origin of the fake
                 # if it is required by the procs
-                if proc == 'tt_lj' and 'tt_ljb' in procs and sel_taus:
+                if isTT and proc == 'tt_lj' and 'tt_ljb' in procs and sel_taus:
                     # the 0 tau is used
                     # sadly root...
                     # I have to convert ALL lorentzvectors to TLorentzVectors to have convenient dR
@@ -3379,8 +3379,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # gen_t_w1_final_pdgIds etc
                     gen_match_cut = 0.3
                     matched_w = False
-                    for w_prod, w_prod_ID in zip(ev.gen_t_w1_final_p4s    + ev.gen_t_w2_final_p4s    + ev.gen_tb_w1_final_p4s    + ev.gen_tb_w2_final_p4s,
-                                                 ev.gen_t_w1_final_pdgIds + ev.gen_t_w2_final_pdgIds + ev.gen_tb_w1_final_pdgIds + ev.gen_tb_w2_final_pdgIds):
+                    for w_prod, w_prod_ID in zip(ev.gen_t_w1_final_p4s, ev.gen_t_w1_final_pdgIds) + zip(ev.gen_t_w2_final_p4s, ev.gen_t_w2_final_pdgIds) + \
+                                             zip(ev.gen_tb_w1_final_p4s, ev.gen_tb_w1_final_pdgIds) + zip(ev.gen_tb_w2_final_p4s, ev.gen_tb_w2_final_pdgIds):
                         if abs(w_prod_ID) in (12, 14, 16):
                             continue
                         w_prod_p4 = TLorentzVector(w_prod.X(), w_prod.Y(), w_prod.Z(), w_prod.T())
@@ -3389,8 +3389,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                             break
 
                     matched_b = False
-                    for b_prod, b_prod_ID in zip(ev.gen_t_b_final_p4s    + ev.gen_tb_b_final_p4s   ,
-                                                 ev.gen_t_b_final_pdgIds + ev.gen_tb_b_final_pdgIds):
+                    for b_prod, b_prod_ID in zip(ev.gen_t_b_final_p4s, ev.gen_t_b_final_pdgIds) + zip(ev.gen_tb_b_final_p4s, ev.gen_tb_b_final_pdgIds):
                         if abs(b_prod_ID) in (12, 14, 16):
                             continue
                         b_prod_p4 = TLorentzVector(b_prod.X(), b_prod.Y(), b_prod.Z(), b_prod.T())
@@ -3782,7 +3781,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     tau_refit_index = ev.tau_refited_index[sel_taus[0][3]] # tau id in the original vector
                     #tau_jet_index   = ev.tau_dR_matched_jet[0]
                     # require refit and dR quality of refit
-                    refitted = tau_refit_index > -1 and ev.tau_SV_fit_track_OS_matched_track_dR[tau_refit_index[0]] + ev.tau_SV_fit_track_SS1_matched_track_dR[tau_refit_index[0]] + ev.tau_SV_fit_track_SS2_matched_track_dR[tau_refit_index[0]] < 0.002
+                    refitted = tau_refit_index > -1 and ev.tau_SV_fit_track_OS_matched_track_dR[tau_refit_index] + ev.tau_SV_fit_track_SS1_matched_track_dR[tau_refit_index] + ev.tau_SV_fit_track_SS2_matched_track_dR[tau_refit_index] < 0.002
                     if refitted:
                         tau_SV_sign    = ev.tau_SV_geom_flightLenSign [tau_refit_index]
                         tau_SV_leng    = ev.tau_SV_geom_flightLen     [tau_refit_index]
