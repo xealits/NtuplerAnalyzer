@@ -325,10 +325,12 @@ Int_t_in_NTuple(OUTNTUPLE, nallbjets) // N b-jets among them
 Int_t_in_NTuple(OUTNTUPLE, ntaus)
 
 // info on veto leps
-Bool_t_in_NTuple(OUTNTUPLE, no_veto_leps) // std veto lep bool for proc
-Int_t_in_NTuple(OUTNTUPLE, nleps_veto_el)
-Int_t_in_NTuple(OUTNTUPLE, nleps_veto_mu)
+Bool_t_in_NTuple(OUTNTUPLE, no_std_veto_leps) // std veto lep bool for proc, includes iso of leptons and the suggested impact of electrons (muon impact is embedded into ID)
+Bool_t_in_NTuple(OUTNTUPLE, no_iso_veto_leps) // only iso, no suggested impacts of electrons
+Int_t_in_NTuple(OUTNTUPLE, nleps_veto_el_iso_imp)
+Int_t_in_NTuple(OUTNTUPLE, nleps_veto_el_iso)
 Int_t_in_NTuple(OUTNTUPLE, nleps_veto_el_all)
+Int_t_in_NTuple(OUTNTUPLE, nleps_veto_mu_iso)
 Int_t_in_NTuple(OUTNTUPLE, nleps_veto_mu_all)
 
 // Primary Vertices
