@@ -991,6 +991,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             procs_mu     = tt_procs_mu     =  (['tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             procs_el_3ch = tt_procs_el_3ch =  (['tt_eltau3ch', 'tt_eltau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             procs_mu_3ch = tt_procs_mu_3ch =  (['tt_mutau3ch', 'tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
+            procs_el_3ch_fbw = tt_procs_el_3ch_fbw =  (['tt_eltau3ch', 'tt_eltau', 'tt_ljb', 'tt_ljw', 'tt_ljo', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
+            procs_mu_3ch_fbw = tt_procs_mu_3ch_fbw =  (['tt_mutau3ch', 'tt_mutau', 'tt_ljb', 'tt_ljw', 'tt_ljo', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             #procs_elmu   = tt_procs_elmu   =  (['tt_elmu', 'tt_taueltaumu', 'tt_other'], 'tt_other')
             procs_elmu   = tt_procs_elmu   =  (['tt_elmu', 'tt_ltaul', 'tt_other'], 'tt_other')
             usual_process   = 'tt_other'
@@ -1326,12 +1328,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_mu_tt_em':             (procs_elmu, systematic_names_pu_toppt),
                 'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_pu_toppt),
 
-                'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
-                'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
+                'ctr_old_mu_presel':        (procs_mu_3ch_fbw, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                'ctr_old_mu_presel_ss':     (procs_mu_3ch_fbw, systematic_names_pu_toppt),
 
                 # testing issue with event yield advantage
-                'ctr_old_mu_sel':           (procs_mu, systematic_names_all_with_th),
-                'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_all),
+                'ctr_old_mu_sel':           (procs_mu_3ch_fbw, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ss':        (procs_mu_3ch_fbw, systematic_names_all),
                 'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_all),
                 'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_all),
                 'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_all),
@@ -3004,10 +3006,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             if isTT:
                 systematics['TOPPTUp']    = [jets_nom,   taus_nom, weight_pu, weight_top_pt, 1.]
                 systematics['TOPPTDown']  = [jets_nom,   taus_nom, weight_pu, 1.,            1.]
-		if with_AlphaS_sys:
+                if with_AlphaS_sys:
                     systematics['AlphaSUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_alphas[0] / weights_gen_weight_norm]
                     systematics['AlphaSDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_alphas[1] / weights_gen_weight_norm]
-		if with_Frag_sys:
+                if with_Frag_sys:
                     systematics['FragUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_Frag[0] / weights_gen_weight_centralFrag]
                     systematics['FragDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_Frag[1] / weights_gen_weight_centralFrag]
         else:
@@ -3356,8 +3358,52 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #    proc = micro_proc
 
                 procs, default_proc = channels[chan][0]
-                if proc not in procs:
+                if micro_proc in procs:
+                    proc = micro_proc
+                elif proc in procs:
+                    pass
+                else:
                     proc = default_proc
+
+                # also if there are taus and it's tt_lj than try to specify the origin of the fake
+                # if it is required by the procs
+                if proc == 'tt_lj' and 'tt_ljb' in procs and sel_taus:
+                    # the 0 tau is used
+                    # sadly root...
+                    # I have to convert ALL lorentzvectors to TLorentzVectors to have convenient dR
+                    tau_p4 = TLorentzVector(sel_taus[0][0].X(), sel_taus[0][0].Y(), sel_taus[0][0].Z(), sel_taus[0][0].T())
+                    # all gen products are in
+                    # gen_t_w1_final_p4s gen_t_w2_final_p4s gen_tb_w1_final_p4s gen_tb_w2_final_p4s
+                    # gen_t_b_final_p4s gen_tb_b_final_p4s
+                    # but neutrinos are also there the ID to check:
+                    # gen_t_w1_final_pdgIds etc
+                    gen_match_cut = 0.3
+                    matched_w = False
+                    for w_prod, w_prod_ID in zip(ev.gen_t_w1_final_p4s    + ev.gen_t_w2_final_p4s    + ev.gen_tb_w1_final_p4s    + ev.gen_tb_w2_final_p4s,
+                                                 ev.gen_t_w1_final_pdgIds + ev.gen_t_w2_final_pdgIds + ev.gen_tb_w1_final_pdgIds + ev.gen_tb_w2_final_pdgIds):
+                        if abs(w_prod_ID) in (12, 14, 16):
+                            continue
+                        w_prod_p4 = TLorentzVector(w_prod.X(), w_prod.Y(), w_prod.Z(), w_prod.T())
+                        if w_prod_p4.DeltaR(tau_p4) < gen_match_cut:
+                            matched_w = True
+                            break
+
+                    matched_b = False
+                    for b_prod, b_prod_ID in zip(ev.gen_t_b_final_p4s    + ev.gen_tb_b_final_p4s   ,
+                                                 ev.gen_t_b_final_pdgIds + ev.gen_tb_b_final_pdgIds):
+                        if abs(b_prod_ID) in (12, 14, 16):
+                            continue
+                        b_prod_p4 = TLorentzVector(b_prod.X(), b_prod.Y(), b_prod.Z(), b_prod.T())
+                        if b_prod_p4.DeltaR(tau_p4) < gen_match_cut:
+                            matched_b = True
+                            break
+
+                    if matched_w and matched_b:
+                        proc = 'tt_ljo'
+                    elif matched_w:
+                        proc = 'tt_ljw'
+                    elif matched_b:
+                        proc = 'tt_ljb'
 
                 # some channels might not have only inclusive processes or minimal systematics
                 if (chan, proc, sys_name) not in out_hs:
@@ -3738,8 +3784,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # require refit and dR quality of refit
                     refitted = tau_refit_index > -1 and ev.tau_SV_fit_track_OS_matched_track_dR[tau_refit_index[0]] + ev.tau_SV_fit_track_SS1_matched_track_dR[tau_refit_index[0]] + ev.tau_SV_fit_track_SS2_matched_track_dR[tau_refit_index[0]] < 0.002
                     if refitted:
-                        tau_SV_sign    = ev.tau_SV_geom_flightLenSign[tau_refit_index]
-                        tau_SV_leng    = ev.tau_SV_geom_flightLen[tau_refit_index]
+                        tau_SV_sign    = ev.tau_SV_geom_flightLenSign [tau_refit_index]
+                        tau_SV_leng    = ev.tau_SV_geom_flightLen     [tau_refit_index]
                         out_hs[(chan, proc, sys_name)]['tau_SV_sign'] .Fill(tau_SV_sign, record_weight)
                         out_hs[(chan, proc, sys_name)]['tau_SV_leng'] .Fill(tau_SV_leng, record_weight)
                     #    # also save PAT and refit values
