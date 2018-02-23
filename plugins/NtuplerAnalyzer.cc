@@ -1688,6 +1688,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	//nVetoE += processElectrons_MatchHLT(selIDElectrons, el_trig_objs, 0.4, selElectrons);
 
+	std::vector<patUtils::GenericLepton> selLeptons;
+	for(size_t l=0; l<selElectrons.size(); ++l) selLeptons.push_back(patUtils::GenericLepton (selElectrons[l] ));
+	for(size_t l=0; l<selMuons.size(); ++l)     selLeptons.push_back(patUtils::GenericLepton (selMuons[l]     ));
+	std::sort(selLeptons.begin(), selLeptons.end(), utils::sort_CandidatesByPt);
+
+	//LogInfo ("Demo") << "selected leptons: " << '(' << selIDElectrons.size() << ',' << selIDMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
+	LogInfo ("Demo") << "selected leptons: " << '(' << selElectrons.size() << ',' << selMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE_IsoImp << ',' << nVetoMu_Iso;
+
 	//bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0; // veto on std iso veto leptons
 	//bool clean_lep_conditions = nVetoE_all==0 && nVetoMu_all==0 && nGoodPV != 0; // veto on all iso veto leptons
 	bool clean_lep_conditions = nGoodPV != 0; // just good PV, the loosest req,save bit if no veto leps
@@ -1731,14 +1739,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		bool passIso = patUtils::passIso(selElectrons[l], patUtils::llvvElecIso::Tight, patUtils::CutVersion::Moriond17Cut, NT_fixedGridRhoFastjetAll);
 		leps_passed_relIso &= passIso;
 		}
-
-	std::vector<patUtils::GenericLepton> selLeptons;
-	for(size_t l=0; l<selElectrons.size(); ++l) selLeptons.push_back(patUtils::GenericLepton (selElectrons[l] ));
-	for(size_t l=0; l<selMuons.size(); ++l)     selLeptons.push_back(patUtils::GenericLepton (selMuons[l]     ));
-	std::sort(selLeptons.begin(), selLeptons.end(), utils::sort_CandidatesByPt);
-
-	//LogInfo ("Demo") << "selected leptons: " << '(' << selIDElectrons.size() << ',' << selIDMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
-	LogInfo ("Demo") << "selected leptons: " << '(' << selElectrons.size() << ',' << selMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
 
 	NT_nleps = selLeptons.size();
 	// for control
@@ -1944,7 +1944,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_jet_PFID.push_back(jetid);
 
 		// just one more parameter for info
-		NT_jetCharge.push_back (jet.jetCharge);
+		NT_jetCharge.push_back (jet.jetCharge());
 
 		// corrections
 		NT_jet_area.push_back (jet.jetArea());
@@ -2086,10 +2086,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	
 			// gen jet info only for MC
 			//NT_jet_matched_genjet_p4.push_back(gen_jet_p4);
-			NT_genjet_matched  = genjet_matched;
-			NT_genjet_pt       = genjet_pt     ;
-			NT_genjet_dR       = genjet_dR     ;
-			NT_genjet_i        = genjet_i      ;
+			NT_genjet_matched  .push_back( genjet_matched );
+			NT_genjet_pt       .push_back( genjet_pt      );
+			NT_genjet_dR       .push_back( genjet_dR      );
+			NT_genjet_i        .push_back( genjet_i       );
 
 			// TODO match to GENPRODUCTS
 			}
