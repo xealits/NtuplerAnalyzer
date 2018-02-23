@@ -1688,6 +1688,17 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	//nVetoE += processElectrons_MatchHLT(selIDElectrons, el_trig_objs, 0.4, selElectrons);
 
+	//bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0; // veto on std iso veto leptons
+	//bool clean_lep_conditions = nVetoE_all==0 && nVetoMu_all==0 && nGoodPV != 0; // veto on all iso veto leptons
+	bool clean_lep_conditions = nGoodPV != 0; // just good PV, the loosest req,save bit if no veto leps
+	if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return;
+	// exit now to reduce computation -- all record schemes have this requirement
+
+	event_counter ->Fill(event_checkpoint++);
+	weight_counter->Fill(event_checkpoint, weight);
+
+	LogInfo ("Demo") << "passed lepton conditions ";
+
 	bool leps_passed_relIso = true;
 	for(size_t l=0; l<selMuons.size(); ++l)
 		{
@@ -1729,23 +1740,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//LogInfo ("Demo") << "selected leptons: " << '(' << selIDElectrons.size() << ',' << selIDMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
 	LogInfo ("Demo") << "selected leptons: " << '(' << selElectrons.size() << ',' << selMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
 
-	//bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0;
-	bool clean_lep_conditions = nVetoE_all==0 && nVetoMu_all==0 && nGoodPV != 0; // veto on any iso veto leptons
-	if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return;
-	// exit now to reduce computation -- all record schemes have this requirement
-
-	event_counter ->Fill(event_checkpoint++);
-	weight_counter->Fill(event_checkpoint, weight);
-
-	LogInfo ("Demo") << "passed lepton conditions ";
-
 	NT_nleps = selLeptons.size();
-	/* discarding events with any veto leptons now
+	// for control
 	NT_nleps_veto_el     = nVetoE;
 	NT_nleps_veto_el_all = nVetoE_all;
 	NT_nleps_veto_mu     = nVetoMu;
 	NT_nleps_veto_mu_all = nVetoMu_all;
-	*/
+	NT_no_veto_leps      = nVetoE == 0 && nVetoMu == 0;
 
 	NT_leps_ID = 1;
 	for (unsigned int i = 0; i<selLeptons.size(); i++)
@@ -1907,9 +1908,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		if (!looseJetID) continue; // 333
 
 		NT_jet_id.push_back(jet.pdgId());
-		NT_jet_p4.push_back(jet.p4());
 
+		// the initial slimmedJet is saved here
 		LorentzVector jet_initial_p4 = jet.p4();
+		NT_jet_initial_p4.push_back(jet_initial_p4);
 
 		//NT_jet_rad.push_back(jet_radius(jet));
 		NT_jet_etaetaMoment.push_back(jet.etaetaMoment());
@@ -1939,6 +1941,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		NT_jet_PFID.push_back(jetid);
 
+		// just one more parameter for info
+		NT_jetCharge.push_back (jet.jetCharge);
+
 		// corrections
 		NT_jet_area.push_back (jet.jetArea());
 
@@ -1965,6 +1970,23 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//jet.addUserFloat("jes_correction", jes_correction);
 		// TODO: compare jet_p4 (default MiniAOD jet) and uncorrected_p4 * jes_correction <- re-corrected jet
 		NT_jet_jes_recorrection.push_back(jes_correction);
+		jet.setP4(jet.p4()*jes_correction);
+		// default jets are fully corrected, the initial slimmedJet is saved
+		// the raw is saved too
+
+		// jet energy scale has uncertainty
+		//totalJESUnc->setJetEta(jet.eta());
+		//totalJESUnc->setJetPt(jet.pt()); // should be the corrected jet pt <- de hell this means? do it after MC SF?
+		// this is rel shift to jes_cor
+		// so it need the corrected jet, but with new jes_cor
+		totalJESUnc->setJetEta(rawJet.eta());
+		totalJESUnc->setJetPt(rawJet.pt() * jes_correction);
+		float relShift = fabs(totalJESUnc->getUncertainty(true));
+		// use it with rawJet*jes_correction*(1 +- relShift)
+		// since all these corrections are multiplication of p4
+		// I can do this shift whenever I want
+		// uncertainty shift is saved only for the NOMINAL jet, which is default MiniAOD one now
+		NT_jet_jes_uncertainty.push_back(relShift);
 
 		float dR_max = 0.4/2;
 		double jet_resolution = -1;
@@ -1973,10 +1995,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		double jer_sf_down = -1;
 		// and the final factors from these SFs
 		double jer_factor = -1, jer_factor_up = -1, jer_factor_down = -1;
-		LorentzVector gen_jet_p4(0,0,0,0);
 		// here is the matching of the jet:
 		if(isMC)
 			{
+			LorentzVector gen_jet_p4(0,0,0,0);
+			Float_t genjet_pt = -1, genjet_dR = -1;
+			Int_t genjet_i = -1;
+			Bool_t genjet_matched = false;
+
 			// the JER SF and resolution for the jet:
 			//std::vector<double> jer_sf_pair = JER_SF(jet.eta());
 			//double jer_sf = jer_sf_pair[0];
@@ -2002,9 +2028,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			for (unsigned int i=0; i<genJets.size(); i++)
 				{
 				reco::GenJet& genJet = genJets[i];
-				double dR = reco::deltaR(jet, genJet);
+				genjet_dR = reco::deltaR(jet, genJet);
 
-				if (dR > dR_max) continue;
+				if (genjet_dR > dR_max) continue;
+				genjet_i = i;
+				genjet_pt = genJet.pt();
+				genjet_matched = true;
 
 				double dPt = std::abs(genJet.pt() - jet.pt());
 				double dPt_max_factor = 3*jet.pt(); // from twiki
@@ -2052,28 +2081,29 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			// THUS MC was shifted by SF jer_factor -- it got corrected and the correction has to be propagated to MET
 			full_jet_corr += jet.p4() - jet_initial_p4; // initial jet + this difference = corrected jet
+	
+			// gen jet info only for MC
+			//NT_jet_matched_genjet_p4.push_back(gen_jet_p4);
+			NT_genjet_matched  = genjet_matched;
+			NT_genjet_pt       = genjet_pt     ;
+			NT_genjet_dR       = genjet_dR     ;
+			NT_genjet_i        = genjet_i      ;
+
+			// TODO match to GENPRODUCTS
 			}
+
+		// the default jet is fully recorrected
+		// but the corrections can be repeated offline
+		NT_jet_p4.push_back(jet.p4());
 
 		NT_jet_resolution.push_back(jet_resolution);
 		NT_jet_jer_sf.        push_back(jer_sf);
 		NT_jet_jer_sf_up.     push_back(jer_sf_up);
 		NT_jet_jer_sf_down.   push_back(jer_sf_down);
 
-		NT_jet_matched_genjet_p4.push_back(gen_jet_p4);
 		NT_jet_jer_factor.       push_back(jer_factor);
 		NT_jet_jer_factor_up.    push_back(jer_factor_up);
 		NT_jet_jer_factor_down.  push_back(jer_factor_down);
-
-		// jet energy scale has uncertainty
-		totalJESUnc->setJetEta(jet.eta());
-		totalJESUnc->setJetPt(jet.pt()); // should be the corrected jet pt <- de hell this means? do it after MC SF?
-		float relShift = fabs(totalJESUnc->getUncertainty(true));
-		//jet.addUserFloat("jes_correction_relShift", relShift);
-		// use it with rawJet*jes_correction*(1 +- relShift)
-		// since all these corrections are multiplication of p4
-		// I can do this shift whenever I want
-		// uncertainty shift is saved only for the NOMINAL jet, which is default MiniAOD one now
-		NT_jet_jes_uncertainty.push_back(relShift);
 
 		/* just a note:
 		 * so, my jets are default MiniAOD jets + MC SF for energy resolution
@@ -2104,6 +2134,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NT_met_corrected = MET_corrected;
 	// TODO: I don't correct NT_met_slimmedMets and the other -- the correction should be applied offline if needed
 	// in principle NT_met_init = NT_met_slimmedMets -- so NT_met_corrected saves the applied correction
+
+	// default jets are fully corrected, the correction is propagated to this met,
+	// the initial slimmedMet is saved
+	// the slimmedJet, which corresponds to this met is saved too and the raw of this jet is saved
+	// therefore if needed to redo met cor for only subset of selected jets
+	// take slimmed met and slimmed jets
+	// for slimmed jets take rawjets and the factors
+	// apply them, caclulate the difference to slimmed and propagate to met
 
 	/* apply them offline
 	// APPLY RECOILD CORRECTIONS TO MET

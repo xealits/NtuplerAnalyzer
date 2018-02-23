@@ -324,6 +324,13 @@ Int_t_in_NTuple(OUTNTUPLE, nalljets)  // all jets, only pt and no leptons in dR
 Int_t_in_NTuple(OUTNTUPLE, nallbjets) // N b-jets among them
 Int_t_in_NTuple(OUTNTUPLE, ntaus)
 
+// info on veto leps
+Bool_t_in_NTuple(OUTNTUPLE, no_veto_leps) // std veto lep bool for proc
+Int_t_in_NTuple(OUTNTUPLE, nleps_veto_el)
+Int_t_in_NTuple(OUTNTUPLE, nleps_veto_mu)
+Int_t_in_NTuple(OUTNTUPLE, nleps_veto_el_all)
+Int_t_in_NTuple(OUTNTUPLE, nleps_veto_mu_all)
+
 // Primary Vertices
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_x)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_y)
@@ -357,9 +364,16 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, jet_id)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_initial_p4)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_p4)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_uncorrected_p4)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_matched_genjet_p4)
+
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_matched_genjet_p4)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  genjet_matched)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, genjet_pt)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, genjet_dR)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   genjet_i)
 
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_PFID)
+
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jetCharge) // whatever, to check the idea of b-antib assymetry on charge, also the mis-modelling
 
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_area)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_uncorrected_jecFactor)
