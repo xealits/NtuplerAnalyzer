@@ -172,11 +172,15 @@ dtag_groups = {'std': dtags_std, 'std_data': dtags_std_data, 'std_mc': dtags_std
 
 # parse the requested dtags and groups
 requested_dtags = set()
+
+logging.debug("got %s dtags" % args.dtags)
+#for req in (args.dtags.split(',') if ',' in args.dtags else [args.dtags,]):
 for req in args.dtags.split(','):
+    logging.debug("%s" % req)
     if req in dtag_groups:
         requested_dtags.update(dtag_groups[req])
     else:
-        requested_dtags.update(req)
+        requested_dtags.update([req])
 
 logging.info("got %d requested dtags" % len(requested_dtags))
 
@@ -256,7 +260,7 @@ for nod, n_queues in scheme.items():
     for i, nod_queue in enumerate(nod_queues):
         queue_filename = nod_queues_dir + '/q%d' % i
         with open(queue_filename, 'w') as f:
-            f.write('\n'.join(nod_queue))
+            f.write('\n'.join(nod_queue) + '\n')
 
 
 

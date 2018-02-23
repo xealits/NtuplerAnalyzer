@@ -36,6 +36,13 @@ ssh fermi03 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW
 ssh fermi04 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/tt-only/by-2/commands_tt_powheg_only_4 "'
 ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/tt-only/by-2/commands_tt_powheg_only_5 "'
 
+new genjobs:
+ssh fermi01 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/queue_dir/v17/tt-b-os-ss-test/1/com "'
+ssh fermi02 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/queue_dir/v17/tt-b-os-ss-test/2/com "'
+ssh fermi03 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/queue_dir/v17/tt-b-os-ss-test/3/com "'
+ssh fermi04 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/queue_dir/v17/tt-b-os-ss-test/4/com "'
+ssh fermi05 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/queue_dir/v17/tt-b-os-ss-test/5/com "'
+
 all up-down systematic datsets:
 
 ssh fermi01 'screen -d -m tcsh -c "source /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/merge-sets/tt-sys/updowns-by-8/commands1 "'

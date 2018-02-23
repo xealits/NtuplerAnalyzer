@@ -3359,11 +3359,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 procs, default_proc = channels[chan][0]
                 if micro_proc in procs:
-                    proc = micro_proc
+                    record_proc = micro_proc
                 elif proc in procs:
-                    pass
+                    record_proc = proc
                 else:
-                    proc = default_proc
+                    record_proc = default_proc
+                # the idea is:
+                # proc and micro_proc are from MC info, from gen level
+                # micro_proc is optional
+                # record_proc can depend on reco level info
 
                 # also if there are taus and it's tt_lj than try to specify the origin of the fake
                 # if it is required by the procs
@@ -3377,7 +3381,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # gen_t_b_final_p4s gen_tb_b_final_p4s
                     # but neutrinos are also there the ID to check:
                     # gen_t_w1_final_pdgIds etc
-                    gen_match_cut = 0.3
+                    gen_match_cut = 0.4
                     matched_w = False
                     for w_prod, w_prod_ID in zip(ev.gen_t_w1_final_p4s, ev.gen_t_w1_final_pdgIds) + zip(ev.gen_t_w2_final_p4s, ev.gen_t_w2_final_pdgIds) + \
                                              zip(ev.gen_tb_w1_final_p4s, ev.gen_tb_w1_final_pdgIds) + zip(ev.gen_tb_w2_final_p4s, ev.gen_tb_w2_final_pdgIds):
@@ -3398,14 +3402,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                             break
 
                     if matched_w and matched_b:
-                        proc = 'tt_ljo'
+                        record_proc = 'tt_ljo'
                     elif matched_w:
-                        proc = 'tt_ljw'
+                        record_proc = 'tt_ljw'
                     elif matched_b:
-                        proc = 'tt_ljb'
+                        record_proc = 'tt_ljb'
 
                 # some channels might not have only inclusive processes or minimal systematics
-                if (chan, proc, sys_name) not in out_hs:
+                if (chan, record_proc, sys_name) not in out_hs:
                     continue # TODO: so it doesn't change amount of computing, systematics are per event, not per channel
                     # but it does reduce the amount of output -- no geom progression
 
@@ -3531,21 +3535,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     (tau_jets_medium, 'medium_tau_jet'), (tau_jets_tight , 'tight_tau_jet'), (tau_jets_vtight, 'vtight_tau_jet')]
                 for jet_p4_s, wp_name in fakerate_working_points:
                     for jet_p4 in jet_p4_s:
-                        out_hs[(chan, proc, sys_name)][wp_name + '_pt']  .Fill(jet_p4.pt() , record_weight)
-                        out_hs[(chan, proc, sys_name)][wp_name + '_eta'] .Fill(jet_p4.eta(), record_weight)
+                        out_hs[(chan, record_proc, sys_name)][wp_name + '_pt']  .Fill(jet_p4.pt() , record_weight)
+                        out_hs[(chan, record_proc, sys_name)][wp_name + '_eta'] .Fill(jet_p4.eta(), record_weight)
                 '''
 
-                out_hs[(chan, proc, sys_name)]['met'].Fill(met_pt, record_weight)
-                out_hs[(chan, proc, sys_name)]['met_prop_taus'].Fill(met_pt_init, met_pt_taus - met_pt_init, record_weight)
-                out_hs[(chan, proc, sys_name)]['met_prop_jets'].Fill(met_pt_init, met_pt_jets - met_pt_init, record_weight)
-                out_hs[(chan, proc, sys_name)]['corr_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
-                out_hs[(chan, proc, sys_name)]['init_met'].Fill(ev.met_init.pt(),      record_weight) # for control
-                out_hs[(chan, proc, sys_name)]['all_sum_control']     .Fill(all_sum_control_pt, record_weight) # for control
-                out_hs[(chan, proc, sys_name)]['all_sum_control_init'].Fill(all_sum_control_init_pt, record_weight) # for control
-                out_hs[(chan, proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  record_weight)
-                out_hs[(chan, proc, sys_name)]['lep_eta'] .Fill(ev.lep_p4[0].eta(), record_weight)
-                out_hs[(chan, proc, sys_name)]['lep_pt_turn'].Fill(ev.lep_p4[0].pt(),  record_weight)
-                out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw'].Fill(ev.lep_p4[0].pt())
+                out_hs[(chan, record_proc, sys_name)]['met'].Fill(met_pt, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_prop_taus'].Fill(met_pt_init, met_pt_taus - met_pt_init, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_prop_jets'].Fill(met_pt_init, met_pt_jets - met_pt_init, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['corr_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
+                out_hs[(chan, record_proc, sys_name)]['init_met'].Fill(ev.met_init.pt(),      record_weight) # for control
+                out_hs[(chan, record_proc, sys_name)]['all_sum_control']     .Fill(all_sum_control_pt, record_weight) # for control
+                out_hs[(chan, record_proc, sys_name)]['all_sum_control_init'].Fill(all_sum_control_init_pt, record_weight) # for control
+                out_hs[(chan, record_proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_eta'] .Fill(ev.lep_p4[0].eta(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_turn'].Fill(ev.lep_p4[0].pt(),  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw'].Fill(ev.lep_p4[0].pt())
 
                 ### debuging the cut of lep_pt at 26 for all MC -- it is in one of the weights
                 ## -- found the weight from trigger cut at 26 -- somehow the histo of SF for trigger 24 starts at 26
@@ -3554,60 +3558,60 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 ## now, debuggin the cut at 120 GeV
                 ## -- the defaults for iso and id were erroneous
                 #if pass_mu:
-                #    ##out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw'].Fill(ev.lep_p4[0].pt())
-                #    #out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw_w_b_trk']    .Fill(ev.lep_p4[0].pt(), mu_sfs_b[0])
-                #    #out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw_w_b_trk_vtx'].Fill(ev.lep_p4[0].pt(), mu_sfs_b[1])
-                #    #out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw_w_b_id']     .Fill(ev.lep_p4[0].pt(), mu_sfs_b[2])
-                #    #out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw_w_b_iso']    .Fill(ev.lep_p4[0].pt(), mu_sfs_b[3])
-                #    #out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw_w_b_trk_vtxgen'].Fill(ev.lep_p4[0].pt(), mu_sfs_b[4])
-                #    #out_hs[(chan, proc, sys_name)]['lep_pt_turn_raw_w_b_trg']    .Fill(ev.lep_p4[0].pt(), mu_trg_sf[0]) # <--- this one is 0
+                #    ##out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw'].Fill(ev.lep_p4[0].pt())
+                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_trk']    .Fill(ev.lep_p4[0].pt(), mu_sfs_b[0])
+                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_trk_vtx'].Fill(ev.lep_p4[0].pt(), mu_sfs_b[1])
+                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_id']     .Fill(ev.lep_p4[0].pt(), mu_sfs_b[2])
+                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_iso']    .Fill(ev.lep_p4[0].pt(), mu_sfs_b[3])
+                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_trk_vtxgen'].Fill(ev.lep_p4[0].pt(), mu_sfs_b[4])
+                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_trg']    .Fill(ev.lep_p4[0].pt(), mu_trg_sf[0]) # <--- this one is 0
                 #    ##control_hs['weight_mu_trg_bcdef'].Fill(mu_trg_sf[0])
                 #    ##control_hs['weight_mu_all_bcdef'].Fill(mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[1] * mu_sfs_b[2] * mu_sfs_b[3])
-                #    out_hs[(chan, proc, sys_name)]['lep_pt_raw_w_b_trk']         .Fill(ev.lep_p4[0].pt(), mu_sfs_b[0])
-                #    out_hs[(chan, proc, sys_name)]['lep_pt_raw_w_b_trk_vtx']     .Fill(ev.lep_p4[0].pt(), mu_sfs_b[1])
-                #    out_hs[(chan, proc, sys_name)]['lep_pt_raw_w_b_id']          .Fill(ev.lep_p4[0].pt(), mu_sfs_b[2])
-                #    out_hs[(chan, proc, sys_name)]['lep_pt_raw_w_b_iso']         .Fill(ev.lep_p4[0].pt(), mu_sfs_b[3])
-                #    out_hs[(chan, proc, sys_name)]['lep_pt_raw_w_b_trk_vtxgen']  .Fill(ev.lep_p4[0].pt(), mu_sfs_b[4])
-                #    out_hs[(chan, proc, sys_name)]['lep_pt_raw_w_b_trg']         .Fill(ev.lep_p4[0].pt(), mu_trg_sf[0]) # <--- this one is 0
+                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_trk']         .Fill(ev.lep_p4[0].pt(), mu_sfs_b[0])
+                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_trk_vtx']     .Fill(ev.lep_p4[0].pt(), mu_sfs_b[1])
+                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_id']          .Fill(ev.lep_p4[0].pt(), mu_sfs_b[2])
+                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_iso']         .Fill(ev.lep_p4[0].pt(), mu_sfs_b[3])
+                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_trk_vtxgen']  .Fill(ev.lep_p4[0].pt(), mu_sfs_b[4])
+                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_trg']         .Fill(ev.lep_p4[0].pt(), mu_trg_sf[0]) # <--- this one is 0
 
                 # OPTIMIZATION controls
                 """
-                out_hs[(chan, proc, sys_name)]['opt_bjet_categories']     .Fill(opt_bjet_category, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['opt_bjet_categories']     .Fill(opt_bjet_category, record_weight)
 
-                out_hs[(chan, proc, sys_name)]['opt_n_presel_tau']        .Fill(n_presel_taus, record_weight)
-                out_hs[(chan, proc, sys_name)]['opt_n_loose_tau']         .Fill(n_loose_taus, record_weight)
-                out_hs[(chan, proc, sys_name)]['opt_n_medium_tau']        .Fill(n_medium_taus, record_weight)
-                out_hs[(chan, proc, sys_name)]['opt_n_tight_tau']         .Fill(n_tight_taus, record_weight)
-                out_hs[(chan, proc, sys_name)]['opt_n_loose_bjet']        .Fill(n_loose_bjets, record_weight)
-                out_hs[(chan, proc, sys_name)]['opt_n_medium_bjet']       .Fill(n_medium_bjets, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['opt_n_presel_tau']        .Fill(n_presel_taus, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['opt_n_loose_tau']         .Fill(n_loose_taus, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['opt_n_medium_tau']        .Fill(n_medium_taus, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['opt_n_tight_tau']         .Fill(n_tight_taus, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['opt_n_loose_bjet']        .Fill(n_loose_bjets, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['opt_n_medium_bjet']       .Fill(n_medium_bjets, record_weight)
 
-                out_hs[(chan, proc, sys_name)]['opt_tau_bjet_categories'] .Fill(opt_tau_bjet_category, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['opt_tau_bjet_categories'] .Fill(opt_tau_bjet_category, record_weight)
 
                 # inclusive categories show the flow of events through cuts,
                 # not the distribution of events among the selections
                 for b_cat, b_pass in enumerate((pass_b_1L0M, pass_b_1L1M, pass_b_2L0M, pass_b_2L1M, pass_b_2L2M)):
                     if b_pass:
-                        out_hs[(chan, proc, sys_name)]['opt_bjet_categories_incl']     .Fill(b_cat, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['opt_bjet_categories_incl']     .Fill(b_cat, record_weight)
                 for tau_cat, tau_pass in enumerate((pass_tau_presel or pass_tau_ss_presel, pass_tau_loose or pass_tau_ss_loose, pass_tau_medium or pass_tau_ss_medium, pass_tau_tight or pass_tau_ss_tight)):
                     for b_cat, b_pass in enumerate((pass_b_1L0M, pass_b_1L1M, pass_b_2L0M, pass_b_2L1M, pass_b_2L2M)):
                         if tau_pass and b_pass:
                             catn = tau_cat*5 + b_cat
-                            out_hs[(chan, proc, sys_name)]['opt_tau_bjet_categories_incl'] .Fill(catn, record_weight)
+                            out_hs[(chan, record_proc, sys_name)]['opt_tau_bjet_categories_incl'] .Fill(catn, record_weight)
 
-                out_hs[(chan, proc, sys_name)]['opt_tau_index_loose']     .Fill(n_loose_tau_i  , record_weight)
-                out_hs[(chan, proc, sys_name)]['opt_tau_index_medium']    .Fill(n_medium_tau_i , record_weight)
-                out_hs[(chan, proc, sys_name)]['opt_tau_index_tight']     .Fill(n_tight_tau_i  , record_weight)
+                out_hs[(chan, record_proc, sys_name)]['opt_tau_index_loose']     .Fill(n_loose_tau_i  , record_weight)
+                out_hs[(chan, record_proc, sys_name)]['opt_tau_index_medium']    .Fill(n_medium_tau_i , record_weight)
+                out_hs[(chan, record_proc, sys_name)]['opt_tau_index_tight']     .Fill(n_tight_tau_i  , record_weight)
                 """
 
                 # for anti-iso and overall
-                out_hs[(chan, proc, sys_name)]['lep_relIso']  .Fill(ev.lep_relIso[0],  record_weight)
-                out_hs[(chan, proc, sys_name)]['lep_relIso_precise']  .Fill(ev.lep_relIso[0],  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_relIso']  .Fill(ev.lep_relIso[0],  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_relIso_precise']  .Fill(ev.lep_relIso[0],  record_weight)
 
                 # not tagged jets
                 if sel_jets.rest:
-                    out_hs[(chan, proc, sys_name)]['Rjet_pt']  .Fill(sel_jets.rest[0][0].pt() * sel_jets.rest[0][1],  record_weight)
-                    out_hs[(chan, proc, sys_name)]['Rjet_eta'] .Fill(sel_jets.rest[0][0].eta(), record_weight)
-                    out_hs[(chan, proc, sys_name)]['b_discr_rest'] .Fill(sel_jets.rest[0][3], record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['Rjet_pt']  .Fill(sel_jets.rest[0][0].pt() * sel_jets.rest[0][1],  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['Rjet_eta'] .Fill(sel_jets.rest[0][0].eta(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['b_discr_rest'] .Fill(sel_jets.rest[0][3], record_weight)
 
                 # not Medium tagged leading jet
                 if sel_jets.rest or sel_jets.loose:
@@ -3617,133 +3621,133 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     if sel_jets.loose:
                         jet_l_pt = sel_jets.loose[0][0].pt() * sel_jets.loose[0][1]
                     if jet_r_pt > jet_l_pt:
-                        out_hs[(chan, proc, sys_name)]['LRjet_pt']  .Fill(sel_jets.rest[0][0].pt() * sel_jets.rest[0][1],  record_weight)
-                        out_hs[(chan, proc, sys_name)]['LRjet_eta'] .Fill(sel_jets.rest[0][0].eta(), record_weight)
-                        out_hs[(chan, proc, sys_name)]['b_discr_LR'] .Fill(sel_jets.rest[0][3], record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['LRjet_pt']  .Fill(sel_jets.rest[0][0].pt() * sel_jets.rest[0][1],  record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['LRjet_eta'] .Fill(sel_jets.rest[0][0].eta(), record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['b_discr_LR'] .Fill(sel_jets.rest[0][3], record_weight)
                     else:
-                        out_hs[(chan, proc, sys_name)]['LRjet_pt']  .Fill(sel_jets.loose[0][0].pt() * sel_jets.loose[0][1],  record_weight)
-                        out_hs[(chan, proc, sys_name)]['LRjet_eta'] .Fill(sel_jets.loose[0][0].eta(), record_weight)
-                        out_hs[(chan, proc, sys_name)]['b_discr_LR'] .Fill(sel_jets.loose[0][3], record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['LRjet_pt']  .Fill(sel_jets.loose[0][0].pt() * sel_jets.loose[0][1],  record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['LRjet_eta'] .Fill(sel_jets.loose[0][0].eta(), record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['b_discr_LR'] .Fill(sel_jets.loose[0][3], record_weight)
 
                 if sel_jets.medium:
-                    out_hs[(chan, proc, sys_name)]['bMjet_pt']  .Fill(sel_jets.medium[0][0].pt() * sel_jets.medium[0][1],  record_weight)
-                    out_hs[(chan, proc, sys_name)]['bMjet_eta'] .Fill(sel_jets.medium[0][0].eta(), record_weight)
-                    out_hs[(chan, proc, sys_name)]['b_discr_med'] .Fill(sel_jets.medium[0][3], record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['bMjet_pt']  .Fill(sel_jets.medium[0][0].pt() * sel_jets.medium[0][1],  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['bMjet_eta'] .Fill(sel_jets.medium[0][0].eta(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['b_discr_med'] .Fill(sel_jets.medium[0][3], record_weight)
 
                 if sel_jets.loose:
-                    out_hs[(chan, proc, sys_name)]['bLjet_pt']  .Fill(sel_jets.loose[0][0].pt() * sel_jets.loose[0][1],  record_weight)
-                    out_hs[(chan, proc, sys_name)]['bLjet_eta'] .Fill(sel_jets.loose[0][0].eta(), record_weight)
-                    out_hs[(chan, proc, sys_name)]['b_discr_loose'] .Fill(sel_jets.loose[0][3], record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['bLjet_pt']  .Fill(sel_jets.loose[0][0].pt() * sel_jets.loose[0][1],  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['bLjet_eta'] .Fill(sel_jets.loose[0][0].eta(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['b_discr_loose'] .Fill(sel_jets.loose[0][3], record_weight)
 
                 if len(sel_jets.loose) > 1:
-                    out_hs[(chan, proc, sys_name)]['bL2jet_pt']  .Fill(sel_jets.loose[1][0].pt() * sel_jets.loose[1][1],  record_weight)
-                    out_hs[(chan, proc, sys_name)]['bL2jet_eta'] .Fill(sel_jets.loose[1][0].eta(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['bL2jet_pt']  .Fill(sel_jets.loose[1][0].pt() * sel_jets.loose[1][1],  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['bL2jet_eta'] .Fill(sel_jets.loose[1][0].eta(), record_weight)
 
                 ## tagged jets
                 #if jets_b:
-                #    out_hs[(chan, proc, sys_name)]['bjet_pt']  .Fill(jets_b[0][0].pt() * jets_b[0][1],  record_weight)
-                #    out_hs[(chan, proc, sys_name)]['bjet_eta'] .Fill(jets_b[0][0].eta(), record_weight)
+                #    out_hs[(chan, record_proc, sys_name)]['bjet_pt']  .Fill(jets_b[0][0].pt() * jets_b[0][1],  record_weight)
+                #    out_hs[(chan, record_proc, sys_name)]['bjet_eta'] .Fill(jets_b[0][0].eta(), record_weight)
                 #    if len(jets_b)>1:
-                #        out_hs[(chan, proc, sys_name)]['bjet2_pt']  .Fill(jets_b[1][0].pt() * jets_b[1][1],  record_weight)
-                #        out_hs[(chan, proc, sys_name)]['bjet2_eta']  .Fill(jets_b[1][0].eta() * jets_b[1][1],  record_weight)
+                #        out_hs[(chan, record_proc, sys_name)]['bjet2_pt']  .Fill(jets_b[1][0].pt() * jets_b[1][1],  record_weight)
+                #        out_hs[(chan, record_proc, sys_name)]['bjet2_eta']  .Fill(jets_b[1][0].eta() * jets_b[1][1],  record_weight)
 
                 """
                 # tagged jets OPTIMIZATION
                 if bjets_all_foropt:
-                    out_hs[(chan, proc, sys_name)]['bjet_pt']  .Fill(bjets_all_foropt[0][0].pt() * bjets_all_foropt[0][1],  record_weight)
-                    out_hs[(chan, proc, sys_name)]['bjet_eta'] .Fill(bjets_all_foropt[0][0].eta(), record_weight)
-                    out_hs[(chan, proc, sys_name)]['opt_lep_bjet_pt']  .Fill(ev.lep_p4[0].pt(), bjets_all_foropt[0][0].pt() * bjets_all_foropt[0][1],  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['bjet_pt']  .Fill(bjets_all_foropt[0][0].pt() * bjets_all_foropt[0][1],  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['bjet_eta'] .Fill(bjets_all_foropt[0][0].eta(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['opt_lep_bjet_pt']  .Fill(ev.lep_p4[0].pt(), bjets_all_foropt[0][0].pt() * bjets_all_foropt[0][1],  record_weight)
                     if len(bjets_all_foropt)>1:
-                        out_hs[(chan, proc, sys_name)]['bjet2_pt']  .Fill(bjets_all_foropt[1][0].pt() * bjets_all_foropt[1][1],  record_weight)
-                        out_hs[(chan, proc, sys_name)]['bjet2_eta'] .Fill(bjets_all_foropt[1][0].eta(),  record_weight)
-                        out_hs[(chan, proc, sys_name)]['opt_bjet_bjet2_pt']  .Fill(bjets_all_foropt[0][0].pt() * bjets_all_foropt[0][1], bjets_all_foropt[1][0].pt() * bjets_all_foropt[1][1],  record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['bjet2_pt']  .Fill(bjets_all_foropt[1][0].pt() * bjets_all_foropt[1][1],  record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['bjet2_eta'] .Fill(bjets_all_foropt[1][0].eta(),  record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['opt_bjet_bjet2_pt']  .Fill(bjets_all_foropt[0][0].pt() * bjets_all_foropt[0][1], bjets_all_foropt[1][0].pt() * bjets_all_foropt[1][1],  record_weight)
 
                 # b-discr control
-                out_hs[(chan, proc, sys_name)]['b_discr_lead_jet']  .Fill(lead_jet_b_discr,  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['b_discr_lead_jet']  .Fill(lead_jet_b_discr,  record_weight)
                 for discr in all_jets_b_discrs:
-                    out_hs[(chan, proc, sys_name)]['b_discr_all_jets']  .Fill(discr,  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['b_discr_all_jets']  .Fill(discr,  record_weight)
                 """
 
-                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_c']    .Fill(Mt_lep_met_c, record_weight)
-                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_test'] .Fill(Mt_lep_met_test, record_weight)
-                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_cos']  .Fill(Mt_lep_met_cos, record_weight)
-                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_cos_c'].Fill(Mt_lep_met_cos_c, record_weight)
-                #out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_mth']  .Fill(Mt_lep_met_mth, record_weight)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_zero']   .Fill(Mt_lep_met, record_weight)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f']      .Fill(Mt_lep_met, record_weight)
+                #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_c']    .Fill(Mt_lep_met_c, record_weight)
+                #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_test'] .Fill(Mt_lep_met_test, record_weight)
+                #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_cos']  .Fill(Mt_lep_met_cos, record_weight)
+                #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_cos_c'].Fill(Mt_lep_met_cos_c, record_weight)
+                #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_mth']  .Fill(Mt_lep_met_mth, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_zero']   .Fill(Mt_lep_met, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f']      .Fill(Mt_lep_met, record_weight)
                 if not ev.pass_basic_METfilters:
-                    out_hs[(chan, proc, sys_name)]['Mt_lep_met_METfilters'].Fill(Mt_lep_met, record_weight)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_VS_nvtx']      .Fill(Mt_lep_met, ev.nvtx, 1.)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_VS_nvtx_gen']      .Fill(Mt_lep_met, ev.nvtx_gen, 1.)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_METfilters'].Fill(Mt_lep_met, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_VS_nvtx']      .Fill(Mt_lep_met, ev.nvtx, 1.)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_VS_nvtx_gen']      .Fill(Mt_lep_met, ev.nvtx_gen, 1.)
                 # controls for effect from weights
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_init']      .Fill(Mt_lep_met)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_in']      .Fill(Mt_lep_met, weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_init']      .Fill(Mt_lep_met)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_in']      .Fill(Mt_lep_met, weight)
                 if isMC and pass_mus:
-                    out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_mu_trk_b'].Fill(Mt_lep_met, mu_sfs_b[4])
-                    out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_mu_trk_h'].Fill(Mt_lep_met, mu_sfs_h[4])
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_bf']      .Fill(Mt_lep_met, weight_bSF)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_pu']      .Fill(Mt_lep_met, weight_PU)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_pu_sum']  .Fill(Mt_lep_met, weight_pu_sum)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_pu_b']    .Fill(Mt_lep_met, weight_pu_b)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_pu_h2']   .Fill(Mt_lep_met, weight_pu_h2)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_w_tp']      .Fill(Mt_lep_met, weight_top_pt)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, record_weight)
-                out_hs[(chan, proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, record_weight)
-                out_hs[(chan, proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_mu_trk_b'].Fill(Mt_lep_met, mu_sfs_b[4])
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_mu_trk_h'].Fill(Mt_lep_met, mu_sfs_h[4])
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_bf']      .Fill(Mt_lep_met, weight_bSF)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu']      .Fill(Mt_lep_met, weight_PU)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_sum']  .Fill(Mt_lep_met, weight_pu_sum)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_b']    .Fill(Mt_lep_met, weight_pu_b)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_h2']   .Fill(Mt_lep_met, weight_pu_h2)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_tp']      .Fill(Mt_lep_met, weight_top_pt)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, record_weight)
 
                 # checking the effect of mu trk SF
-                out_hs[(chan, proc, sys_name)]['nvtx_init']      .Fill(ev.nvtx)
+                out_hs[(chan, record_proc, sys_name)]['nvtx_init']      .Fill(ev.nvtx)
                 if isMC and pass_mus:
-                    out_hs[(chan, proc, sys_name)]['nvtx_w_trk_b']     .Fill(ev.nvtx, mu_sfs_b[4])
-                    out_hs[(chan, proc, sys_name)]['nvtx_w_trk_h']     .Fill(ev.nvtx, mu_sfs_h[4])
+                    out_hs[(chan, record_proc, sys_name)]['nvtx_w_trk_b']     .Fill(ev.nvtx, mu_sfs_b[4])
+                    out_hs[(chan, record_proc, sys_name)]['nvtx_w_trk_h']     .Fill(ev.nvtx, mu_sfs_h[4])
 
                 # for PU tests
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_pu_sum']    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_sum)
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_pu_b'  ]    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_b  )
-                out_hs[(chan, proc, sys_name)]['Mt_lep_met_f_pu_h2' ]    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_h2 )
-                out_hs[(chan, proc, sys_name)]['met_pu_sum'].Fill(met_pt, sys_weight_without_PU * weight_pu_sum)
-                out_hs[(chan, proc, sys_name)]['met_pu_b'  ].Fill(met_pt, sys_weight_without_PU * weight_pu_b  )
-                out_hs[(chan, proc, sys_name)]['met_pu_h2' ].Fill(met_pt, sys_weight_without_PU * weight_pu_h2 )
-                out_hs[(chan, proc, sys_name)]['lep_pt_pu_sum']  .Fill(ev.lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_sum)
-                out_hs[(chan, proc, sys_name)]['lep_pt_pu_b'  ]  .Fill(ev.lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_b  )
-                out_hs[(chan, proc, sys_name)]['lep_pt_pu_h2' ]  .Fill(ev.lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_h2 )
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_pu_sum']    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_sum)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_pu_b'  ]    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_b  )
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_pu_h2' ]    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_h2 )
+                out_hs[(chan, record_proc, sys_name)]['met_pu_sum'].Fill(met_pt, sys_weight_without_PU * weight_pu_sum)
+                out_hs[(chan, record_proc, sys_name)]['met_pu_b'  ].Fill(met_pt, sys_weight_without_PU * weight_pu_b  )
+                out_hs[(chan, record_proc, sys_name)]['met_pu_h2' ].Fill(met_pt, sys_weight_without_PU * weight_pu_h2 )
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_sum']  .Fill(ev.lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_sum)
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_b'  ]  .Fill(ev.lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_b  )
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_h2' ]  .Fill(ev.lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_h2 )
 
                 if pass_mumu or pass_elmu:
                     lep_lep = ev.lep_p4[0] + ev.lep_p4[1]
                     lep_lep_mass = lep_lep.mass()
-                    out_hs[(chan, proc, sys_name)]['M_lep_lep']  .Fill(lep_lep_mass, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['M_lep_lep']  .Fill(lep_lep_mass, record_weight)
 
                 """
                 # taus OPTIMIZATION
                 if taus_all_foropt:
                     # again assuming the 0 tau is the one
                     # -- check the tau indexes to be sure
-                    out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(taus_all_foropt[0][0].pt() * taus_all_foropt[0][1],  record_weight)
-                    out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(taus_all_foropt[0][0].eta(), record_weight)
-                    out_hs[(chan, proc, sys_name)]['opt_lep_tau_pt']  .Fill(ev.lep_p4[0].pt(), taus_all_foropt[0][0].pt() * taus_all_foropt[0][1],  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['tau_pt']  .Fill(taus_all_foropt[0][0].pt() * taus_all_foropt[0][1],  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['tau_eta'] .Fill(taus_all_foropt[0][0].eta(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['opt_lep_tau_pt']  .Fill(ev.lep_p4[0].pt(), taus_all_foropt[0][0].pt() * taus_all_foropt[0][1],  record_weight)
                 """
 
                 # test the Mt shape deviation on njets in event:
                 # small amount of jets (tau selection) -> large deviation, due to correction
                 if len(all_sel_jets) < 4:
-                    out_hs[(chan, proc, sys_name)]['Mt_lep_met_lessjets'] .Fill(Mt_lep_met,   record_weight)
-                    out_hs[(chan, proc, sys_name)]['met_lessjets']        .Fill(met_pt,     record_weight)
-                    out_hs[(chan, proc, sys_name)]['met_lessjets_init']   .Fill(met_pt_init,     record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_lessjets'] .Fill(Mt_lep_met,   record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['met_lessjets']        .Fill(met_pt,     record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['met_lessjets_init']   .Fill(met_pt_init,     record_weight)
 
                 # most deviation was found for 0 loose 2 medium b jets in tau selections
                 # is it connected with Mt?
                 if len(sel_jets.loose) == 0 and len(sel_jets.medium) == 2:
-                    out_hs[(chan, proc, sys_name)]['Mt_lep_met_0L2M'] .Fill(Mt_lep_met, record_weight)
-                    out_hs[(chan, proc, sys_name)]['met_0L2M']        .Fill(met_pt,     record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_0L2M'] .Fill(Mt_lep_met, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['met_0L2M']        .Fill(met_pt,     record_weight)
                 else:
-                    out_hs[(chan, proc, sys_name)]['Mt_lep_met_0L2Mnot'] .Fill(Mt_lep_met, record_weight)
-                    out_hs[(chan, proc, sys_name)]['met_0L2Mnot']        .Fill(met_pt,     record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_0L2Mnot'] .Fill(Mt_lep_met, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['met_0L2Mnot']        .Fill(met_pt,     record_weight)
 
 
                 if sel_taus: #has_medium_tau:
                 #if len(ev.tau_p4) > 0:
                     #lep_tau = ev.lep_p4[0] + taus[0][0] # done above
-                    #out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), record_weight)
+                    #out_hs[(chan, record_proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), record_weight)
                     corrected_tau = sel_taus[0][0] * sel_taus[0][1]
 
                     tau_pt     = corrected_tau.pt()
@@ -3757,26 +3761,26 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                     # testing dependency of Mt shape on tau pt (has to be none)
                     if tau_pt < 30:
-                        out_hs[(chan, proc, sys_name)]['Mt_lep_met_t1']      .Fill(Mt_lep_met, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_t1']      .Fill(Mt_lep_met, record_weight)
                     elif tau_pt < 40:
-                        out_hs[(chan, proc, sys_name)]['Mt_lep_met_t2']      .Fill(Mt_lep_met, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_t2']      .Fill(Mt_lep_met, record_weight)
                     elif tau_pt < 50:
-                        out_hs[(chan, proc, sys_name)]['Mt_lep_met_t3']      .Fill(Mt_lep_met, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_t3']      .Fill(Mt_lep_met, record_weight)
                     elif tau_pt < 70:
-                        out_hs[(chan, proc, sys_name)]['Mt_lep_met_t4']      .Fill(Mt_lep_met, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_t4']      .Fill(Mt_lep_met, record_weight)
                     elif tau_pt < 90:
-                        out_hs[(chan, proc, sys_name)]['Mt_lep_met_t5']      .Fill(Mt_lep_met, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_t5']      .Fill(Mt_lep_met, record_weight)
                     else:
-                        out_hs[(chan, proc, sys_name)]['Mt_lep_met_t6']      .Fill(Mt_lep_met, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_t6']      .Fill(Mt_lep_met, record_weight)
 
-                    out_hs[(chan, proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
-                    out_hs[(chan, proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
 
-                    out_hs[(chan, proc, sys_name)]['tau_pt']  .Fill(corrected_tau.pt(),  record_weight)
-                    out_hs[(chan, proc, sys_name)]['tau_eta'] .Fill(corrected_tau.eta(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['tau_pt']  .Fill(corrected_tau.pt(),  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['tau_eta'] .Fill(corrected_tau.eta(), record_weight)
 
                     # don't do these in OPTIMIZATION
-                    ##out_hs[(chan, proc, sys_name)]['tau_pat_Sign']  .Fill(zero_tau_pat_Sign,  record_weight)
+                    ##out_hs[(chan, record_proc, sys_name)]['tau_pat_Sign']  .Fill(zero_tau_pat_Sign,  record_weight)
                     ## we only work with 0th tau (highest pt)
                     tau_refit_index = ev.tau_refited_index[sel_taus[0][3]] # tau id in the original vector
                     #tau_jet_index   = ev.tau_dR_matched_jet[0]
@@ -3785,8 +3789,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     if refitted:
                         tau_SV_sign    = ev.tau_SV_geom_flightLenSign [tau_refit_index]
                         tau_SV_leng    = ev.tau_SV_geom_flightLen     [tau_refit_index]
-                        out_hs[(chan, proc, sys_name)]['tau_SV_sign'] .Fill(tau_SV_sign, record_weight)
-                        out_hs[(chan, proc, sys_name)]['tau_SV_leng'] .Fill(tau_SV_leng, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['tau_SV_sign'] .Fill(tau_SV_sign, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['tau_SV_leng'] .Fill(tau_SV_leng, record_weight)
                     #    # also save PAT and refit values
                     #    tau_pat_sign    = ev.tau_flightLengthSignificance[0]
                     #    tau_pat_leng    = ev.tau_flightLength[0]
@@ -3796,67 +3800,67 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     #    # SVPV.Mag(), sigmaabs, sign
                     #    tau_ref_leng, tau_ref_sigma, tau_ref_sign = PFTau_FlightLength_significance(pv, ev.PV_cov, sv, ev.tau_SV_cov[0])
 
-                    #    out_hs[(chan, proc, sys_name)]['tau_pat_Sign'] .Fill(tau_pat_sign, record_weight)
-                    #    out_hs[(chan, proc, sys_name)]['tau_pat_Leng'] .Fill(tau_pat_leng, record_weight)
-                    #    out_hs[(chan, proc, sys_name)]['tau_ref_Sign'] .Fill(tau_ref_sign, record_weight)
-                    #    out_hs[(chan, proc, sys_name)]['tau_ref_Leng'] .Fill(tau_ref_leng, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_pat_Sign'] .Fill(tau_pat_sign, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_pat_Leng'] .Fill(tau_pat_leng, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_ref_Sign'] .Fill(tau_ref_sign, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_ref_Leng'] .Fill(tau_ref_leng, record_weight)
                     #if tau_jet_index > -1:
                     #    tau_jet_bdiscr = ev.jet_b_discr[tau_jet_index]
-                    #    out_hs[(chan, proc, sys_name)]['tau_jet_bdiscr'] .Fill(tau_jet_bdiscr, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_jet_bdiscr'] .Fill(tau_jet_bdiscr, record_weight)
                     #if refitted and tau_jet_index > -1:
-                    #    out_hs[(chan, proc, sys_name)]['tau_sign_bdiscr'].Fill(tau_SV_sign, tau_jet_bdiscr, record_weight)
-                    #    out_hs[(chan, proc, sys_name)]['tau_leng_bdiscr'].Fill(tau_SV_leng, tau_jet_bdiscr, record_weight)
-                    #    out_hs[(chan, proc, sys_name)]['tau_sign_energy'].Fill(tau_SV_sign, tau_energy, record_weight)
-                    #    out_hs[(chan, proc, sys_name)]['tau_leng_energy'].Fill(tau_SV_leng, tau_energy, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_sign_bdiscr'].Fill(tau_SV_sign, tau_jet_bdiscr, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_leng_bdiscr'].Fill(tau_SV_leng, tau_jet_bdiscr, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_sign_energy'].Fill(tau_SV_sign, tau_energy, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_leng_energy'].Fill(tau_SV_leng, tau_energy, record_weight)
                     #    # for PAT and refit only sign-b and len-energy
-                    #    out_hs[(chan, proc, sys_name)]['tau_pat_sign_bdiscr'].Fill(tau_pat_sign, tau_jet_bdiscr, record_weight)
-                    #    out_hs[(chan, proc, sys_name)]['tau_pat_leng_energy'].Fill(tau_pat_leng, tau_energy, record_weight)
-                    #    out_hs[(chan, proc, sys_name)]['tau_ref_sign_bdiscr'].Fill(tau_ref_sign, tau_jet_bdiscr, record_weight)
-                    #    out_hs[(chan, proc, sys_name)]['tau_ref_leng_energy'].Fill(tau_ref_leng, tau_energy, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_pat_sign_bdiscr'].Fill(tau_pat_sign, tau_jet_bdiscr, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_pat_leng_energy'].Fill(tau_pat_leng, tau_energy, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_ref_sign_bdiscr'].Fill(tau_ref_sign, tau_jet_bdiscr, record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['tau_ref_leng_energy'].Fill(tau_ref_leng, tau_energy, record_weight)
 
                 # OPTIMIZATION don't make these
-                ##out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, record_weight)
+                ##out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, record_weight)
                 if requires_lj:
-                    out_hs[(chan, proc, sys_name)]['dijet_mass']       .Fill(w_mass, record_weight)
-                    out_hs[(chan, proc, sys_name)]['trijet_mass']      .Fill(t_mass, record_weight)
-                    out_hs[(chan, proc, sys_name)]['2D_dijet_trijet']  .Fill(w_mass, t_mass, record_weight)
-                    out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(lj_var, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['dijet_mass']       .Fill(w_mass, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['trijet_mass']      .Fill(t_mass, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['2D_dijet_trijet']  .Fill(w_mass, t_mass, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass'].Fill(lj_var, record_weight)
 
-                #'njets':       TH1D('%s_%s_%s_njets'     % (chan, proc, sys), '', 5, 0, 5),
-                #'nMbjets':     TH1D('%s_%s_%s_nMbjets'   % (chan, proc, sys), '', 5, 0, 5),
-                #'nLbjets':     TH1D('%s_%s_%s_nLbjets'   % (chan, proc, sys), '', 5, 0, 5),
-                #'ntaus':       TH1D('%s_%s_%s_ntaus'     % (chan, proc, sys), '', 5, 0, 5),
+                #'njets':       TH1D('%s_%s_%s_njets'     % (chan, record_proc, sys), '', 5, 0, 5),
+                #'nMbjets':     TH1D('%s_%s_%s_nMbjets'   % (chan, record_proc, sys), '', 5, 0, 5),
+                #'nLbjets':     TH1D('%s_%s_%s_nLbjets'   % (chan, record_proc, sys), '', 5, 0, 5),
+                #'ntaus':       TH1D('%s_%s_%s_ntaus'     % (chan, record_proc, sys), '', 5, 0, 5),
 
                 n_rest_jets   = len(sel_jets.rest) 
                 n_medium_jets = len(sel_jets.medium)
                 n_loose_jets  = len(sel_jets.loose)
 
-                out_hs[(chan, proc, sys_name)]['njets']  .Fill(len(all_sel_jets),   record_weight)
-                out_hs[(chan, proc, sys_name)]['nRjets'] .Fill(n_rest_jets   , record_weight)
-                out_hs[(chan, proc, sys_name)]['nMbjets'].Fill(n_medium_jets , record_weight)
-                out_hs[(chan, proc, sys_name)]['nLbjets'].Fill(n_loose_jets  , record_weight)
+                out_hs[(chan, record_proc, sys_name)]['njets']  .Fill(len(all_sel_jets),   record_weight)
+                out_hs[(chan, record_proc, sys_name)]['nRjets'] .Fill(n_rest_jets   , record_weight)
+                out_hs[(chan, record_proc, sys_name)]['nMbjets'].Fill(n_medium_jets , record_weight)
+                out_hs[(chan, record_proc, sys_name)]['nLbjets'].Fill(n_loose_jets  , record_weight)
 
                 jets_category = 0
                 jets_category += n_rest_jets if n_rest_jets < 5 else 4
                 jets_category += 5 *   (n_medium_jets if n_medium_jets < 3 else 2)
                 jets_category += 3*5 * (n_loose_jets  if n_loose_jets  < 3 else 2)
-                out_hs[(chan, proc, sys_name)]['njets_cats'].Fill(jets_category,  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['njets_cats'].Fill(jets_category,  record_weight)
 
-                out_hs[(chan, proc, sys_name)]['ntaus']  .Fill(len(sel_taus),  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['ntaus']  .Fill(len(sel_taus),  record_weight)
 
-                out_hs[(chan, proc, sys_name)]['nvtx_raw'] .Fill(ev.nvtx, sys_weight_without_PU * weight_bSF)
-                out_hs[(chan, proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['nvtx_raw'] .Fill(ev.nvtx, sys_weight_without_PU * weight_bSF)
+                out_hs[(chan, record_proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight)
                 if isMC:
-                    out_hs[(chan, proc, sys_name)]['nvtx_gen'].Fill(ev.nvtx_gen, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['nvtx_gen'].Fill(ev.nvtx_gen, record_weight)
                     for jet in all_sel_jets + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
-                        out_hs[(chan, proc, sys_name)]['jet_bID_lev']        .Fill(jet[3], record_weight)
-                        out_hs[(chan, proc, sys_name)]['jet_flavours_hadron'].Fill(abs(jet[4]), record_weight)
-                        out_hs[(chan, proc, sys_name)]['jet_flavours_parton'].Fill(abs(jet[5]), record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['jet_bID_lev']        .Fill(jet[3], record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['jet_flavours_hadron'].Fill(abs(jet[4]), record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['jet_flavours_parton'].Fill(abs(jet[5]), record_weight)
 
-                out_hs[(chan, proc, sys_name)]['control_bSF_weight'].Fill(weight_bSF)
-                out_hs[(chan, proc, sys_name)]['control_PU_weight'] .Fill(weight_PU)
-                out_hs[(chan, proc, sys_name)]['control_th_weight'] .Fill(weight_th)
-                out_hs[(chan, proc, sys_name)]['control_rec_weight'].Fill(record_weight)
+                out_hs[(chan, record_proc, sys_name)]['control_bSF_weight'].Fill(weight_bSF)
+                out_hs[(chan, record_proc, sys_name)]['control_PU_weight'] .Fill(weight_PU)
+                out_hs[(chan, record_proc, sys_name)]['control_th_weight'] .Fill(weight_th)
+                out_hs[(chan, record_proc, sys_name)]['control_rec_weight'].Fill(record_weight)
 
         if save_weights:
           #weight_bSF = 1.
