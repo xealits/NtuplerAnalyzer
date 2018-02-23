@@ -84,6 +84,86 @@ static double pu_vector_NOMINAL[] = {0, 0.360609416811339, 0.910848525427002, 1.
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0};
 
+
+
+// try simpler first
+struct gen_matching {
+	//Int_t sum;
+	Int_t closest;
+	Float_t dR;
+};
+
+struct gen_matching match_to_gen(const LorentzVector& p4,
+	vector<const reco::Candidate*> gen_leps,
+	vector<const reco::Candidate*> gen_taus,
+	vector<const reco::Candidate*> gen_tau3ch,
+	vector<const reco::Candidate*> gen_w_prods,
+	vector<const reco::Candidate*> gen_b_prods)
+{
+Float_t min_dR = 9999.;
+Float_t dR_cut = 0.4;
+Int_t   min_id = 0;
+
+// I need in-place quick loop with list of all inputs here, how to do it in C? -- do it later
+int gen_id = 1;
+for (unsigned int i = 0; i<gen_leps.size(); i++)
+	{
+	Float_t dR = reco::deltaR(p4, *gen_leps[i]);
+	if (dR < dR_cut && dR < min_dR)
+		{
+		min_dR = dR;
+		min_id = gen_id;
+		}
+	}
+
+gen_id++;
+for (unsigned int i = 0; i<gen_taus.size(); i++)
+	{
+	Float_t dR = reco::deltaR(p4, *gen_taus[i]);
+	if (dR < dR_cut && dR < min_dR)
+		{
+		min_dR = dR;
+		min_id = gen_id;
+		}
+	}
+
+gen_id++;
+for (unsigned int i = 0; i<gen_tau3ch.size(); i++)
+	{
+	Float_t dR = reco::deltaR(p4, *gen_tau3ch[i]);
+	if (dR < dR_cut && dR < min_dR)
+		{
+		min_dR = dR;
+		min_id = gen_id;
+		}
+	}
+
+gen_id++;
+for (unsigned int i = 0; i<gen_w_prods.size(); i++)
+	{
+	Float_t dR = reco::deltaR(p4, *gen_w_prods[i]);
+	if (dR < dR_cut && dR < min_dR)
+		{
+		min_dR = dR;
+		min_id = gen_id;
+		}
+	}
+
+gen_id++;
+for (unsigned int i = 0; i<gen_b_prods.size(); i++)
+	{
+	Float_t dR = reco::deltaR(p4, *gen_b_prods[i]);
+	if (dR < dR_cut && dR < min_dR)
+		{
+		min_dR = dR;
+		min_id = gen_id;
+		}
+	}
+
+struct gen_matching match = {.closest=min_id, .dR=min_dR};
+return match;
+}
+
 struct sv_pair {
 	double flightLength;
 	double flightLengthSignificance;
@@ -350,7 +430,7 @@ struct sv_pair geometrical_SV(
 	double conv_frac2 = conv2/dB2.Mag();
 	double conv_frac3 = conv3/dB3.Mag();
 	double conv_frac_sum = conv_frac1 + conv_frac2 + conv_frac3;
-	double conv_frac_averaged = sqrt(pow(conv_frac1, 2) + pow(conv_frac2, 2) + pow(conv_frac3, 2));
+	//double conv_frac_averaged = sqrt(pow(conv_frac1, 2) + pow(conv_frac2, 2) + pow(conv_frac3, 2));
 
 	// SV out of all penalties
 	double flightLength = 0, flightLengthSignificance = 0;
@@ -843,6 +923,16 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NT_runNumber   = iEvent.id().run();
 	NT_lumi        = iEvent.luminosityBlock();
 
+
+	// for matching reco to gen I need
+	// leptons (11, 13), taus (15) and tau od DM10 (3ch) from hard processes or from tt decay in case of tt
+	// and visible products of W and b in case of tt
+	// then a reco object will be matched to gen collections
+	// the match defined by not overlapping sum:
+	// lep tau tau3ch b    W
+	// 1   2   4      8   16
+	vector<const reco::Candidate*> gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods;
+
 	// couple things for MC:
 	//  - gen aMCatNLO
 	//  - gen nvtx
@@ -1136,18 +1226,37 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			for(size_t i = 0; i < gen.size(); ++ i)	
 				{
 				const reco::GenParticle & p = gen[i];
+				//const reco::Candidate* p_cand = GenParticle inherits from candidate, let's try to just use it
 				int id = p.pdgId();
 				unsigned int a_id = abs(id);
 				int st = p.status(); // TODO: check what is status in decat simulation (pythia for our TTbar set)
 				int n_daughters = p.numberOfDaughters();
 
-				// Save parameters for recoil corrections
-				// relevant for DY and WJets
-				if (isDY || isWJets)
+				// leptons from hard processes
+				if ((a_id >= 11 && a_id <= 16 && p.fromHardProcessFinalState()) ||
+					//(p.isDirectHardProcessTauDecayProduct()))
+					(p.isDirectHardProcessTauDecayProductFinalState())) // same stuff
 					{
-					if ((a_id >= 11 && a_id <= 16 && p.fromHardProcessFinalState()) ||
-						//(p.isDirectHardProcessTauDecayProduct()))
-						(p.isDirectHardProcessTauDecayProductFinalState())) // same stuff
+					// saving the hard leptons from here if it is not TT
+					if (!isTT)
+						{
+						if (a_id == 11 || a_id == 13)
+							save_final_cands(&p, gen_leps);
+						// if it is tau -- check if it is DM10+, i.e. decay to 3 charged particles
+						if (a_id == 15)
+							{
+							int tau_id = simple_tau_decay_id(&p);
+							// = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
+							// 20 + 10
+							if (abs(tau_id) >= 30)
+								save_final_cands(&p, gen_tau3ch);
+							else
+								save_final_cands(&p, gen_taus);
+							}
+						}
+					// Save parameters for recoil corrections
+					// relevant for DY and WJets
+					if (isDY || isWJets)
 						{
 						if (isDY) genMomentum += p.p4();
 
@@ -1179,18 +1288,31 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					const reco::Candidate * W_final = find_W_decay(W);
 					int decay_id = 1;
 					// = id of lepton or 1 for quarks
-					if (fabs(W_final->daughter(0)->pdgId()) == 11 || fabs(W_final->daughter(0)->pdgId()) == 13 || fabs(W_final->daughter(0)->pdgId()) == 15)
+					for (unsigned int d_i = 0; d_i < 2; d_i++)
 						{
-						decay_id = W_final->daughter(0)->pdgId();
-						if (fabs(W_final->daughter(0)->pdgId()) == 15)
-							decay_id *= simple_tau_decay_id(W_final->daughter(0)); // = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
+						if (fabs(W_final->daughter(d_i)->pdgId()) == 11 || fabs(W_final->daughter(d_i)->pdgId()) == 13)
+							{
+							decay_id = W_final->daughter(d_i)->pdgId();
+							save_final_cands(W_final->daughter(d_i), gen_leps);
+							}
+						if (fabs(W_final->daughter(d_i)->pdgId()) == 15)
+							{
+							int tau_id = simple_tau_decay_id(W_final->daughter(d_i));
+							// = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
+							// 20 + 10
+							if (abs(tau_id) >= 30)
+								save_final_cands(W_final->daughter(d_i), gen_tau3ch);
+							else
+								save_final_cands(W_final->daughter(d_i), gen_taus);
+							decay_id *= tau_id;
+							}
 						}
-					else if (fabs(W_final->daughter(1)->pdgId()) == 11 || fabs(W_final->daughter(1)->pdgId()) == 13 || fabs(W_final->daughter(1)->pdgId()) == 15)
+					// if W is not leptonic, and decay id is still = 1
+					if (decay_id == 1)
 						{
-						decay_id = W_final->daughter(1)->pdgId();
-						if (fabs(W_final->daughter(1)->pdgId()) == 15)
-							decay_id *= simple_tau_decay_id(W_final->daughter(1));
+						save_final_cands(W_final, gen_w_prods);
 						}
+					save_final_cands(b, gen_b_prods);
 
 					// save stuff, according to top Id, also save top p_T
 					if (id>0)
@@ -1722,6 +1844,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// using old procedures for now
 		bool passIso = patUtils::passIso(selMuons[l], patUtils::llvvMuonIso::Tight, patUtils::CutVersion::Moriond17Cut);
 		leps_passed_relIso &= passIso;
+		if (isMC)
+			{
+			struct gen_matching match = match_to_gen(selMuons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
+			NT_lep_matching_gen   .push_back(match.closest);
+			NT_lep_matching_gen_dR.push_back(match.dR);
+			}
 		}
 
 	for(size_t l=0; l<selElectrons.size(); ++l)
@@ -1738,6 +1866,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//bool passIso = patUtils::passIso(selMuons[l], el_ISO, patUtils::CutVersion::Moriond17Cut, rho);
 		bool passIso = patUtils::passIso(selElectrons[l], patUtils::llvvElecIso::Tight, patUtils::CutVersion::Moriond17Cut, NT_fixedGridRhoFastjetAll);
 		leps_passed_relIso &= passIso;
+		if (isMC)
+			{
+			struct gen_matching match = match_to_gen(selElectrons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
+			NT_lep_matching_gen   .push_back(match.closest);
+			NT_lep_matching_gen_dR.push_back(match.dR);
+			}
 		}
 
 	NT_nleps = selLeptons.size();
@@ -2091,7 +2225,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_genjet_dR       .push_back( genjet_dR      );
 			NT_genjet_i        .push_back( genjet_i       );
 
-			// TODO match to GENPRODUCTS
+			// match to GENPRODUCTS
+			struct gen_matching match = match_to_gen(jet.p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
+			NT_jet_matching_gen   .push_back(match.closest);
+			NT_jet_matching_gen_dR.push_back(match.dR);
 			}
 
 		// the default jet is fully recorrected
@@ -2285,6 +2422,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_tau_hasSecondaryVertex.push_back(tau.hasSecondaryVertex());
 		//NT_tau_hcalEnergy = tau.hcalEnergy();
 		//NT_tau_hcalEnergyLeadChargedHadrCand = tau.hcalEnergyLeadChargedHadrCand();
+
+		if (isMC)
+			{
+			struct gen_matching match = match_to_gen(tau.p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
+			NT_tau_matching_gen   .push_back(match.closest);
+			NT_tau_matching_gen_dR.push_back(match.dR);
+			}
 
 		if (tau.hasSecondaryVertex())
 			{

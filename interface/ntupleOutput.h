@@ -360,12 +360,17 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_dz)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_relIso)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_dB)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, lep_matched_HLT)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_matching_gen)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_matching_gen_dR)
 
 // JETS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, jet_id)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_initial_p4)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_p4)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_uncorrected_p4)
+
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_matching_gen)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_matching_gen_dR)
 
 //VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_matched_genjet_p4)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  genjet_matched)
@@ -407,6 +412,10 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_id)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_p4)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_IDlev)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_decayMode)
+
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_dR)
+
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leading_track_pt)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leadChargedHadrCand_pt)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leadNeutralCand_pt)
