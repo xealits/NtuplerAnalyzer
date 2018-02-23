@@ -1550,9 +1550,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
                                                'tau_ref_Sign': TH1D('%s_%s_%s_tau_ref_Sign'% (chan, proc, sys), '', 44, -1, 10),
                                                'tau_ref_Leng': TH1D('%s_%s_%s_tau_ref_Leng'% (chan, proc, sys), '', 44, -0.001, 0.01),
-                                               'tau_pat_Sign': TH1D('%s_%s_%s_tau_pat_Sign'% (chan, proc, sys), '', 41, -1, 40),
+                                               'tau_pat_Sign': TH1D('%s_%s_%s_tau_pat_Sign'% (chan, proc, sys), '', 50, -10, 40),
                                                'tau_pat_Leng': TH1D('%s_%s_%s_tau_pat_Leng'% (chan, proc, sys), '', 44, -0.01, 0.1),
-                                               'tau_SV_sign':  TH1D('%s_%s_%s_tau_SV_sign'% (chan, proc, sys), '', 42, -1, 20),
+                                               'tau_SV_sign':  TH1D('%s_%s_%s_tau_SV_sign'% (chan, proc, sys), '', 50, -5, 20),
                                                'tau_SV_leng':  TH1D('%s_%s_%s_tau_SV_leng'% (chan, proc, sys), '', 21, -0.1, 1.),
                                                'tau_jet_bdiscr': TH1D('%s_%s_%s_tau_jet_bdiscr'  % (chan, proc, sys), '', 20, -0.1, 1.1),
                                                # correlations to other physical parameters (usually only sign-b and len-energy work)
@@ -1991,7 +1991,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         '''
         #tlep_p4 = TLorentzVector(ev.lep_p4[0].X(), ev.lep_p4[0].Y(), ev.lep_p4[0].Z(), ev.lep_p4[0].T())
         #if ev.tau_p4.size() > 0 and ev.tau_IDlev[0] > 1 and abs(ev.tau_p4[0].eta()) < 2.4:
-        for p4, tau_ID, tau_DM, tau_pdgID in zip(ev.tau_p4, ev.tau_IDlev, ev.tau_decayMode, ev.tau_id):
+        for i, (p4, tau_ID, tau_DM, tau_pdgID) in enumerate(zip(ev.tau_p4, ev.tau_IDlev, ev.tau_decayMode, ev.tau_id)):
+            # the original index i is needed for the match to refitted values
             if abs(p4.eta()) > 2.4: continue
             # it should work like Python does and not copy these objects! (cast)
             #p4, DM, IDlev = ev.tau_p4[0], ev.tau_decayMode[0], ev.tau_IDlev[0]
@@ -2036,38 +2037,38 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             # nominals
             if tau_pt > 20.:
-                taus_nom               .presel.append((p4, TES_factor, tau_pdgID))
+                taus_nom               .presel.append((p4, TES_factor, tau_pdgID, i))
                 #if tau_ID > 1: tausL_nom.lowest.append((p4, TES_factor))
                 #if tau_ID > 2: tausM_nom.lowest.append((p4, TES_factor))
-                if tau_ID > 1: taus_nom.loose.append((p4, TES_factor, tau_pdgID))
-                if tau_ID > 3: taus_nom.lowest.append((p4, TES_factor, tau_pdgID))
+                if tau_ID > 1: taus_nom.loose.append((p4, TES_factor, tau_pdgID, i))
+                if tau_ID > 3: taus_nom.lowest.append((p4, TES_factor, tau_pdgID, i))
             if tau_pt > pt_cut_cuts:
-                if tau_ID > 3: taus_nom.cuts.append((p4, TES_factor, tau_pdgID))
+                if tau_ID > 3: taus_nom.cuts.append((p4, TES_factor, tau_pdgID, i))
             if tau_pt > pt_cut_old:
-                if tau_ID > 2: taus_nom.old .append((p4, TES_factor, tau_pdgID))
+                if tau_ID > 2: taus_nom.old .append((p4, TES_factor, tau_pdgID, i))
 
             # TES
             if isMC and with_TauES_sys:
 
                 TES_factor = factor_up
                 if tau_pt_up > 20.:
-                    taus_ESUp               .presel.append((p4, TES_factor, tau_pdgID))
-                    if tau_ID > 1: taus_ESUp.loose.append((p4, TES_factor, tau_pdgID))
-                    if tau_ID > 3: taus_ESUp.lowest.append((p4, TES_factor, tau_pdgID))
+                    taus_ESUp               .presel.append((p4, TES_factor, tau_pdgID, i))
+                    if tau_ID > 1: taus_ESUp.loose.append((p4, TES_factor, tau_pdgID, i))
+                    if tau_ID > 3: taus_ESUp.lowest.append((p4, TES_factor, tau_pdgID, i))
                 if tau_pt_up > pt_cut_cuts:
-                    if tau_ID > 3: taus_ESUp.cuts.append((p4, TES_factor, tau_pdgID))
+                    if tau_ID > 3: taus_ESUp.cuts.append((p4, TES_factor, tau_pdgID, i))
                 if tau_pt_up > pt_cut_old:
-                    if tau_ID > 2: taus_ESUp.old.append((p4, TES_factor, tau_pdgID))
+                    if tau_ID > 2: taus_ESUp.old.append((p4, TES_factor, tau_pdgID, i))
 
                 TES_factor = factor_down
                 if tau_pt_down > 20.:
-                    taus_ESDown               .presel.append((p4, TES_factor, tau_pdgID))
-                    if tau_ID > 1: taus_ESDown.loose.append((p4, TES_factor, tau_pdgID))
-                    if tau_ID > 3: taus_ESDown.lowest.append((p4, TES_factor, tau_pdgID))
+                    taus_ESDown               .presel.append((p4, TES_factor, tau_pdgID, i))
+                    if tau_ID > 1: taus_ESDown.loose.append((p4, TES_factor, tau_pdgID, i))
+                    if tau_ID > 3: taus_ESDown.lowest.append((p4, TES_factor, tau_pdgID, i))
                 if tau_pt_down > pt_cut_cuts:
-                    if tau_ID > 3: taus_ESDown.cuts.append((p4, TES_factor, tau_pdgID))
+                    if tau_ID > 3: taus_ESDown.cuts.append((p4, TES_factor, tau_pdgID, i))
                 if tau_pt_down > pt_cut_old:
-                    if tau_ID > 2: taus_ESDown.old.append((p4, TES_factor, tau_pdgID))
+                    if tau_ID > 2: taus_ESDown.old.append((p4, TES_factor, tau_pdgID, i))
 
             """
             usual_pt_cut = 20. # TODO: cut for optimization study, review it after results
@@ -2300,15 +2301,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # just lists of tlorentz vectors
         # in lowest and cuts we use tight tau
         # -- using only the first tau in the list -- the target one!
-        for tau_p4, _, _ in taus_nom.lowest[:1]:
+        for tau_p4, _, _, _ in taus_nom.lowest[:1]:
             taus_nom_TLorentz.lowest.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         # TODO: loose taus for 2L1M + loose tau selection -- I'll do it quickly here, re-using the lowest jets (with tight tau)
         #for tau_p4, _, _ in taus_nom.loose[:1]:
             #taus_nom_TLorentz.loose.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
-        for tau_p4, _, _ in taus_nom.cuts[:1]:
+        for tau_p4, _, _, _ in taus_nom.cuts[:1]:
             taus_nom_TLorentz.cuts.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         # in old we use medium tau
-        for tau_p4, _, _ in taus_nom.old[:1]:
+        for tau_p4, _, _, _ in taus_nom.old[:1]:
             taus_nom_TLorentz.old.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         # in principle I should also change TES -- but this effect is very second order
 
@@ -3077,9 +3078,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 large_lj = lj_var > lj_cut
 
             '''
-                'optel_presel_2L1M':     
-                'optel_tight_2L1M':      
-                'optel_tight_2L1M_lj':   
+                'optel_presel_2L1M':
+                'optel_tight_2L1M':
+                'optel_tight_2L1M_lj':
                 'optel_tight_2L1M_ljout':
 
             all iso, ss
@@ -3732,15 +3733,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # don't do these in OPTIMIZATION
                     ##out_hs[(chan, proc, sys_name)]['tau_pat_Sign']  .Fill(zero_tau_pat_Sign,  record_weight)
                     ## we only work with 0th tau (highest pt)
-                    #tau_refit_index = ev.tau_refited_index[0]
+                    tau_refit_index = ev.tau_refited_index[sel_taus[0][3]] # tau id in the original vector
                     #tau_jet_index   = ev.tau_dR_matched_jet[0]
-                    ## require refit and dR quality of refit
-                    #refitted = tau_refit_index > -1 and ev.tau_SV_fit_track_OS_matched_track_dR[ev.tau_refited_index[0]] + ev.tau_SV_fit_track_SS1_matched_track_dR[ev.tau_refited_index[0]] + ev.tau_SV_fit_track_SS2_matched_track_dR[ev.tau_refited_index[0]] < 0.002
-                    #if refitted:
-                    #    tau_SV_sign    = ev.tau_SV_geom_flightLenSign[tau_refit_index]
-                    #    tau_SV_leng    = ev.tau_SV_geom_flightLen[tau_refit_index]
-                    #    out_hs[(chan, proc, sys_name)]['tau_SV_sign'] .Fill(tau_SV_sign, record_weight)
-                    #    out_hs[(chan, proc, sys_name)]['tau_SV_leng'] .Fill(ev.tau_SV_geom_flightLen[tau_refit_index], record_weight)
+                    # require refit and dR quality of refit
+                    refitted = tau_refit_index > -1 and ev.tau_SV_fit_track_OS_matched_track_dR[tau_refit_index[0]] + ev.tau_SV_fit_track_SS1_matched_track_dR[tau_refit_index[0]] + ev.tau_SV_fit_track_SS2_matched_track_dR[tau_refit_index[0]] < 0.002
+                    if refitted:
+                        tau_SV_sign    = ev.tau_SV_geom_flightLenSign[tau_refit_index]
+                        tau_SV_leng    = ev.tau_SV_geom_flightLen[tau_refit_index]
+                        out_hs[(chan, proc, sys_name)]['tau_SV_sign'] .Fill(tau_SV_sign, record_weight)
+                        out_hs[(chan, proc, sys_name)]['tau_SV_leng'] .Fill(tau_SV_leng, record_weight)
                     #    # also save PAT and refit values
                     #    tau_pat_sign    = ev.tau_flightLengthSignificance[0]
                     #    tau_pat_leng    = ev.tau_flightLength[0]
