@@ -94,21 +94,29 @@ struct gen_matching {
 };
 
 struct gen_matching match_to_gen(const LorentzVector& p4,
-	vector<const reco::Candidate*> gen_leps,
-	vector<const reco::Candidate*> gen_taus,
-	vector<const reco::Candidate*> gen_tau3ch,
-	vector<const reco::Candidate*> gen_w_prods,
-	vector<const reco::Candidate*> gen_b_prods)
+	vector<LorentzVector>& gen_leps,
+	vector<LorentzVector>& gen_taus,
+	vector<LorentzVector>& gen_tau3ch,
+	vector<LorentzVector>& gen_w_prods,
+	vector<LorentzVector>& gen_b_prods)
 {
 Float_t min_dR = 9999.;
 Float_t dR_cut = 0.4;
 Int_t   min_id = 0;
+edm::LogInfo ("Demo") << "act gen sizes " << gen_leps.size() << gen_taus.size() << gen_tau3ch.size() << gen_w_prods.size() << gen_b_prods.size();
+edm::LogInfo ("Demo") << "act obj p4    " << p4.pt() << p4.eta() << p4.phi();
+edm::LogInfo ("Demo") << "act gen pts  " << (gen_leps.size()>0 ? gen_leps[0].pt() : 0)
+	<< (gen_taus.size()>0? gen_taus[0].pt():0)
+	<< (gen_tau3ch.size()>0? gen_tau3ch[0].pt():0)
+	<< (gen_w_prods.size()>0? gen_w_prods[0].pt():0)
+	<< (gen_b_prods.size()>0? gen_b_prods[0].pt():0);
+edm::LogInfo ("Demo") << "act matches";
 
 // I need in-place quick loop with list of all inputs here, how to do it in C? -- do it later
 int gen_id = 1;
 for (unsigned int i = 0; i<gen_leps.size(); i++)
 	{
-	Float_t dR = reco::deltaR(p4, *gen_leps[i]);
+	Float_t dR = reco::deltaR(p4, gen_leps[i]);
 	if (dR < dR_cut && dR < min_dR)
 		{
 		min_dR = dR;
@@ -119,7 +127,7 @@ for (unsigned int i = 0; i<gen_leps.size(); i++)
 gen_id++;
 for (unsigned int i = 0; i<gen_taus.size(); i++)
 	{
-	Float_t dR = reco::deltaR(p4, *gen_taus[i]);
+	Float_t dR = reco::deltaR(p4, gen_taus[i]);
 	if (dR < dR_cut && dR < min_dR)
 		{
 		min_dR = dR;
@@ -130,7 +138,7 @@ for (unsigned int i = 0; i<gen_taus.size(); i++)
 gen_id++;
 for (unsigned int i = 0; i<gen_tau3ch.size(); i++)
 	{
-	Float_t dR = reco::deltaR(p4, *gen_tau3ch[i]);
+	Float_t dR = reco::deltaR(p4, gen_tau3ch[i]);
 	if (dR < dR_cut && dR < min_dR)
 		{
 		min_dR = dR;
@@ -141,7 +149,7 @@ for (unsigned int i = 0; i<gen_tau3ch.size(); i++)
 gen_id++;
 for (unsigned int i = 0; i<gen_w_prods.size(); i++)
 	{
-	Float_t dR = reco::deltaR(p4, *gen_w_prods[i]);
+	Float_t dR = reco::deltaR(p4, gen_w_prods[i]);
 	if (dR < dR_cut && dR < min_dR)
 		{
 		min_dR = dR;
@@ -152,7 +160,7 @@ for (unsigned int i = 0; i<gen_w_prods.size(); i++)
 gen_id++;
 for (unsigned int i = 0; i<gen_b_prods.size(); i++)
 	{
-	Float_t dR = reco::deltaR(p4, *gen_b_prods[i]);
+	Float_t dR = reco::deltaR(p4, gen_b_prods[i]);
 	if (dR < dR_cut && dR < min_dR)
 		{
 		min_dR = dR;
@@ -931,7 +939,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// the match defined by not overlapping sum:
 	// lep tau tau3ch b    W
 	// 1   2   4      8   16
-	vector<const reco::Candidate*> gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods;
+	//vector<const reco::Candidate*> gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods;
+	vector<LorentzVector> gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods;
 
 	// couple things for MC:
 	//  - gen aMCatNLO
@@ -1465,6 +1474,31 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	weight_counter->Fill(++event_checkpoint, weight * NT_aMCatNLO_weight);
 	// in old times (2015) there was a recommendation to actually use this as weight -- checking this
 
+	if (isMC)
+		{
+		LogInfo ("Demo") << "gen sizes " << gen_leps.size() << gen_taus.size() << gen_tau3ch.size() << gen_w_prods.size() << gen_b_prods.size();
+		//LogInfo ("Demo") << "gen PDGs  " << (gen_leps.size()>0 ? gen_leps[0].pdgId() : 0)
+		//	<< (gen_taus.size()>0?    gen_taus[0].pdgId():0)
+		//	<< (gen_tau3ch.size()>0?  gen_tau3ch[0].pdgId():0)
+		//	<< (gen_w_prods.size()>0? gen_w_prods[0].pdgId():0)
+		//	<< (gen_b_prods.size()>0? gen_b_prods[0].pdgId():0);
+		LogInfo ("Demo") << "gen pts  " << (gen_leps.size()>0 ? gen_leps[0].pt() : 0)
+			<< (gen_taus.size()>0?    gen_taus[0].pt():0)
+			<< (gen_tau3ch.size()>0?  gen_tau3ch[0].pt():0)
+			<< (gen_w_prods.size()>0? gen_w_prods[0].pt():0)
+			<< (gen_b_prods.size()>0? gen_b_prods[0].pt():0);
+		LogInfo ("Demo") << "gen etas  " << (gen_leps.size()>0 ? gen_leps[0].eta() : 0)
+			<< (gen_taus.size()>0?    gen_taus[0].eta():0)
+			<< (gen_tau3ch.size()>0?  gen_tau3ch[0].eta():0)
+			<< (gen_w_prods.size()>0? gen_w_prods[0].eta():0)
+			<< (gen_b_prods.size()>0? gen_b_prods[0].eta():0);
+		LogInfo ("Demo") << "gen phis  " << (gen_leps.size()>0 ? gen_leps[0].phi() : 0)
+			<< (gen_taus.size()>0?    gen_taus[0].phi():0)
+			<< (gen_tau3ch.size()>0?  gen_tau3ch[0].phi():0)
+			<< (gen_w_prods.size()>0? gen_w_prods[0].phi():0)
+			<< (gen_b_prods.size()>0? gen_b_prods[0].phi():0);
+		}
+
 	//Handle<reco::TrackCollection> tracks;
 	//iEvent.getByToken( tracks_, tracks );
 	//LogInfo("Demo") << "number of tracks "<<tracks->size();
@@ -1891,6 +1925,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 	//NT_leps_ID = NT_leps_ID;
 
+	LogInfo ("Demo") << "saved leptons";
+
 
 
 	// MET
@@ -2225,6 +2261,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_genjet_dR       .push_back( genjet_dR      );
 			NT_genjet_i        .push_back( genjet_i       );
 
+			LogInfo ("Demo") << "match gen to jets";
+			LogInfo ("Demo") << "gen sizes " << gen_leps.size() << gen_taus.size() << gen_tau3ch.size() << gen_w_prods.size() << gen_b_prods.size();
 			// match to GENPRODUCTS
 			struct gen_matching match = match_to_gen(jet.p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
 			NT_jet_matching_gen   .push_back(match.closest);
@@ -2273,6 +2311,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NT_met_corrected = MET_corrected;
 	// TODO: I don't correct NT_met_slimmedMets and the other -- the correction should be applied offline if needed
 	// in principle NT_met_init = NT_met_slimmedMets -- so NT_met_corrected saves the applied correction
+
+	LogInfo ("Demo") << "saved jets";
 
 	// default jets are fully corrected, the correction is propagated to this met,
 	// the initial slimmedMet is saved
@@ -2425,6 +2465,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		if (isMC)
 			{
+			LogInfo ("Demo") << "gen match to tau";
 			struct gen_matching match = match_to_gen(tau.p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
 			NT_tau_matching_gen   .push_back(match.closest);
 			NT_tau_matching_gen_dR.push_back(match.dR);
@@ -2718,6 +2759,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_tau_refited_index.push_back(-1);
 			}
 		}
+	LogInfo ("Demo") << "saved taus";
 
 	// if some tracks were removed (SV was refitted for a tau)
 	// refit PV
