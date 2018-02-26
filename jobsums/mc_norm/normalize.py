@@ -40,8 +40,8 @@ ttbar_xsec = 831.76;
 xsecs = {
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo": 18610,
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_": 18610,
-#"MC2016_Summer16_DYJetsToLL_50toInf_madgraph": 5765.4, # but McM shows 4970
-"MC2016_Summer16_DYJetsToLL_50toInf_madgraph": 6025.2, # KIT TauTau uses this one FIXME: the DY x-section was updated by about 5%
+"MC2016_Summer16_DYJetsToLL_50toInf_madgraph": 5765.4, # but McM shows 4970
+#"MC2016_Summer16_DYJetsToLL_50toInf_madgraph": 6025.2, # KIT TauTau uses this one FIXME: the DY x-section was updated by about 5%
 #"MC2016_Summer16_DYJetsToLL_50toInf_madgraph_": 6025.2, // FIXME: the DY x-section was updated by about 5%
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph_": 4970, # FIXME: the DY x-section was updated by about 5%
 "MC2016_Summer16_QCD_HT-100-200":  27540000,
