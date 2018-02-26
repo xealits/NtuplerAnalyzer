@@ -15,6 +15,7 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer',
 
     isMC = cms.bool(False),
     isLocal = cms.bool(False),
+    HLT_source  = cms.string("HLT"  ), # in 2015 had HLT2 for reHLT datasets
     muHLT_MC1   = cms.string("HLT_IsoMu24_v4"  ),
     muHLT_MC2   = cms.string("HLT_IsoTkMu24_v4"),
     muHLT_Data1 = cms.string("HLT_IsoMu24_v*"  ), # the HLT pattern match

@@ -5,14 +5,14 @@ import FWCore.ParameterSet.VarParsing as VarParsing
 ivars = VarParsing.VarParsing('analysis')
 
 
+HLT_source = 'HLT'
+
  # Data, file on netwokr -- let's see how cmsRun gets it
  #'root://cms-xrd-global.cern.ch///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/001E3E7D-57EB-E611-8469-0CC47A7C35D2.root'
  #31 Aug present on CERN
  #'root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00B474D3-ADEA-E611-9E30-D067E5F910F5.root'
 # single top
  #'file:ST_tW_top_0C2044DB-0EC2-E611-8567-0CC47A7FC378.root'
- # DY file
-input_files, isMC, dtag = ('root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/0EE8D393-D0DE-E611-9106-A4BF0101202F.root',), True, 'DYJets'
 
 # testing MET filters
 input_files, isMC, dtag = ('root://eoscms//eos/cms///store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver2-v1/110000/00B474D3-ADEA-E611-9E30-D067E5F910F5.root',), False, 'Data13TeV_SingleMuon2016H_03Feb2017_ver2'
@@ -29,6 +29,10 @@ input_files, isMC, dtag = ('file:165F54A0-A3BE-E611-B3F7-0025905A606A.root',), T
  # WJets
 #input_files, isMC, dtag = ('root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/009CE684-45BB-E611-A261-001E67E6F8FA.root',), True, 'WJets'
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/MC2016_Summer16_W0Jets_amcatnlo_2475B5FF-D7BE-E611-8E3A-0CC47A7FC350.root',), True, 'WJets'
+
+# DY file
+input_files, isMC, dtag = ('root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/0EE8D393-D0DE-E611-9106-A4BF0101202F.root',), True, 'DYJets'
+input_files, isMC, dtag, HLT_source = ("file:/eos/user/o/otoldaie/MC2015_Spring16_reHLT_DY-50_amcatnlo_00200284-F15C-E611-AA9B-002590574776.root",), True, 'DYJets2015_amcatnlo', 'HLT2'
 
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/26ABF488-A0BE-E611-BEEB-0CC47A4D7640.root'
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root'
@@ -143,6 +147,17 @@ process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 process.ntupler.isMC = cms.bool(isMC)
 process.ntupler.isLocal = cms.bool(True)
 process.ntupler.dtag = cms.string(dtag)
+process.ntupler.HLT_source = cms.string(HLT_source)
+process.ntupler.elHLT_MC   = cms.string("HLT_Ele32_eta2p1_WPTight_Gsf_v8")
+process.ntupler.elHLT_Data = cms.string("HLT_Ele32_eta2p1_WPTight_Gsf_v*")
+
+# test of DY 2015
+process.ntupler.muHLT_MC1   = cms.string("HLT_IsoMu24_v*"  )
+process.ntupler.muHLT_MC2   = cms.string("HLT_IsoTkMu24_v*")
+process.ntupler.muHLT_Data1 = cms.string("HLT_IsoMu24_v*"  )
+process.ntupler.muHLT_Data2 = cms.string("HLT_IsoTkMu24_v*")
+process.ntupler.elHLT_Data  = cms.string("HLT_Ele27_WPTight_Gsf_v*")
+process.ntupler.elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v*")
 
 # for LumiDump:
 process.ntupler.input = cms.untracked.vstring(input_files)

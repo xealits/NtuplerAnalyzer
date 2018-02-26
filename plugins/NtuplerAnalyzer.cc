@@ -572,7 +572,8 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	TString dtag;
 	bool isMC, aMCatNLO, isWJets, isDY, isTT;
 	bool isLocal;
-	string  muHLT_MC1  , muHLT_MC2  ,
+	string  HLT_source,
+		muHLT_MC1  , muHLT_MC2  ,
 		muHLT_Data1, muHLT_Data2,
 		elHLT_Data , elHLT_MC,
 		lepMonitorHLT;
@@ -644,6 +645,7 @@ record_jets          (iConfig.getParameter<bool>("record_jets"))         ,
 dtag       (iConfig.getParameter<std::string>("dtag")),
 isMC       (iConfig.getParameter<bool>("isMC")),
 isLocal    (iConfig.getParameter<bool>("isLocal")),
+HLT_source (iConfig.getParameter<std::string>("HLT_source")),
 muHLT_MC1  (iConfig.getParameter<std::string>("muHLT_MC1")),
 muHLT_MC2  (iConfig.getParameter<std::string>("muHLT_MC2")),
 muHLT_Data1(iConfig.getParameter<std::string>("muHLT_Data1")),
@@ -685,7 +687,8 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	taus_ = consumes<pat::TauCollection>(edm::InputTag("slimmedTaus"));
 	vtx_ = consumes<reco::VertexCollection>(edm::InputTag("offlineSlimmedPrimaryVertices"));
 	rho_ = consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
-	trigResults_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT"));
+	trigResults_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","", HLT_source));
+	//trigResults2_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT2"));
 	trigResultsRECO_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","RECO"));
 	trigResultsPAT_     = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","PAT"));
 	triggerObjects_ = consumes<vector<pat::TriggerObjectStandAlone>>(edm::InputTag("selectedPatTrigger"));
@@ -1710,12 +1713,18 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	string matched_muTriggerName1("");
 	string matched_muTriggerName2("");
 	//edm::TriggerResultsByName tr = ev.triggerResultsByName ("HLT");
-	edm::TriggerResultsByName tr = iEvent.triggerResultsByName ("HLT");
-	if (!tr.isValid ()){
-		cout << "HLT is NOT valid!" << endl;
-		return;
+	edm::TriggerResultsByName tr = iEvent.triggerResultsByName (HLT_source);
+	//if (!tr.isValid ()){
 		// HLT2 was a quirk of Spring16 MC campaigns (noHLT/reHLT/withHLT thing)
-		//tr = ev.triggerResultsByName ("HLT2");
+		// need to compare 2016-2015 in tau SV
+		// using HLT2 as backup (DY50 with HLT is present only in reHLT campaign, wich has this HLT2 path)
+		//tr = iEvent.triggerResultsByName ("HLT2");
+		// it crashes weirdly with "no consumes" complaints
+		//}
+
+	if (!tr.isValid ()){
+		cout << HLT_source << " is NOT valid!" << endl;
+		return;
 		}
 	else
 		{

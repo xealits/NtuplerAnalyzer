@@ -162,7 +162,8 @@ class PrintStuff : public edm::EDAnalyzer  {
 	TString dtag;
 	bool isMC, aMCatNLO, isWJets, isDY;
 	bool isLocal;
-	string  muHLT_MC1  , muHLT_MC2  ,
+	string  HLT_source,
+		muHLT_MC1  , muHLT_MC2  ,
 		muHLT_Data1, muHLT_Data2,
 		elHLT_Data , elHLT_MC,
 		lepMonitorHLT;
@@ -209,7 +210,8 @@ class PrintStuff : public edm::EDAnalyzer  {
 // constructors and destructor
 //
 PrintStuff::PrintStuff(const edm::ParameterSet& iConfig) :
-isMC       (iConfig.getParameter<bool>("isMC"))
+isMC       (iConfig.getParameter<bool>("isMC")),
+HLT_source (iConfig.getParameter<string>("HLT_source"))
 
 {
 
@@ -229,7 +231,7 @@ isMC       (iConfig.getParameter<bool>("isMC"))
 
 	lheRPToken_ = consumes<LHERunInfoProduct, edm::InRun>(edm::InputTag("externalLHEProducer"));
 
-	trigResults_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT"));
+	trigResults_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults", "", HLT_source));
 	trigResultsRECO_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","RECO"));
 	trigResultsPAT_     = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","PAT"));
 
@@ -270,10 +272,10 @@ PrintStuff::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	using namespace edm;
 	LogInfo ("Demo") << "entered event " << iEvent.eventAuxiliary().run() << ' ' << iEvent.eventAuxiliary().luminosityBlock();
 
-	edm::TriggerResultsByName tr = iEvent.triggerResultsByName ("HLT");
+	edm::TriggerResultsByName tr = iEvent.triggerResultsByName (HLT_source);
 	if (tr.isValid())
 		{ // TODO: make a separate executable
-		cout << "Printing HLT trigger list" << endl;
+		cout << "Printing " << HLT_source << " trigger list" << endl;
 		int i = 0;
 		for(edm::TriggerNames::Strings::const_iterator trnames = tr.triggerNames().begin(); trnames!=tr.triggerNames().end(); ++trnames, ++i)
 			cout << i << "\t" << *trnames << endl;
