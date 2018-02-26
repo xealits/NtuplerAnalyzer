@@ -572,6 +572,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	TString dtag;
 	bool isMC, aMCatNLO, isWJets, isDY, isTT;
 	bool isLocal;
+	bool withHLT;
 	string  HLT_source,
 		muHLT_MC1  , muHLT_MC2  ,
 		muHLT_Data1, muHLT_Data2,
@@ -645,6 +646,7 @@ record_jets          (iConfig.getParameter<bool>("record_jets"))         ,
 dtag       (iConfig.getParameter<std::string>("dtag")),
 isMC       (iConfig.getParameter<bool>("isMC")),
 isLocal    (iConfig.getParameter<bool>("isLocal")),
+withHLT    (iConfig.getParameter<bool>("withHLT")),
 HLT_source (iConfig.getParameter<std::string>("HLT_source")),
 muHLT_MC1  (iConfig.getParameter<std::string>("muHLT_MC1")),
 muHLT_MC2  (iConfig.getParameter<std::string>("muHLT_MC2")),
@@ -687,7 +689,9 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	taus_ = consumes<pat::TauCollection>(edm::InputTag("slimmedTaus"));
 	vtx_ = consumes<reco::VertexCollection>(edm::InputTag("offlineSlimmedPrimaryVertices"));
 	rho_ = consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
-	trigResults_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","", HLT_source));
+	// declare consuming the HLT to be able to get triggers in the following
+	if (withHLT)
+		trigResults_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","", HLT_source));
 	//trigResults2_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT2"));
 	trigResultsRECO_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","RECO"));
 	trigResultsPAT_     = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","PAT"));
@@ -1700,10 +1704,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 
 	// HLT TRIGGER
-	bool lepMonitorTrigger = false;
-	bool eTrigger = false;
-	bool muTrigger1, muTrigger2, muTrigger = false;
-	bool jetsHLT140 = false, jetsHLT400 = false, jetsHLT = false;
+	// for 2015 noHLT MC (like QCD)
+	// in this case all triggers pass, but leptons never match to trigger objects
+	bool lepMonitorTrigger = !withHLT;
+	bool eTrigger = !withHLT;
+	bool muTrigger1 = !withHLT, muTrigger2 = !withHLT, muTrigger = !withHLT;
+	bool jetsHLT140 = !withHLT, jetsHLT400 = !withHLT, jetsHLT = !withHLT;
 
 	// TriggerNames for TriggerObjects --------------------
 	edm::Handle<edm::TriggerResults> trigResults; //our trigger result object
@@ -1713,41 +1719,45 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	string matched_muTriggerName1("");
 	string matched_muTriggerName2("");
 	//edm::TriggerResultsByName tr = ev.triggerResultsByName ("HLT");
-	edm::TriggerResultsByName tr = iEvent.triggerResultsByName (HLT_source);
-	//if (!tr.isValid ()){
-		// HLT2 was a quirk of Spring16 MC campaigns (noHLT/reHLT/withHLT thing)
-		// need to compare 2016-2015 in tau SV
-		// using HLT2 as backup (DY50 with HLT is present only in reHLT campaign, wich has this HLT2 path)
-		//tr = iEvent.triggerResultsByName ("HLT2");
-		// it crashes weirdly with "no consumes" complaints
-		//}
 
-	if (!tr.isValid ()){
-		cout << HLT_source << " is NOT valid!" << endl;
-		return;
-		}
-	else
+	if (withHLT)
 		{
-		LogInfo("Demo") << "Trigger HLT is valid";
-		//trigResultsTag = new edm::InputTag("TriggerResults","","HLT"); //make sure have correct process on MC
-		// pass trigger
-		// using this:
-		//   bool passTriggerPatternsAndGetName(edm::TriggerResultsByName& tr, std::string& pathName, std::string pattern)
-		// -- pathName is the matched part of the trigger name (as I got it)
-		//    it is passed to select trigger objects
-		lepMonitorTrigger   = utils::passTriggerPatterns(tr, lepMonitorHLT);
-		eTrigger   = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_elTriggerName, elHLT_MC)   : utils::passTriggerPatternsAndGetName(tr, matched_elTriggerName, elHLT_Data));
-		muTrigger1 = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_MC1) : utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_Data1));
-		muTrigger2 = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName2, muHLT_MC2) : utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName2, muHLT_Data2));
-		muTrigger = muTrigger1 || muTrigger2;
+		edm::TriggerResultsByName tr = iEvent.triggerResultsByName (HLT_source);
+		//if (!tr.isValid ()){
+			// HLT2 was a quirk of Spring16 MC campaigns (noHLT/reHLT/withHLT thing)
+			// need to compare 2016-2015 in tau SV
+			// using HLT2 as backup (DY50 with HLT is present only in reHLT campaign, wich has this HLT2 path)
+			//tr = iEvent.triggerResultsByName ("HLT2");
+			// it crashes weirdly with "no consumes" complaints
+			//}
 
-		jetsHLT140 = utils::passTriggerPatterns(tr, "HLT_PFJet140_v*");
+		if (!tr.isValid ()){
+			cout << HLT_source << " is NOT valid!" << endl;
+			return;
+			}
+		else
+			{
+			LogInfo("Demo") << "Trigger HLT is valid";
+			//trigResultsTag = new edm::InputTag("TriggerResults","","HLT"); //make sure have correct process on MC
+			// pass trigger
+			// using this:
+			//   bool passTriggerPatternsAndGetName(edm::TriggerResultsByName& tr, std::string& pathName, std::string pattern)
+			// -- pathName is the matched part of the trigger name (as I got it)
+			//    it is passed to select trigger objects
+			lepMonitorTrigger   = utils::passTriggerPatterns(tr, lepMonitorHLT);
+			eTrigger   = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_elTriggerName, elHLT_MC)   : utils::passTriggerPatternsAndGetName(tr, matched_elTriggerName, elHLT_Data));
+			muTrigger1 = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_MC1) : utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_Data1));
+			muTrigger2 = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName2, muHLT_MC2) : utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName2, muHLT_Data2));
+			muTrigger = muTrigger1 || muTrigger2;
+
+			jetsHLT140 = utils::passTriggerPatterns(tr, "HLT_PFJet140_v*");
 		jetsHLT400 = utils::passTriggerPatterns(tr, "HLT_PFJet400_v*");
 		}
 
-	if (record_jets)
-		{
-		jetsHLT = jetsHLT140 || jetsHLT400;
+		if (record_jets)
+			{
+			jetsHLT = jetsHLT140 || jetsHLT400;
+			}
 		}
 
 	if (!(eTrigger || muTrigger || lepMonitorTrigger || jetsHLT)) return; // orthogonalization is done afterwards
@@ -2824,7 +2834,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	LogInfo ("Demo") << "all particles/objects are selected, nbjets = " << NT_nbjets;
 
 	//bool record_ntuple = (isSingleMu || isSingleE || pass_dileptons) && NT_nbjets > 0 && NT_tau_IDlev.size() > 0; // at least 1 b jet and 1 loose tau
-	bool pass_leptons = clean_lep_conditions && leps_passed_relIso && selLeptons.size() > 0 && selLeptons.size() < 3;
+	bool pass_leptons = clean_lep_conditions && leps_passed_relIso && selLeptons.size() == 1; // tau_ID oriented scheme, Dileptons are separate
 	bool pass_leptons_all_iso = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3;
 	bool record_ntuple = false;
 

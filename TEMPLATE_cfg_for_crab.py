@@ -124,6 +124,8 @@ process.ntupler.dtag = cms.string(dtag)
 
 process.ntupler.isLocal = cms.bool(False) # LSF submition is local
 
+process.ntupler.withHLT = cms.bool({withHLT})
+
 # for LumiDump (to be scraped):
 process.ntupler.input = cms.untracked.vstring(
 'file:165F54A0-A3BE-E611-B3F7-0025905A606A.root',

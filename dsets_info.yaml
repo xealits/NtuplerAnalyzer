@@ -49,6 +49,20 @@
 /DYJetsToTauTau_ForcedMuEleDecay_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM:
     {LumiMask: '', dtag: MC2016_Summer16_DYJetsToTauTau_50toInf_amcatnlo, isMC: true, xsec: 1867}
 
+/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM:
+    {LumiMask: '', dtag: MC2015_Spring16_DYJetsToLL_50toInf_amcatnlo, isMC: true, xsec: 5765.4}
+/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext1-v1/MINIAODSIM:
+    {LumiMask: '', dtag: MC2015_Spring16_DYJetsToLL_50toInf_madgraph, isMC: true, xsec: 5765.4}
+
+/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v2/MINIAODSIM: {LumiMask: '', dtag: MC2015_Spring16_QCD_HT-1000-1500, isMC: true, xsec: 1206}
+/QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM:   {LumiMask: '', dtag: MC2015_Spring16_QCD_HT-100-200, isMC: true, xsec: 27540000}
+/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v3/MINIAODSIM: {LumiMask: '', dtag: MC2015_Spring16_QCD_HT-1500-2000, isMC: true, xsec: 120.4}
+/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM:  {LumiMask: '', dtag: MC2015_Spring16_QCD_HT-2000-Inf, isMC: true, xsec: 25.25}
+/QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM:   {LumiMask: '', dtag: MC2015_Spring16_QCD_HT-200-300, isMC: true, xsec: 1717000}
+/QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM:   {LumiMask: '', dtag: MC2015_Spring16_QCD_HT-300-500, isMC: true, xsec: 351300}
+/QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM:   {LumiMask: '', dtag: MC2015_Spring16_QCD_HT-500-700, isMC: true, xsec: 31630}
+/QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM:  {LumiMask: '', dtag: MC2015_Spring16_QCD_HT-700-1000, isMC: true, xsec: 6802}
+
 /EWKWMinus2Jets_WToLNu_M-50_13TeV-madgraph-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_EWKWMinus2Jets, isMC: true, xsec: 20.25}
 /EWKWPlus2Jets_WToLNu_M-50_13TeV-madgraph-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_EWKWPlus2Jets, isMC: true, xsec: 25.620000000000001}
 /EWKZ2Jets_ZToLL_M-50_13TeV-madgraph-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_EWKZ2Jets, isMC: true, xsec: 3.9870000000000001}
@@ -68,14 +82,16 @@
   dtag: Data13TeV_JetHT2016H_03Feb2017_ver2, isMC: false, xsec: 1}
 /JetHT/Run2016H-03Feb2017_ver3-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
   dtag: Data13TeV_JetHT2016H_03Feb2017_ver3, isMC: false, xsec: 1}
+
 /QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_QCD_HT-1000-1500, isMC: true, xsec: 1206}
 /QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_QCD_HT-100-200, isMC: true, xsec: 27540000}
-/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_QCD_HT-1500-2000, isMC: true, xsec: 120.40000000000001}
+/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_QCD_HT-1500-2000, isMC: true, xsec: 120.4}
 /QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_QCD_HT-2000-Inf, isMC: true, xsec: 25.25}
 /QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_QCD_HT-200-300, isMC: true, xsec: 1717000}
 /QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_QCD_HT-300-500, isMC: true, xsec: 351300}
 /QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_QCD_HT-500-700, isMC: true, xsec: 31630}
 /QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_QCD_HT-700-1000, isMC: true, xsec: 6802}
+
 /ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo, isMC: true,
   xsec: 3.3599999999999999}
 /ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg,

@@ -30,6 +30,7 @@ if __name__ == "__main__":
     parser.add_argument("record_scheme", help="ntupler's parameter record_scheme, sets thresholds wich events to save")
     parser.add_argument("-s", "--suffix", type=str, default='', help="suffix for dataset, used for ext MC datasets")
     parser.add_argument("-d", "--dsets-info", type=str, default='dsets_info.yaml', help="file with info on datasets: xsec, dtag, isMC, possible LumiMask")
+    parser.add_argument("--without-HLT", action="store_true", default=False, help="turn off HLT in events (to support noHLT MC in 2015)")
     #parser.add_argument("-o", "--output-dir", type=str, default='python/crab_cfgs/', help="directory where config files are created for this vertsion (in version/ subdir)")
 
     args = parser.parse_args()
@@ -46,17 +47,19 @@ if __name__ == "__main__":
     dtag = dsets_info[dset]['dtag']
     isMC = dsets_info[dset]['isMC']
     LumiMask = dsets_info[dset]['LumiMask']
+    withHLT = not args.without_HLT
 
     logging.debug('dtag = ' + dtag)
     logging.debug('suffix = ' + suffix)
     logging.debug('LumiMask = ' + LumiMask)
     logging.debug('isMC = ' + str(isMC))
+    logging.debug('withHLT = ' + str(withHLT))
 
     config_file = conf_dir + version + '/%s%s_cfg.py' % (dtag, suffix)
 
     template_crab = template_crab.format(LumiMask=LumiMask, dtag=dtag, suffix=suffix, version=version, dset=dset,
         config_file=config_file)
-    template_cfg = template_cfg .format(isMC=isMC, dtag=dtag, record_scheme=record_scheme)
+    template_cfg = template_cfg .format(isMC=isMC, dtag=dtag, record_scheme=record_scheme, withHLT=withHLT)
 
     if not os.path.exists(conf_dir + version):
         os.makedirs(conf_dir + version)
