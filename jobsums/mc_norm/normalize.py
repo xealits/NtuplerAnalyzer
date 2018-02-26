@@ -42,8 +42,15 @@ xsecs = {
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_": 18610,
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph": 5765.4, # but McM shows 4970
 #"MC2016_Summer16_DYJetsToLL_50toInf_madgraph": 6025.2, # KIT TauTau uses this one FIXME: the DY x-section was updated by about 5%
-#"MC2016_Summer16_DYJetsToLL_50toInf_madgraph_": 6025.2, // FIXME: the DY x-section was updated by about 5%
-"MC2016_Summer16_DYJetsToLL_50toInf_madgraph_": 4970, # FIXME: the DY x-section was updated by about 5%
+# link: https://github.com/cms-analysis/HiggsAnalysis-KITHiggsToTauTau/blob/704c2adb0148f62580c68d60dc309075639ff6e1/data/ArtusConfigs/Includes/settingsCrossSection.json
+# -- it's DY amcatnlo
+# Spring15
+# commit https://github.com/cms-analysis/HiggsAnalysis-KITHiggsToTauTau/commit/bbd27735feecd7f56e8c390e25301fe0b1c16bb2
+# updated GluGluJets
+# tag SMHTT2016 CMSSW_7_4_7
+# FIXME: "the DY x-section was updated by about 5%" -- so, need to check what's the official value after all, confirm 5765
+#"MC2016_Summer16_DYJetsToLL_50toInf_madgraph_": 6025.2,
+"MC2016_Summer16_DYJetsToLL_50toInf_madgraph_": 4970,
 "MC2016_Summer16_QCD_HT-100-200":  27540000,
 "MC2016_Summer16_QCD_HT-100-200_":  27540000,
 "MC2016_Summer16_QCD_HT-1000-1500":  1206,
