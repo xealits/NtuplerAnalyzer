@@ -155,7 +155,7 @@ this crashes: `--setParameterRanges TOPPT=-1.0,2.0`
 #### Breakdown of the uncertainties
 
 From [tutorial](https://indico.cern.ch/event/677948/contributions/2776352/attachments/1550599/2468832/HComb-Tutorial-FitDiagnostics.pdf) (slide 18)
- + a hypernews question.
+ and a hypernews question.
 
 
 muons
