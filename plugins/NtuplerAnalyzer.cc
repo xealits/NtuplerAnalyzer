@@ -1764,45 +1764,50 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	event_counter ->Fill(event_checkpoint++);
 	weight_counter->Fill(event_checkpoint, weight);
 
+	NT_HLT_el = eTrigger;
+	NT_HLT_mu = muTrigger;
+	NT_HLT_lepMonitor = lepMonitorTrigger;
+	NT_HLT_jets140 = jetsHLT140;
+	NT_HLT_jets400 = jetsHLT400;
+
 	LogInfo ("Demo") << "passed HLT " << eTrigger << ' ' << muTrigger << '(' << muTrigger1 << ',' << muTrigger2 << ')' << ';' << matched_elTriggerName << ' ' << matched_muTriggerName1 << ',' << matched_muTriggerName2;
 
-	// names for trigger bits
-	//edm::EDGetTokenT<edm::TriggerResults> trigResults_ = consumes<edm::TriggerResults>(trigResultsTag);
-	//ev.getByLabel(*trigResultsTag, trigResults);
-	iEvent.getByToken( trigResults_, trigResults );
-	const edm::TriggerNames& trigNames = iEvent.triggerNames(*trigResults);
-
-	//fwlite::Handle<vector<pat::TriggerObjectStandAlone>> triggerObjectsHandle;
-	edm::Handle<vector<pat::TriggerObjectStandAlone>> triggerObjectsHandle;
-	//triggerObjectsHandle.getByLabel(ev, "selectedPatTrigger");
-	iEvent.getByToken(triggerObjects_, triggerObjectsHandle);
-	if (!triggerObjectsHandle.isValid())
-		{
-		LogInfo("Demo") << "!triggerObjectsHandle.isValid()";
-		return;
-		}
-	LogInfo ("Demo") << "got trigger objects";
-	vector<pat::TriggerObjectStandAlone> trig_objs = *triggerObjectsHandle;
-
+	// HLT matching
 	// objects of our triggers
 	vector<pat::TriggerObjectStandAlone> el_trig_objs;
 	vector<pat::TriggerObjectStandAlone> mu_trig_objs, mu_trig_objs2;
 
-	NT_HLT_lepMonitor = lepMonitorTrigger;
-	NT_HLT_jets140 = jetsHLT140;
-	NT_HLT_jets400 = jetsHLT400;
-	if (eTrigger)
+	if (withHLT)
 		{
-		NT_HLT_el = true;
-		Processing_selectHLTobjects(trig_objs, trigNames, el_trig_objs, matched_elTriggerName);
-		}
-	if (muTrigger)
-		{
-		NT_HLT_mu = true;
-		Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs,  matched_muTriggerName1);
-		Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs2, matched_muTriggerName2);
-		// vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
-		mu_trig_objs.insert(mu_trig_objs.end(), mu_trig_objs2.begin(), mu_trig_objs2.end());
+		// names for trigger bits
+		//edm::EDGetTokenT<edm::TriggerResults> trigResults_ = consumes<edm::TriggerResults>(trigResultsTag);
+		//ev.getByLabel(*trigResultsTag, trigResults);
+		iEvent.getByToken( trigResults_, trigResults );
+		const edm::TriggerNames& trigNames = iEvent.triggerNames(*trigResults);
+
+		//fwlite::Handle<vector<pat::TriggerObjectStandAlone>> triggerObjectsHandle;
+		edm::Handle<vector<pat::TriggerObjectStandAlone>> triggerObjectsHandle;
+		//triggerObjectsHandle.getByLabel(ev, "selectedPatTrigger");
+		iEvent.getByToken(triggerObjects_, triggerObjectsHandle);
+		if (!triggerObjectsHandle.isValid())
+			{
+			LogInfo("Demo") << "!triggerObjectsHandle.isValid()";
+			return;
+			}
+		LogInfo ("Demo") << "got trigger objects";
+		vector<pat::TriggerObjectStandAlone> trig_objs = *triggerObjectsHandle;
+
+		if (eTrigger)
+			{
+			Processing_selectHLTobjects(trig_objs, trigNames, el_trig_objs, matched_elTriggerName);
+			}
+		if (muTrigger)
+			{
+			Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs,  matched_muTriggerName1);
+			Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs2, matched_muTriggerName2);
+			// vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
+			mu_trig_objs.insert(mu_trig_objs.end(), mu_trig_objs2.begin(), mu_trig_objs2.end());
+			}
 		}
 
 	LogInfo ("Demo") << "our trigger objects: " << el_trig_objs.size() << ',' << mu_trig_objs.size();
