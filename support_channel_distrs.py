@@ -1339,6 +1339,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_all),
                 'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_all),
 
+                'ctr_old_mu_sel_tauSign3':           (procs_mu_3ch_fbw, systematic_names_nominal),
+                'ctr_old_mu_sel_tauSign3_ss':        (procs_mu_3ch_fbw, systematic_names_nominal),
+
                 'ctr_old_el_presel':        (procs_el, systematic_names_pu_toppt),     # testing issue with event yield advantage
                 'ctr_old_el_presel_ss':     (procs_el, systematic_names_pu_toppt),
                 'ctr_old_el_sel':           (procs_el, systematic_names_all),
@@ -1557,6 +1560,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'tau_SV_sign':  TH1D('%s_%s_%s_tau_SV_sign'% (chan, proc, sys), '', 50, -5, 20),
                                                'tau_SV_leng':  TH1D('%s_%s_%s_tau_SV_leng'% (chan, proc, sys), '', 21, -0.1, 1.),
                                                'tau_jet_bdiscr': TH1D('%s_%s_%s_tau_jet_bdiscr'  % (chan, proc, sys), '', 20, -0.1, 1.1),
+                                               # Dalitz parameters of the tau
+                                               'tau_dalitzes': TH2D('%s_%s_%s_tau_dalitzes' % (chan, proc, sys), '', 20, 0, 2., 20, 0., 2.),
                                                # correlations to other physical parameters (usually only sign-b and len-energy work)
                                                'tau_pat_sign_bdiscr':TH2D('%s_%s_%s_tau_pat_sign_bdiscr' % (chan, proc, sys), '', 41, -1, 40, 20, 0., 1.),
                                                'tau_ref_sign_bdiscr':TH2D('%s_%s_%s_tau_ref_sign_bdiscr' % (chan, proc, sys), '', 44, -1, 10, 20, 0., 1.),
@@ -3079,6 +3084,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 lj_cut = 60.
                 large_lj = lj_var > lj_cut
 
+            tauSign3 = False
+            if len(taus.old) > 0:
+                # tau original index
+                # taus_nom.old .append((p4, TES_factor, tau_pdgID, i))
+                if ev.tau_refited_index[taus.old[0][3]] >= 0:
+                    tauSign3 = ev.tau_SV_geom_flightLenSign[ev.tau_refited_index[taus.old[0][3]]] > 3.
+
             '''
                 'optel_presel_2L1M':
                 'optel_tight_2L1M':
@@ -3313,6 +3325,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         passed_channels.append(('ctr_old_mu_sel_ljout_ss', sel_b_weight, jets.old, taus.old))
                     else:
                         passed_channels.append(('ctr_old_mu_sel_lj_ss', sel_b_weight, jets.old, taus.old))
+
+            if pass_old_mu_sel and tauSign3:
+                old_os = taus.old[0][2] * ev.lep_id[0] < 0
+                sel_b_weight = weight_bSF_old
+                if old_os:
+                    passed_channels.append(('ctr_old_mu_sel_tauSign3',    sel_b_weight, jets.old, taus.old))
+                else:
+                    passed_channels.append(('ctr_old_mu_sel_tauSign3_ss', sel_b_weight, jets.old, taus.old))
 
             if pass_old_el_presel:
                 presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
@@ -3782,8 +3802,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # don't do these in OPTIMIZATION
                     ##out_hs[(chan, record_proc, sys_name)]['tau_pat_Sign']  .Fill(zero_tau_pat_Sign,  record_weight)
                     ## we only work with 0th tau (highest pt)
-                    tau_refit_index = ev.tau_refited_index[sel_taus[0][3]] # tau id in the original vector
-                    #tau_jet_index   = ev.tau_dR_matched_jet[0]
+                    tau_index = sel_taus[0][3]
+                    tau_refit_index = ev.tau_refited_index[tau_index] # tau id in the original vector
                     # require refit and dR quality of refit
                     refitted = tau_refit_index > -1 and ev.tau_SV_fit_track_OS_matched_track_dR[tau_refit_index] + ev.tau_SV_fit_track_SS1_matched_track_dR[tau_refit_index] + ev.tau_SV_fit_track_SS2_matched_track_dR[tau_refit_index] < 0.002
                     if refitted:
@@ -3791,30 +3811,39 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         tau_SV_leng    = ev.tau_SV_geom_flightLen     [tau_refit_index]
                         out_hs[(chan, record_proc, sys_name)]['tau_SV_sign'] .Fill(tau_SV_sign, record_weight)
                         out_hs[(chan, record_proc, sys_name)]['tau_SV_leng'] .Fill(tau_SV_leng, record_weight)
+                        tau_pat_sign    = ev.tau_flightLengthSignificance[tau_index]
+                        tau_pat_leng    = ev.tau_flightLength[tau_index]
+                        out_hs[(chan, record_proc, sys_name)]['tau_pat_Sign'] .Fill(tau_pat_sign, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['tau_pat_Leng'] .Fill(tau_pat_leng, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['tau_sign_energy'].Fill(tau_SV_sign, tau_energy, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['tau_leng_energy'].Fill(tau_SV_leng, tau_energy, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['tau_pat_leng_energy'].Fill(tau_pat_leng, tau_energy, record_weight)
+
+                        # dalitz parameters
+                        m1 = (ev.tau_SV_fit_track_OS_p4[tau_refit_index] + ev.tau_SV_fit_track_SS1_p4[tau_refit_index]).mass()
+                        m2 = (ev.tau_SV_fit_track_OS_p4[tau_refit_index] + ev.tau_SV_fit_track_SS2_p4[tau_refit_index]).mass()
+                        out_hs[(chan, record_proc, sys_name)]['tau_dalitzes'].Fill(m1, m2, record_weight)
+
+                        # dR matched jet
+                        tau_jet_index   = ev.tau_dR_matched_jet[tau_index]
+                        if tau_jet_index > -1:
+                            tau_jet_bdiscr = ev.jet_b_discr[tau_jet_index]
+                            out_hs[(chan, record_proc, sys_name)]['tau_sign_bdiscr'].Fill(tau_SV_sign, tau_jet_bdiscr, record_weight)
+                            #out_hs[(chan, record_proc, sys_name)]['tau_leng_bdiscr'].Fill(tau_SV_leng, tau_jet_bdiscr, record_weight)
+                            out_hs[(chan, record_proc, sys_name)]['tau_pat_sign_bdiscr'].Fill(tau_pat_sign, tau_jet_bdiscr, record_weight)
+
                     #    # also save PAT and refit values
-                    #    tau_pat_sign    = ev.tau_flightLengthSignificance[0]
-                    #    tau_pat_leng    = ev.tau_flightLength[0]
                     #    # calculate from tau_SV_fit_x.., tau_SV_cov
                     #    pv = ROOT.TVector3(ev.PV_fit_x, ev.PV_fit_y, ev.PV_fit_z)
                     #    sv = ROOT.TVector3(ev.tau_SV_fit_x[0], ev.tau_SV_fit_y[0], ev.tau_SV_fit_z[0])
                     #    # SVPV.Mag(), sigmaabs, sign
                     #    tau_ref_leng, tau_ref_sigma, tau_ref_sign = PFTau_FlightLength_significance(pv, ev.PV_cov, sv, ev.tau_SV_cov[0])
 
-                    #    out_hs[(chan, record_proc, sys_name)]['tau_pat_Sign'] .Fill(tau_pat_sign, record_weight)
-                    #    out_hs[(chan, record_proc, sys_name)]['tau_pat_Leng'] .Fill(tau_pat_leng, record_weight)
                     #    out_hs[(chan, record_proc, sys_name)]['tau_ref_Sign'] .Fill(tau_ref_sign, record_weight)
                     #    out_hs[(chan, record_proc, sys_name)]['tau_ref_Leng'] .Fill(tau_ref_leng, record_weight)
-                    #if tau_jet_index > -1:
-                    #    tau_jet_bdiscr = ev.jet_b_discr[tau_jet_index]
                     #    out_hs[(chan, record_proc, sys_name)]['tau_jet_bdiscr'] .Fill(tau_jet_bdiscr, record_weight)
                     #if refitted and tau_jet_index > -1:
-                    #    out_hs[(chan, record_proc, sys_name)]['tau_sign_bdiscr'].Fill(tau_SV_sign, tau_jet_bdiscr, record_weight)
-                    #    out_hs[(chan, record_proc, sys_name)]['tau_leng_bdiscr'].Fill(tau_SV_leng, tau_jet_bdiscr, record_weight)
-                    #    out_hs[(chan, record_proc, sys_name)]['tau_sign_energy'].Fill(tau_SV_sign, tau_energy, record_weight)
-                    #    out_hs[(chan, record_proc, sys_name)]['tau_leng_energy'].Fill(tau_SV_leng, tau_energy, record_weight)
                     #    # for PAT and refit only sign-b and len-energy
-                    #    out_hs[(chan, record_proc, sys_name)]['tau_pat_sign_bdiscr'].Fill(tau_pat_sign, tau_jet_bdiscr, record_weight)
-                    #    out_hs[(chan, record_proc, sys_name)]['tau_pat_leng_energy'].Fill(tau_pat_leng, tau_energy, record_weight)
                     #    out_hs[(chan, record_proc, sys_name)]['tau_ref_sign_bdiscr'].Fill(tau_ref_sign, tau_jet_bdiscr, record_weight)
                     #    out_hs[(chan, record_proc, sys_name)]['tau_ref_leng_energy'].Fill(tau_ref_leng, tau_energy, record_weight)
 
