@@ -666,7 +666,7 @@ def transverse_mass_pts(v1_x, v1_y, v2_x, v2_y):
 
 #lj_var = calc_lj_var(jets, jets_b)
 def calc_lj_var(light_jets, b_jets, save_all_permutations=False):
-    if len(b_jets) == 0 or len(light_jets) < 2: return 5000., 5000., 5000.
+    if len(b_jets) == 0 or len(light_jets) < 2: return 5000., 5000., 5000., []
     # (not doing it now) loop over light jets -- check their mass
     # loop over light jets, check mass of their pairs to be close to 80
     # find the closest vector
