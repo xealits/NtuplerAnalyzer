@@ -798,6 +798,8 @@ def PFTau_FlightLength_significance(pv,  PVcov, sv, SVcov):
    return SVPV.Mag(), sigmaabs, sign
 
 
+control_counters = TH1D("control_counters", "", 500, 0, 500)
+
 # no data types/protocols in ROOT -- looping has to be done manually
 def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     '''full_loop(tree, dtag)
@@ -1651,6 +1653,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 record distr-s for each
         '''
 
+        #if iev > 100000: break
+        #control_counters.Fill(0)
+
         #if iev <  range_min: continue
         #if iev >= range_max: break
         #ev = tree.GetEntry(iev)
@@ -1713,7 +1718,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu
         passes = passes_optimized
+
         if not passes: continue
+        #control_counters.Fill(1)
+
         pass_mus = pass_mu_all or pass_mu or pass_elmu or pass_mumu # or pass_mumu_ss
         # also at least some kind of tau in single-el:
         #if (pass_mu or pass_el) and (not ev.tau_p4.size() > 0): continue # this is the only thing reduces computing
@@ -1938,6 +1946,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 el_sfs = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 weight *= el_trg_sf * el_sfs[0] * el_sfs[1]
+
+        #control_counters.Fill(2)
 
         # -------------------- TAUS
 
@@ -3046,7 +3056,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # check the subprocess
         # store distr
 
-        for sys_name, (jets, taus, weight_PU, weight_top_pt, weight_th) in systematics.items():
+        #control_counters.Fill(3)
+
+        for sys_i, (sys_name, (jets, taus, weight_PU, weight_top_pt, weight_th)) in enumerate(systematics.items()):
+            #control_counters.Fill(4 + sys_i)
+
             # TODO: add here only possible systematics
             sys_weight            = weight * weight_th * weight_PU * weight_top_pt
             sys_weight_without_PU = weight * weight_th * weight_top_pt # for PU tests
@@ -3382,10 +3396,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             #    out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, weight)
             #    out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(25, weight)
 
-            for chan, weight_bSF, sel_jets, sel_taus in [ch for ch in passed_channels if ch[0] in channels]:
+            for chan_i, (chan, weight_bSF, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in channels)):
                 # check for default proc
                 #if chan not in channels:
                     #continue
+                #control_counters.Fill(50 + 20*sys_i + 2*chan_i)
 
                 ## some channels have micro_proc (tt->lep+tau->3charged)
                 ##if chan in ('adv_el_sel', 'adv_mu_sel', 'adv_el_sel_Sign4', 'adv_mu_sel_Sign4') and micro_proc:
@@ -3448,6 +3463,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 if (chan, record_proc, sys_name) not in out_hs:
                     continue # TODO: so it doesn't change amount of computing, systematics are per event, not per channel
                     # but it does reduce the amount of output -- no geom progression
+
+                #control_counters.Fill(50 + 20*sys_i + 2*chan_i + 1)
 
                 #record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
 
@@ -3963,7 +3980,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     # there is no returning string
     #profile.dump_stats()
 
-    return out_hs, control_hs, profile
+    return out_hs, control_hs, control_counters, profile
 
 
 
@@ -4034,7 +4051,7 @@ def main(input_filename, fout_name, outdir, lumi_bcdef=20263.3, lumi_gh=16518.58
     #logger.write("range = %d, %d\n" % (range_min, range_max))
 
     logger.write("lumi BCDEF GH = %f %f\n" % (lumi_bcdef, lumi_gh))
-    out_hs, c_hs, perf_profile = full_loop(tree, input_filename, lumi_bcdef, lumi_gh, logger)
+    out_hs, c_hs, control_counters, perf_profile = full_loop(tree, input_filename, lumi_bcdef, lumi_gh, logger)
 
     perf_profile.dump_stats(logger_file.split('.log')[0] + '.cprof')
 
@@ -4114,6 +4131,7 @@ def main(input_filename, fout_name, outdir, lumi_bcdef=20263.3, lumi_gh=16518.58
     fout.cd()
     events_counter.Write() # hopefully these go to the root of the tfile
     weight_counter.Write()
+    #control_counters.Write()
 
     fout.Write()
 

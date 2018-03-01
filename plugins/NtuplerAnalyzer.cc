@@ -1306,12 +1306,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					// = id of lepton or 1 for quarks
 					for (unsigned int d_i = 0; d_i < 2; d_i++)
 						{
-						if (fabs(W_final->daughter(d_i)->pdgId()) == 11 || fabs(W_final->daughter(d_i)->pdgId()) == 13)
+						int d_i_pdgId = W_final->daughter(d_i)->pdgId();
+						if (fabs(d_i_pdgId) == 11 || fabs(d_i_pdgId) == 13)
 							{
-							decay_id = W_final->daughter(d_i)->pdgId();
+							decay_id = d_i_pdgId;
 							save_final_cands(W_final->daughter(d_i), gen_leps);
 							}
-						if (fabs(W_final->daughter(d_i)->pdgId()) == 15)
+						if (fabs(d_i_pdgId) == 15)
 							{
 							int tau_id = simple_tau_decay_id(W_final->daughter(d_i));
 							// = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
@@ -1320,7 +1321,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 								save_final_cands(W_final->daughter(d_i), gen_tau3ch);
 							else
 								save_final_cands(W_final->daughter(d_i), gen_taus);
-							decay_id *= tau_id;
+							decay_id = d_i_pdgId * abs(tau_id); // to keep the sign of the tau take it in abs
 							}
 						}
 					// if W is not leptonic, and decay id is still = 1
