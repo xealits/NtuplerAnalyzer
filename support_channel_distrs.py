@@ -665,7 +665,7 @@ def transverse_mass_pts(v1_x, v1_y, v2_x, v2_y):
 
 
 #lj_var = calc_lj_var(jets, jets_b)
-def calc_lj_var(light_jets, b_jets):
+def calc_lj_var(light_jets, b_jets, save_all_permutations=False):
     if len(b_jets) == 0 or len(light_jets) < 2: return 5000., 5000., 5000.
     # (not doing it now) loop over light jets -- check their mass
     # loop over light jets, check mass of their pairs to be close to 80
@@ -681,12 +681,18 @@ def calc_lj_var(light_jets, b_jets):
     #        dist_W = new_dist
     #        closest_to_W = j * mult
 
+    # save [(mW, mt)] of all permutations if requested
+    all_masses = []
+
     # pairs of light jets
+    light_jet_pairs = []
     for i in range(len(light_jets)):
       for u in range(i):
         ji, multi, _, _, _, _ = light_jets[i]
         ju, multu, _, _, _, _ = light_jets[u]
         pair = ji * multi + ju * multu
+        if save_all_permutations:
+            light_jet_pairs.append(pair)
         new_dist = abs(pair.mass() - 80)
         if new_dist < dist_W:
             dist_W = new_dist
@@ -695,13 +701,18 @@ def calc_lj_var(light_jets, b_jets):
     # closest to 173
     dist_t = 99999.
     for j, mult, _, _, _, _ in b_jets:
-        pair = j * mult + closest_to_W
+        b_jet = j * mult
+        pair = b_jet + closest_to_W
+        if save_all_permutations:
+            for cand_W in light_jet_pairs:
+                cand_t = cand_W + b_jet
+                all_masses.append((cand_W.mass(), cand_t.mass()))
         new_dist = abs(pair.mass() - 173)
         if new_dist < dist_t:
             dist_t = new_dist
             closest_to_t = pair
 
-    return TMath.Sqrt(dist_W*dist_W + dist_t*dist_t), closest_to_W.mass(), closest_to_t.mass()
+    return TMath.Sqrt(dist_W*dist_W + dist_t*dist_t), closest_to_W.mass(), closest_to_t.mass(), all_masses
 
 
 #def PFTau_FlightLength_significance(TVector3 pv,TMatrixTSym<double> PVcov, TVector3 sv, TMatrixTSym<double> SVcov ){
@@ -1597,8 +1608,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                                                'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', 20, 0, 200),
                                                'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
-                                               '2D_dijet_trijet':   TH2D('%s_%s_%s_2D_dijet_trijet'   % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
-                                               'dijet_trijet_mass': TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400) })
+                                               '2D_dijet_trijet':     TH2D('%s_%s_%s_2D_dijet_trijet'     % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
+                                               '2D_dijet_trijet_all': TH2D('%s_%s_%s_2D_dijet_trijet_all' % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
+                                               'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
+                                               'dijet_trijet_mass_N_permutations':   TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations'  % (chan, proc, sys), '', 50, 0, 50),
+                                               'dijet_trijet_mass_vs_permutations':  TH2D('%s_%s_%s_dijet_trijet_mass_vs_permutations' % (chan, proc, sys), '', 20, 0, 400, 50, 0, 50),
+                                               })
                 for chan, ((procs, _), systs) in channels.items() for proc in procs for sys in systs])
 
     # strange, getting PyROOT_NoneObjects from these after output
@@ -3080,7 +3095,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             if requires_lj:
                 # all jets, without regard to tau in the event go into the calculation
                 # (taumatched jets go too)
-                lj_var, w_mass, t_mass = calc_lj_var(jets.lowest.rest + jets.lowest.taumatched[1], jets.lowest.medium + jets.lowest.loose + jets.lowest.taumatched[0])
+                with_all_permutation_masses = True
+                lj_var, w_mass, t_mass, all_masses = calc_lj_var(jets.lowest.rest + jets.lowest.taumatched[1], jets.lowest.medium + jets.lowest.loose + jets.lowest.taumatched[0], with_all_permutation_masses)
                 lj_cut = 60.
                 large_lj = lj_var > lj_cut
 
@@ -3854,6 +3870,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     out_hs[(chan, record_proc, sys_name)]['trijet_mass']      .Fill(t_mass, record_weight)
                     out_hs[(chan, record_proc, sys_name)]['2D_dijet_trijet']  .Fill(w_mass, t_mass, record_weight)
                     out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass'].Fill(lj_var, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_N_permutations']  .Fill(len(all_masses), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_vs_permutations'] .Fill(lj_var, len(all_masses), record_weight)
+                    for mass_W, mass_t in all_masses:
+                        out_hs[(chan, record_proc, sys_name)]['2D_dijet_trijet_all']  .Fill(mass_W, mass_t, record_weight)
 
                 #'njets':       TH1D('%s_%s_%s_njets'     % (chan, record_proc, sys), '', 5, 0, 5),
                 #'nMbjets':     TH1D('%s_%s_%s_nMbjets'   % (chan, record_proc, sys), '', 5, 0, 5),
