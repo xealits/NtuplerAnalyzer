@@ -48,6 +48,9 @@ parser.add_argument("-p", "--processing-dir", type=str, default='/lstore/cms/ole
 parser.add_argument("--dtags", type=str, default='std',
         help='dtags or groups of dtags to submit, separated by coma like "std,updowns" (default std)')
 
+parser.add_argument("--without-dtags", type=str, default='',
+        help='dtags or groups of dtags to remove from the submission list (default "")')
+
 parser.add_argument("-d", "--debug",  action='store_true', help="DEBUG level of logging")
 
 
@@ -173,7 +176,7 @@ dtag_groups = {'std': dtags_std, 'std_data': dtags_std_data, 'std_mc': dtags_std
 # parse the requested dtags and groups
 requested_dtags = set()
 
-logging.debug("got %s dtags" % args.dtags)
+logging.debug("got %d %s dtags" % (len(args.dtags.split(',')), args.dtags))
 #for req in (args.dtags.split(',') if ',' in args.dtags else [args.dtags,]):
 for req in args.dtags.split(','):
     logging.debug("%s" % req)
@@ -181,6 +184,14 @@ for req in args.dtags.split(','):
         requested_dtags.update(dtag_groups[req])
     else:
         requested_dtags.update([req])
+
+logging.debug("got %d %s subtract dtags" % (len(args.without_dtags.split(',')), args.without_dtags))
+for req in args.without_dtags.split(','):
+    logging.debug("%s" % req)
+    if req in dtag_groups:
+        requested_dtags.difference_update(dtag_groups[req])
+    else:
+        requested_dtags.difference_update([req])
 
 logging.info("got %d requested dtags" % len(requested_dtags))
 
