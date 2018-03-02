@@ -1566,6 +1566,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
                                                'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
                                                'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
+                                               # mass between tau and all non-b jets (to catch the c-jets from W)
+                                               'M_tau_nonb':  TH1D('%s_%s_%s_M_tau_nonb' % (chan, proc, sys), '', 20, 20, 120),
+                                               # parameters of tau
                                                'tau_ref_Sign': TH1D('%s_%s_%s_tau_ref_Sign'% (chan, proc, sys), '', 44, -1, 10),
                                                'tau_ref_Leng': TH1D('%s_%s_%s_tau_ref_Leng'% (chan, proc, sys), '', 44, -0.001, 0.01),
                                                'tau_pat_Sign': TH1D('%s_%s_%s_tau_pat_Sign'% (chan, proc, sys), '', 50, -10, 40),
@@ -3828,6 +3831,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                     out_hs[(chan, record_proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
                     out_hs[(chan, record_proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
+
+                    # mass between tau and all non-b jets (to catch the c-jets from W)
+                    # sel_jets.rest
+                    # jets.lowest.rest + jets.lowest.taumatched[1]
+                    for a_jet in sel_jets.rest: # + sel_jets.taumatched[ -- assume the pair won't be tau matched
+                        mass_j_tau = (a_jet[0] * a_jet[1] + corrected_tau).mass()
+                        out_hs[(chan, record_proc, sys_name)]['M_tau_nonb'] .Fill(mass_j_tau, record_weight)
 
                     out_hs[(chan, record_proc, sys_name)]['tau_pt']  .Fill(corrected_tau.pt(),  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['tau_eta'] .Fill(corrected_tau.eta(), record_weight)
