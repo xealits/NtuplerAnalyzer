@@ -262,17 +262,37 @@ proc_queues_dir = join(args.queue_dir, args.vNtupler, args.vProc)
 if not isdir(proc_queues_dir):
     makedirs(proc_queues_dir)
 
+com_file_template = """
+cd
+source bootup.tcsh
+cmsenv
+cd UserCode/NtuplerAnalyzer
+
+{queue_commands}
+
+bash
+"""
+
+queue_command_template = "bash {queue_dir}/{queue_name}  &"
+
+# write the queue files for each node
 for nod, n_queues in scheme.items():
     nod_queues_dir = join(proc_queues_dir, str(nod))
     if not isdir(nod_queues_dir):
         mkdir(nod_queues_dir)
     nod_queues, queues = queues[:n_queues], queues[n_queues:]
 
+    queue_commands = []
     for i, nod_queue in enumerate(nod_queues):
-        queue_filename = nod_queues_dir + '/q%d' % i
+        queue_name = '/q%d' % i
+        queue_filename = nod_queues_dir + queue_name
+        queue_commands.append(queue_command_template.format(queue_dir=nod_queues_dir, queue_name=queue_name))
         with open(queue_filename, 'w') as f:
             f.write('\n'.join(nod_queue) + '\n')
 
+    # write the command file for the node
+    with open(nod_queues_dir + '/com', 'w') as f:
+        f.write(com_file_template.format(queue_commands = '\n'.join(queue_commands)))
 
 
 
