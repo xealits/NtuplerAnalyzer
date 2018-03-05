@@ -1024,7 +1024,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// it's not the norm weight
 			// and on 1/100th of TT it always = 1.
 			double nomlheweight    = lheEPHandle->originalXWGTUP();
-			NT_gen_weight_norm = nomlheweight;
+			NT_gen_weight_norm = nomlheweight; // this one also = 1
 			LogInfo("Demo") << "PDFs, alphaS and nominal weight";
 
 			// scale weights

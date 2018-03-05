@@ -1007,6 +1007,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
     if isMC:
         systematic_names_all = ['NOMINAL',
+                'LEPUp'     ,
+                'LEPDown'   ,
                 'JESUp'     ,
                 'JESDown'   ,
                 'JERUp'     ,
