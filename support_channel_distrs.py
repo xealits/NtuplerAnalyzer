@@ -506,7 +506,7 @@ yup:
 '''
 
 
-with_bSF = False # 0L2M issue seems to be real
+with_bSF = True # 0L2M issue seems to be real
 
 if with_bSF:
     logging.info("loading b-tagging SF stuff")
@@ -900,8 +900,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     ('weights_gen_weight_alphasUp',    TH1D("weights_gen_weight_alphasUp", "", 50, 0, 2)),
     ('weights_gen_weight_alphasDown',  TH1D("weights_gen_weight_alphasDown", "", 50, 0, 2)),
     ('weights_gen_weight_centralFrag', TH1D("weights_gen_weight_centralFrag", "", 50, 0, 2)),
-    ('weights_FragUp',      TH1D("weights_FragUp", "", 50, 0, 2)),
-    ('weights_FragDown',    TH1D("weights_FragDown", "", 50, 0, 2)),
+    ('weights_gen_weight_Peterson',    TH1D("weights_gen_weight_Peterson", "", 50, 0, 2)),
+    ('weights_gen_weight_FragUp',      TH1D("weights_FragUp", "", 50, 0, 2)),
+    ('weights_gen_weight_FragDown',    TH1D("weights_FragDown", "", 50, 0, 2)),
+    ('weights_gen_weight_semilepbrUp',      TH1D("weights_semilepbrUp", "", 50, 0, 2)),
+    ('weights_gen_weight_semilepbrDown',    TH1D("weights_semilepbrDown", "", 50, 0, 2)),
 
     ('weight_z_mass_pt', TH1D("weight_z_mass_pt", "", 50, 0, 2)),
     #('weight_bSF',       TH1D("weight_bSF", "", 50, 0, 2)),
@@ -988,7 +991,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         systematic_names_toppt = ['NOMINAL', 'TOPPTUp']
         systematic_names_pu_toppt.append('TOPPTUp')
 
-        systematic_names_all_with_th.extend(('AlphaSUp', 'AlphaSDown', 'FragUp', 'FragDown'))
+        systematic_names_all_with_th.extend(('AlphaSUp', 'AlphaSDown', 'FragUp', 'FragDown', 'SemilepBRUp', 'SemilepBRDown', 'PetersonUp', 'PetersonDown'))
 
     if isMC:
         if isTT:
@@ -1385,8 +1388,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     with_JES_sys = with_JES and ('JESUp' in requested_systematics or 'JESDown' in requested_systematics)
     with_TauES_sys = with_TauES and ('TauESUp' in requested_systematics or 'TauESDown' in requested_systematics)
 
-    with_AlphaS_sys = with_bSF and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
-    with_Frag_sys   = with_bSF and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
+    with_AlphaS_sys = 'AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics
+    with_Frag_sys   = 'FragUp'   in requested_systematics or 'FragDown'   in requested_systematics
 
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
     # all requested jet cuts
@@ -1567,7 +1570,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
                                                'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
                                                # mass between tau and all non-b jets (to catch the c-jets from W)
-                                               'M_tau_nonb':  TH1D('%s_%s_%s_M_tau_nonb' % (chan, proc, sys), '', 20, 20, 120),
+                                               'M_tau_nonb':  TH1D('%s_%s_%s_M_tau_nonb' % (chan, proc, sys), '', 19, 10, 200),
                                                # parameters of tau
                                                'tau_ref_Sign': TH1D('%s_%s_%s_tau_ref_Sign'% (chan, proc, sys), '', 44, -1, 10),
                                                'tau_ref_Leng': TH1D('%s_%s_%s_tau_ref_Leng'% (chan, proc, sys), '', 44, -0.001, 0.01),
@@ -1667,34 +1670,42 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # do relIso on 1/8 = 0.125, and "all iso" for QCD anti-iso factor
 
         # I'll make the iso distribution and get the factor over whole range
-        pass_mu_id = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02
-        pass_el_id = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02
+        pass_mu_id = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0]
+        pass_el_id = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0]
 
-        pass_mu_id_iso = pass_mu_id and ev.lep_relIso[0] < 0.125
-        pass_el_id_iso = pass_el_id and ev.lep_relIso[0] < 0.125
+        # for mu suggested dB is 5mm dz and 2mm dxy
+        # for el suggested dB 0.02 cm
+        pass_mu_impact = ev.lep_dz[0] < 0.5 and ev.lep_dxy[0] < 0.2
+        pass_el_impact = ev.lep_dB[0] < 0.02
+
+        # for el the suggested relIso 0.0588 for barrel, 0.0571 for endcaps
+        # data shows it does not matter
+        pass_mu_iso = ev.lep_relIso[0] < 0.15  
+        pass_el_iso = ev.lep_relIso[0] < 0.0588
 
         # 1GeV above HLT pt
         # ele eta gap
-        pass_mu_id_kino = pass_mu_id and ev.lep_p4[0].pt() > 25. and abs(ev.lep_p4[0].eta()) < 2.4
-        pass_el_id_kino = pass_el_id and ev.lep_p4[0].pt() > 28. and abs(ev.lep_p4[0].eta()) < 2.4 and (abs(ev.lep_p4[0].eta()) < 1.4442 or abs(ev.lep_p4[0].eta()) > 1.5660)
+        pass_mu_kino = ev.lep_p4[0].pt() > 25. and abs(ev.lep_p4[0].eta()) < 2.4
+        pass_el_kino = ev.lep_p4[0].pt() > 29. and abs(ev.lep_p4[0].eta()) < 2.4 and (abs(ev.lep_p4[0].eta()) < 1.4442 or abs(ev.lep_p4[0].eta()) > 1.5660)
 
-        # TODO: for optimization testing minimum pt cut --- review it after test results
+        # (did) for optimization testing minimum pt cut --- review it after test results
         #    -- significant discrepancy at lowest lep pt bin -> UP 1 GeV from HLT and added a detailed distr of the trun on curve
         #    -- it seems the discrepancy were comming from trigger SF going down to 26 only -- fixed that, testing now
-        pass_mu_all = pass_mu_id and ev.lep_p4[0].pt() > 24. and abs(ev.lep_p4[0].eta()) < 2.4 # and ev.lep_relIso[0] >= 0.125
-        #pass_mu     = pass_mu_id and ev.lep_p4[0].pt() > 24. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] < 0.125
-        pass_mu     = pass_mu_id_kino and ev.lep_relIso[0] < 0.125
+
+        pass_mu_all = pass_mu_id and pass_mu_impact and pass_mu_kino
 
         # do this in place for the required selection
         #pass_mu_cuts = pass_mu and ev.lep_p4[0].pt() > 25. # so, it's smaller than the old cut 27 GeV
 
         #pass_mu_all = pass_mu_id_kino and ev.lep_relIso[0] >= 0.125
-        pass_el_all = pass_el_id_kino # and ev.lep_relIso[0] >= 0.125
+        pass_el_all = pass_el_id and pass_el_impact and pass_el_kino # and ev.lep_relIso[0] >= 0.125
 
         #pass_mu = pass_mu_id_kino and ev.lep_relIso[0] < 0.125
-        pass_el_all = pass_el_id and ev.lep_p4[0].pt() > 27. and abs(ev.lep_p4[0].eta()) < 2.4
+        #pass_el_all = pass_el_id and ev.lep_p4[0].pt() > 27. and abs(ev.lep_p4[0].eta()) < 2.4
         #pass_el     = pass_el_id and ev.lep_p4[0].pt() > 27. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] < 0.125
-        pass_el     = pass_el_id_kino and ev.lep_relIso[0] < 0.125
+
+        pass_mu     = pass_mu_id and pass_mu_kino and pass_mu_impact and pass_mu_iso
+        pass_el     = pass_el_id and pass_el_kino and pass_mu_impact and pass_mu_iso
 
         # TODO: need to check the trigger SF-s then......
         # for now I'm just trying to get rid of el-mu mix in MC
@@ -1869,7 +1880,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             if isTT:
                 # th weights if needed
                 if with_AlphaS_sys:
-                    weights_gen_weight_norm = ev.gen_weight_norm
+                    #weights_gen_weight_norm = ev.gen_weight_norm
+                    # weight_norm = 1 always
+                    weights_gen_weight_norm = ev.gen_weight_too # looking at data this seems correct
                     weights_gen_weight_alphas = (ev.gen_weight_alphas_1, ev.gen_weight_alphas_2)
                     control_hs['weights_gen_weight_norm']   .Fill(weights_gen_weight_norm)
                     control_hs['weights_gen_weight_alphasUp']   .Fill(weights_gen_weight_alphas[0])
@@ -1877,12 +1890,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 if with_Frag_sys:
                     weights_gen_weight_centralFrag = ev.gen_weight_centralFrag
-                    weights_gen_weight_Frag = (ev.gen_weight_upFrag, ev.gen_weight_downFrag)
+                    weights_gen_weight_Frag = (ev.gen_weight_FragUp, ev.gen_weight_FragDown)
+                    weights_gen_weight_semilepbr = (ev.gen_weight_semilepbrUp, ev.gen_weight_semilepbrDown)
+                    weights_gen_weight_Peterson = ev.gen_weight_PetersonFrag
                     # sub to this naming in the following ntuple runs:
                     #weights_gen_weight_Frag = (ev.gen_weight_FragUp, ev.gen_weight_FragDown)
                     control_hs['weights_gen_weight_centralFrag']   .Fill(weights_gen_weight_centralFrag)
                     control_hs['weights_gen_weight_FragUp']   .Fill(weights_gen_weight_Frag[0])
                     control_hs['weights_gen_weight_FragDown'] .Fill(weights_gen_weight_Frag[1])
+                    control_hs['weights_gen_weight_Peterson'] .Fill(weights_gen_weight_Peterson)
+                    control_hs['weights_gen_weight_semilepbrUp']   .Fill(weights_gen_weight_semilepbr[0])
+                    control_hs['weights_gen_weight_semilepbrDown'] .Fill(weights_gen_weight_semilepbr[1])
 
                 weight_top_pt = ttbar_pT_SF(ev.gen_t_pt, ev.gen_tb_pt)
                 #weight *= weight_top_pt # to sys
@@ -3043,8 +3061,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     systematics['AlphaSUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_alphas[0] / weights_gen_weight_norm]
                     systematics['AlphaSDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_alphas[1] / weights_gen_weight_norm]
                 if with_Frag_sys:
-                    systematics['FragUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_Frag[0] / weights_gen_weight_centralFrag]
-                    systematics['FragDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_Frag[1] / weights_gen_weight_centralFrag]
+                    systematics['FragUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_Frag[0] / weights_gen_weight_centralFrag]
+                    systematics['FragDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_Frag[1] / weights_gen_weight_centralFrag]
+                    systematics['SemilepBRUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_semilepbr[0] / weights_gen_weight_centralFrag]
+                    systematics['SemilepBRDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_semilepbr[1] / weights_gen_weight_centralFrag]
+                    systematics['PetersonUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_Peterson / weights_gen_weight_centralFrag]
+                    systematics['PetersonDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  1.]
         else:
             systematics = {'NOMINAL': [jets_nom, taus_nom, 1., 1., 1.]}
 

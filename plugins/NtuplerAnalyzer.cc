@@ -1155,7 +1155,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		// fragmentation and decay tables (of b->hadron) systematics
 		edm::Handle<std::vector<reco::GenJet>> genJets2;
-		iEvent.getByToken( genJetsToken_, genJets2); // https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer
+		iEvent.getByToken( genJetsToken_, genJets2);
+		// https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer
+		// in particular:
+		// > in the analyzer method get the genJets,
+		// > the weights and loop over the jets to analyse them,
+		// > and take the product of the jet weights as event weight
 		// https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer/blob/master/plugins/BFragmentationWeightProducer.cc
 		// TODO: check the genJet info checks
 
