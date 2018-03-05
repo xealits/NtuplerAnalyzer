@@ -1825,6 +1825,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             #met_x = ev.met_corrected.Px()
             #met_y = ev.met_corrected.Py()
             # RECORRECTED
+            # use miniaod met and jets, reapply corrections of the passed jets to met
             met_x = ev.met_init.Px()
             met_y = ev.met_init.Py()
             Mt_lep_met_c   = ROOT.MTlep_c(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
@@ -1924,14 +1925,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 if with_AlphaS_sys:
                     #weights_gen_weight_norm = ev.gen_weight_norm
                     # weight_norm = 1 always
-                    weights_gen_weight_norm = ev.gen_weight_too # looking at data this seems correct
                     weights_gen_weight_alphas = (ev.gen_weight_alphas_1, ev.gen_weight_alphas_2)
-                    control_hs['weights_gen_weight_norm']   .Fill(weights_gen_weight_norm)
+                    weights_gen_weight_norm = ev.gen_weight_too if ev.gen_weight_too > 0. else 0.001 # looking at data this seems correct
+                    #control_hs['weights_gen_weight_norm']   .Fill(ev.gen_weight_too)
+                    control_hs['weights_gen_weight_norm']       .Fill(weights_gen_weight_norm)
                     control_hs['weights_gen_weight_alphasUp']   .Fill(weights_gen_weight_alphas[0])
                     control_hs['weights_gen_weight_alphasDown'] .Fill(weights_gen_weight_alphas[1])
 
                 if with_Frag_sys:
-                    weights_gen_weight_centralFrag = ev.gen_weight_centralFrag
+                    weights_gen_weight_centralFrag = ev.gen_weight_centralFrag if ev.gen_weight_centralFrag > 0. else 0.001
                     weights_gen_weight_Frag = (ev.gen_weight_FragUp, ev.gen_weight_FragDown)
                     weights_gen_weight_semilepbr = (ev.gen_weight_semilepbrUp, ev.gen_weight_semilepbrDown)
                     weights_gen_weight_Peterson = ev.gen_weight_PetersonFrag
@@ -2427,8 +2429,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         for i in xrange(ev.jet_p4.size()):
             #pfid, p4 = ev.jet_PFID[i], ev.jet_p4[i]
             # RECORRECTED jets
-            #pfid, p4 = ev.jet_PFID[i], ev.jet_uncorrected_p4[i]
-            pfid, p4 = ev.jet_PFID[i], ev.jet_p4[i]
+            #p4 = ev.jet_uncorrected_p4[i]
+            # jet_p4 is fully corrected online
+            # and whole correction is propagated to corrected met
+            #p4 = ev.jet_p4[i]
+            # as I did before I use the subset of passed jets, and propagate only their correction to met
+            # TODO: add comparison to using all-corrected jets
+            p4 = ev.jet_initial_p4[i]
+
+            pfid = ev.jet_PFID[i]
+
             # actually the jet_p4 is the slimmed jet
             # -- works for slimmed met, which is met_init
             # met_x = ev.met_init.Px()
