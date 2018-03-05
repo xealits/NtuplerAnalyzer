@@ -937,7 +937,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     ('weight_pu_h2',  TH1D("weight_pu_h2", "", 50, 0, 2)),
     ('weight_top_pt', TH1D("weight_top_pt", "", 50, 0, 2)),
 
-    ('weights_gen_weight_norm',    TH1D("weights_gen_weight_norm", "", 50, 0, 2)),
+    ('weights_gen_weight_too',         TH1D("weights_gen_weight_too", "", 50, 0, 2)),
+    ('weights_gen_weight_norm',        TH1D("weights_gen_weight_norm", "", 50, 0, 2)),
     ('weights_gen_weight_alphasUp',    TH1D("weights_gen_weight_alphasUp", "", 50, 0, 2)),
     ('weights_gen_weight_alphasDown',  TH1D("weights_gen_weight_alphasDown", "", 50, 0, 2)),
     ('weights_gen_weight_centralFrag', TH1D("weights_gen_weight_centralFrag", "", 50, 0, 2)),
@@ -1928,8 +1929,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     #weights_gen_weight_norm = ev.gen_weight_norm
                     # weight_norm = 1 always
                     weights_gen_weight_alphas = (ev.gen_weight_alphas_1, ev.gen_weight_alphas_2)
-                    weights_gen_weight_norm = ev.gen_weight_too if ev.gen_weight_too > 0. else 0.001 # looking at data this seems correct
+                    # norm to average
+                    weights_gen_weight_norm = (weights_gen_weight_alphas[0] + ev.gen_weight_too[1]) / 2
                     #control_hs['weights_gen_weight_norm']   .Fill(ev.gen_weight_too)
+                    control_hs['weights_gen_weight_too']        .Fill(ev.gen_weight_too)
                     control_hs['weights_gen_weight_norm']       .Fill(weights_gen_weight_norm)
                     control_hs['weights_gen_weight_alphasUp']   .Fill(weights_gen_weight_alphas[0])
                     control_hs['weights_gen_weight_alphasDown'] .Fill(weights_gen_weight_alphas[1])
