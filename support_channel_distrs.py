@@ -1763,6 +1763,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
 
         # minimum possible pt threshold -- 24 GeV, = to HLT and recorded in Ntupler
+        pass_mu_id_iso = pass_mu_id and pass_mu_iso
         pass_min_mu     = pass_mu_id_iso and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] < 0.125
         pass_min_mu_all = pass_mu_id_iso and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] >= 0.125
 
@@ -3939,9 +3940,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         out_hs[(chan, record_proc, sys_name)]['tau_pat_leng_energy'].Fill(tau_pat_leng, tau_energy, record_weight)
 
                         # dalitz parameters
-                        m1 = (ev.tau_SV_fit_track_OS_p4[tau_refit_index] + ev.tau_SV_fit_track_SS1_p4[tau_refit_index]).mass()
-                        m2 = (ev.tau_SV_fit_track_OS_p4[tau_refit_index] + ev.tau_SV_fit_track_SS2_p4[tau_refit_index]).mass()
-                        out_hs[(chan, record_proc, sys_name)]['tau_dalitzes'].Fill(m1, m2, record_weight)
+                        try:
+                            m1 = (ev.tau_SV_fit_track_OS_p4[tau_refit_index] + ev.tau_SV_fit_track_SS1_p4[tau_refit_index]).mass()
+                            m2 = (ev.tau_SV_fit_track_OS_p4[tau_refit_index] + ev.tau_SV_fit_track_SS2_p4[tau_refit_index]).mass()
+                            out_hs[(chan, record_proc, sys_name)]['tau_dalitzes'].Fill(m1, m2, record_weight)
+                        except IndexError:
+                            print "IndexError: %d, (%d, %d, %d, %d)" % (tau_refit_index, ev.tau_SV_fit_track_OS_p4.size(), ev.tau_SV_fit_track_SS1_p4.size(), ev.tau_SV_fit_track_SS2_p4.size(), ev.tau_p4.size())
+                            continue
 
                         # dR matched jet
                         tau_jet_index   = ev.tau_dR_matched_jet[tau_index]
