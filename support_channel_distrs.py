@@ -146,6 +146,19 @@ pileup_ratio_down_ele = array('d', [0,
 
 logging.info("leptonic SFs")
 
+# ------------------------------------------------------------------
+# Muon Reco (tracking), ID, ISO and trigger SF
+# https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults
+# it also links to tracking
+# https://twiki.cern.ch/twiki/bin/view/CMS/MuonReferenceEffsRun2#Tracking_efficiency_provided_by
+# 
+# says
+# > usual systematic ID uncertainty from tag-n-probe is 1%
+# > add 0.5 for tracking HIP issue in quadrature
+# > and 1% for PF Tight isolation
+# -- therefore there is no shape?
+#    what are the uncertainties in these histograms?
+
 muon_effs_dirname = "${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/analysis/muon-effs/"
 gSystem.ExpandPathName(muon_effs_dirname    )
 #TString muon_effs_dirname = "analysis/muon-effs/";
@@ -177,8 +190,7 @@ print type(muon_effs_iso_BCDEF_histo)
 
 # --- yep, everywhere here Tight ID and ISO is used, since that's the leptons I use
 
-# ------------------------------------------------------------------
-# Muon trigger SF
+# ------------------------ Muon trigger SF
 # 
 
 muon_effs_trg_BCDEF_file  = TFile(muon_effs_dirname + "/2016_23Sep_SingleMuonTrigger_EfficienciesAndSF_RunBtoF.root" )
@@ -264,9 +276,12 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
       bin_x = pt
 
     bin_y = abs_eta if abs_eta < muon_effs_id_BCDEF_histo_max_y else muon_effs_id_BCDEF_histo_max_y - 0.01 # checked. the binnint is about 0.2 there
-    bcdef_weight_id = muon_effs_id_BCDEF_histo.GetBinContent(muon_effs_id_BCDEF_histo.FindBin(bin_x, bin_y))
-    h_weight_mu_idd_bcdef_pt .Fill(bin_x)
-    h_weight_mu_idd_bcdef_eta.Fill(bin_y)
+    id_bin = muon_effs_id_BCDEF_histo.FindBin(bin_x, bin_y)
+    bcdef_weight_id     = muon_effs_id_BCDEF_histo.GetBinContent (id_bin)
+    bcdef_weight_id_unc = muon_effs_id_BCDEF_histo.GetBinError   (id_bin)
+    # leftover from tests
+    #h_weight_mu_idd_bcdef_pt .Fill(bin_x)
+    #h_weight_mu_idd_bcdef_eta.Fill(bin_y)
 
     # these too:
     if   pt < muon_effs_iso_BCDEF_histo_min_x:
@@ -277,9 +292,12 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
       bin_x = pt
 
     bin_y = abs_eta if abs_eta < muon_effs_iso_BCDEF_histo_max_y else muon_effs_iso_BCDEF_histo_max_y - 0.01
-    bcdef_weight_iso = muon_effs_iso_BCDEF_histo.GetBinContent(muon_effs_iso_BCDEF_histo.FindBin(bin_x, bin_y))
-    h_weight_mu_iso_bcdef_pt .Fill(bin_x)
-    h_weight_mu_iso_bcdef_eta.Fill(bin_y)
+    iso_bin = muon_effs_iso_BCDEF_histo.FindBin(bin_x, bin_y)
+    bcdef_weight_iso     = muon_effs_iso_BCDEF_histo.GetBinContent (iso_bin)
+    bcdef_weight_iso_unc = muon_effs_iso_BCDEF_histo.GetBinError   (iso_bin)
+    # leftover from tests
+    #h_weight_mu_iso_bcdef_pt .Fill(bin_x)
+    #h_weight_mu_iso_bcdef_eta.Fill(bin_y)
     #bin_x = (pt < muon_effs_iso_BCDEF_histo->GetXaxis()->GetXmax()      ? pt : muon_effs_iso_BCDEF_histo->GetXaxis()->GetXmax() - 1);
     #bin_y = (abs_eta < muon_effs_iso_BCDEF_histo->GetYaxis()->GetXmax() ? abs_eta : muon_effs_iso_BCDEF_histo->GetYaxis()->GetXmax() - 1);
     #bcdef_weight_iso = muon_effs_iso_BCDEF_histo->GetBinContent (muon_effs_iso_BCDEF_histo->FindBin(bin_x, bin_y));
@@ -303,7 +321,9 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
       bin_x = pt
 
     bin_y = abs_eta if abs_eta < muon_effs_id_GH_histo_max_y else muon_effs_id_GH_histo_max_y - 0.01
-    gh_weight_id = muon_effs_id_GH_histo.GetBinContent(muon_effs_id_GH_histo.FindBin(bin_x, bin_y))
+    id_bin = muon_effs_id_GH_histo.FindBin(bin_x, bin_y)
+    gh_weight_id     = muon_effs_id_GH_histo.GetBinContent (id_bin)
+    gh_weight_id_unc = muon_effs_id_GH_histo.GetBinError   (id_bin)
     #h_weight_mu_idd_gh_pt .Fill(bin_x)
     #h_weight_mu_idd_gh_eta.Fill(bin_y)
 
@@ -316,11 +336,14 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
       bin_x = pt
 
     bin_y = abs_eta if abs_eta < muon_effs_iso_GH_histo_max_y else muon_effs_iso_GH_histo_max_y - 0.01
-    gh_weight_iso = muon_effs_iso_GH_histo.GetBinContent(muon_effs_iso_GH_histo.FindBin(bin_x, bin_y))
+    iso_bin = muon_effs_iso_GH_histo.FindBin(bin_x, bin_y)
+    gh_weight_iso     = muon_effs_iso_GH_histo.GetBinContent (iso_bin)
+    gh_weight_iso_unc = muon_effs_iso_GH_histo.GetBinError   (iso_bin)
     #h_weight_mu_iso_gh_pt .Fill(bin_x)
     #h_weight_mu_iso_gh_eta.Fill(bin_y)
 
-    return (bcdef_weight_trk, bcdef_weight_trk_vtx, bcdef_weight_id, bcdef_weight_iso, bcdef_weight_trk_vtx_gen), (gh_weight_trk, gh_weight_trk_vtx, gh_weight_id, gh_weight_iso, gh_weight_trk_vtx_gen)
+    return (bcdef_weight_trk, bcdef_weight_trk_vtx_gen, bcdef_weight_trk_vtx, (bcdef_weight_id, bcdef_weight_id_unc), (bcdef_weight_iso, bcdef_weight_iso_unc)), \
+           (gh_weight_trk,    gh_weight_trk_vtx_gen, gh_weight_trk_vtx, (gh_weight_id, gh_weight_id_unc), (gh_weight_iso, gh_weight_iso_unc))
 
 
 muon_effs_trg_BCDEF_histo_max_x = muon_effs_trg_BCDEF_histo.GetXaxis().GetXmax()
@@ -356,22 +379,35 @@ def lepton_muon_trigger_SF(abs_eta, pt): #, double SingleMuon_data_bcdef_fractio
     #mu_trig_weight = 1 - no_trig; // so for 1 muon it will = to the SF, for 2 there will be a mix
     #fill_1d(string("weight_trigger_no_muon"),  200, 0., 1.1,   no_mu_trig, 1);
 
-    h_weight_mu_trg_bcdef_pt .Fill(bin_x)
-    h_weight_mu_trg_bcdef_eta.Fill(bin_y)
+    # from tests
+    #h_weight_mu_trg_bcdef_pt .Fill(bin_x)
+    #h_weight_mu_trg_bcdef_eta.Fill(bin_y)
 
     #weight_muon_trig = 1 - no_mu_trig;
-    return muon_effs_trg_BCDEF_histo.GetBinContent(muon_effs_trg_BCDEF_histo.FindBin(bin_x, bin_y)), muon_effs_trg_GH_histo.GetBinContent(muon_effs_trg_GH_histo.FindBin(bin_x, bin_y))
+    trg_bin_b = muon_effs_trg_BCDEF_histo.FindBin(bin_x, bin_y)
+    trg_bin_h = muon_effs_trg_GH_histo.FindBin(bin_x, bin_y)
+    return (muon_effs_trg_BCDEF_histo.GetBinContent(trg_bin_b), muon_effs_trg_BCDEF_histo.GetBinError(trg_bin_b)), (muon_effs_trg_GH_histo.GetBinContent(trg_bin_h), muon_effs_trg_GH_histo.GetBinError(trg_bin_h))
 
 
 '''
-/* ---------------------------------------------------
- * now, electrons have
- *      track(reconstruction) efficiency, which is recommended per eta of muon now (however there should be something about N vertices too..
- *      and ID sf
- *      also trigger
- *
- * the trig eff for dilepton case is: apply negative of it for both leptons
- */
+ ---------------------------------------------------
+ now, electrons have
+      track(reconstruction) efficiency
+      and ID sf
+      also trigger
+
+ https://twiki.cern.ch/twiki/bin/view/CMS/EgammaIDRecipesRun2#Efficiencies_and_scale_factors
+ > The value can be access with usual GetBinContent and the recommended systematic is the error (GetBinError).
+ > The pT range is limited to 150GeV. For pT > 150 GeV the highest pT bin scale factor should to be used.
+ -- more logic here!
+
+ presentation on HLTs:
+ https://indico.cern.ch/event/604912/#3-sf-of-hlt_ele25_eta2p1_wptig
+ slide 25 "Summary"
+ > Bin errors (TH1::GetBinError) give full uncertainties
+ -- and more logic!
+
+ the trig eff for dilepton case is: apply negative of it for both leptons
 '''
 logging.info("unpacking electron eff SFs")
 
@@ -418,7 +454,9 @@ def lepton_electron_SF(eta, pt):
       bin_y = electron_effs_tracking_all_histo_min_y + 0.01
     else:
       bin_y = pt
-    sf_reco = electron_effs_tracking_all_histo.GetBinContent (electron_effs_tracking_all_histo.FindBin(bin_x, bin_y))
+    reco_bin = electron_effs_tracking_all_histo.FindBin(bin_x, bin_y)
+    sf_reco     = electron_effs_tracking_all_histo.GetBinContent (reco_bin)
+    sf_reco_unc = electron_effs_tracking_all_histo.GetBinError   (reco_bin)
 
     #bin_x = eta;
     if   pt > electron_effs_id_all_histo_max_y:
@@ -427,9 +465,11 @@ def lepton_electron_SF(eta, pt):
       bin_y = electron_effs_id_all_histo_min_y + 0.01
     else:
       bin_y = pt
-    sf_id = electron_effs_id_all_histo.GetBinContent (electron_effs_id_all_histo.FindBin(bin_x, bin_y))
+    id_bin = electron_effs_id_all_histo.FindBin(bin_x, bin_y)
+    sf_id     = electron_effs_id_all_histo.GetBinContent (id_bin)
+    sf_id_unc = electron_effs_id_all_histo.GetBinError   (id_bin)
 
-    return sf_reco, sf_id
+    return (sf_reco, sf_reco_unc), (sf_id, sf_id_unc)
 
 electron_effs_trg_all_histo_max_x = electron_effs_trg_all_histo.GetXaxis().GetXmax()
 electron_effs_trg_all_histo_max_y = electron_effs_trg_all_histo.GetYaxis().GetXmax()
@@ -458,7 +498,8 @@ def lepton_electron_trigger_SF(eta, pt):
     else:
         bin_y = eta
 
-    return electron_effs_trg_all_histo.GetBinContent(electron_effs_trg_all_histo.FindBin(bin_x, bin_y))
+    trg_bin = electron_effs_trg_all_histo.FindBin(bin_x, bin_y)
+    return electron_effs_trg_all_histo.GetBinContent(trg_bin), electron_effs_trg_all_histo.GetBinError(trg_bin)
     #el_trig_weight = 1 - no_trig; // so for 1 lepton it will = to the SF, for 2 there will be a mix
     #fill_1d(string("weight_trigger_no_electron"),  200, 0., 1.1,   no_ele_trig, 1);
 
@@ -1955,18 +1996,29 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             if (pass_mu_all or pass_mu or pass_elmu or pass_mumu or pass_mumu_ss) and isMC:
                 #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt()) # old
+                # 0, 1, 2 -- trk
+                # 3, 4    -- id, iso
                 mu_sfs_b, mu_sfs_h = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt(), ev.nvtx, ev.nvtx_gen) # running tracking SF on reco nvtx and output on nvtx_gen for control
-                mu_trg_sf = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
+                (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 # bcdef gh eras
                 #weight *= ratio_bcdef * mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[1] * mu_sfs_b[2] * mu_sfs_b[3] + ratio_gh * mu_trg_sf[1] * mu_sfs_h[0] * mu_sfs_h[1] * mu_sfs_h[2] * mu_sfs_h[3]
                 # with gen_nvtx for tracking eff
-                weight *= ratio_bcdef * mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[4] * mu_sfs_b[2] * mu_sfs_b[3] + ratio_gh * mu_trg_sf[1] * mu_sfs_h[0] * mu_sfs_h[4] * mu_sfs_h[2] * mu_sfs_h[3]
+                mu_b_trk = mu_sfs_b[0] * mu_sfs_b[1]
+                mu_h_trk = mu_sfs_h[0] * mu_sfs_h[1]
+                weight_lep_Up   = weight * (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
+                                               ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
+                weight_lep_Down = weight * (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
+                                               ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
+                weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + ratio_gh * mu_trg_sf_h[0] * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
 
             if (pass_el_all or pass_el) and isMC:
-                el_sfs = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
+                el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
-                weight *= el_trg_sf * el_sfs[0] * el_sfs[1]
+                # on 0 position is the value, on 1 is uncertainty
+                weight_lep_Up   = weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
+                weight_lep_Down = weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+                weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
 
         #control_counters.Fill(2)
 
@@ -3040,35 +3092,37 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # jet pts, tau pts, b weight (=1 for data), pu weight (=1 for data)
 
         if isTT_systematic: # tt systematic datasets have all nominal experimental systematic variations -- they are a systematic themselves
-            systematics = {isTT_systematic: [jets_nom, taus_nom, weight_pu, 1, 1.]}
+            systematics = {isTT_systematic: [jets_nom, taus_nom, weight, weight_pu, 1, 1.]}
         elif isMC:
-            systematics = {'NOMINAL'   : [jets_nom,     taus_nom,    weight_pu,    1, 1.],
-                           'JESUp'     : [jets_JESUp,   taus_nom,    weight_pu,    1, 1.],
-                           'JESDown'   : [jets_JESDown, taus_nom,    weight_pu,    1, 1.],
-                           'JERUp'     : [jets_JERUp,   taus_nom,    weight_pu,    1, 1.],
-                           'JERDown'   : [jets_JERDown, taus_nom,    weight_pu,    1, 1.],
-                           'TauESUp'   : [jets_nom,     taus_ESUp  , weight_pu,    1, 1.],
-                           'TauESDown' : [jets_nom,     taus_ESDown, weight_pu,    1, 1.],
-                           'bSFUp'     : [jets_bUp,     taus_nom,    weight_pu,    1, 1.],
-                           'bSFDown'   : [jets_bDown,   taus_nom,    weight_pu,    1, 1.],
-                           'PUUp'      : [jets_nom,     taus_nom,    weight_pu_up, 1, 1.],
-                           'PUDown'    : [jets_nom,     taus_nom,    weight_pu_dn, 1, 1.],
+            systematics = {'NOMINAL'   : [jets_nom,     taus_nom,    weight, weight_pu,    1, 1.],
+                           'LEPUp'     : [jets_nom,     taus_nom,    weight_lep_Up,   weight_pu,    1, 1.],
+                           'LEPDown'   : [jets_nom,     taus_nom,    weight_lep_Down, weight_pu,    1, 1.],
+                           'JESUp'     : [jets_JESUp,   taus_nom,    weight, weight_pu,    1, 1.],
+                           'JESDown'   : [jets_JESDown, taus_nom,    weight, weight_pu,    1, 1.],
+                           'JERUp'     : [jets_JERUp,   taus_nom,    weight, weight_pu,    1, 1.],
+                           'JERDown'   : [jets_JERDown, taus_nom,    weight, weight_pu,    1, 1.],
+                           'TauESUp'   : [jets_nom,     taus_ESUp  , weight, weight_pu,    1, 1.],
+                           'TauESDown' : [jets_nom,     taus_ESDown, weight, weight_pu,    1, 1.],
+                           'bSFUp'     : [jets_bUp,     taus_nom,    weight, weight_pu,    1, 1.],
+                           'bSFDown'   : [jets_bDown,   taus_nom,    weight, weight_pu,    1, 1.],
+                           'PUUp'      : [jets_nom,     taus_nom,    weight, weight_pu_up, 1, 1.],
+                           'PUDown'    : [jets_nom,     taus_nom,    weight, weight_pu_dn, 1, 1.],
                            }
             if isTT:
-                systematics['TOPPTUp']    = [jets_nom,   taus_nom, weight_pu, weight_top_pt, 1.]
-                systematics['TOPPTDown']  = [jets_nom,   taus_nom, weight_pu, 1.,            1.]
+                systematics['TOPPTUp']    = [jets_nom,   taus_nom, weight, weight_pu, weight_top_pt, 1.]
+                systematics['TOPPTDown']  = [jets_nom,   taus_nom, weight, weight_pu, 1.,            1.]
                 if with_AlphaS_sys:
-                    systematics['AlphaSUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_alphas[0] / weights_gen_weight_norm]
-                    systematics['AlphaSDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_alphas[1] / weights_gen_weight_norm]
+                    systematics['AlphaSUp']   = [jets_nom,   taus_nom, weight, weight_pu, 1.,  weights_gen_weight_alphas[0] / weights_gen_weight_norm]
+                    systematics['AlphaSDown'] = [jets_nom,   taus_nom, weight, weight_pu, 1.,  weights_gen_weight_alphas[1] / weights_gen_weight_norm]
                 if with_Frag_sys:
-                    systematics['FragUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_Frag[0] / weights_gen_weight_centralFrag]
-                    systematics['FragDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_Frag[1] / weights_gen_weight_centralFrag]
-                    systematics['SemilepBRUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_semilepbr[0] / weights_gen_weight_centralFrag]
-                    systematics['SemilepBRDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_semilepbr[1] / weights_gen_weight_centralFrag]
-                    systematics['PetersonUp']   = [jets_nom,   taus_nom, weight_pu, 1.,  weights_gen_weight_Peterson / weights_gen_weight_centralFrag]
-                    systematics['PetersonDown'] = [jets_nom,   taus_nom, weight_pu, 1.,  1.]
+                    systematics['FragUp']        = [jets_nom, taus_nom, weight, weight_pu, 1.,  weights_gen_weight_Frag[0] / weights_gen_weight_centralFrag]
+                    systematics['FragDown']      = [jets_nom, taus_nom, weight, weight_pu, 1.,  weights_gen_weight_Frag[1] / weights_gen_weight_centralFrag]
+                    systematics['SemilepBRUp']   = [jets_nom, taus_nom, weight, weight_pu, 1.,  weights_gen_weight_semilepbr[0] / weights_gen_weight_centralFrag]
+                    systematics['SemilepBRDown'] = [jets_nom, taus_nom, weight, weight_pu, 1.,  weights_gen_weight_semilepbr[1] / weights_gen_weight_centralFrag]
+                    systematics['PetersonUp']    = [jets_nom, taus_nom, weight, weight_pu, 1.,  weights_gen_weight_Peterson / weights_gen_weight_centralFrag]
+                    systematics['PetersonDown']  = [jets_nom, taus_nom, weight, weight_pu, 1.,  1.]
         else:
-            systematics = {'NOMINAL': [jets_nom, taus_nom, 1., 1., 1.]}
+            systematics = {'NOMINAL': [jets_nom, taus_nom, 1., 1., 1., 1.]}
 
         # remove not requested systematics to reduce the loop:
         for name, _ in systematics.items():
@@ -3083,7 +3137,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         #control_counters.Fill(3)
 
-        for sys_i, (sys_name, (jets, taus, weight_PU, weight_top_pt, weight_th)) in enumerate(systematics.items()):
+        for sys_i, (sys_name, (jets, taus, weight, weight_PU, weight_top_pt, weight_th)) in enumerate(systematics.items()):
             #control_counters.Fill(4 + sys_i)
 
             # TODO: add here only possible systematics
@@ -3761,8 +3815,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_init']      .Fill(Mt_lep_met)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_in']      .Fill(Mt_lep_met, weight)
                 if isMC and pass_mus:
-                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_mu_trk_b'].Fill(Mt_lep_met, mu_sfs_b[4])
-                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_mu_trk_h'].Fill(Mt_lep_met, mu_sfs_h[4])
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_mu_trk_b'].Fill(Mt_lep_met, mu_sfs_b[1])
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_mu_trk_h'].Fill(Mt_lep_met, mu_sfs_h[1])
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_bf']      .Fill(Mt_lep_met, weight_bSF)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu']      .Fill(Mt_lep_met, weight_PU)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_sum']  .Fill(Mt_lep_met, weight_pu_sum)
@@ -3776,8 +3830,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # checking the effect of mu trk SF
                 out_hs[(chan, record_proc, sys_name)]['nvtx_init']      .Fill(ev.nvtx)
                 if isMC and pass_mus:
-                    out_hs[(chan, record_proc, sys_name)]['nvtx_w_trk_b']     .Fill(ev.nvtx, mu_sfs_b[4])
-                    out_hs[(chan, record_proc, sys_name)]['nvtx_w_trk_h']     .Fill(ev.nvtx, mu_sfs_h[4])
+                    out_hs[(chan, record_proc, sys_name)]['nvtx_w_trk_b']     .Fill(ev.nvtx, mu_sfs_b[1])
+                    out_hs[(chan, record_proc, sys_name)]['nvtx_w_trk_h']     .Fill(ev.nvtx, mu_sfs_h[1])
 
                 # for PU tests
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_pu_sum']    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_sum)
@@ -3974,21 +4028,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
             #mu_trg_sf = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
 
-            control_hs['weight_mu_trk_bcdef']    .Fill(mu_sfs_b[0])
-            control_hs['weight_mu_trk_bcdef_vtx'].Fill(mu_sfs_b[1])
-            control_hs['weight_mu_id_bcdef']     .Fill(mu_sfs_b[2])
-            control_hs['weight_mu_iso_bcdef']    .Fill(mu_sfs_b[3])
-            control_hs['weight_mu_trk_bcdef_vtx_gen'].Fill(mu_sfs_b[4])
-            control_hs['weight_mu_trg_bcdef'].Fill(mu_trg_sf[0])
-            control_hs['weight_mu_all_bcdef'].Fill(mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[1] * mu_sfs_b[2] * mu_sfs_b[3])
+            control_hs['weight_mu_trk_bcdef']        .Fill(mu_sfs_b[0])
+            control_hs['weight_mu_trk_bcdef_vtx_gen'].Fill(mu_sfs_b[1])
+            control_hs['weight_mu_trk_bcdef_vtx']    .Fill(mu_sfs_b[2])
+            control_hs['weight_mu_id_bcdef']         .Fill(mu_sfs_b[3][0])
+            control_hs['weight_mu_iso_bcdef']        .Fill(mu_sfs_b[4][0])
+            control_hs['weight_mu_trg_bcdef'].Fill(mu_trg_sf_b)
+            control_hs['weight_mu_all_bcdef'].Fill(mu_trg_sf_b * mu_sfs_b[0] * mu_sfs_b[1] * mu_sfs_b[3][0] * mu_sfs_b[4][0])
 
-            control_hs['weight_mu_trk_gh']    .Fill(mu_sfs_h[0])
-            control_hs['weight_mu_trk_gh_vtx'].Fill(mu_sfs_h[1])
-            control_hs['weight_mu_id_gh']     .Fill(mu_sfs_h[2])
-            control_hs['weight_mu_iso_gh']    .Fill(mu_sfs_h[3])
-            control_hs['weight_mu_trk_gh_vtx_gen'].Fill(mu_sfs_h[4])
-            control_hs['weight_mu_trg_gh'].Fill(mu_trg_sf[1])
-            control_hs['weight_mu_all_gh']   .Fill(mu_trg_sf[1] * mu_sfs_h[0] * mu_sfs_h[1] * mu_sfs_h[2] * mu_sfs_h[3])
+            control_hs['weight_mu_trk_gh']        .Fill(mu_sfs_h[0])
+            control_hs['weight_mu_trk_gh_vtx_gen'].Fill(mu_sfs_h[1])
+            control_hs['weight_mu_trk_gh_vtx']    .Fill(mu_sfs_h[2])
+            control_hs['weight_mu_id_gh']         .Fill(mu_sfs_h[3][0])
+            control_hs['weight_mu_iso_gh']        .Fill(mu_sfs_h[4][0])
+            control_hs['weight_mu_trg_gh'] .Fill(mu_trg_sf_h)
+            control_hs['weight_mu_all_gh'] .Fill(mu_trg_sf_h * mu_sfs_h[0] * mu_sfs_h[1] * mu_sfs_h[3][0] * mu_sfs_h[4][0])
 
             #control_hs['weight_mu_bSF']     .Fill(weight_bSF)
             #control_hs['weight_mu_bSF_up']  .Fill(weight_bSF_up)
@@ -3998,10 +4052,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             #el_sfs = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
             #el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
 
-            control_hs['weight_el_trk'].Fill(el_sfs[0])
-            control_hs['weight_el_idd'].Fill(el_sfs[1])
-            control_hs['weight_el_trg'].Fill(el_trg_sf)
-            control_hs['weight_el_all'].Fill(el_trg_sf * el_sfs[0] * el_sfs[1])
+            control_hs['weight_el_trk'].Fill(el_sfs_reco[0])
+            control_hs['weight_el_idd'].Fill(el_sfs_id[0])
+            control_hs['weight_el_trg'].Fill(el_trg_sf[0])
+            control_hs['weight_el_all'].Fill(el_trg_sf[0] * el_sfs[0] * el_sfs[0])
 
             #control_hs['weight_el_bSF']     .Fill(weight_bSF)
             #control_hs['weight_el_bSF_up']  .Fill(weight_bSF_up)
