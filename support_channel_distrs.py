@@ -2010,7 +2010,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
                 weight_lep_Down = weight * (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
                                                ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
-                weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + ratio_gh * mu_trg_sf_h[0] * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                             ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
 
             if (pass_el_all or pass_el) and isMC:
@@ -4060,7 +4061,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             control_hs['weight_el_trk'].Fill(el_sfs_reco[0])
             control_hs['weight_el_idd'].Fill(el_sfs_id[0])
             control_hs['weight_el_trg'].Fill(el_trg_sf[0])
-            control_hs['weight_el_all'].Fill(el_trg_sf[0] * el_sfs[0] * el_sfs[0])
+            control_hs['weight_el_all'].Fill(el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0])
 
             #control_hs['weight_el_bSF']     .Fill(weight_bSF)
             #control_hs['weight_el_bSF_up']  .Fill(weight_bSF_up)
