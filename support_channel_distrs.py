@@ -1930,7 +1930,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # weight_norm = 1 always
                     weights_gen_weight_alphas = (ev.gen_weight_alphas_1, ev.gen_weight_alphas_2)
                     # norm to average
-                    weights_gen_weight_norm = (weights_gen_weight_alphas[0] + ev.gen_weight_too[1]) / 2
+                    weights_gen_weight_norm = (weights_gen_weight_alphas[0] + weights_gen_weight_alphas[1]) / 2
+                    if weights_gen_weight_norm < 0.0001:
+                        weights_gen_weight_norm = 0.0001
                     #control_hs['weights_gen_weight_norm']   .Fill(ev.gen_weight_too)
                     control_hs['weights_gen_weight_too']        .Fill(ev.gen_weight_too)
                     control_hs['weights_gen_weight_norm']       .Fill(weights_gen_weight_norm)

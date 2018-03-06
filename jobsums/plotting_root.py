@@ -58,8 +58,11 @@ nick_colour = {
 "tt_elmu":     rgb(254,224,210),
 "tt_taultauh": rgb(253,141,60),
 "tt_taueltaumu": rgb(252,146,114),
-"tt_lj":       rgb(240,59,32),
-"tt_other":    rgb(189,0,38),
+"tt_ljw":       rgb(240,59,32),
+"tt_ljb":       rgb(240,59,32),
+"tt_ljo":       rgb(240,59,32),
+"tt_lj":        rgb(240,59,32),
+"tt_other":     rgb(189,0,38),
 
 "qcd": kViolet,
 }
@@ -74,19 +77,23 @@ nick_order = {
 "tt_elmu":  -3,
 "tt_taueltaumu": -4,
 "tt_taultauh": -4,
-"tt_lj": -5,
-"tt_other": -6,
+"tt_ljw": -5,
+"tt_ljb": -6,
+"tt_ljo": -7,
+"tt_lj":  -8,
+"tt_other": -9,
 
-"wjets": -10,
-"dy_tautau": -11,
-"dy_other": -12,
+"wjets": -20,
+"dy_tautau": -21,
+"dy_other": -22,
 
-"s_top_eltau": -20,
-"s_top_mutau": -21,
-"s_top_elmu": -22,
-"s_top_lj": -23,
-"s_top_other": -24,
-"dibosons": -30,
+"s_top_eltau": -30,
+"s_top_mutau": -31,
+"s_top_elmu":  -32,
+"s_top_lj":    -33,
+"s_top_other": -34,
+
+"dibosons": -40,
 }
 
 def stack_n_legend(used_histos):
