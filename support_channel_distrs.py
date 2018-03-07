@@ -9,6 +9,8 @@ import ctypes
 
 OLD_MINIAOD_JETS = False
 
+DO_W_STITCHING = False
+
 logging = Logging.getLogger("common")
 
 logging.info('importing ROOT')
@@ -731,8 +733,8 @@ def calc_lj_var(light_jets, b_jets, save_all_permutations=False):
     light_jet_pairs = []
     for i in range(len(light_jets)):
       for u in range(i):
-        ji, multi, _, _, _, _ = light_jets[i]
-        ju, multu, _, _, _, _ = light_jets[u]
+        ji, multi, _, _, _, _, _ = light_jets[i]
+        ju, multu, _, _, _, _, _ = light_jets[u]
         pair = ji * multi + ju * multu
         if save_all_permutations:
             light_jet_pairs.append(pair)
@@ -743,7 +745,7 @@ def calc_lj_var(light_jets, b_jets, save_all_permutations=False):
 
     # closest to 173
     dist_t = 99999.
-    for j, mult, _, _, _, _ in b_jets:
+    for j, mult, _, _, _, _, _ in b_jets:
         b_jet = j * mult
         pair = b_jet + closest_to_W
         if save_all_permutations:
@@ -887,6 +889,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     isSTopTSchannels = 'tchannel' in dtag or 'schannel' in dtag
     isDY = 'DY' in dtag
     isWJets = 'WJet' in dtag or 'W1Jet' in dtag or 'W2Jet' in dtag or 'W3Jet' in dtag or 'W4Jet' in dtag
+    isWJetsInclusive = 'WJet' in dtag
     isQCD = 'QCD' in dtag
     isDibosons = 'WW' in dtag or 'ZZ' in dtag or 'WZ' in dtag
 
@@ -1395,34 +1398,43 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_mu_tt_em':             (procs_elmu, systematic_names_pu_toppt),
                 'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_pu_toppt),
 
-                'ctr_old_mu_presel':        (procs_mu_3ch_fbw, systematic_names_pu_toppt),     # testing issue with event yield advantage
-                'ctr_old_mu_presel_ss':     (procs_mu_3ch_fbw, systematic_names_pu_toppt),
+                #'ctr_old_mu_presel':        (procs_mu_3ch_fbw, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                #'ctr_old_mu_presel_ss':     (procs_mu_3ch_fbw, systematic_names_pu_toppt),
+
+                'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
+
+                'ctr_old_mu_presel_alliso':        (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_presel_alliso_ss':     (procs_mu, systematic_names_nominal),
+
+                'ctr_old_el_presel_alliso':        (procs_mu, systematic_names_nominal),
+                'ctr_old_el_presel_alliso_ss':     (procs_mu, systematic_names_nominal),
 
                 # testing issue with event yield advantage
-                'ctr_old_mu_sel':           (procs_mu_3ch_fbw, systematic_names_all_with_th),
-                'ctr_old_mu_sel_ss':        (procs_mu_3ch_fbw, systematic_names_all),
-                'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_all),
-                'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_all),
-                'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_all),
-                'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_all),
+                'ctr_old_mu_sel':           (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_all_with_th),
 
                 'ctr_old_mu_sel_tauSign3':           (procs_mu_3ch_fbw, systematic_names_nominal),
                 'ctr_old_mu_sel_tauSign3_ss':        (procs_mu_3ch_fbw, systematic_names_nominal),
 
                 'ctr_old_el_presel':        (procs_el, systematic_names_pu_toppt),     # testing issue with event yield advantage
                 'ctr_old_el_presel_ss':     (procs_el, systematic_names_pu_toppt),
-                'ctr_old_el_sel':           (procs_el, systematic_names_all),
-                'ctr_old_el_sel_ss':        (procs_el, systematic_names_all),
-                'ctr_old_el_sel_lj':        (procs_el, systematic_names_all),
-                'ctr_old_el_sel_lj_ss':     (procs_el, systematic_names_all),
-                'ctr_old_el_sel_ljout':     (procs_el, systematic_names_all),
-                'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_all),
+                'ctr_old_el_sel':           (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_ss':        (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_lj':        (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_lj_ss':     (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_ljout':     (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_all_with_th),
     }
 
     #channels = channels_mu_only
     #channels = channels_usual
     #channels, with_bSF = channels_mutau_optimization_scan, False
-    channels = channels_optimized_old_full_sys
+    selected_channels = channels_optimized_old_full_sys
 
     with_JER   = isMC and True
     with_JES   = isMC and True
@@ -1430,7 +1442,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
     # find all requested systematics
     requested_systematics = set()
-    for k, (ch_name, systematic_names) in channels.items():
+    for k, (ch_name, systematic_names) in selected_channels.items():
       for systematic_name in systematic_names:
         requested_systematics.add(systematic_name)
 
@@ -1460,14 +1472,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     #bTagging_udsg_jet_efficiency = bTagging_X_jet_efficiency(udsg_alljet, udsg_tagged)
 
     # test
-    logger.write('%s\n' % '\n'.join('%s_%s_%s' % (chan, proc, sys[0]) for chan, ((procs, _), sys) in channels.items() for proc in procs))
+    logger.write('%s\n' % '\n'.join('%s_%s_%s' % (chan, proc, sys[0]) for chan, ((procs, _), sys) in selected_channels.items() for proc in procs))
 
     tau_fakerate_pts  = (ctypes.c_double * 10)(* [20, 30, 40, 50, 70, 90, 120, 150, 200, 300])
     tau_fakerate_pts_n  = 9
     tau_fakerate_etas = (ctypes.c_double * 13)(* [-2.4, -2, -1.6, -1.2, -0.8, -0.4, 0, 0.4, 0.8, 1.2, 1.6, 2, 2.4])
     tau_fakerate_etas_n = 12
-    lep_relIso_bins = (ctypes.c_double * 9)(* [0, 1./8., 1./4., 1./2., 1., 2., 4., 8., 16.])
-    lep_relIso_bins_n = 8
+    lep_relIso_bins = (ctypes.c_double * 7)(* [0, 1./8., 1./4., 1./2., 1., 2., 4.])
+    lep_relIso_bins_n = 6
+    lep_relIso_bins_ext = (ctypes.c_double * 9)(* [0, 1./8., 1./4., 1./2., 1., 2., 4., 8., 16.])
+    lep_relIso_bins_ext_n = 8
     # channel -- reco selection
     # proc    -- MC gen info, like inclusive tt VS tt->mutau and others,
     #            choice of subprocesses depends on channel (sadly),
@@ -1504,6 +1518,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'lep_eta':    TH1D('%s_%s_%s_lep_eta'    % (chan, proc, sys), '', 50, -2.5, 2.5),
                                                'tau_pt':     TH1D('%s_%s_%s_tau_pt'     % (chan, proc, sys), '', 30, 0, 150),
                                                'tau_eta':    TH1D('%s_%s_%s_tau_eta'    % (chan, proc, sys), '', 50, -2.5, 2.5),
+                                               'tau_jetmatched':         TH1D('%s_%s_%s_tau_jetmatched'    % (chan, proc, sys), '', 3, -1, 2),
+                                               'tau_jetmatched_VS_eta':  TH2D('%s_%s_%s_tau_jetmatched_VS_eta'    % (chan, proc, sys), '', 3, -1, 2, 50, -2.5, 2.5),
+
                                                'Rjet_pt':    TH1D('%s_%s_%s_Rjet_pt'    % (chan, proc, sys), '', 30, 0, 300),
                                                'Rjet_eta':   TH1D('%s_%s_%s_Rjet_eta'   % (chan, proc, sys), '', 50, -2.5, 2.5),
                                                'LRjet_pt':   TH1D('%s_%s_%s_LRjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
@@ -1561,7 +1578,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'dphi_lep_met': TH1D('%s_%s_%s_dphi_lep_met' % (chan, proc, sys), '', 20, -3.2, 3.2),
                                                'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
                                                # relIso for the QCD anti-iso region
-                                               'lep_relIso':  TH1D('%s_%s_%s_lep_relIso' % (chan, proc, sys), '', lep_relIso_bins_n, lep_relIso_bins),
+                                               'lep_relIso':          TH1D('%s_%s_%s_lep_relIso'     % (chan, proc, sys), '', lep_relIso_bins_n,     lep_relIso_bins),
+                                               'lep_relIso_ext':      TH1D('%s_%s_%s_lep_relIso_ext' % (chan, proc, sys), '', lep_relIso_bins_ext_n, lep_relIso_bins_ext),
                                                'lep_relIso_precise':  TH1D('%s_%s_%s_lep_relIso_precise' % (chan, proc, sys), '', 300, 0., 0.3), # around the cut of 0.125-0.15
                                                #'Mt_lep_met_f_mth':   TH1D('%s_%s_%s_Mt_lep_met_f_mth'   % (chan, proc, sys), '', 20, 0, 250),
                                                #'Mt_lep_met_f_cos':   TH1D('%s_%s_%s_Mt_lep_met_f_cos'   % (chan, proc, sys), '', 20, 0, 250),
@@ -1663,6 +1681,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                # do them up to 30 -- check overflows if there are many
                                                'jet_flavours_hadron': TH1D('%s_%s_%s_jet_flavours_hadron' % (chan, proc, sys), '', 35, -5, 30),
                                                'jet_flavours_parton': TH1D('%s_%s_%s_jet_flavours_parton' % (chan, proc, sys), '', 35, -5, 30),
+                                               'jet_genmatch':        TH1D('%s_%s_%s_jet_genmatch'        % (chan, proc, sys), '', 11, -1, 10),
                                                'jet_bID_lev':         TH1D('%s_%s_%s_jet_bID_lev'         % (chan, proc, sys), '', 5, 0, 5),
 
                                                'control_bSF_weight':  TH1D('%s_%s_%s_control_bSF_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
@@ -1679,7 +1698,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'dijet_trijet_mass_N_permutations_passed': TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations_passed'  % (chan, proc, sys), '', 50, 0, 50),
                                                'dijet_trijet_mass_vs_permutations':  TH2D('%s_%s_%s_dijet_trijet_mass_vs_permutations' % (chan, proc, sys), '', 20, 0, 400, 50, 0, 50),
                                                })
-                for chan, ((procs, _), systs) in channels.items() for proc in procs for sys in systs])
+                for chan, ((procs, _), systs) in selected_channels.items() for proc in procs for sys in systs])
 
     # strange, getting PyROOT_NoneObjects from these after output
     for _, histos in out_hs.items():
@@ -1719,6 +1738,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #if iev > 100000: break
         control_counters.Fill(0)
 
+        # NUP stitching for WJets
+        if isMC and DO_W_STITCHING:
+            if ev.gen_NUP > 5: continue
+
         #if iev <  range_min: continue
         #if iev >= range_max: break
         #ev = tree.GetEntry(iev)
@@ -1752,12 +1775,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #    -- significant discrepancy at lowest lep pt bin -> UP 1 GeV from HLT and added a detailed distr of the trun on curve
         #    -- it seems the discrepancy were comming from trigger SF going down to 26 only -- fixed that, testing now
 
-        pass_mu_all = pass_mu_id and pass_mu_impact and pass_mu_kino
 
         # do this in place for the required selection
         #pass_mu_cuts = pass_mu and ev.lep_p4[0].pt() > 25. # so, it's smaller than the old cut 27 GeV
 
         #pass_mu_all = pass_mu_id_kino and ev.lep_relIso[0] >= 0.125
+        pass_mu_all = pass_mu_id and pass_mu_impact and pass_mu_kino
         pass_el_all = pass_el_id and pass_el_impact and pass_el_kino # and ev.lep_relIso[0] >= 0.125
 
         #pass_mu = pass_mu_id_kino and ev.lep_relIso[0] < 0.125
@@ -1791,7 +1814,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #passes = pass_min_mu or pass_min_mu_all or pass_mu_all or pass_mu or pass_el or pass_mumu or pass_mumu_ss or pass_elmu or pass_mu_id_iso
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
-        passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu
+        passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all
         passes = passes_optimized
 
         if not passes: continue
@@ -1800,7 +1823,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         pass_mus = pass_mu_all or pass_mu or pass_elmu or pass_mumu # or pass_mumu_ss
         # also at least some kind of tau in single-el:
         #if (pass_mu or pass_el) and (not ev.tau_p4.size() > 0): continue # this is the only thing reduces computing
-        passed_ele_event = pass_el
+        passed_ele_event = pass_el or pass_el_all
 
         micro_proc = ''
 
@@ -2145,6 +2168,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             pt_cut_cuts = 22.
             pt_cut_old  = 30.
 
+            jetmatched = ev.tau_dR_matched_jet > -1
+
             #if tau_pt < 20.: continue # no need to check -- it's default in ntupler
 
             # MC corrections
@@ -2172,38 +2197,38 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             # nominals
             if tau_pt > 20.:
-                taus_nom               .presel.append((p4, TES_factor, tau_pdgID, i))
+                taus_nom               .presel.append((p4, TES_factor, tau_pdgID, i, jetmatched))
                 #if tau_ID > 1: tausL_nom.lowest.append((p4, TES_factor))
                 #if tau_ID > 2: tausM_nom.lowest.append((p4, TES_factor))
-                if tau_ID > 1: taus_nom.loose.append((p4, TES_factor, tau_pdgID, i))
-                if tau_ID > 3: taus_nom.lowest.append((p4, TES_factor, tau_pdgID, i))
+                if tau_ID > 1: taus_nom.loose.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                if tau_ID > 3: taus_nom.lowest.append((p4, TES_factor, tau_pdgID, i, jetmatched))
             if tau_pt > pt_cut_cuts:
-                if tau_ID > 3: taus_nom.cuts.append((p4, TES_factor, tau_pdgID, i))
+                if tau_ID > 3: taus_nom.cuts.append((p4, TES_factor, tau_pdgID, i, jetmatched))
             if tau_pt > pt_cut_old:
-                if tau_ID > 2: taus_nom.old .append((p4, TES_factor, tau_pdgID, i))
+                if tau_ID > 2: taus_nom.old .append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
             # TES
             if isMC and with_TauES_sys:
 
                 TES_factor = factor_up
                 if tau_pt_up > 20.:
-                    taus_ESUp               .presel.append((p4, TES_factor, tau_pdgID, i))
-                    if tau_ID > 1: taus_ESUp.loose.append((p4, TES_factor, tau_pdgID, i))
-                    if tau_ID > 3: taus_ESUp.lowest.append((p4, TES_factor, tau_pdgID, i))
+                    taus_ESUp               .presel.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                    if tau_ID > 1: taus_ESUp.loose.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                    if tau_ID > 3: taus_ESUp.lowest.append((p4, TES_factor, tau_pdgID, i, jetmatched))
                 if tau_pt_up > pt_cut_cuts:
-                    if tau_ID > 3: taus_ESUp.cuts.append((p4, TES_factor, tau_pdgID, i))
+                    if tau_ID > 3: taus_ESUp.cuts.append((p4, TES_factor, tau_pdgID, i, jetmatched))
                 if tau_pt_up > pt_cut_old:
-                    if tau_ID > 2: taus_ESUp.old.append((p4, TES_factor, tau_pdgID, i))
+                    if tau_ID > 2: taus_ESUp.old.append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
                 TES_factor = factor_down
                 if tau_pt_down > 20.:
-                    taus_ESDown               .presel.append((p4, TES_factor, tau_pdgID, i))
-                    if tau_ID > 1: taus_ESDown.loose.append((p4, TES_factor, tau_pdgID, i))
-                    if tau_ID > 3: taus_ESDown.lowest.append((p4, TES_factor, tau_pdgID, i))
+                    taus_ESDown               .presel.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                    if tau_ID > 1: taus_ESDown.loose.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                    if tau_ID > 3: taus_ESDown.lowest.append((p4, TES_factor, tau_pdgID, i, jetmatched))
                 if tau_pt_down > pt_cut_cuts:
-                    if tau_ID > 3: taus_ESDown.cuts.append((p4, TES_factor, tau_pdgID, i))
+                    if tau_ID > 3: taus_ESDown.cuts.append((p4, TES_factor, tau_pdgID, i, jetmatched))
                 if tau_pt_down > pt_cut_old:
-                    if tau_ID > 2: taus_ESDown.old.append((p4, TES_factor, tau_pdgID, i))
+                    if tau_ID > 2: taus_ESDown.old.append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
             """
             usual_pt_cut = 20. # TODO: cut for optimization study, review it after results
@@ -2436,15 +2461,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # just lists of tlorentz vectors
         # in lowest and cuts we use tight tau
         # -- using only the first tau in the list -- the target one!
-        for tau_p4, _, _, _ in taus_nom.lowest[:1]:
+        for tau_p4, _, _, _, _ in taus_nom.lowest[:1]:
             taus_nom_TLorentz.lowest.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         # TODO: loose taus for 2L1M + loose tau selection -- I'll do it quickly here, re-using the lowest jets (with tight tau)
         #for tau_p4, _, _ in taus_nom.loose[:1]:
             #taus_nom_TLorentz.loose.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
-        for tau_p4, _, _, _ in taus_nom.cuts[:1]:
+        for tau_p4, _, _, _, _ in taus_nom.cuts[:1]:
             taus_nom_TLorentz.cuts.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         # in old we use medium tau
-        for tau_p4, _, _, _ in taus_nom.old[:1]:
+        for tau_p4, _, _, _, _ in taus_nom.old[:1]:
             taus_nom_TLorentz.old.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         # in principle I should also change TES -- but this effect is very second order
 
@@ -2488,6 +2513,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             en_factor = 1.
             HF = -1
             PF = -1
+            genmatch = -1
             if isMC:
                 jer_factor = ev.jet_jer_factor[i]
                 jes_factor = ev.jet_jes_recorrection[i]
@@ -2496,6 +2522,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 HF = ev.jet_hadronFlavour[i]
                 PF = ev.jet_partonFlavour[i]
+
+                genmatch = ev.jet_matching_gen[i]
 
             jet_pt  = p4.pt() * en_factor
             jet_eta = p4.eta()
@@ -2632,76 +2660,76 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                     # nominals
                     if b_tagged_medium:
-                        jets_nom.lowest.medium.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                        jets_nom.lowest.medium.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                         if with_bSF_sys:
-                            jets_bUp  .lowest.medium.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                            jets_bDown.lowest.medium.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                            jets_bUp  .lowest.medium.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                            jets_bDown.lowest.medium.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.medium.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.medium.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.medium.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.medium.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.medium.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.medium.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.medium.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.medium.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                     elif b_tagged_loose:
-                        jets_nom.lowest.loose.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                        jets_nom.lowest.loose.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                         if with_bSF_sys:
-                            jets_bUp  .lowest.loose.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                            jets_bDown.lowest.loose.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                            jets_bUp  .lowest.loose.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                            jets_bDown.lowest.loose.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.loose.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.loose.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.loose.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.loose.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.loose.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.loose.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.loose.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.loose.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                     else:
-                        jets_nom.lowest.rest.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                        jets_nom.lowest.rest.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                         if with_bSF_sys:
-                            jets_bUp  .lowest.rest.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                            jets_bDown.lowest.rest.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                            jets_bUp  .lowest.rest.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                            jets_bDown.lowest.rest.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.rest.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.rest.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.rest.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.rest.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.rest.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.rest.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.rest.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.rest.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                 else:
                     # this is the lowest selection, loose b-jets count
                     if b_tagged_loose:
-                        jets_nom.lowest.taumatched[0].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                        jets_nom.lowest.taumatched[0].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                         if with_bSF_sys:
-                            jets_bUp  .lowest.taumatched[0].append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                            jets_bDown.lowest.taumatched[0].append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                            jets_bUp  .lowest.taumatched[0].append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                            jets_bDown.lowest.taumatched[0].append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.taumatched[0].append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.taumatched[0].append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.taumatched[0].append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.taumatched[0].append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.taumatched[0].append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.taumatched[0].append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.taumatched[0].append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.taumatched[0].append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                     else:
-                        jets_nom.lowest.taumatched[1].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                        jets_nom.lowest.taumatched[1].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                         if with_bSF_sys:
-                            jets_bUp  .lowest.taumatched[1].append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                            jets_bDown.lowest.taumatched[1].append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                            jets_bUp  .lowest.taumatched[1].append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                            jets_bDown.lowest.taumatched[1].append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.taumatched[1].append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.taumatched[1].append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > 20.: jets_JERUp  .lowest.taumatched[1].append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > 20.: jets_JERDown.lowest.taumatched[1].append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.taumatched[1].append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.taumatched[1].append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > 20.: jets_JESUp  .lowest.taumatched[1].append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > 20.: jets_JESDown.lowest.taumatched[1].append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
 
                 pt_cut = 22.
@@ -2710,80 +2738,80 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # nominals
                     if b_tagged_medium:
                         if jet_pt > pt_cut:
-                            jets_nom.cuts.medium.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            jets_nom.cuts.medium.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                             if with_bSF_sys:
-                                jets_bUp  .cuts.medium.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                                jets_bDown.cuts.medium.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                                jets_bUp  .cuts.medium.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                                jets_bDown.cuts.medium.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.medium.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.medium.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.medium.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.medium.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.medium.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.medium.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.medium.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.medium.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                     elif b_tagged_loose:
                         if jet_pt > pt_cut:
-                            jets_nom.cuts.loose.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            jets_nom.cuts.loose.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                             if with_bSF_sys:
-                                jets_bUp  .cuts.loose.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                                jets_bDown.cuts.loose.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                                jets_bUp  .cuts.loose.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                                jets_bDown.cuts.loose.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.loose.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.loose.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.loose.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.loose.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.loose.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.loose.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.loose.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.loose.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                     else:
                         if jet_pt > pt_cut:
-                            jets_nom.cuts.rest.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            jets_nom.cuts.rest.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                             if with_bSF_sys:
-                                jets_bUp  .cuts.rest.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                                jets_bDown.cuts.rest.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                                jets_bUp  .cuts.rest.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                                jets_bDown.cuts.rest.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.rest.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.rest.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.rest.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.rest.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.rest.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.rest.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.rest.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.rest.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                 else:
                     # this is the cuts selection, same as lowest but with pt cuts, loose b-jets count
                     if b_tagged_loose:
                         if jet_pt > pt_cut:
-                            jets_nom.cuts.taumatched[0].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            jets_nom.cuts.taumatched[0].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                             if with_bSF_sys:
-                                jets_bUp  .cuts.taumatched[0].append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                                jets_bDown.cuts.taumatched[0].append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                                jets_bUp  .cuts.taumatched[0].append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                                jets_bDown.cuts.taumatched[0].append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.taumatched[0].append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.taumatched[0].append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.taumatched[0].append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.taumatched[0].append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.taumatched[0].append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.taumatched[0].append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.taumatched[0].append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.taumatched[0].append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                     else:
                         if jet_pt > pt_cut:
-                            jets_nom.cuts.taumatched[1].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            jets_nom.cuts.taumatched[1].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                             if with_bSF_sys:
-                                jets_bUp  .cuts.taumatched[1].append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                                jets_bDown.cuts.taumatched[1].append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                                jets_bUp  .cuts.taumatched[1].append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                                jets_bDown.cuts.taumatched[1].append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.taumatched[1].append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.taumatched[1].append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .cuts.taumatched[1].append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.cuts.taumatched[1].append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.taumatched[1].append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.taumatched[1].append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .cuts.taumatched[1].append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.cuts.taumatched[1].append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
 
                 pt_cut = 30.
@@ -2792,80 +2820,80 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # nominals
                     if b_tagged_medium:
                         if jet_pt > pt_cut:
-                            jets_nom.old.medium.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            jets_nom.old.medium.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                             if with_bSF_sys:
-                                jets_bUp  .old.medium.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                                jets_bDown.old.medium.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                                jets_bUp  .old.medium.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                                jets_bDown.old.medium.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.medium.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > pt_cut: jets_JERDown.old.medium.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.medium.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.old.medium.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.medium.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > pt_cut: jets_JESDown.old.medium.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.medium.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.old.medium.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                     elif b_tagged_loose:
                         if jet_pt > pt_cut:
-                            jets_nom.old.loose.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            jets_nom.old.loose.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                             if with_bSF_sys:
-                                jets_bUp  .old.loose.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                                jets_bDown.old.loose.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                                jets_bUp  .old.loose.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                                jets_bDown.old.loose.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.loose.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > pt_cut: jets_JERDown.old.loose.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.loose.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.old.loose.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.loose.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > pt_cut: jets_JESDown.old.loose.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.loose.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.old.loose.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                     else:
                         if jet_pt > pt_cut:
-                            jets_nom.old.rest.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            jets_nom.old.rest.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                             if with_bSF_sys:
-                                jets_bUp  .old.rest.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                                jets_bDown.old.rest.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                                jets_bUp  .old.rest.append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                                jets_bDown.old.rest.append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.rest.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > pt_cut: jets_JERDown.old.rest.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.rest.append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.old.rest.append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.rest.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > pt_cut: jets_JESDown.old.rest.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.rest.append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.old.rest.append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                 else:
                     # this is the old selection, the medium b jets count
                     if b_tagged_medium:
                         if jet_pt > pt_cut:
-                            jets_nom.old.taumatched[0].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            jets_nom.old.taumatched[0].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                             if with_bSF_sys:
-                                jets_bUp  .old.taumatched[0].append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                                jets_bDown.old.taumatched[0].append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                                jets_bUp  .old.taumatched[0].append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                                jets_bDown.old.taumatched[0].append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.taumatched[0].append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > pt_cut: jets_JERDown.old.taumatched[0].append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.taumatched[0].append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.old.taumatched[0].append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.taumatched[0].append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > pt_cut: jets_JESDown.old.taumatched[0].append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.taumatched[0].append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.old.taumatched[0].append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                     else:
                         if jet_pt > pt_cut:
-                            jets_nom.old.taumatched[1].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            jets_nom.old.taumatched[1].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
                             if with_bSF_sys:
-                                jets_bUp  .old.taumatched[1].append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF))
-                                jets_bDown.old.taumatched[1].append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF))
+                                jets_bUp  .old.taumatched[1].append((p4, en_factor, jet_weight_bSFUp,   jet_b_discr, HF, PF, genmatch))
+                                jets_bDown.old.taumatched[1].append((p4, en_factor, jet_weight_bSFDown, jet_b_discr, HF, PF, genmatch))
 
                         if with_JER_sys:
-                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.taumatched[1].append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jer_down > pt_cut: jets_JERDown.old.taumatched[1].append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jer_up   > pt_cut: jets_JERUp  .old.taumatched[1].append((p4, en_factor * jet_factor_JERUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jer_down > pt_cut: jets_JERDown.old.taumatched[1].append((p4, en_factor * jet_factor_JERDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
                         if with_JES_sys:
-                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.taumatched[1].append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF))
-                            if jet_pt_jes_down > pt_cut: jets_JESDown.old.taumatched[1].append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF))
+                            if jet_pt_jes_up   > pt_cut: jets_JESUp  .old.taumatched[1].append((p4, en_factor * jet_factor_JESUp,   jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
+                            if jet_pt_jes_down > pt_cut: jets_JESDown.old.taumatched[1].append((p4, en_factor * jet_factor_JESDown, jet_weight_bSF_nom, jet_b_discr, HF, PF, genmatch))
 
 
 
@@ -3213,17 +3241,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             weight_bSF_lowest = 1.
             # p4, energy factor, b SF weight, ID lev
-            for _, _, jet_weight, _, _, _ in jets.lowest.medium + jets.lowest.loose + jets.lowest.rest:
+            for _, _, jet_weight, _, _, _, _ in jets.lowest.medium + jets.lowest.loose + jets.lowest.rest:
                 weight_bSF_lowest *= jet_weight
 
             weight_bSF_old = 1.
-            for _, _, jet_weight, _, _, _ in jets.old.medium + jets.old.loose + jets.old.rest:
+            for _, _, jet_weight, _, _, _, _ in jets.old.medium + jets.old.loose + jets.old.rest:
                 weight_bSF_old *= jet_weight
 
             has_tight_lowest_taus = len(taus.lowest) > 0
             has_loose_lowest_taus = len(taus.loose) > 0
 
-            old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
+            old_jet_sel = (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
 
             if old_jet_sel:
                 control_counters.Fill(103)
@@ -3252,13 +3280,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             pass_old_el_presel = pass_el and old_jet_sel and len(taus.presel) > 0
             pass_old_lep_presel = pass_old_mu_presel or pass_old_el_presel
 
-            pass_elmu_close = pass_elmu and len(jets.old.medium) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1
+            # alliso
+            pass_old_mu_presel_alliso = pass_mu_all and old_jet_sel and len(taus.presel) > 0
+            pass_old_el_presel_alliso = pass_el_all and old_jet_sel and len(taus.presel) > 0
+
+            pass_elmu_close = pass_elmu and (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1
             requires_lj = pass_elmu_close or pass_old_lep_presel or pass_old_mu_sel or pass_old_el_sel or ((pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus))
             if requires_lj:
                 # all jets, without regard to tau in the event go into the calculation
                 # (taumatched jets go too)
                 with_all_permutation_masses = True
-                lj_var, w_mass, t_mass, all_masses = calc_lj_var(jets.lowest.rest + jets.lowest.taumatched[1], jets.lowest.medium + jets.lowest.loose + jets.lowest.taumatched[0], with_all_permutation_masses)
+                #lj_var, w_mass, t_mass, all_masses = calc_lj_var(jets.lowest.rest + jets.lowest.taumatched[1], jets.lowest.medium + jets.lowest.loose + jets.lowest.taumatched[0], with_all_permutation_masses)
+                lj_var, w_mass, t_mass, all_masses = calc_lj_var(jets.old.rest + jets.old.loose + jets.old.taumatched[1], jets.old.medium + jets.old.taumatched[0], with_all_permutation_masses)
                 lj_cut = 60.
                 large_lj = lj_var > lj_cut
 
@@ -3484,6 +3517,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 else:
                     passed_channels.append(('ctr_old_mu_presel_ss', sel_b_weight, jets.old, taus.presel))
 
+            if pass_old_mu_presel_alliso:
+                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
+                sel_b_weight = weight_bSF_old
+                if presel_os:
+                    passed_channels.append(('ctr_old_mu_presel_alliso', sel_b_weight, jets.old, taus.presel))
+                else:
+                    passed_channels.append(('ctr_old_mu_presel_alliso_ss', sel_b_weight, jets.old, taus.presel))
+
             #pass_single_lep_presel = large_met and has_3jets and has_bjets and (pass_el or pass_mu) #and os_lep_med_tau
             #pass_single_lep_sel = pass_single_lep_presel and os_lep_med_tau
             #if pass_mu and old_jet_sel and met_pt > 40 and len(taus.old) > 0:
@@ -3520,6 +3561,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 else:
                     passed_channels.append(('ctr_old_el_presel_ss', sel_b_weight, jets.old, taus.presel))
 
+            if pass_old_el_presel_alliso:
+                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
+                sel_b_weight = weight_bSF_old
+                if presel_os:
+                    passed_channels.append(('ctr_old_el_presel_alliso', sel_b_weight, jets.old, taus.presel))
+                else:
+                    passed_channels.append(('ctr_old_el_presel_alliso_ss', sel_b_weight, jets.old, taus.presel))
+
             if pass_old_el_sel:
                 # actually I should add ev.lep_p4[0].pt() > 27
                 old_os = taus.old[0][2] * ev.lep_id[0] < 0
@@ -3544,7 +3593,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             #    out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, weight)
             #    out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(25, weight)
 
-            for chan_i, (chan, weight_bSF, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in channels)):
+            for chan_i, (chan, weight_bSF, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
                 # check for default proc
                 #if chan not in channels:
                     #continue
@@ -3556,7 +3605,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #   'mu_presel', 'mu_sel', 'mu_lj', 'mu_lj_out', 'mu_lj_ss', 'mu_lj_out_ss', 'el_presel', 'el_sel', 'el_lj', 'el_lj_out') and micro_proc:
                 #    proc = micro_proc
 
-                procs, default_proc = channels[chan][0]
+                procs, default_proc = selected_channels[chan][0]
                 if micro_proc in procs:
                     record_proc = micro_proc
                 elif proc in procs:
@@ -3805,8 +3854,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 """
 
                 # for anti-iso and overall
-                out_hs[(chan, record_proc, sys_name)]['lep_relIso']  .Fill(ev.lep_relIso[0],  record_weight)
-                out_hs[(chan, record_proc, sys_name)]['lep_relIso_precise']  .Fill(ev.lep_relIso[0],  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_relIso']         .Fill(ev.lep_relIso[0],  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_relIso_ext']     .Fill(ev.lep_relIso[0],  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_relIso_precise'] .Fill(ev.lep_relIso[0],  record_weight)
 
                 # not tagged jets
                 if sel_jets.rest:
@@ -3988,6 +4038,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     out_hs[(chan, record_proc, sys_name)]['tau_pt']  .Fill(corrected_tau.pt(),  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['tau_eta'] .Fill(corrected_tau.eta(), record_weight)
 
+                    out_hs[(chan, record_proc, sys_name)]['tau_jetmatched']        .Fill(sel_taus[0][4], record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['tau_jetmatched_VS_eta'] .Fill(sel_taus[0][4], corrected_tau.eta(), record_weight)
+
                     # don't do these in OPTIMIZATION
                     ##out_hs[(chan, record_proc, sys_name)]['tau_pat_Sign']  .Fill(zero_tau_pat_Sign,  record_weight)
                     ## we only work with 0th tau (highest pt)
@@ -4047,9 +4100,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     out_hs[(chan, record_proc, sys_name)]['trijet_mass']      .Fill(t_mass, record_weight)
                     out_hs[(chan, record_proc, sys_name)]['2D_dijet_trijet']  .Fill(w_mass, t_mass, record_weight)
                     out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass'].Fill(lj_var, record_weight)
+
+                    # the following two make up probability to pass VS permutations
                     out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_N_permutations']  .Fill(len(all_masses), record_weight)
                     if not large_lj:
                         out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_N_permutations_passed']  .Fill(len(all_masses), record_weight)
+
                     out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_vs_permutations'] .Fill(lj_var, len(all_masses), record_weight)
                     for mass_W, mass_t in all_masses:
                         out_hs[(chan, record_proc, sys_name)]['2D_dijet_trijet_all']  .Fill(mass_W, mass_t, record_weight)
@@ -4076,6 +4132,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 jets_category += 3*5 * (n_loose_jets  if n_loose_jets  < 3 else 2)
                 out_hs[(chan, record_proc, sys_name)]['njets_cats'].Fill(jets_category,  record_weight)
 
+
                 out_hs[(chan, record_proc, sys_name)]['ntaus']  .Fill(len(sel_taus),  record_weight)
 
                 out_hs[(chan, record_proc, sys_name)]['nvtx_raw'] .Fill(ev.nvtx, sys_weight_without_PU * weight_bSF)
@@ -4086,6 +4143,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         out_hs[(chan, record_proc, sys_name)]['jet_bID_lev']        .Fill(jet[3], record_weight)
                         out_hs[(chan, record_proc, sys_name)]['jet_flavours_hadron'].Fill(abs(jet[4]), record_weight)
                         out_hs[(chan, record_proc, sys_name)]['jet_flavours_parton'].Fill(abs(jet[5]), record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['jet_genmatch'].Fill(jet[6],  record_weight)
 
                 out_hs[(chan, record_proc, sys_name)]['control_bSF_weight'].Fill(weight_bSF)
                 out_hs[(chan, record_proc, sys_name)]['control_PU_weight'] .Fill(weight_PU)
