@@ -929,9 +929,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
 
     control_hs = OrderedDict([
-    ('weight_pu', TH1D("weight_pu", "", 50, 0, 2)),
-    ('weight_pu_up', TH1D("weight_pu_up", "", 50, 0, 2)),
-    ('weight_pu_dn', TH1D("weight_pu_dn", "", 50, 0, 2)),
+    ('weight_pu',     TH1D("weight_pu", "", 50, 0, 2)),
+    ('weight_pu_ele', TH1D("weight_pu_ele", "", 50, 0, 2)),
+
+    ('weight_pu_up',     TH1D("weight_pu_up", "", 50, 0, 2)),
+    ('weight_pu_dn',     TH1D("weight_pu_dn", "", 50, 0, 2)),
+    ('weight_pu_ele_up', TH1D("weight_pu_ele_up", "", 50, 0, 2)),
+    ('weight_pu_ele_dn', TH1D("weight_pu_ele_dn", "", 50, 0, 2)),
+
     ('weight_pu_sum', TH1D("weight_pu_sum", "", 50, 0, 2)),
     ('weight_pu_b',   TH1D("weight_pu_b", "", 50, 0, 2)),
     ('weight_pu_h2',  TH1D("weight_pu_h2", "", 50, 0, 2)),
@@ -949,7 +954,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     ('weights_gen_weight_semilepbrDown',    TH1D("weights_semilepbrDown", "", 50, 0, 2)),
 
     ('weight_z_mass_pt', TH1D("weight_z_mass_pt", "", 50, 0, 2)),
-    #('weight_bSF',       TH1D("weight_bSF", "", 50, 0, 2)),
+    ('weight_bSF',       TH1D("weight_bSF", "", 50, 0, 2)),
 
     ('weight_mu_trk_bcdef', TH1D("weight_mu_trk_bcdef", "", 50, 0, 2)),
     ('weight_mu_trk_bcdef_vtx', TH1D("weight_mu_trk_bcdef_vtx", "", 50, 0, 2)),
@@ -1704,7 +1709,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         '''
 
         #if iev > 100000: break
-        #control_counters.Fill(0)
+        control_counters.Fill(0)
 
         #if iev <  range_min: continue
         #if iev >= range_max: break
@@ -1779,7 +1784,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         passes = passes_optimized
 
         if not passes: continue
-        #control_counters.Fill(1)
+        control_counters.Fill(1)
 
         pass_mus = pass_mu_all or pass_mu or pass_elmu or pass_mumu # or pass_mumu_ss
         # also at least some kind of tau in single-el:
@@ -1875,17 +1880,20 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     weight_pu    = pileup_ratio_ele     [ev.nvtx_gen]
                     weight_pu_up = pileup_ratio_up_ele  [ev.nvtx_gen]
                     weight_pu_dn = pileup_ratio_down_ele[ev.nvtx_gen]
+                    control_hs['weight_pu_ele']   .Fill(weight_pu)
+                    control_hs['weight_pu_ele_up'].Fill(weight_pu_up)
+                    control_hs['weight_pu_ele_dn'].Fill(weight_pu_dn)
                 else:
                     weight_pu    = pileup_ratio[ev.nvtx_gen]
                     weight_pu_up = pileup_ratio_up[ev.nvtx_gen]
                     weight_pu_dn = pileup_ratio_down[ev.nvtx_gen]
+                    control_hs['weight_pu']   .Fill(weight_pu)
+                    control_hs['weight_pu_up'].Fill(weight_pu_up)
+                    control_hs['weight_pu_dn'].Fill(weight_pu_dn)
                 # and the new PU-s
                 weight_pu_sum  = pileup_ratio_sum[ev.nvtx_gen]
                 weight_pu_b    = pileup_ratio_b[ev.nvtx_gen]
                 weight_pu_h2   = pileup_ratio_h2[ev.nvtx_gen]
-                control_hs['weight_pu']   .Fill(weight_pu)
-                control_hs['weight_pu_up'].Fill(weight_pu_up)
-                control_hs['weight_pu_dn'].Fill(weight_pu_dn)
                 control_hs['weight_pu_sum'] .Fill(weight_pu_sum)
                 control_hs['weight_pu_b']   .Fill(weight_pu_b)
                 control_hs['weight_pu_h2']  .Fill(weight_pu_h2)
@@ -2031,7 +2039,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 weight_lep_Down = weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
                 weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
 
-        #control_counters.Fill(2)
+        control_counters.Fill(2)
 
         # -------------------- TAUS
 
@@ -3154,7 +3162,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # check the subprocess
         # store distr
 
-        #control_counters.Fill(3)
+        control_counters.Fill(3)
 
         for sys_i, (sys_name, (jets, taus, weight, weight_PU, weight_top_pt, weight_th)) in enumerate(systematics.items()):
             #control_counters.Fill(4 + sys_i)
@@ -3177,6 +3185,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             # for each lowest tight 2L1M
             #lj_memo = {} # (jets, )
             #lj_var, w_mass, t_mass = calc_lj_var(jets, jets_b)
+            if sys_i == 0:
+                control_counters.Fill(100)
+
+            if pass_mu:
+                control_counters.Fill(101)
+
+            if pass_el:
+                control_counters.Fill(102)
 
             has_lowest_2L1M = len(jets.lowest.medium) > 0 and (len(jets.lowest.medium) + len(jets.lowest.loose)) > 1 
 
@@ -3193,6 +3209,25 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             has_loose_lowest_taus = len(taus.loose) > 0
 
             old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
+
+            if old_jet_sel:
+                control_counters.Fill(103)
+
+            if len(taus.old) > 0:
+                control_counters.Fill(104)
+
+            if pass_mu and old_jet_sel:
+                control_counters.Fill(203)
+
+            if pass_el and old_jet_sel:
+                control_counters.Fill(303)
+
+            if pass_mu and old_jet_sel and len(taus.old) > 0:
+                control_counters.Fill(304)
+
+            if pass_el and old_jet_sel and len(taus.old) > 0:
+                control_counters.Fill(304)
+
             # 3 jets (2b and 1 tau) and 1 b-tagged
             # TODO: compare with previous result with only 2 jets and 1 b-tagged -- check njets distrs
             pass_old_mu_sel = pass_mu and old_jet_sel and len(taus.old) > 0 # and no met cut
@@ -4043,7 +4078,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
           #weight_bSF_jer_up, weight_bSF_jer_down = 1., 1.
           #weight_bSF_jes_up, weight_bSF_jes_down = 1., 1.
           control_hs['weight_z_mass_pt'] .Fill(weight_z_mass_pt)
-          #control_hs['weight_bSF']    .Fill(weight_bSF)
+          control_hs['weight_bSF']    .Fill(weight_bSF)
           #control_hs['weight_top_pt'] .Fill(weight_top_pt) # done above
 
           if pass_mu or pass_elmu or pass_mumu:
@@ -4067,7 +4102,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             control_hs['weight_mu_trg_gh'] .Fill(mu_trg_sf_h)
             control_hs['weight_mu_all_gh'] .Fill(mu_trg_sf_h * mu_sfs_h[0] * mu_sfs_h[1] * mu_sfs_h[3][0] * mu_sfs_h[4][0])
 
-            #control_hs['weight_mu_bSF']     .Fill(weight_bSF)
+            control_hs['weight_mu_bSF']     .Fill(weight_bSF)
             #control_hs['weight_mu_bSF_up']  .Fill(weight_bSF_up)
             #control_hs['weight_mu_bSF_down'].Fill(weight_bSF_down)
 
@@ -4080,7 +4115,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             control_hs['weight_el_trg'].Fill(el_trg_sf[0])
             control_hs['weight_el_all'].Fill(el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0])
 
-            #control_hs['weight_el_bSF']     .Fill(weight_bSF)
+            control_hs['weight_el_bSF']     .Fill(weight_bSF)
             #control_hs['weight_el_bSF_up']  .Fill(weight_bSF_up)
             #control_hs['weight_el_bSF_down'].Fill(weight_bSF_down)
 
@@ -4240,7 +4275,7 @@ def main(input_filename, fout_name, outdir, lumi_bcdef=20263.3, lumi_gh=16518.58
     fout.cd()
     events_counter.Write() # hopefully these go to the root of the tfile
     weight_counter.Write()
-    #control_counters.Write()
+    control_counters.Write()
 
     fout.Write()
 
