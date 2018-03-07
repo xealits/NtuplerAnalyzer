@@ -23,6 +23,8 @@ parser.add_argument("-l", "--logy", action='store_true', help="set logarithmic s
 parser.add_argument("--normalize", action='store_true', help="normalize the integral to data")
 parser.add_argument("-o", "--output-directory", type=str, default='', help="optional output directory")
 
+parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
+
 parser.add_argument("--y-max", type=float, help="set the maximum on Y axis")
 
 parser.add_argument("--no-data",   action='store_true', help="don't draw data")
@@ -661,8 +663,8 @@ else:
         #hs_sum1_relative.GetYaxis().SetRange(0.5, 1.5)
         #hs_sum1_relative.GetYaxis().SetUserRange(0.5, 1.5)
 
-        ratio_max = 2. if args.fake_rate else 1.5
-        ratio_min = 0. if args.fake_rate else 0.5
+        ratio_max = 1. + args.ratio_range
+        ratio_min = 1. - args.ratio_range
         histo_data_relative.SetMaximum(ratio_max)
         histo_data_relative.SetMinimum(ratio_min)
         hs_sum1_relative.SetMaximum(ratio_max)
