@@ -26,6 +26,7 @@ if __name__ == '__main__':
     #parser.add_argument("-s", "--range-min", type=int, default=0,    help="number of event to start processing from")
     #parser.add_argument("-e", "--range-max",   type=int, default=None, help="number of event to end processing")
     parser.add_argument("-i", "--input-files", nargs='+', help='files to process (each is run in a thread)')
+    parser.add_argument("--old-miniaod-jets",  action='store_true', help="the option to run on pre-v20 incorectly saved jets (initial empty, save in nominal jets)")
 
     args = parser.parse_args()
 
@@ -64,7 +65,9 @@ if __name__ == '__main__':
             print "output file exists: %s" % (args.outdir + '/' + fout_name)
             continue
 
+        import support_channel_distrs
         from support_channel_distrs import main # ROOT stuff is loaded here
+        support_channel_distrs.OLD_MINIAOD_JETS = args.old_miniaod_jets
         t = threading.Thread(target=main, args=(input_filename, fout_name, args.outdir))
         t.start()
         log_common.info('started thread on %s' % input_filename)

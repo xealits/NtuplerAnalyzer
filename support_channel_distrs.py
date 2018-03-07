@@ -7,6 +7,8 @@ import logging as Logging
 import ctypes
 
 
+OLD_MINIAOD_JETS = False
+
 logging = Logging.getLogger("common")
 
 logging.info('importing ROOT')
@@ -1437,8 +1439,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     with_JES_sys = with_JES and ('JESUp' in requested_systematics or 'JESDown' in requested_systematics)
     with_TauES_sys = with_TauES and ('TauESUp' in requested_systematics or 'TauESDown' in requested_systematics)
 
-    with_AlphaS_sys = 'AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics
-    with_Frag_sys   = 'FragUp'   in requested_systematics or 'FragDown'   in requested_systematics
+    with_AlphaS_sys = False and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
+    with_Frag_sys   = False and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
 
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
     # all requested jet cuts
@@ -1568,6 +1570,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                #'Mt_lep_met_f_test':  TH1D('%s_%s_%s_Mt_lep_met_f_test'  % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_zero':           TH1D('%s_%s_%s_Mt_lep_met_zero'       % (chan, proc, sys), '', 20, 0, 20),
                                                'Mt_lep_met_METfilters':     TH1D('%s_%s_%s_Mt_lep_met_METfilters' % (chan, proc, sys), '', 20, 0, 20),
+
+                                               'met_VS_Mt_lep_met_f':       TH2D('%s_%s_%s_met_VS_Mt_lep_met_f'   % (chan, proc, sys), '', 15, 0, 300, 10, 0, 250),
                                                'Mt_lep_met_f':              TH1D('%s_%s_%s_Mt_lep_met_f'          % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_t1':             TH1D('%s_%s_%s_Mt_lep_met_t1'         % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met_t2':             TH1D('%s_%s_%s_Mt_lep_met_t2'         % (chan, proc, sys), '', 20, 0, 250),
@@ -1615,6 +1619,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'Mt_lep_met_f_w_tp':       TH1D('%s_%s_%s_Mt_lep_met_f_w_tp'       % (chan, proc, sys), '', 20, 0, 250),
                                                'Mt_lep_met':  TH1D('%s_%s_%s_Mt_lep_met' % (chan, proc, sys), '', 10, 0, 200),
                                                'Mt_tau_met':  TH1D('%s_%s_%s_Mt_tau_met' % (chan, proc, sys), '', 20, 0, 200),
+
                                                # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
                                                'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
                                                'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
@@ -1652,6 +1657,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'njets_cats':  TH1D('%s_%s_%s_njets_cats' % (chan, proc, sys), '', 45, 0, 45),
                                                'ntaus':       TH1D('%s_%s_%s_ntaus'      % (chan, proc, sys), '', 5, 0, 5),
 
+                                               'met_nRjets':  TH2D('%s_%s_%s_met_nRjets'        % (chan, proc, sys), '', 30, 0, 300, 10, 0, 10),
+
                                                # jet flavours exist only for mc
                                                # do them up to 30 -- check overflows if there are many
                                                'jet_flavours_hadron': TH1D('%s_%s_%s_jet_flavours_hadron' % (chan, proc, sys), '', 35, -5, 30),
@@ -1668,7 +1675,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                '2D_dijet_trijet':     TH2D('%s_%s_%s_2D_dijet_trijet'     % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
                                                '2D_dijet_trijet_all': TH2D('%s_%s_%s_2D_dijet_trijet_all' % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
                                                'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
-                                               'dijet_trijet_mass_N_permutations':   TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations'  % (chan, proc, sys), '', 50, 0, 50),
+                                               'dijet_trijet_mass_N_permutations':        TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations'         % (chan, proc, sys), '', 50, 0, 50),
+                                               'dijet_trijet_mass_N_permutations_passed': TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations_passed'  % (chan, proc, sys), '', 50, 0, 50),
                                                'dijet_trijet_mass_vs_permutations':  TH2D('%s_%s_%s_dijet_trijet_mass_vs_permutations' % (chan, proc, sys), '', 20, 0, 400, 50, 0, 50),
                                                })
                 for chan, ((procs, _), systs) in channels.items() for proc in procs for sys in systs])
@@ -2441,16 +2449,20 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # only 1 jet is taken out
         tau_match_lowest, tau_match_cuts, tau_match_old = False, False, False
 
+        # transition to v20-v21
+        miniaod_jets = ev.jet_p4 if OLD_MINIAOD_JETS else ev.jet_initial_p4
+
         for i in xrange(ev.jet_p4.size()):
             #pfid, p4 = ev.jet_PFID[i], ev.jet_p4[i]
             # RECORRECTED jets
             #p4 = ev.jet_uncorrected_p4[i]
             # jet_p4 is fully corrected online
             # and whole correction is propagated to corrected met
-            #p4 = ev.jet_p4[i]
             # as I did before I use the subset of passed jets, and propagate only their correction to met
             # TODO: add comparison to using all-corrected jets
-            p4 = ev.jet_initial_p4[i]
+            #p4 = ev.jet_p4[i]
+            #p4 = ev.jet_initial_p4[i]
+            p4 = miniaod_jets[i]
 
             pfid = ev.jet_PFID[i]
 
@@ -3859,8 +3871,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_cos']  .Fill(Mt_lep_met_cos, record_weight)
                 #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_cos_c'].Fill(Mt_lep_met_cos_c, record_weight)
                 #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_mth']  .Fill(Mt_lep_met_mth, record_weight)
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_zero']   .Fill(Mt_lep_met, record_weight)
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f']      .Fill(Mt_lep_met, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_zero']     .Fill(Mt_lep_met, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f']        .Fill(Mt_lep_met, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_VS_Mt_lep_met_f'] .Fill(met_pt, Mt_lep_met, record_weight)
                 if not ev.pass_basic_METfilters:
                     out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_METfilters'].Fill(Mt_lep_met, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_VS_nvtx']      .Fill(Mt_lep_met, ev.nvtx, 1.)
@@ -4032,6 +4045,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     out_hs[(chan, record_proc, sys_name)]['2D_dijet_trijet']  .Fill(w_mass, t_mass, record_weight)
                     out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass'].Fill(lj_var, record_weight)
                     out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_N_permutations']  .Fill(len(all_masses), record_weight)
+                    if not large_lj:
+                        out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_N_permutations_passed']  .Fill(len(all_masses), record_weight)
                     out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_vs_permutations'] .Fill(lj_var, len(all_masses), record_weight)
                     for mass_W, mass_t in all_masses:
                         out_hs[(chan, record_proc, sys_name)]['2D_dijet_trijet_all']  .Fill(mass_W, mass_t, record_weight)
@@ -4049,6 +4064,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, record_proc, sys_name)]['nRjets'] .Fill(n_rest_jets   , record_weight)
                 out_hs[(chan, record_proc, sys_name)]['nMbjets'].Fill(n_medium_jets , record_weight)
                 out_hs[(chan, record_proc, sys_name)]['nLbjets'].Fill(n_loose_jets  , record_weight)
+
+                out_hs[(chan, record_proc, sys_name)]['met_nRjets'] .Fill(met_pt, n_rest_jets   , record_weight)
 
                 jets_category = 0
                 jets_category += n_rest_jets if n_rest_jets < 5 else 4
