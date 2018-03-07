@@ -1899,7 +1899,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_p4.push_back(selMuons[l].p4());
 		NT_lep_id.push_back(selMuons[l].pdgId());
 		// mu_trig_objs or el_trig_objs
-		NT_lep_matched_HLT.push_back(processMuon_matchesHLTs(selMuons[l], mu_trig_objs, 0.4));
+		// https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#2016_Data
+		// > Offline muons selected for analysis should always be associated to the HLT objects that triggered the event. Recommended matching criterion: ΔR(HLT object, offline muon) < 0.1.
+		NT_lep_matched_HLT.push_back(processMuon_matchesHLTs(selMuons[l], mu_trig_objs, 0.1));
 		NT_lep_dz  .push_back(selMuons[l].muonBestTrack()->dz (goodPV.position()));
 		NT_lep_dxy .push_back(selMuons[l].muonBestTrack()->dxy (goodPV.position()));
 		NT_lep_dB.push_back(selMuons[l].dB());
@@ -1921,7 +1923,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_p4.push_back(selElectrons[l].p4());
 		NT_lep_id.push_back(selElectrons[l].pdgId());
 		// mu_trig_objs or el_trig_objs
-		NT_lep_matched_HLT.push_back(processElectron_matchesHLTs(selElectrons[l], el_trig_objs, 0.4));
+		// Propagating 0.1 -> 0.2 trigger match to el untill found the recommended value
+		NT_lep_matched_HLT.push_back(processElectron_matchesHLTs(selElectrons[l], el_trig_objs, 0.2));
 		NT_lep_dz  .push_back(selElectrons[l].gsfTrack()->dz (goodPV.position()));
 		NT_lep_dxy .push_back(selElectrons[l].gsfTrack()->dxy (goodPV.position()));
 		NT_lep_dB.push_back(selElectrons[l].dB());

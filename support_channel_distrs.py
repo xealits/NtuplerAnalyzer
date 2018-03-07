@@ -1742,7 +1742,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         # 1GeV above HLT pt
         # ele eta gap
-        pass_mu_kino = ev.lep_p4[0].pt() > 25. and abs(ev.lep_p4[0].eta()) < 2.4
+        # suggested minimal offline
+        # https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#2016_Data
+        # pT > 26 GeV, |η| < 2.4; 
+        pass_mu_kino = ev.lep_p4[0].pt() > 26. and abs(ev.lep_p4[0].eta()) < 2.4
         pass_el_kino = ev.lep_p4[0].pt() > 29. and abs(ev.lep_p4[0].eta()) < 2.4 and (abs(ev.lep_p4[0].eta()) < 1.4442 or abs(ev.lep_p4[0].eta()) > 1.5660)
 
         # (did) for optimization testing minimum pt cut --- review it after test results
