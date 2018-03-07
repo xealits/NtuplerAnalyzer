@@ -87,6 +87,56 @@ static double pu_vector_NOMINAL[] = {0, 0.360609416811339, 0.910848525427002, 1.
 
 
 // try simpler first
+struct dR_matching {
+	//Int_t sum;
+	Bool_t  matched;
+	Float_t dR;
+};
+
+struct dR_matching dR_match_to_HLTs(
+        pat::Muon& lepton,
+        vector<pat::TriggerObjectStandAlone>& trig_objs,    // input: trigger objects to match against (so, these should match HLT of interest)
+        float dR_cut
+        )
+{
+Float_t min_dR = 999.;
+for (size_t i = 0; i < trig_objs.size(); i++)
+        {
+        pat::TriggerObjectStandAlone& obj = trig_objs[i];
+	Float_t dR = reco::deltaR(lepton, obj);
+        if (dR < min_dR)
+                {
+                min_dR = dR;
+                }
+        }
+struct dR_matching ret = {.matched = min_dR < dR_cut, .dR = min_dR};
+return ret;
+}
+
+struct dR_matching dR_match_to_HLTs(
+        pat::Electron& lepton,
+        vector<pat::TriggerObjectStandAlone>& trig_objs,    // input: trigger objects to match against (so, these should match HLT of interest)
+        float dR_cut
+        )
+{
+Float_t min_dR = 999.;
+for (size_t i = 0; i < trig_objs.size(); i++)
+        {
+        pat::TriggerObjectStandAlone& obj = trig_objs[i];
+	Float_t dR = reco::deltaR(lepton, obj);
+        if (dR < min_dR)
+                {
+                min_dR = dR;
+                }
+        }
+struct dR_matching ret = {.matched = min_dR < dR_cut, .dR = min_dR};
+return ret;
+}
+
+
+
+
+// try simpler first
 struct gen_matching {
 	//Int_t sum;
 	Int_t closest;
@@ -1869,12 +1919,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// ELECTRONS
 	//pat::ElectronCollection selIDElectrons, selElectrons;
 	pat::ElectronCollection selElectrons, selElectrons_allIso;
-	unsigned int nVetoE_IsoImp = 0, nVetoE_Iso = 0, nVetoE_all = 0;
+	unsigned int nVetoE_Iso = 0, nVetoE_all = 0;
 	LorentzVector elDiff(0., 0., 0., 0.);
 	processElectrons_ID_ISO_Kinematics(electrons, goodPV, NT_fixedGridRhoFastjetAll, weight, patUtils::llvvElecId::Tight, patUtils::llvvElecId::Loose, patUtils::llvvElecIso::Tight, patUtils::llvvElecIso::Loose,
 		el_kino_cuts_pt, el_kino_cuts_eta, el_veto_kino_cuts_pt, el_veto_kino_cuts_eta,
 		selElectrons, selElectrons_allIso,
-		elDiff, nVetoE_IsoImp, nVetoE_Iso, nVetoE_all, false, false);
+		elDiff, nVetoE_Iso, nVetoE_all, false, false);
 
 	//nVetoE += processElectrons_MatchHLT(selIDElectrons, el_trig_objs, 0.4, selElectrons);
 
@@ -1888,7 +1938,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	for(size_t l=0; l<selMuons_allIso.size(); ++l)     selLeptons_allIso.push_back(patUtils::GenericLepton (selMuons[l]     ));
 
 	//LogInfo ("Demo") << "selected leptons: " << '(' << selIDElectrons.size() << ',' << selIDMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
-	LogInfo ("Demo") << "selected leptons: " << '(' << selElectrons.size() << ',' << selMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE_IsoImp << ',' << nVetoMu_Iso;
+	LogInfo ("Demo") << "selected leptons: " << '(' << selElectrons.size() << ',' << selMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE_Iso << ',' << nVetoMu_Iso;
 
 	//bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0; // veto on std iso veto leptons
 	//bool clean_lep_conditions = nVetoE_all==0 && nVetoMu_all==0 && nGoodPV != 0; // veto on all iso veto leptons
@@ -1909,7 +1959,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// mu_trig_objs or el_trig_objs
 		// https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#2016_Data
 		// > Offline muons selected for analysis should always be associated to the HLT objects that triggered the event. Recommended matching criterion: ΔR(HLT object, offline muon) < 0.1.
-		NT_lep_matched_HLT.push_back(processMuon_matchesHLTs(selMuons[l], mu_trig_objs, 0.1));
+		struct dR_matching match_to_HLTs = dR_match_to_HLTs(selMuons[l], mu_trig_objs, 0.1);
+		NT_lep_matched_HLT    .push_back(match_to_HLTs.matched);
+		NT_lep_matched_HLT_dR .push_back(match_to_HLTs.dR);
 		NT_lep_dz  .push_back(selMuons[l].muonBestTrack()->dz (goodPV.position()));
 		NT_lep_dxy .push_back(selMuons[l].muonBestTrack()->dxy (goodPV.position()));
 		NT_lep_dB.push_back(selMuons[l].dB());
@@ -1932,7 +1984,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_id.push_back(selElectrons[l].pdgId());
 		// mu_trig_objs or el_trig_objs
 		// Propagating 0.1 -> 0.2 trigger match to el untill found the recommended value
-		NT_lep_matched_HLT.push_back(processElectron_matchesHLTs(selElectrons[l], el_trig_objs, 0.2));
+		struct dR_matching match_to_HLTs = dR_match_to_HLTs(selElectrons[l], el_trig_objs, 0.2);
+		NT_lep_matched_HLT    .push_back(match_to_HLTs.matched);
+		NT_lep_matched_HLT_dR .push_back(match_to_HLTs.dR);
 		NT_lep_dz  .push_back(selElectrons[l].gsfTrack()->dz (goodPV.position()));
 		NT_lep_dxy .push_back(selElectrons[l].gsfTrack()->dxy (goodPV.position()));
 		NT_lep_dB.push_back(selElectrons[l].dB());
@@ -2383,7 +2437,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				dR_to_alliso = dR;
 			}
 		NT_jet_matching_allIso_lep    .push_back(dR_to_alliso < 0.4);
-		NT_jet_matching_allIso_lep_dR .push_back(dR_to_alliso;
+		NT_jet_matching_allIso_lep_dR .push_back(dR_to_alliso);
 
 		}
 	NT_nalljets  = selJetsNoLep.size();
@@ -2558,7 +2612,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				dR_to_alliso = dR;
 			}
 		NT_tau_matching_allIso_lep    .push_back(dR_to_alliso < 0.4);
-		NT_tau_matching_allIso_lep_dR .push_back(dR_to_alliso;
+		NT_tau_matching_allIso_lep_dR .push_back(dR_to_alliso);
 
 		if (isMC)
 			{

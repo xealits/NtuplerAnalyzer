@@ -362,6 +362,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_relIso)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  lep_passIso)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_dB)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  lep_matched_HLT)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_matched_HLT_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_matching_gen_dR)
 
