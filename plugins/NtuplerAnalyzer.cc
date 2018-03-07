@@ -1858,26 +1858,34 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	LorentzVector muDiff(0., 0., 0., 0.);
 	unsigned int nVetoMu_Iso = 0, nVetoMu_all = 0;
 	//pat::MuonCollection selIDMuons, selMuons;
-	pat::MuonCollection selMuons;
+	pat::MuonCollection selMuons, selMuons_allIso;
 	processMuons_ID_ISO_Kinematics(muons, goodPV, weight, patUtils::llvvMuonId::StdTight, patUtils::llvvMuonId::StdLoose, patUtils::llvvMuonIso::Tight, patUtils::llvvMuonIso::Loose,               
-		mu_kino_cuts_pt, mu_kino_cuts_eta, mu_veto_kino_cuts_pt, mu_veto_kino_cuts_eta, selMuons, muDiff, nVetoMu_Iso, nVetoMu_all, false, false);
+		mu_kino_cuts_pt, mu_kino_cuts_eta, mu_veto_kino_cuts_pt, mu_veto_kino_cuts_eta,
+		selMuons, selMuons_allIso,
+		muDiff, nVetoMu_Iso, nVetoMu_all, false, false);
 
 	//nVetoMu += processMuons_MatchHLT(selIDMuons, mu_trig_objs, 0.4, selMuons);
 
 	// ELECTRONS
 	//pat::ElectronCollection selIDElectrons, selElectrons;
-	pat::ElectronCollection selElectrons;
+	pat::ElectronCollection selElectrons, selElectrons_allIso;
 	unsigned int nVetoE_IsoImp = 0, nVetoE_Iso = 0, nVetoE_all = 0;
 	LorentzVector elDiff(0., 0., 0., 0.);
 	processElectrons_ID_ISO_Kinematics(electrons, goodPV, NT_fixedGridRhoFastjetAll, weight, patUtils::llvvElecId::Tight, patUtils::llvvElecId::Loose, patUtils::llvvElecIso::Tight, patUtils::llvvElecIso::Loose,
-		el_kino_cuts_pt, el_kino_cuts_eta, el_veto_kino_cuts_pt, el_veto_kino_cuts_eta, selElectrons, elDiff, nVetoE_IsoImp, nVetoE_Iso, nVetoE_all, false, false);
+		el_kino_cuts_pt, el_kino_cuts_eta, el_veto_kino_cuts_pt, el_veto_kino_cuts_eta,
+		selElectrons, selElectrons_allIso,
+		elDiff, nVetoE_IsoImp, nVetoE_Iso, nVetoE_all, false, false);
 
 	//nVetoE += processElectrons_MatchHLT(selIDElectrons, el_trig_objs, 0.4, selElectrons);
 
 	std::vector<patUtils::GenericLepton> selLeptons;
 	for(size_t l=0; l<selElectrons.size(); ++l) selLeptons.push_back(patUtils::GenericLepton (selElectrons[l] ));
 	for(size_t l=0; l<selMuons.size(); ++l)     selLeptons.push_back(patUtils::GenericLepton (selMuons[l]     ));
-	std::sort(selLeptons.begin(), selLeptons.end(), utils::sort_CandidatesByPt);
+	//std::sort(selLeptons.begin(), selLeptons.end(), utils::sort_CandidatesByPt);
+
+	std::vector<patUtils::GenericLepton> selLeptons_allIso;
+	for(size_t l=0; l<selElectrons_allIso.size(); ++l) selLeptons_allIso.push_back(patUtils::GenericLepton (selElectrons[l] ));
+	for(size_t l=0; l<selMuons_allIso.size(); ++l)     selLeptons_allIso.push_back(patUtils::GenericLepton (selMuons[l]     ));
 
 	//LogInfo ("Demo") << "selected leptons: " << '(' << selIDElectrons.size() << ',' << selIDMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
 	LogInfo ("Demo") << "selected leptons: " << '(' << selElectrons.size() << ',' << selMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE_IsoImp << ',' << nVetoMu_Iso;
@@ -1885,7 +1893,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0; // veto on std iso veto leptons
 	//bool clean_lep_conditions = nVetoE_all==0 && nVetoMu_all==0 && nGoodPV != 0; // veto on all iso veto leptons
 	bool clean_lep_conditions = nGoodPV != 0; // just good PV, the loosest req,save bit if no veto leps
-	if (!(clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3)) return;
+	if (!(clean_lep_conditions && ((selLeptons.size() > 0 && selLeptons.size() < 3) || selLeptons_allIso.size() == 1) )) return;
 	// exit now to reduce computation -- all record schemes have this requirement
 
 	event_counter ->Fill(event_checkpoint++);
@@ -1908,8 +1916,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		float rel_iso = relIso(selMuons[l], NT_fixedGridRhoFastjetAll);
 		NT_lep_relIso.push_back(rel_iso);
 		// using old procedures for now
-		bool passIso = patUtils::passIso(selMuons[l], patUtils::llvvMuonIso::Tight, patUtils::CutVersion::Moriond17Cut);
-		leps_passed_relIso &= passIso;
+		NT_lep_passIso.push_back(patUtils::passIso(selMuons[l], patUtils::llvvMuonIso::Tight, patUtils::CutVersion::Moriond17Cut));
+		//leps_passed_relIso &= passIso;
 		if (isMC)
 			{
 			struct gen_matching match = match_to_gen(selMuons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
@@ -1931,8 +1939,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		float rel_iso = relIso(selElectrons[l], NT_fixedGridRhoFastjetAll);
 		NT_lep_relIso.push_back(rel_iso);
 		//bool passIso = patUtils::passIso(selMuons[l], el_ISO, patUtils::CutVersion::Moriond17Cut, rho);
-		bool passIso = patUtils::passIso(selElectrons[l], patUtils::llvvElecIso::Tight, patUtils::CutVersion::Moriond17Cut, NT_fixedGridRhoFastjetAll);
-		leps_passed_relIso &= passIso;
+		NT_lep_passIso.push_back(patUtils::passIso(selElectrons[l], patUtils::llvvElecIso::Tight, patUtils::CutVersion::Moriond17Cut, NT_fixedGridRhoFastjetAll));
+		//leps_passed_relIso &= passIso;
 		if (isMC)
 			{
 			struct gen_matching match = match_to_gen(selElectrons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
@@ -1942,13 +1950,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 
 	NT_nleps = selLeptons.size();
+
+
 	// for control
-	NT_nleps_veto_el_isoimp = nVetoE_IsoImp;
+	//NT_nleps_veto_el_isoimp = nVetoE_IsoImp;
 	NT_nleps_veto_el_iso = nVetoE_Iso;
 	NT_nleps_veto_el_all = nVetoE_all;
 	NT_nleps_veto_mu_iso = nVetoMu_Iso;
 	NT_nleps_veto_mu_all = nVetoMu_all;
-	NT_no_std_veto_leps  = nVetoE_IsoImp == 0 && nVetoMu_Iso == 0;
+	//NT_no_std_veto_leps  = nVetoE_IsoImp == 0 && nVetoMu_Iso == 0;
 	NT_no_iso_veto_leps  = nVetoE_Iso == 0 && nVetoMu_Iso == 0;
 
 	NT_leps_ID = 1;
@@ -1956,7 +1966,35 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		{
 		NT_leps_ID *= selLeptons[i].pdgId();
 		}
-	//NT_leps_ID = NT_leps_ID;
+
+	// all iso leptons for QCD study
+	/* this selection won't reproduce the veto on relIso
+	 * -- TODO: not sure if no-veto for QCD is fine
+	 */
+	NT_leps_ID_allIso = 1;
+
+	for(size_t l=0; l<selElectrons_allIso.size(); ++l)
+		{
+		NT_leps_ID_allIso *= selElectrons_allIso[l].pdgId();
+
+		NT_lep_alliso_p4.push_back(selElectrons_allIso[l].p4());
+		NT_lep_alliso_id.push_back(selElectrons_allIso[l].pdgId());
+		float rel_iso = relIso(selElectrons_allIso[l], NT_fixedGridRhoFastjetAll);
+		NT_lep_alliso_relIso.push_back(rel_iso);
+		NT_lep_alliso_matched_HLT.push_back(processElectron_matchesHLTs(selElectrons_allIso[l], el_trig_objs, 0.2));
+		}
+
+	for(size_t l=0; l<selMuons_allIso.size(); ++l)
+		{
+		NT_leps_ID_allIso *= selMuons_allIso[l].pdgId();
+
+		NT_lep_alliso_p4.push_back(selMuons_allIso[l].p4());
+		NT_lep_alliso_id.push_back(selMuons_allIso[l].pdgId());
+		float rel_iso = relIso(selMuons_allIso[l], NT_fixedGridRhoFastjetAll);
+		NT_lep_alliso_relIso.push_back(rel_iso);
+		NT_lep_alliso_matched_HLT.push_back(processMuon_matchesHLTs(selMuons_allIso[l], mu_trig_objs, 0.1));
+		}
+
 
 	LogInfo ("Demo") << "saved leptons";
 
@@ -2334,6 +2372,19 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		/* requirements for there jets: pt and no leptons in dR
 		 * no PFID requirement and no eta
 		 */
+
+		// match to all-iso leptons
+		Bool_t match_to_alliso = false;
+		Float_t dR_to_alliso = 999.;
+		for(size_t l=0; l<selLeptons_allIso.size(); ++l)
+			{
+			double dR = reco::deltaR(jet, selLeptons[l]);
+			if (dR < dR_to_alliso)
+				dR_to_alliso = dR;
+			}
+		NT_jet_matching_allIso_lep    .push_back(dR_to_alliso < 0.4);
+		NT_jet_matching_allIso_lep_dR .push_back(dR_to_alliso;
+
 		}
 	NT_nalljets  = selJetsNoLep.size();
 
@@ -2495,6 +2546,19 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_tau_hasSecondaryVertex.push_back(tau.hasSecondaryVertex());
 		//NT_tau_hcalEnergy = tau.hcalEnergy();
 		//NT_tau_hcalEnergyLeadChargedHadrCand = tau.hcalEnergyLeadChargedHadrCand();
+
+
+		// match to all-iso leptons
+		Bool_t match_to_alliso = false;
+		Float_t dR_to_alliso = 999.;
+		for(size_t l=0; l<selLeptons_allIso.size(); ++l)
+			{
+			double dR = reco::deltaR(tau, selLeptons[l]);
+			if (dR < dR_to_alliso)
+				dR_to_alliso = dR;
+			}
+		NT_tau_matching_allIso_lep    .push_back(dR_to_alliso < 0.4);
+		NT_tau_matching_allIso_lep_dR .push_back(dR_to_alliso;
 
 		if (isMC)
 			{
@@ -2848,8 +2912,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	LogInfo ("Demo") << "all particles/objects are selected, nbjets = " << NT_nbjets;
 
 	//bool record_ntuple = (isSingleMu || isSingleE || pass_dileptons) && NT_nbjets > 0 && NT_tau_IDlev.size() > 0; // at least 1 b jet and 1 loose tau
-	bool pass_leptons = clean_lep_conditions && leps_passed_relIso && selLeptons.size() == 1; // tau_ID oriented scheme, Dileptons are separate
-	bool pass_leptons_all_iso = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3;
+	bool pass_leptons = clean_lep_conditions && NT_no_iso_veto_leps && selLeptons.size() > 0 && selLeptons.size() < 3; // tau_ID oriented scheme, Dileptons are separate
+	bool pass_leptons_all_iso = clean_lep_conditions && selLeptons_allIso.size() > 0 && selLeptons_allIso.size() < 3;
 	bool record_ntuple = false;
 
 	if (record_tauID)
@@ -2860,30 +2924,30 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		 *
 		 * should contain good WJets control sample
 		 */
-		record_ntuple |= pass_leptons && NT_ntaus > 0;
+		record_ntuple |= pass_leptons && NT_ntaus > 0 && selLeptons.size() == 1;
 		}
 	if (record_tauIDantiIso)
 		{
-		record_ntuple |= pass_leptons_all_iso && NT_ntaus > 0;
+		record_ntuple |= pass_leptons_all_iso && NT_ntaus > 0 && selLeptons_allIso.size() == 1;
 		}
 	if (record_bPreselection)
 		{
 		/* leptons and at least 1 b jet
 		 * our old preselection
 		 */
-		record_ntuple |= pass_leptons && NT_nbjets > 0;
+		record_ntuple |= pass_leptons && NT_nbjets > 0 && selLeptons.size() == 1;
 		}
 	if (record_MonitorHLT)
 		{
 		/* the HLT efficiency study
 		 * only few events in lepMonitorTrigger
 		 */
-		record_ntuple |= pass_leptons && lepMonitorTrigger;
+		record_ntuple |= pass_leptons && lepMonitorTrigger && selLeptons.size() == 1;
 		}
 	if (record_ElMu)
 		{
 		// all el-mu events (it's mainly TTbar, so should be few)
-		record_ntuple |= clean_lep_conditions && abs(NT_leps_ID) == 143;
+		record_ntuple |= pass_leptons && abs(NT_leps_ID) == 143;
 		}
 	if (record_Dilep)
 		{
@@ -2891,7 +2955,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		 * control for lepton IDs
 		 * about = to tau ID preselection
 		 */
-		record_ntuple |= clean_lep_conditions && selLeptons.size() == 2;
+		record_ntuple |= pass_leptons && selLeptons.size() == 2;
 		}
 	if (record_jets)
 		{

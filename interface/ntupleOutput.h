@@ -325,9 +325,10 @@ Int_t_in_NTuple(OUTNTUPLE, nallbjets) // N b-jets among them
 Int_t_in_NTuple(OUTNTUPLE, ntaus)
 
 // info on veto leps
-Bool_t_in_NTuple(OUTNTUPLE, no_std_veto_leps) // std veto lep bool for proc, includes iso of leptons and the suggested impact of electrons (muon impact is embedded into ID)
+// ele impact is ON by default since v22
+//Bool_t_in_NTuple(OUTNTUPLE, no_std_veto_leps) // std veto lep bool for proc, includes iso of leptons and the suggested impact of electrons (muon impact is embedded into ID)
 Bool_t_in_NTuple(OUTNTUPLE, no_iso_veto_leps) // only iso, no suggested impacts of electrons
-Int_t_in_NTuple(OUTNTUPLE, nleps_veto_el_isoimp)
+//Int_t_in_NTuple(OUTNTUPLE, nleps_veto_el_isoimp)
 Int_t_in_NTuple(OUTNTUPLE, nleps_veto_el_iso)
 Int_t_in_NTuple(OUTNTUPLE, nleps_veto_el_all)
 Int_t_in_NTuple(OUTNTUPLE, nleps_veto_mu_iso)
@@ -358,10 +359,18 @@ VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_dxy)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_dz)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_relIso)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  lep_passIso)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_dB)
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, lep_matched_HLT)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  lep_matched_HLT)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_matching_gen_dR)
+
+// allIso LEPTONS
+Int_t_in_NTuple(OUTNTUPLE, leps_ID_allIso)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, lep_alliso_id)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, lep_alliso_p4)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_alliso_relIso)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  lep_alliso_matched_HLT)
 
 // JETS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, jet_id)
@@ -371,6 +380,10 @@ VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::
 
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_matching_gen_dR)
+
+// more info for all-iso region
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  jet_matching_allIso_lep)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_matching_allIso_lep_dR)
 
 //VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_matched_genjet_p4)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  genjet_matched)
@@ -415,6 +428,10 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_decayMode)
 
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_dR)
+
+// more info for all-iso region
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  tau_matching_allIso_lep)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_allIso_lep_dR)
 
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leading_track_pt)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_leadChargedHadrCand_pt)
