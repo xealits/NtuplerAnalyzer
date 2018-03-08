@@ -245,9 +245,11 @@ logging.info("made %d job commands" % len(job_commands))
 # split the jobs into queues according to the scheme
 # at the moment standard scheme only:
 standard_scheme = {1:5, 2:5, 3:5, 4:13, 5:13}
-scheme = standard_scheme
+scheme_one3 = {1:6, 2:6, 3:1, 4:14, 5:14}
+scheme_no3 =  {1:6, 2:6, 3:0, 4:14, 5:14}
+scheme = scheme_no3 # standard_scheme
 
-n_queues = sum(standard_scheme.values())
+n_queues = sum(scheme.values())
 
 #>>> def chunkify(lst,n):
 #...     return [lst[i::n] for i in xrange(n)]
