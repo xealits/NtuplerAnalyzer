@@ -443,6 +443,12 @@ if not args.plot and not args.ratio:
          proc/
             sys/
                 distrs
+
+    also save MC sums:
+    cannel/
+        sums/
+	    sys/
+	        distrs
     '''
 
     filename = out_dir + args.mc_file.split('.root')[0] + '_HISTOSEL_%s_%s_%s.root' % (distr_name, channel, sys_name)
@@ -472,14 +478,23 @@ if not args.plot and not args.ratio:
         h.SetDirectory(syst_dir)
         h.Write()
 
+    chan_dir.cd()
+    sums_dir = chan_dir.mkdir("sums")
+    sums_dir.cd()
+    syst_dir = proc_dir.mkdir(sys_name)
+    syst_dir.cd()
+    hs.SetDirectory(syst_dir)
+    hs_sum1.SetDirectory(syst_dir)
+    hs_sum2.SetDirectory(syst_dir)
+    hs.Write()
+    hs_sum1.Write()
+    hs_sum2.Write()
+
     ## AttributeError: 'THStack' object has no attribute 'SetDirectory'
     ## therefore no THStack in the output
     #for stuff in [hs_sum1, hs_sum2]:
     #    stuff.SetDirectory(out_dir)
     #    stuff.Write()
-    ##hs.Write()
-    ##hs_sum1.Write()
-    ##hs_sum2.Write()
     ## also
     ## AttributeError: 'TLegend' object has no attribute 'SetDirectory'
     ##leg.SetDirectory(out_dir)
