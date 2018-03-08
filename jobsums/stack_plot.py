@@ -218,13 +218,19 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
 f = TFile(args.mc_file)
 used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_name, distr_name)) for distr_name in distr_names]
 
+# USING NOMINAL QCD:
+# ss MC for QCD is taken at NOMINAL, data is always nominal
+# then SS MC is scaled
+# and substituted in OS histos
+
 # for ss channels I need data - MC sum
 # and I substitute QCD with this difference everywhere
 hs_sums2_ss = [] # these will be sums of no-QCD MC in SS region
 
 if args.qcd > 0. or args.osss:
     # get all the same distributions for _ss channel
-    used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, sys_name, distr_name)) for distr_name in distr_names]
+    #used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, sys_name, distr_name)) for distr_name in distr_names]
+    used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, 'NOMINAL', distr_name)) for distr_name in distr_names]
 
     for distr, histos in used_histos_per_distr_ss:
         # loop through normal list
@@ -479,16 +485,23 @@ if not args.plot and not args.ratio:
         h.Write()
 
     chan_dir.cd()
-    sums_dir = chan_dir.mkdir("sums")
+    #syst_dir = proc_dir.mkdir(sys_name) # object of this name already exists...
+    # now this is why Unix is such a great system: it does have hierarchical structures, global vs local scope, modularity
+    # ROOT was made in 90th and it does not have these features
+    sums_dir = chan_dir.mkdir("sums_" + sys_name)
     sums_dir.cd()
-    syst_dir = proc_dir.mkdir(sys_name)
-    syst_dir.cd()
-    hs.SetDirectory(syst_dir)
-    hs_sum1.SetDirectory(syst_dir)
-    hs_sum2.SetDirectory(syst_dir)
-    hs.Write()
-    hs_sum1.Write()
-    hs_sum2.Write()
+    #syst_dir = proc_dir.mkdir(sys_name)
+    #syst_dir.cd()
+    #hs      .SetName (hs     .GetName() + '_' + sys_name)
+    hs_sum1 .SetName (hs_sum1.GetName() + '_' + sys_name)
+    hs_sum2 .SetName (hs_sum2.GetName() + '_' + sys_name)
+    #hs      .SetDirectory (sums_dir) # 'THStack' object has no attribute 'SetDirectory'
+    # least expected nonuniformity of interface
+    hs_sum1 .SetDirectory (sums_dir)
+    hs_sum2 .SetDirectory (sums_dir)
+    #hs      .Write()
+    hs_sum1 .Write()
+    hs_sum2 .Write()
 
     ## AttributeError: 'THStack' object has no attribute 'SetDirectory'
     ## therefore no THStack in the output
