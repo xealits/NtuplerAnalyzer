@@ -1642,7 +1642,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
                                                'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
                                                # mass between tau and all non-b jets (to catch the c-jets from W)
-                                               'M_tau_nonb':  TH1D('%s_%s_%s_M_tau_nonb' % (chan, proc, sys), '', 19, 10, 200),
+                                               'M_tau_nonb':       TH1D('%s_%s_%s_M_tau_nonb'       % (chan, proc, sys), '', 19, 10, 200),
+                                               'M_tau_nonb_min':   TH1D('%s_%s_%s_M_tau_nonb_min'   % (chan, proc, sys), '', 19, 10, 200),
+                                               'M_tau_nonb_Wdist': TH1D('%s_%s_%s_M_tau_nonb_Wdist' % (chan, proc, sys), '', 19, 10, 200),
                                                # parameters of tau
                                                'tau_ref_Sign': TH1D('%s_%s_%s_tau_ref_Sign'% (chan, proc, sys), '', 44, -1, 10),
                                                'tau_ref_Leng': TH1D('%s_%s_%s_tau_ref_Leng'% (chan, proc, sys), '', 44, -0.001, 0.01),
@@ -4031,9 +4033,19 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # mass between tau and all non-b jets (to catch the c-jets from W)
                     # sel_jets.rest
                     # jets.lowest.rest + jets.lowest.taumatched[1]
+                    M_tau_nonb_min = 1000.
+                    M_tau_nonb_Wdist = 1000.
                     for a_jet in sel_jets.rest: # + sel_jets.taumatched[ -- assume the pair won't be tau matched
                         mass_j_tau = (a_jet[0] * a_jet[1] + corrected_tau).mass()
+                        if mass_j_tau < M_tau_nonb_min:
+                            M_tau_nonb_min = mass_j_tau
+                        W_dist = abs(mass_j_tau - 80.)
+                        if W_dist < M_tau_nonb_Wdist:
+                            M_tau_nonb_Wdist = W_dist
                         out_hs[(chan, record_proc, sys_name)]['M_tau_nonb'] .Fill(mass_j_tau, record_weight)
+
+                    out_hs[(chan, record_proc, sys_name)]['M_tau_nonb_min']   .Fill(M_tau_nonb_min, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['M_tau_nonb_Wdist'] .Fill(M_tau_nonb_Wdist, record_weight)
 
                     out_hs[(chan, record_proc, sys_name)]['tau_pt']  .Fill(corrected_tau.pt(),  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['tau_eta'] .Fill(corrected_tau.eta(), record_weight)

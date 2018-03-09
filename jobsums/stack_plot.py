@@ -25,11 +25,13 @@ parser.add_argument("-o", "--output-directory", type=str, default='', help="opti
 
 parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
 
-parser.add_argument("--y-max", type=float, help="set the maximum on Y axis")
+parser.add_argument("--y-max",   type=float, help="set the maximum on Y axis")
+parser.add_argument("--x-range", type=str,   help="set the range on X axis")
 
 parser.add_argument("--no-data",   action='store_true', help="don't draw data")
 
 parser.add_argument("--qcd",   type=float, default=0., help="get QCD from corresponding _ss channel and transfer it with the given factor (try --qcd 1)")
+parser.add_argument("--qcd-factor",   type=float, default=1., help="factor for MC QCD")
 parser.add_argument("--osss",  action='store_true', help="plot the ratio in OS/SS of data-other bkcg")
 
 parser.add_argument("--wjets", type=float, default=0., help="scale factor for wjets (from the control region)")
@@ -45,6 +47,7 @@ parser.add_argument("-f", "--form-shapes", action='store_true', help="plot the s
 parser.add_argument("--processes", type=str, default='all', help="set processes to consider (all by default)")
 
 parser.add_argument("--skip-legend", action='store_true', help="don't plot the legend (full view of distribution)")
+parser.add_argument("--skip-QCD", action='store_true', help="skip MC QCD")
 
 parser.add_argument("--lumi", type=float, default=35.8, help="set lumi label on the plot")
 parser.add_argument("--title-x", type=str, default="", help="set title of X axis on the plot")
@@ -90,10 +93,11 @@ distr_names = args.distr_name.split('/')
 if '/' in distr_names:
     logging.info("getting %d distrs from %s" % (len(distr_names), args.distr_name))
 
-if args.processes == 'all':
-    processes_requirement = None
-else:
-    processes_requirement = args.processes.split(',')
+processes_requirement = None
+#if args.processes == 'all':
+#    processes_requirement = None
+#else:
+#    processes_requirement = args.processes.split(',')
 
 
 '''
@@ -136,7 +140,7 @@ else:
 
 logging.info("# data histograms = %d" % len(histos_data_per_distr))
 
-def get_histos(infile, channels, shape_channel, sys_name, distr_name):
+def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=False):
     """get_histos(infile)
 
     the file contains usual structure
@@ -156,6 +160,8 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
         #for process in sorted_pkeys:
         for process in processes_keys:
            nick = process.GetName()
+           if skip_QCD and nick == 'qcd':
+               continue
            if processes_requirement and nick not in processes_requirement:
                continue
            #logging.info(nick)
@@ -200,6 +206,10 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
            if args.wjets > 0 and nick == 'wjets':
                histo.Scale(args.wjets)
 
+           # mc qcd normalization
+           if nick == 'qcd':
+               histo.Scale(args.qcd_factor)
+
            # rename the histo for the correct systematic name in case of TT systematics
            histo_name = '_'.join([channel, nick, sys_name, distr_name])
            histo.SetName(histo_name)
@@ -216,7 +226,7 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name):
 
 
 f = TFile(args.mc_file)
-used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_name, distr_name)) for distr_name in distr_names]
+used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_name, distr_name, skip_QCD = args.skip_QCD)) for distr_name in distr_names]
 
 # USING NOMINAL QCD:
 # ss MC for QCD is taken at NOMINAL, data is always nominal
@@ -532,6 +542,8 @@ elif args.form_shapes:
         histo_data.Scale(1/histo_data.Integral()) # but errors are not scaled here?
 
     for histo, nick, _ in used_histos:
+        #if nick not in args.processes:
+            #continue
         histo.Scale(1/histo.Integral())
 
     gStyle.SetHatchesSpacing(2)
@@ -550,6 +562,8 @@ elif args.form_shapes:
     if not args.no_data:
         histos_data[0][0].Draw('e1 p')
     for i, (histo, nick, _) in enumerate(histos_data[1:] + used_histos):
+        if nick not in args.processes:
+            continue
         #histo.SetFillColor( # it shouldn't be needed with hist drawing option
         # nope, it's needed...
         histo.SetLineColor(plotting_root.nick_colour[nick])
@@ -561,14 +575,15 @@ elif args.form_shapes:
             histo.SetFillStyle([3354, 3345][i])
         else:
             histo.SetFillColorAlpha(0, 0.0)
-        histo.Draw("hist" if args.no_data and i<=len(histos_data[1:]) else "hist same")
+        histo.Draw("hist e" if args.no_data and i<=len(histos_data[1:]) else "hist e same")
     if not args.no_data:
         histos_data[0][0].Draw('same e1 p')
 
     if not args.skip_legend:
         leg.Draw("same")
 
-    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes_%d-channels_%s-processes.png' % (len(channels), '-'.join(processes_requirement)))
+    #cst.SaveAs(out_dir + '_'.join([args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name]) + '_shapes_%d-channels_%s-processes.png' % (len(channels), '-'.join(processes_requirement)))
+    cst.SaveAs(out_dir + "shapes%s%s%s.png" %('_' + args.mc_file.split('.')[0], '_' + args.processes, '_data-qcd' if args.qcd > 0. else ''))
 
 elif args.osss:
     from ROOT import gStyle, gROOT, TCanvas, TPad
@@ -672,6 +687,11 @@ else:
     if args.fake_rate:
         histos_data_sum.Divide(histos_data_sum2)
         hs_sum1.Divide(hs_sum1_2)
+
+    if args.x_range:
+        x_min, x_max = (float(x) for x in args.x_range.split(','))
+        histos_data_sum .SetAxisRange(x_min, x_max, "X")
+        hs_sum1         .SetAxisRange(x_min, x_max, "X")
 
     # plotting
     if args.ratio:
@@ -891,7 +911,7 @@ else:
     else:
         stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
         shape_chan = ('_x_' + args.shape) if args.shape else ''
-        cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ".png")
+        cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ('_noQCD' if args.skip_QCD else '') + ".png")
 
 
 logging.info("segfault after here")

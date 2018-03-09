@@ -51,6 +51,7 @@ leg = TLegend(0.6,0.6, 1.,1.)
 # get nominal MC
 sys = 'NOMINAL'
 nom_MC = fdata.Get(args.channel + '/sums_%s/mc_sum1_%s' % (sys, sys))
+nom_MC.Print()
 
 #leg.AddEntry(nom_MC, "MC NOMINAL", "L")
 leg.AddEntry(nom_MC, "MC NOMINAL", "f")
@@ -62,13 +63,27 @@ if not args.no_data:
     leg.AddEntry(data, "Data", "lep")
 
 sys_color = {'TOPPTUp': kRed,
-    'PUUp': kGreen,
-    'PUDown': kGreen + 1}
+    'PUUp':   kGreen,
+    'PUDown': kGreen + 1,
+    'bSFUp':   kGreen,
+    'bSFDown': kGreen + 1,
+    'JERUp':   kGreen,
+    'JERDown': kGreen + 1,
+    'JESUp':   kGreen,
+    'JESDown': kGreen + 1,
+    'ISRUp'   : kOrange,
+    'ISRDown' : kOrange + 1,
+    'FSRUp'   : kOrange,
+    'FSRDown' : kOrange + 1,
+    'TuneCUETP8M2T4Up'   : kOrange,
+    'TuneCUETP8M2T4Down' : kOrange + 1,
+}
 
 sys_MCs = []
 # and systematic MC-s
 for sys in sys_names:
     sys_MC = fdata.Get(args.channel + '/sums_%s/mc_sum1_%s' % (sys, sys))
+    sys_MC.Print()
     sys_MC.SetLineColor(sys_color[sys])
     leg.AddEntry(sys_MC, "MC %s" % sys, "L")
     sys_MCs.append(sys_MC)
@@ -138,5 +153,5 @@ if args.ratio:
         h_rel.Draw("same")
     data_rel.Draw("same")
 
-    cst.SaveAs(args.output_directory + '/MC-systs_%s_%s_%s.png' % (args.channel, args.distr, args.systematic))
+cst.SaveAs(args.output_directory + '/MC-systs_%s_%s_%s.png' % (args.channel, args.distr, args.systematic))
 
