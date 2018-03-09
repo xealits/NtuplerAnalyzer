@@ -1,3 +1,4 @@
+python stack_postfit.py fitDiagnosticsElShapesPostFitDistr.root ctr_old_el_sel_ljout --title-x "Mt(lep, MET)"
 
 # crab submition
 
