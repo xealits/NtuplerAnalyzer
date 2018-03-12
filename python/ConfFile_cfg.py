@@ -35,6 +35,9 @@ input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/MC2016_Summer16_W0Jets_amc
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/MC2016_Summer16_DY50_amcatnlo_0EE8D393-D0DE-E611-9106-A4BF0101202F.root',), True, 'DYJets'
 input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/MC2015_Spring16_reHLT_DY-50_amcatnlo_00200284-F15C-E611-AA9B-002590574776.root",), True, 'DYJets2015_amcatnlo'
 
+if any('2015' in infile for infile in input_files) or '2015' in dtag:
+    HLT_source = 'HLT2'
+
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/26ABF488-A0BE-E611-BEEB-0CC47A4D7640.root'
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root'
  #'root://eoscms//eos/cms///store/data/Run2016G/SingleMuon/AOD/23Sep2016-v1/120000/D400618A-839C-E611-8E83-008CFAF73190.root' # no CTPPS here
@@ -83,6 +86,7 @@ process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
+
 #process.MessageLogger.cerr.threshold = 'INFO'
 ##process.MessageLogger.categories.append('Demo')
 #process.MessageLogger.cerr.INFO = cms.untracked.PSet(

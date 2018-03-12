@@ -147,7 +147,7 @@ else if (depth > 0)
 	{
 	// loop through mother
 	const reco::Candidate* cand = NULL;
-	for (int d_i=0; d_i < part->numberOfMothers(); d_i++)
+	for (unsigned int d_i=0; d_i < part->numberOfMothers(); d_i++)
 		{
 		const reco::Candidate * mother = part->mother(d_i);
 		depth -= 1;
@@ -157,6 +157,7 @@ else if (depth > 0)
 		}
 	return cand;
 	}
+return NULL;
 }
 
 
@@ -1351,13 +1352,17 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							else
 								save_final_cands(&p, gen_taus);
 							}
-						else if (const reco::Candidate& tau_mother = has_tau_mother(&p, 2))
+						else
 							{
-							int tau_id = simple_tau_decay_id(&p);
-							if (abs(tau_id) >= 30)
-								save_final_cands(tau_mother, gen_tau3ch);
-							else
-								save_final_cands(tau_mother, gen_taus);
+							const reco::Candidate* tau_mother = has_tau_mother(&p, 2);
+							if (tau_mother != NULL)
+								{
+								int tau_id = simple_tau_decay_id(tau_mother);
+								if (abs(tau_id) >= 30)
+									save_final_cands(tau_mother, gen_tau3ch);
+								else
+									save_final_cands(tau_mother, gen_taus);
+								}
 							}
 						}
 					// Save parameters for recoil corrections
@@ -1937,6 +1942,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		}
 
+	LogInfo ("Demo") << "selected vertex";
 	//weight = 1; // reset weights?
 
 	// MUONS
@@ -1950,6 +1956,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		muDiff, nVetoMu_Iso, nVetoMu_all, false, false);
 
 	//nVetoMu += processMuons_MatchHLT(selIDMuons, mu_trig_objs, 0.4, selMuons);
+	LogInfo ("Demo") << "passed muons" << selMuons.size() << ' ' << selMuons_allIso.size();
 
 	// ELECTRONS
 	//pat::ElectronCollection selIDElectrons, selElectrons;
@@ -1961,6 +1968,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		selElectrons, selElectrons_allIso,
 		elDiff, nVetoE_Iso, nVetoE_all, false, false);
 
+	LogInfo ("Demo") << "passed electrons" << selElectrons.size() << ' ' << selElectrons_allIso.size();
 	//nVetoE += processElectrons_MatchHLT(selIDElectrons, el_trig_objs, 0.4, selElectrons);
 
 	std::vector<patUtils::GenericLepton> selLeptons;
@@ -1969,8 +1977,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//std::sort(selLeptons.begin(), selLeptons.end(), utils::sort_CandidatesByPt);
 
 	std::vector<patUtils::GenericLepton> selLeptons_allIso;
-	for(size_t l=0; l<selElectrons_allIso.size(); ++l) selLeptons_allIso.push_back(patUtils::GenericLepton (selElectrons[l] ));
-	for(size_t l=0; l<selMuons_allIso.size(); ++l)     selLeptons_allIso.push_back(patUtils::GenericLepton (selMuons[l]     ));
+	for(size_t l=0; l<selElectrons_allIso.size(); ++l) selLeptons_allIso.push_back(patUtils::GenericLepton (selElectrons_allIso[l] ));
+	for(size_t l=0; l<selMuons_allIso.size(); ++l)     selLeptons_allIso.push_back(patUtils::GenericLepton (selMuons_allIso[l]     ));
 
 	//LogInfo ("Demo") << "selected leptons: " << '(' << selIDElectrons.size() << ',' << selIDMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
 	LogInfo ("Demo") << "selected leptons: " << '(' << selElectrons.size() << ',' << selMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE_Iso << ',' << nVetoMu_Iso;
@@ -1989,6 +1997,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	bool leps_passed_relIso = true;
 	for(size_t l=0; l<selMuons.size(); ++l)
 		{
+		LogInfo ("Demo") << "saving mu " << l;
+
 		NT_lep_p4.push_back(selMuons[l].p4());
 		NT_lep_id.push_back(selMuons[l].pdgId());
 		// mu_trig_objs or el_trig_objs
@@ -2012,6 +2022,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_lep_matching_gen_dR.push_back(match.dR);
 			}
 		}
+
+	LogInfo ("Demo") << "saved muons";
 
 	for(size_t l=0; l<selElectrons.size(); ++l)
 		{
@@ -2039,6 +2051,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 
 	NT_nleps = selLeptons.size();
+
+	LogInfo ("Demo") << "saved electrons";
 
 
 	// for control
@@ -2427,6 +2441,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			struct gen_matching match = match_to_gen(jet.p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
 			NT_jet_matching_gen   .push_back(match.closest);
 			NT_jet_matching_gen_dR.push_back(match.dR);
+			LogInfo ("Demo") << "matched gen";
 			}
 
 		// the default jet is fully recorrected
@@ -2467,7 +2482,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		Float_t dR_to_alliso = 999.;
 		for(size_t l=0; l<selLeptons_allIso.size(); ++l)
 			{
-			double dR = reco::deltaR(jet, selLeptons[l]);
+			double dR = reco::deltaR(jet, selLeptons_allIso[l]);
 			if (dR < dR_to_alliso)
 				dR_to_alliso = dR;
 			}
@@ -2642,7 +2657,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		Float_t dR_to_alliso = 999.;
 		for(size_t l=0; l<selLeptons_allIso.size(); ++l)
 			{
-			double dR = reco::deltaR(tau, selLeptons[l]);
+			double dR = reco::deltaR(tau, selLeptons_allIso[l]);
 			if (dR < dR_to_alliso)
 				dR_to_alliso = dR;
 			}
