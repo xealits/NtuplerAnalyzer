@@ -2,7 +2,39 @@ import argparse
 import logging
 from os.path import isfile
 
-logging.basicConfig(level=logging.DEBUG)
+
+
+
+parser = argparse.ArgumentParser(
+    formatter_class = argparse.RawDescriptionHelpFormatter,
+    description = "sumup TTree Draw",
+    #epilog = "Example:\n$ python job_submit.py ttbarleps80_eventSelection jobing/my_runAnalysis_cfg_NEWSUBMIT.templ.py bin/ttbar-leptons-80X/analysis/dsets_testing_noHLT_TTbar.json test/tests/outdir_test_v11_ttbar_v8.40/"
+    )
+
+parser.add_argument('draw_com', type=str, help='Draw("??")')
+parser.add_argument('cond_com', type=str, default="", help='Draw("", "??")')
+parser.add_argument('histo_name',  type=str, default="out_histo", help='the ROOTName for output')
+parser.add_argument('histo_range', type=str, default=None, help='optionally set the range')
+parser.add_argument('histo_color', type=str, default=None, help='optional rgb color, like `255,255,255`')
+
+parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
+parser.add_argument("--output", type=str, default="output.root", help="filename for output")
+
+parser.add_argument('input_files', nargs='+', help="the files to sum up, passed by shell,
+as:
+
+/gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_*.root")
+
+
+args = parser.parse_args()
+
+if args.debug:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.INFO)
+
+
+logging.info("import ROOT")
 
 import ROOT
 from ROOT import TH1D, TFile, TTree, gROOT
@@ -10,13 +42,19 @@ from ROOT import kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed,
 from ROOT import TLegend
 #from ROOT import THStack
 
+logging.info("done")
+
+from plotting_root import rgb
+
 gROOT.SetBatch()
 
 
 
-file_pattern = "/gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_%d.root"
+input_files = args.input_files
 
-tau_all    = TH1D("os_tauall", "", 44, -2, 20)
+
+'''
+out_histo  = TH1D("os_tauall", "", 44, -2, 20)
 tau_b      = TH1D("os_taub", "", 44, -2, 20)
 tau_w      = TH1D("os_tauw", "", 44, -2, 20)
 tau_w_c    = TH1D("os_tauw_c", "", 44, -2, 20)
@@ -27,62 +65,41 @@ ss_tau_b      = TH1D("ss_taub", "", 44, -2, 20)
 ss_tau_w      = TH1D("ss_tauw", "", 44, -2, 20)
 ss_tau_w_c    = TH1D("ss_tauw_c", "", 44, -2, 20)
 ss_tau_w_notc = TH1D("ss_tauw_notc", "", 44, -2, 20)
+'''
+out_histo = None
 
-for filename in (file_pattern % i for i in range(100)):
+for filename in input_files:
     if not isfile(filename):
+        logging.info("missing: " + filename)
         continue
 
-    logging.info(filename)
+    logging.debug(filename)
 
     tfile = TFile(filename)
     ttree = tfile.Get("ntupler/reduced_ttree")
 
-    # OS
-    ttree.Draw("tau_SV_geom_flightLenSign[tau_refited_index[0]]>>h(44,-2,20)", "(abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13 || abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 11) && tau_refited_index[0] >= 0 && tau_IDlev[0] > 2 && tau_id[0] * lep_id[0] < 0")
-    tau_all.Add(ttree.GetHistogram())
+    # Draw the file and sum up
+    # 
+    if args.histo_range:
+        # TOFIX: without explicit range the histos won't add up
+        ttree.Draw(args.draw_com, args.cond_com)
+    else:
+        ttree.Draw(args.draw_com + ">>h(%s)" % args.histo_range, args.cond_com)
 
-    ttree.Draw("tau_SV_geom_flightLenSign[tau_refited_index[0]]>>h(44,-2,20)", "(abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13 || abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 11) && tau_refited_index[0] >= 0 && tau_IDlev[0] > 2 && tau_id[0] * lep_id[0] < 0 && tau_matching_gen[0] == 5")
-    tau_b.Add(ttree.GetHistogram())
-
-    ttree.Draw("tau_SV_geom_flightLenSign[tau_refited_index[0]]>>h(44,-2,20)", "(abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13 || abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 11) && tau_refited_index[0] >= 0 && tau_IDlev[0] > 2 && tau_id[0] * lep_id[0] < 0 && tau_matching_gen[0] == 4")
-    tau_w.Add(ttree.GetHistogram())
-
-    ttree.Draw("tau_SV_geom_flightLenSign[tau_refited_index[0]]>>h(44,-2,20)", "(abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13 || abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 11) && tau_refited_index[0] >= 0 && tau_IDlev[0] > 2 && tau_id[0] * lep_id[0] < 0 && tau_matching_gen[0] == 4 && tau_dR_matched_jet[0] >= 0 && abs(jet_hadronFlavour[tau_dR_matched_jet[0]]) == 4")
-    tau_w_c.Add(ttree.GetHistogram())
-
-    ttree.Draw("tau_SV_geom_flightLenSign[tau_refited_index[0]]>>h(44,-2,20)", "(abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13 || abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 11) && tau_refited_index[0] >= 0 && tau_IDlev[0] > 2 && tau_id[0] * lep_id[0] < 0 && tau_matching_gen[0] == 4 && tau_dR_matched_jet[0] >= 0 && abs(jet_hadronFlavour[tau_dR_matched_jet[0]]) != 4")
-    tau_w_notc.Add(ttree.GetHistogram())
-
-    # SS
-    ttree.Draw("tau_SV_geom_flightLenSign[tau_refited_index[0]]>>h(44,-2,20)", "(abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13 || abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 11) && tau_refited_index[0] >= 0 && tau_IDlev[0] > 2 && tau_id[0] * lep_id[0] > 0")
-    ss_tau_all.Add(ttree.GetHistogram())
-
-    ttree.Draw("tau_SV_geom_flightLenSign[tau_refited_index[0]]>>h(44,-2,20)", "(abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13 || abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 11) && tau_refited_index[0] >= 0 && tau_IDlev[0] > 2 && tau_id[0] * lep_id[0] > 0 && tau_matching_gen[0] == 5")
-    ss_tau_b.Add(ttree.GetHistogram())
-
-    ttree.Draw("tau_SV_geom_flightLenSign[tau_refited_index[0]]>>h(44,-2,20)", "(abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13 || abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 11) && tau_refited_index[0] >= 0 && tau_IDlev[0] > 2 && tau_id[0] * lep_id[0] > 0 && tau_matching_gen[0] == 4")
-    ss_tau_w.Add(ttree.GetHistogram())
-
-    ttree.Draw("tau_SV_geom_flightLenSign[tau_refited_index[0]]>>h(44,-2,20)", "(abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13 || abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 11) && tau_refited_index[0] >= 0 && tau_IDlev[0] > 2 && tau_id[0] * lep_id[0] > 0 && tau_matching_gen[0] == 4 && tau_dR_matched_jet[0] >= 0 && abs(jet_hadronFlavour[tau_dR_matched_jet[0]]) == 4")
-    ss_tau_w_c.Add(ttree.GetHistogram())
-
-    ttree.Draw("tau_SV_geom_flightLenSign[tau_refited_index[0]]>>h(44,-2,20)", "(abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13 || abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 11) && tau_refited_index[0] >= 0 && tau_IDlev[0] > 2 && tau_id[0] * lep_id[0] > 0 && tau_matching_gen[0] == 4 && tau_dR_matched_jet[0] >= 0 && abs(jet_hadronFlavour[tau_dR_matched_jet[0]]) != 4")
-    ss_tau_w_notc.Add(ttree.GetHistogram())
+    if not out_histo:
+        out_histo = ttree.GetHistogram()
+        out_histo.SetDirectory(0)
+        out_histo.SetName(args.histo_name)
+    else:
+        out_histo.Add(ttree.GetHistogram())
 
     tfile.Close()
 
-tau_b      .SetLineColor(kGreen)
-tau_w      .SetLineColor(kRed)
-tau_w_c    .SetLineColor(kYellow)
-tau_w_notc .SetLineColor(kYellow)
-tau_w_notc .SetLineStyle(7)
+if args.histo_color:
+    out_histo.SetLineColor(*(int(i) for i in args.histo_color.split(',')))
 
-ss_tau_b      .SetLineColor(kGreen)
-ss_tau_w      .SetLineColor(kRed)
-ss_tau_w_c    .SetLineColor(kYellow)
-ss_tau_w_notc .SetLineColor(kYellow)
-ss_tau_w_notc .SetLineStyle(7)
 
+''' no legend for now
 leg = TLegend(0.5, 0.5, 0.9, 0.9)
 leg.SetName("legOS")
 
@@ -100,24 +117,13 @@ leg2.AddEntry(tau_b      , "tt->lj, SS, b prod", 'L')
 leg2.AddEntry(tau_w      , "tt->lj, SS, w prod", 'L')
 leg2.AddEntry(tau_w_c    , "tt->lj, SS, w, C flav", 'L')
 leg2.AddEntry(tau_w_notc , "tt->lj, SS, w, not C", 'L')
+'''
 
-fout = TFile("sumup.root", "RECREATE")
+
+fout = TFile(args.output, "RECREATE")
 fout.Write()
 
-tau_all    .Write()
-tau_b      .Write()
-tau_w      .Write()
-tau_w_c    .Write()
-tau_w_notc .Write()
-
-ss_tau_all    .Write()
-ss_tau_b      .Write()
-ss_tau_w      .Write()
-ss_tau_w_c    .Write()
-ss_tau_w_notc .Write()
-
-leg  .Write()
-leg2 .Write()
+out_histo.Write()
 
 fout.Write()
 fout.Close()
