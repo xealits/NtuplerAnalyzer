@@ -1061,10 +1061,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             procs_mu     = tt_procs_mu     =  (['tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             procs_el_3ch = tt_procs_el_3ch =  (['tt_eltau3ch', 'tt_eltau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
             procs_mu_3ch = tt_procs_mu_3ch =  (['tt_mutau3ch', 'tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
-            procs_el_3ch_fbw = tt_procs_el_3ch_fbw =  (['tt_eltau3ch', 'tt_eltau', 'tt_ljb', 'tt_ljw', 'tt_ljo', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
-            procs_mu_3ch_fbw = tt_procs_mu_3ch_fbw =  (['tt_mutau3ch', 'tt_mutau', 'tt_ljb', 'tt_ljw', 'tt_ljo', 'tt_lj', 'tt_taultauh', 'tt_other'], 'tt_other')
+            procs_el_3ch_fbw = tt_procs_el_3ch_fbw =  (['tt_eltau3ch', 'tt_eltau', 'tt_ljb', 'tt_ljw', 'tt_ljo', 'tt_lj', 'tt_taultauh', 'tt_tauelj', 'tt_other'], 'tt_other')
+            procs_mu_3ch_fbw = tt_procs_mu_3ch_fbw =  (['tt_mutau3ch', 'tt_mutau', 'tt_ljb', 'tt_ljw', 'tt_ljo', 'tt_lj', 'tt_taultauh', 'tt_taumuj', 'tt_other'], 'tt_other')
             #procs_elmu   = tt_procs_elmu   =  (['tt_elmu', 'tt_taueltaumu', 'tt_other'], 'tt_other')
-            procs_elmu   = tt_procs_elmu   =  (['tt_elmu', 'tt_ltaul', 'tt_other'], 'tt_other')
+            procs_elmu   = tt_procs_elmu   =  (['tt_elmu', 'tt_ltaul', 'tt_taueltaumu', 'tt_other'], 'tt_other')
             usual_process   = 'tt_other'
 
         if isWJets:
@@ -2024,6 +2024,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 elif (t_wid > 15*15 and (tb_wid == 11*15 or tb_wid == 13*15)) or \
                      ((t_wid == 11*15 or t_wid == 13*15) and tb_wid > 15*15): # taul tauh
                     proc = 'tt_taultauh'
+                elif (t_wid == 1     and tb_wid == 13*15) or \
+                     (t_wid == 13*15 and tb_wid == 1):
+                    proc = 'tt_taumuj'
+                elif (t_wid == 1     and tb_wid == 11*15) or \
+                     (t_wid == 11*15 and tb_wid == 1):
+                    proc = 'tt_tauelj'
                 else:
                     proc = 'tt_other'
 
