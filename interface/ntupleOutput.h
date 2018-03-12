@@ -277,6 +277,16 @@ Float_t_in_NTuple(OUTNTUPLE, gen_visPy)
 Float_t_in_NTuple(OUTNTUPLE, genPt)
 Float_t_in_NTuple(OUTNTUPLE, genMass)
 
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   gen_match_lep_id) // IDs of matched gen particles final states for control
+// it just shows number of leptons (el, mu, tau) found in event
+// or for tau decay products passing p.isDirectHardProcessTauDecayProductFinalState
+// it saves IDs of these products separately for 3ch taus and 1ch (including leptonic taus)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   gen_match_tau_id)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   gen_match_tau3ch_id)
+// -- should be enough to distinguish number of taus etc
+// it just confirms that the DY true gen taus are correctly found
+//Int_t_in_NTuple(OUTNTUPLE, gen_match_w_id)
+//Int_t_in_NTuple(OUTNTUPLE, gen_match_b_id)
 
 Int_t_in_NTuple(OUTNTUPLE, gen_NUP) // TODO: add gen info from TTbar
 Int_t_in_NTuple(OUTNTUPLE, gen_n_PUP)

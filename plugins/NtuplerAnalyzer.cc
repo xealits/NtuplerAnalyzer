@@ -1340,7 +1340,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					if (!isTT)
 						{
 						if (a_id == 11 || a_id == 13)
+							{
 							save_final_cands(&p, gen_leps);
+							NT_gen_match_lep_id.push_back(id);
+							}
 						// if it is tau -- check if it is DM10+, i.e. decay to 3 charged particles
 						else if (a_id == 15)
 							{
@@ -1348,23 +1351,36 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							// = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
 							// 20 + 10
 							if (abs(tau_id) >= 30)
+								{
 								save_final_cands(&p, gen_tau3ch);
+								NT_gen_match_tau3ch_id.push_back(id);
+								}
 							else
+								{
 								save_final_cands(&p, gen_taus);
+								NT_gen_match_tau_id.push_back(id);
+								}
 							}
 						else
 							{
-							const reco::Candidate* tau_mother = has_tau_mother(&p, 2);
+							const reco::Candidate* tau_mother = has_tau_mother(&p, 5);
 							if (tau_mother != NULL)
 								{
 								int tau_id = simple_tau_decay_id(tau_mother);
 								if (abs(tau_id) >= 30)
+									{
 									save_final_cands(tau_mother, gen_tau3ch);
+									NT_gen_match_tau3ch_id.push_back(id);
+									}
 								else
+									{
 									save_final_cands(tau_mother, gen_taus);
+									NT_gen_match_tau_id.push_back(id);
+									}
 								}
 							}
 						}
+
 					// Save parameters for recoil corrections
 					// relevant for DY and WJets
 					if (isDY || isWJets)
@@ -1423,6 +1439,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					if (decay_id == 1)
 						{
 						save_final_cands(W_final, gen_w_prods);
+						//NT_gen_match_w_id.push_back(id); // TODO: remake the saving important gen particloes
 						}
 					save_final_cands(b, gen_b_prods);
 
