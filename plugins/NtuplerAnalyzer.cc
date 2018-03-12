@@ -136,6 +136,33 @@ return ret;
 
 
 
+const reco::Candidate* has_tau_mother(
+	const reco::Candidate* part, unsigned int depth)
+
+{
+unsigned int pdgId = abs(part->pdgId());
+if (pdgId == 15)
+	return part;
+else if (depth > 0)
+	{
+	// loop through mother
+	const reco::Candidate* cand = NULL;
+	for (int d_i=0; d_i < part->numberOfMothers(); d_i++)
+		{
+		const reco::Candidate * mother = part->mother(d_i);
+		depth -= 1;
+		cand = has_tau_mother(mother, depth);
+		if (cand != NULL)
+			return cand;
+		}
+	return cand;
+	}
+}
+
+
+
+
+
 // try simpler first
 struct gen_matching {
 	//Int_t sum;
@@ -1314,7 +1341,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						if (a_id == 11 || a_id == 13)
 							save_final_cands(&p, gen_leps);
 						// if it is tau -- check if it is DM10+, i.e. decay to 3 charged particles
-						if (a_id == 15)
+						else if (a_id == 15)
 							{
 							int tau_id = simple_tau_decay_id(&p);
 							// = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
@@ -1323,6 +1350,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 								save_final_cands(&p, gen_tau3ch);
 							else
 								save_final_cands(&p, gen_taus);
+							}
+						else if (const reco::Candidate& tau_mother = has_tau_mother(&p, 2))
+							{
+							int tau_id = simple_tau_decay_id(&p);
+							if (abs(tau_id) >= 30)
+								save_final_cands(tau_mother, gen_tau3ch);
+							else
+								save_final_cands(tau_mother, gen_taus);
 							}
 						}
 					// Save parameters for recoil corrections
