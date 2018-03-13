@@ -12,18 +12,18 @@ parser = argparse.ArgumentParser(
     )
 
 parser.add_argument('draw_com', type=str, help='Draw("??")')
-parser.add_argument('cond_com', type=str, default="", help='Draw("", "??")')
-parser.add_argument('histo_name',  type=str, default="out_histo", help='the ROOTName for output')
-parser.add_argument('histo_range', type=str, default=None, help='optionally set the range')
-parser.add_argument('histo_color', type=str, default=None, help='optional rgb color, like `255,255,255`')
+parser.add_argument('--cond-com', type=str, default="", help='Draw("", "??")')
+parser.add_argument('--histo-name',  type=str, default="out_histo", help='the ROOTName for output')
+parser.add_argument('--histo-range', type=str, default=None, help='optionally set the range')
+parser.add_argument('--histo-color', type=str, default=None, help='optional rgb color, like `255,255,255`')
 
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 parser.add_argument("--output", type=str, default="output.root", help="filename for output")
 
-parser.add_argument('input_files', nargs='+', help="the files to sum up, passed by shell,
+parser.add_argument('input_files', nargs='+', help="""the files to sum up, passed by shell,
 as:
 
-/gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_*.root")
+/gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_*.root""")
 
 
 args = parser.parse_args()
@@ -66,6 +66,23 @@ ss_tau_w      = TH1D("ss_tauw", "", 44, -2, 20)
 ss_tau_w_c    = TH1D("ss_tauw_c", "", 44, -2, 20)
 ss_tau_w_notc = TH1D("ss_tauw_notc", "", 44, -2, 20)
 '''
+
+
+if args.histo_color:
+    logging.debug("color: " + args.histo_color)
+else:
+    logging.debug("no color")
+
+# Draw command
+# 
+if args.histo_range:
+    draw_command = args.draw_com + ">>h(%s)" % args.histo_range
+else:
+    # TOFIX: without explicit range the histos won't add up
+    draw_command = args.draw_com
+
+logging.debug("draw: " + draw_command)
+
 out_histo = None
 
 for filename in input_files:
@@ -80,11 +97,8 @@ for filename in input_files:
 
     # Draw the file and sum up
     # 
-    if args.histo_range:
-        # TOFIX: without explicit range the histos won't add up
-        ttree.Draw(args.draw_com, args.cond_com)
-    else:
-        ttree.Draw(args.draw_com + ">>h(%s)" % args.histo_range, args.cond_com)
+    # TOFIX: without explicit range the histos won't add up
+    ttree.Draw(draw_command, args.cond_com)
 
     if not out_histo:
         out_histo = ttree.GetHistogram()
@@ -96,7 +110,7 @@ for filename in input_files:
     tfile.Close()
 
 if args.histo_color:
-    out_histo.SetLineColor(*(int(i) for i in args.histo_color.split(',')))
+    out_histo.SetLineColor(rgb(*(int(i) for i in args.histo_color.split(','))))
 
 
 ''' no legend for now
