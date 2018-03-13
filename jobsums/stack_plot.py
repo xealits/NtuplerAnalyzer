@@ -250,6 +250,8 @@ if args.qcd > 0. or args.osss:
         for h, nick, channel in histos[1:]: # I sum different channels?... the old hacked not fixed yet
             if nick == 'qcd': continue # don't include QCD MC -- its sum of no-QCD MC
             hs_sum2.Add(h)
+        channel = histos[0][2]
+        logging.debug("all channels are the same: %r" % all(ch == channel for _, _, ch in histos))
 
         hs_sum2.SetFillStyle(3004);
         hs_sum2.SetFillColor(1);
@@ -467,7 +469,10 @@ if not args.plot and not args.ratio:
 	        distrs
     '''
 
-    filename = out_dir + args.mc_file.split('.root')[0] + '_HISTOSEL_%s_%s_%s.root' % (distr_name, channel, sys_name)
+    options = ""
+    options += "_data-qcd" if args.qcd > 0. else ""
+
+    filename = out_dir + args.mc_file.split('.root')[0] + '_HISTOSEL_%s_%s_%s%s.root' % (distr_name, channel, sys_name, options)
     logging.info('saving root %s' % filename)
     #fout = TFile(filename, 'RECREATE')
     fout = TFile(filename, 'CREATE')
@@ -582,8 +587,10 @@ elif args.form_shapes:
     if not args.skip_legend:
         leg.Draw("same")
 
-    #cst.SaveAs(out_dir + '_'.join([args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name]) + '_shapes_%d-channels_%s-processes.png' % (len(channels), '-'.join(processes_requirement)))
-    cst.SaveAs(out_dir + "shapes%s%s%s.png" %('_' + args.mc_file.split('.')[0], '_' + args.processes, '_data-qcd' if args.qcd > 0. else ''))
+    data_driv_qcd = "_data-qcd" if args.qcd > 0. else ""
+
+    #cst.SaveAs(out_dir + "shapes%s%s%s.png" %('_' + args.mc_file.split('.')[0], '_' + args.processes, '_data-qcd' if args.qcd > 0. else ''))
+    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes_%d-channels_%s-processes%s.png' % (len(channels), '-'.join(processes_requirement), data_driv_qcd))
 
 elif args.osss:
     from ROOT import gStyle, gROOT, TCanvas, TPad
