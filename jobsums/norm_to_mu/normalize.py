@@ -247,7 +247,7 @@ for fname in files:
 
     for proc in list(f.GetListOfKeys()):
         process = proc.GetName()
-        if process == 'weight_counter' or process == 'events_counter':
+        if process in ('weight_counter', 'events_counter', 'control_counters'):
             continue
 
         # mu tracking factor

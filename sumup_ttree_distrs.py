@@ -20,6 +20,8 @@ parser.add_argument('--histo-color', type=str, default=None, help='optional rgb 
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 parser.add_argument("--output", type=str, default="output.root", help="filename for output")
 
+parser.add_argument("--per-weight",  action='store_true', help="normalize by event weight of datasets")
+
 parser.add_argument('input_files', nargs='+', help="""the files to sum up, passed by shell,
 as:
 
@@ -84,6 +86,7 @@ else:
 logging.debug("draw: " + draw_command)
 
 out_histo = None
+weight_counter = None
 
 for filename in input_files:
     if not isfile(filename):
@@ -100,14 +103,29 @@ for filename in input_files:
     # TOFIX: without explicit range the histos won't add up
     ttree.Draw(draw_command, args.cond_com)
 
+    histo = ttree.GetHistogram()
+    histo.SetDirectory(0)
+
+    if args.per_weight:
+        wcounter = tfile.Get('ntupler/weight_counter')
+        if not weight_counter:
+            weight_counter = wcounter
+            weight_counter.SetDirectory(0)
+            weight_counter.SetName("sumup_weight_counter")
+        else:
+            weight_counter.Add(wcounter)
+
     if not out_histo:
-        out_histo = ttree.GetHistogram()
-        out_histo.SetDirectory(0)
+        out_histo = histo
         out_histo.SetName(args.histo_name)
     else:
-        out_histo.Add(ttree.GetHistogram())
+        out_histo.Add(histo)
 
     tfile.Close()
+
+if args.per_weight:
+    #weight_counter = tfile.Get('ntupler/weight_counter')
+    histo.Scale(1./weight_counter.GetBinContent(2))
 
 if args.histo_color:
     out_histo.SetLineColor(rgb(*(int(i) for i in args.histo_color.split(','))))

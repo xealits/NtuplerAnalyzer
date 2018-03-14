@@ -112,31 +112,36 @@ if args.y_max:
     data.SetMaximum(args.y_max)
 
 if args.ratio:
-    data.GetXaxis().SetLabelOffset(999)
-    data.GetXaxis().SetLabelSize(0)
+    #data.GetXaxis().SetLabelOffset(999)
+    #data.GetXaxis().SetLabelSize(0)
+    nom_MC.GetXaxis().SetLabelOffset(999)
+    nom_MC.GetXaxis().SetLabelSize(0)
 
-data.Draw()
+nom_MC.Draw("e2")
 for h in sys_MCs:
     h.Print()
     h.Draw("same")
 
-nom_MC.Draw("same e2")
-data.Draw("same")
+#nom_MC.Draw("same e2")
+if not args.no_data:
+    data.Draw("same")
 
 leg.Draw("same")
 
 if args.ratio:
     pad2.cd()
 
-    data_rel = data.Clone()
+    nom_MC_rel = nom_MC.Clone()
+    if not args.no_data:
+        data_rel = data.Clone()
 
     ratio_max = 1. + args.ratio_range
     ratio_min = 1. - args.ratio_range
-    data_rel.SetMaximum(ratio_max)
-    data_rel.SetMinimum(ratio_min)
+    #data_rel.SetMaximum(ratio_max)
+    #data_rel.SetMinimum(ratio_min)
+    nom_MC_rel.SetMaximum(ratio_max)
+    nom_MC_rel.SetMinimum(ratio_min)
 
-    data_rel.Divide(nom_MC)
-    data_rel.Draw()
     sys_MCs_rel = []
     for h in sys_MCs:
         h_rel = h.Clone()
@@ -146,12 +151,14 @@ if args.ratio:
         h_rel.Divide(nom_MC)
         sys_MCs_rel.append(h_rel)
 
-    nom_MC_rel = nom_MC.Clone()
     nom_MC_rel.Divide(nom_MC)
-    nom_MC_rel.Draw("same e2")
+    nom_MC_rel.Draw("e2")
     for h_rel in sys_MCs_rel:
         h_rel.Draw("same")
-    data_rel.Draw("same")
+
+    if not args.no_data:
+        data_rel.Divide(nom_MC)
+        data_rel.Draw("same")
 
 cst.SaveAs(args.output_directory + '/MC-systs_%s_%s_%s.png' % (args.channel, args.distr, args.systematic))
 

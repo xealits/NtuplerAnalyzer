@@ -28,8 +28,10 @@ parser.add_argument('--logy', action='store_true', help="log scale Y axis")
 parser.add_argument("-o", "--output-directory", type=str, default='./', help="optional output directory")
 
 parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
-parser.add_argument("--y-max",       type=float,              help="set the maximum on Y axis")
+#parser.add_argument("--y-max",       type=float,              help="set the maximum on Y axis")
+parser.add_argument("--y-range",     type=str,              help="set Y range as `ymin,ymax`")
 
+parser.add_argument("--add-y-line", type=float, help="add horizontal line at the given Y value")
 
 args = parser.parse_args()
 
@@ -38,7 +40,7 @@ assert isfile(args.data_file)
 logging.info("import ROOT")
 
 import ROOT
-from ROOT import gStyle, gROOT, gPad, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan
+from ROOT import gStyle, gROOT, gPad, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TLine, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan
 gROOT.SetBatch()
 gStyle.SetOptStat(0)
 
@@ -112,8 +114,8 @@ pad1 = TPad("pad1","This is pad1", 0., 0.,  1., 1.)
 pad1.Draw()
 
 pad1.cd()
-if args.y_max:
-    data.SetMaximum(args.y_max)
+#if args.y_max:
+#    data.SetMaximum(args.y_max)
 
 if args.ratio:
     data.GetXaxis().SetLabelOffset(999)
@@ -125,11 +127,17 @@ nom_MC.Print()
 nom_MC.SetTitle(args.process)
 nom_MC.SetXTitle(ref_distr)
 
-nom_MC.SetMaximum(2)
-if args.logy:
-    nom_MC.SetMinimum(0.001)
+if args.y_range:
+    y_min, y_max = [float(x) for x in args.y_range.split(',')]
 else:
-    nom_MC.SetMinimum(0)
+    y_max = 2
+    if args.logy:
+        y_min = 0.001
+    else:
+        y_min = 0.
+
+nom_MC.SetMaximum(y_max)
+nom_MC.SetMinimum(y_min)
 
 if args.logy:
     #cst.SetLogy()
@@ -141,6 +149,12 @@ nom_MC.Draw("e")
 for histo in histo_MCs:
     histo.Print()
     histo.Draw("same e")
+
+if args.add_y_line:
+    x_min = nom_MC.GetXaxis().GetXmin()
+    x_max = nom_MC.GetXaxis().GetXmax()
+    l = TLine(x_min, args.add_y_line, x_max, args.add_y_line)
+    l.Draw("same")
 
 leg.Draw("same")
 

@@ -191,7 +191,8 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                logging.debug("absent %s" % histo_name)
                continue
 
-           if shape_channel and nick in ('dy_other', 'dy_tautau', 'wjets'):
+           # just take shapes for all channels
+           if shape_channel: # and nick in ('dy_other', 'dy_tautau', 'wjets'):
                histo_name = '_'.join([shape_channel, nick, fixed_sys_name, distr_name])
                h_shape_path = shape_channel + '/' + nick + '/' + fixed_sys_name + '/' + histo_name
                logging.info("shape from %s" % h_shape_path)
