@@ -1,0 +1,28 @@
+
+# TT datasets
+
+
+## TT systematics
+
+
+### aMCatNLO cross-check
+
+backup is a valid dataset, indeed it is larger than the other one:
+
+$ das_client --limit=0 --query="summary dataset=/TTJets_TuneCUETP8M2T4_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM"                                                 
+DAS CLIENT WARNING: das_client will be retired soon, please switch to dasgoclient
+nfiles   : 831
+nevents  : 44350533
+nblocks  : 101
+nlumis   : 283774
+file_size: 1957833813665
+
+0 otoldaie @lxplus082 master ~/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer
+$ das_client --limit=0 --query="summary dataset=/TTJets_TuneCUETP8M2T4_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_backup_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"                                          
+DAS CLIENT WARNING: das_client will be retired soon, please switch to dasgoclient
+nfiles   : 888
+nevents  : 43561608
+nblocks  : 138
+nlumis   : 325529
+file_size: 1923707479242
+
