@@ -383,6 +383,8 @@ VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_alliso_relIso)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  lep_alliso_matched_HLT)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_alliso_matched_HLT_dR)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_alliso_matching_gen)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_alliso_matching_gen_dR)
 
 // JETS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, jet_id)
@@ -393,7 +395,10 @@ VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_matching_gen_dR)
 
-// more info for all-iso region
+// info on lep-dR-match
+// skip or study these jets in proc
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  jet_matching_lep)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_matching_lep_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  jet_matching_allIso_lep)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_matching_allIso_lep_dR)
 
@@ -441,7 +446,9 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_decayMode)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_dR)
 
-// more info for all-iso region
+// info on lep matching
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  tau_matching_lep)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_lep_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  tau_matching_allIso_lep)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_allIso_lep_dR)
 

@@ -2162,10 +2162,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         4 Tight
         5 VTight
         '''
+
         #tlep_p4 = TLorentzVector(ev.lep_p4[0].X(), ev.lep_p4[0].Y(), ev.lep_p4[0].Z(), ev.lep_p4[0].T())
         #if ev.tau_p4.size() > 0 and ev.tau_IDlev[0] > 1 and abs(ev.tau_p4[0].eta()) < 2.4:
         for i, (p4, tau_ID, tau_DM, tau_pdgID) in enumerate(zip(ev.tau_p4, ev.tau_IDlev, ev.tau_decayMode, ev.tau_id)):
+            # discard taus if they match to lepton
+            # TODO: turn it on in next NT
+            #if ev.tau_matching_lep[i]:
+            #    continue
             # the original index i is needed for the match to refitted values
+
             if abs(p4.eta()) > 2.4: continue
             # it should work like Python does and not copy these objects! (cast)
             #p4, DM, IDlev = ev.tau_p4[0], ev.tau_decayMode[0], ev.tau_IDlev[0]
@@ -2496,6 +2502,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         miniaod_jets = ev.jet_p4 if OLD_MINIAOD_JETS else ev.jet_initial_p4
 
         for i in xrange(ev.jet_p4.size()):
+            # discard jets if they match to lepton
+            # TODO: turn it on in next NT
+            #if ev.jet_matching_lep[i]:
+            #    continue
+
             #pfid, p4 = ev.jet_PFID[i], ev.jet_p4[i]
             # RECORRECTED jets
             #p4 = ev.jet_uncorrected_p4[i]

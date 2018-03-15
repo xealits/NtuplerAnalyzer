@@ -2003,7 +2003,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0; // veto on std iso veto leptons
 	//bool clean_lep_conditions = nVetoE_all==0 && nVetoMu_all==0 && nGoodPV != 0; // veto on all iso veto leptons
 	bool clean_lep_conditions = nGoodPV != 0; // just good PV, the loosest req,save bit if no veto leps
-	if (!(clean_lep_conditions && ((selLeptons.size() > 0 && selLeptons.size() < 3) || selLeptons_allIso.size() == 1) )) return;
+	if (!(clean_lep_conditions && ((selLeptons.size() > 0 && selLeptons.size() < 3 && nVetoE_Iso == 0 && nVetoMu_Iso == 0) || (selLeptons_allIso.size() == 1 && nVetoE_all == 0 && nVetoMu_all == 0)) )) return;
 	// exit now to reduce computation -- all record schemes have this requirement
 
 	event_counter ->Fill(event_checkpoint++);
@@ -2105,6 +2105,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//NT_lep_alliso_matched_HLT.push_back(processElectron_matchesHLTs(selElectrons_allIso[l], el_trig_objs, 0.2));
 		NT_lep_alliso_matched_HLT   .push_back(match_to_HLTs.matched);
 		NT_lep_alliso_matched_HLT_dR.push_back(match_to_HLTs.dR);
+		if (isMC)
+			{
+			struct gen_matching match = match_to_gen(selElectrons_allIso[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
+			NT_lep_alliso_matching_gen   .push_back(match.closest);
+			NT_lep_alliso_matching_gen_dR.push_back(match.dR);
+			}
 		}
 
 	for(size_t l=0; l<selMuons_allIso.size(); ++l)
@@ -2119,6 +2125,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//NT_lep_alliso_matched_HLT.push_back(processMuon_matchesHLTs(selMuons_allIso[l], mu_trig_objs, 0.1));
 		NT_lep_alliso_matched_HLT   .push_back(match_to_HLTs.matched);
 		NT_lep_alliso_matched_HLT_dR.push_back(match_to_HLTs.dR);
+		if (isMC)
+			{
+			struct gen_matching match = match_to_gen(selMuons_allIso[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
+			NT_lep_alliso_matching_gen   .push_back(match.closest);
+			NT_lep_alliso_matching_gen_dR.push_back(match.dR);
+			}
 		}
 
 
@@ -2190,8 +2202,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	LorentzVector full_jet_corr(0., 0., 0., 0.);
 	//pat::JetCollection IDjets;
-	//pat::JetCollection selJets;
-	pat::JetCollection selJetsNoLep;
+	pat::JetCollection selJets;
 	//map<systematic_shift, pat::JetCollection> IDjets;
 	// it's filled with jetSystematics by processJets_CorrectJES_SmearJERnJES_ID_ISO_with_systematics
 	//string jetID("Loose");
@@ -2218,16 +2229,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		if (jet.pt() < jet_kino_cuts_pt) continue; // 111
 		// all eta pass -- forward jets too, usefull for WJets control region
-
-		//crossClean_in_dR(selJets, selLeptons, 0.4, selJetsNoLep, weight, string("selJetsNoLep"), false, false);
-	        bool overlapWithLepton(false);
-		float min_dR = 0.4;
-	        for(unsigned int l=0; l<(unsigned int)selLeptons.size();++l)
-	                {
-	                if (reco::deltaR(jet, selLeptons[l])<min_dR)
-	                        { overlapWithLepton=true; break; }
-	                }
-	        if (overlapWithLepton) continue; // 222
 
 		// PF jet ID
 	        // from the twiki:
@@ -2495,13 +2496,32 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		 */
 
 		// save this jet -- it's used in tau dR match to jets
-		selJetsNoLep.push_back(jet);
+		selJets.push_back(jet);
 		/* requirements for there jets: pt and no leptons in dR
 		 * no PFID requirement and no eta
 		 */
 
+		// match to sel leptons
+		//crossClean_in_dR(selJets, selLeptons, 0.4, selJets, weight, string("selJets"), false, false);
+	        //bool overlapWithLepton(false);
+		//float min_dR = 0.4;
+	        //for(unsigned int l=0; l<(unsigned int)selLeptons.size();++l)
+	        //        {
+	        //        if (reco::deltaR(jet, selLeptons[l])<min_dR)
+	        //                { overlapWithLepton=true; break; }
+	        //        }
+	        //if (overlapWithLepton) continue; // 222
+		Float_t dR_to_sel = 999.;
+		for(size_t l=0; l<selLeptons.size(); ++l)
+			{
+			double dR = reco::deltaR(jet, selLeptons[l]);
+			if (dR < dR_to_sel)
+				dR_to_sel = dR;
+			}
+		NT_jet_matching_lep    .push_back(dR_to_sel < 0.4);
+		NT_jet_matching_lep_dR .push_back(dR_to_sel);
+
 		// match to all-iso leptons
-		Bool_t match_to_alliso = false;
 		Float_t dR_to_alliso = 999.;
 		for(size_t l=0; l<selLeptons_allIso.size(); ++l)
 			{
@@ -2513,7 +2533,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_jet_matching_allIso_lep_dR .push_back(dR_to_alliso);
 
 		}
-	NT_nalljets  = selJetsNoLep.size();
+	NT_nalljets  = selJets.size();
 
 	NT_jets_full_correction = full_jet_corr; // initial jets + this correction = corrected jets
 	// ALSO MET
@@ -2557,14 +2577,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//pat::JetCollection selJets;
 	//processJets_Kinematics(IDjets, /*bool isMC,*/ weight, jet_kino_cuts_pt, jet_kino_cuts_eta, selJets, false, false);
 
-	//pat::JetCollection selJetsNoLep;
-	//crossClean_in_dR(selJets, selLeptons, 0.4, selJetsNoLep, weight, string("selJetsNoLep"), false, false);
+	//pat::JetCollection selJets;
+	//crossClean_in_dR(selJets, selLeptons, 0.4, selJets, weight, string("selJets"), false, false);
 	// and these are output jets for NTuple
 	// they pass ID, corrected with JEC (smeared JES for MC)
 	// pass kinematic cuts (pt, eta)
 	// and dR-cleaned from selected leptons
 
-	//std::sort (selJetsNoLep.begin(),  selJetsNoLep.end(),  utils::sort_CandidatesByPt);
+	//std::sort (selJets.begin(),  selJets.end(),  utils::sort_CandidatesByPt);
 	// no need for sort
 
 
@@ -2587,11 +2607,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//processTaus_ID_ISO    (taus,   weight, tau_decayMode, tau_VLoose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
 	processTaus_Kinematics(IDtaus, weight, tau_kino_cuts_pt, tau_kino_cuts_eta, selTaus,      false, false);
 
-	pat::TauCollection selTausNoLep;
-	crossClean_in_dR(selTaus,       selLeptons, 0.4, selTausNoLep,        weight, string("selTausNoLep"),        false, false);
+	//pat::TauCollection selTausNoLep;
+	//crossClean_in_dR(selTaus,       selLeptons, 0.4, selTausNoLep,        weight, string("selTausNoLep"),        false, false);
 
 	// and these are the NT output taus
-	std::sort (selTausNoLep.begin(),  selTausNoLep.end(),  utils::sort_CandidatesByPt);
+	// taus are sorted py pt
+	std::sort (selTaus.begin(),  selTaus.end(),  utils::sort_CandidatesByPt);
 
 	// PREPARE TRACKS AND STUFF for REFITTING TAU SV AND PV
 
@@ -2644,14 +2665,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 
 	//NT_ntaus = 0;
-	NT_ntaus = selTausNoLep.size(); // all tau before MVA anti-jet iso
+	NT_ntaus = selTaus.size(); // all tau before MVA anti-jet iso
 	std::vector<double > tracksToBeRemoved_PV; // compared by Pt due to the conflict of comparing const and not const iterators
 	// these tracks correspond to all 3pi tau tracks in the event
 	// without considering the ID of these taus
 	// whenever refit works for a tau the corresponding tracks are removed
-	for(size_t i=0; i<selTausNoLep.size(); ++i)
+	for(size_t i=0; i<selTaus.size(); ++i)
 		{
-		pat::Tau& tau = selTausNoLep[i];
+		pat::Tau& tau = selTaus[i];
 
 		Int_t IDlev = 0;
 		if (tau.tauID(tau_VTight_ID)) IDlev = 5;
@@ -2675,8 +2696,18 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//NT_tau_hcalEnergyLeadChargedHadrCand = tau.hcalEnergyLeadChargedHadrCand();
 
 
+		// match to sel leptons
+		Float_t dR_to_sel = 999.;
+		for(size_t l=0; l<selLeptons.size(); ++l)
+			{
+			double dR = reco::deltaR(tau, selLeptons[l]);
+			if (dR < dR_to_sel)
+				dR_to_sel = dR;
+			}
+		NT_tau_matching_lep    .push_back(dR_to_sel < 0.4);
+		NT_tau_matching_lep_dR .push_back(dR_to_sel);
+
 		// match to all-iso leptons
-		Bool_t match_to_alliso = false;
 		Float_t dR_to_alliso = 999.;
 		for(size_t l=0; l<selLeptons_allIso.size(); ++l)
 			{
@@ -2720,9 +2751,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		// dR match to jet
 		Int_t matched_jet_number = -1;
-		for (unsigned int i=0; i<selJetsNoLep.size(); i++)
+		for (unsigned int i=0; i<selJets.size(); i++)
 			{
-			pat::Jet& jet = selJetsNoLep[i];
+			pat::Jet& jet = selJets[i];
 			if (reco::deltaR(jet, tau) < 0.4)
 				{
 				matched_jet_number = i;
@@ -3086,7 +3117,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 	if (record_jets)
 		{
-		record_ntuple |= jetsHLT && selJetsNoLep.size() > 0; // these are all-eta jets with pt-cut, anti-lep dR and Loose ID..
+		record_ntuple |= jetsHLT && selJets.size() > 0; // these are all-eta jets with pt-cut, anti-lep dR and Loose ID..
 		}
 
 	if (record_ntuple)
