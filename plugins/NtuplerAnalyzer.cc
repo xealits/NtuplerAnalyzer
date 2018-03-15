@@ -205,6 +205,7 @@ while (n_mothers > 0)
 				id = 4;
 				}
 			chain_id += order_multiplier * id;
+			order_multiplier *= 10;
 			part = mother;
 			break;
 			}
