@@ -1482,6 +1482,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     lep_relIso_bins_n = 6
     lep_relIso_bins_ext = (ctypes.c_double * 9)(* [0, 1./8., 1./4., 1./2., 1., 2., 4., 8., 16.])
     lep_relIso_bins_ext_n = 8
+
+    dojet_trijet_bins_ext = (ctypes.c_double * 8)(* [0, 20., 40., 60., 100., 150., 250., 400.])
+    dojet_trijet_bins_ext_n = 7
+
     # channel -- reco selection
     # proc    -- MC gen info, like inclusive tt VS tt->mutau and others,
     #            choice of subprocesses depends on channel (sadly),
@@ -1695,7 +1699,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
                                                '2D_dijet_trijet':     TH2D('%s_%s_%s_2D_dijet_trijet'     % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
                                                '2D_dijet_trijet_all': TH2D('%s_%s_%s_2D_dijet_trijet_all' % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
-                                               'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
+                                               #'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
+                                               'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', dojet_trijet_bins_ext_n, dojet_trijet_bins_ext),
                                                'dijet_trijet_mass_N_permutations':        TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations'         % (chan, proc, sys), '', 50, 0, 50),
                                                'dijet_trijet_mass_N_permutations_passed': TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations_passed'  % (chan, proc, sys), '', 50, 0, 50),
                                                'dijet_trijet_mass_vs_permutations':  TH2D('%s_%s_%s_dijet_trijet_mass_vs_permutations' % (chan, proc, sys), '', 20, 0, 400, 50, 0, 50),
