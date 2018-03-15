@@ -1747,7 +1747,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         control_counters.Fill(0)
 
         # NUP stitching for WJets
-        if isMC and DO_W_STITCHING:
+        if isWJetsInclusive and DO_W_STITCHING:
             if ev.gen_NUP > 5: continue
 
         #if iev <  range_min: continue

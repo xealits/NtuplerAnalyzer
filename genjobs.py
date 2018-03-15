@@ -51,6 +51,7 @@ parser.add_argument("--dtags", type=str, default='std',
 parser.add_argument("--without-dtags", type=str, default='',
         help='dtags or groups of dtags to remove from the submission list (default "")')
 
+parser.add_argument("--do-W-stitching",  action='store_true', help="turn ON skipping NUP events of inclusive sample")
 parser.add_argument("-d", "--debug",  action='store_true', help="DEBUG level of logging")
 
 
@@ -199,7 +200,10 @@ logging.info("got %d requested dtags" % len(requested_dtags))
 # make the jobs
 job_dir_template = args.ntupler_dir + "/{vntupler}/{dset}/Ntupler_{vntupler}_{dtag}/" #*/0000/"
 # list this dir to get the available files
-job_template = "python channel_distrs_full_loop.py -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ -i {job_file}   || true"
+if args.do_W_stitching:
+    job_template = "python channel_distrs_full_loop.py --do-W-stitching -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ -i {job_file}   || true"
+else:
+    job_template = "python channel_distrs_full_loop.py -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ -i {job_file}   || true"
 
 # make just flat list of jobs commands
 job_commands = []
