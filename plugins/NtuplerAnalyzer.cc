@@ -2101,7 +2101,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_alliso_id.push_back(selElectrons_allIso[l].pdgId());
 		float rel_iso = relIso(selElectrons_allIso[l], NT_fixedGridRhoFastjetAll);
 		NT_lep_alliso_relIso.push_back(rel_iso);
-		NT_lep_alliso_matched_HLT.push_back(processElectron_matchesHLTs(selElectrons_allIso[l], el_trig_objs, 0.2));
+		struct dR_matching match_to_HLTs = dR_match_to_HLTs(selElectrons_allIso[l], el_trig_objs, 0.2);
+		//NT_lep_alliso_matched_HLT.push_back(processElectron_matchesHLTs(selElectrons_allIso[l], el_trig_objs, 0.2));
+		NT_lep_alliso_matched_HLT   .push_back(match_to_HLTs.matched);
+		NT_lep_alliso_matched_HLT_dR.push_back(match_to_HLTs.dR);
 		}
 
 	for(size_t l=0; l<selMuons_allIso.size(); ++l)
@@ -2112,7 +2115,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_alliso_id.push_back(selMuons_allIso[l].pdgId());
 		float rel_iso = relIso(selMuons_allIso[l], NT_fixedGridRhoFastjetAll);
 		NT_lep_alliso_relIso.push_back(rel_iso);
-		NT_lep_alliso_matched_HLT.push_back(processMuon_matchesHLTs(selMuons_allIso[l], mu_trig_objs, 0.1));
+		struct dR_matching match_to_HLTs = dR_match_to_HLTs(selMuons_allIso[l], mu_trig_objs, 0.1);
+		//NT_lep_alliso_matched_HLT.push_back(processMuon_matchesHLTs(selMuons_allIso[l], mu_trig_objs, 0.1));
+		NT_lep_alliso_matched_HLT   .push_back(match_to_HLTs.matched);
+		NT_lep_alliso_matched_HLT_dR.push_back(match_to_HLTs.dR);
 		}
 
 

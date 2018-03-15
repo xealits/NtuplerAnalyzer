@@ -382,6 +382,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, lep_alliso_id)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, lep_alliso_p4)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_alliso_relIso)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  lep_alliso_matched_HLT)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_alliso_matched_HLT_dR)
 
 // JETS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, jet_id)
