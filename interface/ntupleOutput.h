@@ -267,6 +267,21 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_wdecays_IDs) // ID-s of the prompt
 Int_t_in_NTuple(OUTNTUPLE, gen_N_zdecays)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_zdecays_IDs)
 
+/*
+ * new homogeneous gen final states
+ * should substitute all the above
+ */
+
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_final_p4)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, gen_final_PromptFinal)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, gen_final_PromptDecayed)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, gen_final_fromHardFinal)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, gen_final_PromptTauDecay)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,  gen_final_pdgId)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,  gen_final_chainId)
+// custom ID: +-4 t,  +-3 b,  +- 2W,  +-1 tau
+// multiplied by power of 10 in order of the decay chain
+
 // for recoil corrections:
 Float_t_in_NTuple(OUTNTUPLE, gen_genPx)
 Float_t_in_NTuple(OUTNTUPLE, gen_genPy)

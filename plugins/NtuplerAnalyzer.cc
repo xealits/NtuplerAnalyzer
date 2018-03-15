@@ -161,6 +161,61 @@ return NULL;
 }
 
 
+Int_t parse_chain_id(const reco::Candidate* part)
+
+{
+Int_t chain_id = 0;
+
+unsigned int n_mothers = part->numberOfMothers();
+
+unsigned int order_multiplier = 1;
+
+while (n_mothers > 0)
+	{
+	n_mothers = part->numberOfMothers();
+
+	if (n_mothers == 0)
+		return chain_id;
+
+	unsigned int part_pdg = abs(part->pdgId());
+
+	for (unsigned int d_i=0; d_i < n_mothers; d_i++)
+		{
+		const reco::Candidate * mother = part->mother(d_i);
+		// mother must be different and one of the targets
+		unsigned int m_pdg = abs(mother->pdgId());
+		if (part_pdg == m_pdg)
+			{
+			part = mother;
+			break;
+			}
+		// 15 tau 24 W 5 b 6 top
+		else if (m_pdg == 15 || m_pdg == 24 || m_pdg == 5 || m_pdg == 6)
+			{
+			// add to the chain id
+			int id = 0;
+			switch(m_pdg) {
+			case 15:
+				id = 1;
+			case 24:
+				id = 2;
+			case 5:
+				id = 3;
+			case 6:
+				id = 4;
+				}
+			chain_id += order_multiplier * id;
+			part = mother;
+			break;
+			}
+		else
+			return chain_id;
+		}
+	}
+return chain_id;
+}
+
+
 
 
 
@@ -1330,6 +1385,18 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				unsigned int a_id = abs(id);
 				int st = p.status(); // TODO: check what is status in decat simulation (pythia for our TTbar set)
 				int n_daughters = p.numberOfDaughters();
+
+				// new homogeneous gen final states
+				if (p.fromHardProcessFinalState() || p.isPromptFinalState() || p.isPromptDecayed() || p.isDirectHardProcessTauDecayProductFinalState())
+					{
+					NT_gen_final_p4              .push_back(p.p4());
+					NT_gen_final_PromptFinal     .push_back(p.isPromptFinalState());
+					NT_gen_final_PromptDecayed   .push_back(p.isPromptDecayed());
+					NT_gen_final_fromHardFinal   .push_back(p.fromHardProcessFinalState());
+					NT_gen_final_PromptTauDecay  .push_back(p.isDirectHardProcessTauDecayProductFinalState());
+					NT_gen_final_pdgId           .push_back(p.pdgId());
+					NT_gen_final_chainId         .push_back(parse_chain_id(&p));
+					}
 
 				// leptons from hard processes
 				if ((a_id >= 11 && a_id <= 16 && p.fromHardProcessFinalState()) ||
