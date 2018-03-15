@@ -1,3 +1,34 @@
+mutau_l0->Divide(mutau_all)
+mutau_l1->Divide(mutau_all)
+mutau_l2->Divide(mutau_all)
+mutau_l3->Divide(mutau_all)
+mutau_l4->Divide(mutau_all)
+
+mutau_l1->SetLineColor(kRed + 0)
+mutau_l2->SetLineColor(kRed + 1)
+mutau_l3->SetLineColor(kRed + 2)
+mutau_l4->SetLineColor(kRed + 3)
+
+mutau_l0->Draw()
+mutau_l1->Draw("same")
+mutau_l2->Draw("same")
+mutau_l3->Draw("same")
+mutau_l4->Draw("same")
+
+
+TLegend* leg = new TLegend(0.7,0.7,1,1)
+leg->AddEntry(mutau_l0, "vloose/all", "L")
+leg->AddEntry(mutau_l1, "loose/all", "L")
+leg->AddEntry(mutau_l2, "medium/all", "L")
+leg->AddEntry(mutau_l3, "tight/all", "L")
+leg->AddEntry(mutau_l4, "vtight/all", "L")
+
+leg->Draw("same")
+
+
+
+
+
 python stack_postfit.py fitDiagnosticsElShapesPostFitDistr.root ctr_old_el_sel_ljout --title-x "Mt(lep, MET)"
 
 # crab submition
