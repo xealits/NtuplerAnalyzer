@@ -947,15 +947,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     ('weight_pu_h2',  TH1D("weight_pu_h2", "", 50, 0, 2)),
     ('weight_top_pt', TH1D("weight_top_pt", "", 50, 0, 2)),
 
-    ('weights_gen_weight_too',         TH1D("weights_gen_weight_too", "", 50, 0, 2)),
-    ('weights_gen_weight_norm',        TH1D("weights_gen_weight_norm", "", 50, 0, 2)),
-    ('weights_gen_weight_alphasUp',    TH1D("weights_gen_weight_alphasUp", "", 50, 0, 2)),
-    ('weights_gen_weight_alphasDown',  TH1D("weights_gen_weight_alphasDown", "", 50, 0, 2)),
+    ('weights_gen_weight_too',         TH1D("weights_gen_weight_too",         "", 50, 0, 2)),
+    ('weights_gen_weight_norm',        TH1D("weights_gen_weight_norm",        "", 50, 0, 2)),
+    ('weights_gen_weight_average',     TH1D("weights_gen_weight_average",     "", 50, 0, 2)),
+    ('weights_gen_weight_alphasUp',    TH1D("weights_gen_weight_alphasUp",    "", 50, 0, 2)),
+    ('weights_gen_weight_alphasDown',  TH1D("weights_gen_weight_alphasDown",  "", 50, 0, 2)),
     ('weights_gen_weight_centralFrag', TH1D("weights_gen_weight_centralFrag", "", 50, 0, 2)),
-    ('weights_gen_weight_Peterson',    TH1D("weights_gen_weight_Peterson", "", 50, 0, 2)),
-    ('weights_gen_weight_FragUp',      TH1D("weights_FragUp", "", 50, 0, 2)),
+    ('weights_gen_weight_Peterson',    TH1D("weights_gen_weight_Peterson",    "", 50, 0, 2)),
+    ('weights_gen_weight_FragUp',      TH1D("weights_FragUp",   "", 50, 0, 2)),
     ('weights_gen_weight_FragDown',    TH1D("weights_FragDown", "", 50, 0, 2)),
-    ('weights_gen_weight_semilepbrUp',      TH1D("weights_semilepbrUp", "", 50, 0, 2)),
+    ('weights_gen_weight_semilepbrUp',      TH1D("weights_semilepbrUp",   "", 50, 0, 2)),
     ('weights_gen_weight_semilepbrDown',    TH1D("weights_semilepbrDown", "", 50, 0, 2)),
 
     ('weight_z_mass_pt', TH1D("weight_z_mass_pt", "", 50, 0, 2)),
@@ -1980,16 +1981,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     weights_gen_weight_alphas = (ev.gen_weight_alphas_1, ev.gen_weight_alphas_2)
                     # norm to average
                     weights_gen_weight_norm = (weights_gen_weight_alphas[0] + weights_gen_weight_alphas[1]) / 2
-                    if weights_gen_weight_norm < 0.0001:
-                        weights_gen_weight_norm = 0.0001
+                    if weights_gen_weight_norm < 0.00001:
+                        weights_gen_weight_norm = 0.00001
                     #control_hs['weights_gen_weight_norm']   .Fill(ev.gen_weight_too)
                     control_hs['weights_gen_weight_too']        .Fill(ev.gen_weight_too)
-                    control_hs['weights_gen_weight_norm']       .Fill(weights_gen_weight_norm)
+                    control_hs['weights_gen_weight_norm']       .Fill(ev.gen_weight_norm)
+                    control_hs['weights_gen_weight_average']    .Fill(weights_gen_weight_norm)
                     control_hs['weights_gen_weight_alphasUp']   .Fill(weights_gen_weight_alphas[0])
                     control_hs['weights_gen_weight_alphasDown'] .Fill(weights_gen_weight_alphas[1])
 
                 if with_Frag_sys:
-                    weights_gen_weight_centralFrag = ev.gen_weight_centralFrag if ev.gen_weight_centralFrag > 0. else 0.001
+                    weights_gen_weight_centralFrag = ev.gen_weight_centralFrag if ev.gen_weight_centralFrag > 0. else 0.00001
                     weights_gen_weight_Frag = (ev.gen_weight_FragUp, ev.gen_weight_FragDown)
                     weights_gen_weight_semilepbr = (ev.gen_weight_semilepbrUp, ev.gen_weight_semilepbrDown)
                     weights_gen_weight_Peterson = ev.gen_weight_PetersonFrag
