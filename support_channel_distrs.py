@@ -1069,7 +1069,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             usual_process   = 'tt_other'
 
         if isWJets:
-            wjets_procs = (['wjets'], 'wjets')
+            wjets_procs = (['wjets', 'wjets_tauh', 'wjets_taul'],  'wjets')
             procs_el_3ch = procs_el = procs_mu_3ch = procs_mu = procs_elmu = procs_mu_3ch_fbw = procs_el_3ch_fbw = wjets_procs
             usual_process = 'wjets'
 
@@ -1969,6 +1969,23 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     proc = 'dy_tautau'
                 else:
                     proc = 'dy_other'
+
+            if isWJets:
+                if ev.gen_N_wdecays > 0:
+                    lep1_id = abs(ev.gen_wdecays_IDs[0])
+                #W does not need these prompt leptons, but I keep them just in case
+                else:
+                    # check prompt leptns
+                    lep1_id = abs(ev.gen_pythia8_prompt_leptons_IDs[0])
+                if lep1_id >= 15*15:
+                    proc = 'wjets_tauh'
+                elif lep1_id >= 15: # 15*11 and 15*13
+                    proc = 'wjets_taul'
+                # we use only WToLNu now, W->j does not happen
+                #elif lep1_id == 1:
+                #    proc = 'wjets_j'
+                else:
+                    proc = 'wjets'
 
             weight_top_pt = 1.
             # "Only top quarks in SM ttbar events must be reweighted, not single tops or tops from BSM production mechanisms."
