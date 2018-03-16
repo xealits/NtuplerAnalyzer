@@ -1392,6 +1392,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     channels_optimized_old_full_sys = {
                 'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
                 'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
+                'ctr_el_wjet':              (procs_el, systematic_names_pu),
+                'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
                 'ctr_alliso_mu_wjet':       (procs_mu, systematic_names_nominal),
                 'ctr_alliso_mu_wjet_ss':    (procs_mu, systematic_names_nominal),
 
@@ -3566,6 +3568,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         passed_channels.append(('ctr_mu_wjet', sel_b_weight, jets.lowest, taus.presel))
                     else:
                         passed_channels.append(('ctr_mu_wjet_ss', sel_b_weight, jets.lowest, taus.presel))
+
+            if pass_el and len(jets.lowest.medium) == 0 and taus.presel:
+                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
+                sel_b_weight = weight_bSF_lowest
+
+                if presel_os:
+                    passed_channels.append(('ctr_el_wjet', sel_b_weight, jets.lowest, taus.presel))
+                else:
+                    passed_channels.append(('ctr_el_wjet_ss', sel_b_weight, jets.lowest, taus.presel))
 
 
             if pass_old_mu_presel:
