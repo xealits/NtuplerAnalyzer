@@ -1,3 +1,81 @@
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 0]:gen_final_PromptFinal[ 0]:gen_final_chainId[ 0]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 1]:gen_final_PromptFinal[ 1]:gen_final_chainId[ 1]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 2]:gen_final_PromptFinal[ 2]:gen_final_chainId[ 2]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 3]:gen_final_PromptFinal[ 3]:gen_final_chainId[ 3]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 4]:gen_final_PromptFinal[ 4]:gen_final_chainId[ 4]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 5]:gen_final_PromptFinal[ 5]:gen_final_chainId[ 5]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 6]:gen_final_PromptFinal[ 6]:gen_final_chainId[ 6]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 7]:gen_final_PromptFinal[ 7]:gen_final_chainId[ 7]", "", "", 1)
+
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 8]:gen_final_PromptFinal[ 8]:gen_final_chainId[ 8]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 9]:gen_final_PromptFinal[ 9]:gen_final_chainId[ 9]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[10]:gen_final_PromptFinal[10]:gen_final_chainId[10]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[11]:gen_final_PromptFinal[11]:gen_final_chainId[11]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[12]:gen_final_PromptFinal[12]:gen_final_chainId[12]", "", "", 1)
+
+
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[0]:gen_final_PromptFinal[0]:gen_final_PromptDecayed[0]:gen_final_fromHardFinal[0]:gen_final_PromptTauDecay[0]:gen_final_chainId[0]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[1]:gen_final_PromptFinal[1]:gen_final_PromptDecayed[1]:gen_final_fromHardFinal[1]:gen_final_PromptTauDecay[1]:gen_final_chainId[1]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[2]:gen_final_PromptFinal[2]:gen_final_PromptDecayed[2]:gen_final_fromHardFinal[2]:gen_final_PromptTauDecay[2]:gen_final_chainId[2]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[3]:gen_final_PromptFinal[3]:gen_final_PromptDecayed[3]:gen_final_fromHardFinal[3]:gen_final_PromptTauDecay[3]:gen_final_chainId[3]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[4]:gen_final_PromptFinal[4]:gen_final_PromptDecayed[4]:gen_final_fromHardFinal[4]:gen_final_PromptTauDecay[4]:gen_final_chainId[4]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[5]:gen_final_PromptFinal[5]:gen_final_PromptDecayed[5]:gen_final_fromHardFinal[5]:gen_final_PromptTauDecay[5]:gen_final_chainId[5]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[6]:gen_final_PromptFinal[6]:gen_final_PromptDecayed[6]:gen_final_fromHardFinal[6]:gen_final_PromptTauDecay[6]:gen_final_chainId[6]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[7]:gen_final_PromptFinal[7]:gen_final_PromptDecayed[7]:gen_final_fromHardFinal[7]:gen_final_PromptTauDecay[7]:gen_final_chainId[7]", "", "", 1)
+
+
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_PromptDecayed_pdgId[ 0]:gen_PromptDecayed_status[ 0]:gen_PromptDecayed_ndaughters[ 0]:gen_PromptDecayed_chainId[ 0]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_PromptDecayed_pdgId[ 1]:gen_PromptDecayed_status[ 1]:gen_PromptDecayed_ndaughters[ 1]:gen_PromptDecayed_chainId[ 1]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_PromptDecayed_pdgId[ 2]:gen_PromptDecayed_status[ 2]:gen_PromptDecayed_ndaughters[ 2]:gen_PromptDecayed_chainId[ 2]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_PromptDecayed_pdgId[ 3]:gen_PromptDecayed_status[ 3]:gen_PromptDecayed_ndaughters[ 3]:gen_PromptDecayed_chainId[ 3]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_PromptDecayed_pdgId[ 4]:gen_PromptDecayed_status[ 4]:gen_PromptDecayed_ndaughters[ 4]:gen_PromptDecayed_chainId[ 4]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_PromptDecayed_pdgId[ 5]:gen_PromptDecayed_status[ 5]:gen_PromptDecayed_ndaughters[ 5]:gen_PromptDecayed_chainId[ 5]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_PromptDecayed_pdgId[ 6]:gen_PromptDecayed_status[ 6]:gen_PromptDecayed_ndaughters[ 6]:gen_PromptDecayed_chainId[ 6]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_PromptDecayed_pdgId[ 7]:gen_PromptDecayed_status[ 7]:gen_PromptDecayed_ndaughters[ 7]:gen_PromptDecayed_chainId[ 7]", "", "", 1)
+
+
+
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_b_final_pdgIds[ 0]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_b_final_pdgIds[ 1]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_b_final_pdgIds[ 2]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_b_final_pdgIds[ 3]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_b_final_pdgIds[ 4]", "", "", 1)
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_tb_b_final_pdgIds[ 0]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_tb_b_final_pdgIds[ 1]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_tb_b_final_pdgIds[ 2]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_tb_b_final_pdgIds[ 3]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_tb_b_final_pdgIds[ 4]", "", "", 1)
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_w1_final_pdgIds[ 0]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_w1_final_pdgIds[ 1]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_w1_final_pdgIds[ 2]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_w1_final_pdgIds[ 3]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_w1_final_pdgIds[ 4]", "", "", 1)
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_w2_final_pdgIds[ 0]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_w2_final_pdgIds[ 1]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_w2_final_pdgIds[ 2]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_w2_final_pdgIds[ 3]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_t_w2_final_pdgIds[ 4]", "", "", 1)
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_tb_w1_final_pdgIds[ 0]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_tb_w1_final_pdgIds[ 1]", "", "", 1)
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_tb_w2_final_pdgIds[ 0]", "", "", 1)
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_tb_w2_final_pdgIds[ 1]", "", "", 1)
+
+gen_t_b_final_pdgIds
+
+
+
+
+
+
 mutau_l0->Divide(mutau_all)
 mutau_l1->Divide(mutau_all)
 mutau_l2->Divide(mutau_all)
