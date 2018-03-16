@@ -2216,7 +2216,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             pt_cut_cuts = 22.
             pt_cut_old  = 30.
 
-            jetmatched = ev.tau_dR_matched_jet > -1
+            jetmatched = ev.tau_dR_matched_jet[i] > -1
 
             #if tau_pt < 20.: continue # no need to check -- it's default in ntupler
 
