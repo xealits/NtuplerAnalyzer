@@ -1487,9 +1487,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     tau_fakerate_pts_n  = 9
     tau_fakerate_etas = (ctypes.c_double * 13)(* [-2.4, -2, -1.6, -1.2, -0.8, -0.4, 0, 0.4, 0.8, 1.2, 1.6, 2, 2.4])
     tau_fakerate_etas_n = 12
-    lep_relIso_bins = (ctypes.c_double * 7)(* [0, 1./8., 1./4., 1./2., 1., 2., 4.])
+    lep_relIso_el_bins   = (ctypes.c_double * 6)(* [0, 0.059, 0.1, 0.175, 0.3, 0.5])
+    lep_relIso_el_bins_n = 5
+    lep_relIso_el_bins_ext   = (ctypes.c_double * 8)(* [0, 0.059, 0.1, 0.175, 0.3, 0.5, 2., 4.])
+    lep_relIso_el_bins_ext_n = 7
+    lep_relIso_bins   = (ctypes.c_double * 7)(* [0, 0.15., 0.25., 0.5, 1., 2., 4.])
     lep_relIso_bins_n = 6
-    lep_relIso_bins_ext = (ctypes.c_double * 9)(* [0, 1./8., 1./4., 1./2., 1., 2., 4., 8., 16.])
+    lep_relIso_bins_ext   = (ctypes.c_double * 9)(* [0, 0.15., 0.25., 0.5, 1., 2., 4., 8., 16.])
     lep_relIso_bins_ext_n = 8
 
     dojet_trijet_bins_ext = (ctypes.c_double * 8)(* [0, 20., 40., 60., 100., 150., 250., 400.])
@@ -1591,6 +1595,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'dphi_lep_met': TH1D('%s_%s_%s_dphi_lep_met' % (chan, proc, sys), '', 20, -3.2, 3.2),
                                                'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
                                                # relIso for the QCD anti-iso region
+                                               'lep_relIso_el':       TH1D('%s_%s_%s_lep_relIso_el'     % (chan, proc, sys), '', lep_relIso_el_bins_n,     lep_relIso_el_bins),
+                                               'lep_relIso_el_ext':   TH1D('%s_%s_%s_lep_relIso_el_ext' % (chan, proc, sys), '', lep_relIso_el_bins_ext_n, lep_relIso_el_bins_ext),
                                                'lep_relIso':          TH1D('%s_%s_%s_lep_relIso'     % (chan, proc, sys), '', lep_relIso_bins_n,     lep_relIso_bins),
                                                'lep_relIso_ext':      TH1D('%s_%s_%s_lep_relIso_ext' % (chan, proc, sys), '', lep_relIso_bins_ext_n, lep_relIso_bins_ext),
                                                'lep_relIso_precise':  TH1D('%s_%s_%s_lep_relIso_precise' % (chan, proc, sys), '', 300, 0., 0.3), # around the cut of 0.125-0.15
@@ -3960,6 +3966,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 """
 
                 # for anti-iso and overall
+                out_hs[(chan, record_proc, sys_name)]['lep_relIso_el']      .Fill(ev.lep_relIso[0],  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_relIso_el_ext']  .Fill(ev.lep_relIso[0],  record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_relIso']         .Fill(ev.lep_relIso[0],  record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_relIso_ext']     .Fill(ev.lep_relIso[0],  record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_relIso_precise'] .Fill(ev.lep_relIso[0],  record_weight)
