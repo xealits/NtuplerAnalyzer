@@ -1688,7 +1688,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                # do them up to 30 -- check overflows if there are many
                                                'jet_flavours_hadron': TH1D('%s_%s_%s_jet_flavours_hadron' % (chan, proc, sys), '', 35, -5, 30),
                                                'jet_flavours_parton': TH1D('%s_%s_%s_jet_flavours_parton' % (chan, proc, sys), '', 35, -5, 30),
+                                               'lep_genmatch':        TH1D('%s_%s_%s_lep_genmatch'        % (chan, proc, sys), '', 11, -1, 10),
+                                               'tau_genmatch':        TH1D('%s_%s_%s_tau_genmatch'        % (chan, proc, sys), '', 11, -1, 10),
                                                'jet_genmatch':        TH1D('%s_%s_%s_jet_genmatch'        % (chan, proc, sys), '', 11, -1, 10),
+                                               'jet_genmatch_Mb':        TH1D('%s_%s_%s_jet_genmatch_Mb'       % (chan, proc, sys), '', 11, -1, 10),
+                                               'jet_genmatch_Lb':        TH1D('%s_%s_%s_jet_genmatch_Lb'       % (chan, proc, sys), '', 11, -1, 10),
+                                               'jet_genmatch_R':         TH1D('%s_%s_%s_jet_genmatch_R'        % (chan, proc, sys), '', 11, -1, 10),
                                                'jet_bID_lev':         TH1D('%s_%s_%s_jet_bID_lev'         % (chan, proc, sys), '', 5, 0, 5),
 
                                                'control_bSF_weight':  TH1D('%s_%s_%s_control_bSF_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
@@ -3663,6 +3668,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # also if there are taus and it's tt_lj than try to specify the origin of the fake
                 # if it is required by the procs
                 if isTT and proc == 'tt_lj' and 'tt_ljb' in procs and sel_taus:
+
+                    '''
                     # the 0 tau is used
                     # sadly root...
                     # I have to convert ALL lorentzvectors to TLorentzVectors to have convenient dR
@@ -3691,6 +3698,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         if b_prod_p4.DeltaR(tau_p4) < gen_match_cut:
                             matched_b = True
                             break
+                    '''
+                    # the same using genmatch info
+                    tau_index = sel_taus[0][3]
+                    gen_dR = ev.tau_matching_gen_dR[tau_index]
+                    gen_id = ev.tau_matching_gen[tau_index]
+
+                    matched_w = gen_dR < 0.3 and abs(gen_id) == 4
+                    matched_b = gen_dR < 0.3 and abs(gen_id) == 5
 
                     if matched_w and matched_b:
                         record_proc = 'tt_ljo'
@@ -4197,6 +4212,26 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         out_hs[(chan, record_proc, sys_name)]['jet_flavours_hadron'].Fill(abs(jet[4]), record_weight)
                         out_hs[(chan, record_proc, sys_name)]['jet_flavours_parton'].Fill(abs(jet[5]), record_weight)
                         out_hs[(chan, record_proc, sys_name)]['jet_genmatch'].Fill(jet[6],  record_weight)
+
+                    # gen matching  separate jets
+                    for jet in sel_jets.medium:
+                        out_hs[(chan, record_proc, sys_name)]['jet_genmatch_Mb'].Fill(jet[6],  record_weight)
+                    for jet in sel_jets.loose:
+                        out_hs[(chan, record_proc, sys_name)]['jet_genmatch_Lb'].Fill(jet[6],  record_weight)
+                    for jet in sel_jets.rest:
+                        out_hs[(chan, record_proc, sys_name)]['jet_genmatch_R'].Fill(jet[6],  record_weight)
+
+                    lep_genmatch = 0.
+                    if ev.lep_matching_gen_dR[0] < 0.3:
+                        lep_genmatch = ev.lep_matching_gen[0]
+                    out_hs[(chan, record_proc, sys_name)]['lep_genmatch'].Fill(lep_genmatch,  record_weight)
+
+                    if sel_taus:
+                        tau_genmatch = 0.
+                        tau_index = sel_taus[0][3]
+                        if ev.tau_matching_gen_dR[tau_index] < 0.3:
+                            tau_genmatch = ev.tau_matching_gen[tau_index]
+                        out_hs[(chan, record_proc, sys_name)]['tau_genmatch'].Fill(tau_genmatch,  record_weight)
 
                 out_hs[(chan, record_proc, sys_name)]['control_bSF_weight'].Fill(weight_bSF)
                 out_hs[(chan, record_proc, sys_name)]['control_PU_weight'] .Fill(weight_PU)
