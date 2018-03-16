@@ -1408,8 +1408,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_old_mu_presel_alliso':        (procs_mu, systematic_names_nominal),
                 'ctr_old_mu_presel_alliso_ss':     (procs_mu, systematic_names_nominal),
 
-                'ctr_old_el_presel_alliso':        (procs_mu, systematic_names_nominal),
-                'ctr_old_el_presel_alliso_ss':     (procs_mu, systematic_names_nominal),
+                'ctr_old_el_presel_alliso':        (procs_el, systematic_names_nominal),
+                'ctr_old_el_presel_alliso_ss':     (procs_el, systematic_names_nominal),
 
                 # testing issue with event yield advantage
                 'ctr_old_mu_sel':           (procs_mu, systematic_names_all_with_th),
