@@ -162,6 +162,19 @@ else if (depth > 0)
 return NULL;
 }
 
+bool has_mother(const reco::Candidate& part, unsigned int target_pdgId)
+{
+unsigned int pdgId = abs(part.pdgId());
+unsigned int n_mothers = part.numberOfMothers();
+
+if (pdgId == target_pdgId)
+	return true;
+else if (n_mothers == 0)
+	return false;
+else
+	has_mother(*part.mother[0], target_pdgId);
+}
+
 
 
 
@@ -1650,6 +1663,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				// could merge this with t decay procedure, or search from the final state leptons..
 				if (abs(id) == 24 && n_daughters == 2)
 					{
+					// to suite single-top
+					// skip the W from top decay -- it's picked up above
+					if (has_mother(p, 6)) continue;
+					// and save the final states from this W
+					// if it is "normal" final state daughters:
+					// leptons, light jets or b, but not top
+					// b is for the "exotic" single top s/t channels
+					// it should catch tW correctly, other channels don't matter now
+
 					int wdecay_id = 1;
 					int d0_id = abs(p.daughter(0)->pdgId());
 					int d1_id = abs(p.daughter(1)->pdgId());
@@ -1658,8 +1680,36 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						{
 						wdecay_id = p.daughter(lep_daughter)->pdgId();
 						if (abs(wdecay_id) == 15)
-							wdecay_id *= simple_tau_decay_id(p.daughter(lep_daughter));
+							{
+							int tau_id = simple_tau_decay_id(p.daughter(lep_daughter));
+							wdecay_id *= tau_id;
+							// = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
+							// 20 + 10
+							if (abs(tau_id) >= 30)
+								save_final_cands(p.daughter(lep_daughter), gen_tau3ch);
+							if (abs(tau_id) >= 15)
+								save_final_cands(p.daughter(lep_daughter), gen_taus);
+							else
+								save_final_cands(p.daughter(lep_daughter), gen_taulep);
+							}
+						else
+							{
+							save_final_cands(p.daughter(lep_daughter), gen_leps);
+							}
 						}
+					// the t/s channel case of b-jet
+					if (d0_id == 5)
+						save_final_cands(p.daughter(d0_id), gen_b_prods);
+					else if (d1_id == 5)
+						save_final_cands(p.daughter(d1_id), gen_b_prods);
+
+					// normal W->jets
+					if (d0_id < 5 && d1_id < 5)
+						{
+						save_final_cands(p.daughter(d1_id), gen_w_prods);
+						save_final_cands(p.daughter(d0_id), gen_w_prods);
+						}
+
 
 					NT_gen_N_wdecays += 1;
 					NT_gen_wdecays_IDs.push_back(wdecay_id);
