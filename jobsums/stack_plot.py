@@ -138,6 +138,17 @@ else:
     histos_data_per_distr    = histos_data_distrs
     histos_data_per_distr_ss = histos_data_distrs_ss
 
+
+# normalize data distrs to different bin width:
+for _, distrs in histos_data_per_distr + histos_data_per_distr_ss:
+    for histo, _, _ in distrs:
+        for bini in range(histo.GetSize()):
+            content = histo.GetBinContent(bini)
+            error   = histo.GetBinError(bini)
+            width   = histo.GetXaxis().GetBinUpEdge(bini) - histo.GetXaxis().GetBinLowEdge(bini)
+            histo.SetBinContent(bini, content/width)
+            histo.SetBinError(bini, error/width)
+
 logging.info("# data histograms = %d" % len(histos_data_per_distr))
 
 def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=False):
@@ -217,6 +228,14 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
 
            #histo = histo_key.ReadObj()
            logging.info("%s   %s   %x = %f %f" % (histo.GetName(), histo_name, histo_name == '_'.join([channel, nick, fixed_sys_name, distr_name]), histo.GetEntries(), histo.Integral()))
+
+           # normalize to different bin width:
+           for bini in range(histo.GetSize()):
+                content = histo.GetBinContent(bini)
+                error   = histo.GetBinError(bini)
+                width   = histo.GetXaxis().GetBinUpEdge(bini) - histo.GetXaxis().GetBinLowEdge(bini)
+                histo.SetBinContent(bini, content/width)
+                histo.SetBinError(bini, error/width)
 
            if args.cumulative:
                used_histos.append((histo.GetCumulative(False), nick, channel)) # hopefully root wont screw this up

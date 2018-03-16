@@ -18,4 +18,9 @@ merge_proc:
 	hadd merge-sets/${nt}/${proc}/$$d.root /lstore/cms/olek/outdirs/${nt}/${proc}/$$d/*.root & \
 	done
 
+merge_tt:
+	for fl in `ls tt_files_*`; \
+	do \
+	hadd merge-sets/${nt}/${proc}/$$fl.root `sed 's,^,/lstore/cms/olek/outdirs/${nt}/${proc}/${dtag}/,' $$fl` & \
+	done
 
