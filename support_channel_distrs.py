@@ -1398,6 +1398,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_alliso_mu_wjet_ss':    (procs_mu, systematic_names_nominal),
 
                 'ctr_mu_dy_mumu':           (procs_mu, systematic_names_pu),
+                'ctr_mu_dy_elel':           (procs_el, systematic_names_pu),
                 'ctr_mu_tt_em':             (procs_elmu, systematic_names_pu_toppt),
                 'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_pu_toppt),
 
@@ -1818,8 +1819,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
 
         pass_mumu = ev.leps_ID == -13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_std_veto_leps and \
-            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
-            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
+            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.15 and \
+            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.15
+
+        pass_elel = ev.leps_ID == -11*11 and (ev.HLT_el) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_std_veto_leps and \
+            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.059 and \
+            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.059
+
         pass_mumu_ss = ev.leps_ID == 13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_std_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
@@ -1834,7 +1840,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #passes = pass_min_mu or pass_min_mu_all or pass_mu_all or pass_mu or pass_el or pass_mumu or pass_mumu_ss or pass_elmu or pass_mu_id_iso
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
-        passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all
+        passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
         passes = passes_optimized
 
         if not passes: continue
@@ -1843,7 +1849,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         pass_mus = pass_mu_all or pass_mu or pass_elmu or pass_mumu # or pass_mumu_ss
         # also at least some kind of tau in single-el:
         #if (pass_mu or pass_el) and (not ev.tau_p4.size() > 0): continue # this is the only thing reduces computing
-        passed_ele_event = pass_el or pass_el_all
+        passed_ele_event = pass_el or pass_el_all or pass_elel
 
         micro_proc = ''
 
@@ -2109,7 +2115,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                              ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
 
-            if (pass_el_all or pass_el) and isMC:
+            if (pass_el_all or pass_el or pass_elel) and isMC:
                 el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 # on 0 position is the value, on 1 is uncertainty
@@ -3543,6 +3549,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             if pass_mumu:
                 passed_channels.append(('ctr_mu_dy_mumu', 1., jets.lowest, taus.presel))
+            if pass_elel:
+                passed_channels.append(('ctr_mu_dy_elel', 1., jets.lowest, taus.presel))
             if pass_elmu:
                 passed_channels.append(('ctr_mu_tt_em', 1., jets.lowest, taus.presel))
                 # elmu selection with almost main jet requirements
