@@ -2583,7 +2583,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             en_factor = 1.
             HF = -1
             PF = -1
-            genmatch = -1
+            genmatch = 0
             if isMC:
                 jer_factor = ev.jet_jer_factor[i]
                 jes_factor = ev.jet_jes_recorrection[i]
@@ -2593,7 +2593,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 HF = ev.jet_hadronFlavour[i]
                 PF = ev.jet_partonFlavour[i]
 
-                genmatch = ev.jet_matching_gen[i]
+                if ev.jet_matching_gen_dR[i] < 0.3:
+                    genmatch = ev.jet_matching_gen[i]
 
             jet_pt  = p4.pt() * en_factor
             jet_eta = p4.eta()
