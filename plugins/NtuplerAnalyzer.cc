@@ -166,13 +166,27 @@ bool has_mother(const reco::Candidate& part, unsigned int target_pdgId)
 {
 unsigned int pdgId = abs(part.pdgId());
 unsigned int n_mothers = part.numberOfMothers();
+edm::LogInfo ("Demo") << "has_mother: " << target_pdgId << ' ' << pdgId << ' ' << n_mothers;
 
 if (pdgId == target_pdgId)
 	return true;
 else if (n_mothers == 0)
 	return false;
 else
-	has_mother(*part.mother[0], target_pdgId);
+	{
+	// check pdgIDs of all mothers
+	for (unsigned int m_i=0; m_i<n_mothers; m_i++)
+		{
+		unsigned int m_pdg = abs(part.mother(m_i)->pdgId());
+		edm::LogInfo ("Demo") << "has_mother: m " << m_pdg;
+		if (m_pdg == target_pdgId) return true;
+		}
+	// if still no match -- follow the first mother
+	return has_mother(*(part.mother(0)), target_pdgId);
+	}
+
+edm::LogInfo ("Demo") << "has_mother: impossible case, returning the default false";
+return false;
 }
 
 
@@ -193,7 +207,7 @@ struct gen_matching match_to_gen(const LorentzVector& p4,
 	vector<LorentzVector>& gen_tau3ch,
 	vector<LorentzVector>& gen_taulep,
 	vector<LorentzVector>& gen_w_prods,
-	vector<int>& gen_b_prods,
+	vector<LorentzVector>& gen_b_prods,
 	vector<int>& gid_leps,
 	vector<int>& gid_taus,
 	vector<int>& gid_tau3ch,
@@ -908,7 +922,7 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	isWJets = dtag.Contains("WJet") || dtag.Contains("W0Jet") || dtag.Contains("W1Jet") || dtag.Contains("W2Jet") || dtag.Contains("W3Jet") || dtag.Contains("W4Jet");
 	isDY = dtag.Contains("DYJet");
 	isTT = dtag.Contains("TT");
-	isSingleTop = dtag.Contains("SingleT") || dtag.Contains("tchannel") || dtag.Contains("schannel")
+	isSingleTop = dtag.Contains("SingleT") || dtag.Contains("tchannel") || dtag.Contains("schannel");
 
 	/* do it offline
 	// recoil corrector
@@ -1539,6 +1553,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					const reco::Candidate * W = p.daughter( W_num );
 					const reco::Candidate * b = p.daughter( 1 - W_num );
 					const reco::Candidate * W_final = find_W_decay(W);
+					LogInfo ("Demo") << "t decay W final pointer " << W_final;
+					LogInfo ("Demo") << "t decay b " << b;
+
 					int decay_id = 1;
 					// = id of lepton or 1 for quarks
 					for (unsigned int d_i = 0; d_i < 2; d_i++)
@@ -1563,13 +1580,17 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							decay_id = d_i_pdgId * abs(tau_id); // to keep the sign of the tau take it in abs
 							}
 						}
+					LogInfo ("Demo") << "processed leptonic W";
 					// if W is not leptonic, and decay id is still = 1
 					if (decay_id == 1)
 						{
+						LogInfo ("Demo") << "W was not leptonic";
 						save_final_cands(W_final, gen_w_prods, gid_w_prods, W_final->pdgId());
+						LogInfo ("Demo") << "processed hadronic W";
 						//NT_gen_match_w_id.push_back(id); // TODO: remake the saving important gen particloes
 						}
 					save_final_cands(b, gen_b_prods, gid_b_prods, b->pdgId());
+					LogInfo ("Demo") << "processed b";
 
 					// save stuff, according to top Id, also save top p_T
 					if (id>0)
@@ -1691,12 +1712,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					{
 					// to suite single-top
 					// skip the W from top decay -- it's picked up above
+					LogInfo ("Demo") << "consider W with mothers: " << p.numberOfMothers();
 					if (has_mother(p, 6)) continue;
 					// and save the final states from this W
 					// if it is "normal" final state daughters:
 					// leptons, light jets or b, but not top
 					// b is for the "exotic" single top s/t channels
 					// it should catch tW correctly, other channels don't matter now
+
+					LogInfo ("Demo") << "processing standalone W";
 
 					int wdecay_id = 1;
 					int d0_id = abs(p.daughter(0)->pdgId());
@@ -1725,21 +1749,22 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						}
 					// the t/s channel case of b-jet
 					if (d0_id == 5)
-						save_final_cands(p.daughter(d0_id), gen_b_prods, gid_b_prods, p.daughter(d0_id)->pdgId());
+						save_final_cands(p.daughter(0), gen_b_prods, gid_b_prods, p.daughter(d0_id)->pdgId());
 					else if (d1_id == 5)
-						save_final_cands(p.daughter(d1_id), gen_b_prods, gid_b_prods, p.daughter(d1_id)->pdgId());
+						save_final_cands(p.daughter(1), gen_b_prods, gid_b_prods, p.daughter(d1_id)->pdgId());
 
 					// normal W->jets
 					if (d0_id < 5)
 						{
-						save_final_cands(p.daughter(d0_id), gen_w_prods, gid_w_prods, id);
+						save_final_cands(p.daughter(0), gen_w_prods, gid_w_prods, id);
 						}
 					if (d1_id < 5)
 						{
-						save_final_cands(p.daughter(d1_id), gen_w_prods, gid_w_prods, id);
+						save_final_cands(p.daughter(1), gen_w_prods, gid_w_prods, id);
 						}
 					// TODO: check if it can go backwards in the t-channel tree?
 
+					LogInfo ("Demo") << "done with W";
 
 					NT_gen_N_wdecays += 1;
 					NT_gen_wdecays_IDs.push_back(wdecay_id);
