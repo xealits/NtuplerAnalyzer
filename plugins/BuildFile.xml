@@ -21,6 +21,7 @@
 
 <use name="UserCode/llvv_fwk"/>
 <use name="UserCode/ttbar-leptons-80X"/>
+<use name="UserCode/NtuplerAnalyzer"/>
 
 <flags EDM_PLUGIN="1"/>
 

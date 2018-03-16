@@ -72,6 +72,8 @@
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingGenParticles.h"
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingDRCleaning.h"
 
+//#include "UserCode/NtuplerAnalyzer/interface/handy.h"
+
 static double pu_vector_NOMINAL[] = {0, 0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
 0.884048630953726, 0.964813189764159, 1.07045369167689, 1.12497267309738, 1.17367530613108, 1.20239808206413, 1.20815108390021, 1.20049333094509, 1.18284686347315, 1.14408796655615,
 1.0962284704313, 1.06549162803223, 1.05151011089581, 1.05159666626121, 1.05064452078328, 1.0491726301522, 1.05772537082991, 1.07279673875566, 1.0837536468865, 1.09536667397119,
@@ -161,61 +163,6 @@ return NULL;
 }
 
 
-Int_t parse_chain_id(const reco::Candidate* part)
-
-{
-Int_t chain_id = 0;
-
-unsigned int n_mothers = part->numberOfMothers();
-
-unsigned int order_multiplier = 1;
-
-while (n_mothers > 0)
-	{
-	n_mothers = part->numberOfMothers();
-
-	if (n_mothers == 0)
-		return chain_id;
-
-	unsigned int part_pdg = abs(part->pdgId());
-
-	for (unsigned int d_i=0; d_i < n_mothers; d_i++)
-		{
-		const reco::Candidate * mother = part->mother(d_i);
-		// mother must be different and one of the targets
-		unsigned int m_pdg = abs(mother->pdgId());
-		if (part_pdg == m_pdg)
-			{
-			part = mother;
-			break;
-			}
-		// 15 tau 24 W 5 b 6 top
-		else if (m_pdg == 15 || m_pdg == 24 || m_pdg == 5 || m_pdg == 6)
-			{
-			// add to the chain id
-			int id = 0;
-			switch(m_pdg) {
-			case 15:
-				id = 1;
-			case 24:
-				id = 2;
-			case 5:
-				id = 3;
-			case 6:
-				id = 4;
-				}
-			chain_id += order_multiplier * id;
-			order_multiplier *= 10;
-			part = mother;
-			break;
-			}
-		else
-			return chain_id;
-		}
-	}
-return chain_id;
-}
-
 
 
 
@@ -231,6 +178,7 @@ struct gen_matching match_to_gen(const LorentzVector& p4,
 	vector<LorentzVector>& gen_leps,
 	vector<LorentzVector>& gen_taus,
 	vector<LorentzVector>& gen_tau3ch,
+	vector<LorentzVector>& gen_taulep,
 	vector<LorentzVector>& gen_w_prods,
 	vector<LorentzVector>& gen_b_prods)
 {
@@ -273,6 +221,17 @@ gen_id++;
 for (unsigned int i = 0; i<gen_tau3ch.size(); i++)
 	{
 	Float_t dR = reco::deltaR(p4, gen_tau3ch[i]);
+	if (dR < dR_cut && dR < min_dR)
+		{
+		min_dR = dR;
+		min_id = gen_id;
+		}
+	}
+
+gen_id++;
+for (unsigned int i = 0; i<gen_taulep.size(); i++)
+	{
+	Float_t dR = reco::deltaR(p4, gen_taulep[i]);
 	if (dR < dR_cut && dR < min_dR)
 		{
 		min_dR = dR;
@@ -1081,7 +1040,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// lep tau tau3ch b    W
 	// 1   2   4      8   16
 	//vector<const reco::Candidate*> gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods;
-	vector<LorentzVector> gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods;
+	vector<LorentzVector> gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods;
 
 	// couple things for MC:
 	//  - gen aMCatNLO
@@ -1387,17 +1346,67 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				int st = p.status(); // TODO: check what is status in decat simulation (pythia for our TTbar set)
 				int n_daughters = p.numberOfDaughters();
 
+				/* these don't work well -- brute force all no-daughter genparts
 				// new homogeneous gen final states
-				if (p.fromHardProcessFinalState() || p.isPromptFinalState() || p.isPromptDecayed() || p.isDirectHardProcessTauDecayProductFinalState())
+				if (p.fromHardProcessFinalState() || p.isPromptFinalState() || p.isDirectHardProcessTauDecayProductFinalState())
 					{
 					NT_gen_final_p4              .push_back(p.p4());
 					NT_gen_final_PromptFinal     .push_back(p.isPromptFinalState());
-					NT_gen_final_PromptDecayed   .push_back(p.isPromptDecayed());
 					NT_gen_final_fromHardFinal   .push_back(p.fromHardProcessFinalState());
 					NT_gen_final_PromptTauDecay  .push_back(p.isDirectHardProcessTauDecayProductFinalState());
 					NT_gen_final_pdgId           .push_back(p.pdgId());
+					NT_gen_final_status          .push_back(p.status());
+					NT_gen_final_ndaughters      .push_back(p.numberOfDaughters());
 					NT_gen_final_chainId         .push_back(parse_chain_id(&p));
 					}
+				*/
+
+				// prompt decayed are b-mesons and w-jet hadrons and tau stuff
+				// save them separately
+				/*
+				if (p.isPromptDecayed())
+					{
+					NT_gen_PromptDecayed_p4      .push_back(p.p4());
+					NT_gen_PromptDecayed_pdgId   .push_back(p.pdgId());
+					NT_gen_PromptDecayed_status  .push_back(p.status());
+					NT_gen_PromptDecayed_ndaughters  .push_back(p.numberOfDaughters());
+					NT_gen_PromptDecayed_chainId .push_back(parse_chain_id(&p));
+					// and save their final states
+					save_final_states(&p, decay_final_states);
+					for (size_t f_i=0; f_i < decay_final_states.size(); f_i++)
+						{
+						NT_gen_final_p4              .push_back(decay_final_states[f_i]->p4());
+						// and cms awesomeness... the candidates don't have all the following methods
+						// call for daughter returns candidates but GenParticles are needed
+						///
+						NT_gen_final_PromptFinal     .push_back(((const reco::GenParticle *) decay_final_states[f_i])->isPromptFinalState());
+						NT_gen_final_fromHardFinal   .push_back(((const reco::GenParticle *) decay_final_states[f_i])->fromHardProcessFinalState());
+						NT_gen_final_PromptTauDecay  .push_back(((const reco::GenParticle *) decay_final_states[f_i])->isDirectHardProcessTauDecayProductFinalState());
+						NT_gen_final_pdgId           .push_back(((const reco::GenParticle *) decay_final_states[f_i])->pdgId());
+						NT_gen_final_status          .push_back(((const reco::GenParticle *) decay_final_states[f_i])->status());
+						NT_gen_final_ndaughters      .push_back(decay_final_states[f_i]->numberOfDaughters());
+						NT_gen_final_chainId         .push_back(parse_chain_id(decay_final_states[f_i]));
+						}
+					}
+				*/
+
+				/* brute force does not work due to collor reconnection crap and it is not obvious that a simple hack will solve it, a complex hack is too messy
+				if (p.numberOfDaughters() == 0)
+					{
+					Int_t chain_id = parse_chain_id(&p);
+					if (chain_id != 0)
+						{
+						NT_gen_final_p4              .push_back(p.p4());
+						NT_gen_final_PromptFinal     .push_back(p.isPromptFinalState());
+						NT_gen_final_fromHardFinal   .push_back(p.fromHardProcessFinalState());
+						NT_gen_final_PromptTauDecay  .push_back(p.isDirectHardProcessTauDecayProductFinalState());
+						NT_gen_final_pdgId           .push_back(p.pdgId());
+						NT_gen_final_status          .push_back(p.status());
+						//NT_gen_final_ndaughters      .push_back(p.numberOfDaughters());
+						NT_gen_final_chainId         .push_back(chain_id);
+						}
+					}
+				*/
 
 				// leptons from hard processes
 				if ((a_id >= 11 && a_id <= 16 && p.fromHardProcessFinalState()) ||
@@ -1423,9 +1432,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 								save_final_cands(&p, gen_tau3ch);
 								NT_gen_match_tau3ch_id.push_back(id);
 								}
-							else
+							else if (abs(tau_id) >= 15)
 								{
 								save_final_cands(&p, gen_taus);
+								NT_gen_match_tau_id.push_back(id);
+								}
+							else
+								{
+								save_final_cands(&p, gen_taulep);
 								NT_gen_match_tau_id.push_back(id);
 								}
 							}
@@ -1440,9 +1454,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 									save_final_cands(tau_mother, gen_tau3ch);
 									NT_gen_match_tau3ch_id.push_back(id);
 									}
-								else
+								else if (abs(tau_id) >= 15)
 									{
 									save_final_cands(tau_mother, gen_taus);
+									NT_gen_match_tau_id.push_back(id);
+									}
+								else
+									{
+									save_final_cands(tau_mother, gen_taulep);
 									NT_gen_match_tau_id.push_back(id);
 									}
 								}
@@ -1498,8 +1517,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							// 20 + 10
 							if (abs(tau_id) >= 30)
 								save_final_cands(W_final->daughter(d_i), gen_tau3ch);
-							else
+							if (abs(tau_id) >= 15)
 								save_final_cands(W_final->daughter(d_i), gen_taus);
+							else
+								save_final_cands(W_final->daughter(d_i), gen_taulep);
 							decay_id = d_i_pdgId * abs(tau_id); // to keep the sign of the tau take it in abs
 							}
 						}
@@ -2102,7 +2123,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//leps_passed_relIso &= passIso;
 		if (isMC)
 			{
-			struct gen_matching match = match_to_gen(selMuons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
+			struct gen_matching match = match_to_gen(selMuons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods);
 			NT_lep_matching_gen   .push_back(match.closest);
 			NT_lep_matching_gen_dR.push_back(match.dR);
 			}
@@ -2129,7 +2150,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//leps_passed_relIso &= passIso;
 		if (isMC)
 			{
-			struct gen_matching match = match_to_gen(selElectrons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
+			struct gen_matching match = match_to_gen(selElectrons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods);
 			NT_lep_matching_gen   .push_back(match.closest);
 			NT_lep_matching_gen_dR.push_back(match.dR);
 			}
@@ -2175,7 +2196,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_alliso_matched_HLT_dR.push_back(match_to_HLTs.dR);
 		if (isMC)
 			{
-			struct gen_matching match = match_to_gen(selElectrons_allIso[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
+			struct gen_matching match = match_to_gen(selElectrons_allIso[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods);
 			NT_lep_alliso_matching_gen   .push_back(match.closest);
 			NT_lep_alliso_matching_gen_dR.push_back(match.dR);
 			}
@@ -2195,7 +2216,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_alliso_matched_HLT_dR.push_back(match_to_HLTs.dR);
 		if (isMC)
 			{
-			struct gen_matching match = match_to_gen(selMuons_allIso[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
+			struct gen_matching match = match_to_gen(selMuons_allIso[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods);
 			NT_lep_alliso_matching_gen   .push_back(match.closest);
 			NT_lep_alliso_matching_gen_dR.push_back(match.dR);
 			}
@@ -2530,7 +2551,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			LogInfo ("Demo") << "match gen to jets";
 			LogInfo ("Demo") << "gen sizes " << gen_leps.size() << gen_taus.size() << gen_tau3ch.size() << gen_w_prods.size() << gen_b_prods.size();
 			// match to GENPRODUCTS
-			struct gen_matching match = match_to_gen(jet.p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
+			struct gen_matching match = match_to_gen(jet.p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods);
 			NT_jet_matching_gen   .push_back(match.closest);
 			NT_jet_matching_gen_dR.push_back(match.dR);
 			LogInfo ("Demo") << "matched gen";
@@ -2789,7 +2810,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		if (isMC)
 			{
 			LogInfo ("Demo") << "gen match to tau";
-			struct gen_matching match = match_to_gen(tau.p4(), gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods);
+			struct gen_matching match = match_to_gen(tau.p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods);
 			NT_tau_matching_gen   .push_back(match.closest);
 			NT_tau_matching_gen_dR.push_back(match.dR);
 			}

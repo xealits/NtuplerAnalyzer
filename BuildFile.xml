@@ -1,0 +1,37 @@
+<use name="DataFormats/Common"/>
+<use name="FWCore/Utilities"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/FWLite"/>
+<use name="DataFormats/FWLite"/>
+<use name="FWCore/ServiceRegistry"/>
+<use name="FWCore/Services"/>
+<use name="DataFormats/VertexReco"/>
+<use name="DataFormats/BeamSpot"/>
+<use name="DataFormats/EgammaCandidates"/>
+<use name="DataFormats/PatCandidates"/>
+<use name="DataFormats/HepMCCandidate"/>
+<use name="SimDataFormats/GeneratorProducts"/>
+<use name="CondFormats/JetMETObjects"/>
+<use name="JetMETCorrections/Modules"/>
+<use name="RecoEcal/EgammaCoreTools"/>
+<use name="RecoEgamma/EgammaTools"/>
+<use name="RecoEgamma/ElectronIdentification"/>
+<use name="PhysicsTools/UtilAlgos"/>
+<use name="PhysicsTools/Utilities"/>
+<use name="roottmva"/>
+<use name="roofit"/>
+<use name="rootrflx"/>
+<use name="fastjet"/>
+<use name="roostats"/>
+<use name="CondFormats/BTauObjects"/>
+<use name="CondTools/BTau"/>
+<use name="RecoJet/JetProducers"/>
+<use name="UserCode/llvv_fwk"/>
+<use name="HTT-utilities/RecoilCorrections"/>
+
+<export>
+  <lib name="1"/>
+</export>
+
+<flags CXXFLAGS="-g -Wno-sign-compare -Wno-unused-variable -Wno-unused-but-set-variable  -Os"/>
