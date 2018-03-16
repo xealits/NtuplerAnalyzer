@@ -1467,7 +1467,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     # all requested jet cuts
     JetBSplit = namedtuple('BJets', 'medium loose rest taumatched')
     JetCutsPerSystematic = namedtuple('Jets', 'lowest cuts old') # TODO add jets loose
-    TauCutsPerSystematic = namedtuple('Taus', 'lowest loose cuts old presel')
+    TauCutsPerSystematic = namedtuple('Taus', 'lowest loose cuts old oldVloose presel')
 
     proc = usual_process
     micro_proc = '' # hack for tt_leptau->3ch subchannel of hadronic taus
@@ -1491,9 +1491,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     lep_relIso_el_bins_n = 5
     lep_relIso_el_bins_ext   = (ctypes.c_double * 8)(* [0, 0.059, 0.1, 0.175, 0.3, 0.5, 2., 4.])
     lep_relIso_el_bins_ext_n = 7
-    lep_relIso_bins   = (ctypes.c_double * 7)(* [0, 0.15., 0.25., 0.5, 1., 2., 4.])
+    lep_relIso_bins   = (ctypes.c_double * 7)(* [0, 0.15, 0.25, 0.5, 1., 2., 4.])
     lep_relIso_bins_n = 6
-    lep_relIso_bins_ext   = (ctypes.c_double * 9)(* [0, 0.15., 0.25., 0.5, 1., 2., 4., 8., 16.])
+    lep_relIso_bins_ext   = (ctypes.c_double * 9)(* [0, 0.15, 0.25, 0.5, 1., 2., 4., 8., 16.])
     lep_relIso_bins_ext_n = 8
 
     dojet_trijet_bins_ext = (ctypes.c_double * 8)(* [0, 20., 40., 60., 100., 150., 250., 400.])
@@ -2153,9 +2153,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # lowest and cuts -- tight
         # old -- medium
         # I also need preselection for WJets SS and preselection SS (for QCD)
-        taus_nom    = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], oldVloose=[] presel=[])
-        taus_ESUp   = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], oldVloose=[] presel=[])
-        taus_ESDown = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], oldVloose=[] presel=[])
+        taus_nom    = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], oldVloose=[], presel=[])
+        taus_ESUp   = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], oldVloose=[], presel=[])
+        taus_ESDown = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], oldVloose=[], presel=[])
 
         # each tau is
         # p4, ES factor (ID lev is per collection), pdg ID (for OS, SS)
@@ -2518,7 +2518,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # of lowest cuts? -- no, of the same as in the selection
         #                 -- and this again messes up the code.......
 
-        taus_nom_TLorentz    = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], presel=[]) # presel won't be needed
+        taus_nom_TLorentz    = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], oldVloose=[], presel=[]) # presel won't be needed
         # presel should also be cleaned of the tau -- of the one I do SS with
         # in fact the cross-cleaning should be done only from the used tau
         # I can sort the taus by pt and use the first one
@@ -2536,6 +2536,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # in old we use medium tau
         for tau_p4, _, _, _, _ in taus_nom.old[:1]:
             taus_nom_TLorentz.old.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
+        #for tau_p4, _, _, _, _ in taus_nom.oldVloose[:1]:
+        #    taus_nom_TLorentz.oldVloose.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         # in principle I should also change TES -- but this effect is very second order
 
         # loose and tight b jet collections are cross cleaned from loose zero tau

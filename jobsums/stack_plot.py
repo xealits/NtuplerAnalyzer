@@ -27,12 +27,14 @@ parser.add_argument("--ratio-range", type=float, default=0.5, help="range of rat
 
 parser.add_argument("--y-max",   type=float, help="set the maximum on Y axis")
 parser.add_argument("--x-range", type=str,   help="set the range on X axis")
+parser.add_argument("--y-range",   type=str, help="set the range on Y axis `0,1.5`")
 
 parser.add_argument("--no-data",   action='store_true', help="don't draw data")
 
 parser.add_argument("--qcd",   type=float, default=0., help="get QCD from corresponding _ss channel and transfer it with the given factor (try --qcd 1)")
 parser.add_argument("--qcd-factor",   type=float, default=1., help="factor for MC QCD")
-parser.add_argument("--osss",  action='store_true', help="plot the ratio in OS/SS of data-other bkcg")
+parser.add_argument("--osss",     action='store_true', help="plot the ratio in OS/SS of data-other bkcg")
+parser.add_argument("--osss-mc",  action='store_true', help="plot the ratio in OS/SS of MC QCD")
 
 parser.add_argument("--wjets", type=float, default=0., help="scale factor for wjets (from the control region)")
 
@@ -128,7 +130,7 @@ for distr_name in distr_names:
         data_distr_name = 'Mt_lep_met_f'
     data_distr_name.replace('_w_pu_sum', '_w_pu').replace('_w_pu_b', '_w_pu').replace('_w_pu_h2', '_w_pu').replace('_pu_h2', '').replace('_pu_b', '').replace('_pu_sum', '')
     histos_data_distrs.append((data_distr_name, [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
-    if args.qcd > 0. or args.osss:
+    if args.qcd > 0. or args.osss or args.osss_mc:
         histos_data_distrs_ss.append((data_distr_name, [(fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
 
 if args.cumulative:
@@ -257,7 +259,7 @@ used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_na
 # and I substitute QCD with this difference everywhere
 hs_sums2_ss = [] # these will be sums of no-QCD MC in SS region
 
-if args.qcd > 0. or args.osss:
+if args.qcd > 0. or args.osss or args.osss_mc:
     # get all the same distributions for _ss channel
     #used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, sys_name, distr_name)) for distr_name in distr_names]
     used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, 'NOMINAL', distr_name)) for distr_name in distr_names]
@@ -350,7 +352,7 @@ for distr, histos in used_histos_per_distr:
     hs_sums_noqcd.append(hs_sum_noqcd)
 
 hs_sum2 = hs_sums2[0]
-if args.qcd > 0. or args.osss:
+if args.qcd > 0. or args.osss or args.osss_mc:
     hs_sum_noqcd    = hs_sums_noqcd[0]
     #hs_sum_noqcd_ss = hs_sums2_ss[0]
     #hs_sums2_ss.append((distr, [(hs_sum2, "mc_sum", channel)]))
@@ -581,6 +583,10 @@ elif args.form_shapes:
     if args.y_max:
         max_y = args.y_max
 
+    if args.y_range:
+        min_y, max_y = [float(x) for x in args.y_range.split(',')]
+        histos_data[0][0].SetMinimum(min_y)
+
     histos_data[0][0].SetMaximum(max_y * 1.1)
     histos_data[0][0].SetXTitle(distr_name)
 
@@ -612,7 +618,7 @@ elif args.form_shapes:
     #cst.SaveAs(out_dir + "shapes%s%s%s.png" %('_' + args.mc_file.split('.')[0], '_' + args.processes, '_data-qcd' if args.qcd > 0. else ''))
     cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes_%d-channels_%s-processes%s.png' % (len(channels), '-'.join(processes_requirement), data_driv_qcd))
 
-elif args.osss:
+elif args.osss or args.osss_mc:
     from ROOT import gStyle, gROOT, TCanvas, TPad
     gROOT.SetBatch()
     gStyle.SetOptStat(0)
@@ -624,8 +630,14 @@ elif args.osss:
     # histos_data_per_distr and histos_data_per_distr_ss
     #histos_data_distrs = [(distr_name, [(histo, 'data', channel)]]
 
-    histo_diff_os = histos_data_per_distr   [0][1][0][0] - hs_sum_noqcd
-    histo_diff_ss = histos_data_per_distr_ss[0][1][0][0] - hs_sum_noqcd_ss
+    if args.osss:
+        histo_diff_os = histos_data_per_distr   [0][1][0][0] - hs_sum_noqcd
+        histo_diff_ss = histos_data_per_distr_ss[0][1][0][0] - hs_sum_noqcd_ss
+    elif args.osss_mc:
+        #used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_name, distr_name, skip_QCD = args.skip_QCD)) for distr_name in distr_names]
+        # [(distr_name, [h, nick, channel in histos])]
+        histo_diff_os = [h for h, nick, _ in used_histos_per_distr   [0][1] if nick == 'qcd'][0]
+        histo_diff_ss = [h for h, nick, _ in used_histos_per_distr_ss[0][1] if nick == 'qcd'][0]
 
     histo_diff_os.Divide(histo_diff_ss)
 
@@ -641,6 +653,11 @@ elif args.osss:
 
     title_x = args.title_x if args.title_x else args.distr_name
     title_y = args.title_y if args.title_y else "OS/SS"
+
+    if args.y_range:
+        min_y, max_y = [float(x) for x in args.y_range.split(',')]
+        histo_diff_os.SetMaximum(max_y)
+        histo_diff_os.SetMinimum(min_y)
 
     histo_diff_os.SetXTitle(title_x)
     histo_diff_os.SetYTitle(title_y)
@@ -665,7 +682,7 @@ elif args.osss:
     label.SetFillColor(0)
     label.Draw("same")
 
-    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_osss-factor.png')
+    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + ('_osss-factor' if args.osss else '_osss-mc-factor') + '.png')
 
 else:
     '''
@@ -798,6 +815,9 @@ else:
         if args.y_max:
             max_y = args.y_max
         min_y = max([h.GetMinimum() for h in (hs_sum1, histos_data_sum)])
+
+        if args.y_range:
+            min_y, max_y = [float(x) for x in args.y_range.split(',')]
 
         # remove the label on stack plot if ratio is there
         if args.ratio:
