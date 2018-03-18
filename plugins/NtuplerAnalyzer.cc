@@ -1748,6 +1748,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							}
 						}
 					// the t/s channel case of b-jet
+					// in WZTo2LTo2Q
+					// I get decay of:
+					// processing standalone W 5 4
+					// and it comes direclty from up-down collision in protons (m 1 m 2)
+					// -- it is the W of the process and it decays into b+s
+					// however, W cannot decay into 2 b-s, hence if else
 					if (d0_id == 5)
 						save_final_cands(p.daughter(0), gen_b_prods, gid_b_prods, p.daughter(0)->pdgId());
 					else if (d1_id == 5)
