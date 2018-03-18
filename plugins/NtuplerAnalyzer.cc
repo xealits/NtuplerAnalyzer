@@ -1720,11 +1720,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					// b is for the "exotic" single top s/t channels
 					// it should catch tW correctly, other channels don't matter now
 
-					LogInfo ("Demo") << "processing standalone W";
-
 					int wdecay_id = 1;
 					int d0_id = abs(p.daughter(0)->pdgId());
 					int d1_id = abs(p.daughter(1)->pdgId());
+					LogInfo ("Demo") << "processing standalone W " << d0_id << ' ' << d1_id;
+
 					int lep_daughter = (d0_id == 11 || d0_id == 13 || d0_id == 15 ? 0 : (d1_id == 11 || d1_id == 13 || d1_id == 15 ? 1 : -1));
 					if (lep_daughter >= 0)
 						{
@@ -1749,9 +1749,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						}
 					// the t/s channel case of b-jet
 					if (d0_id == 5)
-						save_final_cands(p.daughter(0), gen_b_prods, gid_b_prods, p.daughter(d0_id)->pdgId());
+						save_final_cands(p.daughter(0), gen_b_prods, gid_b_prods, p.daughter(0)->pdgId());
 					else if (d1_id == 5)
-						save_final_cands(p.daughter(1), gen_b_prods, gid_b_prods, p.daughter(d1_id)->pdgId());
+						save_final_cands(p.daughter(1), gen_b_prods, gid_b_prods, p.daughter(1)->pdgId());
 
 					// normal W->jets
 					if (d0_id < 5)
