@@ -1496,8 +1496,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     lep_relIso_bins_ext   = (ctypes.c_double * 9)(* [0, 0.15, 0.25, 0.5, 1., 2., 4., 8., 16.])
     lep_relIso_bins_ext_n = 8
 
-    dojet_trijet_bins_ext = (ctypes.c_double * 8)(* [0, 20., 40., 60., 100., 150., 250., 400.])
-    dojet_trijet_bins_ext_n = 7
+    dijet_trijet_bins_ext = (ctypes.c_double * 8)(* [0, 20., 40., 60., 100., 150., 250., 400.])
+    dijet_trijet_bins_ext_n = 7
+
+    dijet_bins_ext  = (ctypes.c_double * 8)(* [10, 40., 65., 80., 95., 120., 150., 200.])
+    dijet_bins_ext_n  = 7
+
+    trijet_bins_ext = (ctypes.c_double * 8)(* [20., 100., 125., 150., 175., 200., 300., 400.])
+    trijet_bins_ext_n = 7
 
     # channel -- reco selection
     # proc    -- MC gen info, like inclusive tt VS tt->mutau and others,
@@ -1715,12 +1721,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                'control_th_weight':   TH1D('%s_%s_%s_control_th_weight'   % (chan, proc, sys), '', 150, 0., 1.5),
                                                'control_rec_weight':  TH1D('%s_%s_%s_control_rec_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
 
-                                               'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', 20, 0, 200),
-                                               'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
+                                               #'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', 20, 0, 200),
+                                               #'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
+                                               'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', dijet_bins_ext_n, dijet_bins_ext),
+                                               'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', trijet_bins_ext_n, trijet_bins_ext),
                                                '2D_dijet_trijet':     TH2D('%s_%s_%s_2D_dijet_trijet'     % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
                                                '2D_dijet_trijet_all': TH2D('%s_%s_%s_2D_dijet_trijet_all' % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
                                                #'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
-                                               'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', dojet_trijet_bins_ext_n, dojet_trijet_bins_ext),
+                                               'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', dijet_trijet_bins_ext_n, dijet_trijet_bins_ext),
                                                'dijet_trijet_mass_N_permutations':        TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations'         % (chan, proc, sys), '', 50, 0, 50),
                                                'dijet_trijet_mass_N_permutations_passed': TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations_passed'  % (chan, proc, sys), '', 50, 0, 50),
                                                'dijet_trijet_mass_vs_permutations':  TH2D('%s_%s_%s_dijet_trijet_mass_vs_permutations' % (chan, proc, sys), '', 20, 0, 400, 50, 0, 50),
