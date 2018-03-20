@@ -1468,6 +1468,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     JetBSplit = namedtuple('BJets', 'medium loose rest taumatched')
     JetCutsPerSystematic = namedtuple('Jets', 'lowest cuts old') # TODO add jets loose
     TauCutsPerSystematic = namedtuple('Taus', 'lowest loose cuts old oldVloose presel')
+    LeptonSelection = namedtuple('Leptons', 'iso alliso')
 
     proc = usual_process
     micro_proc = '' # hack for tt_leptau->3ch subchannel of hadronic taus
@@ -1708,12 +1709,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                # do them up to 30 -- check overflows if there are many
                                                'jet_flavours_hadron': TH1D('%s_%s_%s_jet_flavours_hadron' % (chan, proc, sys), '', 35, -5, 30),
                                                'jet_flavours_parton': TH1D('%s_%s_%s_jet_flavours_parton' % (chan, proc, sys), '', 35, -5, 30),
-                                               'lep_genmatch':        TH1D('%s_%s_%s_lep_genmatch'        % (chan, proc, sys), '', 11, -1, 10),
-                                               'tau_genmatch':        TH1D('%s_%s_%s_tau_genmatch'        % (chan, proc, sys), '', 11, -1, 10),
-                                               'jet_genmatch':        TH1D('%s_%s_%s_jet_genmatch'        % (chan, proc, sys), '', 11, -1, 10),
-                                               'jet_genmatch_Mb':        TH1D('%s_%s_%s_jet_genmatch_Mb'       % (chan, proc, sys), '', 11, -1, 10),
-                                               'jet_genmatch_Lb':        TH1D('%s_%s_%s_jet_genmatch_Lb'       % (chan, proc, sys), '', 11, -1, 10),
-                                               'jet_genmatch_R':         TH1D('%s_%s_%s_jet_genmatch_R'        % (chan, proc, sys), '', 11, -1, 10),
+                                               'lep_genmatch':        TH1D('%s_%s_%s_lep_genmatch'        % (chan, proc, sys), '', 20, -10, 10),
+                                               'tau_genmatch':        TH1D('%s_%s_%s_tau_genmatch'        % (chan, proc, sys), '', 20, -10, 10),
+                                               'jet_genmatch':        TH1D('%s_%s_%s_jet_genmatch'        % (chan, proc, sys), '', 20, -10, 10),
+                                               'jet_genmatch_Mb':     TH1D('%s_%s_%s_jet_genmatch_Mb'     % (chan, proc, sys), '', 20, -10, 10),
+                                               'jet_genmatch_Lb':     TH1D('%s_%s_%s_jet_genmatch_Lb'     % (chan, proc, sys), '', 20, -10, 10),
+                                               'jet_genmatch_R':      TH1D('%s_%s_%s_jet_genmatch_R'      % (chan, proc, sys), '', 20, -10, 10),
                                                'jet_bID_lev':         TH1D('%s_%s_%s_jet_bID_lev'         % (chan, proc, sys), '', 5, 0, 5),
 
                                                'control_bSF_weight':  TH1D('%s_%s_%s_control_bSF_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
@@ -1785,13 +1786,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # do relIso on 1/8 = 0.125, and "all iso" for QCD anti-iso factor
 
         # I'll make the iso distribution and get the factor over whole range
-        pass_mu_id = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.no_std_veto_leps
-        pass_el_id = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.no_std_veto_leps
+        pass_mu_id = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.no_iso_veto_leps
+        pass_el_id = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.no_iso_veto_leps
 
+        # impacts are embedded into ID procedure, no need to repeate them here, TODO: re-check
         # for mu suggested dB is 5mm dz and 2mm dxy
         # for el suggested dB 0.02 cm
-        pass_mu_impact = ev.lep_dz[0] < 0.5 and ev.lep_dxy[0] < 0.2
-        pass_el_impact = ev.lep_dB[0] < 0.02
+        #pass_mu_impact = ev.lep_dz[0] < 0.5 and ev.lep_dxy[0] < 0.2
+        #pass_el_impact = ev.lep_dB[0] < 0.02
 
         # for el the suggested relIso 0.0588 for barrel, 0.0571 for endcaps
         # data shows it does not matter
@@ -1810,37 +1812,43 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #    -- significant discrepancy at lowest lep pt bin -> UP 1 GeV from HLT and added a detailed distr of the trun on curve
         #    -- it seems the discrepancy were comming from trigger SF going down to 26 only -- fixed that, testing now
 
+        pass_mu     = pass_mu_id and pass_mu_kino and pass_mu_iso # and pass_mu_impact
+        pass_el     = pass_el_id and pass_el_kino and pass_mu_iso # and pass_mu_impact
 
         # do this in place for the required selection
         #pass_mu_cuts = pass_mu and ev.lep_p4[0].pt() > 25. # so, it's smaller than the old cut 27 GeV
 
         #pass_mu_all = pass_mu_id_kino and ev.lep_relIso[0] >= 0.125
-        pass_mu_all = pass_mu_id and pass_mu_impact and pass_mu_kino
-        pass_el_all = pass_el_id and pass_el_impact and pass_el_kino # and ev.lep_relIso[0] >= 0.125
+
+        pass_mu_id_all = abs(ev.leps_ID_allIso) == 13 and ev.HLT_mu and ev.lep_alliso_matched_HLT[0] and ev.nleps_veto_mu_all == 0 and ev.nleps_veto_el_all == 0
+        pass_el_id_all = abs(ev.leps_ID_allIso) == 11 and ev.HLT_el and ev.lep_alliso_matched_HLT[0] and ev.nleps_veto_el_all == 0 and ev.nleps_veto_mu_all == 0
+
+        pass_mu_kino = ev.lep_alliso_p4[0].pt() > 26. and abs(ev.lep_alliso_p4[0].eta()) < 2.4
+        pass_el_kino = ev.lep_alliso_p4[0].pt() > 30. and abs(ev.lep_alliso_p4[0].eta()) < 2.4 and (abs(ev.lep_alliso_p4[0].eta()) < 1.4442 or abs(ev.lep_alliso_p4[0].eta()) > 1.5660)
+
+        pass_mu_all = pass_mu_id_all and pass_mu_kino_all
+        pass_el_all = pass_el_id_all and pass_el_kino_all
 
         #pass_mu = pass_mu_id_kino and ev.lep_relIso[0] < 0.125
         #pass_el_all = pass_el_id and ev.lep_p4[0].pt() > 27. and abs(ev.lep_p4[0].eta()) < 2.4
         #pass_el     = pass_el_id and ev.lep_p4[0].pt() > 27. and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] < 0.125
 
-        pass_mu     = pass_mu_id and pass_mu_kino and pass_mu_impact and pass_mu_iso
-        pass_el     = pass_el_id and pass_el_kino and pass_mu_impact and pass_mu_iso
-
         # TODO: need to check the trigger SF-s then......
         # for now I'm just trying to get rid of el-mu mix in MC
-        pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el and ev.no_std_veto_leps and \
+        pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el and ev.no_iso_veto_leps and \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
 
-        pass_mumu = ev.leps_ID == -13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_std_veto_leps and \
+        pass_mumu = ev.leps_ID == -13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.15 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.15
 
-        pass_elel = ev.leps_ID == -11*11 and (ev.HLT_el) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_std_veto_leps and \
+        pass_elel = ev.leps_ID == -11*11 and (ev.HLT_el) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.059 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.059
 
-        pass_mumu_ss = ev.leps_ID == 13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_std_veto_leps and \
+        pass_mumu_ss = ev.leps_ID == 13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
 
@@ -2138,6 +2146,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
 
         control_counters.Fill(2)
+
+        # -------------------- LEPTONS
+        leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR))
 
         # -------------------- TAUS
 
@@ -3565,18 +3576,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             """
 
             if pass_mumu:
-                passed_channels.append(('ctr_mu_dy_mumu', 1., jets.lowest, taus.presel))
+                passed_channels.append(('ctr_mu_dy_mumu', 1., leps.iso, jets.lowest, taus.presel))
             if pass_elel:
-                passed_channels.append(('ctr_mu_dy_elel', 1., jets.lowest, taus.presel))
+                passed_channels.append(('ctr_mu_dy_elel', 1., leps.iso, jets.lowest, taus.presel))
             if pass_elmu:
-                passed_channels.append(('ctr_mu_tt_em', 1., jets.lowest, taus.presel))
+                passed_channels.append(('ctr_mu_tt_em', 1., leps.iso, jets.lowest, taus.presel))
                 # elmu selection with almost main jet requirements
                 #old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
                 # at least 2 jets (3-1 for missing tau jet) and 1 b-tagged
                 # the selection should be close to lep+tau but there is another lepton instead of tau
                 #if len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1:
                 if pass_elmu_close:
-                    passed_channels.append(('ctr_mu_tt_em_close', 1., jets.old, taus.presel))
+                    passed_channels.append(('ctr_mu_tt_em_close', 1., leps.iso, jets.old, taus.presel))
 
             #if pass_mu and nbjets == 0 and (Mt_lep_met > 50 or met_pt > 40): # skipped lep+tau mass -- hopefuly DY will be small (-- it became larger than tt)
             #    passed_channels.append('ctr_mu_wjet')
@@ -3585,40 +3596,48 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_lowest
                 if presel_os:
-                    passed_channels.append(('ctr_alliso_mu_wjet', sel_b_weight, jets.lowest, taus.presel))
+                    passed_channels.append(('ctr_alliso_mu_wjet', sel_b_weight, leps.iso, jets.lowest, taus.presel))
                 else:
-                    passed_channels.append(('ctr_alliso_mu_wjet_ss', sel_b_weight, jets.lowest, taus.presel))
+                    passed_channels.append(('ctr_alliso_mu_wjet_ss', sel_b_weight, leps.iso, jets.lowest, taus.presel))
                 if pass_mu:
                     if presel_os:
-                        passed_channels.append(('ctr_mu_wjet', sel_b_weight, jets.lowest, taus.presel))
+                        passed_channels.append(('ctr_mu_wjet', sel_b_weight, leps.iso, jets.lowest, taus.presel))
                     else:
-                        passed_channels.append(('ctr_mu_wjet_ss', sel_b_weight, jets.lowest, taus.presel))
+                        passed_channels.append(('ctr_mu_wjet_ss', sel_b_weight, leps.iso, jets.lowest, taus.presel))
 
             if pass_el and len(jets.lowest.medium) == 0 and taus.presel:
                 presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_lowest
 
                 if presel_os:
-                    passed_channels.append(('ctr_el_wjet', sel_b_weight, jets.lowest, taus.presel))
+                    passed_channels.append(('ctr_el_wjet', sel_b_weight, leps.iso, jets.lowest, taus.presel))
                 else:
-                    passed_channels.append(('ctr_el_wjet_ss', sel_b_weight, jets.lowest, taus.presel))
+                    passed_channels.append(('ctr_el_wjet_ss', sel_b_weight, leps.iso, jets.lowest, taus.presel))
 
 
             if pass_old_mu_presel:
                 presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_old
                 if presel_os:
-                    passed_channels.append(('ctr_old_mu_presel', sel_b_weight, jets.old, taus.presel))
+                    passed_channels.append(('ctr_old_mu_presel', sel_b_weight, leps.iso, jets.old, taus.presel))
                 else:
-                    passed_channels.append(('ctr_old_mu_presel_ss', sel_b_weight, jets.old, taus.presel))
+                    passed_channels.append(('ctr_old_mu_presel_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
 
             if pass_old_mu_presel_alliso:
                 presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_old
                 if presel_os:
-                    passed_channels.append(('ctr_old_mu_presel_alliso', sel_b_weight, jets.old, taus.presel))
+                    passed_channels.append(('ctr_old_mu_presel_alliso', sel_b_weight, leps.alliso, jets.old, taus.presel))
                 else:
-                    passed_channels.append(('ctr_old_mu_presel_alliso_ss', sel_b_weight, jets.old, taus.presel))
+                    passed_channels.append(('ctr_old_mu_presel_alliso_ss', sel_b_weight, leps.alliso, jets.old, taus.presel))
+
+            if pass_old_el_presel_alliso:
+                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
+                sel_b_weight = weight_bSF_old
+                if presel_os:
+                    passed_channels.append(('ctr_old_el_presel_alliso', sel_b_weight, leps.alliso, jets.old, taus.presel))
+                else:
+                    passed_channels.append(('ctr_old_el_presel_alliso_ss', sel_b_weight, leps.alliso, jets.old, taus.presel))
 
             #pass_single_lep_presel = large_met and has_3jets and has_bjets and (pass_el or pass_mu) #and os_lep_med_tau
             #pass_single_lep_sel = pass_single_lep_presel and os_lep_med_tau
@@ -3628,76 +3647,68 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 old_os = taus.old[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_old
                 if old_os:
-                    passed_channels.append(('ctr_old_mu_sel', sel_b_weight, jets.old, taus.old))
+                    passed_channels.append(('ctr_old_mu_sel', sel_b_weight, leps.iso, jets.old, taus.old))
                     if large_lj:
-                        passed_channels.append(('ctr_old_mu_sel_ljout', sel_b_weight, jets.old, taus.old))
+                        passed_channels.append(('ctr_old_mu_sel_ljout', sel_b_weight, leps.iso, jets.old, taus.old))
                     else:
-                        passed_channels.append(('ctr_old_mu_sel_lj', sel_b_weight, jets.old, taus.old))
+                        passed_channels.append(('ctr_old_mu_sel_lj', sel_b_weight, leps.iso, jets.old, taus.old))
                 else:
-                    passed_channels.append(('ctr_old_mu_sel_ss', sel_b_weight, jets.old, taus.old))
+                    passed_channels.append(('ctr_old_mu_sel_ss', sel_b_weight, leps.iso, jets.old, taus.old))
                     if large_lj:
-                        passed_channels.append(('ctr_old_mu_sel_ljout_ss', sel_b_weight, jets.old, taus.old))
+                        passed_channels.append(('ctr_old_mu_sel_ljout_ss', sel_b_weight, leps.iso, jets.old, taus.old))
                     else:
-                        passed_channels.append(('ctr_old_mu_sel_lj_ss', sel_b_weight, jets.old, taus.old))
+                        passed_channels.append(('ctr_old_mu_sel_lj_ss', sel_b_weight, leps.iso, jets.old, taus.old))
 
             if pass_old_mu_sel_Vloose:
                 # actually I should add ev.lep_p4[0].pt() > 27
                 old_os = taus.oldVloose[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_old
                 if old_os:
-                    passed_channels.append(('ctr_old_mu_selVloose', sel_b_weight, jets.old, taus.oldVloose))
+                    passed_channels.append(('ctr_old_mu_selVloose', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
                 else:
-                    passed_channels.append(('ctr_old_mu_selVloose_ss', sel_b_weight, jets.old, taus.oldVloose))
+                    passed_channels.append(('ctr_old_mu_selVloose_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
 
             if pass_old_el_sel_Vloose:
                 # actually I should add ev.lep_p4[0].pt() > 27
                 old_os = taus.oldVloose[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_old
                 if old_os:
-                    passed_channels.append(('ctr_old_el_selVloose', sel_b_weight, jets.old, taus.oldVloose))
+                    passed_channels.append(('ctr_old_el_selVloose', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
                 else:
-                    passed_channels.append(('ctr_old_el_selVloose_ss', sel_b_weight, jets.old, taus.oldVloose))
+                    passed_channels.append(('ctr_old_el_selVloose_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
 
             if pass_old_mu_sel and tauSign3:
                 old_os = taus.old[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_old
                 if old_os:
-                    passed_channels.append(('ctr_old_mu_sel_tauSign3',    sel_b_weight, jets.old, taus.old))
+                    passed_channels.append(('ctr_old_mu_sel_tauSign3',    sel_b_weight, leps.iso, jets.old, taus.old))
                 else:
-                    passed_channels.append(('ctr_old_mu_sel_tauSign3_ss', sel_b_weight, jets.old, taus.old))
+                    passed_channels.append(('ctr_old_mu_sel_tauSign3_ss', sel_b_weight, leps.iso, jets.old, taus.old))
 
             if pass_old_el_presel:
                 presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_old
                 if presel_os:
-                    passed_channels.append(('ctr_old_el_presel', sel_b_weight, jets.old, taus.presel))
+                    passed_channels.append(('ctr_old_el_presel', sel_b_weight, leps.iso, jets.old, taus.presel))
                 else:
-                    passed_channels.append(('ctr_old_el_presel_ss', sel_b_weight, jets.old, taus.presel))
-
-            if pass_old_el_presel_alliso:
-                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
-                sel_b_weight = weight_bSF_old
-                if presel_os:
-                    passed_channels.append(('ctr_old_el_presel_alliso', sel_b_weight, jets.old, taus.presel))
-                else:
-                    passed_channels.append(('ctr_old_el_presel_alliso_ss', sel_b_weight, jets.old, taus.presel))
+                    passed_channels.append(('ctr_old_el_presel_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
 
             if pass_old_el_sel:
                 # actually I should add ev.lep_p4[0].pt() > 27
                 old_os = taus.old[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_old
                 if old_os:
-                    passed_channels.append(('ctr_old_el_sel', sel_b_weight, jets.old, taus.old))
+                    passed_channels.append(('ctr_old_el_sel', sel_b_weight, leps.iso, jets.old, taus.old))
                     if large_lj:
-                        passed_channels.append(('ctr_old_el_sel_ljout', sel_b_weight, jets.old, taus.old))
+                        passed_channels.append(('ctr_old_el_sel_ljout', sel_b_weight, leps.iso, jets.old, taus.old))
                     else:
-                        passed_channels.append(('ctr_old_el_sel_lj', sel_b_weight, jets.old, taus.old))
+                        passed_channels.append(('ctr_old_el_sel_lj', sel_b_weight, leps.iso, jets.old, taus.old))
                 else:
-                    passed_channels.append(('ctr_old_el_sel_ss', sel_b_weight, jets.old, taus.old))
+                    passed_channels.append(('ctr_old_el_sel_ss', sel_b_weight, leps.iso, jets.old, taus.old))
                     if large_lj:
-                        passed_channels.append(('ctr_old_el_sel_ljout_ss', sel_b_weight, jets.old, taus.old))
+                        passed_channels.append(('ctr_old_el_sel_ljout_ss', sel_b_weight, leps.iso, jets.old, taus.old))
                     else:
-                        passed_channels.append(('ctr_old_el_sel_lj_ss', sel_b_weight, jets.old, taus.old))
+                        passed_channels.append(('ctr_old_el_sel_lj_ss', sel_b_weight, leps.iso, jets.old, taus.old))
 
             ## save distrs
             #for chan, proc in chan_subproc_pairs:
@@ -3706,7 +3717,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             #    out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, weight)
             #    out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(25, weight)
 
-            for chan_i, (chan, weight_bSF, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
+            for chan_i, (chan, weight_bSF, sel_leps, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
                 # check for default proc
                 #if chan not in channels:
                     #continue
@@ -3769,8 +3780,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     gen_dR = ev.tau_matching_gen_dR[tau_index]
                     gen_id = ev.tau_matching_gen[tau_index]
 
-                    matched_w = gen_dR < 0.3 and abs(gen_id) == 4
-                    matched_b = gen_dR < 0.3 and abs(gen_id) == 5
+                    matched_w = gen_dR < 0.3 and abs(gen_id) == 5
+                    matched_b = gen_dR < 0.3 and abs(gen_id) == 6
 
                     if matched_w and matched_b:
                         record_proc = 'tt_ljo'
@@ -3783,6 +3794,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 if (chan, record_proc, sys_name) not in out_hs:
                     continue # TODO: so it doesn't change amount of computing, systematics are per event, not per channel
                     # but it does reduce the amount of output -- no geom progression
+
+                #leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR))
+                lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR = sel_leps
 
                 #control_counters.Fill(50 + 20*sys_i + 2*chan_i + 1)
 
@@ -3862,7 +3876,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # met prop = met nom + nom - factor
                     # met prop + factor = met nom + nom
 
-                Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x_prop, met_y_prop)
+                Mt_lep_met = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
                 # test on Mt fluctuation in mu_sel
                 if Mt_lep_met < 1.:
                     continue
@@ -3889,16 +3903,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #   but
                 #       + what if tau is not matched to any jet?
 
-                all_sum_control_X = ev.lep_p4[0].Px() + met_x_prop + sum_jets_corr_X + sum_tau_corr_X
-                all_sum_control_Y = ev.lep_p4[0].Py() + met_y_prop + sum_jets_corr_Y + sum_tau_corr_Y
+                all_sum_control_X = lep_p4[0].Px() + met_x_prop + sum_jets_corr_X + sum_tau_corr_X
+                all_sum_control_Y = lep_p4[0].Py() + met_y_prop + sum_jets_corr_Y + sum_tau_corr_Y
                 all_sum_control_pt = TMath.Sqrt(all_sum_control_X*all_sum_control_X + all_sum_control_Y*all_sum_control_Y)
 
-                all_sum_control_init_X = ev.lep_p4[0].Px() + met_x + sum_jets_init_X + sum_tau_init_X
-                all_sum_control_init_Y = ev.lep_p4[0].Py() + met_y + sum_jets_init_Y + sum_tau_init_Y
+                all_sum_control_init_X = lep_p4[0].Px() + met_x + sum_jets_init_X + sum_tau_init_X
+                all_sum_control_init_Y = lep_p4[0].Py() + met_y + sum_jets_init_Y + sum_tau_init_Y
                 all_sum_control_init_pt = TMath.Sqrt(all_sum_control_init_X*all_sum_control_init_X + all_sum_control_init_Y*all_sum_control_init_Y)
 
-                #all_sum_control_jets_X = ev.lep_p4.X() + met_x_prop_jets + sum_jets_corr.X() + sum_tau_init.X()
-                #all_sum_control_jets_Y = ev.lep_p4.Y() + met_y_prop_jets + sum_jets_corr.Y() + sum_tau_init.Y()
+                #all_sum_control_jets_X = lep_p4.X() + met_x_prop_jets + sum_jets_corr.X() + sum_tau_init.X()
+                #all_sum_control_jets_Y = lep_p4.Y() + met_y_prop_jets + sum_jets_corr.Y() + sum_tau_init.Y()
                 #all_sum_control_jets_pt = TMath.Sqrt(all_sum_control_init_X*all_sum_control_init_X + all_sum_control_init_Y*all_sum_control_init_Y)
 
                 '''
@@ -3919,10 +3933,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, record_proc, sys_name)]['init_met'].Fill(ev.met_init.pt(),      record_weight) # for control
                 out_hs[(chan, record_proc, sys_name)]['all_sum_control']     .Fill(all_sum_control_pt, record_weight) # for control
                 out_hs[(chan, record_proc, sys_name)]['all_sum_control_init'].Fill(all_sum_control_init_pt, record_weight) # for control
-                out_hs[(chan, record_proc, sys_name)]['lep_pt']  .Fill(ev.lep_p4[0].pt(),  record_weight)
-                out_hs[(chan, record_proc, sys_name)]['lep_eta'] .Fill(ev.lep_p4[0].eta(), record_weight)
-                out_hs[(chan, record_proc, sys_name)]['lep_pt_turn'].Fill(ev.lep_p4[0].pt(),  record_weight)
-                out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw'].Fill(ev.lep_p4[0].pt())
+                out_hs[(chan, record_proc, sys_name)]['lep_pt']  .Fill(lep_p4[0].pt(),  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_eta'] .Fill(lep_p4[0].eta(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_turn'].Fill(lep_p4[0].pt(),  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw'].Fill(lep_p4[0].pt())
 
                 ### debuging the cut of lep_pt at 26 for all MC -- it is in one of the weights
                 ## -- found the weight from trigger cut at 26 -- somehow the histo of SF for trigger 24 starts at 26
@@ -3931,21 +3945,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 ## now, debuggin the cut at 120 GeV
                 ## -- the defaults for iso and id were erroneous
                 #if pass_mu:
-                #    ##out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw'].Fill(ev.lep_p4[0].pt())
-                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_trk']    .Fill(ev.lep_p4[0].pt(), mu_sfs_b[0])
-                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_trk_vtx'].Fill(ev.lep_p4[0].pt(), mu_sfs_b[1])
-                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_id']     .Fill(ev.lep_p4[0].pt(), mu_sfs_b[2])
-                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_iso']    .Fill(ev.lep_p4[0].pt(), mu_sfs_b[3])
-                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_trk_vtxgen'].Fill(ev.lep_p4[0].pt(), mu_sfs_b[4])
-                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_trg']    .Fill(ev.lep_p4[0].pt(), mu_trg_sf[0]) # <--- this one is 0
+                #    ##out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw'].Fill(lep_p4[0].pt())
+                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_trk']    .Fill(lep_p4[0].pt(), mu_sfs_b[0])
+                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_trk_vtx'].Fill(lep_p4[0].pt(), mu_sfs_b[1])
+                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_id']     .Fill(lep_p4[0].pt(), mu_sfs_b[2])
+                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_iso']    .Fill(lep_p4[0].pt(), mu_sfs_b[3])
+                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_trk_vtxgen'].Fill(lep_p4[0].pt(), mu_sfs_b[4])
+                #    #out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw_w_b_trg']    .Fill(lep_p4[0].pt(), mu_trg_sf[0]) # <--- this one is 0
                 #    ##control_hs['weight_mu_trg_bcdef'].Fill(mu_trg_sf[0])
                 #    ##control_hs['weight_mu_all_bcdef'].Fill(mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[1] * mu_sfs_b[2] * mu_sfs_b[3])
-                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_trk']         .Fill(ev.lep_p4[0].pt(), mu_sfs_b[0])
-                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_trk_vtx']     .Fill(ev.lep_p4[0].pt(), mu_sfs_b[1])
-                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_id']          .Fill(ev.lep_p4[0].pt(), mu_sfs_b[2])
-                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_iso']         .Fill(ev.lep_p4[0].pt(), mu_sfs_b[3])
-                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_trk_vtxgen']  .Fill(ev.lep_p4[0].pt(), mu_sfs_b[4])
-                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_trg']         .Fill(ev.lep_p4[0].pt(), mu_trg_sf[0]) # <--- this one is 0
+                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_trk']         .Fill(lep_p4[0].pt(), mu_sfs_b[0])
+                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_trk_vtx']     .Fill(lep_p4[0].pt(), mu_sfs_b[1])
+                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_id']          .Fill(lep_p4[0].pt(), mu_sfs_b[2])
+                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_iso']         .Fill(lep_p4[0].pt(), mu_sfs_b[3])
+                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_trk_vtxgen']  .Fill(lep_p4[0].pt(), mu_sfs_b[4])
+                #    out_hs[(chan, record_proc, sys_name)]['lep_pt_raw_w_b_trg']         .Fill(lep_p4[0].pt(), mu_trg_sf[0]) # <--- this one is 0
 
                 # OPTIMIZATION controls
                 """
@@ -3977,11 +3991,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 """
 
                 # for anti-iso and overall
-                out_hs[(chan, record_proc, sys_name)]['lep_relIso_el']      .Fill(ev.lep_relIso[0],  record_weight)
-                out_hs[(chan, record_proc, sys_name)]['lep_relIso_el_ext']  .Fill(ev.lep_relIso[0],  record_weight)
-                out_hs[(chan, record_proc, sys_name)]['lep_relIso']         .Fill(ev.lep_relIso[0],  record_weight)
-                out_hs[(chan, record_proc, sys_name)]['lep_relIso_ext']     .Fill(ev.lep_relIso[0],  record_weight)
-                out_hs[(chan, record_proc, sys_name)]['lep_relIso_precise'] .Fill(ev.lep_relIso[0],  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_relIso_el']      .Fill(lep_relIso[0],  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_relIso_el_ext']  .Fill(lep_relIso[0],  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_relIso']         .Fill(lep_relIso[0],  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_relIso_ext']     .Fill(lep_relIso[0],  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_relIso_precise'] .Fill(lep_relIso[0],  record_weight)
 
                 # not tagged jets
                 if sel_jets.rest:
@@ -4032,7 +4046,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 if bjets_all_foropt:
                     out_hs[(chan, record_proc, sys_name)]['bjet_pt']  .Fill(bjets_all_foropt[0][0].pt() * bjets_all_foropt[0][1],  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['bjet_eta'] .Fill(bjets_all_foropt[0][0].eta(), record_weight)
-                    out_hs[(chan, record_proc, sys_name)]['opt_lep_bjet_pt']  .Fill(ev.lep_p4[0].pt(), bjets_all_foropt[0][0].pt() * bjets_all_foropt[0][1],  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['opt_lep_bjet_pt']  .Fill(lep_p4[0].pt(), bjets_all_foropt[0][0].pt() * bjets_all_foropt[0][1],  record_weight)
                     if len(bjets_all_foropt)>1:
                         out_hs[(chan, record_proc, sys_name)]['bjet2_pt']  .Fill(bjets_all_foropt[1][0].pt() * bjets_all_foropt[1][1],  record_weight)
                         out_hs[(chan, record_proc, sys_name)]['bjet2_eta'] .Fill(bjets_all_foropt[1][0].eta(),  record_weight)
@@ -4085,12 +4099,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, record_proc, sys_name)]['met_pu_sum'].Fill(met_pt, sys_weight_without_PU * weight_pu_sum)
                 out_hs[(chan, record_proc, sys_name)]['met_pu_b'  ].Fill(met_pt, sys_weight_without_PU * weight_pu_b  )
                 out_hs[(chan, record_proc, sys_name)]['met_pu_h2' ].Fill(met_pt, sys_weight_without_PU * weight_pu_h2 )
-                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_sum']  .Fill(ev.lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_sum)
-                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_b'  ]  .Fill(ev.lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_b  )
-                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_h2' ]  .Fill(ev.lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_h2 )
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_sum']  .Fill(lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_sum)
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_b'  ]  .Fill(lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_b  )
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_h2' ]  .Fill(lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_h2 )
 
                 if pass_mumu or pass_elmu:
-                    lep_lep = ev.lep_p4[0] + ev.lep_p4[1]
+                    lep_lep = lep_p4[0] + lep_p4[1]
                     lep_lep_mass = lep_lep.mass()
                     out_hs[(chan, record_proc, sys_name)]['M_lep_lep']  .Fill(lep_lep_mass, record_weight)
 
@@ -4101,7 +4115,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # -- check the tau indexes to be sure
                     out_hs[(chan, record_proc, sys_name)]['tau_pt']  .Fill(taus_all_foropt[0][0].pt() * taus_all_foropt[0][1],  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['tau_eta'] .Fill(taus_all_foropt[0][0].eta(), record_weight)
-                    out_hs[(chan, record_proc, sys_name)]['opt_lep_tau_pt']  .Fill(ev.lep_p4[0].pt(), taus_all_foropt[0][0].pt() * taus_all_foropt[0][1],  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['opt_lep_tau_pt']  .Fill(lep_p4[0].pt(), taus_all_foropt[0][0].pt() * taus_all_foropt[0][1],  record_weight)
                 """
 
                 # test the Mt shape deviation on njets in event:
@@ -4123,7 +4137,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 if sel_taus: #has_medium_tau:
                 #if len(ev.tau_p4) > 0:
-                    #lep_tau = ev.lep_p4[0] + taus[0][0] # done above
+                    #lep_tau = lep_p4[0] + taus[0][0] # done above
                     #out_hs[(chan, record_proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), record_weight)
                     corrected_tau = sel_taus[0][0] * sel_taus[0][1]
 
@@ -4133,7 +4147,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                     # TODO: not fully corrected met
                     Mt_tau_met = transverse_mass(corrected_tau, ev.met_corrected)
-                    lep_tau = ev.lep_p4[0] + corrected_tau
+                    lep_tau = lep_p4[0] + corrected_tau
                     lep_tau_mass = lep_tau.mass()
 
                     # testing dependency of Mt shape on tau pt (has to be none)
@@ -4289,8 +4303,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         out_hs[(chan, record_proc, sys_name)]['jet_genmatch_R'].Fill(jet[6],  record_weight)
 
                     lep_genmatch = 0.
-                    if ev.lep_matching_gen_dR[0] < 0.3:
-                        lep_genmatch = ev.lep_matching_gen[0]
+                    if lep_matching_gen_dR[0] < 0.3:
+                        lep_genmatch = lep_matching_gen[0]
                     out_hs[(chan, record_proc, sys_name)]['lep_genmatch'].Fill(lep_genmatch,  record_weight)
 
                     if sel_taus:
