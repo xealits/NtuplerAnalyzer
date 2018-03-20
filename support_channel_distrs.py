@@ -1599,8 +1599,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                #'vtight_tau_jet_eta': TH1D('%s_%s_%s_vtight_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
 
                                                #'bdiscr_max':       TH1D('%s_%s_%s_b_discr_max'      % (chan, proc, sys), '', 30, 0, 300),
-                                               'dphi_lep_met': TH1D('%s_%s_%s_dphi_lep_met' % (chan, proc, sys), '', 20, -3.2, 3.2),
-                                               'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
+                                               #'dphi_lep_met': TH1D('%s_%s_%s_dphi_lep_met' % (chan, proc, sys), '', 20, -3.2, 3.2),
+                                               #'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
                                                # relIso for the QCD anti-iso region
                                                'lep_relIso_el':       TH1D('%s_%s_%s_lep_relIso_el'     % (chan, proc, sys), '', lep_relIso_el_bins_n,     lep_relIso_el_bins),
                                                'lep_relIso_el_ext':   TH1D('%s_%s_%s_lep_relIso_el_ext' % (chan, proc, sys), '', lep_relIso_el_bins_ext_n, lep_relIso_el_bins_ext),
@@ -1797,16 +1797,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         # for el the suggested relIso 0.0588 for barrel, 0.0571 for endcaps
         # data shows it does not matter
-        pass_mu_iso = ev.lep_relIso[0] < 0.15  
-        pass_el_iso = ev.lep_relIso[0] < 0.0588
+        pass_mu_iso = pass_mu_id and ev.lep_relIso[0] < 0.15  
+        pass_el_iso = pass_mu_id and ev.lep_relIso[0] < 0.0588
 
         # 1GeV above HLT pt
         # ele eta gap
         # suggested minimal offline
         # https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#2016_Data
         # pt > 25, eta < 2.4
-        pass_mu_kino = ev.lep_p4[0].pt() > 26. and abs(ev.lep_p4[0].eta()) < 2.4
-        pass_el_kino = ev.lep_p4[0].pt() > 30. and abs(ev.lep_p4[0].eta()) < 2.4 and (abs(ev.lep_p4[0].eta()) < 1.4442 or abs(ev.lep_p4[0].eta()) > 1.5660)
+        pass_mu_kino = pass_mu_id and ev.lep_p4[0].pt() > 26. and abs(ev.lep_p4[0].eta()) < 2.4
+        pass_el_kino = pass_mu_id and ev.lep_p4[0].pt() > 30. and abs(ev.lep_p4[0].eta()) < 2.4 and (abs(ev.lep_p4[0].eta()) < 1.4442 or abs(ev.lep_p4[0].eta()) > 1.5660)
 
         # (did) for optimization testing minimum pt cut --- review it after test results
         #    -- significant discrepancy at lowest lep pt bin -> UP 1 GeV from HLT and added a detailed distr of the trun on curve
@@ -1823,8 +1823,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         pass_mu_id_all = abs(ev.leps_ID_allIso) == 13 and ev.HLT_mu and ev.lep_alliso_matched_HLT[0] and ev.nleps_veto_mu_all == 0 and ev.nleps_veto_el_all == 0
         pass_el_id_all = abs(ev.leps_ID_allIso) == 11 and ev.HLT_el and ev.lep_alliso_matched_HLT[0] and ev.nleps_veto_el_all == 0 and ev.nleps_veto_mu_all == 0
 
-        pass_mu_kino = ev.lep_alliso_p4[0].pt() > 26. and abs(ev.lep_alliso_p4[0].eta()) < 2.4
-        pass_el_kino = ev.lep_alliso_p4[0].pt() > 30. and abs(ev.lep_alliso_p4[0].eta()) < 2.4 and (abs(ev.lep_alliso_p4[0].eta()) < 1.4442 or abs(ev.lep_alliso_p4[0].eta()) > 1.5660)
+        pass_mu_kino_all = pass_mu_id_all and ev.lep_alliso_p4[0].pt() > 26. and abs(ev.lep_alliso_p4[0].eta()) < 2.4
+        pass_el_kino_all = pass_el_id_all and ev.lep_alliso_p4[0].pt() > 30. and abs(ev.lep_alliso_p4[0].eta()) < 2.4 and (abs(ev.lep_alliso_p4[0].eta()) < 1.4442 or abs(ev.lep_alliso_p4[0].eta()) > 1.5660)
 
         pass_mu_all = pass_mu_id_all and pass_mu_kino_all
         pass_el_all = pass_el_id_all and pass_el_kino_all
@@ -1906,7 +1906,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 0
                 #ev.nalljets  # number of jets (hadronic jet multiplicity) (int) <-- they use jets with pt>30... here it's the same, only pt requirement (20), no eta or PF ID
                 )
-            Mt_lep_met_c   = ROOT.MTlep_met_pt_recoilcor(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py(), ev.gen_genPx, ev.gen_genPy, ev.gen_visPx, ev.gen_visPy, 0)
+            #Mt_lep_met_c   = ROOT.MTlep_met_pt_recoilcor(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py(), ev.gen_genPx, ev.gen_genPy, ev.gen_visPx, ev.gen_visPy, 0)
 
             #Mt_lep_met = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.pfmetcorr_ex, ev.pfmetcorr_ey)
             #Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px(), ev.tau_p4[0].Py(), ev.pfmetcorr_ex, ev.pfmetcorr_ey)
@@ -1918,7 +1918,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             # use miniaod met and jets, reapply corrections of the passed jets to met
             met_x = ev.met_init.Px()
             met_y = ev.met_init.Py()
-            Mt_lep_met_c   = ROOT.MTlep_c(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
+            #Mt_lep_met_c   = ROOT.MTlep_c(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
             #Mt_lep_met_test = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x, met_y)
             #Mt_lep_met = transverse_mass(ev.lep_p4[0], ev.met_corrected)
             #Mt_tau_met = transverse_mass(ev.tau_p4[0], ev.met_corrected)
@@ -1930,19 +1930,19 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #met_vector = TLorentzVector(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
         #met_vector = ROOT.Math.LorentzVector(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
         #met_vector = ROOT.Math.LorentzVector(ROOT.Math.PxPyPzE4D(float))(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
-        met_vector = ROOT.Math.LorentzVector(ROOT.Math.PxPyPzE4D('double'))(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
-        d_lep_met = ev.lep_p4[0] - met_vector
-        dphi_lep_met = d_lep_met.Phi() # ev.lep_p4[0].Phi() - met_vector.Phi()
-        cos_dphi_lep_met = TMath.Cos(dphi_lep_met)
+        #met_vector = ROOT.Math.LorentzVector(ROOT.Math.PxPyPzE4D('double'))(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
+        #d_lep_met = ev.lep_p4[0] - met_vector
+        #dphi_lep_met = d_lep_met.Phi() # ev.lep_p4[0].Phi() - met_vector.Phi()
+        #cos_dphi_lep_met = TMath.Cos(dphi_lep_met)
         #met_pt = TMath.Sqrt(met_x*met_x + met_y*met_y)
 
         #float MTlep_met_pt_recoilcor(float lep_px, float lep_py,
         #        float met_px, float met_py,
         #        float gen_genPx, float gen_genPy, float gen_visPx, float gen_visPy,
         #        int njets)
-        Mt_lep_met_cos = TMath.Sqrt(2*ev.lep_p4[0].pt() * met_vector.pt() * (1 - cos_dphi_lep_met))
-        Mt_lep_met_mth = abs((ev.lep_p4[0] - met_vector).Mt())
-        Mt_lep_met_cos_c = ROOT.transverse_mass(ev.lep_p4[0], met_vector)
+        #Mt_lep_met_cos = TMath.Sqrt(2*ev.lep_p4[0].pt() * met_vector.pt() * (1 - cos_dphi_lep_met))
+        #Mt_lep_met_mth = abs((ev.lep_p4[0] - met_vector).Mt())
+        #Mt_lep_met_cos_c = ROOT.transverse_mass(ev.lep_p4[0], met_vector)
 
         # from PU tests, leaving it here for now
         if not isMC:
@@ -2122,8 +2122,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt()) # old
                 # 0, 1, 2 -- trk
                 # 3, 4    -- id, iso
-                mu_sfs_b, mu_sfs_h = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt(), ev.nvtx, ev.nvtx_gen) # running tracking SF on reco nvtx and output on nvtx_gen for control
-                (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
+                if pass_mu_all and not (pass_mu or pass_elmu or pass_mumu or pass_mumu_ss):
+                    mu_sfs_b, mu_sfs_h = lepton_muon_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt(), ev.nvtx, ev.nvtx_gen)
+                    (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt())
+                else:
+                    mu_sfs_b, mu_sfs_h = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt(), ev.nvtx, ev.nvtx_gen) # running tracking SF on reco nvtx and output on nvtx_gen for control
+                    (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 # bcdef gh eras
                 #weight *= ratio_bcdef * mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[1] * mu_sfs_b[2] * mu_sfs_b[3] + ratio_gh * mu_trg_sf[1] * mu_sfs_h[0] * mu_sfs_h[1] * mu_sfs_h[2] * mu_sfs_h[3]
                 # with gen_nvtx for tracking eff
@@ -2138,8 +2142,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
 
             if (pass_el_all or pass_el or pass_elel) and isMC:
-                el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
-                el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
+                if pass_el_all and not (pass_el or pass_elel):
+                    el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt())
+                    el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt())
+                else:
+                    el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
+                    el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 # on 0 position is the value, on 1 is uncertainty
                 weight_lep_Up   = weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 weight_lep_Down = weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
@@ -3408,6 +3416,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             # I sorted all tau by pt -- and take the first one always
 
+            ''' the selections for optimization
             if pass_el and has_lowest_2L1M and len(taus.presel) > 0:
                 presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
                 sel_b_weight = weight_bSF_lowest
@@ -3561,6 +3570,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         passed_channels.append(('optmu_alliso_tight_2L1M_cuts', sel_b_weight, sel_jets, sel_taus))
                     else:
                         passed_channels.append(('optmu_alliso_tight_2L1M_cuts_ss', sel_b_weight, sel_jets, sel_taus))
+            '''
 
             # wjets, dy mumu, tt elmu, old mu_sel
 
@@ -3593,13 +3603,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             #    passed_channels.append('ctr_mu_wjet')
             #if pass_mu_all and len(jets.lowest.medium) == 0 and (Mt_lep_met > 50 or met_pt > 40) and taus.presel:
             if pass_mu_all and len(jets.lowest.medium) == 0 and taus.presel:
-                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
+                presel_os = taus.presel[0][2] * ev.lep_alliso_id[0] < 0
                 sel_b_weight = weight_bSF_lowest
                 if presel_os:
-                    passed_channels.append(('ctr_alliso_mu_wjet', sel_b_weight, leps.iso, jets.lowest, taus.presel))
+                    passed_channels.append(('ctr_alliso_mu_wjet', sel_b_weight, leps.alliso, jets.lowest, taus.presel))
                 else:
-                    passed_channels.append(('ctr_alliso_mu_wjet_ss', sel_b_weight, leps.iso, jets.lowest, taus.presel))
+                    passed_channels.append(('ctr_alliso_mu_wjet_ss', sel_b_weight, leps.alliso, jets.lowest, taus.presel))
                 if pass_mu:
+                    presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
                     if presel_os:
                         passed_channels.append(('ctr_mu_wjet', sel_b_weight, leps.iso, jets.lowest, taus.presel))
                     else:
@@ -3624,7 +3635,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     passed_channels.append(('ctr_old_mu_presel_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
 
             if pass_old_mu_presel_alliso:
-                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
+                presel_os = taus.presel[0][2] * ev.lep_alliso_id[0] < 0
                 sel_b_weight = weight_bSF_old
                 if presel_os:
                     passed_channels.append(('ctr_old_mu_presel_alliso', sel_b_weight, leps.alliso, jets.old, taus.presel))
@@ -3632,7 +3643,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     passed_channels.append(('ctr_old_mu_presel_alliso_ss', sel_b_weight, leps.alliso, jets.old, taus.presel))
 
             if pass_old_el_presel_alliso:
-                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
+                presel_os = taus.presel[0][2] * ev.lep_alliso_id[0] < 0
                 sel_b_weight = weight_bSF_old
                 if presel_os:
                     passed_channels.append(('ctr_old_el_presel_alliso', sel_b_weight, leps.alliso, jets.old, taus.presel))
@@ -4083,8 +4094,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_h2']   .Fill(Mt_lep_met, weight_pu_h2)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_tp']      .Fill(Mt_lep_met, weight_top_pt)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, record_weight)
-                out_hs[(chan, record_proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, record_weight)
-                out_hs[(chan, record_proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, record_weight)
+                #out_hs[(chan, record_proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, record_weight)
+                #out_hs[(chan, record_proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, record_weight)
 
                 # checking the effect of mu trk SF
                 out_hs[(chan, record_proc, sys_name)]['nvtx_init']      .Fill(ev.nvtx)
