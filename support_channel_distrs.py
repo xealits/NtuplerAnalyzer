@@ -2557,7 +2557,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # of lowest cuts? -- no, of the same as in the selection
         #                 -- and this again messes up the code.......
 
-        taus_nom_TLorentz    = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], oldVloose=[], presel=[]) # presel won't be needed
+        taus_nom_TLorentz    = TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], oldVloose=[], presel=[], presel_alliso=[]) # presel won't be needed
         # presel should also be cleaned of the tau -- of the one I do SS with
         # in fact the cross-cleaning should be done only from the used tau
         # I can sort the taus by pt and use the first one
