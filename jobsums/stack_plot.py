@@ -616,7 +616,8 @@ elif args.form_shapes:
     data_driv_qcd = "_data-qcd" if args.qcd > 0. else ""
 
     #cst.SaveAs(out_dir + "shapes%s%s%s.png" %('_' + args.mc_file.split('.')[0], '_' + args.processes, '_data-qcd' if args.qcd > 0. else ''))
-    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + '_shapes_%d-channels_%s-processes%s.png' % (len(channels), '-'.join(processes_requirement), data_driv_qcd))
+    fname = '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name))
+    cst.SaveAs(out_dir + fname + '_shapes_%d-channels_%s-processes%s.png' % (len(channels), '-'.join(args.processes.split(',')), data_driv_qcd))
 
 elif args.osss or args.osss_mc:
     from ROOT import gStyle, gROOT, TCanvas, TPad

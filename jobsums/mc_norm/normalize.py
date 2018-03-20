@@ -170,11 +170,11 @@ xsecs = {
 ## TODO: need to replay this study..
 ## o.65 factor
 #"MC2016_Summer16_WJets_madgraph":  61526.7 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
-##"MC2016_Summer16_WJets_madgraph":  50690 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
-#"MC2016_Summer16_W1Jets_madgraph":  9493,
-#"MC2016_Summer16_W2Jets_madgraph":  3120,
-#"MC2016_Summer16_W3Jets_madgraph":   942.3,
-#"MC2016_Summer16_W4Jets_madgraph":   524.2,
+"MC2016_Summer16_WJets_madgraph":  50690 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
+"MC2016_Summer16_W1Jets_madgraph":  9493,
+"MC2016_Summer16_W2Jets_madgraph":  3120,
+"MC2016_Summer16_W3Jets_madgraph":   942.3,
+"MC2016_Summer16_W4Jets_madgraph":   524.2,
 
 # with the MiT factors
 # https://github.com/MiT-HEP/ChargedHiggs/blob/8927a1101b87bd0e4bb8059a0cdd4e957eef08e7/aux/DYNjets.txt
@@ -182,11 +182,13 @@ xsecs = {
 ### WNjets MG ## xSec=61526.7
 # 0.557053 0.299967 0.0981022 0.0296045 0.0152728 0 0 0 0
 # 61526.7 .* [0.557053 0.299967 0.0981022 0.0296045 0.0152728] = 34273.6  18456.0  6035.9  1821.47  939.685
-"MC2016_Summer16_WJets_madgraph":  34273.6,
-"MC2016_Summer16_W1Jets_madgraph": 18456.0,
-"MC2016_Summer16_W2Jets_madgraph":  6035.9,
-"MC2016_Summer16_W3Jets_madgraph":  1821.47,
-"MC2016_Summer16_W4Jets_madgraph":   939.685,
+
+#"MC2016_Summer16_WJets_madgraph":  34273.6,
+#"MC2016_Summer16_W0Jets_madgraph": 34273.6,
+#"MC2016_Summer16_W1Jets_madgraph": 18456.0,
+#"MC2016_Summer16_W2Jets_madgraph":  6035.9,
+#"MC2016_Summer16_W3Jets_madgraph":  1821.47,
+#"MC2016_Summer16_W4Jets_madgraph":   939.685,
 
  "MC2016_Summer16_WWTo2L2Nu_powheg"               :  12.178  ,
  "MC2016_Summer16_WWToLNuQQ_powheg"               :  49.997  ,

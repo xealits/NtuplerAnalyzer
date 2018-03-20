@@ -17,12 +17,20 @@ parser.add_argument("-p", "--process", type=str, default='tt_lj', help="process"
 parser.add_argument('-s', '--systematic',  type=str, default='NOMINAL', help="systematic")
 parser.add_argument('-d', '--distr',  type=str, default='Mt_lep_met_f', help="distr")
 parser.add_argument('--logy',  action='store_true', help="log Y")
+parser.add_argument("--y-range",     type=str,      help="set Y range as `ymin,ymax`")
+parser.add_argument("--x-title",     type=str,      help="title of X axis")
 
 parser.add_argument('--formula',  type=str, help="to plot h1 overlayed with 123*h2+982*h3: `h1 : 123 h2 , 982h3`")
 
-parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename`""")
+parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename[:s,SYSNAME]`""")
 
 args = parser.parse_args()
+
+if args.y_range:
+    y_min, y_max = [float(x) for x in args.y_range.split(',')]
+else:
+    y_min = y_max = None
+
 
 logging.info("import ROOT")
 
@@ -37,15 +45,27 @@ leg = TLegend(0.6,0.7, 0.9,0.9)
 
 histos = {}
 
-for i, (nick, filename) in enumerate([fileparameter.split(':') for fileparameter in args.input_files]):
+for i, fileparameter in enumerate(args.input_files):
+    pars = fileparameter.split(':')
+    assert len(pars) == 2 or len(pars) == 3
+    if len(pars) == 3:
+        nick, filename, opts = pars
+    else:
+        nick, filename = pars
+        opts = None
+
     if not isfile(filename):
         logging.info("missing: " + filename)
         continue
 
     tfile = TFile(filename)
-    histo = tfile.Get("{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=args.channel, proc=args.process, sys=args.systematic, distr=args.distr))
+    systematic = args.systematic
+    if opts:
+        systematic = opts.replace('s,', '')
+    logging.debug("sys:%s" % systematic)
+    histo = tfile.Get("{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=args.channel, proc=args.process, sys=systematic, distr=args.distr))
 
-    logging.debug("histo integral: %f" % histo.Integral())
+    logging.debug("histo integral: %20s %f" % (nick, histo.Integral()))
     histo.SetDirectory(0)
     histo.SetLineColor(1 + i)
     histo.Scale(1./histo.Integral())
@@ -67,6 +87,12 @@ pad1.cd()
 if not args.formula:
     for i, (nick, h) in enumerate(histos.items()):
         if i == 0:
+            if y_max is not None and y_min is not None:
+                h.SetMaximum(y_max)
+                h.SetMinimum(y_min)
+            if args.x_title:
+                #nom_MC.SetTitle(args.process)
+                h.SetXTitle(args.x_title)
             h.Draw()
         else:
             h.Draw("same")
@@ -78,19 +104,25 @@ else:
     drawn = False
     for subform in args.formula.split(':'): # sub-formulas
         # ' number  nick ' pairs
-        logging.debug(subform)
+        logging.debug("subform " + subform)
         nicks = [nick for nick in histos.keys() if nick in subform]
         logging.debug(nicks)
         nick_pairs = []
         for nick_pair in subform.split(','):
             for nick in nicks:
                 if nick in nick_pair:
-                    logging.debug(nick_pair)
+                    logging.debug("nick_pair " + nick_pair)
                     number = nick_pair.replace(nick, '')
-                    nick_pairs.append((float(number) if number.strip() else 1., nick))
+                    logging.debug("number " + number)
+                    factor = float(number) if number.strip() else 1.
+                    logging.debug("factor %f" % factor)
+                    nick_pairs.append((factor, nick))
                     break
 
         logging.debug(nick_pairs)
+
+        # normalize the histo
+        histo.Scale(1./histo.Integral())
 
         # construct the histo of the subform
         factor, nick = nick_pairs[0]
@@ -101,12 +133,18 @@ else:
             h.Scale(factor)
             histo.Add(h)
 
-        # normalize the histo
-        histo.Scale(1./histo.Integral())
+        logging.debug("histo %20s %f" % (nick, histo.Integral()))
+
         # and draw
         if drawn:
             histo.Draw("same")
         else:
+            if y_max is not None and y_min is not None:
+                histo.SetMaximum(y_max)
+                histo.SetMinimum(y_min)
+            if args.x_title:
+                #nom_MC.SetTitle(args.process)
+                histo.SetXTitle(args.x_title)
             histo.Draw()
             drawn = True
 
