@@ -1,3 +1,40 @@
+-- How do you treat using both the inclusive W+jets sample as well as the dedicated W+1-4jets samples?
+
+In the presented version of AN the dedicated samples are just added to the inclusive sample. For lumi normalization the cross-section of inclusive sample is reduced by the sum of N-jet cross-sections.
+Previously a stitching procedure over generator level "number of particles parameter" NUP was used. But due to couple issues it was turned off.
+And since the contribution of WJets is small in final selection (5%), the stitching was not applied for time being.
+Now different approaches to WJets have been well reviewed with the conclusion to return to using the stitching procedure with WNJets, it provides enough statistics and good modeling of Mt and other distributions.
+
+
+
+Also the aMCatNLO WJets was considered. The dataset performed well at preselection but lacked statistics for final selection (the extended dataset of aMCatNLO was not included at that time).
+Now the stitching and overall behavior of WJets MC has being reviewed with the following results.
+
+In wjets control region and in preselection three versions of WJets models are considered: 1) inclusive Madgraph WJets, 2) Madgraph WNJets with the inclusive dataset added as W0Jets with required cut on NUP parameter, 3) the inclusive aMCatNLO dataset.
+And all extended datasets are included for these MC.
+The QCD and all other processes are taken from MC.
+The events in W0Jets sample are required to have NUP different from the values in WNJets. Which means NUP < 6 (W1Jets has NUP = 6, W2Jets NUP = 7 etc).
+Standard cross-sections (reported in table 1) are used for inclusive Madgraph and aMCatNLO, in case on NJets the cross section of W0Jets = inclusive - sum(WNJets).
+
+For each of WJets I test different normalization factors, trying to match MC to Data at high values of lepton pt, met and Mt -- i.e. the kinematic regions without QCD.
+First of all the shapes of all distributions in all 3 models of WJets mostly agree. *TODO add comparative plots of WJets shape.*
+The WNJets is a bit closer to aMCatNLO than just the inclusive Madgraph. However inclusive Madgraph is not significantly different.
+Then, the normalization shows close agreement with the value of NLO cross section used for aMCatNLO 61.500 fb:
+the aMCatNLO WJets get the normalization factor of 0.96,
+inclusive Madgraph gets 1.25 which brings it close to aMCatNLO 50.6 * 1.24 = 62.9 fb.
+*Add plots of the distributions with the normalization factors as text labels on them. And add event yield tables.*
+And also it is useful to notice that the MC QCD matches the data well in these regions when it is multiplied by a factor about of two (more precisely 1.75).
+*Plots with normalized QCD.*
+(This factor also shows up in study of QCD modeling.)
+
+The stithced Madgraph WNJets resemble aMCatNLO well and have good statistics in some regions of data. But in our main selection they end up lacking statistics.
+*The W0Jets pass the selection? -- add numbers on that. And final decision to switch to aMCatNLO or just inclusive Madgraph, depending on statistics.*
+
+
+
+
+
+
 ((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 0]:gen_final_PromptFinal[ 0]:gen_final_chainId[ 0]", "", "", 1)
 ((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 1]:gen_final_PromptFinal[ 1]:gen_final_chainId[ 1]", "", "", 1)
 ((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[ 2]:gen_final_PromptFinal[ 2]:gen_final_chainId[ 2]", "", "", 1)
