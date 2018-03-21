@@ -1713,7 +1713,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
           'jet_flavours_hadron': TH1D('%s_%s_%s_jet_flavours_hadron' % (chan, proc, sys), '', 35, -5, 30),
           'jet_flavours_parton': TH1D('%s_%s_%s_jet_flavours_parton' % (chan, proc, sys), '', 35, -5, 30),
           'lep_genmatch':        TH1D('%s_%s_%s_lep_genmatch'        % (chan, proc, sys), '', 20, -10, 10),
-          'tau_genmatch':        TH1D('%s_%s_%s_tau_genmatch'        % (chan, proc, sys), '', 20, -10, 10),
+          'tau_genmatch_p':      TH1D('%s_%s_%s_tau_genmatch_p'        % (chan, proc, sys), '', 20, -10, 10),
+          'tau_genmatch_n':      TH1D('%s_%s_%s_tau_genmatch_n'        % (chan, proc, sys), '', 20, -10, 10),
           'jet_genmatch':        TH1D('%s_%s_%s_jet_genmatch'        % (chan, proc, sys), '', 20, -10, 10),
           'jet_genmatch_Mb':     TH1D('%s_%s_%s_jet_genmatch_Mb'     % (chan, proc, sys), '', 20, -10, 10),
           'jet_genmatch_Lb':     TH1D('%s_%s_%s_jet_genmatch_Lb'     % (chan, proc, sys), '', 20, -10, 10),
@@ -2160,7 +2161,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         control_counters.Fill(2)
 
         # -------------------- LEPTONS
-        leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR))
+        leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR, ev.lep_id), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR, ev.lep_alliso_id))
 
         # -------------------- TAUS
 
@@ -3957,7 +3958,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # but it does reduce the amount of output -- no geom progression
 
                 #leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR))
-                lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR = sel_leps
+                lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = sel_leps
 
                 #control_counters.Fill(50 + 20*sys_i + 2*chan_i + 1)
 
@@ -4513,7 +4514,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         tau_index = sel_taus[0][3]
                         if ev.tau_matching_gen_dR[tau_index] < 0.3:
                             tau_genmatch = ev.tau_matching_gen[tau_index]
-                        out_hs[(chan, record_proc, sys_name)]['tau_genmatch'].Fill(tau_genmatch,  record_weight)
+                        if lep_id[0] > 0:
+                            out_hs[(chan, record_proc, sys_name)]['tau_genmatch_p'].Fill(tau_genmatch,  record_weight)
+                        else:
+                            out_hs[(chan, record_proc, sys_name)]['tau_genmatch_n'].Fill(tau_genmatch,  record_weight)
 
                 out_hs[(chan, record_proc, sys_name)]['control_bSF_weight'].Fill(weight_bSF)
                 out_hs[(chan, record_proc, sys_name)]['control_PU_weight'] .Fill(weight_PU)
