@@ -290,7 +290,8 @@ for fname in files:
 
                 for histo_key in list(sys.ReadObj().GetListOfKeys()):
                     h = histo_key.ReadObj()
-                    h.ClearUnderflowAndOverflow() # this might not work as expected! -- it leaves N entries the same
+                    # now overflows are needed
+                    #h.ClearUnderflowAndOverflow() # this might not work as expected! -- it leaves N entries the same
                     #h.Print()
                     #h.Sumw2() # to keep errors correctly
                     # it still complains that the structure is there

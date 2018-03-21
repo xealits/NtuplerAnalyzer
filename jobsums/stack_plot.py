@@ -38,6 +38,8 @@ parser.add_argument("--osss-mc",  action='store_true', help="plot the ratio in O
 
 parser.add_argument("--wjets", type=float, default=0., help="scale factor for wjets (from the control region)")
 
+parser.add_argument("--draw-overflows", type=float, default=0., help="draw the overflow bin with the specified width")
+
 parser.add_argument("--fake-rate", action='store_true', help='(ad-hocish) the fake rate in MC and data, i.e. ratio of whatever two distributions given as "nominator/denominator"')
 
 parser.add_argument("--cumulative", action='store_true', help="plot stack of cumulative distribution (from right)")
@@ -67,7 +69,7 @@ logging.info("import ROOT")
 
 import ROOT
 from ROOT import TFile, THStack, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan
-import plotting_root
+import plotting_root, draw_overflows
 
 #channel = "mu_presel"
 #channel = "mu_sel"
@@ -230,6 +232,11 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
 
            #histo = histo_key.ReadObj()
            logging.info("%s   %s   %x = %f %f" % (histo.GetName(), histo_name, histo_name == '_'.join([channel, nick, fixed_sys_name, distr_name]), histo.GetEntries(), histo.Integral()))
+
+           # get overflows if requested
+           if args.draw_overflows:
+               h_overflows = draw_overflows.DrawOverflow(histo, args.draw_overflows)
+               histo = h_overflows
 
            # normalize to different bin width:
            for bini in range(histo.GetSize()):
