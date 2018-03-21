@@ -1806,7 +1806,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	if (isMC)
 		{
-		LogInfo ("Demo") << "gen sizes " << gen_leps.size() << gen_taus.size() << gen_tau3ch.size() << gen_w_prods.size() << gen_b_prods.size();
+		LogInfo ("Demo") << "gen sizes " << gen_leps.size() << ' ' << gen_taus.size() << ' ' << gen_tau3ch.size() << ' ' << gen_taulep.size() << ' ' << gen_w_prods.size() << ' ' << gen_b_prods.size();
 		//LogInfo ("Demo") << "gen PDGs  " << (gen_leps.size()>0 ? gen_leps[0].pdgId() : 0)
 		//	<< (gen_taus.size()>0?    gen_taus[0].pdgId():0)
 		//	<< (gen_tau3ch.size()>0?  gen_tau3ch[0].pdgId():0)
