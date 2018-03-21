@@ -1571,12 +1571,22 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							int tau_id = simple_tau_decay_id(W_final->daughter(d_i));
 							// = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
 							// 20 + 10
+							LogInfo ("Demo") << "tau decay w ID " << tau_id;
 							if (abs(tau_id) >= 30)
+								{
 								save_final_cands(W_final->daughter(d_i), gen_tau3ch, gid_tau3ch, d_i_pdgId);
-							if (abs(tau_id) >= 15)
+								LogInfo ("Demo") << "saved to 3h taus";
+								}
+							else if (abs(tau_id) >= 15)
+								{
 								save_final_cands(W_final->daughter(d_i), gen_taus, gid_taus, d_i_pdgId);
+								LogInfo ("Demo") << "saved to  h taus";
+								}
 							else
+								{
 								save_final_cands(W_final->daughter(d_i), gen_taulep, gid_taulep, d_i_pdgId);
+								LogInfo ("Demo") << "saved to l taus";
+								}
 							decay_id = d_i_pdgId * abs(tau_id); // to keep the sign of the tau take it in abs
 							}
 						}
@@ -1736,7 +1746,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							// 20 + 10
 							if (abs(tau_id) >= 30)
 								save_final_cands(p.daughter(lep_daughter), gen_tau3ch, gid_tau3ch, wdecay_id);
-							if (abs(tau_id) >= 15)
+							else if (abs(tau_id) >= 15)
 								save_final_cands(p.daughter(lep_daughter), gen_taus, gid_taus, wdecay_id);
 							else
 								save_final_cands(p.daughter(lep_daughter), gen_taulep, gid_taulep, wdecay_id);
