@@ -1817,7 +1817,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #    -- it seems the discrepancy were comming from trigger SF going down to 26 only -- fixed that, testing now
 
         pass_mu     = pass_mu_id and pass_mu_kino and pass_mu_iso # and pass_mu_impact
-        pass_el     = pass_el_id and pass_el_kino and pass_mu_iso # and pass_mu_impact
+        pass_el     = pass_el_id and pass_el_kino and pass_el_iso
 
         # do this in place for the required selection
         #pass_mu_cuts = pass_mu and ev.lep_p4[0].pt() > 25. # so, it's smaller than the old cut 27 GeV
