@@ -1222,6 +1222,18 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// https://twiki.cern.ch/twiki/bin/viewauth/CMS/LHEReaderCMSSW#How_to_use_weights
 			// You can see that the CT10 weight is the last in the truncated list (ID: 3001) and that there are other 109 weights before.
 			// So in this case, CT10 will be weight number 109 (numbering starts from 0 as in C++) and ID = "3001". 
+			// according to
+			// https://lhapdf.hepforge.org/pdfsets
+			// 13100 is CT14nlo and has 57 members
+			// after these in the weights are (see the printout with names)
+			// 13164 -- CT14nlo_as_0117
+			// 13166 -- CT14nlo_as_0119
+			// these are variation of alpha S
+			// and after them is
+			// 11000 -- CT10nlo with 53 parameters
+			// but there are no parameters,
+			// it is immediatly folowed by 25200,25201 etc
+
 			// and the alphaS were assumed,
 			// but I didn't save the last one 3060 with label 11000
 			// they also suggest this:
