@@ -25,6 +25,8 @@ parser.add_argument("-o", "--output-directory", type=str, default='', help="opti
 
 parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
 
+parser.add_argument("--lumi", type=float, help="use to skip the final normalizing step")
+
 parser.add_argument("--y-max",   type=float, help="set the maximum on Y axis")
 parser.add_argument("--x-range", type=str,   help="set the range on X axis")
 parser.add_argument("--y-range",   type=str, help="set the range on Y axis `0,1.5`")
@@ -217,6 +219,28 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                histo.Scale(h_init.Integral() / h_shape.Integral())
            else:
                histo = h_init
+
+           # the fast normalization
+           if args.lumi:
+               tauIDSF_factor = 1.
+               if nick == 'none': #'tt_mutau':
+                   tauIDSF_factor = 0.90
+               elif nick in ('tt_mutau3ch', 'tt_eltau3ch', 'tt_mutau', 'tt_eltau', 'tt_taultauh', 'dy_tautau', 's_top_eltau', 's_top_mutau', 'dy_tautau'):
+                   tauIDSF_factor = 0.95
+               elif any(ch in nick for ch in ('ctr_old_mu_sel', 'ctr_old_mu_sel', 'ctr_old_el_sel', 'optel_tight_2L1M', 'optmu_tight_2L1M')):
+                   tauIDSF_factor = 0.95
+               else:
+                   tauIDSF_factor = 1.
+               pu_factor = 1.
+               cor = 1.
+               if 'PUUp' in fixed_sys_name:
+                   pu_factor = cor * 1. / 0.9979 # 0.97 # 1./ 0.9979
+               elif 'PUDown' in fixed_sys_name:
+                   pu_factor = cor * 1. / 1.0485 # 1.17 # 1./ 1.485
+               else:
+                   pu_factor = cor * 1. / 1.022  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
+
+               hiso.Scale(args.lumi * tauIDSF_factor * pu_factor)
 
            # wjets normalization
            if args.wjets > 0 and nick == 'wjets':
