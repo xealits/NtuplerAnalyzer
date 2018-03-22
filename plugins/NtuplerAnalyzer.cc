@@ -1565,8 +1565,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					const reco::Candidate * W = p.daughter( W_num );
 					const reco::Candidate * b = p.daughter( 1 - W_num );
 					const reco::Candidate * W_final = find_W_decay(W);
-					LogInfo ("Demo") << "t decay W final pointer " << W_final;
-					LogInfo ("Demo") << "t decay b " << b;
+					LogInfo ("Demo") << "t " << id << " decay W "  << W_final ->pdgId() << " final pointer " << W_final;
+					LogInfo ("Demo") << "t " << id << " decay b  " << b       ->pdgId() << " pointer " << b;
 
 					int decay_id = 1;
 					// = id of lepton or 1 for quarks
