@@ -252,7 +252,8 @@ standard_scheme = {1:5, 2:5, 3:5, 4:13, 5:13}
 scheme_one3 = {1:6, 2:6, 3:1, 4:14, 5:14}
 scheme_two3 = {1:6, 2:6, 3:2, 4:14, 5:14}
 scheme_no3 =  {1:6, 2:6, 3:0, 4:14, 5:14}
-scheme = scheme_two3 # standard_scheme
+scheme_no3_loaded =  {1:7, 2:7, 3:0, 4:15, 5:15}
+scheme = scheme_no3_loaded # standard_scheme
 
 n_queues = sum(scheme.values())
 

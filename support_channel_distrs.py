@@ -710,8 +710,10 @@ def transverse_mass_pts(v1_x, v1_y, v2_x, v2_y):
 
 
 #lj_var = calc_lj_var(jets, jets_b)
-def calc_lj_var(ev, light_jets, b_jets, save_all_permutations=False):
-    if len(b_jets) == 0 or len(light_jets) < 2: return 5000., 5000., 5000., ((0, 0), 0), []
+def calc_lj_var(ev, light_jets, b_jets, save_all_permutations=False, isMC=False):
+    closest_pair_gens = (0, 0)
+    closest_b_gen = 0
+    if len(b_jets) == 0 or len(light_jets) < 2: return 5000., 5000., 5000., (closest_pair_gens, closest_b_gen), []
     # (not doing it now) loop over light jets -- check their mass
     # loop over light jets, check mass of their pairs to be close to 80
     # find the closest vector
@@ -742,7 +744,8 @@ def calc_lj_var(ev, light_jets, b_jets, save_all_permutations=False):
         if new_dist < dist_W:
             dist_W = new_dist
             closest_to_W = pair
-            closest_pair_gens = (ev.jet_matching_gen[light_jets[i][6]], ev.jet_matching_gen[light_jets[u][6]])
+            if isMC:
+                closest_pair_gens = (ev.jet_matching_gen[light_jets[i][6]], ev.jet_matching_gen[light_jets[u][6]])
 
     # closest to 173
     dist_t = 99999.
@@ -757,7 +760,8 @@ def calc_lj_var(ev, light_jets, b_jets, save_all_permutations=False):
         if new_dist < dist_t:
             dist_t = new_dist
             closest_to_t = pair
-            closest_b_gen = ev.jet_matching_gen[jet_index]
+            if isMC:
+                closest_b_gen = ev.jet_matching_gen[jet_index]
 
     return TMath.Sqrt(dist_W*dist_W + dist_t*dist_t), closest_to_W.mass(), closest_to_t.mass(), (closest_pair_gens, closest_b_gen), all_masses
 
@@ -3546,7 +3550,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # (taumatched jets go too)
                 with_all_permutation_masses = True
                 #lj_var, w_mass, t_mass, all_masses = calc_lj_var(jets.lowest.rest + jets.lowest.taumatched[1], jets.lowest.medium + jets.lowest.loose + jets.lowest.taumatched[0], with_all_permutation_masses)
-                lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.loose + jets.old.taumatched[1], jets.old.medium + jets.old.taumatched[0], with_all_permutation_masses)
+                lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.loose + jets.old.taumatched[1], jets.old.medium + jets.old.taumatched[0], with_all_permutation_masses, isMC)
                 lj_cut = 60.
                 large_lj = lj_var > lj_cut
 

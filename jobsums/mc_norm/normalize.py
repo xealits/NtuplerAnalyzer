@@ -161,16 +161,18 @@ xsecs = {
 "MC2016_Summer16_W3Jets_madgraph_": 942.3,
 "MC2016_Summer16_W4Jets_madgraph_perc":  354.83,
 "MC2016_Summer16_W4Jets_madgraph_": 524.2,
-"MC2016_Summer16_WJets_amcatnlo": 49143.25,# norm study in madgraph gives about 49k x-sec # 61526.7 - 9493 - 3120 - 942.3 - 524.2, # = 47447.2
+
+"MC2016_Summer16_WJets_amcatnlo":      61526.7, #49143.25,# norm study in madgraph gives about 49k x-sec # 61526.7 - 9493 - 3120 - 942.3 - 524.2, # = 47447.2
 "MC2016_Summer16_WJets_amcatnlo_full": 61526.7,
-"MC2016_Summer16_WJets_amcatnlo_": 61526.7,
-"MC2016_Summer16_WJets_madgraph_075": 50690 - 9493 - 3120 - 942.3 - 524.2,
+"MC2016_Summer16_WJets_amcatnlo_":     61526.7,
+"MC2016_Summer16_WJets_madgraph_075":  50690 - 9493 - 3120 - 942.3 - 524.2,
 "MC2016_Summer16_WJets_madgraph_perc": 37713.4 ,
 
 ## TODO: need to replay this study..
 ## o.65 factor
 #"MC2016_Summer16_WJets_madgraph":  61526.7 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
 "MC2016_Summer16_WJets_madgraph":  50690 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
+"MC2016_Summer16_W0Jets_madgraph":  50690, # with the NUP
 "MC2016_Summer16_W1Jets_madgraph":  9493,
 "MC2016_Summer16_W2Jets_madgraph":  3120,
 "MC2016_Summer16_W3Jets_madgraph":   942.3,
