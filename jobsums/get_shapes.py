@@ -70,6 +70,9 @@ for i, fileparameter in enumerate(args.input_files):
     histo.SetLineColor(1 + i)
     histo.Scale(1./histo.Integral())
     histo.SetName(nick)
+    if y_max is not None and y_min is not None:
+        histo.SetMaximum(y_max)
+        histo.SetMinimum(y_min)
     histos[nick] = histo
 
 
@@ -102,6 +105,7 @@ else:
     # parse the formula
     import re
     drawn = False
+    form_histos = []
     for subform in args.formula.split(':'): # sub-formulas
         # ' number  nick ' pairs
         logging.debug("subform " + subform)
@@ -135,20 +139,31 @@ else:
 
         logging.debug("histo %20s %f" % (nick, histo.Integral()))
 
-        # and draw
+        form_histos.append(histo)
+
+        leg.AddEntry(histo, subform, "l")
+
+    # and draw
+    for histo in form_histos:
         if drawn:
-            histo.Draw("same")
-        else:
             if y_max is not None and y_min is not None:
+                logging.debug("setting min-max")
                 histo.SetMaximum(y_max)
                 histo.SetMinimum(y_min)
+            histo.Draw("same")
+        else:
             if args.x_title:
                 #nom_MC.SetTitle(args.process)
                 histo.SetXTitle(args.x_title)
-            histo.Draw()
-            drawn = True
+            if y_max is not None and y_min is not None:
+                logging.debug("setting min-max")
+                histo.SetMaximum(y_max)
+                histo.SetMinimum(y_min)
 
-        leg.AddEntry(histo, subform, "l")
+            # draw the first one with line
+            histo.SetFillColor(0)
+            histo.Draw("hist e")
+            drawn = True
 
 leg.Draw("same")
 

@@ -55,7 +55,7 @@ parser.add_argument("--processes", type=str, default='all', help="set processes 
 parser.add_argument("--skip-legend", action='store_true', help="don't plot the legend (full view of distribution)")
 parser.add_argument("--skip-QCD", action='store_true', help="skip MC QCD")
 
-parser.add_argument("--lumi", type=float, default=35.8, help="set lumi label on the plot")
+parser.add_argument("--lumi-label", type=float, default=35.8, help="set lumi label on the plot")
 parser.add_argument("--title-x", type=str, default="", help="set title of X axis on the plot")
 parser.add_argument("--title-y", type=str, default="", help="set title of Y axis on the plot")
 parser.add_argument("--title",   type=str, default="default", help="set title of the plot")
@@ -701,14 +701,14 @@ elif args.osss or args.osss_mc:
     left_title.SetTextFont(1)
 
     right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
-    right_title.AddText("L = %s fb^{-1}" % args.lumi)
+    right_title.AddText("L = %s fb^{-1}" % args.lumi_label)
     right_title.SetTextFont(132)
     right_title.SetFillColor(0)
 
     left_title .Draw("same")
     right_title.Draw("same")
 
-    label = TPaveText(0.2, 0.2, 0.5, 0.3, "brNDC")
+    label = TPaveText(0.5, 0.2, 0.8, 0.3, "brNDC")
     label.AddText("anti-iso region")
     label.SetTextFont(132)
     label.SetFillColor(0)
@@ -978,7 +978,7 @@ else:
     '''
 
     right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
-    right_title.AddText("L = %s fb^{-1}" % args.lumi)
+    right_title.AddText("L = %s fb^{-1}" % args.lumi_label)
     right_title.SetTextFont(132)
     right_title.SetFillColor(0)
 

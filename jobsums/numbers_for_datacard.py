@@ -69,6 +69,13 @@ parser.add_argument("-v", "--verbose",  action = "store_true", help="log debug o
 parser.add_argument("-y", "--event-yields", action='store_true', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-r", "--ratios",       action='store_true', help="output ratios to data")
 
+parser.add_argument("--skip-procs",    type=str, help="skip these processes")
+
+parser.add_argument("--wjets",    type=float, help="factor of wjets")
+
+parser.add_argument("--range-min",    type=float, help="calculate from")
+parser.add_argument("--range-max",    type=float, help="calculate up to")
+
 parser.add_argument("--latex",       action='store_true', help="output in latex")
 
 
@@ -127,6 +134,21 @@ proc_yields = {} # proc_nick: {channel: yield}
 
 data_yields = {} # channel: yield
 
+def range_integral(histo):
+    if args.range_max or args.range_min:
+        integral = 0.
+        for bini in range(histo.GetSize()):
+            bin_x   = histo.GetBinCenter(bini)
+            if args.range_max and bin_x > args.range_max:
+                break
+            if args.range_min and bin_x < args.range_min:
+                continue
+            integral += histo.GetBinContent(bini)
+    else:
+        integral = histo.Integral()
+
+    return integral
+
 for channel in channels:
     chan = fdata.Get(channel)
     #if chan.GetName() == 'weight_counter' or chan.GetName() == 'events_counter':
@@ -160,6 +182,9 @@ for channel in channels:
        #if shape_channel and nick in ('dy', 'wjets') and chan.GetName() != shape_channel:
        #    continue
 
+       if args.skip_procs and process in args.skip_procs:
+           continue
+
        histo_name = '_'.join([channel, process, sys_name, distr_name])
 
        logging.debug(histo_name)
@@ -172,15 +197,19 @@ for channel in channels:
            continue
        logging.debug(histo.Integral())
 
+       if 'wjet' in process and args.wjets:
+           histo.Scale(args.wjets)
+
        histos.append(histo)
 
        #proc_yields[-1][1].append((process, histo.Integral()))
-       proc_yields.setdefault(process, {})[channel] = histo.Integral()
+       proc_yields.setdefault(process, {})[channel] = range_integral(histo)
 
     histo_name = '_'.join([channel, 'data', 'NOMINAL', distr_name])
     full_path = '%s/%s/%s/%s' % (channel, 'data', 'NOMINAL', histo_name)
     data_histo = fdata.Get(full_path)
-    data_yields[channel] = data_histo.Integral()
+
+    data_yields[channel] = range_integral(data_histo)
 
     if not args.event_yields:
         print 'bin           ' + ''.join('%-25s' % channel for _ in processes)
