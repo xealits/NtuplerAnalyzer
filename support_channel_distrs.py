@@ -1734,6 +1734,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
           '2D_dijet_trijet_all': TH2D('%s_%s_%s_2D_dijet_trijet_all' % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
           #'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
           'lj_gens':             TH1D('%s_%s_%s_lj_gens' % (chan, proc, sys), '', 15, 0, 15),
+          'lj_gens_b_gen':       TH1D('%s_%s_%s_lj_gens_b_gen' % (chan, proc, sys), '', 20, -10, 10),
+          'lj_gens_w1_gen':      TH1D('%s_%s_%s_lj_gens_w1_gen' % (chan, proc, sys), '', 20, -10, 10),
+          'lj_gens_w2_gen':      TH1D('%s_%s_%s_lj_gens_w2_gen' % (chan, proc, sys), '', 20, -10, 10),
           'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', dijet_trijet_bins_ext_n, dijet_trijet_bins_ext),
           'dijet_trijet_mass_N_permutations':        TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations'         % (chan, proc, sys), '', 50, 0, 50),
           'dijet_trijet_mass_N_permutations_passed': TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations_passed'  % (chan, proc, sys), '', 50, 0, 50),
@@ -4413,6 +4416,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass'].Fill(lj_var, record_weight)
 
                     (lj_w1_gen, lj_w2_gen), lj_b_gen = lj_gens
+                    out_hs[(chan, record_proc, sys_name)]['lj_gens_b_gen']  .Fill(lj_b_gen, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['lj_gens_w1_gen'] .Fill(lj_w1_gen, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['lj_gens_w2_gen'] .Fill(lj_w2_gen, record_weight)
+
                     if abs(lj_b_gen) == 6:
                         lj_gen_var = 6
                     else:
@@ -4422,7 +4429,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     # ID the W pair
                     # cases of only 1 W match
                     if abs(lj_w1_gen) == 5 and abs(lj_w2_gen) != 5:
-                        # check if W corresponds to the b
+                        # check if W corresponds to the b, if W has the same sign as b
                         lj_gen_var += 2 if lj_b_gen*lj_w1_gen < 0 else 1
                     elif abs(lj_w1_gen) != 5 and abs(lj_w2_gen) == 5:
                         lj_gen_var += 2 if lj_b_gen*lj_w2_gen < 0 else 1
