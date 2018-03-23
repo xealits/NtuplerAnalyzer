@@ -4472,8 +4472,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #'nLbjets':     TH1D('%s_%s_%s_nLbjets'   % (chan, record_proc, sys), '', 5, 0, 5),
                 #'ntaus':       TH1D('%s_%s_%s_ntaus'     % (chan, record_proc, sys), '', 5, 0, 5),
 
-                n_rest_jets   = len(sel_jets.rest) 
-                n_medium_jets = len(sel_jets.medium)
+                n_rest_jets   = len(sel_jets.rest)   + len(sel_jets.taumatched[1])
+                #n_medium_jets = len(sel_jets.medium)
+                n_medium_jets = len(sel_jets.medium) + len(sel_jets.taumatched[0])
                 n_loose_jets  = len(sel_jets.loose)
 
                 out_hs[(chan, record_proc, sys_name)]['njets']  .Fill(len(all_sel_jets),   record_weight)
