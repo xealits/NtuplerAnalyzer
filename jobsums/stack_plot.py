@@ -71,7 +71,8 @@ logging.info("import ROOT")
 
 import ROOT
 from ROOT import TFile, THStack, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan
-import plotting_root, draw_overflows
+import plotting_root
+from draw_overflows import DrawOverflow
 
 #channel = "mu_presel"
 #channel = "mu_sel"
@@ -133,7 +134,13 @@ for distr_name in distr_names:
     if data_distr_name in ('Mt_lep_met_f_w_mu_trk_b', 'Mt_lep_met_f_w_mu_trk_h'):
         data_distr_name = 'Mt_lep_met_f'
     data_distr_name.replace('_w_pu_sum', '_w_pu').replace('_w_pu_b', '_w_pu').replace('_w_pu_h2', '_w_pu').replace('_pu_h2', '').replace('_pu_b', '').replace('_pu_sum', '')
-    histos_data_distrs.append((data_distr_name, [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
+    # get overflows if requested
+    if args.draw_overflows:
+        #h_overflows = draw_overflows.DrawOverflow(histo, args.draw_overflows)
+        histos_data_distrs.append((data_distr_name, [(DrawOverflow(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', data_distr_name])), args.draw_overflows), 'data', channel) for channel in channels]))
+    else:
+        histos_data_distrs.append((data_distr_name, [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
+
     if args.qcd > 0. or args.osss or args.osss_mc:
         histos_data_distrs_ss.append((data_distr_name, [(fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
 
@@ -240,7 +247,7 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                else:
                    pu_factor = cor * 1. / 1.022  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
 
-               hiso.Scale(args.lumi * tauIDSF_factor * pu_factor)
+               histo.Scale(args.lumi * tauIDSF_factor * pu_factor)
 
            # wjets normalization
            if args.wjets > 0 and nick == 'wjets':
@@ -259,7 +266,7 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
 
            # get overflows if requested
            if args.draw_overflows:
-               h_overflows = draw_overflows.DrawOverflow(histo, args.draw_overflows)
+               h_overflows = DrawOverflow(histo, args.draw_overflows)
                histo = h_overflows
 
            # normalize to different bin width:
@@ -701,7 +708,7 @@ elif args.osss or args.osss_mc:
     left_title.SetTextFont(1)
 
     right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
-    right_title.AddText("L = %s fb^{-1}" % args.lumi_label)
+    right_title.AddText("L = %s fb^{-1}" % (args.lumi if args.lumi else args.lumi_label))
     right_title.SetTextFont(132)
     right_title.SetFillColor(0)
 
@@ -978,7 +985,7 @@ else:
     '''
 
     right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
-    right_title.AddText("L = %s fb^{-1}" % args.lumi_label)
+    right_title.AddText("L = %s fb^{-1}" % (args.lumi if args.lumi else args.lumi_label))
     right_title.SetTextFont(132)
     right_title.SetFillColor(0)
 

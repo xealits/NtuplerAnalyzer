@@ -2111,10 +2111,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             if isSTop:
                 # basically only difference is eltau/mutau
-                w1_id = abs(ev.gen_wdecays_IDs[0])
+                #w1_id = abs(ev.gen_wdecays_IDs[0])
+                # check the top decay insted
+                w1_id = abs(ev.gen_t_w_decay_id) if ev.gen_t_w_decay_id != -111 else abs(ev.gen_tb_w_decay_id)
                 w2_id = 1
                 if not isSTopTSchannels:
-                    w2_id = abs(ev.gen_wdecays_IDs[1])
+                    # in tW there is an additional W produced with top
+                    w2_id = abs(ev.gen_wdecays_IDs[0])
+                    #w2_id = abs(ev.gen_t_w_decay_id) if ev.gen_t_w_decay_id != -111 else abs(ev.gen_tb_w_decay_id)
                 # t/s channels emit top and a quark -- top ID + jets
                 if (w1_id > 15*15 and w2_id == 13) or (w1_id == 13 and w2_id > 15*15): # lt
                     proc = 's_top_mutau'
@@ -3484,6 +3488,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             if pass_el:
                 control_counters.Fill(102)
+
+            if pass_mu_all:
+                control_counters.Fill(105)
+
+            if pass_el_all:
+                control_counters.Fill(106)
 
             #has_lowest_2L1M = len(jets.lowest.medium) > 0 and (len(jets.lowest.medium) + len(jets.lowest.loose)) > 1 
 

@@ -132,6 +132,14 @@ dtags_std_mc = [
 "MC2016_Summer16_TTJets_powheg",
 ]
 
+dtags_singletop_mc = [
+"MC2016_Summer16_SingleT_tW_5FS_powheg",
+"MC2016_Summer16_SingleTbar_tW_5FS_powheg",
+"MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo",
+"MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg",
+"MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg",
+]
+
 # the dtags used in Ntupler runs up to v17 have names different to systematics
 # I probably won't fix it -- just will switch to using FIRST-NAME and drop dtag
 dtags_updowns_old = [
@@ -171,7 +179,8 @@ dtags_std_data = [
 dtags_std = dtags_std_mc + dtags_std_data
 
 
-dtag_groups = {'std': dtags_std, 'std_data': dtags_std_data, 'std_mc': dtags_std_mc, 'updowns': dtags_updowns_old}
+dtag_groups = {'std': dtags_std, 'std_data': dtags_std_data, 'std_mc': dtags_std_mc, 'updowns': dtags_updowns_old,
+    'singletop': dtags_singletop_mc}
 
 
 # parse the requested dtags and groups

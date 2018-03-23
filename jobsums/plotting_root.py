@@ -18,6 +18,8 @@ nick_colour = {
 "dy_tautau": kGray+2,
 #"wjets": kRed+1,
 "wjets": kCyan+2,
+"wjets_tauh": kCyan+3,
+"wjets_taul": kCyan+4,
 "dibosons": kCyan,
 "singletop": kAzure,
 "s_top_eltau": kAzure,
@@ -86,8 +88,11 @@ nick_order = {
 "tt_other": -9,
 
 "wjets": -20,
-"dy_tautau": -21,
-"dy_other": -22,
+"wjets_tauh": -21,
+"wjets_taul": -22,
+
+"dy_tautau": -25,
+"dy_other":  -26,
 
 "s_top_eltau": -30,
 "s_top_mutau": -31,
