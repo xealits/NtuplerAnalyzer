@@ -1852,8 +1852,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         # TODO: need to check the trigger SF-s then......
         # for now I'm just trying to get rid of el-mu mix in MC
-        #pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and ev.no_iso_veto_leps and \
-        pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el and ev.no_iso_veto_leps and \
+        #pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el and ev.no_iso_veto_leps and \
+        pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and ev.no_iso_veto_leps and \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
@@ -2106,7 +2106,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         tt_ids[i] = 7
                     else:
                         tt_ids[i] = 8
-                control_hs['genproc_id']   .Fill(tt_ids[0], tt_ids[1])
 
                 if (t_wid > 15*15 and tb_wid == 13) or (t_wid == 13 and tb_wid > 15*15): # lt
                     proc = 'tt_mutau'
@@ -4524,6 +4523,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, record_proc, sys_name)]['nvtx_raw'] .Fill(ev.nvtx, sys_weight_without_PU * weight_bSF)
                 out_hs[(chan, record_proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight)
                 if isMC:
+                    out_hs[(chan, record_proc, sys_name)]['genproc_id']   .Fill(tt_ids[0], tt_ids[1])
                     out_hs[(chan, record_proc, sys_name)]['nvtx_gen'].Fill(ev.nvtx_gen, record_weight)
                     for jet in all_sel_jets + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
                         jet_genmatch = 0.
