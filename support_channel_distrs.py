@@ -965,6 +965,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     ('weights_gen_weight_semilepbrUp',      TH1D("weights_semilepbrUp",   "", 50, 0, 2)),
     ('weights_gen_weight_semilepbrDown',    TH1D("weights_semilepbrDown", "", 50, 0, 2)),
 
+    ('weights_gen_weight_nom'   , TH1D('weights_gen_weight_nom'  , "", 50, 0, 2)),
+    ('weights_gen_weight_f_rUp' , TH1D('weights_gen_weight_f_rUp', "", 50, 0, 2)),
+    ('weights_gen_weight_f_rDn' , TH1D('weights_gen_weight_f_rDn', "", 50, 0, 2)),
+    ('weights_gen_weight_fUp_r' , TH1D('weights_gen_weight_fUp_r', "", 50, 0, 2)),
+    ('weights_gen_weight_fDn_r' , TH1D('weights_gen_weight_fDn_r', "", 50, 0, 2)),
+    ('weights_gen_weight_frUp'  , TH1D('weights_gen_weight_frUp' , "", 50, 0, 2)),
+    ('weights_gen_weight_frDn'  , TH1D('weights_gen_weight_frDn' , "", 50, 0, 2)),
+
     ('weight_z_mass_pt', TH1D("weight_z_mass_pt", "", 50, 0, 2)),
     ('weight_bSF',       TH1D("weight_bSF", "", 50, 0, 2)),
 
@@ -1053,6 +1061,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         systematic_names_pu_toppt.append('TOPPTUp')
 
         systematic_names_all_with_th.extend(('AlphaSUp', 'AlphaSDown', 'FragUp', 'FragDown', 'SemilepBRUp', 'SemilepBRDown', 'PetersonUp', 'PetersonDown'))
+        systematic_names_all_with_th.extend(('MrUp', 'MrDown', 'MfUp', 'MfDown', 'MfrUp', 'MfrDown'))
 
     if isMC:
         if isTT:
@@ -1466,8 +1475,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     with_JES_sys = with_JES and ('JESUp' in requested_systematics or 'JESDown' in requested_systematics)
     with_TauES_sys = with_TauES and ('TauESUp' in requested_systematics or 'TauESDown' in requested_systematics)
 
-    with_AlphaS_sys = False and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
-    with_Frag_sys   = False and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
+    with_AlphaS_sys  = True and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
+    with_Frag_sys    = True and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
+    with_MEscale_sys = True and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
 
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
     # all requested jet cuts
@@ -2077,6 +2087,31 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     control_hs['weights_gen_weight_Peterson'] .Fill(weights_gen_weight_Peterson)
                     control_hs['weights_gen_weight_semilepbrUp']   .Fill(weights_gen_weight_semilepbr[0])
                     control_hs['weights_gen_weight_semilepbrDown'] .Fill(weights_gen_weight_semilepbr[1])
+
+                if with_MEscale_sys:
+                    """ these are calculated "with respect to the sum of nominal weights":
+                      > Depending on the case, one may want to normalize the per-event weights
+                      > to the sum of weights corresponding to the default scale choice...
+                        i.e. they are not per-event normalized to the nominal weight
+                        but they are normalized afterwards to the overall weight, i.e. to the average of the nominal
+                    """
+                    weights_gen_weight_nom   = ev.gen_weights_renorm_fact[4] if ev.gen_weights_renorm_fact[4] > 0. else 0.00001
+                    weights_gen_weight_f_rUp = ev.gen_weights_renorm_fact[5]
+                    weights_gen_weight_f_rDn = ev.gen_weights_renorm_fact[3]
+                    weights_gen_weight_fUp_r = ev.gen_weights_renorm_fact[7]
+                    weights_gen_weight_fDn_r = ev.gen_weights_renorm_fact[1]
+                    weights_gen_weight_frUp  = ev.gen_weights_renorm_fact[8]
+                    weights_gen_weight_frDn  = ev.gen_weights_renorm_fact[0]
+
+                    # sub to this naming in the following ntuple runs:
+                    #weights_gen_weight_Frag = (ev.gen_weight_FragUp, ev.gen_weight_FragDown)
+                    control_hs['weights_gen_weight_nom']   .Fill(weights_gen_weight_nom  )
+                    control_hs['weights_gen_weight_f_rUp'] .Fill(weights_gen_weight_f_rUp)
+                    control_hs['weights_gen_weight_f_rDn'] .Fill(weights_gen_weight_f_rDn)
+                    control_hs['weights_gen_weight_fUp_r'] .Fill(weights_gen_weight_fUp_r)
+                    control_hs['weights_gen_weight_fDn_r'] .Fill(weights_gen_weight_fDn_r)
+                    control_hs['weights_gen_weight_frUp']  .Fill(weights_gen_weight_frUp )
+                    control_hs['weights_gen_weight_frDn']  .Fill(weights_gen_weight_frDn )
 
                 weight_top_pt = ttbar_pT_SF(ev.gen_t_pt, ev.gen_tb_pt)
                 #weight *= weight_top_pt # to sys
@@ -3478,6 +3513,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     systematics['SemilepBRDown'] = [jets_nom, taus_nom, weight, weight_pu, 1.,  weights_gen_weight_semilepbr[1] / weights_gen_weight_centralFrag]
                     systematics['PetersonUp']    = [jets_nom, taus_nom, weight, weight_pu, 1.,  weights_gen_weight_Peterson / weights_gen_weight_centralFrag]
                     systematics['PetersonDown']  = [jets_nom, taus_nom, weight, weight_pu, 1.,  1.]
+                if with_MEscale_sys:
+                    systematics['MrUp']    = [jets_nom, taus.nom, weight, weight_pu, 1., weights_gen_weight_f_rUp]
+                    systematics['MrDown']  = [jets_nom, taus.nom, weight, weight_pu, 1., weights_gen_weight_f_rDn]
+                    systematics['MfUp']    = [jets_nom, taus.nom, weight, weight_pu, 1., weights_gen_weight_fUp_r]
+                    systematics['MfDown']  = [jets_nom, taus.nom, weight, weight_pu, 1., weights_gen_weight_fDn_r]
+                    systematics['MfrUp']   = [jets_nom, taus.nom, weight, weight_pu, 1., weights_gen_weight_frUp ]
+                    systematics['MfrDown'] = [jets_nom, taus.nom, weight, weight_pu, 1., weights_gen_weight_frDn ]
         else:
             systematics = {'NOMINAL': [jets_nom, taus_nom, 1., 1., 1., 1.]}
 

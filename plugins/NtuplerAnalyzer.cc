@@ -1184,15 +1184,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			double   muf_up_mur_down_weight = (fabs(lheEPHandle->weights()[7].wgt))/(fabs(nomlheweight));
 			double muf_down_mur_down_weight = (fabs(lheEPHandle->weights()[8].wgt))/(fabs(nomlheweight));
 
-			NT_gen_weights_renorm_fact.push_back(muf_down_mur_down_weight);
-			NT_gen_weights_renorm_fact.push_back(muf_down_mur_nom_weight );
-			NT_gen_weights_renorm_fact.push_back(muf_down_mur_up_weight  );
-			NT_gen_weights_renorm_fact.push_back(muf_nom_mur_down_weight );
-			NT_gen_weights_renorm_fact.push_back(muf_nom_mur_nom_weight  );
+			NT_gen_weights_renorm_fact.push_back(muf_down_mur_down_weight); // 0
+			NT_gen_weights_renorm_fact.push_back(muf_down_mur_nom_weight ); // 1
+			NT_gen_weights_renorm_fact.push_back(muf_down_mur_up_weight  ); // 2
+			NT_gen_weights_renorm_fact.push_back(muf_nom_mur_down_weight ); // 3
+			NT_gen_weights_renorm_fact.push_back(muf_nom_mur_nom_weight  ); // 4
 			NT_gen_weights_renorm_fact.push_back(muf_nom_mur_up_weight   );
 			NT_gen_weights_renorm_fact.push_back(muf_up_mur_down_weight  );
 			NT_gen_weights_renorm_fact.push_back(muf_up_mur_nom_weight   );
-			NT_gen_weights_renorm_fact.push_back(muf_up_mur_up_weight    );
+			NT_gen_weights_renorm_fact.push_back(muf_up_mur_up_weight    ); // 8
 			LogInfo("Demo") << "scale weights";
 
 
