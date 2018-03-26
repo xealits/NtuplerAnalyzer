@@ -1405,8 +1405,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 'ctr_mu_dy_mumu':           (procs_mu, systematic_names_pu),
                 'ctr_mu_dy_elel':           (procs_el, systematic_names_pu),
-                'ctr_mu_tt_em':             (procs_elmu, systematic_names_pu_toppt),
-                'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_pu_toppt),
+                #'ctr_mu_tt_em':             (procs_elmu, systematic_names_pu_toppt),
+                'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_all_with_th),
 
 
                 #'ctr_old_mu_presel':        (procs_mu_3ch_fbw, systematic_names_pu_toppt),     # testing issue with event yield advantage
@@ -1713,9 +1713,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
           'met_nRjets':  TH2D('%s_%s_%s_met_nRjets'        % (chan, proc, sys), '', 30, 0, 300, 10, 0, 10),
 
           # control of tt channels
-          #'genproc_id1':        TH1D('%s_%s_%s_genproc_id1'        % (chan, proc, sys), '', 601, -1, 600),
-          #'genproc_id2':        TH1D('%s_%s_%s_genproc_id2'        % (chan, proc, sys), '', 601, -600, 1),
-          'genproc_id':        TH2D('%s_%s_%s_genproc_id'        % (chan, proc, sys), '', 9, 0, 9, 9, 0, 9),
+          #'genproc_id':        TH2D('%s_%s_%s_genproc_id'        % (chan, proc, sys), '', 9, 0, 9, 9, 0, 9),
 
           # jet flavours exist only for mc
           # do them up to 30 -- check overflows if there are many
@@ -2086,26 +2084,26 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # basically only difference is eltau/mutau
                 t_wid  = abs(ev.gen_t_w_decay_id)
                 tb_wid = abs(ev.gen_tb_w_decay_id)
-                # save detailed proc control for elmu "other" contribution
-                tt_ids = [0, 0]
-                tt_id1 = 0
-                for i, t_w_id in enumerate((t_wid, tb_wid)):
-                    if t_w_id == 1:
-                        tt_ids[i] = 1
-                    elif t_w_id == 11:
-                        tt_ids[i] = 2
-                    elif t_w_id == 13:
-                        tt_ids[i] = 3
-                    elif t_w_id == 15*11:
-                        tt_ids[i] = 4
-                    elif t_w_id == 15*13:
-                        tt_ids[i] = 5
-                    elif 15*15 < t_w_id < 15*30:
-                        tt_ids[i] = 6
-                    elif t_w_id >= 15*30:
-                        tt_ids[i] = 7
-                    else:
-                        tt_ids[i] = 8
+                ## save detailed proc control for elmu "other" contribution
+                #tt_ids = [0, 0]
+                #tt_id1 = 0
+                #for i, t_w_id in enumerate((t_wid, tb_wid)):
+                #    if t_w_id == 1:
+                #        tt_ids[i] = 1
+                #    elif t_w_id == 11:
+                #        tt_ids[i] = 2
+                #    elif t_w_id == 13:
+                #        tt_ids[i] = 3
+                #    elif t_w_id == 15*11:
+                #        tt_ids[i] = 4
+                #    elif t_w_id == 15*13:
+                #        tt_ids[i] = 5
+                #    elif 15*15 < t_w_id < 15*30:
+                #        tt_ids[i] = 6
+                #    elif t_w_id >= 15*30:
+                #        tt_ids[i] = 7
+                #    else:
+                #        tt_ids[i] = 8
 
                 if (t_wid > 15*15 and tb_wid == 13) or (t_wid == 13 and tb_wid > 15*15): # lt
                     proc = 'tt_mutau'
@@ -2121,7 +2119,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #elif t_wid * tb_wid == 15*13*15*11: # this should work, but:
                 elif (t_wid == 15*13 and tb_wid == 15*11) or (t_wid == 15*11 and tb_wid == 15*13):
                     proc = 'tt_taueltaumu'
-                elif (t_wid == 13 and tb_wid == 15*11) or (t_wid == 11 and tb_wid == 15*13):
+                elif (t_wid  == 13 and tb_wid == 15*11) or (t_wid  == 11 and tb_wid == 15*13) or \
+                     (tb_wid == 13 and t_wid  == 15*11) or (tb_wid == 11 and  t_wid == 15*13):
                     proc = 'tt_ltaul' # opposite leptons -- el-taumu etc
                 elif t_wid * tb_wid == 13 or t_wid * tb_wid == 11: # lj
                     proc = 'tt_lj'
@@ -2181,6 +2180,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                                ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
                 weight_lep_Down = weight * (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
                                                ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
+
+                if pass_elmu_close:
+                    el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
+                    el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
+                    weight_lep_Up   *= weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
+                    weight_lep_Down *= weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+                    weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+
                 weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
                              ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
@@ -3784,7 +3791,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             if pass_elel:
                 passed_channels.append(('ctr_mu_dy_elel', 1., leps.iso, jets.old, taus.presel))
             if pass_elmu:
-                passed_channels.append(('ctr_mu_tt_em', 1., leps.iso, jets.old, taus.presel))
+                #passed_channels.append(('ctr_mu_tt_em', 1., leps.iso, jets.old, taus.presel))
                 # elmu selection with almost main jet requirements
                 #old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
                 # at least 2 jets (3-1 for missing tau jet) and 1 b-tagged
@@ -4523,7 +4530,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, record_proc, sys_name)]['nvtx_raw'] .Fill(ev.nvtx, sys_weight_without_PU * weight_bSF)
                 out_hs[(chan, record_proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight)
                 if isMC:
-                    out_hs[(chan, record_proc, sys_name)]['genproc_id']   .Fill(tt_ids[0], tt_ids[1])
+                    #out_hs[(chan, record_proc, sys_name)]['genproc_id']   .Fill(tt_ids[0], tt_ids[1])
                     out_hs[(chan, record_proc, sys_name)]['nvtx_gen'].Fill(ev.nvtx_gen, record_weight)
                     for jet in all_sel_jets + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
                         jet_genmatch = 0.
