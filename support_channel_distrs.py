@@ -1062,6 +1062,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         systematic_names_all_with_th.extend(('AlphaSUp', 'AlphaSDown', 'FragUp', 'FragDown', 'SemilepBRUp', 'SemilepBRDown', 'PetersonUp', 'PetersonDown'))
         systematic_names_all_with_th.extend(('MrUp', 'MrDown', 'MfUp', 'MfDown', 'MfrUp', 'MfrDown'))
+        systematic_names_all_with_th.extend(('PDF_TRIGGER')
 
     if isMC:
         if isTT:
@@ -1478,6 +1479,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     with_AlphaS_sys  = True and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
     with_Frag_sys    = True and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
     with_MEscale_sys = True and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
+    with_PDF_sys     = True and ('PDF_TRIGGER'      in requested_systematics)
 
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
     # all requested jet cuts
@@ -1759,7 +1761,28 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
           'dijet_trijet_mass_N_permutations_passed': TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations_passed'  % (chan, proc, sys), '', 50, 0, 50),
           'dijet_trijet_mass_vs_permutations':  TH2D('%s_%s_%s_dijet_trijet_mass_vs_permutations' % (chan, proc, sys), '', 20, 0, 400, 50, 0, 50),
           })
-         for chan, ((procs, _), systs) in selected_channels.items() for proc in procs for sys in systs])
+         for chan, ((procs, _), systs) in selected_channels.items() for proc in procs for sys in systs if sys != 'PDF_TRIGGER'])
+
+    # add pdf uncertainties where requiested
+    if with_PDF_sys:
+        for chan, ((procs, _), systs) in selected_channels.items():
+          for proc in procs:
+            for sys in systs:
+                if sys != 'PDF_TRIGGER':
+                    continue
+                # create PDF-varied target histograms
+                # for 56 CT14 (not nominal) members
+                for i in range(1,57):
+                    sys_name = 'PDFCT14n%dUp' % i
+                    out_hs.update(OrderedDict([((chan, proc, sys_name), {
+                       'Mt_lep_met_f':  TH1D('%s_%s_%s_Mt_lep_met_f' % (chan, proc, sys_name), '', 20, 0, 250),
+                       'Mt_lep_met':    TH1D('%s_%s_%s_Mt_lep_met'   % (chan, proc, sys_name), '', 10, 0, 200),
+                      })]))
+                    sys_name = 'PDFCT14n%dDown' % i
+                    out_hs.update(OrderedDict([((chan, proc, sys_name), {
+                       'Mt_lep_met_f':  TH1D('%s_%s_%s_Mt_lep_met_f' % (chan, proc, sys_name), '', 20, 0, 250),
+                       'Mt_lep_met':    TH1D('%s_%s_%s_Mt_lep_met'   % (chan, proc, sys_name), '', 10, 0, 200),
+                      })]))
 
     # strange, getting PyROOT_NoneObjects from these after output
     for _, histos in out_hs.items():
@@ -4134,8 +4157,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 Mt_lep_met = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
                 # test on Mt fluctuation in mu_sel
-                if Mt_lep_met < 1.:
+                #if Mt_lep_met < 1.:
+                #    continue
+
+                # the main target distribution
+                if sys_name == 'PDF_TRIGGER':
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f']        .Fill(Mt_lep_met, record_weight * pdf_w)
                     continue
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f']        .Fill(Mt_lep_met, record_weight)
 
                 met_pt = TMath.Sqrt(met_x_prop*met_x_prop + met_y_prop*met_y_prop)
                 met_pt_taus = TMath.Sqrt(met_x_prop_taus*met_x_prop_taus + met_y_prop_taus*met_y_prop_taus)
@@ -4320,7 +4349,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_cos_c'].Fill(Mt_lep_met_cos_c, record_weight)
                 #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_mth']  .Fill(Mt_lep_met_mth, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_zero']     .Fill(Mt_lep_met, record_weight)
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f']        .Fill(Mt_lep_met, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_VS_Mt_lep_met_f'] .Fill(met_pt, Mt_lep_met, record_weight)
                 if not ev.pass_basic_METfilters:
                     out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_METfilters'].Fill(Mt_lep_met, record_weight)
