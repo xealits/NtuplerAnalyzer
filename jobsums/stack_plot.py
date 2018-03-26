@@ -55,6 +55,10 @@ parser.add_argument("--processes", type=str, default='all', help="set processes 
 parser.add_argument("--skip-legend", action='store_true', help="don't plot the legend (full view of distribution)")
 parser.add_argument("--skip-QCD", action='store_true', help="skip MC QCD")
 
+parser.add_argument("--legend-shift", type=float, help="shift legend on X axis")
+
+parser.add_argument("--drop-bin", type=float, help="drop values in the bin")
+
 parser.add_argument("--lumi-label", type=float, default=35.8, help="set lumi label on the plot")
 parser.add_argument("--title-x", type=str, default="", help="set title of X axis on the plot")
 parser.add_argument("--title-y", type=str, default="", help="set title of Y axis on the plot")
@@ -277,6 +281,12 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                 histo.SetBinContent(bini, content/width)
                 histo.SetBinError(bini, error/width)
 
+           # drop bin
+           if args.drop_bin:
+               bn_to_drop = histo.FindBin(args.drop_bin)
+               histo.SetBinContent (bn_to_drop, 0)
+               histo.SetBinError   (bn_to_drop, 0)
+
            if args.cumulative:
                used_histos.append((histo.GetCumulative(False), nick, channel)) # hopefully root wont screw this up
            else:
@@ -451,7 +461,10 @@ if args.form_shapes:
 
 # get MC stack and legend for it
 #hs, leg = plotting_root.stack_n_legend(used_histos)
-hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos)) for distr_name, histos in used_histos_per_distr]
+if args.legend_shift:
+    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos, args.legend_shift)) for distr_name, histos in used_histos_per_distr]
+else:
+    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos)) for distr_name, histos in used_histos_per_distr]
 
 # sum of MC to get the sum of errors
 
@@ -708,7 +721,7 @@ elif args.osss or args.osss_mc:
     left_title.SetTextFont(1)
 
     right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
-    right_title.AddText("L = %s fb^{-1}" % (args.lumi if args.lumi else args.lumi_label))
+    right_title.AddText("L = %s fb^{-1}" % (args.lumi / 1000. if args.lumi else args.lumi_label))
     right_title.SetTextFont(132)
     right_title.SetFillColor(0)
 
@@ -775,6 +788,12 @@ else:
         x_min, x_max = (float(x) for x in args.x_range.split(','))
         histos_data_sum .SetAxisRange(x_min, x_max, "X")
         hs_sum1         .SetAxisRange(x_min, x_max, "X")
+
+    # drop bin
+    if args.drop_bin:
+        bn_to_drop = histos_data_sum.FindBin(args.drop_bin)
+        histos_data_sum.SetBinContent (bn_to_drop, 0)
+        histos_data_sum.SetBinError   (bn_to_drop, 0)
 
     # plotting
     if args.ratio:
@@ -985,7 +1004,7 @@ else:
     '''
 
     right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
-    right_title.AddText("L = %s fb^{-1}" % (args.lumi if args.lumi else args.lumi_label))
+    right_title.AddText("L = %s fb^{-1}" % (args.lumi / 1000. if args.lumi else args.lumi_label))
     right_title.SetTextFont(132)
     right_title.SetFillColor(0)
 

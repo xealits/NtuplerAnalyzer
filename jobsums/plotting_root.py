@@ -103,7 +103,7 @@ nick_order = {
 "dibosons": -40,
 }
 
-def stack_n_legend(used_histos):
+def stack_n_legend(used_histos, shift=0.):
     '''stack_n_legend(used_histos)
 
     used_histos = [(histo, nick of process, channel), ...]
@@ -118,7 +118,7 @@ def stack_n_legend(used_histos):
     # build Stach and legend
     hs = THStack("mc_stack", "mc_stack")
     #leg = TLegend(0.7 - (0.15 if not homogeneous_channels else 0.), 0.4, 0.89, 0.89)
-    leg = TLegend(0.7, 0.4, 0.89, 0.89)
+    leg = TLegend(0.7 - shift, 0.4, 0.89 - shift, 0.89)
 
     process_counter = {} # for distinguishing processes in different channels
 
