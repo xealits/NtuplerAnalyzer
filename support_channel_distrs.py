@@ -1712,6 +1712,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
           'met_nRjets':  TH2D('%s_%s_%s_met_nRjets'        % (chan, proc, sys), '', 30, 0, 300, 10, 0, 10),
 
+          # control of tt channels
+          #'genproc_id1':        TH1D('%s_%s_%s_genproc_id1'        % (chan, proc, sys), '', 601, -1, 600),
+          #'genproc_id2':        TH1D('%s_%s_%s_genproc_id2'        % (chan, proc, sys), '', 601, -600, 1),
+          'genproc_id':        TH2D('%s_%s_%s_genproc_id'        % (chan, proc, sys), '', 9, 0, 9, 9, 0, 9),
+
           # jet flavours exist only for mc
           # do them up to 30 -- check overflows if there are many
           'jet_flavours_hadron': TH1D('%s_%s_%s_jet_flavours_hadron' % (chan, proc, sys), '', 35, -5, 30),
@@ -1847,6 +1852,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         # TODO: need to check the trigger SF-s then......
         # for now I'm just trying to get rid of el-mu mix in MC
+        #pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and ev.no_iso_veto_leps and \
         pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el and ev.no_iso_veto_leps and \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
@@ -1876,6 +1882,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
         passes = passes_optimized
+        passes = pass_elmu
 
         if not passes: continue
         control_counters.Fill(1)
@@ -2079,6 +2086,28 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # basically only difference is eltau/mutau
                 t_wid  = abs(ev.gen_t_w_decay_id)
                 tb_wid = abs(ev.gen_tb_w_decay_id)
+                # save detailed proc control for elmu "other" contribution
+                tt_ids = [0, 0]
+                tt_id1 = 0
+                for i, t_w_id in enumerate((t_wid, tb_wid)):
+                    if t_w_id == 1:
+                        tt_ids[i] = 1
+                    elif t_w_id == 11:
+                        tt_ids[i] = 2
+                    elif t_w_id == 13:
+                        tt_ids[i] = 3
+                    elif t_w_id == 15*11:
+                        tt_ids[i] = 4
+                    elif t_w_id == 15*13:
+                        tt_ids[i] = 5
+                    elif 15*15 < t_w_id < 15*30:
+                        tt_ids[i] = 6
+                    elif t_w_id >= 15*30:
+                        tt_ids[i] = 7
+                    else:
+                        tt_ids[i] = 8
+                control_hs['genproc_id']   .Fill(tt_ids[0], tt_ids[1])
+
                 if (t_wid > 15*15 and tb_wid == 13) or (t_wid == 13 and tb_wid > 15*15): # lt
                     proc = 'tt_mutau'
                     # check if tau decayed in 3 charged particles
