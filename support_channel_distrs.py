@@ -1427,11 +1427,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
                 'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
 
-                'ctr_old_mu_presel_alliso':        (procs_mu, systematic_names_nominal),
-                'ctr_old_mu_presel_alliso_ss':     (procs_mu, systematic_names_nominal),
+                #'ctr_old_mu_presel_alliso':        (procs_mu, systematic_names_nominal),
+                #'ctr_old_mu_presel_alliso_ss':     (procs_mu, systematic_names_nominal),
+                #'ctr_old_el_presel_alliso':        (procs_el, systematic_names_nominal),
+                #'ctr_old_el_presel_alliso_ss':     (procs_el, systematic_names_nominal),
 
-                'ctr_old_el_presel_alliso':        (procs_el, systematic_names_nominal),
-                'ctr_old_el_presel_alliso_ss':     (procs_el, systematic_names_nominal),
+                'ctr_old_mu_selVloose_alliso':      (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_selVloose_alliso_ss':   (procs_mu, systematic_names_nominal),
+                'ctr_old_el_selVloose_alliso':      (procs_el, systematic_names_nominal),
+                'ctr_old_el_selVloose_alliso_ss':   (procs_el, systematic_names_nominal),
 
                 # testing issue with event yield advantage
                 'ctr_old_mu_selVloose':     (procs_mu, systematic_names_all_with_th),
@@ -3727,8 +3731,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             pass_old_lep_presel = pass_old_mu_presel or pass_old_el_presel
 
             # alliso
-            pass_old_mu_presel_alliso = pass_mu_all and old_jet_sel_alliso and len(taus.presel_alliso) > 0
-            pass_old_el_presel_alliso = pass_el_all and old_jet_sel_alliso and len(taus.presel_alliso) > 0
+            pass_old_mu_presel_alliso = False and pass_mu_all and old_jet_sel_alliso and len(taus.presel_alliso) > 0
+            pass_old_el_presel_alliso = False and pass_el_all and old_jet_sel_alliso and len(taus.presel_alliso) > 0
+
+            pass_old_mu_sel_Vloose_alliso = pass_mu_all and old_jet_sel and len(taus.oldVloose) > 0 # and no met cut
+            pass_old_el_sel_Vloose_alliso = pass_el_all and old_jet_sel and len(taus.oldVloose) > 0 # and no met cut
 
             pass_elmu_close = pass_elmu and (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1
 
@@ -3986,6 +3993,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 else:
                     passed_channels.append(('ctr_old_mu_presel_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
 
+            # presel alliso
             if pass_old_mu_presel_alliso:
                 presel_os = taus.presel_alliso[0][2] * ev.lep_alliso_id[0] < 0
                 sel_b_weight = weight_bSF_old_alliso
@@ -4001,6 +4009,23 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     passed_channels.append(('ctr_old_el_presel_alliso', sel_b_weight, leps.alliso, jets.old_alliso, taus.presel_alliso))
                 else:
                     passed_channels.append(('ctr_old_el_presel_alliso_ss', sel_b_weight, leps.alliso, jets.old_alliso, taus.presel_alliso))
+
+            # VLoose alliso
+            if pass_old_mu_sel_Vloose_alliso:
+                presel_os = taus.oldVloose[0][2] * ev.lep_alliso_id[0] < 0
+                sel_b_weight = weight_bSF_old_alliso
+                if presel_os:
+                    passed_channels.append(('ctr_old_mu_selVloose_alliso', sel_b_weight, leps.alliso, jets.old_alliso, taus.oldVloose))
+                else:
+                    passed_channels.append(('ctr_old_mu_selVloose_alliso_ss', sel_b_weight, leps.alliso, jets.old_alliso, taus.oldVloose))
+
+            if pass_old_el_sel_Vloose_alliso:
+                presel_os = taus.oldVloose[0][2] * ev.lep_alliso_id[0] < 0
+                sel_b_weight = weight_bSF_old_alliso
+                if presel_os:
+                    passed_channels.append(('ctr_old_el_selVloose_alliso', sel_b_weight, leps.alliso, jets.old_alliso, taus.oldVloose))
+                else:
+                    passed_channels.append(('ctr_old_el_selVloose_alliso_ss', sel_b_weight, leps.alliso, jets.old_alliso, taus.oldVloose))
 
             #pass_single_lep_presel = large_met and has_3jets and has_bjets and (pass_el or pass_mu) #and os_lep_med_tau
             #pass_single_lep_sel = pass_single_lep_presel and os_lep_med_tau
