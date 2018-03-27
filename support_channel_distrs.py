@@ -1,7 +1,7 @@
 import os
 from os import environ
 from array import array
-from collections import OrderedDict, namedtuple
+from collections import OrderedDict, namedtuple, defaultdict
 import cProfile
 import logging as Logging
 import ctypes
@@ -1031,6 +1031,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
     systematic_names_nominal = ['NOMINAL']
 
+    all_systematic_objects = ('NOMINAL', 'JESUp', 'JESDown', 'JERUp', 'JERDown', 'TauESUp', 'TauESDown', 'bSFUp', 'bSFDown')
+
     if isMC:
         systematic_names_all = ['NOMINAL',
                 'LEPUp'     ,
@@ -1466,10 +1468,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     with_TauES = isMC and True
 
     # find all requested systematics
-    requested_systematics = set()
+    requested_systematics  = set()
+    requested_objects      = set()
     for k, (ch_name, systematic_names) in selected_channels.items():
       for systematic_name in systematic_names:
         requested_systematics.add(systematic_name)
+        if systematic_name in all_systematic_objects:
+            requested_objects.add(systematic_name)
 
     with_bSF_sys = with_bSF and ('bSFUp' in requested_systematics or 'bSFDown' in requested_systematics)
     with_JER_sys = with_JER and ('JERUp' in requested_systematics or 'JERDown' in requested_systematics)
@@ -1530,237 +1535,279 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     #            choice of subprocesses depends on channel (sadly),
     #            (find most precise subprocess ones, then store accordingly for channels)
     # sys     -- shape systematics
-    out_hs = OrderedDict([((chan, proc, sys), {
-          'met':        TH1D('%s_%s_%s_met'        % (chan, proc, sys), '', 30, 0, 300),
-          # control the tau/jet prop to met
-          'met_prop_taus':      TH2D('%s_%s_%s_met_prop_taus'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
-          'met_prop_jets':      TH2D('%s_%s_%s_met_prop_jets'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
-          'init_met':   TH1D('%s_%s_%s_init_met'   % (chan, proc, sys), '', 30, 0, 300),
-          'corr_met':   TH1D('%s_%s_%s_corr_met'   % (chan, proc, sys), '', 30, 0, 300),
-          'all_sum_control':       TH1D('%s_%s_%s_all_sum_control'      % (chan, proc, sys), '', 100, 0, 100),
-          'all_sum_control_init':  TH1D('%s_%s_%s_all_sum_control_init' % (chan, proc, sys), '', 100, 0, 100),
-          'lep_pt':     TH1D('%s_%s_%s_lep_pt'     % (chan, proc, sys), '', 40, 0, 200),
-          'lep_pt_turn':TH1D('%s_%s_%s_lep_pt_turn'% (chan, proc, sys), '', 270, 23, 50),
-          'lep_pt_turn_raw':TH1D('%s_%s_%s_lep_pt_turn_raw' % (chan, proc, sys), '', 40, 20, 40),
-          ## debuging the cut on MC lep pt from weights at 26 GeV
-          #'lep_pt_turn_raw_w_b_trk':          TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_trk'     % (chan, proc, sys), '', 40, 20, 40),
-          #'lep_pt_turn_raw_w_b_trk_vtx':      TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_trk_vtx' % (chan, proc, sys), '', 40, 20, 40),
-          #'lep_pt_turn_raw_w_b_id':           TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_id'      % (chan, proc, sys), '', 40, 20, 40),
-          #'lep_pt_turn_raw_w_b_iso':          TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_iso'     % (chan, proc, sys), '', 40, 20, 40),
-          #'lep_pt_turn_raw_w_b_trk_vtxgen':   TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_trk_vtxgen' % (chan, proc, sys), '', 40, 20, 40),
-          #'lep_pt_turn_raw_w_b_trg':          TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_trg'     % (chan, proc, sys), '', 40, 20, 40), # <--- this one is 0
-          ## debugging cut at 120 GeV
-          ## the new defaults for id and iso were erroneous
-          #'lep_pt_raw_w_b_trk':          TH1D('%s_%s_%s_lep_pt_raw_w_b_trk'     % (chan, proc, sys), '', 40, 20, 200),
-          #'lep_pt_raw_w_b_trk_vtx':      TH1D('%s_%s_%s_lep_pt_raw_w_b_trk_vtx' % (chan, proc, sys), '', 40, 20, 200),
-          #'lep_pt_raw_w_b_id':           TH1D('%s_%s_%s_lep_pt_raw_w_b_id'      % (chan, proc, sys), '', 40, 20, 200),
-          #'lep_pt_raw_w_b_iso':          TH1D('%s_%s_%s_lep_pt_raw_w_b_iso'     % (chan, proc, sys), '', 40, 20, 200),
-          #'lep_pt_raw_w_b_trk_vtxgen':   TH1D('%s_%s_%s_lep_pt_raw_w_b_trk_vtxgen' % (chan, proc, sys), '', 40, 20, 200),
-          #'lep_pt_raw_w_b_trg':          TH1D('%s_%s_%s_lep_pt_raw_w_b_trg'     % (chan, proc, sys), '', 40, 20, 200), # <--- this one is 0
 
-          'lep_eta':    TH1D('%s_%s_%s_lep_eta'    % (chan, proc, sys), '', 50, -2.5, 2.5),
-          'tau_pt':     TH1D('%s_%s_%s_tau_pt'     % (chan, proc, sys), '', 30, 0, 150),
-          'tau_eta':    TH1D('%s_%s_%s_tau_eta'    % (chan, proc, sys), '', 50, -2.5, 2.5),
-          'tau_jetmatched':         TH1D('%s_%s_%s_tau_jetmatched'    % (chan, proc, sys), '', 3, -1, 2),
-          'tau_jetmatched_VS_eta':  TH2D('%s_%s_%s_tau_jetmatched_VS_eta'    % (chan, proc, sys), '', 3, -1, 2, 50, -2.5, 2.5),
+    class ZeroOutDistr:
+        def Fill(self, *args):
+            pass
+    #zero_out_distr = ZeroOutDistr()
 
-          'Rjet_pt':    TH1D('%s_%s_%s_Rjet_pt'    % (chan, proc, sys), '', 30, 0, 300),
-          'Rjet_eta':   TH1D('%s_%s_%s_Rjet_eta'   % (chan, proc, sys), '', 50, -2.5, 2.5),
-          'LRjet_pt':   TH1D('%s_%s_%s_LRjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
-          'LRjet_eta':  TH1D('%s_%s_%s_LRjet_eta'  % (chan, proc, sys), '', 50, -2.5, 2.5),
-          'bMjet_pt':   TH1D('%s_%s_%s_bMjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
-          'bMjet_eta':  TH1D('%s_%s_%s_bMjet_eta'  % (chan, proc, sys), '', 50, -2.5, 2.5),
-          'bLjet_pt':   TH1D('%s_%s_%s_bLjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
-          'bLjet_eta':  TH1D('%s_%s_%s_bLjet_eta'  % (chan, proc, sys), '', 20, -2.5, 2.5),
-          'bL2jet_pt':  TH1D('%s_%s_%s_bL2jet_pt'  % (chan, proc, sys), '', 30, 0, 300),
-          'bL2jet_eta': TH1D('%s_%s_%s_bL2jet_eta' % (chan, proc, sys), '', 20, -2.5, 2.5),
-          'b_discr_rest':  TH1D('%s_%s_%s_b_discr_rest'  % (chan, proc, sys), '', 30, 0., 1.),
-          'b_discr_med':   TH1D('%s_%s_%s_b_discr_med'   % (chan, proc, sys), '', 30, 0., 1.),
-          'b_discr_loose': TH1D('%s_%s_%s_b_discr_loose' % (chan, proc, sys), '', 30, 0., 1.),
-          'b_discr_LR':    TH1D('%s_%s_%s_b_discr_LR' % (chan, proc, sys), '', 30, 0., 1.),
+    def format_distrs(chan, proc, sys):
+        '''
+        I don't need all distrs for all systematics, only some
 
-          ## OPTIMIZATION
-          ## control the b-jet categories
-          ## tau-b-jet categories
-          ## tau index in tau arrays (should always be 0)
-          #'opt_bjet_categories':      TH1D('%s_%s_%s_opt_bjet_categories'     % (chan, proc, sys), '', 5, 0., 5.),
-          ##'opt_tau_categories':       TH1D('%s_%s_%s_opt_tau_categories'      % (chan, proc, sys), '', 5, 0., 5.),
-          #'opt_tau_bjet_categories':  TH1D('%s_%s_%s_opt_tau_bjet_categories' % (chan, proc, sys), '', 4*5, 0., 4*5.),
-          #'opt_bjet_categories_incl':      TH1D('%s_%s_%s_opt_bjet_categories_incl'     % (chan, proc, sys), '', 5, 0., 5.),
-          #'opt_tau_bjet_categories_incl':  TH1D('%s_%s_%s_opt_tau_bjet_categories_incl' % (chan, proc, sys), '', 4*5, 0., 4*5.),
-          #'opt_tau_index_loose':      TH1D('%s_%s_%s_opt_tau_index_loose'     % (chan, proc, sys), '', 10, 0., 10.),
-          #'opt_tau_index_medium':     TH1D('%s_%s_%s_opt_tau_index_medium'    % (chan, proc, sys), '', 10, 0., 10.),
-          #'opt_tau_index_tight':      TH1D('%s_%s_%s_opt_tau_index_tight'     % (chan, proc, sys), '', 10, 0., 10.),
-          #'opt_lep_tau_pt':           TH2D('%s_%s_%s_opt_lep_tau_pt'          % (chan, proc, sys), '', 20, 0, 200, 30, 0, 300),
-          #'opt_lep_bjet_pt':          TH2D('%s_%s_%s_opt_lep_bjet_pt'         % (chan, proc, sys), '', 20, 0, 200, 30, 0, 300),
-          #'opt_bjet_bjet2_pt':        TH2D('%s_%s_%s_opt_bjet_bjet2_pt'       % (chan, proc, sys), '', 20, 0, 250, 20, 0, 250),
-          #'opt_n_presel_tau':  TH1D('%s_%s_%s_opt_n_presel_tau'    % (chan, proc, sys), '', 5, 0., 5.),
-          #'opt_n_loose_tau':   TH1D('%s_%s_%s_opt_n_loose_tau'     % (chan, proc, sys), '', 5, 0., 5.),
-          #'opt_n_medium_tau':  TH1D('%s_%s_%s_opt_n_medium_tau'    % (chan, proc, sys), '', 5, 0., 5.),
-          #'opt_n_tight_tau':   TH1D('%s_%s_%s_opt_n_tight_tau'     % (chan, proc, sys), '', 5, 0., 5.),
-          #'opt_n_loose_bjet':  TH1D('%s_%s_%s_opt_n_loose_bjet'    % (chan, proc, sys), '', 5, 0., 5.),
-          #'opt_n_medium_bjet': TH1D('%s_%s_%s_opt_n_medium_bjet'   % (chan, proc, sys), '', 5, 0., 5.),
+        if distr is not there? -- ok, I'll use defaultdict with the factory for defaults
+        it creates the dummies dynamically and runs quickly after that
+        '''
 
-          ## for tt->elmu FAKERATES
-          #'all_jet_pt':     TH1D('%s_%s_%s_all_jet_pt'     % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-          #'all_jet_eta':    TH1D('%s_%s_%s_all_jet_eta'    % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-          #'candidate_tau_jet_pt':  TH1D('%s_%s_%s_candidate_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-          #'candidate_tau_jet_eta': TH1D('%s_%s_%s_candidate_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-          #'vloose_tau_jet_pt':  TH1D('%s_%s_%s_vloose_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-          #'vloose_tau_jet_eta': TH1D('%s_%s_%s_vloose_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-          #'loose_tau_jet_pt':   TH1D('%s_%s_%s_loose_tau_jet_pt'   % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-          #'loose_tau_jet_eta':  TH1D('%s_%s_%s_loose_tau_jet_eta'  % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-          #'medium_tau_jet_pt':  TH1D('%s_%s_%s_medium_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-          #'medium_tau_jet_eta': TH1D('%s_%s_%s_medium_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-          #'tight_tau_jet_pt':   TH1D('%s_%s_%s_tight_tau_jet_pt'   % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-          #'tight_tau_jet_eta':  TH1D('%s_%s_%s_tight_tau_jet_eta'  % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-          #'vtight_tau_jet_pt':  TH1D('%s_%s_%s_vtight_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
-          #'vtight_tau_jet_eta': TH1D('%s_%s_%s_vtight_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+        # do simply
+        # here all-syst distrs and PDF syst:
+        distrs = defaultdict(ZeroOutDistr)
+        if 'PDF' in sys:
+            distrs.update({
+              'Mt_lep_met_f': TH1D('%s_%s_%s_Mt_lep_met_f' % (chan, proc, sys), '', 20, 0, 250),
+              #'Mt_lep_met':   TH1D('%s_%s_%s_Mt_lep_met'   % (chan, proc, sys), '', 10, 0, 200),
+              })
+        else:
+            distrs.update({
+              'met':          TH1D('%s_%s_%s_met'          % (chan, proc, sys), '', 30, 0, 300),
+              'lep_pt':       TH1D('%s_%s_%s_lep_pt'       % (chan, proc, sys), '', 40, 0, 200),
+              'Mt_lep_met_f': TH1D('%s_%s_%s_Mt_lep_met_f' % (chan, proc, sys), '', 20, 0, 250),
+              'Mt_lep_met':   TH1D('%s_%s_%s_Mt_lep_met'   % (chan, proc, sys), '', 10, 0, 200),
+              })
 
-          #'bdiscr_max':       TH1D('%s_%s_%s_b_discr_max'      % (chan, proc, sys), '', 30, 0, 300),
-          #'dphi_lep_met': TH1D('%s_%s_%s_dphi_lep_met' % (chan, proc, sys), '', 20, -3.2, 3.2),
-          #'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
-          # relIso for the QCD anti-iso region
-          'lep_relIso_el':       TH1D('%s_%s_%s_lep_relIso_el'     % (chan, proc, sys), '', lep_relIso_el_bins_n,     lep_relIso_el_bins),
-          'lep_relIso_el_ext':   TH1D('%s_%s_%s_lep_relIso_el_ext' % (chan, proc, sys), '', lep_relIso_el_bins_ext_n, lep_relIso_el_bins_ext),
-          'lep_relIso':          TH1D('%s_%s_%s_lep_relIso'     % (chan, proc, sys), '', lep_relIso_bins_n,     lep_relIso_bins),
-          'lep_relIso_ext':      TH1D('%s_%s_%s_lep_relIso_ext' % (chan, proc, sys), '', lep_relIso_bins_ext_n, lep_relIso_bins_ext),
-          'lep_relIso_precise':  TH1D('%s_%s_%s_lep_relIso_precise' % (chan, proc, sys), '', 300, 0., 0.3), # around the cut of 0.125-0.15
-          #'Mt_lep_met_f_mth':   TH1D('%s_%s_%s_Mt_lep_met_f_mth'   % (chan, proc, sys), '', 20, 0, 250),
-          #'Mt_lep_met_f_cos':   TH1D('%s_%s_%s_Mt_lep_met_f_cos'   % (chan, proc, sys), '', 20, 0, 250),
-          #'Mt_lep_met_f_cos_c': TH1D('%s_%s_%s_Mt_lep_met_f_cos_c' % (chan, proc, sys), '', 20, 0, 250),
-          #'Mt_lep_met_f_c':     TH1D('%s_%s_%s_Mt_lep_met_f_c'     % (chan, proc, sys), '', 20, 0, 250),
-          #'Mt_lep_met_f_test':  TH1D('%s_%s_%s_Mt_lep_met_f_test'  % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_zero':           TH1D('%s_%s_%s_Mt_lep_met_zero'       % (chan, proc, sys), '', 20, 0, 20),
-          'Mt_lep_met_METfilters':     TH1D('%s_%s_%s_Mt_lep_met_METfilters' % (chan, proc, sys), '', 20, 0, 20),
+        # here only obj syst:
+        if sys in requested_objects:
+          distrs.update({
+            ## debuging the cut on MC lep pt from weights at 26 GeV
+            #'lep_pt_turn_raw_w_b_trk':          TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_trk'     % (chan, proc, sys), '', 40, 20, 40),
+            #'lep_pt_turn_raw_w_b_trk_vtx':      TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_trk_vtx' % (chan, proc, sys), '', 40, 20, 40),
+            #'lep_pt_turn_raw_w_b_id':           TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_id'      % (chan, proc, sys), '', 40, 20, 40),
+            #'lep_pt_turn_raw_w_b_iso':          TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_iso'     % (chan, proc, sys), '', 40, 20, 40),
+            #'lep_pt_turn_raw_w_b_trk_vtxgen':   TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_trk_vtxgen' % (chan, proc, sys), '', 40, 20, 40),
+            #'lep_pt_turn_raw_w_b_trg':          TH1D('%s_%s_%s_lep_pt_turn_raw_w_b_trg'     % (chan, proc, sys), '', 40, 20, 40), # <--- this one is 0
+            ## debugging cut at 120 GeV
+            ## the new defaults for id and iso were erroneous
+            #'lep_pt_raw_w_b_trk':          TH1D('%s_%s_%s_lep_pt_raw_w_b_trk'     % (chan, proc, sys), '', 40, 20, 200),
+            #'lep_pt_raw_w_b_trk_vtx':      TH1D('%s_%s_%s_lep_pt_raw_w_b_trk_vtx' % (chan, proc, sys), '', 40, 20, 200),
+            #'lep_pt_raw_w_b_id':           TH1D('%s_%s_%s_lep_pt_raw_w_b_id'      % (chan, proc, sys), '', 40, 20, 200),
+            #'lep_pt_raw_w_b_iso':          TH1D('%s_%s_%s_lep_pt_raw_w_b_iso'     % (chan, proc, sys), '', 40, 20, 200),
+            #'lep_pt_raw_w_b_trk_vtxgen':   TH1D('%s_%s_%s_lep_pt_raw_w_b_trk_vtxgen' % (chan, proc, sys), '', 40, 20, 200),
+            #'lep_pt_raw_w_b_trg':          TH1D('%s_%s_%s_lep_pt_raw_w_b_trg'     % (chan, proc, sys), '', 40, 20, 200), # <--- this one is 0
 
-          'met_VS_Mt_lep_met_f':       TH2D('%s_%s_%s_met_VS_Mt_lep_met_f'   % (chan, proc, sys), '', 15, 0, 300, 10, 0, 250),
-          'Mt_lep_met_f':              TH1D('%s_%s_%s_Mt_lep_met_f'          % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_t1':             TH1D('%s_%s_%s_Mt_lep_met_t1'         % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_t2':             TH1D('%s_%s_%s_Mt_lep_met_t2'         % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_t3':             TH1D('%s_%s_%s_Mt_lep_met_t3'         % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_t4':             TH1D('%s_%s_%s_Mt_lep_met_t4'         % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_t5':             TH1D('%s_%s_%s_Mt_lep_met_t5'         % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_t6':             TH1D('%s_%s_%s_Mt_lep_met_t6'         % (chan, proc, sys), '', 20, 0, 250),
-          # Mt per different n jets
-          'Mt_lep_met_lessjets':       TH1D('%s_%s_%s_Mt_lep_met_lessjets'   % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_0L2M':           TH1D('%s_%s_%s_Mt_lep_met_0L2M'       % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_0L2Mnot':        TH1D('%s_%s_%s_Mt_lep_met_0L2Mnot'    % (chan, proc, sys), '', 20, 0, 250),
-          'met_0L2M':           TH1D('%s_%s_%s_met_0L2M'          % (chan, proc, sys), '', 30, 0, 300),
-          'met_0L2Mnot':        TH1D('%s_%s_%s_met_0L2Mnot'       % (chan, proc, sys), '', 30, 0, 300),
-          'met_lessjets':       TH1D('%s_%s_%s_met_lessjets'      % (chan, proc, sys), '', 30, 0, 300),
-          'met_lessjets_init':  TH1D('%s_%s_%s_met_lessjets_init' % (chan, proc, sys), '', 30, 0, 300),
+            'lep_eta':    TH1D('%s_%s_%s_lep_eta'    % (chan, proc, sys), '', 50, -2.5, 2.5),
+            'tau_pt':     TH1D('%s_%s_%s_tau_pt'     % (chan, proc, sys), '', 30, 0, 150),
+            'tau_eta':    TH1D('%s_%s_%s_tau_eta'    % (chan, proc, sys), '', 50, -2.5, 2.5),
 
-          'Mt_lep_met_f_VS_nvtx':      TH2D('%s_%s_%s_Mt_lep_met_f_VS_nvtx'  % (chan, proc, sys), '', 20, 0, 250, 50, 0, 50),
-          'Mt_lep_met_f_VS_nvtx_gen':  TH2D('%s_%s_%s_Mt_lep_met_f_VS_nvtx_gen' % (chan, proc, sys), '', 20, 0, 250, 50, 0, 50),
+            'Rjet_pt':    TH1D('%s_%s_%s_Rjet_pt'    % (chan, proc, sys), '', 30, 0, 300),
+            'Rjet_eta':   TH1D('%s_%s_%s_Rjet_eta'   % (chan, proc, sys), '', 50, -2.5, 2.5),
+            'LRjet_pt':   TH1D('%s_%s_%s_LRjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
+            'LRjet_eta':  TH1D('%s_%s_%s_LRjet_eta'  % (chan, proc, sys), '', 50, -2.5, 2.5),
+            'bMjet_pt':   TH1D('%s_%s_%s_bMjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
+            'bMjet_eta':  TH1D('%s_%s_%s_bMjet_eta'  % (chan, proc, sys), '', 50, -2.5, 2.5),
+            'bLjet_pt':   TH1D('%s_%s_%s_bLjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
+            'bLjet_eta':  TH1D('%s_%s_%s_bLjet_eta'  % (chan, proc, sys), '', 20, -2.5, 2.5),
+            'bL2jet_pt':  TH1D('%s_%s_%s_bL2jet_pt'  % (chan, proc, sys), '', 30, 0, 300),
+            'bL2jet_eta': TH1D('%s_%s_%s_bL2jet_eta' % (chan, proc, sys), '', 20, -2.5, 2.5),
 
-          # PU tests
-          'lep_pt_pu_sum':     TH1D('%s_%s_%s_lep_pt_pu_sum'     % (chan, proc, sys), '', 20, 0, 200),
-          'lep_pt_pu_b'  :     TH1D('%s_%s_%s_lep_pt_pu_b'       % (chan, proc, sys), '', 20, 0, 200),
-          'lep_pt_pu_h2' :     TH1D('%s_%s_%s_lep_pt_pu_h2'      % (chan, proc, sys), '', 20, 0, 200),
-          'met_pu_sum'   :     TH1D('%s_%s_%s_met_pu_sum'      % (chan, proc, sys), '', 20, 0, 200),
-          'met_pu_b'     :     TH1D('%s_%s_%s_met_pu_b'        % (chan, proc, sys), '', 20, 0, 200),
-          'met_pu_h2'    :     TH1D('%s_%s_%s_met_pu_h2'       % (chan, proc, sys), '', 20, 0, 200),
-          'Mt_lep_met_f_pu_sum':     TH1D('%s_%s_%s_Mt_lep_met_f_pu_sum'       % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_f_pu_b'  :     TH1D('%s_%s_%s_Mt_lep_met_f_pu_b'       % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_f_pu_h2' :     TH1D('%s_%s_%s_Mt_lep_met_f_pu_h2'       % (chan, proc, sys), '', 20, 0, 250),
-          # control distrs for effect of different weights
-          'Mt_lep_met_f_init':       TH1D('%s_%s_%s_Mt_lep_met_f_init'       % (chan, proc, sys), '', 20, 0, 250),
-          'nvtx_init':               TH1D('%s_%s_%s_nvtx_init'               % (chan, proc, sys), '', 50, 0, 50),
-          #sys_weight = weight * weight_bSF * weight_PU * weight_top_pt
-          'nvtx_w_trk_b':            TH1D('%s_%s_%s_nvtx_w_trk_b'            % (chan, proc, sys), '', 50, 0, 50),
-          'nvtx_w_trk_h':            TH1D('%s_%s_%s_nvtx_w_trk_h'            % (chan, proc, sys), '', 50, 0, 50),
-          'Mt_lep_met_f_w_in':       TH1D('%s_%s_%s_Mt_lep_met_f_w_in'       % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_f_w_mu_trk_b': TH1D('%s_%s_%s_Mt_lep_met_f_w_mu_trk_b' % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_f_w_mu_trk_h': TH1D('%s_%s_%s_Mt_lep_met_f_w_mu_trk_h' % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_f_w_pu':       TH1D('%s_%s_%s_Mt_lep_met_f_w_pu'       % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_f_w_pu_sum':   TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_sum'   % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_f_w_pu_b':     TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_b'     % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_f_w_pu_h2':    TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_h2'    % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_f_w_bf':       TH1D('%s_%s_%s_Mt_lep_met_f_w_bf'       % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_f_w_bf_min':   TH1D('%s_%s_%s_Mt_lep_met_f_w_bf_min'   % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met_f_w_tp':       TH1D('%s_%s_%s_Mt_lep_met_f_w_tp'       % (chan, proc, sys), '', 20, 0, 250),
-          'Mt_lep_met':  TH1D('%s_%s_%s_Mt_lep_met' % (chan, proc, sys), '', 10, 0, 200),
-          'Mt_tau_met':  TH1D('%s_%s_%s_Mt_tau_met' % (chan, proc, sys), '', 20, 0, 200),
+            ## OPTIMIZATION
+            ## control the b-jet categories
+            ## tau-b-jet categories
+            ## tau index in tau arrays (should always be 0)
+            #'opt_bjet_categories':      TH1D('%s_%s_%s_opt_bjet_categories'     % (chan, proc, sys), '', 5, 0., 5.),
+            ##'opt_tau_categories':       TH1D('%s_%s_%s_opt_tau_categories'      % (chan, proc, sys), '', 5, 0., 5.),
+            #'opt_tau_bjet_categories':  TH1D('%s_%s_%s_opt_tau_bjet_categories' % (chan, proc, sys), '', 4*5, 0., 4*5.),
+            #'opt_bjet_categories_incl':      TH1D('%s_%s_%s_opt_bjet_categories_incl'     % (chan, proc, sys), '', 5, 0., 5.),
+            #'opt_tau_bjet_categories_incl':  TH1D('%s_%s_%s_opt_tau_bjet_categories_incl' % (chan, proc, sys), '', 4*5, 0., 4*5.),
+            #'opt_tau_index_loose':      TH1D('%s_%s_%s_opt_tau_index_loose'     % (chan, proc, sys), '', 10, 0., 10.),
+            #'opt_tau_index_medium':     TH1D('%s_%s_%s_opt_tau_index_medium'    % (chan, proc, sys), '', 10, 0., 10.),
+            #'opt_tau_index_tight':      TH1D('%s_%s_%s_opt_tau_index_tight'     % (chan, proc, sys), '', 10, 0., 10.),
+            #'opt_lep_tau_pt':           TH2D('%s_%s_%s_opt_lep_tau_pt'          % (chan, proc, sys), '', 20, 0, 200, 30, 0, 300),
+            #'opt_lep_bjet_pt':          TH2D('%s_%s_%s_opt_lep_bjet_pt'         % (chan, proc, sys), '', 20, 0, 200, 30, 0, 300),
+            #'opt_bjet_bjet2_pt':        TH2D('%s_%s_%s_opt_bjet_bjet2_pt'       % (chan, proc, sys), '', 20, 0, 250, 20, 0, 250),
+            #'opt_n_presel_tau':  TH1D('%s_%s_%s_opt_n_presel_tau'    % (chan, proc, sys), '', 5, 0., 5.),
+            #'opt_n_loose_tau':   TH1D('%s_%s_%s_opt_n_loose_tau'     % (chan, proc, sys), '', 5, 0., 5.),
+            #'opt_n_medium_tau':  TH1D('%s_%s_%s_opt_n_medium_tau'    % (chan, proc, sys), '', 5, 0., 5.),
+            #'opt_n_tight_tau':   TH1D('%s_%s_%s_opt_n_tight_tau'     % (chan, proc, sys), '', 5, 0., 5.),
+            #'opt_n_loose_bjet':  TH1D('%s_%s_%s_opt_n_loose_bjet'    % (chan, proc, sys), '', 5, 0., 5.),
+            #'opt_n_medium_bjet': TH1D('%s_%s_%s_opt_n_medium_bjet'   % (chan, proc, sys), '', 5, 0., 5.),
 
-          # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
-          'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
-          'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
-          # mass between tau and all non-b jets (to catch the c-jets from W)
-          'M_tau_nonb':       TH1D('%s_%s_%s_M_tau_nonb'       % (chan, proc, sys), '', 19, 10, 200),
-          'M_tau_nonb_min':   TH1D('%s_%s_%s_M_tau_nonb_min'   % (chan, proc, sys), '', 19, 10, 200),
-          'M_tau_nonb_Wdist': TH1D('%s_%s_%s_M_tau_nonb_Wdist' % (chan, proc, sys), '', 19, 10, 200),
-          # parameters of tau
-          'tau_ref_Sign': TH1D('%s_%s_%s_tau_ref_Sign'% (chan, proc, sys), '', 44, -1, 10),
-          'tau_ref_Leng': TH1D('%s_%s_%s_tau_ref_Leng'% (chan, proc, sys), '', 44, -0.001, 0.01),
-          'tau_pat_Sign': TH1D('%s_%s_%s_tau_pat_Sign'% (chan, proc, sys), '', 50, -10, 40),
-          'tau_pat_Leng': TH1D('%s_%s_%s_tau_pat_Leng'% (chan, proc, sys), '', 44, -0.01, 0.1),
-          'tau_SV_sign':  TH1D('%s_%s_%s_tau_SV_sign'% (chan, proc, sys), '', 50, -5, 20),
-          'tau_SV_leng':  TH1D('%s_%s_%s_tau_SV_leng'% (chan, proc, sys), '', 21, -0.1, 1.),
-          'tau_jet_bdiscr': TH1D('%s_%s_%s_tau_jet_bdiscr'  % (chan, proc, sys), '', 20, -0.1, 1.1),
-          # Dalitz parameters of the tau
-          'tau_dalitzes': TH2D('%s_%s_%s_tau_dalitzes' % (chan, proc, sys), '', 20, 0, 2., 20, 0., 2.),
-          # correlations to other physical parameters (usually only sign-b and len-energy work)
-          'tau_pat_sign_bdiscr':TH2D('%s_%s_%s_tau_pat_sign_bdiscr' % (chan, proc, sys), '', 41, -1, 40, 20, 0., 1.),
-          'tau_ref_sign_bdiscr':TH2D('%s_%s_%s_tau_ref_sign_bdiscr' % (chan, proc, sys), '', 44, -1, 10, 20, 0., 1.),
-          'tau_sign_bdiscr':TH2D('%s_%s_%s_tau_sign_bdiscr' % (chan, proc, sys), '', 21, -1, 20, 20, 0., 1.),
-          'tau_leng_bdiscr':TH2D('%s_%s_%s_tau_leng_bdiscr' % (chan, proc, sys), '', 21, -0.1, 1., 20, 0., 1.),
-          'tau_sign_energy':TH2D('%s_%s_%s_tau_sign_energy' % (chan, proc, sys), '', 21, -1,  20., 20, 20., 150.),
-          'tau_leng_energy':TH2D('%s_%s_%s_tau_leng_energy' % (chan, proc, sys), '', 21, -0.1, 1., 20, 20., 150.),
-          'tau_pat_leng_energy':TH2D('%s_%s_%s_tau_pat_leng_energy' % (chan, proc, sys), '', 44, -0.01,  0.1,  20, 20., 150.),
-          'tau_ref_leng_energy':TH2D('%s_%s_%s_tau_ref_leng_energy' % (chan, proc, sys), '', 44, -0.001, 0.01, 20, 20., 150.),
-          'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
-          'nvtx_raw':    TH1D('%s_%s_%s_nvtx_raw'   % (chan, proc, sys), '', 50, 0, 50),
-          'nvtx_gen':    TH1D('%s_%s_%s_nvtx_gen'   % (chan, proc, sys), '', 100, 0, 100),
-          # TODO: add rho to ntuples
-          'rho':         TH1D('%s_%s_%s_rho'        % (chan, proc, sys), '', 50, 0, 50),
+            ## for tt->elmu FAKERATES
+            #'all_jet_pt':     TH1D('%s_%s_%s_all_jet_pt'     % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+            #'all_jet_eta':    TH1D('%s_%s_%s_all_jet_eta'    % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+            #'candidate_tau_jet_pt':  TH1D('%s_%s_%s_candidate_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+            #'candidate_tau_jet_eta': TH1D('%s_%s_%s_candidate_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+            #'vloose_tau_jet_pt':  TH1D('%s_%s_%s_vloose_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+            #'vloose_tau_jet_eta': TH1D('%s_%s_%s_vloose_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+            #'loose_tau_jet_pt':   TH1D('%s_%s_%s_loose_tau_jet_pt'   % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+            #'loose_tau_jet_eta':  TH1D('%s_%s_%s_loose_tau_jet_eta'  % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+            #'medium_tau_jet_pt':  TH1D('%s_%s_%s_medium_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+            #'medium_tau_jet_eta': TH1D('%s_%s_%s_medium_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+            #'tight_tau_jet_pt':   TH1D('%s_%s_%s_tight_tau_jet_pt'   % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+            #'tight_tau_jet_eta':  TH1D('%s_%s_%s_tight_tau_jet_eta'  % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+            #'vtight_tau_jet_pt':  TH1D('%s_%s_%s_vtight_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
+            #'vtight_tau_jet_eta': TH1D('%s_%s_%s_vtight_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
+            'Mt_tau_met':  TH1D('%s_%s_%s_Mt_tau_met' % (chan, proc, sys), '', 20, 0, 200),
 
-          'njets':       TH1D('%s_%s_%s_njets'      % (chan, proc, sys), '', 10, 0, 10),
-          'nRjets':      TH1D('%s_%s_%s_nRjets'     % (chan, proc, sys), '', 10, 0, 10),
-          'nMbjets':     TH1D('%s_%s_%s_nMbjets'    % (chan, proc, sys), '', 5, 0, 5),
-          'nLbjets':     TH1D('%s_%s_%s_nLbjets'    % (chan, proc, sys), '', 5, 0, 5),
-          'njets_cats':  TH1D('%s_%s_%s_njets_cats' % (chan, proc, sys), '', 45, 0, 45),
-          'ntaus':       TH1D('%s_%s_%s_ntaus'      % (chan, proc, sys), '', 5, 0, 5),
+            # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
+            'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
+            'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
+            })
 
-          'met_nRjets':  TH2D('%s_%s_%s_met_nRjets'        % (chan, proc, sys), '', 30, 0, 300, 10, 0, 10),
+        # and only nominals
+        if sys == 'NOMINAL':
+           distr.update({
+             # control the tau/jet prop to met
+             'met_prop_taus':      TH2D('%s_%s_%s_met_prop_taus'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
+             'met_prop_jets':      TH2D('%s_%s_%s_met_prop_jets'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
+             'init_met':   TH1D('%s_%s_%s_init_met'   % (chan, proc, sys), '', 30, 0, 300),
+             'corr_met':   TH1D('%s_%s_%s_corr_met'   % (chan, proc, sys), '', 30, 0, 300),
+             'all_sum_control':       TH1D('%s_%s_%s_all_sum_control'      % (chan, proc, sys), '', 100, 0, 100),
+             'all_sum_control_init':  TH1D('%s_%s_%s_all_sum_control_init' % (chan, proc, sys), '', 100, 0, 100),
+             'lep_pt_turn':TH1D('%s_%s_%s_lep_pt_turn'% (chan, proc, sys), '', 270, 23, 50),
+             'lep_pt_turn_raw':TH1D('%s_%s_%s_lep_pt_turn_raw' % (chan, proc, sys), '', 40, 20, 40),
 
-          # control of tt channels
-          #'genproc_id':        TH2D('%s_%s_%s_genproc_id'        % (chan, proc, sys), '', 9, 0, 9, 9, 0, 9),
+             'b_discr_rest':  TH1D('%s_%s_%s_b_discr_rest'  % (chan, proc, sys), '', 30, 0., 1.),
+             'b_discr_med':   TH1D('%s_%s_%s_b_discr_med'   % (chan, proc, sys), '', 30, 0., 1.),
+             'b_discr_loose': TH1D('%s_%s_%s_b_discr_loose' % (chan, proc, sys), '', 30, 0., 1.),
+             'b_discr_LR':    TH1D('%s_%s_%s_b_discr_LR' % (chan, proc, sys), '', 30, 0., 1.),
 
-          # jet flavours exist only for mc
-          # do them up to 30 -- check overflows if there are many
-          'jet_flavours_hadron': TH1D('%s_%s_%s_jet_flavours_hadron' % (chan, proc, sys), '', 35, -5, 30),
-          'jet_flavours_parton': TH1D('%s_%s_%s_jet_flavours_parton' % (chan, proc, sys), '', 35, -5, 30),
-          'lep_genmatch':        TH1D('%s_%s_%s_lep_genmatch'        % (chan, proc, sys), '', 20, -10, 10),
-          'tau_genmatch_p':      TH1D('%s_%s_%s_tau_genmatch_p'        % (chan, proc, sys), '', 20, -10, 10),
-          'tau_genmatch_n':      TH1D('%s_%s_%s_tau_genmatch_n'        % (chan, proc, sys), '', 20, -10, 10),
-          'jet_genmatch':        TH1D('%s_%s_%s_jet_genmatch'        % (chan, proc, sys), '', 20, -10, 10),
-          'jet_genmatch_Mb':     TH1D('%s_%s_%s_jet_genmatch_Mb'     % (chan, proc, sys), '', 20, -10, 10),
-          'jet_genmatch_Lb':     TH1D('%s_%s_%s_jet_genmatch_Lb'     % (chan, proc, sys), '', 20, -10, 10),
-          'jet_genmatch_R':      TH1D('%s_%s_%s_jet_genmatch_R'      % (chan, proc, sys), '', 20, -10, 10),
-          'jet_bID_lev':         TH1D('%s_%s_%s_jet_bID_lev'         % (chan, proc, sys), '', 5, 0, 5),
+             'tau_jetmatched':         TH1D('%s_%s_%s_tau_jetmatched'    % (chan, proc, sys), '', 3, -1, 2),
+             'tau_jetmatched_VS_eta':  TH2D('%s_%s_%s_tau_jetmatched_VS_eta'    % (chan, proc, sys), '', 3, -1, 2, 50, -2.5, 2.5),
 
-          'control_bSF_weight':  TH1D('%s_%s_%s_control_bSF_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
-          'control_PU_weight':   TH1D('%s_%s_%s_control_PU_weight'   % (chan, proc, sys), '', 150, 0., 1.5),
-          'control_th_weight':   TH1D('%s_%s_%s_control_th_weight'   % (chan, proc, sys), '', 150, 0., 1.5),
-          'control_rec_weight':  TH1D('%s_%s_%s_control_rec_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
+             # jet flavours exist only for mc
+             # do them up to 30 -- check overflows if there are many
+             'jet_flavours_hadron': TH1D('%s_%s_%s_jet_flavours_hadron' % (chan, proc, sys), '', 35, -5, 30),
+             'jet_flavours_parton': TH1D('%s_%s_%s_jet_flavours_parton' % (chan, proc, sys), '', 35, -5, 30),
+             'lep_genmatch':        TH1D('%s_%s_%s_lep_genmatch'        % (chan, proc, sys), '', 20, -10, 10),
+             'tau_genmatch_p':      TH1D('%s_%s_%s_tau_genmatch_p'        % (chan, proc, sys), '', 20, -10, 10),
+             'tau_genmatch_n':      TH1D('%s_%s_%s_tau_genmatch_n'        % (chan, proc, sys), '', 20, -10, 10),
+             'jet_genmatch':        TH1D('%s_%s_%s_jet_genmatch'        % (chan, proc, sys), '', 20, -10, 10),
+             'jet_genmatch_Mb':     TH1D('%s_%s_%s_jet_genmatch_Mb'     % (chan, proc, sys), '', 20, -10, 10),
+             'jet_genmatch_Lb':     TH1D('%s_%s_%s_jet_genmatch_Lb'     % (chan, proc, sys), '', 20, -10, 10),
+             'jet_genmatch_R':      TH1D('%s_%s_%s_jet_genmatch_R'      % (chan, proc, sys), '', 20, -10, 10),
+             'jet_bID_lev':         TH1D('%s_%s_%s_jet_bID_lev'         % (chan, proc, sys), '', 5, 0, 5),
 
-          #'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', 20, 0, 200),
-          #'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
-          'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', dijet_bins_ext_n, dijet_bins_ext),
-          'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', trijet_bins_ext_n, trijet_bins_ext),
-          '2D_dijet_trijet':     TH2D('%s_%s_%s_2D_dijet_trijet'     % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
-          '2D_dijet_trijet_all': TH2D('%s_%s_%s_2D_dijet_trijet_all' % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
-          #'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
-          'lj_gens':             TH1D('%s_%s_%s_lj_gens' % (chan, proc, sys), '', 15, 0, 15),
-          'lj_gens_b_gen':       TH1D('%s_%s_%s_lj_gens_b_gen' % (chan, proc, sys), '', 20, -10, 10),
-          'lj_gens_w1_gen':      TH1D('%s_%s_%s_lj_gens_w1_gen' % (chan, proc, sys), '', 20, -10, 10),
-          'lj_gens_w2_gen':      TH1D('%s_%s_%s_lj_gens_w2_gen' % (chan, proc, sys), '', 20, -10, 10),
-          'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', dijet_trijet_bins_ext_n, dijet_trijet_bins_ext),
-          'dijet_trijet_mass_N_permutations':        TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations'         % (chan, proc, sys), '', 50, 0, 50),
-          'dijet_trijet_mass_N_permutations_passed': TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations_passed'  % (chan, proc, sys), '', 50, 0, 50),
-          'dijet_trijet_mass_vs_permutations':  TH2D('%s_%s_%s_dijet_trijet_mass_vs_permutations' % (chan, proc, sys), '', 20, 0, 400, 50, 0, 50),
-          })
+             # parameters of tau
+             'tau_ref_Sign': TH1D('%s_%s_%s_tau_ref_Sign'% (chan, proc, sys), '', 44, -1, 10),
+             'tau_ref_Leng': TH1D('%s_%s_%s_tau_ref_Leng'% (chan, proc, sys), '', 44, -0.001, 0.01),
+             'tau_pat_Sign': TH1D('%s_%s_%s_tau_pat_Sign'% (chan, proc, sys), '', 50, -10, 40),
+             'tau_pat_Leng': TH1D('%s_%s_%s_tau_pat_Leng'% (chan, proc, sys), '', 44, -0.01, 0.1),
+             'tau_SV_sign':  TH1D('%s_%s_%s_tau_SV_sign'% (chan, proc, sys), '', 50, -5, 20),
+             'tau_SV_leng':  TH1D('%s_%s_%s_tau_SV_leng'% (chan, proc, sys), '', 21, -0.1, 1.),
+             'tau_jet_bdiscr': TH1D('%s_%s_%s_tau_jet_bdiscr'  % (chan, proc, sys), '', 20, -0.1, 1.1),
+             # Dalitz parameters of the tau
+             'tau_dalitzes': TH2D('%s_%s_%s_tau_dalitzes' % (chan, proc, sys), '', 20, 0, 2., 20, 0., 2.),
+             # correlations to other physical parameters (usually only sign-b and len-energy work)
+             'tau_pat_sign_bdiscr':TH2D('%s_%s_%s_tau_pat_sign_bdiscr' % (chan, proc, sys), '', 41, -1, 40, 20, 0., 1.),
+             'tau_ref_sign_bdiscr':TH2D('%s_%s_%s_tau_ref_sign_bdiscr' % (chan, proc, sys), '', 44, -1, 10, 20, 0., 1.),
+             'tau_sign_bdiscr':TH2D('%s_%s_%s_tau_sign_bdiscr' % (chan, proc, sys), '', 21, -1, 20, 20, 0., 1.),
+             'tau_leng_bdiscr':TH2D('%s_%s_%s_tau_leng_bdiscr' % (chan, proc, sys), '', 21, -0.1, 1., 20, 0., 1.),
+             'tau_sign_energy':TH2D('%s_%s_%s_tau_sign_energy' % (chan, proc, sys), '', 21, -1,  20., 20, 20., 150.),
+             'tau_leng_energy':TH2D('%s_%s_%s_tau_leng_energy' % (chan, proc, sys), '', 21, -0.1, 1., 20, 20., 150.),
+             'tau_pat_leng_energy':TH2D('%s_%s_%s_tau_pat_leng_energy' % (chan, proc, sys), '', 44, -0.01,  0.1,  20, 20., 150.),
+             'tau_ref_leng_energy':TH2D('%s_%s_%s_tau_ref_leng_energy' % (chan, proc, sys), '', 44, -0.001, 0.01, 20, 20., 150.),
+             'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
+             'nvtx_raw':    TH1D('%s_%s_%s_nvtx_raw'   % (chan, proc, sys), '', 50, 0, 50),
+             'nvtx_gen':    TH1D('%s_%s_%s_nvtx_gen'   % (chan, proc, sys), '', 100, 0, 100),
+             # TODO: add rho to ntuples
+             'rho':         TH1D('%s_%s_%s_rho'        % (chan, proc, sys), '', 50, 0, 50),
+
+             'njets':       TH1D('%s_%s_%s_njets'      % (chan, proc, sys), '', 10, 0, 10),
+             'nRjets':      TH1D('%s_%s_%s_nRjets'     % (chan, proc, sys), '', 10, 0, 10),
+             'nMbjets':     TH1D('%s_%s_%s_nMbjets'    % (chan, proc, sys), '', 5, 0, 5),
+             'nLbjets':     TH1D('%s_%s_%s_nLbjets'    % (chan, proc, sys), '', 5, 0, 5),
+             'njets_cats':  TH1D('%s_%s_%s_njets_cats' % (chan, proc, sys), '', 45, 0, 45),
+             'ntaus':       TH1D('%s_%s_%s_ntaus'      % (chan, proc, sys), '', 5, 0, 5),
+
+             'met_nRjets':  TH2D('%s_%s_%s_met_nRjets'        % (chan, proc, sys), '', 30, 0, 300, 10, 0, 10),
+
+             # control of tt channels
+             #'genproc_id':        TH2D('%s_%s_%s_genproc_id'        % (chan, proc, sys), '', 9, 0, 9, 9, 0, 9),
+
+             #'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', 20, 0, 200),
+             #'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
+             'dijet_mass':  TH1D('%s_%s_%s_dijet_mass'  % (chan, proc, sys), '', dijet_bins_ext_n, dijet_bins_ext),
+             'trijet_mass': TH1D('%s_%s_%s_trijet_mass' % (chan, proc, sys), '', trijet_bins_ext_n, trijet_bins_ext),
+             '2D_dijet_trijet':     TH2D('%s_%s_%s_2D_dijet_trijet'     % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
+             '2D_dijet_trijet_all': TH2D('%s_%s_%s_2D_dijet_trijet_all' % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
+             #'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
+             'lj_gens':             TH1D('%s_%s_%s_lj_gens' % (chan, proc, sys), '', 15, 0, 15),
+             'lj_gens_b_gen':       TH1D('%s_%s_%s_lj_gens_b_gen' % (chan, proc, sys), '', 20, -10, 10),
+             'lj_gens_w1_gen':      TH1D('%s_%s_%s_lj_gens_w1_gen' % (chan, proc, sys), '', 20, -10, 10),
+             'lj_gens_w2_gen':      TH1D('%s_%s_%s_lj_gens_w2_gen' % (chan, proc, sys), '', 20, -10, 10),
+             'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', dijet_trijet_bins_ext_n, dijet_trijet_bins_ext),
+             'dijet_trijet_mass_N_permutations':        TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations'         % (chan, proc, sys), '', 50, 0, 50),
+             'dijet_trijet_mass_N_permutations_passed': TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations_passed'  % (chan, proc, sys), '', 50, 0, 50),
+             'dijet_trijet_mass_vs_permutations':  TH2D('%s_%s_%s_dijet_trijet_mass_vs_permutations' % (chan, proc, sys), '', 20, 0, 400, 50, 0, 50),
+
+
+             # mass between tau and all non-b jets (to catch the c-jets from W)
+             'M_tau_nonb':       TH1D('%s_%s_%s_M_tau_nonb'       % (chan, proc, sys), '', 19, 10, 200),
+             'M_tau_nonb_min':   TH1D('%s_%s_%s_M_tau_nonb_min'   % (chan, proc, sys), '', 19, 10, 200),
+             'M_tau_nonb_Wdist': TH1D('%s_%s_%s_M_tau_nonb_Wdist' % (chan, proc, sys), '', 19, 10, 200),
+
+             # PU tests
+             'lep_pt_pu_sum':     TH1D('%s_%s_%s_lep_pt_pu_sum'     % (chan, proc, sys), '', 20, 0, 200),
+             'lep_pt_pu_b'  :     TH1D('%s_%s_%s_lep_pt_pu_b'       % (chan, proc, sys), '', 20, 0, 200),
+             'lep_pt_pu_h2' :     TH1D('%s_%s_%s_lep_pt_pu_h2'      % (chan, proc, sys), '', 20, 0, 200),
+             'met_pu_sum'   :     TH1D('%s_%s_%s_met_pu_sum'      % (chan, proc, sys), '', 20, 0, 200),
+             'met_pu_b'     :     TH1D('%s_%s_%s_met_pu_b'        % (chan, proc, sys), '', 20, 0, 200),
+             'met_pu_h2'    :     TH1D('%s_%s_%s_met_pu_h2'       % (chan, proc, sys), '', 20, 0, 200),
+             'Mt_lep_met_f_pu_sum':     TH1D('%s_%s_%s_Mt_lep_met_f_pu_sum'       % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_pu_b'  :     TH1D('%s_%s_%s_Mt_lep_met_f_pu_b'       % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_pu_h2' :     TH1D('%s_%s_%s_Mt_lep_met_f_pu_h2'       % (chan, proc, sys), '', 20, 0, 250),
+             # control distrs for effect of different weights
+             'Mt_lep_met_f_init':       TH1D('%s_%s_%s_Mt_lep_met_f_init'       % (chan, proc, sys), '', 20, 0, 250),
+             'nvtx_init':               TH1D('%s_%s_%s_nvtx_init'               % (chan, proc, sys), '', 50, 0, 50),
+             #sys_weight = weight * weight_bSF * weight_PU * weight_top_pt
+             'nvtx_w_trk_b':            TH1D('%s_%s_%s_nvtx_w_trk_b'            % (chan, proc, sys), '', 50, 0, 50),
+             'nvtx_w_trk_h':            TH1D('%s_%s_%s_nvtx_w_trk_h'            % (chan, proc, sys), '', 50, 0, 50),
+             'Mt_lep_met_f_w_in':       TH1D('%s_%s_%s_Mt_lep_met_f_w_in'       % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_mu_trk_b': TH1D('%s_%s_%s_Mt_lep_met_f_w_mu_trk_b' % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_mu_trk_h': TH1D('%s_%s_%s_Mt_lep_met_f_w_mu_trk_h' % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_pu':       TH1D('%s_%s_%s_Mt_lep_met_f_w_pu'       % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_pu_sum':   TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_sum'   % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_pu_b':     TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_b'     % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_pu_h2':    TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_h2'    % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_bf':       TH1D('%s_%s_%s_Mt_lep_met_f_w_bf'       % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_bf_min':   TH1D('%s_%s_%s_Mt_lep_met_f_w_bf_min'   % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_tp':       TH1D('%s_%s_%s_Mt_lep_met_f_w_tp'       % (chan, proc, sys), '', 20, 0, 250),
+
+             #'bdiscr_max':       TH1D('%s_%s_%s_b_discr_max'      % (chan, proc, sys), '', 30, 0, 300),
+             #'dphi_lep_met': TH1D('%s_%s_%s_dphi_lep_met' % (chan, proc, sys), '', 20, -3.2, 3.2),
+             #'cos_dphi_lep_met': TH1D('%s_%s_%s_cos_dphi_lep_met' % (chan, proc, sys), '', 20, -1.1, 1.1),
+             # relIso for the QCD anti-iso region
+             'lep_relIso_el':       TH1D('%s_%s_%s_lep_relIso_el'     % (chan, proc, sys), '', lep_relIso_el_bins_n,     lep_relIso_el_bins),
+             'lep_relIso_el_ext':   TH1D('%s_%s_%s_lep_relIso_el_ext' % (chan, proc, sys), '', lep_relIso_el_bins_ext_n, lep_relIso_el_bins_ext),
+             'lep_relIso':          TH1D('%s_%s_%s_lep_relIso'     % (chan, proc, sys), '', lep_relIso_bins_n,     lep_relIso_bins),
+             'lep_relIso_ext':      TH1D('%s_%s_%s_lep_relIso_ext' % (chan, proc, sys), '', lep_relIso_bins_ext_n, lep_relIso_bins_ext),
+             'lep_relIso_precise':  TH1D('%s_%s_%s_lep_relIso_precise' % (chan, proc, sys), '', 300, 0., 0.3), # around the cut of 0.125-0.15
+             #'Mt_lep_met_f_mth':   TH1D('%s_%s_%s_Mt_lep_met_f_mth'   % (chan, proc, sys), '', 20, 0, 250),
+             #'Mt_lep_met_f_cos':   TH1D('%s_%s_%s_Mt_lep_met_f_cos'   % (chan, proc, sys), '', 20, 0, 250),
+             #'Mt_lep_met_f_cos_c': TH1D('%s_%s_%s_Mt_lep_met_f_cos_c' % (chan, proc, sys), '', 20, 0, 250),
+             #'Mt_lep_met_f_c':     TH1D('%s_%s_%s_Mt_lep_met_f_c'     % (chan, proc, sys), '', 20, 0, 250),
+             #'Mt_lep_met_f_test':  TH1D('%s_%s_%s_Mt_lep_met_f_test'  % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_zero':           TH1D('%s_%s_%s_Mt_lep_met_zero'       % (chan, proc, sys), '', 20, 0, 20),
+             'Mt_lep_met_METfilters':     TH1D('%s_%s_%s_Mt_lep_met_METfilters' % (chan, proc, sys), '', 20, 0, 20),
+
+             'met_VS_Mt_lep_met_f':       TH2D('%s_%s_%s_met_VS_Mt_lep_met_f'   % (chan, proc, sys), '', 15, 0, 300, 10, 0, 250),
+             'Mt_lep_met_t1':             TH1D('%s_%s_%s_Mt_lep_met_t1'         % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_t2':             TH1D('%s_%s_%s_Mt_lep_met_t2'         % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_t3':             TH1D('%s_%s_%s_Mt_lep_met_t3'         % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_t4':             TH1D('%s_%s_%s_Mt_lep_met_t4'         % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_t5':             TH1D('%s_%s_%s_Mt_lep_met_t5'         % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_t6':             TH1D('%s_%s_%s_Mt_lep_met_t6'         % (chan, proc, sys), '', 20, 0, 250),
+             # Mt per different n jets
+             'Mt_lep_met_lessjets':       TH1D('%s_%s_%s_Mt_lep_met_lessjets'   % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_0L2M':           TH1D('%s_%s_%s_Mt_lep_met_0L2M'       % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_0L2Mnot':        TH1D('%s_%s_%s_Mt_lep_met_0L2Mnot'    % (chan, proc, sys), '', 20, 0, 250),
+             'met_0L2M':           TH1D('%s_%s_%s_met_0L2M'          % (chan, proc, sys), '', 30, 0, 300),
+             'met_0L2Mnot':        TH1D('%s_%s_%s_met_0L2Mnot'       % (chan, proc, sys), '', 30, 0, 300),
+             'met_lessjets':       TH1D('%s_%s_%s_met_lessjets'      % (chan, proc, sys), '', 30, 0, 300),
+             'met_lessjets_init':  TH1D('%s_%s_%s_met_lessjets_init' % (chan, proc, sys), '', 30, 0, 300),
+
+             'Mt_lep_met_f_VS_nvtx':      TH2D('%s_%s_%s_Mt_lep_met_f_VS_nvtx'  % (chan, proc, sys), '', 20, 0, 250, 50, 0, 50),
+             'Mt_lep_met_f_VS_nvtx_gen':  TH2D('%s_%s_%s_Mt_lep_met_f_VS_nvtx_gen' % (chan, proc, sys), '', 20, 0, 250, 50, 0, 50),
+
+             'control_bSF_weight':  TH1D('%s_%s_%s_control_bSF_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
+             'control_PU_weight':   TH1D('%s_%s_%s_control_PU_weight'   % (chan, proc, sys), '', 150, 0., 1.5),
+             'control_th_weight':   TH1D('%s_%s_%s_control_th_weight'   % (chan, proc, sys), '', 150, 0., 1.5),
+             'control_rec_weight':  TH1D('%s_%s_%s_control_rec_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
+             })
+
+        return (chan, proc, sys), distrs
+
+    out_hs = OrderedDict([format_distrs(chan, proc, sys)
          for chan, ((procs, _), systs) in selected_channels.items() for proc in procs for sys in systs if sys != 'PDF_TRIGGER'])
 
     # add pdf uncertainties where requiested
@@ -1773,16 +1820,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # create PDF-varied target histograms
                 # for 56 CT14 (not nominal) members
                 for i in range(1,57):
-                    sys_name = 'PDFCT14n%dUp' % i
-                    out_hs.update(OrderedDict([((chan, proc, sys_name), {
-                       'Mt_lep_met_f':  TH1D('%s_%s_%s_Mt_lep_met_f' % (chan, proc, sys_name), '', 20, 0, 250),
-                       'Mt_lep_met':    TH1D('%s_%s_%s_Mt_lep_met'   % (chan, proc, sys_name), '', 10, 0, 200),
-                      })]))
-                    sys_name = 'PDFCT14n%dDown' % i
-                    out_hs.update(OrderedDict([((chan, proc, sys_name), {
-                       'Mt_lep_met_f':  TH1D('%s_%s_%s_Mt_lep_met_f' % (chan, proc, sys_name), '', 20, 0, 250),
-                       'Mt_lep_met':    TH1D('%s_%s_%s_Mt_lep_met'   % (chan, proc, sys_name), '', 10, 0, 200),
-                      })]))
+                    out_hs.update(OrderedDict([format_distrs(chan, proc, sys_name) for sys_name in ('PDFCT14n%dUp' % i, 'PDFCT14n%dDown' % i)]))
 
     # strange, getting PyROOT_NoneObjects from these after output
     for _, histos in out_hs.items():
@@ -3508,50 +3546,59 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         #nominal systematics
         # jet pts, tau pts, b weight (=1 for data), pu weight (=1 for data)
 
-        if isTT_systematic: # tt systematic datasets have all nominal experimental systematic variations -- they are a systematic themselves
-            systematics = {isTT_systematic: [jets_nom, taus_nom, weight, weight_pu, 1, 1.]}
+        syst_weights_nominal = [weight, weight_pu, 1., 1.]
+        syst_weights = {'NOMINAL': syst_weights_nominal}
+        # data and tt systematic datasets have all nominal systematic variations -- they are a systematic themselves
+        if isTT_systematic or not isMC:
+            syst_objects = {isTT_systematic: [jets_nom, taus_nom]}
         elif isMC:
-            systematics = {'NOMINAL'   : [jets_nom,     taus_nom,    weight, weight_pu,    1, 1.],
-                           'LEPUp'     : [jets_nom,     taus_nom,    weight_lep_Up,   weight_pu,    1, 1.],
-                           'LEPDown'   : [jets_nom,     taus_nom,    weight_lep_Down, weight_pu,    1, 1.],
-                           'JESUp'     : [jets_JESUp,   taus_nom,    weight, weight_pu,    1, 1.],
-                           'JESDown'   : [jets_JESDown, taus_nom,    weight, weight_pu,    1, 1.],
-                           'JERUp'     : [jets_JERUp,   taus_nom,    weight, weight_pu,    1, 1.],
-                           'JERDown'   : [jets_JERDown, taus_nom,    weight, weight_pu,    1, 1.],
-                           'TauESUp'   : [jets_nom,     taus_ESUp  , weight, weight_pu,    1, 1.],
-                           'TauESDown' : [jets_nom,     taus_ESDown, weight, weight_pu,    1, 1.],
-                           'bSFUp'     : [jets_bUp,     taus_nom,    weight, weight_pu,    1, 1.],
-                           'bSFDown'   : [jets_bDown,   taus_nom,    weight, weight_pu,    1, 1.],
-                           'PUUp'      : [jets_nom,     taus_nom,    weight, weight_pu_up, 1, 1.],
-                           'PUDown'    : [jets_nom,     taus_nom,    weight, weight_pu_dn, 1, 1.],
+            syst_objects = {'NOMINAL'  : [jets_nom,     taus_nom,    ],
+                           'JESUp'     : [jets_JESUp,   taus_nom,    ],
+                           'JESDown'   : [jets_JESDown, taus_nom,    ],
+                           'JERUp'     : [jets_JERUp,   taus_nom,    ],
+                           'JERDown'   : [jets_JERDown, taus_nom,    ],
+                           'TauESUp'   : [jets_nom,     taus_ESUp  , ],
+                           'TauESDown' : [jets_nom,     taus_ESDown, ],
+                           'bSFUp'     : [jets_bUp,     taus_nom,    ],
+                           'bSFDown'   : [jets_bDown,   taus_nom,    ],
                            }
-            if isTT:
-                systematics['TOPPTUp']    = [jets_nom,   taus_nom, weight, weight_pu, weight_top_pt, 1.]
-                systematics['TOPPTDown']  = [jets_nom,   taus_nom, weight, weight_pu, 1.,            1.]
-                if with_AlphaS_sys:
-                    systematics['AlphaSUp']   = [jets_nom,   taus_nom, weight, weight_pu, 1.,  weights_gen_weight_alphas[0] / weights_gen_weight_norm]
-                    systematics['AlphaSDown'] = [jets_nom,   taus_nom, weight, weight_pu, 1.,  weights_gen_weight_alphas[1] / weights_gen_weight_norm]
-                if with_Frag_sys:
-                    systematics['FragUp']        = [jets_nom, taus_nom, weight, weight_pu, 1.,  weights_gen_weight_Frag[0] / weights_gen_weight_centralFrag]
-                    systematics['FragDown']      = [jets_nom, taus_nom, weight, weight_pu, 1.,  weights_gen_weight_Frag[1] / weights_gen_weight_centralFrag]
-                    systematics['SemilepBRUp']   = [jets_nom, taus_nom, weight, weight_pu, 1.,  weights_gen_weight_semilepbr[0] / weights_gen_weight_centralFrag]
-                    systematics['SemilepBRDown'] = [jets_nom, taus_nom, weight, weight_pu, 1.,  weights_gen_weight_semilepbr[1] / weights_gen_weight_centralFrag]
-                    systematics['PetersonUp']    = [jets_nom, taus_nom, weight, weight_pu, 1.,  weights_gen_weight_Peterson / weights_gen_weight_centralFrag]
-                    systematics['PetersonDown']  = [jets_nom, taus_nom, weight, weight_pu, 1.,  1.]
-                if with_MEscale_sys:
-                    systematics['MrUp']    = [jets_nom, taus.nom, weight, weight_pu, 1., weights_gen_weight_f_rUp]
-                    systematics['MrDown']  = [jets_nom, taus.nom, weight, weight_pu, 1., weights_gen_weight_f_rDn]
-                    systematics['MfUp']    = [jets_nom, taus.nom, weight, weight_pu, 1., weights_gen_weight_fUp_r]
-                    systematics['MfDown']  = [jets_nom, taus.nom, weight, weight_pu, 1., weights_gen_weight_fDn_r]
-                    systematics['MfrUp']   = [jets_nom, taus.nom, weight, weight_pu, 1., weights_gen_weight_frUp ]
-                    systematics['MfrDown'] = [jets_nom, taus.nom, weight, weight_pu, 1., weights_gen_weight_frDn ]
-        else:
-            systematics = {'NOMINAL': [jets_nom, taus_nom, 1., 1., 1., 1.]}
+            syst_weights = {
+                           'LEPUp'     : [weight_lep_Up,   weight_pu,    1, 1.],
+                           'LEPDown'   : [weight_lep_Down, weight_pu,    1, 1.],
+                           'PUUp'      : [weight,          weight_pu_up, 1, 1.],
+                           'PUDown'    : [weight,          weight_pu_dn, 1, 1.],
+                           }
 
-        # remove not requested systematics to reduce the loop:
-        for name, _ in systematics.items():
+            if isTT:
+                syst_weights['TOPPTUp']    = [weight, weight_pu, weight_top_pt, 1.]
+                syst_weights['TOPPTDown']  = [weight, weight_pu, 1.,            1.]
+                if with_AlphaS_sys:
+                    syst_weights['AlphaSUp']   = [weight, weight_pu, 1.,  weights_gen_weight_alphas[0] / weights_gen_weight_norm]
+                    syst_weights['AlphaSDown'] = [weight, weight_pu, 1.,  weights_gen_weight_alphas[1] / weights_gen_weight_norm]
+                if with_Frag_sys:
+                    syst_weights['FragUp']        = [weight, weight_pu, 1.,  weights_gen_weight_Frag[0] / weights_gen_weight_centralFrag]
+                    syst_weights['FragDown']      = [weight, weight_pu, 1.,  weights_gen_weight_Frag[1] / weights_gen_weight_centralFrag]
+                    syst_weights['SemilepBRUp']   = [weight, weight_pu, 1.,  weights_gen_weight_semilepbr[0] / weights_gen_weight_centralFrag]
+                    syst_weights['SemilepBRDown'] = [weight, weight_pu, 1.,  weights_gen_weight_semilepbr[1] / weights_gen_weight_centralFrag]
+                    syst_weights['PetersonUp']    = [weight, weight_pu, 1.,  weights_gen_weight_Peterson / weights_gen_weight_centralFrag]
+                    syst_weights['PetersonDown']  = [weight, weight_pu, 1.,  1.]
+                if with_MEscale_sys:
+                    syst_weights['MrUp']    = [weight, weight_pu, 1., weights_gen_weight_f_rUp]
+                    syst_weights['MrDown']  = [weight, weight_pu, 1., weights_gen_weight_f_rDn]
+                    syst_weights['MfUp']    = [weight, weight_pu, 1., weights_gen_weight_fUp_r]
+                    syst_weights['MfDown']  = [weight, weight_pu, 1., weights_gen_weight_fDn_r]
+                    syst_weights['MfrUp']   = [weight, weight_pu, 1., weights_gen_weight_frUp ]
+                    syst_weights['MfrDown'] = [weight, weight_pu, 1., weights_gen_weight_frDn ]
+                # and PDFs
+
+        # remove not requested syst_objects to reduce the loop:
+        for name, _ in syst_objects.items():
             if name not in requested_systematics:
-                systematics.pop(name)
+                syst_objects.pop(name)
+        # same for weights
+        for name, _ in syst_weights.items():
+            if name not in requested_systematics:
+                syst_weights.pop(name)
 
         # SYSTEMATIC LOOP, RECORD
         # for each systematic
@@ -3561,12 +3608,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         control_counters.Fill(3)
 
-        for sys_i, (sys_name, (jets, taus, weight, weight_PU, weight_top_pt, weight_th)) in enumerate(systematics.items()):
+        for sys_i, (sys_name, (jets, taus)) in enumerate(syst_objects.items()):
             #control_counters.Fill(4 + sys_i)
+            '''
+            1) for each variation of objects check if which channels pass
+            2) then in the recording make a special section to fill histos with systematic weights
+            3) for the rest use only the nominal weights
 
-            # TODO: add here only possible systematics
-            sys_weight            = weight * weight_th * weight_PU * weight_top_pt
-            sys_weight_without_PU = weight * weight_th * weight_top_pt # for PU tests
+            from the object I only need the weight of bSF?
+            routine to record a histo with all sys weights?
+            and to create that histo with all sys weights?
+            -- already the histos are created only for certain systs
+            '''
             # -- I miss the bSF weight
             # TODO: in principle it should be added according to the b-s used in the selection and passed down to the channel
             #       notice the b SF are calculated in old scheme, for medium jets only
@@ -3998,7 +4051,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             #    out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, weight)
             #    out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(25, weight)
 
-            for chan_i, (chan, weight_bSF, sel_leps, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
+            for chan_i, (chan, _, sel_leps, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
                 # check for default proc
                 #if chan not in channels:
                     #continue
@@ -4010,7 +4063,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #   'mu_presel', 'mu_sel', 'mu_lj', 'mu_lj_out', 'mu_lj_ss', 'mu_lj_out_ss', 'el_presel', 'el_sel', 'el_lj', 'el_lj_out') and micro_proc:
                 #    proc = micro_proc
 
-                procs, default_proc = selected_channels[chan][0]
+                (procs, default_proc), channel_systs = selected_channels[chan]
                 if micro_proc in procs:
                     record_proc = micro_proc
                 elif proc in procs:
@@ -4073,8 +4126,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 # some channels might not have only inclusive processes or minimal systematics
                 if (chan, record_proc, sys_name) not in out_hs:
-                    continue # TODO: so it doesn't change amount of computing, systematics are per event, not per channel
-                    # but it does reduce the amount of output -- no geom progression
+                    continue # it doesn't change amount of computing, systematics are calculated per each event if at all requested
+                    # but they are stored per channel and per histogram
+
+                weight_bSF = 1.
+                # consider tau-matched jets too as in:
+                #old_jet_sel = (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
+                # -- TODO: by the way this is a weird part for b-tagging -- are there studies of b-taging for true taus?
+                for _, _, jet_weight, _, _, _, _ in sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
+                    weight_bSF *= jet_weight
 
                 #leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR))
                 lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = sel_leps
@@ -4083,7 +4143,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 #record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
 
-                record_weight = sys_weight * weight_bSF
+                # nominal systematics
+                weight, weight_PU, weight_top_pt, weight_th = syst_weights_nominal
+                nom_sys_weight            = weight * weight_th * weight_PU * weight_top_pt
+                nom_sys_weight_without_PU = weight * weight_th * weight_top_pt # for PU tests
+
+                record_weight = nom_sys_weight * weight_bSF
 
                 met_x_prop_taus = met_x
                 met_y_prop_taus = met_y
@@ -4162,16 +4227,44 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 #if Mt_lep_met < 1.:
                 #    continue
 
-                # the main target distribution
-                if sys_name == 'PDF_TRIGGER':
-                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f']        .Fill(Mt_lep_met, record_weight * pdf_w)
-                    continue
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f']        .Fill(Mt_lep_met, record_weight)
-
                 met_pt = TMath.Sqrt(met_x_prop*met_x_prop + met_y_prop*met_y_prop)
                 met_pt_taus = TMath.Sqrt(met_x_prop_taus*met_x_prop_taus + met_y_prop_taus*met_y_prop_taus)
                 met_pt_jets = TMath.Sqrt(met_x_prop_jets*met_x_prop_jets + met_y_prop_jets*met_y_prop_jets)
                 met_pt_init = TMath.Sqrt(met_x*met_x + met_y*met_y)
+
+                # SPECIAL block for weight-based systematics:
+                # in NOMINAL objects
+                # check which syst_weights are requested for the channel
+                if sys_name == 'NOMINAL':
+                    for weight_sys_name in channel_systs: # these are all systematics
+		        if weight_sys_name == 'PDF_TRIGGER':
+			    # get the pdfs..
+			    #pdf_w = 1.
+			    # they don't clarify how to deal with nominal PDF weight
+			    # (subtract or divide? both should be very equal actually)
+			    # but since they say "calculate 57 xsecs as if you do it with dif PDF weight"
+			    # I'll divide -- as if it's normalized and stuff
+			    # how does it go into the fit? where is Up and Down? as in
+			    # in their formula there is no up-down for a particular K pdf parameter..
+			    # there are differences of final values...
+                            # out_hs.update(OrderedDict([format_distrs(chan, proc, sys_name) for sys_name in ('PDFCT14n%dUp' % i, 'PDFCT14n%dDown' % i)]))
+                            for i in range(1,57):
+                                pdf_w = event.gen_weights_pdf_hessians[i] / weights_gen_weight_norm
+                                pdf_sys_name = 'PDFCT14n%dUp'
+                                out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, nom_sys_weight * pdf_w)
+                                pdf_sys_name = 'PDFCT14n%dDown' # down is nominal
+                                out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, nom_sys_weight)
+			    continue
+			if not weight_sys_name in syst_weights:
+			    # must by a systematic of objects
+			    continue
+                        weight, weight_PU, weight_top_pt, weight_th = syst_weights[weight_sys_name]
+                        sys_weight            = weight * weight_th * weight_PU * weight_top_pt
+                        record_weight = sys_weight * weight_bSF
+                        out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['met']          .Fill(met_pt, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['lep_pt']       .Fill(lep_p4[0].pt(),  record_weight)
 
                 # all sum kind of should find:
                 # - which level of jet/met correction is the true "synchronized" one (just technical stuff)
@@ -4213,14 +4306,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         out_hs[(chan, record_proc, sys_name)][wp_name + '_eta'] .Fill(jet_p4.eta(), record_weight)
                 '''
 
-                out_hs[(chan, record_proc, sys_name)]['met'].Fill(met_pt, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_prop_taus'].Fill(met_pt_init, met_pt_taus - met_pt_init, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_prop_jets'].Fill(met_pt_init, met_pt_jets - met_pt_init, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['corr_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
                 out_hs[(chan, record_proc, sys_name)]['init_met'].Fill(ev.met_init.pt(),      record_weight) # for control
                 out_hs[(chan, record_proc, sys_name)]['all_sum_control']     .Fill(all_sum_control_pt, record_weight) # for control
                 out_hs[(chan, record_proc, sys_name)]['all_sum_control_init'].Fill(all_sum_control_init_pt, record_weight) # for control
-                out_hs[(chan, record_proc, sys_name)]['lep_pt']  .Fill(lep_p4[0].pt(),  record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_eta'] .Fill(lep_p4[0].eta(), record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_pt_turn'].Fill(lep_p4[0].pt(),  record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw'].Fill(lep_p4[0].pt())
@@ -4368,7 +4459,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_b']    .Fill(Mt_lep_met, weight_pu_b)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_h2']   .Fill(Mt_lep_met, weight_pu_h2)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_tp']      .Fill(Mt_lep_met, weight_top_pt)
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, record_weight)
+                #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, record_weight)
                 #out_hs[(chan, record_proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, record_weight)
                 #out_hs[(chan, record_proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, record_weight)
 
@@ -4379,15 +4470,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     out_hs[(chan, record_proc, sys_name)]['nvtx_w_trk_h']     .Fill(ev.nvtx, mu_sfs_h[1])
 
                 # for PU tests
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_pu_sum']    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_sum)
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_pu_b'  ]    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_b  )
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_pu_h2' ]    .Fill(Mt_lep_met, sys_weight_without_PU * weight_pu_h2 )
-                out_hs[(chan, record_proc, sys_name)]['met_pu_sum'].Fill(met_pt, sys_weight_without_PU * weight_pu_sum)
-                out_hs[(chan, record_proc, sys_name)]['met_pu_b'  ].Fill(met_pt, sys_weight_without_PU * weight_pu_b  )
-                out_hs[(chan, record_proc, sys_name)]['met_pu_h2' ].Fill(met_pt, sys_weight_without_PU * weight_pu_h2 )
-                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_sum']  .Fill(lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_sum)
-                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_b'  ]  .Fill(lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_b  )
-                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_h2' ]  .Fill(lep_p4[0].pt(),  sys_weight_without_PU * weight_pu_h2 )
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_pu_sum']    .Fill(Mt_lep_met, nom_sys_weight_without_PU * weight_pu_sum)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_pu_b'  ]    .Fill(Mt_lep_met, nom_sys_weight_without_PU * weight_pu_b  )
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_pu_h2' ]    .Fill(Mt_lep_met, nom_sys_weight_without_PU * weight_pu_h2 )
+                out_hs[(chan, record_proc, sys_name)]['met_pu_sum'].Fill(met_pt, nom_sys_weight_without_PU * weight_pu_sum)
+                out_hs[(chan, record_proc, sys_name)]['met_pu_b'  ].Fill(met_pt, nom_sys_weight_without_PU * weight_pu_b  )
+                out_hs[(chan, record_proc, sys_name)]['met_pu_h2' ].Fill(met_pt, nom_sys_weight_without_PU * weight_pu_h2 )
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_sum']  .Fill(lep_p4[0].pt(),  nom_sys_weight_without_PU * weight_pu_sum)
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_b'  ]  .Fill(lep_p4[0].pt(),  nom_sys_weight_without_PU * weight_pu_b  )
+                out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_h2' ]  .Fill(lep_p4[0].pt(),  nom_sys_weight_without_PU * weight_pu_h2 )
 
                 if pass_mumu or pass_elmu:
                     lep_lep = lep_p4[0] + lep_p4[1]
@@ -4599,7 +4690,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 out_hs[(chan, record_proc, sys_name)]['ntaus']  .Fill(len(sel_taus),  record_weight)
 
-                out_hs[(chan, record_proc, sys_name)]['nvtx_raw'] .Fill(ev.nvtx, sys_weight_without_PU * weight_bSF)
+                out_hs[(chan, record_proc, sys_name)]['nvtx_raw'] .Fill(ev.nvtx, nom_sys_weight_without_PU * weight_bSF)
                 out_hs[(chan, record_proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight)
                 if isMC:
                     #out_hs[(chan, record_proc, sys_name)]['genproc_id']   .Fill(tt_ids[0], tt_ids[1])
