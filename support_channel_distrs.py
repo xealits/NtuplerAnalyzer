@@ -3562,7 +3562,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # jet pts, tau pts, b weight (=1 for data), pu weight (=1 for data)
 
         syst_weights_nominal = [weight, weight_pu, 1., 1.]
-        syst_weights = {'NOMINAL': syst_weights_nominal}
+        syst_weights = {} # {'NOMINAL': syst_weights_nominal}
         # data and tt systematic datasets have all nominal systematic variations -- they are a systematic themselves
         if isTT_systematic:
             syst_objects = {isTT_systematic: [jets_nom, taus_nom]}
@@ -3691,9 +3691,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             has_tight_lowest_taus = len(taus.lowest) > 0
             has_loose_lowest_taus = len(taus.loose) > 0
 
-            old_jet_sel = (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
+            #old_jet_sel = (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
+            # separate b and tau tags
+            old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
 
-            old_jet_sel_alliso = (len(jets.old_alliso.medium) + len(jets.old_alliso.taumatched[0])) > 0 and (len(jets.old_alliso.taumatched[0]) + len(jets.old_alliso.taumatched[1]) + len(jets.old_alliso.medium) + len(jets.old_alliso.loose) + len(jets.old_alliso.rest)) > 2
+            old_jet_sel_alliso = len(jets.old_alliso.medium) > 0 and (len(jets.old_alliso.taumatched[0]) + len(jets.old_alliso.taumatched[1]) + len(jets.old_alliso.medium) + len(jets.old_alliso.loose) + len(jets.old_alliso.rest)) > 2
 
             if old_jet_sel:
                 control_counters.Fill(111)
@@ -4278,6 +4280,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                                 pdf_sys_name = pdf_sys_names_Down[i-1] # down is nominal
                                 out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, record_weight)
                             continue
+
                         # must by a systematic weight, not syst of objects
                         if not weight_sys_name in syst_weights:
                             continue
@@ -4288,6 +4291,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                         out_hs[(chan, record_proc, weight_sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met,     record_weight_sys)
                         out_hs[(chan, record_proc, weight_sys_name)]['met']          .Fill(met_pt,         record_weight_sys)
                         out_hs[(chan, record_proc, weight_sys_name)]['lep_pt']       .Fill(lep_p4[0].pt(), record_weight_sys)
+
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met,     record_weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met,     record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met']          .Fill(met_pt,         record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep_pt']       .Fill(lep_p4[0].pt(), record_weight)
 
                 # all sum kind of should find:
                 # - which level of jet/met correction is the true "synchronized" one (just technical stuff)
@@ -4695,7 +4703,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                 n_rest_jets   = len(sel_jets.rest)   + len(sel_jets.taumatched[1])
                 #n_medium_jets = len(sel_jets.medium)
-                n_medium_jets = len(sel_jets.medium) + len(sel_jets.taumatched[0])
+                n_medium_jets = len(sel_jets.medium) # + len(sel_jets.taumatched[0])
                 n_loose_jets  = len(sel_jets.loose)
 
                 out_hs[(chan, record_proc, sys_name)]['njets']  .Fill(len(all_sel_jets),   record_weight)
