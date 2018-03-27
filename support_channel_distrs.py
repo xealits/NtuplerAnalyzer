@@ -1656,6 +1656,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # and only nominals
         if sys == 'NOMINAL':
            distrs.update({
+             'Mt_tau_lep':  TH1D('%s_%s_%s_Mt_tau_lep' % (chan, proc, sys), '', 20, 0, 300),
+
              # control the tau/jet prop to met
              'met_prop_taus':      TH2D('%s_%s_%s_met_prop_taus'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
              'met_prop_jets':      TH2D('%s_%s_%s_met_prop_jets'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
@@ -4574,6 +4576,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
                     out_hs[(chan, record_proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
                     out_hs[(chan, record_proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
+
+                    # TODO: this calculation is saved only for NOMINAL syst, in principle it should not be done in other cases then
+                    Mt_tau_lep = transverse_mass(corrected_tau, lep_p4[0].pt())
+                    out_hs[(chan, record_proc, sys_name)]['Mt_tau_lep'] .Fill(Mt_tau_lep, record_weight)
 
                     # mass between tau and all non-b jets (to catch the c-jets from W)
                     # sel_jets.rest
