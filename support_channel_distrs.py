@@ -1872,7 +1872,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 record distr-s for each
         '''
 
-        if iev > 10000: break
+        #if iev > 10000: break
         control_counters.Fill(0)
 
         # NUP stitching for WJets
@@ -3564,8 +3564,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         syst_weights_nominal = [weight, weight_pu, 1., 1.]
         syst_weights = {'NOMINAL': syst_weights_nominal}
         # data and tt systematic datasets have all nominal systematic variations -- they are a systematic themselves
-        if isTT_systematic or not isMC:
+        if isTT_systematic:
             syst_objects = {isTT_systematic: [jets_nom, taus_nom]}
+        elif not isMC:
+            syst_objects = {'NOMINAL': [jets_nom, taus_nom]}
         elif isMC:
             syst_objects = {'NOMINAL'  : [jets_nom,     taus_nom,    ],
                            'JESUp'     : [jets_JESUp,   taus_nom,    ],
@@ -3577,12 +3579,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                            'bSFUp'     : [jets_bUp,     taus_nom,    ],
                            'bSFDown'   : [jets_bDown,   taus_nom,    ],
                            }
-            syst_weights = {
+            syst_weights.update({
                            'LEPUp'     : [weight_lep_Up,   weight_pu,    1, 1.],
                            'LEPDown'   : [weight_lep_Down, weight_pu,    1, 1.],
                            'PUUp'      : [weight,          weight_pu_up, 1, 1.],
                            'PUDown'    : [weight,          weight_pu_dn, 1, 1.],
-                           }
+                           })
 
             if isTT:
                 syst_weights['TOPPTUp']    = [weight, weight_pu, weight_top_pt, 1.]
@@ -3614,6 +3616,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         for name, _ in syst_weights.items():
             if name not in requested_systematics:
                 syst_weights.pop(name)
+
+        #print syst_objects.keys()
+        #print syst_weights.keys()
 
         # SYSTEMATIC LOOP, RECORD
         # for each systematic
@@ -4269,20 +4274,20 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                             for i in range(1,57):
                                 pdf_w = ev.gen_weights_pdf_hessians[i] / weights_gen_weight_norm
                                 pdf_sys_name = pdf_sys_names_Up[i-1]
-                                out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, nom_sys_weight * pdf_w)
+                                out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, record_weight * pdf_w)
                                 pdf_sys_name = pdf_sys_names_Down[i-1] # down is nominal
-                                out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, nom_sys_weight)
+                                out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, record_weight)
                             continue
+                        # must by a systematic weight, not syst of objects
                         if not weight_sys_name in syst_weights:
-                            # must by a systematic of objects
                             continue
                         weight, weight_PU, weight_top_pt, weight_th = syst_weights[weight_sys_name]
                         sys_weight            = weight * weight_th * weight_PU * weight_top_pt
-                        record_weight = sys_weight * weight_bSF
-                        out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, record_weight)
-                        out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met, record_weight)
-                        out_hs[(chan, record_proc, sys_name)]['met']          .Fill(met_pt, record_weight)
-                        out_hs[(chan, record_proc, sys_name)]['lep_pt']       .Fill(lep_p4[0].pt(),  record_weight)
+                        record_weight_sys = sys_weight * weight_bSF
+                        out_hs[(chan, record_proc, weight_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met,     record_weight_sys)
+                        out_hs[(chan, record_proc, weight_sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met,     record_weight_sys)
+                        out_hs[(chan, record_proc, weight_sys_name)]['met']          .Fill(met_pt,         record_weight_sys)
+                        out_hs[(chan, record_proc, weight_sys_name)]['lep_pt']       .Fill(lep_p4[0].pt(), record_weight_sys)
 
                 # all sum kind of should find:
                 # - which level of jet/met correction is the true "synchronized" one (just technical stuff)
