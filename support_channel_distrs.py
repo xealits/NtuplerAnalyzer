@@ -4605,7 +4605,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     out_hs[(chan, record_proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
 
                     # TODO: this calculation is saved only for NOMINAL syst, in principle it should not be done in other cases then
-                    Mt_tau_lep = transverse_mass(corrected_tau, lep_p4[0].pt())
+                    Mt_tau_lep = transverse_mass(corrected_tau, lep_p4[0])
                     out_hs[(chan, record_proc, sys_name)]['Mt_tau_lep'] .Fill(Mt_tau_lep, record_weight)
 
                     # mass between tau and all non-b jets (to catch the c-jets from W)
