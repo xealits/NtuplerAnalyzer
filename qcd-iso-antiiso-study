@@ -1,0 +1,6 @@
+
+foreach qcd ( HT-1000-1500 HT-100-200 HT-1500-2000 HT-2000-Inf HT-200-300 HT-300-500 HT-500-700 HT-700-1000 )
+python sumup_ttree_distrs.py --histo-name isolep_`echo $qcd | tr "-" "_"`     --output isolep_$qcd.root     --cond-com 'abs(leps_ID_allIso) == 13 && tau_matching_allIso_lep_dR[0]>0.4 && lep_alliso_relIso[0] < 0.15' "(lep_alliso_id[0] * tau_id[0] > 0) >>h(4,-2,2)" `find /gstore/t3cms/store/user/otoldaie//v23/ -name "*$qcd*root"` &
+python sumup_ttree_distrs.py --histo-name antiisolep_`echo $qcd | tr "-" "_"` --output antiisolep_$qcd.root --cond-com 'abs(leps_ID_allIso) == 13 && tau_matching_allIso_lep_dR[0]>0.4 && lep_alliso_relIso[0] > 0.15' "(lep_alliso_id[0] * tau_id[0] > 0) >>h(4,-2,2)" `find /gstore/t3cms/store/user/otoldaie//v23/ -name "*$qcd*root"` &
+end
+
