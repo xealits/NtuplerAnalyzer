@@ -709,7 +709,6 @@ def transverse_mass_pts(v1_x, v1_y, v2_x, v2_y):
     return TMath.Sqrt(2*(v1v2 - (v1_x*v2_x + v1_y*v2_y)))
 
 
-#lj_var = calc_lj_var(jets, jets_b)
 def calc_lj_var(ev, light_jets, b_jets, save_all_permutations=False, isMC=False):
     closest_pair_gens = (0, 0)
     closest_b_gen = 0
@@ -1740,6 +1739,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
              'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', dijet_trijet_bins_ext_n, dijet_trijet_bins_ext),
              'dijet_trijet_mass_N_permutations':        TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations'         % (chan, proc, sys), '', 50, 0, 50),
              'dijet_trijet_mass_N_permutations_passed': TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations_passed'  % (chan, proc, sys), '', 50, 0, 50),
+             'dijet_trijet_mass_N_permutations_passed_b1': TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations_passed_b1'  % (chan, proc, sys), '', 50, 0, 50),
+             'dijet_trijet_mass_N_permutations_passed_bM': TH1D('%s_%s_%s_dijet_trijet_mass_N_permutations_passed_bM'  % (chan, proc, sys), '', 50, 0, 50),
              'dijet_trijet_mass_vs_permutations':  TH2D('%s_%s_%s_dijet_trijet_mass_vs_permutations' % (chan, proc, sys), '', 20, 0, 400, 50, 0, 50),
 
 
@@ -3653,10 +3654,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             # all the channel selections follow
             passed_channels = []
 
-            # I need lj for all single-lep if tau passes tight (with SS, all iso)
-            # for each lowest tight 2L1M
-            #lj_memo = {} # (jets, )
-            #lj_var, w_mass, t_mass = calc_lj_var(jets, jets_b)
             if sys_i == 0:
                 control_counters.Fill(100)
 
@@ -3741,8 +3738,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # all jets, without regard to tau in the event go into the calculation
                 # (taumatched jets go too)
                 with_all_permutation_masses = True
-                #lj_var, w_mass, t_mass, all_masses = calc_lj_var(jets.lowest.rest + jets.lowest.taumatched[1], jets.lowest.medium + jets.lowest.loose + jets.lowest.taumatched[0], with_all_permutation_masses)
-                lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.loose + jets.old.taumatched[1], jets.old.medium + jets.old.taumatched[0], with_all_permutation_masses, isMC)
+                # order: not-b-taged, b-taged
+                # only medium b-tags
+                #lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.loose + jets.old.taumatched[1], jets.old.medium + jets.old.taumatched[0], with_all_permutation_masses, isMC)
+                # medium and loose b-tags
+                # but tau-matches are done to Medium b!
+                lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.taumatched[1], jets.old.medium + jets.old.loose + jets.old.taumatched[0], with_all_permutation_masses, isMC)
+                n_bjets_used_in_lj = len(jets.old.medium) + len(jets.old.loose) + len(jets.old.taumatched[0])
                 lj_cut = 60.
                 large_lj = lj_var > lj_cut
 
@@ -4656,6 +4658,23 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     #    out_hs[(chan, record_proc, sys_name)]['tau_ref_sign_bdiscr'].Fill(tau_ref_sign, tau_jet_bdiscr, record_weight)
                     #    out_hs[(chan, record_proc, sys_name)]['tau_ref_leng_energy'].Fill(tau_ref_leng, tau_energy, record_weight)
 
+                #'njets':       TH1D('%s_%s_%s_njets'     % (chan, record_proc, sys), '', 5, 0, 5),
+                #'nMbjets':     TH1D('%s_%s_%s_nMbjets'   % (chan, record_proc, sys), '', 5, 0, 5),
+                #'nLbjets':     TH1D('%s_%s_%s_nLbjets'   % (chan, record_proc, sys), '', 5, 0, 5),
+                #'ntaus':       TH1D('%s_%s_%s_ntaus'     % (chan, record_proc, sys), '', 5, 0, 5),
+
+                n_rest_jets   = len(sel_jets.rest)   + len(sel_jets.taumatched[1])
+                #n_medium_jets = len(sel_jets.medium)
+                n_medium_jets = len(sel_jets.medium) # + len(sel_jets.taumatched[0])
+                n_loose_jets  = len(sel_jets.loose)
+
+                out_hs[(chan, record_proc, sys_name)]['njets']  .Fill(len(all_sel_jets),   record_weight)
+                out_hs[(chan, record_proc, sys_name)]['nRjets'] .Fill(n_rest_jets   , record_weight)
+                out_hs[(chan, record_proc, sys_name)]['nMbjets'].Fill(n_medium_jets , record_weight)
+                out_hs[(chan, record_proc, sys_name)]['nLbjets'].Fill(n_loose_jets  , record_weight)
+
+                out_hs[(chan, record_proc, sys_name)]['met_nRjets'] .Fill(met_pt, n_rest_jets   , record_weight)
+
                 # OPTIMIZATION don't make these
                 ##out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, record_weight)
                 if requires_lj:
@@ -4697,27 +4716,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_N_permutations']  .Fill(len(all_masses), record_weight)
                     if not large_lj:
                         out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_N_permutations_passed']  .Fill(len(all_masses), record_weight)
+                        if n_bjets_used_in_lj == 1:
+                            out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_N_permutations_passed_b1']  .Fill(len(all_masses), record_weight)
+                        else:
+                            out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_N_permutations_passed_bM']  .Fill(len(all_masses), record_weight)
 
                     out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_vs_permutations'] .Fill(lj_var, len(all_masses), record_weight)
                     for mass_W, mass_t in all_masses:
                         out_hs[(chan, record_proc, sys_name)]['2D_dijet_trijet_all']  .Fill(mass_W, mass_t, record_weight)
-
-                #'njets':       TH1D('%s_%s_%s_njets'     % (chan, record_proc, sys), '', 5, 0, 5),
-                #'nMbjets':     TH1D('%s_%s_%s_nMbjets'   % (chan, record_proc, sys), '', 5, 0, 5),
-                #'nLbjets':     TH1D('%s_%s_%s_nLbjets'   % (chan, record_proc, sys), '', 5, 0, 5),
-                #'ntaus':       TH1D('%s_%s_%s_ntaus'     % (chan, record_proc, sys), '', 5, 0, 5),
-
-                n_rest_jets   = len(sel_jets.rest)   + len(sel_jets.taumatched[1])
-                #n_medium_jets = len(sel_jets.medium)
-                n_medium_jets = len(sel_jets.medium) # + len(sel_jets.taumatched[0])
-                n_loose_jets  = len(sel_jets.loose)
-
-                out_hs[(chan, record_proc, sys_name)]['njets']  .Fill(len(all_sel_jets),   record_weight)
-                out_hs[(chan, record_proc, sys_name)]['nRjets'] .Fill(n_rest_jets   , record_weight)
-                out_hs[(chan, record_proc, sys_name)]['nMbjets'].Fill(n_medium_jets , record_weight)
-                out_hs[(chan, record_proc, sys_name)]['nLbjets'].Fill(n_loose_jets  , record_weight)
-
-                out_hs[(chan, record_proc, sys_name)]['met_nRjets'] .Fill(met_pt, n_rest_jets   , record_weight)
 
                 jets_category = 0
                 jets_category += n_rest_jets if n_rest_jets < 5 else 4
