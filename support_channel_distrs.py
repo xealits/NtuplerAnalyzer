@@ -1056,15 +1056,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         systematic_names_pu_toppt  = ['NOMINAL']
     systematic_names_toppt = ['NOMINAL']
 
-    systematic_names_all_with_th = systematic_names_all
+    systematic_names_all_with_th = systematic_names_all[:]
     if isTT:
         systematic_names_all.extend(('TOPPTUp', 'TOPPTDown'))
         systematic_names_toppt = ['NOMINAL', 'TOPPTUp']
         systematic_names_pu_toppt.append('TOPPTUp')
 
+        systematic_names_all_with_th.extend(('TOPPTUp', 'TOPPTDown'))
         systematic_names_all_with_th.extend(('AlphaSUp', 'AlphaSDown', 'FragUp', 'FragDown', 'SemilepBRUp', 'SemilepBRDown', 'PetersonUp', 'PetersonDown'))
         systematic_names_all_with_th.extend(('MrUp', 'MrDown', 'MfUp', 'MfDown', 'MfrUp', 'MfrDown'))
-        systematic_names_all_with_th.extend(('PDF_TRIGGER')
+        systematic_names_all_with_th.extend(('PDF_TRIGGER',))
 
     if isMC:
         if isTT:
@@ -1458,6 +1459,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_all_with_th),
     }
 
+    print systematic_names_all_with_th
+    print systematic_names_pu_toppt
+    print systematic_names_pu
+    print systematic_names_nominal
+
     #channels = channels_mu_only
     #channels = channels_usual
     #channels, with_bSF = channels_mutau_optimization_scan, False
@@ -1538,6 +1544,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
     class ZeroOutDistr:
         def Fill(self, *args):
+            pass
+        def SetDirectory(self, *args):
+            pass
+        def Write(self, *args):
             pass
     #zero_out_distr = ZeroOutDistr()
 
@@ -1645,7 +1655,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         # and only nominals
         if sys == 'NOMINAL':
-           distr.update({
+           distrs.update({
              # control the tau/jet prop to met
              'met_prop_taus':      TH2D('%s_%s_%s_met_prop_taus'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
              'met_prop_jets':      TH2D('%s_%s_%s_met_prop_jets'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
@@ -1807,11 +1817,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
         return (chan, proc, sys), distrs
 
+    print "to systs"
     out_hs = OrderedDict([format_distrs(chan, proc, sys)
          for chan, ((procs, _), systs) in selected_channels.items() for proc in procs for sys in systs if sys != 'PDF_TRIGGER'])
 
+    print "done non-PDF systs"
     # add pdf uncertainties where requiested
     if with_PDF_sys:
+        pdf_sys_names_Up   = ['PDFCT14n%dUp'   % i for i in range(1,57)]
+        pdf_sys_names_Down = ['PDFCT14n%dDown' % i for i in range(1,57)]
         for chan, ((procs, _), systs) in selected_channels.items():
           for proc in procs:
             for sys in systs:
@@ -1821,6 +1835,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # for 56 CT14 (not nominal) members
                 for i in range(1,57):
                     out_hs.update(OrderedDict([format_distrs(chan, proc, sys_name) for sys_name in ('PDFCT14n%dUp' % i, 'PDFCT14n%dDown' % i)]))
+    print "done PDF systs"
 
     # strange, getting PyROOT_NoneObjects from these after output
     for _, histos in out_hs.items():
@@ -1857,7 +1872,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 record distr-s for each
         '''
 
-        #if iev > 100000: break
+        if iev > 10000: break
         control_counters.Fill(0)
 
         # NUP stitching for WJets
@@ -2126,7 +2141,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                     weights_gen_weight_alphas = (ev.gen_weight_alphas_1, ev.gen_weight_alphas_2)
                     # norm to average
                     #weights_gen_weight_norm = (weights_gen_weight_alphas[0] + weights_gen_weight_alphas[1]) / 2
-                    weights_gen_weight_norm = event.gen_weights_pdf_hessians[0]
+                    weights_gen_weight_norm = ev.gen_weights_pdf_hessians[0]
                     # norm is the nominal PDF
                     if weights_gen_weight_norm < 0.00001:
                         weights_gen_weight_norm = 0.00001
@@ -3644,6 +3659,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             if pass_el:
                 control_counters.Fill(102)
 
+            if pass_elmu:
+                control_counters.Fill(103)
+
             if pass_mu_all:
                 control_counters.Fill(105)
 
@@ -3673,10 +3691,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             old_jet_sel_alliso = (len(jets.old_alliso.medium) + len(jets.old_alliso.taumatched[0])) > 0 and (len(jets.old_alliso.taumatched[0]) + len(jets.old_alliso.taumatched[1]) + len(jets.old_alliso.medium) + len(jets.old_alliso.loose) + len(jets.old_alliso.rest)) > 2
 
             if old_jet_sel:
-                control_counters.Fill(103)
+                control_counters.Fill(111)
 
             if len(taus.old) > 0:
-                control_counters.Fill(104)
+                control_counters.Fill(112)
 
             if pass_mu and old_jet_sel:
                 control_counters.Fill(203)
@@ -4237,27 +4255,27 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 # check which syst_weights are requested for the channel
                 if sys_name == 'NOMINAL':
                     for weight_sys_name in channel_systs: # these are all systematics
-		        if weight_sys_name == 'PDF_TRIGGER':
-			    # get the pdfs..
-			    #pdf_w = 1.
-			    # they don't clarify how to deal with nominal PDF weight
-			    # (subtract or divide? both should be very equal actually)
-			    # but since they say "calculate 57 xsecs as if you do it with dif PDF weight"
-			    # I'll divide -- as if it's normalized and stuff
-			    # how does it go into the fit? where is Up and Down? as in
-			    # in their formula there is no up-down for a particular K pdf parameter..
-			    # there are differences of final values...
+                        if weight_sys_name == 'PDF_TRIGGER':
+                            # get the pdfs..
+                            #pdf_w = 1.
+                            # they don't clarify how to deal with nominal PDF weight
+                            # (subtract or divide? both should be very equal actually)
+                            # but since they say "calculate 57 xsecs as if you do it with dif PDF weight"
+                            # I'll divide -- as if it's normalized and stuff
+                            # how does it go into the fit? where is Up and Down? as in
+                            # in their formula there is no up-down for a particular K pdf parameter..
+                            # there are differences of final values...
                             # out_hs.update(OrderedDict([format_distrs(chan, proc, sys_name) for sys_name in ('PDFCT14n%dUp' % i, 'PDFCT14n%dDown' % i)]))
                             for i in range(1,57):
-                                pdf_w = event.gen_weights_pdf_hessians[i] / weights_gen_weight_norm
-                                pdf_sys_name = 'PDFCT14n%dUp'
+                                pdf_w = ev.gen_weights_pdf_hessians[i] / weights_gen_weight_norm
+                                pdf_sys_name = pdf_sys_names_Up[i-1]
                                 out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, nom_sys_weight * pdf_w)
-                                pdf_sys_name = 'PDFCT14n%dDown' # down is nominal
+                                pdf_sys_name = pdf_sys_names_Down[i-1] # down is nominal
                                 out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, nom_sys_weight)
-			    continue
-			if not weight_sys_name in syst_weights:
-			    # must by a systematic of objects
-			    continue
+                            continue
+                        if not weight_sys_name in syst_weights:
+                            # must by a systematic of objects
+                            continue
                         weight, weight_PU, weight_top_pt, weight_th = syst_weights[weight_sys_name]
                         sys_weight            = weight * weight_th * weight_PU * weight_top_pt
                         record_weight = sys_weight * weight_bSF

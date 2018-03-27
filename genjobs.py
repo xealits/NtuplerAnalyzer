@@ -51,8 +51,8 @@ parser.add_argument("--dtags", type=str, default='std',
 parser.add_argument("--without-dtags", type=str, default='',
         help='dtags or groups of dtags to remove from the submission list (default "")')
 
-parser.add_argument("--do-W-stitching",  action='store_true', help="turn ON skipping NUP events of inclusive sample")
-parser.add_argument("-d", "--debug",  action='store_true', help="DEBUG level of logging")
+parser.add_argument("--do-W-stitching", action='store_true', help="turn ON skipping NUP events of inclusive sample")
+parser.add_argument("-d", "--debug",    action='store_true', help="DEBUG level of logging")
 
 
 args = parser.parse_args()
