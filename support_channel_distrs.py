@@ -1914,6 +1914,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         pass_mu_id = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.no_iso_veto_leps
         pass_el_id = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.no_iso_veto_leps
 
+        if abs(ev.leps_ID) == 13:    control_counters.Fill(1)
+        if abs(ev.leps_ID) == 13 and ev.HLT_mu:  control_counters.Fill(2)
+        if abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0]:  control_counters.Fill(3)
+        if abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.no_iso_veto_leps:  control_counters.Fill(4)
+
+        if abs(ev.leps_ID) == 11:    control_counters.Fill(6)
+        if abs(ev.leps_ID) == 11 and ev.HLT_el:  control_counters.Fill(7)
+        if abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0]:  control_counters.Fill(8)
+        if abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.no_iso_veto_leps:  control_counters.Fill(9)
+
         # impacts are embedded into ID procedure, no need to repeate them here, TODO: re-check
         # for mu suggested dB is 5mm dz and 2mm dxy
         # for el suggested dB 0.02 cm
@@ -1940,16 +1950,26 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         pass_mu     = pass_mu_id and pass_mu_kino and pass_mu_iso # and pass_mu_impact
         pass_el     = pass_el_id and pass_el_kino and pass_el_iso
 
+        if pass_el_id:    control_counters.Fill(11)
+        if pass_el_iso:   control_counters.Fill(12)
+        if pass_el_kino:  control_counters.Fill(13)
+        if pass_el:       control_counters.Fill(14)
+
+        if pass_mu_id:    control_counters.Fill(16)
+        if pass_mu_iso:   control_counters.Fill(17)
+        if pass_mu_kino:  control_counters.Fill(18)
+        if pass_mu:       control_counters.Fill(19)
+
         # do this in place for the required selection
         #pass_mu_cuts = pass_mu and ev.lep_p4[0].pt() > 25. # so, it's smaller than the old cut 27 GeV
 
         #pass_mu_all = pass_mu_id_kino and ev.lep_relIso[0] >= 0.125
 
-        pass_mu_id_all = abs(ev.leps_ID_allIso) == 13 and ev.HLT_mu and ev.lep_alliso_matched_HLT[0] and ev.nleps_veto_mu_all == 0 and ev.nleps_veto_el_all == 0
-        pass_el_id_all = abs(ev.leps_ID_allIso) == 11 and ev.HLT_el and ev.lep_alliso_matched_HLT[0] and ev.nleps_veto_el_all == 0 and ev.nleps_veto_mu_all == 0
+        pass_mu_id_all = False and abs(ev.leps_ID_allIso) == 13 and ev.HLT_mu and ev.lep_alliso_matched_HLT[0] and ev.nleps_veto_mu_all == 0 and ev.nleps_veto_el_all == 0
+        pass_el_id_all = False and abs(ev.leps_ID_allIso) == 11 and ev.HLT_el and ev.lep_alliso_matched_HLT[0] and ev.nleps_veto_el_all == 0 and ev.nleps_veto_mu_all == 0
 
-        pass_mu_kino_all = pass_mu_id_all and ev.lep_alliso_p4[0].pt() > 26. and abs(ev.lep_alliso_p4[0].eta()) < 2.4
-        pass_el_kino_all = pass_el_id_all and ev.lep_alliso_p4[0].pt() > 30. and abs(ev.lep_alliso_p4[0].eta()) < 2.4 and (abs(ev.lep_alliso_p4[0].eta()) < 1.4442 or abs(ev.lep_alliso_p4[0].eta()) > 1.5660)
+        pass_mu_kino_all = False and pass_mu_id_all and ev.lep_alliso_p4[0].pt() > 26. and abs(ev.lep_alliso_p4[0].eta()) < 2.4
+        pass_el_kino_all = False and pass_el_id_all and ev.lep_alliso_p4[0].pt() > 30. and abs(ev.lep_alliso_p4[0].eta()) < 2.4 and (abs(ev.lep_alliso_p4[0].eta()) < 1.4442 or abs(ev.lep_alliso_p4[0].eta()) > 1.5660)
 
         pass_mu_all = pass_mu_id_all and pass_mu_kino_all
         pass_el_all = pass_el_id_all and pass_el_kino_all
@@ -1992,7 +2012,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         event_passes = pass_el # passes_optimized
 
         if not event_passes: continue
-        control_counters.Fill(1)
+        control_counters.Fill(51)
 
         pass_mus = pass_mu_all or pass_mu or pass_elmu or pass_mumu # or pass_mumu_ss
         # also at least some kind of tau in single-el:
@@ -2341,10 +2361,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 weight_lep_Down = weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
                 weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
 
-        control_counters.Fill(2)
+        control_counters.Fill(52)
 
         # -------------------- LEPTONS
-        leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR, ev.lep_id), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR, ev.lep_alliso_id))
+        #leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR, ev.lep_id), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR, ev.lep_alliso_id))
+        leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR, ev.lep_id), alliso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR, ev.lep_id))
 
         # -------------------- TAUS
 
@@ -2447,8 +2468,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
             jetmatched = ev.tau_dR_matched_jet[i] > -1
 
-            match_lep        = ev.tau_matching_lep[i]
-            match_lep_alliso = ev.tau_matching_allIso_lep[i]
+            match_lep        = False # ev.tau_matching_lep[i]
+            match_lep_alliso = False # ev.tau_matching_allIso_lep[i]
 
             #if tau_pt < 20.: continue # no need to check -- it's default in ntupler
 
@@ -2832,8 +2853,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             jet_b_discr = ev.jet_b_discr[i]
             #all_jets_b_discrs.append(jet_b_discr)
 
-            match_lep        = ev.jet_matching_lep[i]
-            match_lep_alliso = ev.jet_matching_allIso_lep[i]
+            match_lep        = False # ev.jet_matching_lep[i]
+            match_lep_alliso = False # ev.jet_matching_allIso_lep[i]
 
             # jet energy scale factor = JES factor * JER
             # But the JES is re-correction
@@ -3650,7 +3671,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # check the subprocess
         # store distr
 
-        control_counters.Fill(3)
+        control_counters.Fill(53)
 
         for sys_i, (sys_name, (jets, taus)) in enumerate(syst_objects.items()):
             #control_counters.Fill(4 + sys_i)
