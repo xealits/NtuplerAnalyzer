@@ -3735,8 +3735,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             pass_old_mu_presel_alliso = False and pass_mu_all and old_jet_sel_alliso and len(taus.presel_alliso) > 0
             pass_old_el_presel_alliso = False and pass_el_all and old_jet_sel_alliso and len(taus.presel_alliso) > 0
 
-            pass_old_mu_sel_Vloose_alliso = pass_mu_all and old_jet_sel and len(taus.oldVloose) > 0 # and no met cut
-            pass_old_el_sel_Vloose_alliso = pass_el_all and old_jet_sel and len(taus.oldVloose) > 0 # and no met cut
+            pass_old_mu_sel_Vloose_alliso = pass_mu_all and old_jet_sel_alliso and len(taus.oldVloose) > 0
+            pass_old_el_sel_Vloose_alliso = pass_el_all and old_jet_sel_alliso and len(taus.oldVloose) > 0
 
             pass_elmu_close = pass_elmu and (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1
 
