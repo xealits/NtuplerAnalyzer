@@ -33,6 +33,8 @@ parser.add_argument("--y-range",   type=str, help="set the range on Y axis `0,1.
 
 parser.add_argument("--no-data",   action='store_true', help="don't draw data")
 
+parser.add_argument("--bin-norm",  action='store_true', help="normalize per bin width")
+
 parser.add_argument("--qcd",   type=float, default=0., help="get QCD from corresponding _ss channel and transfer it with the given factor (try --qcd 1)")
 parser.add_argument("--qcd-factor",   type=float, default=1., help="factor for MC QCD")
 parser.add_argument("--osss",     action='store_true', help="plot the ratio in OS/SS of data-other bkcg")
@@ -157,14 +159,15 @@ else:
 
 
 # normalize data distrs to different bin width:
-for _, distrs in histos_data_per_distr + histos_data_per_distr_ss:
-    for histo, _, _ in distrs:
-        for bini in range(histo.GetSize()):
-            content = histo.GetBinContent(bini)
-            error   = histo.GetBinError(bini)
-            width   = histo.GetXaxis().GetBinUpEdge(bini) - histo.GetXaxis().GetBinLowEdge(bini)
-            histo.SetBinContent(bini, content/width)
-            histo.SetBinError(bini, error/width)
+if args.bin_norm:
+  for _, distrs in histos_data_per_distr + histos_data_per_distr_ss:
+      for histo, _, _ in distrs:
+          for bini in range(histo.GetSize()):
+              content = histo.GetBinContent(bini)
+              error   = histo.GetBinError(bini)
+              width   = histo.GetXaxis().GetBinUpEdge(bini) - histo.GetXaxis().GetBinLowEdge(bini)
+              histo.SetBinContent(bini, content/width)
+              histo.SetBinError(bini, error/width)
 
 logging.info("# data histograms = %d" % len(histos_data_per_distr))
 
@@ -274,7 +277,8 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                histo = h_overflows
 
            # normalize to different bin width:
-           for bini in range(histo.GetSize()):
+           if args.bin_norm:
+             for bini in range(histo.GetSize()):
                 content = histo.GetBinContent(bini)
                 error   = histo.GetBinError(bini)
                 width   = histo.GetXaxis().GetBinUpEdge(bini) - histo.GetXaxis().GetBinLowEdge(bini)

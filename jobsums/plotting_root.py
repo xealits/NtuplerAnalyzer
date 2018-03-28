@@ -65,6 +65,7 @@ nick_colour = {
 "tt_ljb":       rgb(240,59,32),
 "tt_ljo":       rgb(240,59,32),
 "tt_lj":        rgb(240,59,32),
+"tt_taulj":     rgb(210,29,32),
 "tt_other":     rgb(189,0,38),
 
 "qcd": kViolet,
@@ -85,7 +86,8 @@ nick_order = {
 "tt_ljb": -6,
 "tt_ljo": -7,
 "tt_lj":  -8,
-"tt_other": -9,
+"tt_taulj": -9,
+"tt_other": -11,
 
 "wjets": -20,
 "wjets_tauh": -21,
