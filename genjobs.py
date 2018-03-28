@@ -155,7 +155,7 @@ dtags_updowns_old = [
 
 
 
-dtags_std_data = [
+dtags_std_data_mu = [
 "Data13TeV_SingleMuon2016B_03Feb2017_ver2",
 "Data13TeV_SingleMuon2016C_03Feb2017_v1",
 "Data13TeV_SingleMuon2016D_03Feb2017_v1",
@@ -164,6 +164,9 @@ dtags_std_data = [
 "Data13TeV_SingleMuon2016G_03Feb2017_v1",
 "Data13TeV_SingleMuon2016H_03Feb2017_ver2",
 "Data13TeV_SingleMuon2016H_03Feb2017_ver3",
+]
+
+dtags_std_data_el = [
 "Data13TeV_SingleElectron2016B_03Feb2017_ver2",
 "Data13TeV_SingleElectron2016C_03Feb2017_v1",
 "Data13TeV_SingleElectron2016D_03Feb2017_v1",
@@ -174,12 +177,14 @@ dtags_std_data = [
 "Data13TeV_SingleElectron2016H_03Feb2017_ver3",
 ]
 
+dtags_std_data = dtags_std_data_mu + dtags_std_data_el
 
 
 dtags_std = dtags_std_mc + dtags_std_data
 
 
-dtag_groups = {'std': dtags_std, 'std_data': dtags_std_data, 'std_mc': dtags_std_mc, 'updowns': dtags_updowns_old,
+dtag_groups = {'std': dtags_std, 'std_data': dtags_std_data, 'data_el': dtags_std_data_el, 'data_mu': dtags_std_data_mu,
+    'std_mc': dtags_std_mc, 'updowns': dtags_updowns_old,
     'singletop': dtags_singletop_mc}
 
 

@@ -1462,6 +1462,22 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_all_with_th),
     }
 
+    channels_full_sys_electron_selections = {
+                'ctr_el_wjet':              (procs_el, systematic_names_pu),
+                'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
+
+                'ctr_old_el_presel':        (procs_el, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                'ctr_old_el_presel_ss':     (procs_el, systematic_names_pu_toppt),
+                'ctr_old_el_selVloose':     (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_selVloose_ss':  (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel':           (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_ss':        (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_lj':        (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_lj_ss':     (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_ljout':     (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_all_with_th),
+    }
+
     print systematic_names_all_with_th
     print systematic_names_pu_toppt
     print systematic_names_pu
@@ -1470,7 +1486,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     #channels = channels_mu_only
     #channels = channels_usual
     #channels, with_bSF = channels_mutau_optimization_scan, False
-    selected_channels = channels_optimized_old_full_sys
+    #selected_channels = channels_optimized_old_full_sys
+    selected_channels = channels_full_sys_electron_selections
 
     with_JER   = isMC and True
     with_JES   = isMC and True
@@ -1972,10 +1989,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        passes = passes_optimized
-        #passes = pass_elmu
+        event_passes = pass_el # passes_optimized
 
-        if not passes: continue
+        if not event_passes: continue
         control_counters.Fill(1)
 
         pass_mus = pass_mu_all or pass_mu or pass_elmu or pass_mumu # or pass_mumu_ss
