@@ -1906,7 +1906,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # for el the suggested relIso 0.0588 for barrel, 0.0571 for endcaps
         # data shows it does not matter
         pass_mu_iso = pass_mu_id and ev.lep_relIso[0] < 0.15  
-        pass_el_iso = pass_mu_id and ev.lep_relIso[0] < 0.0588
+        pass_el_iso = pass_el_id and ev.lep_relIso[0] < 0.0588
 
         # 1GeV above HLT pt
         # ele eta gap
@@ -1914,7 +1914,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#2016_Data
         # pt > 25, eta < 2.4
         pass_mu_kino = pass_mu_id and ev.lep_p4[0].pt() > 26. and abs(ev.lep_p4[0].eta()) < 2.4
-        pass_el_kino = pass_mu_id and ev.lep_p4[0].pt() > 30. and abs(ev.lep_p4[0].eta()) < 2.4 and (abs(ev.lep_p4[0].eta()) < 1.4442 or abs(ev.lep_p4[0].eta()) > 1.5660)
+        pass_el_kino = pass_el_id and ev.lep_p4[0].pt() > 30. and abs(ev.lep_p4[0].eta()) < 2.4 and (abs(ev.lep_p4[0].eta()) < 1.4442 or abs(ev.lep_p4[0].eta()) > 1.5660)
 
         # (did) for optimization testing minimum pt cut --- review it after test results
         #    -- significant discrepancy at lowest lep pt bin -> UP 1 GeV from HLT and added a detailed distr of the trun on curve
