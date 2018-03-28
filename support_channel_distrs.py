@@ -2061,6 +2061,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
             weight_pu_h2 = 1.
 
         weight = 1. # common weight of event (1. for data)
+        weight_pu = 1.
         #weights_th = namedtuple('th_weights', 'AlphaSUp AlphaSDown FragUp FragDown')
         #weights_th = (1., 1., 1., 1.)
         weights_gen_weight_alphas = (1., 1.)
