@@ -705,7 +705,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//RecoilCorrector* recoilPFMetCorrector;
 	//TH2D* zPtMass_histo;
 
-	bool record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets;
+	bool record_ElTau, record_MuTau, record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets;
 
 	TString dtag;
 	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop;
@@ -774,6 +774,8 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 // constructors and destructor
 //
 NtuplerAnalyzer::NtuplerAnalyzer(const edm::ParameterSet& iConfig) :
+record_ElTau         (iConfig.getParameter<bool>("record_ElTau"))         ,
+record_MuTau         (iConfig.getParameter<bool>("record_MuTau"))         ,
 record_tauID         (iConfig.getParameter<bool>("record_tauID"))         ,
 record_tauIDantiIso  (iConfig.getParameter<bool>("record_tauIDantiIso"))  ,
 record_bPreselection (iConfig.getParameter<bool>("record_bPreselection")) ,
@@ -2248,7 +2250,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0; // veto on std iso veto leptons
 	//bool clean_lep_conditions = nVetoE_all==0 && nVetoMu_all==0 && nGoodPV != 0; // veto on all iso veto leptons
 	bool clean_lep_conditions = nGoodPV != 0; // just good PV, the loosest req,save bit if no veto leps
-	if (!(clean_lep_conditions && ((selLeptons.size() > 0 && selLeptons.size() < 3 && nVetoE_Iso == 0 && nVetoMu_Iso == 0) || (selLeptons_allIso.size() == 1 && nVetoE_all == 0 && nVetoMu_all == 0)) )) return;
+	//if (!(clean_lep_conditions && ((selLeptons.size() > 0 && selLeptons.size() < 3 && nVetoE_Iso == 0 && nVetoMu_Iso == 0) || (selLeptons_allIso.size() == 1 && nVetoE_all == 0 && nVetoMu_all == 0)) )) return;
+	if (!(clean_lep_conditions && ((selLeptons.size() > 0 && selLeptons.size() < 3) || (selLeptons_allIso.size() == 1)) )) return;
 	// exit now to reduce computation -- all record schemes have this requirement
 
 	event_counter ->Fill(event_checkpoint++);
@@ -3346,7 +3349,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	LogInfo ("Demo") << "all particles/objects are selected, nbjets = " << NT_nbjets;
 
 	//bool record_ntuple = (isSingleMu || isSingleE || pass_dileptons) && NT_nbjets > 0 && NT_tau_IDlev.size() > 0; // at least 1 b jet and 1 loose tau
-	bool pass_leptons = clean_lep_conditions && NT_no_iso_veto_leps && selLeptons.size() > 0 && selLeptons.size() < 3; // tau_ID oriented scheme, Dileptons are separate
+	bool pass_leptons = clean_lep_conditions && selLeptons.size() > 0 && selLeptons.size() < 3; // tau_ID oriented scheme, Dileptons are separate
 	bool pass_leptons_all_iso = clean_lep_conditions && selLeptons_allIso.size() > 0 && selLeptons_allIso.size() < 3;
 	bool record_ntuple = false;
 
@@ -3374,6 +3377,16 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		 */
 		record_ntuple |= record_tauID_cond;
 		}
+
+	if (record_ElTau)
+		{
+		record_ntuple |= record_tauID_cond && selElectrons.size() == 1;
+		}
+	if (record_MuTau)
+		{
+		record_ntuple |= record_tauID_cond && selMuons.size() == 1;
+		}
+
 	if (record_tauIDantiIso)
 		{
 		record_ntuple |= pass_leptons_all_iso && NT_ntaus > 0 && selLeptons_allIso.size() == 1;

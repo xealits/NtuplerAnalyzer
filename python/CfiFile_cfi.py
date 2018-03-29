@@ -5,6 +5,8 @@ import FWCore.ParameterSet.Config as cms
 #)
 
 ntupler = cms.EDAnalyzer('NtuplerAnalyzer',
+    record_ElTau         = cms.bool(True) ,
+    record_MuTau         = cms.bool(True) ,
     record_tauID         = cms.bool(True) ,
     record_tauIDantiIso  = cms.bool(False) ,
     record_bPreselection = cms.bool(False) ,
