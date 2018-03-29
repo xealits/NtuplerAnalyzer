@@ -818,6 +818,8 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 // MissingParameter: Parameter 'BadChargedCandidateFilter' not found.
 
 {
+	edm::LogInfo ("Demo") << "building the object";
+
 	r3 = new TRandom3();
 
 	/* define in constructor via call to consumes (magic thingy) */
@@ -830,6 +832,7 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	// declare consuming the HLT to be able to get triggers in the following
 	if (withHLT)
 		trigResults_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","", HLT_source));
+	edm::LogInfo ("Demo") << "HLT results";
 	//trigResults2_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT2"));
 	trigResultsRECO_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","RECO"));
 	trigResultsPAT_     = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","PAT"));
@@ -912,6 +915,8 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	 * -- there is no filter = True option!!
 	 */
 
+	edm::LogInfo ("Demo") << "AAA";
+
 	// dtag configs
 	bool period_BCD = !isMC && (dtag.Contains("2016B") || dtag.Contains("2016C") || dtag.Contains("2016D"));
 	bool period_EF  = !isMC && (dtag.Contains("2016E") || dtag.Contains("2016F"));
@@ -973,6 +978,8 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	jesCor = utils::cmssw::getJetCorrector (jecDir, jet_corr_files, isMC);
 	totalJESUnc = new JetCorrectionUncertainty ((jecDir + jet_corr_files + "_Uncertainty_AK4PFchs.txt").Data());
 
+	edm::LogInfo ("Demo") << "BBB";
+
 	// resolution and scale-factors for the systematics
 	gSystem->ExpandPathName(TjetResolutionFileName);
 	gSystem->ExpandPathName(TjetResolutionSFFileName);
@@ -982,6 +989,8 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	// <---- ROOT & CMSSW are best friends
 	jet_resolution_in_pt = JME::JetResolution(jetResolutionFileName);
 	jet_resolution_sf_per_eta = JME::JetResolutionScaleFactor(jetResolutionSFFileName);
+
+	edm::LogInfo ("Demo") << "CCC";
 
 	edm::Service<TFileService> fs;
 	// init ttree
@@ -1016,6 +1025,8 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	 * -- so it's really just for producers
 	 */
 	//produces<vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > >>("leps_p4");
+
+	edm::LogInfo ("Demo") << "done";
 
 }
 
@@ -2095,6 +2106,18 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		}
 
+	event_checkpoint++;
+
+	event_checkpoint++;
+	if (eTrigger)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (muTrigger)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+
 	if (!(eTrigger || muTrigger || lepMonitorTrigger || jetsHLT)) return; // orthogonalization is done afterwards
 	event_counter ->Fill(event_checkpoint++);
 	weight_counter->Fill(event_checkpoint, weight);
@@ -2232,6 +2255,37 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	weight_counter->Fill(event_checkpoint, weight);
 
 	LogInfo ("Demo") << "passed lepton conditions ";
+
+
+	event_checkpoint++;
+
+	event_checkpoint++;
+	if (selElectrons.size() == 1)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (selMuons.size() == 1)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (selLeptons.size() == 1)
+		event_counter ->Fill(event_checkpoint);
+
+
+	bool no_veto = nVetoE_Iso == 0 && nVetoMu_Iso == 0;
+	event_checkpoint++;
+	if (selElectrons.size() == 1 && no_veto)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (selMuons.size() == 1 && no_veto)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (selLeptons.size() == 1 && no_veto)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
 
 	bool leps_passed_relIso = true;
 	for(size_t l=0; l<selMuons.size(); ++l)
@@ -3296,6 +3350,20 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	bool pass_leptons_all_iso = clean_lep_conditions && selLeptons_allIso.size() > 0 && selLeptons_allIso.size() < 3;
 	bool record_ntuple = false;
 
+	bool record_tauID_cond = pass_leptons && NT_ntaus > 0 && selLeptons.size() == 1;
+
+	event_checkpoint++;
+
+	event_checkpoint++;
+	if (selElectrons.size() == 1 && record_tauID_cond)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (selMuons.size() == 1 && record_tauID_cond)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+
 	if (record_tauID)
 		{
 		/*
@@ -3304,7 +3372,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		 *
 		 * should contain good WJets control sample
 		 */
-		record_ntuple |= pass_leptons && NT_ntaus > 0 && selLeptons.size() == 1;
+		record_ntuple |= record_tauID_cond;
 		}
 	if (record_tauIDantiIso)
 		{

@@ -64,7 +64,9 @@ if __name__ == "__main__":
     if not os.path.exists(conf_dir + version):
         os.makedirs(conf_dir + version)
 
-    with open(conf_dir + version + '/%s%s_crab.py' % (dtag, suffix), 'w') as f:
+    crab_cfg_file = conf_dir + version + '/%s%s_crab.py' % (dtag, suffix)
+    print(crab_cfg_file)
+    with open(crab_cfg_file, 'w') as f:
         f.write(template_crab)
 
     with open(config_file, 'w') as f:

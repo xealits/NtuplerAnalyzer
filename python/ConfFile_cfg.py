@@ -1,12 +1,17 @@
+from os import path as path
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
+
+import FWCore.PythonUtilities.LumiList as LumiList
+import FWCore.ParameterSet.Types as CfgTypes
+#LumiList.LumiList().getVLuminosityBlockRange()
 
 # this ivars thing, whatever this is, will hold the names to the input/output files
 ivars = VarParsing.VarParsing('analysis')
 
 
 HLT_source = 'HLT' # 'HLT2'
-withHLT = False
+withHLT = True
 
  # Data, file on netwokr -- let's see how cmsRun gets it
  #'root://cms-xrd-global.cern.ch///store/data/Run2016B/SingleMuon/MINIAOD/03Feb2017_ver2-v2/100000/001E3E7D-57EB-E611-8469-0CC47A7C35D2.root'
@@ -36,6 +41,8 @@ input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/MC2015_Spring16_reHLT_DY-5
 # /eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8_D4F3B681-A3BE-E611-913C-0CC47AC08816.root
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_06437FA0-B2D8-E611-923D-02163E019DBD.root',), True, 'WZTo2L2Q'
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_165F54A0-A3BE-E611-B3F7-0025905A606A.root',), True, 'TTJets'
+
+input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/Data_SingleElectron_G_FAAE8AFC-32EB-E611-88E3-0CC47A6C186C.root',), False, 'SingleElectron'
 
 if any('2015' in infile for infile in input_files) or '2015' in dtag:
     HLT_source = 'HLT2'
@@ -89,12 +96,12 @@ process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 
-process.MessageLogger.cerr.threshold = 'INFO'
-#process.MessageLogger.categories.append('Demo')
-process.MessageLogger.cerr.INFO = cms.untracked.PSet(
-    #limit = cms.untracked.int32(-1)
-    limit = cms.untracked.int32(10000)
-)
+#process.MessageLogger.cerr.threshold = 'INFO'
+##process.MessageLogger.categories.append('Demo')
+#process.MessageLogger.cerr.INFO = cms.untracked.PSet(
+#    #limit = cms.untracked.int32(-1)
+#    limit = cms.untracked.int32(10000)
+#)
 
 #process.MessageLogger = cms.Service("MessageLogger",
 #       destinations   = cms.untracked.vstring(
@@ -116,9 +123,9 @@ process.MessageLogger.cerr.INFO = cms.untracked.PSet(
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(2) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 
 
@@ -152,7 +159,7 @@ process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.isMC = cms.bool(isMC)
-process.ntupler.isLocal = cms.bool(True)
+process.ntupler.isLocal = cms.bool(False)
 process.ntupler.withHLT = cms.bool(withHLT)
 process.ntupler.dtag = cms.string(dtag)
 process.ntupler.HLT_source = cms.string(HLT_source)
@@ -167,11 +174,14 @@ process.ntupler.HLT_source = cms.string(HLT_source)
 #process.ntupler.elHLT_Data  = cms.string("HLT_Ele27_WPTight_Gsf_v*")
 #process.ntupler.elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v*")
 
+theLumiMask = path.expandvars("") # -- lumi should be handled via CRAB3, but for now I leave this config option available in Ntupler for local runs
+process.ntupler.lumisToProcess = LumiList.LumiList(filename = theLumiMask).getVLuminosityBlockRange()
+
 # for LumiDump:
 process.ntupler.input = cms.untracked.vstring(input_files)
 process.ntupler.outfile = cms.string(output_file)
 
-record_scheme = 'tauID Dilep MonitorHLT tauIDantiIso jets'
+record_scheme = 'tauID' # Dilep MonitorHLT tauIDantiIso jets'
 if record_scheme:
     process.ntupler.record_tauID         = cms.bool('tauID'         in record_scheme)
     process.ntupler.record_tauIDantiIso  = cms.bool('tauIDantiIso'  in record_scheme)
