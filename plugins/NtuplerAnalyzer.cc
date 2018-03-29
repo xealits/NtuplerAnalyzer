@@ -1926,6 +1926,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		selMuons, selMuons_allIso,
 		muDiff, nVetoMu_Iso, nVetoMu_all, false, false);
 
+	LogInfo ("Demo") << "passed muons";
 	//nVetoMu += processMuons_MatchHLT(selIDMuons, mu_trig_objs, 0.4, selMuons);
 
 	// ELECTRONS
@@ -1938,6 +1939,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		selElectrons, selElectrons_allIso,
 		elDiff, nVetoE_Iso, nVetoE_all, false, false);
 
+	LogInfo ("Demo") << "passed electrons";
 	//nVetoE += processElectrons_MatchHLT(selIDElectrons, el_trig_objs, 0.4, selElectrons);
 
 	std::vector<patUtils::GenericLepton> selLeptons;
@@ -1946,8 +1948,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//std::sort(selLeptons.begin(), selLeptons.end(), utils::sort_CandidatesByPt);
 
 	std::vector<patUtils::GenericLepton> selLeptons_allIso;
-	for(size_t l=0; l<selElectrons_allIso.size(); ++l) selLeptons_allIso.push_back(patUtils::GenericLepton (selElectrons[l] ));
-	for(size_t l=0; l<selMuons_allIso.size(); ++l)     selLeptons_allIso.push_back(patUtils::GenericLepton (selMuons[l]     ));
+	for(size_t l=0; l<selElectrons_allIso.size(); ++l) selLeptons_allIso.push_back(patUtils::GenericLepton (selElectrons_allIso[l] ));
+	for(size_t l=0; l<selMuons_allIso.size(); ++l)     selLeptons_allIso.push_back(patUtils::GenericLepton (selMuons_allIso[l]     ));
 
 	//LogInfo ("Demo") << "selected leptons: " << '(' << selIDElectrons.size() << ',' << selIDMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
 	LogInfo ("Demo") << "selected leptons: " << '(' << selElectrons.size() << ',' << selMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE_Iso << ',' << nVetoMu_Iso;
@@ -2475,7 +2477,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		Float_t dR_to_alliso = 999.;
 		for(size_t l=0; l<selLeptons_allIso.size(); ++l)
 			{
-			double dR = reco::deltaR(jet, selLeptons[l]);
+			double dR = reco::deltaR(jet, selLeptons_allIso[l]);
 			if (dR < dR_to_alliso)
 				dR_to_alliso = dR;
 			}
@@ -2650,7 +2652,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		Float_t dR_to_alliso = 999.;
 		for(size_t l=0; l<selLeptons_allIso.size(); ++l)
 			{
-			double dR = reco::deltaR(tau, selLeptons[l]);
+			double dR = reco::deltaR(tau, selLeptons_allIso[l]);
 			if (dR < dR_to_alliso)
 				dR_to_alliso = dR;
 			}
