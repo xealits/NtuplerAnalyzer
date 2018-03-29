@@ -1816,6 +1816,18 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		}
 
+	event_checkpoint++;
+
+	event_checkpoint++;
+	if (eTrigger)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (muTrigger)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+
 	if (!(eTrigger || muTrigger || lepMonitorTrigger || jetsHLT)) return; // orthogonalization is done afterwards
 	event_counter ->Fill(event_checkpoint++);
 	weight_counter->Fill(event_checkpoint, weight);
@@ -1950,6 +1962,37 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	weight_counter->Fill(event_checkpoint, weight);
 
 	LogInfo ("Demo") << "passed lepton conditions ";
+
+	event_checkpoint++;
+
+	event_checkpoint++;
+	if (selElectrons.size() == 1)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (selMuons.size() == 1)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (selLeptons.size() == 1)
+		event_counter ->Fill(event_checkpoint);
+
+
+	bool no_veto = nVetoE_Iso == 0 && nVetoMu_Iso == 0;
+	event_checkpoint++;
+	if (selElectrons.size() == 1 && no_veto)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (selMuons.size() == 1 && no_veto)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (selLeptons.size() == 1 && no_veto)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+
 
 	bool leps_passed_relIso = true;
 	for(size_t l=0; l<selMuons.size(); ++l)
@@ -2970,6 +3013,21 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	bool pass_leptons_all_iso = clean_lep_conditions && selLeptons_allIso.size() > 0 && selLeptons_allIso.size() < 3;
 	bool record_ntuple = false;
 
+	bool record_tauID_cond = pass_leptons && NT_ntaus > 0 && selLeptons.size() == 1;
+
+	event_checkpoint++;
+
+	event_checkpoint++;
+	if (selElectrons.size() == 1 && record_tauID_cond)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (selMuons.size() == 1 && record_tauID_cond)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+
+
 	if (record_tauID)
 		{
 		/*
@@ -2978,7 +3036,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		 *
 		 * should contain good WJets control sample
 		 */
-		record_ntuple |= pass_leptons && NT_ntaus > 0 && selLeptons.size() == 1;
+		//record_ntuple |= pass_leptons && NT_ntaus > 0 && selLeptons.size() == 1;
+		record_ntuple |= record_tauID_cond;
 		}
 	if (record_tauIDantiIso)
 		{
