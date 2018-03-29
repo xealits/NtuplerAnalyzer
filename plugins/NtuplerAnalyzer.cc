@@ -1921,9 +1921,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	unsigned int nVetoMu_Iso = 0, nVetoMu_all = 0;
 	//pat::MuonCollection selIDMuons, selMuons;
 	pat::MuonCollection selMuons, selMuons_allIso;
+	//processMuons_ID_ISO_Kinematics(muons, goodPV, weight, patUtils::llvvMuonId::StdTight, patUtils::llvvMuonId::StdLoose, patUtils::llvvMuonIso::Tight, patUtils::llvvMuonIso::Loose,               
+	//	mu_kino_cuts_pt, mu_kino_cuts_eta, mu_veto_kino_cuts_pt, mu_veto_kino_cuts_eta,
+	//	selMuons, selMuons_allIso,
+	//	muDiff, nVetoMu_Iso, nVetoMu_all, false, false);
 	processMuons_ID_ISO_Kinematics(muons, goodPV, weight, patUtils::llvvMuonId::StdTight, patUtils::llvvMuonId::StdLoose, patUtils::llvvMuonIso::Tight, patUtils::llvvMuonIso::Loose,               
 		mu_kino_cuts_pt, mu_kino_cuts_eta, mu_veto_kino_cuts_pt, mu_veto_kino_cuts_eta,
-		selMuons, selMuons_allIso,
+		selMuons,
 		muDiff, nVetoMu_Iso, nVetoMu_all, false, false);
 
 	LogInfo ("Demo") << "passed muons";
@@ -1934,9 +1938,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	pat::ElectronCollection selElectrons, selElectrons_allIso;
 	unsigned int nVetoE_Iso = 0, nVetoE_all = 0;
 	LorentzVector elDiff(0., 0., 0., 0.);
+	//processElectrons_ID_ISO_Kinematics(electrons, goodPV, NT_fixedGridRhoFastjetAll, weight, patUtils::llvvElecId::Tight, patUtils::llvvElecId::Loose, patUtils::llvvElecIso::Tight, patUtils::llvvElecIso::Loose,
+	//	el_kino_cuts_pt, el_kino_cuts_eta, el_veto_kino_cuts_pt, el_veto_kino_cuts_eta,
+	//	selElectrons, selElectrons_allIso,
+	//	elDiff, nVetoE_Iso, nVetoE_all, false, false);
 	processElectrons_ID_ISO_Kinematics(electrons, goodPV, NT_fixedGridRhoFastjetAll, weight, patUtils::llvvElecId::Tight, patUtils::llvvElecId::Loose, patUtils::llvvElecIso::Tight, patUtils::llvvElecIso::Loose,
 		el_kino_cuts_pt, el_kino_cuts_eta, el_veto_kino_cuts_pt, el_veto_kino_cuts_eta,
-		selElectrons, selElectrons_allIso,
+		selElectrons,
 		elDiff, nVetoE_Iso, nVetoE_all, false, false);
 
 	LogInfo ("Demo") << "passed electrons";
