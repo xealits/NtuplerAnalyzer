@@ -1271,6 +1271,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// the twiki page does suggest to divide everything though...
 			// -- keeping the division after all, seems like a good guess
 
+			// CT14 pdfs have 57 members: 0th nominal + 56 variations
+
 			//get the original mc replica weights
 			//unsigned int nNNPPDF3Weights_ = 100, pdfWeightOffset_ = 9, nPdfEigWeights_ = 60; // as in example
 			// -- for NNPDF3
