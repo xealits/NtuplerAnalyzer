@@ -1005,6 +1005,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     ('weight_el_bSF_down', TH1D("weight_el_bSF_down", "", 50, 0, 2)),
     ])
 
+    if isTT:
+        control_hs.update({'PDFCT14n%dUp' % i: TH1D("weight_PDFCT14n%dUp" % i, "", 50, 0, 2) for i in range(58) })
+
     # strange, getting PyROOT_NoneObjects from these after output
     for _, h in control_hs.items():
         h.SetDirectory(0)
@@ -1847,9 +1850,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
     print "done non-PDF systs"
     # add pdf uncertainties where requiested
+    def pdf_sys_name_up(number):
+        return 'PDFCT14n%dUp' % i
+    def pdf_sys_name_down(number):
+        return 'PDFCT14n%dDown' % i
+
     if with_PDF_sys:
-        pdf_sys_names_Up   = ['PDFCT14n%dUp'   % i for i in range(1,57)]
-        pdf_sys_names_Down = ['PDFCT14n%dDown' % i for i in range(1,57)]
+        #pdf_sys_names_Up   = ['PDFCT14n%dUp'   % i for i in range(1,57)]
+        #pdf_sys_names_Down = ['PDFCT14n%dDown' % i for i in range(1,57)]
         for chan, ((procs, _), systs) in selected_channels.items():
           for proc in procs:
             for sys in systs:
@@ -4342,9 +4350,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                             # out_hs.update(OrderedDict([format_distrs(chan, proc, sys_name) for sys_name in ('PDFCT14n%dUp' % i, 'PDFCT14n%dDown' % i)]))
                             for i in range(1,57):
                                 pdf_w = ev.gen_weights_pdf_hessians[i] / weights_gen_weight_norm
-                                pdf_sys_name = pdf_sys_names_Up[i-1]
+                                pdf_sys_name = pdf_sys_name_up(i) #pdf_sys_names_Up[i-1]
+                                control_hs[pdf_sys_name].Fill(pdf_w)
                                 out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, record_weight * pdf_w)
-                                pdf_sys_name = pdf_sys_names_Down[i-1] # down is nominal
+                                pdf_sys_name = pdf_sys_name_down(i) #pdf_sys_names_Down[i-1] # down is nominal
                                 out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, record_weight)
                             continue
 
