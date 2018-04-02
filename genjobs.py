@@ -38,6 +38,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument("vNtupler",    help="Ntupler output version")
 parser.add_argument("vProc",       help="Processing version")
+parser.add_argument("chan_def",    help="definition of selection channels")
 parser.add_argument("-q", "--queue-dir",      type=str, default='./queue_dir',
         help="the directory for storing the generated job queues (default ./queue_dir)")
 parser.add_argument("-n", "--ntupler-dir",    type=str, default='/gstore/t3cms/store/user/otoldaie/',
@@ -215,9 +216,9 @@ logging.info("got %d requested dtags" % len(requested_dtags))
 job_dir_template = args.ntupler_dir + "/{vntupler}/{dset}/Ntupler_{vntupler}_{dtag}/" #*/0000/"
 # list this dir to get the available files
 if args.do_W_stitching:
-    job_template = "python channel_distrs_full_loop.py --do-W-stitching -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ -i {job_file}   || true"
+    job_template = "python channel_distrs_full_loop.py --do-W-stitching -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ {chans} -i {job_file}   || true"
 else:
-    job_template = "python channel_distrs_full_loop.py -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ -i {job_file}   || true"
+    job_template = "python channel_distrs_full_loop.py -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ {chans} -i {job_file}   || true"
 
 # make just flat list of jobs commands
 job_commands = []
@@ -256,7 +257,7 @@ for dtag in requested_dtags:
     logging.debug("%d .root files" % len(rootfiles))
 
     for job_file in rootfiles:
-        job_commands.append(job_template.format(vntupler=args.vNtupler, vproc=args.vProc, dtag=dtag, job_file=job_file))
+        job_commands.append(job_template.format(vntupler=args.vNtupler, vproc=args.vProc, dtag=dtag, job_file=job_file, chans=args.chan_def))
 
 logging.info("made %d job commands" % len(job_commands))
 

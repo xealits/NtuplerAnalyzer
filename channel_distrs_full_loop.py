@@ -22,6 +22,7 @@ if __name__ == '__main__':
     #parser.add_argument("input_file", help="file with results from job")
     #parser.add_argument("dtag",      help="basically it's the filename with the TTree from jobs")
     parser.add_argument("outdir",    help="where to store the output")
+    parser.add_argument("channels",  help="channels of the selection")
     parser.add_argument("-l", "--log-file",  type=str, default='', help="if given the log of the process will go to this file under outdir/log/<log_file>")
     #parser.add_argument("-s", "--range-min", type=int, default=0,    help="number of event to start processing from")
     #parser.add_argument("-e", "--range-max",   type=int, default=None, help="number of event to end processing")
@@ -70,7 +71,7 @@ if __name__ == '__main__':
         from support_channel_distrs import main # ROOT stuff is loaded here
         support_channel_distrs.OLD_MINIAOD_JETS = args.old_miniaod_jets
         support_channel_distrs.W_STITCHING = args.do_W_stitching
-        t = threading.Thread(target=main, args=(input_filename, fout_name, args.outdir))
+        t = threading.Thread(target=main, args=(input_filename, fout_name, args.outdir, args.channels))
         t.start()
         log_common.info('started thread on %s' % input_filename)
 

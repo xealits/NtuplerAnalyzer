@@ -851,7 +851,7 @@ def PFTau_FlightLength_significance(pv,  PVcov, sv, SVcov):
 control_counters = TH1D("control_counters", "", 500, 0, 500)
 
 # no data types/protocols in ROOT -- looping has to be done manually
-def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
+def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
     '''full_loop(tree, dtag)
 
     TTree tree
@@ -1336,7 +1336,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     except DY and WJets os iso -- with PU Up/Down
     '''
 
-    channels_optimized_alliso = {
+    selection_definitions = {
+        'channels_optimized_alliso' : {
                 'optmu_alliso_presel_2L1M':         (procs_mu, systematic_names_nominal),
                 'optmu_alliso_presel_2L1M_ss':      (procs_mu, systematic_names_nominal),
                 #'optmu_alliso_loose_2L1M':          (procs_mu, systematic_names_nominal),
@@ -1360,9 +1361,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'optel_alliso_tight_2L1M_lj_ss':    (procs_el, systematic_names_nominal),
                 'optel_alliso_tight_2L1M_ljout':    (procs_el, systematic_names_nominal),
                 'optel_alliso_tight_2L1M_ljout_ss': (procs_el, systematic_names_nominal),
-    }
+        },
 
-    channels_optimized = {
+        'channels_optimized' : {
                 'optmu_presel_2L1M':         (procs_mu, systematic_names_nominal),
                 'optmu_presel_2L1M_ss':      (procs_mu, systematic_names_nominal),
                 #'optmu_loose_2L1M':          (procs_mu, systematic_names_nominal),
@@ -1408,9 +1409,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_nominal),
                 'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_nominal),
                 'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_nominal),
-    }
+        },
 
-    channels_optimized_old_full_sys = {
+        'channels_optimized_old_full_sys' : {
                 'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
                 'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
                 'ctr_el_wjet':              (procs_el, systematic_names_pu),
@@ -1463,12 +1464,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_old_el_sel_lj_ss':     (procs_el, systematic_names_all_with_th),
                 'ctr_old_el_sel_ljout':     (procs_el, systematic_names_all_with_th),
                 'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_all_with_th),
-    }
+        },
 
-    channels_full_sys_electron_selections = {
+        'channels_full_sys_electron_selections' : {
                 'ctr_el_wjet':              (procs_el, systematic_names_pu),
                 'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
-
                 'ctr_old_el_presel':        (procs_el, systematic_names_pu_toppt),     # testing issue with event yield advantage
                 'ctr_old_el_presel_ss':     (procs_el, systematic_names_pu_toppt),
                 'ctr_old_el_selVloose':     (procs_el, systematic_names_all_with_th),
@@ -1479,6 +1479,50 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
                 'ctr_old_el_sel_lj_ss':     (procs_el, systematic_names_all_with_th),
                 'ctr_old_el_sel_ljout':     (procs_el, systematic_names_all_with_th),
                 'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_all_with_th),
+        },
+
+        'channels_full_sys_muon_selections' : {
+                'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
+                'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
+                'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
+                'ctr_old_mu_selVloose':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_ss':  (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel':           (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_all_with_th),
+        },
+
+        'channels_full_sys_lep_selections' : {
+                'ctr_el_wjet':              (procs_el, systematic_names_pu),
+                'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
+                'ctr_old_el_presel':        (procs_el, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                'ctr_old_el_presel_ss':     (procs_el, systematic_names_pu_toppt),
+                'ctr_old_el_selVloose':     (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_selVloose_ss':  (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel':           (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_ss':        (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_lj':        (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_lj_ss':     (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_ljout':     (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_all_with_th),
+
+                'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
+                'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
+                'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
+                'ctr_old_mu_selVloose':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_ss':  (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel':           (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_all_with_th),
+        }
     }
 
     print systematic_names_all_with_th
@@ -1490,7 +1534,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
     #channels = channels_usual
     #channels, with_bSF = channels_mutau_optimization_scan, False
     #selected_channels = channels_optimized_old_full_sys
-    selected_channels = channels_full_sys_electron_selections
+    #selected_channels = channels_full_sys_electron_selections
+    selected_channels = selection_definitions[channels_to_select]
 
     with_JER   = isMC and True
     with_JES   = isMC and True
@@ -2017,7 +2062,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_el # passes_optimized
+        event_passes = pass_el or pass_mu # passes_optimized
 
         if not event_passes: continue
         control_counters.Fill(51)
@@ -4919,7 +4964,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger):
 
 
 #def main(input_dir, dtag, outdir, range_min, range_max):
-def main(input_filename, fout_name, outdir, lumi_bcdef=20263.3, lumi_gh=16518.588):
+def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=20263.3, lumi_gh=16518.588):
     '''main(input_filename, outdir, range_min, range_max, lumi_bcdef=20263.3, lumi_gh=16518.588)
 
     lumi defaults are from _full_ golden json for muon
@@ -4983,7 +5028,7 @@ def main(input_filename, fout_name, outdir, lumi_bcdef=20263.3, lumi_gh=16518.58
     #logger.write("range = %d, %d\n" % (range_min, range_max))
 
     logger.write("lumi BCDEF GH = %f %f\n" % (lumi_bcdef, lumi_gh))
-    out_hs, c_hs, control_counters, perf_profile = full_loop(tree, input_filename, lumi_bcdef, lumi_gh, logger)
+    out_hs, c_hs, control_counters, perf_profile = full_loop(tree, input_filename, lumi_bcdef, lumi_gh, logger, channels_to_select=channels_to_select)
 
     perf_profile.dump_stats(logger_file.split('.log')[0] + '.cprof')
 
