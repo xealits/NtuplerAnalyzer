@@ -5,15 +5,18 @@ process     10        9         8         7             6           5           
 rate        117.997   10.96     417.34    169.45        29.42       205.302     25.73    228.08       3523.18   328.59    3750.46     ------------------------------------------------------------------------------------------------------------------------------------------------------------
 '''
 
-all_known_sorted_processes = [ 'dy_tautau', 'dy_other',  'wjets', 'dibosons',  's_top_eltau',  's_top_mutau',   's_top_other', 's_top_lj',    'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'tt_eltau', 'qcd']
+all_known_sorted_processes = [ 'dy_tautau', 'dy_other',  'wjets', 'wjets_taul', 'wjets_tauh', 'dibosons',  's_top_eltau',  's_top_mutau',   's_top_other', 's_top_lj',    'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'tt_eltau', 'tt_taulj', 'qcd']
+# tt_taulj
+# wjets_taul
+# wjets_tauh
 
-processes_mu = ['dy_tautau', 'dy_other',  'wjets',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'qcd']
+processes_mu = ['dy_tautau', 'dy_other',  'wjets', 'wjets_taul', 'wjets_tauh',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'tt_taulj', 'qcd']
 #processes_mu = set(['dy_tautau', 'dy_other',  'wjets',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau'])
-processes_mu_id = {'qcd': 11, 'dy_tautau':10, 'dy_other': 9,  'wjets': 8,     's_top_mutau': 7,   's_top_other': 6, 's_top_lj': 5,    'dibosons': 4, 'tt_taultauh': 3,  'tt_lj': 2,     'tt_other': 1,  'tt_mutau':0}
+processes_mu_id = {'qcd': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets': 11,  'wjets_taul': 10,  'wjets_tauh': 9,     's_top_mutau': 8,   's_top_other': 7, 's_top_lj': 6,    'dibosons': 5,     'tt_other': 4, 'tt_taultauh': 3, 'tt_taulj': 2,  'tt_lj': 1,  'tt_mutau':0}
 
-processes_el = ['dy_tautau', 'dy_other',  'wjets',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau', 'qcd']
+processes_el = ['dy_tautau', 'dy_other',  'wjets', 'wjets_taul', 'wjets_tauh',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau', 'tt_taulj', 'qcd']
 #processes_el = set(['dy_tautau', 'dy_other',  'wjets',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau'])
-processes_el_id = {'qcd': 11, 'dy_tautau':10, 'dy_other': 9,  'wjets': 8,     's_top_eltau': 7,   's_top_other': 6, 's_top_lj': 5,    'dibosons': 4, 'tt_taultauh': 3,  'tt_lj': 2,     'tt_other': 1,  'tt_eltau':0}
+processes_el_id = {'qcd': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets': 11,  'wjets_taul': 10,  'wjets_tauh': 9,     's_top_eltau': 8,   's_top_other': 7, 's_top_lj': 6,    'dibosons': 5,     'tt_other': 4, 'tt_taultauh': 3, 'tt_taulj': 2,  'tt_lj': 1,  'tt_eltau':0}
 
 """
 \text{dy}\rightarrow{\tau\tau}

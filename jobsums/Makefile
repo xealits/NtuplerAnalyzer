@@ -229,36 +229,37 @@ fit_datafile: mc_in=v23p4_mc_fast_run1W0Jets
 fit_datafile: lumi=35800
 fit_datafile: wjet=0.85
 fit_datafile: qcd=1.
+fit_datafile: chan=ctr_old_mu_sel
 fit_datafile:
 	# histosel-roots//v23p4_mc_fast_run1W0Jets_HISTOSEL_Mt_lep_met_f_ctr_old_mu_sel_NOMINAL_data-qcd.root
 	# the NOMINAL sets
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} --qcd ${qcd} -c ctr_old_mu_sel -d Mt_lep_met_f -o histosel-roots/ || true
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} --qcd ${qcd} -c ${chan} -d Mt_lep_met_f -o histosel-roots/ || true
 	# the other systematics without data QCD
 	#for SYS in TOPPTUp TOPPTDown PUUp PUDown LEPUp LEPDown JESUp JESDown JERUp JERDown TauESUp TauESDown bSFUp bSFDown;
 	# object systs
 	for SYS in JES JER TauES bSF; \
         do \
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Up   -c ctr_old_mu_sel -d Mt_lep_met_f -o histosel-roots/ ; \
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Down -c ctr_old_mu_sel -d Mt_lep_met_f -o histosel-roots/ ; \
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Up   -c ${chan} -d Mt_lep_met_f -o histosel-roots/ ; \
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Down -c ${chan} -d Mt_lep_met_f -o histosel-roots/ ; \
         done
 	# basic weight systs
 	for SYS in LEP PU TOPPT AlphaS Frag SemilepBR Peterson Mr Mf Mfr; \
         do \
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Up   -c ctr_old_mu_sel -d Mt_lep_met_f -o histosel-roots/ ; \
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Down -c ctr_old_mu_sel -d Mt_lep_met_f -o histosel-roots/ ; \
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Up   -c ${chan} -d Mt_lep_met_f -o histosel-roots/ ; \
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Down -c ${chan} -d Mt_lep_met_f -o histosel-roots/ ; \
         done
 	# pdfs
 	# PDFCT14n%dUp
 	for NUM in `seq 56`; \
         do \
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s PDFCT14n$${NUM}Up   -c ctr_old_mu_sel -d Mt_lep_met_f -o histosel-roots/ ; \
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s PDFCT14n$${NUM}Down -c ctr_old_mu_sel -d Mt_lep_met_f -o histosel-roots/ ; \
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s PDFCT14n$${NUM}Up   -c ${chan} -d Mt_lep_met_f -o histosel-roots/ ; \
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s PDFCT14n$${NUM}Down -c ${chan} -d Mt_lep_met_f -o histosel-roots/ ; \
         done
 	# the hadd of produced files
 	hadd histosel-roots/${mc_in}_histosel.root histosel-roots/${mc_in}_HISTOSEL*root
 
 clean_fit_datafile: mc_in=mc_mu_try2_split12
 clean_fit_datafile:
-	hadd histosel-roots/${mc_in}_HISTOSEL*root
+	rm histosel-roots/${mc_in}_HISTOSEL*root
 
 
