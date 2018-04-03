@@ -218,11 +218,13 @@ for channel in channels:
         print 'bin           ' + ''.join('%-25s' % channel for _ in processes)
         print 'process       ' + ''.join('%-25s' % proc for proc in processes)
         print 'process       ' + ''.join('%-25d' % processes_id[proc] for proc in processes)
-        print 'rate          ' + ''.join('%-25.3f' % histo.Integral() for histo in histos)
+        print 'rate          ' + ''.join('%-25.3f' % (proc_yields[proc][channel] if proc in proc_yields else 0) for proc in processes)
 
         print full_path
-        print 'obs %f' % data_histo.Integral()
-        print 'mc sum = %f' % sum(h.Integral() for h in histos)
+        #print 'obs %f' % data_histo.Integral()
+        #print 'mc sum = %f' % sum(h.Integral() for h in histos)
+        print 'obs %f'      % data_yields[channel]
+        print 'mc sum = %f' % sum(proc[channel] for proc in proc_yields.values())
 
 
 proc_s = '%40s'

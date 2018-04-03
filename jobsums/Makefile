@@ -256,7 +256,7 @@ fit_datafile:
 	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s PDFCT14n$${NUM}Down -c ${chan} -d Mt_lep_met_f -o histosel-roots/ ; \
         done
 	# the hadd of produced files
-	hadd histosel-roots/${mc_in}_histosel.root histosel-roots/${mc_in}_HISTOSEL*root
+	hadd histosel-roots/${mc_in}_histosel_${chan}.root histosel-roots/${mc_in}_HISTOSEL*_${chan}_*.root
 
 clean_fit_datafile: mc_in=mc_mu_try2_split12
 clean_fit_datafile:
