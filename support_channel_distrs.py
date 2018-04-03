@@ -964,6 +964,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
     ('weights_gen_weight_semilepbrUp',      TH1D("weights_semilepbrUp",   "", 50, 0, 2)),
     ('weights_gen_weight_semilepbrDown',    TH1D("weights_semilepbrDown", "", 50, 0, 2)),
 
+    ('AlphaSUp',       TH1D("weight_AlphaSUp",       "", 50, 0, 2)),
+    ('AlphaSDown',     TH1D("weight_AlphaSDown",     "", 50, 0, 2)),
+    ('FragUp',         TH1D("weight_FragUp",         "", 50, 0, 2)),
+    ('FragDown',       TH1D("weight_FragDown",       "", 50, 0, 2)),
+    ('SemilepBRUp',    TH1D("weight_SemilepBRUp",         "", 50, 0, 2)),
+    ('SemilepBRDown',  TH1D("weight_SemilepBRDown",       "", 50, 0, 2)),
+    ('PetersonUp',     TH1D("weight_PetersonUp",         "", 50, 0, 2)),
+    ('PetersonDown',   TH1D("weight_PetersonDown",       "", 50, 0, 2)),
+    ('MrUp',      TH1D("weight_MrUp",         "", 50, 0, 2)),
+    ('MrDown',    TH1D("weight_MrDown",       "", 50, 0, 2)),
+    ('MfUp',      TH1D("weight_MfUp",         "", 50, 0, 2)),
+    ('MfDown',    TH1D("weight_MfDown",       "", 50, 0, 2)),
+    ('MfrUp',     TH1D("weight_MfrUp",        "", 50, 0, 2)),
+    ('MfrDown',   TH1D("weight_MfrDown",      "", 50, 0, 2)),
+
     ('weights_gen_weight_nom'   , TH1D('weights_gen_weight_nom'  , "", 50, 0, 2)),
     ('weights_gen_weight_f_rUp' , TH1D('weights_gen_weight_f_rUp', "", 50, 0, 2)),
     ('weights_gen_weight_f_rDn' , TH1D('weights_gen_weight_f_rDn', "", 50, 0, 2)),
@@ -4406,6 +4421,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                         if not weight_sys_name in syst_weights:
                             continue
                         weight, weight_PU, weight_top_pt, weight_th = syst_weights[weight_sys_name]
+                        if weight_sys_name in control_hs:
+                            control_hs[weight_sys_name].Fill(weight_th)
+
                         sys_weight            = weight * weight_th * weight_PU * weight_top_pt
                         record_weight_sys = sys_weight * weight_bSF
                         out_hs[(chan, record_proc, weight_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met,     record_weight_sys)
