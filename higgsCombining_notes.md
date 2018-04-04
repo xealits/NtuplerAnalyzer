@@ -89,7 +89,10 @@ go to HiggsCombine CMSSW release:
 
 Fit MC to Data with all nuisances, storing NLL of each variation:
 
-    combine -M MultiDimFit fit-stuff/latest_datacard_mu.txt --algo grid --points 2000 --rMax 2 --name MuShapes
+    combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.txt --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name MuShapes
+
+
+if needed --freezeNuisanceGroup tt_th_frag,tt_th_match
 
 -- `--algo grid` runs the fit over #N points (given by `--points N`) in the space of nuisance parameters.
 2000 is many, usually 100 is ok to check.
@@ -565,6 +568,8 @@ electrons (I had some issues with these, but fixed them somehow):
     ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doFits --parallel 5
     ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 -o latest_el_impacts.json
     ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o latest_el_impacts
+
+if needed --freezeNuisanceGroup tt_th_frag,tt_th_match
 
 muons:
 

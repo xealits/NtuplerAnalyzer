@@ -1802,9 +1802,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'rho':         TH1D('%s_%s_%s_rho'        % (chan, proc, sys), '', 50, 0, 50),
 
              'njets':       TH1D('%s_%s_%s_njets'      % (chan, proc, sys), '', 10, 0, 10),
+             'njets_all':   TH1D('%s_%s_%s_njets_all'      % (chan, proc, sys), '', 10, 0, 10),
              'nRjets':      TH1D('%s_%s_%s_nRjets'     % (chan, proc, sys), '', 10, 0, 10),
              'nMbjets':     TH1D('%s_%s_%s_nMbjets'    % (chan, proc, sys), '', 5, 0, 5),
              'nLbjets':     TH1D('%s_%s_%s_nLbjets'    % (chan, proc, sys), '', 5, 0, 5),
+             'nTBjets':     TH1D('%s_%s_%s_nTBjets'    % (chan, proc, sys), '', 5, 0, 5),
+             'nTRjets':     TH1D('%s_%s_%s_nTRjets'    % (chan, proc, sys), '', 5, 0, 5),
+
              'njets_cats':  TH1D('%s_%s_%s_njets_cats' % (chan, proc, sys), '', 45, 0, 45),
              'ntaus':       TH1D('%s_%s_%s_ntaus'      % (chan, proc, sys), '', 5, 0, 5),
 
@@ -4451,7 +4455,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                             continue
                         sys_weight, sys_weight_PU, sys_weight_top_pt, sys_weight_th = syst_weights[weight_sys_name]
                         if weight_sys_name in control_hs:
-                            control_hs[weight_sys_name].Fill(weight_th)
+                            control_hs[weight_sys_name].Fill(sys_weight_th)
 
                         sys_weight       *= sys_weight_th * sys_weight_PU * sys_weight_top_pt
                         record_weight_sys = sys_weight * weight_bSF
@@ -4827,15 +4831,19 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 #'nLbjets':     TH1D('%s_%s_%s_nLbjets'   % (chan, record_proc, sys), '', 5, 0, 5),
                 #'ntaus':       TH1D('%s_%s_%s_ntaus'     % (chan, record_proc, sys), '', 5, 0, 5),
 
-                n_rest_jets   = len(sel_jets.rest)   + len(sel_jets.taumatched[1])
+                n_rest_jets   = len(sel_jets.rest) #  + len(sel_jets.taumatched[1])
                 #n_medium_jets = len(sel_jets.medium)
                 n_medium_jets = len(sel_jets.medium) # + len(sel_jets.taumatched[0])
                 n_loose_jets  = len(sel_jets.loose)
 
                 out_hs[(chan, record_proc, sys_name)]['njets']  .Fill(len(all_sel_jets),   record_weight)
+                out_hs[(chan, record_proc, sys_name)]['njets_all']  .Fill(len(all_sel_jets) + len(sel_jets.taumatched[0]) + len(sel_jets.taumatched[1]),   record_weight)
                 out_hs[(chan, record_proc, sys_name)]['nRjets'] .Fill(n_rest_jets   , record_weight)
                 out_hs[(chan, record_proc, sys_name)]['nMbjets'].Fill(n_medium_jets , record_weight)
                 out_hs[(chan, record_proc, sys_name)]['nLbjets'].Fill(n_loose_jets  , record_weight)
+
+                out_hs[(chan, record_proc, sys_name)]['nTBjets'].Fill(sel_jets.taumatched[0], record_weight)
+                out_hs[(chan, record_proc, sys_name)]['nTRjets'].Fill(sel_jets.taumatched[1], record_weight)
 
                 out_hs[(chan, record_proc, sys_name)]['met_nRjets'] .Fill(met_pt, n_rest_jets   , record_weight)
 
