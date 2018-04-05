@@ -4420,11 +4420,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                         # must by a systematic weight, not syst of objects
                         if not weight_sys_name in syst_weights:
                             continue
-                        weight, weight_PU, weight_top_pt, weight_th = syst_weights[weight_sys_name]
+                        sys_weight, sys_weight_PU, sys_weight_top_pt, sys_weight_th = syst_weights[weight_sys_name]
                         if weight_sys_name in control_hs:
                             control_hs[weight_sys_name].Fill(weight_th)
 
-                        sys_weight            = weight * weight_th * weight_PU * weight_top_pt
+                        sys_weight       *= sys_weight_th * sys_weight_PU * sys_weight_top_pt
                         record_weight_sys = sys_weight * weight_bSF
                         out_hs[(chan, record_proc, weight_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met,     record_weight_sys)
                         out_hs[(chan, record_proc, weight_sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met,     record_weight_sys)

@@ -1,3 +1,33 @@
+weights:
+weight         0.95
+pu             1.05
+bSF            0.97
+record_weight  0.96
+
+
+syst_weights_nominal = [weight, weight_pu, 1., 1.]
+weight, weight_PU, weight_top_pt, weight_th = syst_weights_nominal
+nom_sys_weight       = weight * weight_th * weight_PU * weight_top_pt
+record_weight        = nom_sys_weight * weight_bSF
+
+
+
+before that:
+
+weight = 1.
+weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+
+weight control histos for el SFs:
+trk  0.988
+id   0.981
+trg  0.97713
+0.988 * 0.981 * 0.977 = 0.9469
+all  0.948
+
+-- matches
+
+
+
 -- How do you treat using both the inclusive W+jets sample as well as the dedicated W+1-4jets samples?
 
 In the presented version of AN the dedicated samples are just added to the inclusive sample. For lumi normalization the cross-section of inclusive sample is reduced by the sum of N-jet cross-sections.
