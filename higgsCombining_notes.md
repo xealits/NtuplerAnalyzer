@@ -147,6 +147,9 @@ this crashes: `--setParameterRanges TOPPT=-1.0,2.0`
     root -l higgsCombineElShapesOldNoTTSys.MultiDimFit.mH120.root
     limit->Draw("2*deltaNLL:r", "deltaNLL>0 && 2*deltaNLL<10", "L")
 
+also useful:
+
+--saveSpecifiedNuis
 
 
 
@@ -208,6 +211,8 @@ also some runs:
     combine -M MultiDimFit --algo grid --points  100 --rMin 0.7 --rMax 1.3 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff" -n MuNoTau
     combine -M MultiDimFit --algo grid --points  100 --rMin 0.7 --rMax 1.3 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV" -n MuNoLumi
     combine -M MultiDimFit --algo grid --points  100 --rMin 0.7 --rMax 1.3 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit -n MuFullUncertainty
+
+no the weights if needed --freezeNuisanceGroup tt_th_pdf,tt_th_frag,tt_th_match
 
 To plot the breakdown with the script from Harvester repository:
 
