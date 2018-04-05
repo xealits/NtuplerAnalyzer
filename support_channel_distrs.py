@@ -2255,8 +2255,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     #weights_gen_weight_norm = (weights_gen_weight_alphas[0] + weights_gen_weight_alphas[1]) / 2
                     weights_gen_weight_norm = ev.gen_weights_pdf_hessians[0]
                     # norm is the nominal PDF
-                    if weights_gen_weight_norm < 0.00001:
+                    if 0. <= weights_gen_weight_norm < 0.00001:
                         weights_gen_weight_norm = 0.00001
+                    elif 0. > weights_gen_weight_norm > -0.00001:
+                        weights_gen_weight_norm = -0.00001
                     #control_hs['weights_gen_weight_norm']   .Fill(ev.gen_weight_too)
                     control_hs['weights_gen_weight_too']        .Fill(ev.gen_weight_too)
                     control_hs['weights_gen_weight_norm']       .Fill(ev.gen_weight_norm)
