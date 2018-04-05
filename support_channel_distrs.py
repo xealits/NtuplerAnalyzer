@@ -4432,6 +4432,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                             # out_hs.update(OrderedDict([format_distrs(chan, proc, sys_name) for sys_name in ('PDFCT14n%dUp' % i, 'PDFCT14n%dDown' % i)]))
                             for i in range(1,57):
                                 pdf_w = ev.gen_weights_pdf_hessians[i] / weights_gen_weight_norm
+                                # 1 event in muon selection has a number of PDF sets far above nominal value, weighted at 18 and more
+                                # row 92098 in
+                                # /gstore/t3cms/store/user/otoldaie/v23/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v23_MC2016_Summer16_TTJets_powheg/180317_001114/0000/MC2016_Summer16_TTJets_powheg_91.root
+                                # for PDF n2 (one of the problematic ones) there are 2 more events with pdf weight more than 2
+                                # the rest (far larger majority) are below
+                                if pdf_w > 2.:
+                                    pdf_w = 1.
                                 pdf_sys_name = pdf_sys_name_up(i) #pdf_sys_names_Up[i-1]
                                 control_hs[pdf_sys_name].Fill(pdf_w)
                                 out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, record_weight * pdf_w)

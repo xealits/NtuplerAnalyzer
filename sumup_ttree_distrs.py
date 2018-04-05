@@ -20,10 +20,10 @@ parser.add_argument('--histo-color', type=str, default=None, help='optional rgb 
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 parser.add_argument("--output", type=str, default="output.root", help="filename for output")
 
-parser.add_argument("--per-weight",  action='store_true', help="normalize by event weight of datasets")
+parser.add_argument("--per-weight", action='store_true', help="normalize by event weight of datasets")
+parser.add_argument("--scan",       action='store_true', help="also scan events ant print out")
 
-parser.add_argument('input_files', nargs='+', help="""the files to sum up, passed by shell,
-as:
+parser.add_argument('input_files', nargs='+', help="""the files to sum up, passed by shell, as:
 
 /gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_*.root""")
 
@@ -101,7 +101,10 @@ for filename in input_files:
     # Draw the file and sum up
     # 
     # TOFIX: without explicit range the histos won't add up
-    ttree.Draw(draw_command, args.cond_com)
+    ttree.Draw(draw_command,  args.cond_com)
+    if args.scan:
+        print filename
+        ttree.Scan(args.draw_com, args.cond_com)
 
     histo = ttree.GetHistogram()
     histo.SetDirectory(0)

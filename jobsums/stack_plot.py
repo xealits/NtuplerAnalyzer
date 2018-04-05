@@ -886,6 +886,16 @@ else:
 
         if args.y_range:
             min_y, max_y = [float(x) for x in args.y_range.split(',')]
+            histos_data_sum.SetMaximum(max_y)
+            hs_sum1        .SetMaximum(max_y)
+            histos_data_sum.SetMinimum(min_y)
+            hs_sum1        .SetMinimum(min_y)
+            #hs_sum1.GetYaxis().SetRange(min_y, max_y)
+            #hs_sum1.GetYaxis().SetRangeUser(min_y, max_y)
+            #histos_data_sum.GetYaxis().SetRange(min_y, max_y)
+            #histos_data_sum.GetYaxis().SetRangeUser(min_y, max_y)
+            hs_sum1         .SetAxisRange(min_y, max_y, "Y")
+            histos_data_sum .SetAxisRange(min_y, max_y, "Y")
 
         # remove the label on stack plot if ratio is there
         if args.ratio:
@@ -935,6 +945,11 @@ else:
         #hs             .SetTitle(title_plot)
         hs_sum1        .SetTitle(title_plot)
         histos_data_sum.SetTitle(title_plot)
+
+        if args.y_range:
+            min_y, max_y = [float(x) for x in args.y_range.split(',')]
+            hs_sum1         .SetAxisRange(min_y, max_y, "Y")
+            histos_data_sum .SetAxisRange(min_y, max_y, "Y")
 
         # damn root's inability to adjust maxima and all these workarounds...
         if not args.no_data:
