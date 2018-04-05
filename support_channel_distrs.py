@@ -1497,18 +1497,22 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         },
 
         'channels_full_sys_muon_selections' : {
-                'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
-                'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
-                'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
-                'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
-                'ctr_old_mu_selVloose':     (procs_mu, systematic_names_all_with_th),
-                'ctr_old_mu_selVloose_ss':  (procs_mu, systematic_names_all_with_th),
-                'ctr_old_mu_sel':           (procs_mu, systematic_names_all_with_th),
-                'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_all_with_th),
-                'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_all_with_th),
-                'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_all_with_th),
-                'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_all_with_th),
-                'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_all_with_th),
+                'ctr_mu_wjet':                    (procs_mu, systematic_names_pu),
+                'ctr_mu_wjet_ss':                 (procs_mu, systematic_names_pu),
+                'ctr_old_mu_presel':              (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                'ctr_old_mu_presel_ss':           (procs_mu, systematic_names_pu_toppt),
+                'ctr_old_mu_selVloose':           (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_ss':        (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_lj':        (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_lj_ss':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_ljout':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_ljout_ss':  (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel':                 (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ss':              (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_lj':              (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_lj_ss':           (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ljout':           (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ljout_ss':        (procs_mu, systematic_names_all_with_th),
         },
 
         'channels_full_sys_lep_selections' : {
@@ -4161,8 +4165,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 sel_b_weight = weight_bSF_old
                 if old_os:
                     passed_channels.append(('ctr_old_mu_selVloose', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
+                    if large_lj:
+                        passed_channels.append(('ctr_old_mu_selVloose_lj', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
+                    else:
+                        passed_channels.append(('ctr_old_mu_selVloose_ljout', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
                 else:
                     passed_channels.append(('ctr_old_mu_selVloose_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
+                    if large_lj:
+                        passed_channels.append(('ctr_old_mu_selVloose_lj_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
+                    else:
+                        passed_channels.append(('ctr_old_mu_selVloose_ljout_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
 
             if pass_old_el_sel_Vloose:
                 # actually I should add ev.lep_p4[0].pt() > 27
@@ -4170,8 +4182,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 sel_b_weight = weight_bSF_old
                 if old_os:
                     passed_channels.append(('ctr_old_el_selVloose', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
+                    if large_lj:
+                        passed_channels.append(('ctr_old_el_selVloose_lj', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
+                    else:
+                        passed_channels.append(('ctr_old_el_selVloose_ljout', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
                 else:
                     passed_channels.append(('ctr_old_el_selVloose_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
+                    if large_lj:
+                        passed_channels.append(('ctr_old_el_selVloose_lj_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
+                    else:
+                        passed_channels.append(('ctr_old_el_selVloose_ljout_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
 
             if pass_old_mu_sel and tauSign3:
                 old_os = taus.old[0][2] * ev.lep_id[0] < 0
