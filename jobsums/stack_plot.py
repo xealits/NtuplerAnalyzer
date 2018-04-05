@@ -219,7 +219,13 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
            h_init = process.ReadObj().Get(fixed_sys_name + '/' + histo_name)
 
            if not h_init:
-               logging.debug("absent %s" % histo_name)
+               logging.debug("absent %s" % fixed_sys_name)
+               fixed_sys_name = 'NOMINAL'
+               histo_name = '_'.join([channel, nick, fixed_sys_name, distr_name])
+               h_init = process.ReadObj().Get(fixed_sys_name + '/' + histo_name)
+
+           if not h_init:
+               logging.debug("absent NOMINAL %s" % histo_name)
                continue
 
            # just take shapes for all channels
