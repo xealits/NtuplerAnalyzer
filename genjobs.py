@@ -118,6 +118,7 @@ dtags_std_mc = [
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1",
 "MC2016_Summer16_SingleT_tW_5FS_powheg",
 "MC2016_Summer16_SingleTbar_tW_5FS_powheg",
+"MC2016_Summer16_TTJets_powheg",
 "MC2016_Summer16_W1Jets_madgraph",
 "MC2016_Summer16_W2Jets_madgraph",
 "MC2016_Summer16_W2Jets_madgraph_ext1",
@@ -130,7 +131,21 @@ dtags_std_mc = [
 "MC2016_Summer16_WJets_amcatnlo_ext2_v2",
 "MC2016_Summer16_WJets_madgraph",
 "MC2016_Summer16_WJets_madgraph_ext2_v1",
-"MC2016_Summer16_TTJets_powheg",
+]
+
+dtags_wjets = [
+"MC2016_Summer16_W1Jets_madgraph",
+"MC2016_Summer16_W2Jets_madgraph",
+"MC2016_Summer16_W2Jets_madgraph_ext1",
+"MC2016_Summer16_W3Jets_madgraph",
+"MC2016_Summer16_W3Jets_madgraph_ext1",
+"MC2016_Summer16_W4Jets_madgraph",
+"MC2016_Summer16_W4Jets_madgraph_ext1",
+"MC2016_Summer16_W4Jets_madgraph_ext2",
+"MC2016_Summer16_WJets_amcatnlo",
+"MC2016_Summer16_WJets_amcatnlo_ext2_v2",
+"MC2016_Summer16_WJets_madgraph",
+"MC2016_Summer16_WJets_madgraph_ext2_v1",
 ]
 
 dtags_singletop_mc = [
@@ -186,7 +201,8 @@ dtags_std = dtags_std_mc + dtags_std_data
 
 dtag_groups = {'std': dtags_std, 'std_data': dtags_std_data, 'data_el': dtags_std_data_el, 'data_mu': dtags_std_data_mu,
     'std_mc': dtags_std_mc, 'updowns': dtags_updowns_old,
-    'singletop': dtags_singletop_mc}
+    'singletop': dtags_singletop_mc,
+    'wjets': dtags_wjets}
 
 
 # parse the requested dtags and groups
