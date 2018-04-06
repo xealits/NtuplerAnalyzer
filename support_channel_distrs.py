@@ -4842,8 +4842,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['nMbjets'].Fill(n_medium_jets , record_weight)
                 out_hs[(chan, record_proc, sys_name)]['nLbjets'].Fill(n_loose_jets  , record_weight)
 
-                out_hs[(chan, record_proc, sys_name)]['nTBjets'].Fill(sel_jets.taumatched[0], record_weight)
-                out_hs[(chan, record_proc, sys_name)]['nTRjets'].Fill(sel_jets.taumatched[1], record_weight)
+                out_hs[(chan, record_proc, sys_name)]['nTBjets'].Fill(len(sel_jets.taumatched[0]), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['nTRjets'].Fill(len(sel_jets.taumatched[1]), record_weight)
 
                 out_hs[(chan, record_proc, sys_name)]['met_nRjets'] .Fill(met_pt, n_rest_jets   , record_weight)
 
