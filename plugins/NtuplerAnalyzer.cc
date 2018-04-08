@@ -999,6 +999,12 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	NT_output_ttree = fs->make<TTree>("reduced_ttree", "TTree with reduced event data");
 	event_counter  = fs->make<TH1D>( "events_counter"  , "pass category", 100,  0, 100);
 	weight_counter = fs->make<TH1D>( "weight_counter"  , "pass category", 100,  0, 100); // for control of effect from PU reweighting, aMCatNLO gen -1 weights, top pt
+	add more bins for various systematic weights in case they are shape-systematics:
+	PDF, fragmentation, QCD scale etc
+	-- these per-event weights are normalized to some "central" weight
+	   does it cover the event weight sum normalization?
+	   anyway add these counters just in case
+
 	// in principle it should be orthogonal to the ntuple preselection
 	// and be possible to do it after the preselection
 	// N_presel / weighted N_presel = N_all / weighted N_all
@@ -1090,6 +1096,16 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NT_runNumber   = iEvent.id().run();
 	NT_lumi        = iEvent.luminosityBlock();
 
+	/*
+	 * weird cms software needs pat jets to get the jet flavour of reco::GenJet
+	 */
+
+	// jets
+	pat::JetCollection jets;
+	edm::Handle<pat::JetCollection>jetsHandle;
+	//jetsHandle.getByLabel(ev, "slimmedJets");
+	iEvent.getByToken(jets_, jetsHandle);
+	if(jetsHandle.isValid() ) jets = *jetsHandle;
 
 	// for matching reco to gen I need
 	// leptons (11, 13), taus (15) and tau od DM10 (3ch) from hard processes or from tt decay in case of tt
@@ -1354,6 +1370,26 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			edm::Ref<std::vector<reco::GenJet> > genJetRef(genJets2, genJet - genJets2->begin()); // this looks really weird
 			//cout << "pt=" << genJet->pt() << " id=" << genJet->pdgId() << " petersonFragWeight=" << (*petersonFrag)[genJetRef] << endl;
 			//...
+			//Check if the jet is b-jet
+			//sadly, these genJets are reco::GenJet
+			//they don't have partonFlavour, only pat jets have it
+			//match within dR < 0.4 to pat jets, get the flavour
+			float min_dR_to_patJet = 999., dR_max = 0.4;
+			unsigned int min_dR_partonFlavour = 0;
+			for(auto patJet=jets->begin(); patJet!=jets->end(); ++patJet)
+				{
+				float dR_to_patJet = reco::deltaR(patJet, genJet);
+				if (dR_to_patJet < dR_max && dR_to_patJet < min_dR_to_patJet)
+					{
+					min_dR_to_patJet = dR_to_patJet;
+					min_dR_partonFlavour = abs(patJet.partonFlavour());
+					// break; maybe?
+					}
+				}
+
+			// these systematic weights are only for b-jets
+			if (min_dR_partonFlavour != 5) continue;
+
 			weight_centralFrag   *= (*centralFrag)[genJetRef];
 			weight_upFrag        *= (*upFrag)[genJetRef];
 			weight_downFrag      *= (*downFrag)[genJetRef];
@@ -2467,12 +2503,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 * kinematic cuts
 	 */
 
-	// jets
-	pat::JetCollection jets;
-	edm::Handle<pat::JetCollection>jetsHandle;
-	//jetsHandle.getByLabel(ev, "slimmedJets");
-	iEvent.getByToken(jets_, jetsHandle);
-	if(jetsHandle.isValid() ) jets = *jetsHandle;
+	// PAT jets are opened above
+	// to have access to their partonFlavour/hadronFlavour
+	// at processing MC weights
 
 	// get genJets from the event
 	std::vector<reco::GenJet> genJets;
