@@ -232,30 +232,31 @@ fit_datafile: qcd=1.
 fit_datafile: chan=ctr_old_mu_sel
 fit_datafile: out_dir=histosel-roots/
 fit_datafile: add_options=""
+fit_datafile: distr=Mt_lep_met_f
 fit_datafile:
 	# histosel-roots//v23p4_mc_fast_run1W0Jets_HISTOSEL_Mt_lep_met_f_ctr_old_mu_sel_NOMINAL_data-qcd.root
 	# the NOMINAL sets
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} --qcd ${qcd} -c ${chan} -d Mt_lep_met_f ${add_options} -o ${out_dir} || true
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} --qcd ${qcd} -c ${chan} -d ${distr} ${add_options} -o ${out_dir} || true
 	# the other systematics without data QCD
 	#for SYS in TOPPTUp TOPPTDown PUUp PUDown LEPUp LEPDown JESUp JESDown JERUp JERDown TauESUp TauESDown bSFUp bSFDown;
 	# object systs
 	for SYS in JES JER TauES bSF; \
         do \
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Up   -c ${chan} -d Mt_lep_met_f ${add_options} -o ${out_dir} ; \
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Down -c ${chan} -d Mt_lep_met_f ${add_options} -o ${out_dir} ; \
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Up   -c ${chan} -d ${distr} ${add_options} -o ${out_dir} ; \
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Down -c ${chan} -d ${distr} ${add_options} -o ${out_dir} ; \
         done
 	# basic weight systs
 	for SYS in LEP PU TOPPT AlphaS Frag SemilepBR Peterson Mr Mf Mfr; \
         do \
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Up   -c ${chan} -d Mt_lep_met_f ${add_options} -o ${out_dir} ; \
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Down -c ${chan} -d Mt_lep_met_f ${add_options} -o ${out_dir} ; \
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Up   -c ${chan} -d ${distr} ${add_options} -o ${out_dir} ; \
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s $${SYS}Down -c ${chan} -d ${distr} ${add_options} -o ${out_dir} ; \
         done
 	# pdfs
 	# PDFCT14n%dUp
 	for NUM in `seq 56`; \
         do \
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s PDFCT14n$${NUM}Up   -c ${chan} -d Mt_lep_met_f ${add_options} -o ${out_dir} ; \
-	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s PDFCT14n$${NUM}Down -c ${chan} -d Mt_lep_met_f ${add_options} -o ${out_dir} ; \
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s PDFCT14n$${NUM}Up   -c ${chan} -d ${distr} ${add_options} -o ${out_dir} ; \
+	python stack_plot.py ${mc_in}.root ${data_in}.root --lumi ${lumi} --wjet ${wjet} -s PDFCT14n$${NUM}Down -c ${chan} -d ${distr} ${add_options} -o ${out_dir} ; \
         done
 	# the hadd of produced files
 	hadd ${out_dir}/${mc_in}_histosel_${chan}_${lumi}.root ${out_dir}/${mc_in}_HISTOSEL*_${chan}_*.root

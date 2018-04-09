@@ -3862,11 +3862,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 # (taumatched jets go too)
                 with_all_permutation_masses = True
                 # order: not-b-taged, b-taged
-                # only medium b-tags
-                lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.loose + jets.old.taumatched[1], jets.old.medium + jets.old.taumatched[0], with_all_permutation_masses, isMC)
+                # only medium b-tags p8
+                #lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.loose + jets.old.taumatched[1], jets.old.medium + jets.old.taumatched[0], with_all_permutation_masses, isMC)
                 # medium and loose b-tags
                 # but tau-matches are done to Medium b!
-                #lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.taumatched[1], jets.old.medium + jets.old.loose + jets.old.taumatched[0], with_all_permutation_masses, isMC)
+                lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.taumatched[1], jets.old.medium + jets.old.loose + jets.old.taumatched[0], with_all_permutation_masses, isMC)
                 n_bjets_used_in_lj = len(jets.old.medium) + len(jets.old.loose) + len(jets.old.taumatched[0])
                 lj_cut = 60.
                 large_lj = lj_var > lj_cut
@@ -4408,22 +4408,22 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     # met prop = met nom + nom - factor
                     # met prop + factor = met nom + nom
 
-                ## and substitute the jet->tau in met
-                #if sel_taus:
-                #    # only first tau is taken
-                #    tau_index = sel_taus[0][3]
-                #    the_tau_p4 = sel_taus[0][0] * sel_taus[0][1]
-                #    tau_jet_index   = ev.tau_dR_matched_jet[tau_index]
-                #    if tau_jet_index > -1:
-                #        # substitute the nominal jet
-                #        jer_factor = ev.jet_jer_factor[tau_jet_index]
-                #        jes_factor = ev.jet_jes_recorrection[tau_jet_index]
-                #        jes_uncorFactor = ev.jet_uncorrected_jecFactor[tau_jet_index]
-                #        en_factor = jer_factor * jes_factor * jes_uncorFactor
-                #        the_jet_p4 = miniaod_jets[tau_jet_index] * en_factor
-                #        substitution = the_tau_p4 - the_jet_p4
-                #        met_x_prop += substitution.X()
-                #        met_y_prop += substitution.Y()
+                # and substitute the jet->tau in met p7 p9
+                if sel_taus:
+                    # only first tau is taken
+                    tau_index = sel_taus[0][3]
+                    the_tau_p4 = sel_taus[0][0] * sel_taus[0][1]
+                    tau_jet_index   = ev.tau_dR_matched_jet[tau_index]
+                    if tau_jet_index > -1:
+                        # substitute the nominal jet
+                        jer_factor = ev.jet_jer_factor[tau_jet_index]
+                        jes_factor = ev.jet_jes_recorrection[tau_jet_index]
+                        jes_uncorFactor = ev.jet_uncorrected_jecFactor[tau_jet_index]
+                        en_factor = jer_factor * jes_factor * jes_uncorFactor
+                        the_jet_p4 = miniaod_jets[tau_jet_index] * en_factor
+                        substitution = the_tau_p4 - the_jet_p4
+                        met_x_prop += substitution.X()
+                        met_y_prop += substitution.Y()
 
                 Mt_lep_met = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
                 # test on Mt fluctuation in mu_sel
