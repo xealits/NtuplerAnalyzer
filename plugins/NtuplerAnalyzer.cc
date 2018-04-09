@@ -86,8 +86,10 @@ static double pu_vector_NOMINAL[] = {0, 0.360609416811339, 0.910848525427002, 1.
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0};
 
+#define MAX_NVTX 80
+
 // 80 numbers
-static double pu_vector_mu[80] = {0, 0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
+static double pu_vector_mu[MAX_NVTX] = {0, 0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
 0.884048630953726, 0.964813189764159, 1.07045369167689, 1.12497267309738, 1.17367530613108, 1.20239808206413, 1.20815108390021, 1.20049333094509, 1.18284686347315, 1.14408796655615,
 1.0962284704313, 1.06549162803223, 1.05151011089581, 1.05159666626121, 1.05064452078328, 1.0491726301522, 1.05772537082991, 1.07279673875566, 1.0837536468865, 1.09536667397119,
 1.10934472980173, 1.09375894592864, 1.08263679568271, 1.04289345879947, 0.9851490341672, 0.909983816540809, 0.821346330143864, 0.71704523475871, 0.609800913869359, 0.502935245638477,
@@ -96,7 +98,7 @@ static double pu_vector_mu[80] = {0, 0.360609416811339, 0.910848525427002, 1.206
 0.00186652283903214, 0.00314422244976771, 0.00406954793369611, 0.00467888840511915, 0.00505224284441512, 0.00562827194936864, 0.0055889504870752, 0.00522867039470319, 0.00450752163476433, 0.00395300774604375,
 0.00330577167682956, 0.00308353042577215, 0.00277846504893301, 0.00223943190687725, 0.00196650068765464, 0.00184742734258922,  0, 0, 0, 0};
 
-static double pu_vector_mu_up[80] = {0, 0.351377216124927, 0.717199649125846, 1.14121536968772, 0.84885826611733, 1.00700929402897, 1.03428595270903, 0.717444379696992, 0.344078389355127, 0.499570875027422,
+static double pu_vector_mu_up[MAX_NVTX] = {0, 0.351377216124927, 0.717199649125846, 1.14121536968772, 0.84885826611733, 1.00700929402897, 1.03428595270903, 0.717444379696992, 0.344078389355127, 0.499570875027422,
 0.606614916257104, 0.632584599390169, 0.731450949466174, 0.827511723989754, 0.910682115553867, 0.960170981598162, 0.988896170761361, 1.02468865580207, 1.05296667126403, 1.05112033565679,
 1.0269129153969, 1.00548641752714, 0.998316130432865, 1.01492587998551, 1.03753749807849, 1.05742218946485, 1.08503978097083, 1.12134132247053, 1.15585339474274, 1.19214399856171,
 1.23308400947467, 1.24528804633732, 1.26786364716917, 1.26101551498967, 1.23297806722714, 1.18042533075471, 1.10534683838101, 1.00275591661645, 0.889094305531985, 0.768791254270252,
@@ -105,7 +107,7 @@ static double pu_vector_mu_up[80] = {0, 0.351377216124927, 0.717199649125846, 1.
 0.00236236592656064, 0.00372472999463276, 0.00474687312579969, 0.00549508151576102, 0.00603023110946686, 0.0068545111910253, 0.00695838760530896, 0.00666224781277046, 0.00588243140681038, 0.00528714370892014,
 0.00453424615273565, 0.00433985030329723, 0.00401493171035719, 0.00332436608713241, 0.00300063798808221, 0.00289925128977536, 0, 0, 0, 0};
 
-static double pu_vector_mu_down[80] = {0, 0.37361294640242, 1.1627791004568, 1.26890787896295, 1.10266790442705, 1.23456697093644, 1.26278991594152, 0.909648777562084, 0.759569490571151, 1.09035651921682,
+static double pu_vector_mu_down[MAX_NVTX] = {0, 0.37361294640242, 1.1627791004568, 1.26890787896295, 1.10266790442705, 1.23456697093644, 1.26278991594152, 0.909648777562084, 0.759569490571151, 1.09035651921682,
 1.34530547603283, 1.48713160105, 1.52535976889483, 1.49730550773404, 1.49792998045778, 1.49767851097519, 1.44431045398336, 1.3681909492045, 1.29912252494785, 1.2274279217797,
 1.16525969099909, 1.12531044676724, 1.09094501417685, 1.06405434433422, 1.03997120824565, 1.0185716022098, 1.00560949501652, 0.997570939806059, 0.985543761409897, 0.972557804582185,
 0.957832827239337, 0.9139572640153, 0.872252387173971, 0.808388185417578, 0.733817960498049, 0.650440963845892, 0.561688505024782, 0.466564380334112, 0.374428618658619, 0.28845274688129,
@@ -114,7 +116,7 @@ static double pu_vector_mu_down[80] = {0, 0.37361294640242, 1.1627791004568, 1.2
 0.00158061353194779, 0.00261959852500539, 0.00331800452823827, 0.00372426930370732, 0.00392086545082614, 0.00425479965493548, 0.00411256966391362, 0.00374240422174387, 0.00313603438166934, 0.00267155793176928,
 0.00216878198028599, 0.00196249821290853, 0.00171433839159669, 0.00133866519755926, 0.00113810604240254, 0.00103447940224886, 0, 0, 0, 0};
 
-static double pu_vector_el[80] = {0,
+static double pu_vector_el[MAX_NVTX] = {0,
    0.413231   ,    1.01701    ,    1.19502     ,   0.883906   ,    1.05852    ,    1.11823    ,    0.789439   ,    0.515477   ,    0.81338    ,    0.990148   ,
    1.0919     ,    1.21784    ,    1.28268     ,   1.33936    ,    1.37267    ,    1.38001    ,    1.37224    ,    1.35253    ,    1.30805    ,    1.25303    ,
    1.21761    ,    1.20085    ,    1.1987      ,   1.19257    ,    1.1807     ,    1.17079    ,    1.15238    ,    1.10667    ,    1.03375    ,    0.935086   ,
@@ -124,7 +126,7 @@ static double pu_vector_el[80] = {0,
    0.0035872  ,    0.00465614 ,    0.005359    ,   0.00578897 ,    0.00645001 ,    0.00640537 ,    0.00599263 ,    0.00516618 ,    0.00453067 ,    0.00378886 ,
    0.00353415 ,    0.00318451 ,    0.0025667   ,   0.00225388 ,    0.00211741 ,    0          ,    0          ,    0          ,    0};
 
-static double pu_vector_el_up[80] = {0,
+static double pu_vector_el_up[MAX_NVTX] = {0,
    0.402668    ,   0.803377   ,    1.15963    ,    0.764147   ,    0.966328    ,   0.995159   ,    0.71563    ,    0.354304   ,   0.541943   ,    0.674778   ,
    0.713035    ,   0.830366   ,    0.942616   ,    1.03882    ,    1.09589     ,   1.12909    ,    1.17068    ,    1.20376    ,   1.20191    ,    1.17404    ,
    1.14928     ,   1.14083    ,    1.15906    ,    1.18279    ,    1.20082     ,   1.22277    ,    1.24559    ,    1.25129    ,   1.23607    ,    1.19534    ,
@@ -134,7 +136,7 @@ static double pu_vector_el_up[80] = {0,
    0.00400894  ,   0.00530831 ,    0.00623822 ,    0.00688571 ,    0.00784455  ,   0.00797042 ,    0.00763388 ,    0.00674129 ,   0.00605947 ,    0.00519674 ,
    0.00497399  ,   0.00460162 ,    0.00381017 ,    0.00343914 ,    0.00332295  ,   0          ,    0          ,    0          ,   0};
 
-static double pu_vector_el_down[80] = {0,
+static double pu_vector_el_down[MAX_NVTX] = {0,
    0.428107   ,   1.29388    ,    1.22078   ,    1.02596    ,    1.1769     ,    1.24377    ,    0.921862   ,    0.814769   ,    1.20901   ,    1.51527   ,
    1.68838    ,   1.73792    ,    1.70826   ,    1.70984    ,    1.71038    ,    1.65067    ,    1.56442    ,    1.48535    ,    1.40303   ,    1.33164   ,
    1.28514    ,   1.24342    ,    1.20714   ,    1.16839    ,    1.12262    ,    1.06993    ,    0.999693   ,    0.900043   ,    0.778486  ,    0.644942  ,
@@ -458,7 +460,7 @@ enum nWeights {
 };
 
 // substituting stuff with another enum
-enum names_Mfr = {
+enum names_Mfr {
 	MUf_down_MUr_down = 0,
 	MUf_down_MUr_nom  = 1,
 	MUf_down_MUr_up   = 2,
@@ -473,6 +475,12 @@ enum names_Mfr = {
 TRandom3 *r3 = new TRandom3();
 
 typedef ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag> ROOT_TTree_vector3D;
+
+
+struct sv_pair {
+	double flightLength;
+	double flightLengthSignificance;
+};
 
 struct sv_pair geometrical_SV(
 	ROOT_TTree_vector3D& b_1, ROOT_TTree_vector3D& tr1,
@@ -908,7 +916,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//  - and reset/fill stuff in analyze
 	// let's do it first manually for p4-s of leptons
 	TTree* NT_output_ttree; 
-	TH1D *event_counter, *weight_counter; 
+	TH1D *event_counter, *weight_counter, *systematic_weights; 
 	/*
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > > NT_lep_p4;
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > >* pt_lep_p4; // yep, vectors of complex objects require additional persistent pointers
@@ -1571,13 +1579,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			//match within dR < 0.4 to pat jets, get the flavour
 			float min_dR_to_patJet = 999., dR_max = 0.4;
 			unsigned int min_dR_partonFlavour = 0;
-			for(auto patJet=jets->begin(); patJet!=jets->end(); ++patJet)
+			for(auto patJet=jets.begin(); patJet!=jets.end(); ++patJet)
 				{
-				float dR_to_patJet = reco::deltaR(patJet, genJet);
+				// whatchout, the deltaR does not get through iterators..
+				float dR_to_patJet = reco::deltaR(*patJet, *genJet);
 				if (dR_to_patJet < dR_max && dR_to_patJet < min_dR_to_patJet)
 					{
 					min_dR_to_patJet = dR_to_patJet;
-					min_dR_partonFlavour = abs(patJet.partonFlavour());
+					min_dR_partonFlavour = abs(patJet->partonFlavour());
 					// break; maybe?
 					}
 				}
@@ -2064,15 +2073,16 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		systematic_weights->Fill(NOM_EVENTS);
 		systematic_weights->Fill(NOMINAL, (aMCatNLO? weight_Gen : 1));
 
-		if (NT_nvtx_gen < )
+		if (NT_nvtx_gen < MAX_NVTX)
 			{
-			systematic_weights->FIll(MU_PU     , pu_vector_mu[NT_nvtx_gen],
-			systematic_weights->FIll(MU_PUUp   , pu_vector_mu_up[NT_nvtx_gen],
-			systematic_weights->FIll(MU_PUDown , pu_vector_mu_down[NT_nvtx_gen],
-			systematic_weights->FIll(El_PU     , pu_vector_el[NT_nvtx_gen],
-			systematic_weights->FIll(El_PUUp   , pu_vector_el_up[NT_nvtx_gen],
-			systematic_weights->FIll(El_PUDown , pu_vector_el_down[NT_nvtx_gen],
+			systematic_weights->Fill(MU_PU     , pu_vector_mu[NT_nvtx_gen]);
+			systematic_weights->Fill(MU_PUUp   , pu_vector_mu_up[NT_nvtx_gen]);
+			systematic_weights->Fill(MU_PUDown , pu_vector_mu_down[NT_nvtx_gen]);
+			systematic_weights->Fill(El_PU     , pu_vector_el[NT_nvtx_gen]);
+			systematic_weights->Fill(El_PUUp   , pu_vector_el_up[NT_nvtx_gen]);
+			systematic_weights->Fill(El_PUDown , pu_vector_el_down[NT_nvtx_gen]);
 			}
+		// else the PU weight = 0
 
 		if (isTT)
 			{
