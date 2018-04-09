@@ -4170,15 +4170,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 if old_os:
                     passed_channels.append(('ctr_old_mu_selVloose', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
                     if large_lj:
-                        passed_channels.append(('ctr_old_mu_selVloose_lj', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                    else:
                         passed_channels.append(('ctr_old_mu_selVloose_ljout', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
+                    else:
+                        passed_channels.append(('ctr_old_mu_selVloose_lj', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
                 else:
                     passed_channels.append(('ctr_old_mu_selVloose_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
                     if large_lj:
-                        passed_channels.append(('ctr_old_mu_selVloose_lj_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                    else:
                         passed_channels.append(('ctr_old_mu_selVloose_ljout_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
+                    else:
+                        passed_channels.append(('ctr_old_mu_selVloose_lj_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
 
             if pass_old_el_sel_Vloose:
                 # actually I should add ev.lep_p4[0].pt() > 27
@@ -4187,15 +4187,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 if old_os:
                     passed_channels.append(('ctr_old_el_selVloose', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
                     if large_lj:
-                        passed_channels.append(('ctr_old_el_selVloose_lj', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                    else:
                         passed_channels.append(('ctr_old_el_selVloose_ljout', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
+                    else:
+                        passed_channels.append(('ctr_old_el_selVloose_lj', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
                 else:
                     passed_channels.append(('ctr_old_el_selVloose_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
                     if large_lj:
-                        passed_channels.append(('ctr_old_el_selVloose_lj_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                    else:
                         passed_channels.append(('ctr_old_el_selVloose_ljout_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
+                    else:
+                        passed_channels.append(('ctr_old_el_selVloose_lj_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
 
             if pass_old_mu_sel and tauSign3:
                 old_os = taus.old[0][2] * ev.lep_id[0] < 0
