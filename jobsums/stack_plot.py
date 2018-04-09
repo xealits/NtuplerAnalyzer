@@ -31,6 +31,8 @@ parser.add_argument("--y-max",   type=float, help="set the maximum on Y axis")
 parser.add_argument("--x-range", type=str,   help="set the range on X axis")
 parser.add_argument("--y-range",   type=str, help="set the range on Y axis `0,1.5`")
 
+#parser.add_argument("--Vloose-shapes",   action='store_true', help="get TT proc shapes from selVloose")
+
 parser.add_argument("--no-data",   action='store_true', help="don't draw data")
 
 parser.add_argument("--bin-norm",  action='store_true', help="normalize per bin width")
