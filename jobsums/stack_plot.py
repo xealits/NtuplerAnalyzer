@@ -653,7 +653,9 @@ elif args.form_shapes:
 
     if not args.no_data:
         histos_data[0][0].Draw('e1 p')
-    for i, (histo, nick, _) in enumerate(histos_data[1:] + used_histos):
+
+    histos_loop = [h_record for h_record in histos_data[1:] + used_histos if h_record[1] in args.processes]
+    for i, (histo, nick, _) in enumerate(histos_loop):
         if nick not in args.processes:
             continue
         #histo.SetFillColor( # it shouldn't be needed with hist drawing option
@@ -667,7 +669,12 @@ elif args.form_shapes:
             histo.SetFillStyle([3354, 3345][i])
         else:
             histo.SetFillColorAlpha(0, 0.0)
-        histo.Draw("hist e" if args.no_data and i<=len(histos_data[1:]) else "hist e same")
+        print nick
+        histo.Draw("hist" if args.no_data and i<=len(histos_data[1:]) else "e same")
+
+    # draw last histogram with markers to overlay over the hist
+    last_histo, _, _ = histos_loop[-1]
+    last_histo.Draw("e same")
     if not args.no_data:
         histos_data[0][0].Draw('same e1 p')
 
