@@ -84,6 +84,7 @@ else:
     draw_command = args.draw_com
 
 logging.debug("draw: " + draw_command)
+logging.debug("cond: " + args.cond_com)
 
 out_histo = None
 weight_counter = None
