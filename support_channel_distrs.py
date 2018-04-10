@@ -2546,8 +2546,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
             jetmatched = ev.tau_dR_matched_jet[i] > -1
 
-            match_lep        = False # ev.tau_matching_lep[i]
-            match_lep_alliso = False # ev.tau_matching_allIso_lep[i]
+            match_lep        = ev.tau_matching_lep[i]
+            match_lep_alliso = ev.tau_matching_allIso_lep[i]
 
             #if tau_pt < 20.: continue # no need to check -- it's default in ntupler
 
@@ -2931,8 +2931,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             jet_b_discr = ev.jet_b_discr[i]
             #all_jets_b_discrs.append(jet_b_discr)
 
-            match_lep        = False # ev.jet_matching_lep[i]
-            match_lep_alliso = False # ev.jet_matching_allIso_lep[i]
+            match_lep        = ev.jet_matching_lep[i]
+            match_lep_alliso = ev.jet_matching_allIso_lep[i]
 
             # jet energy scale factor = JES factor * JER
             # But the JES is re-correction
