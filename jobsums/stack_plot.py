@@ -319,6 +319,26 @@ used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_na
 # and I substitute QCD with this difference everywhere
 hs_sums2_ss = [] # these will be sums of no-QCD MC in SS region
 
+# sum all MC except qcd
+def datadriven_qcd(channel, distr, sys):
+    # get SS data and MC
+    used_histos_per_distr_ss = get_histos(f, [channel + '_ss'], args.shape, sys, distr)
+    data_hist = fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', distr]))
+
+    # find QCD shape in SS
+    mc_hist = used_histos_per_distr_ss[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
+    mc_hist.SetName('mc_sum2_ss')
+    for h, nick, channel in used_histos_per_distr_ss[1:]:
+        if nick == 'qcd': continue # don't include QCD MC -- its sum of no-QCD MC
+        mc_hist.Add(h)
+
+    qcd_hist = data_hist - mc_hist
+    # scale by the given factor and return
+    qcd_hist.Scale(args.qcd)
+
+    return qcd_hist
+
+
 if args.qcd > 0. or args.osss or args.osss_mc:
     # get all the same distributions for _ss channel
     #used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, sys_name, distr_name)) for distr_name in distr_names]
@@ -343,6 +363,7 @@ if args.qcd > 0. or args.osss or args.osss_mc:
         # TODO: it turns messy, need to fix the channels
         hs_sums2_ss.append((distr, [(hs_sum2, "mc_sum", channel)]))
 
+# subtract Data - MC in SS, get the qcd distr
 if args.qcd > 0.:
     # find difference and substitute QCD
     # histos_data_per_distr_ss = (distr, hists = [(histo, nick=data, channel)...])
@@ -363,6 +384,14 @@ if args.qcd > 0.:
                     histo->SetBinError(i, error/width);
                     }
             '''
+
+            # here I found nominal "yield" datadriven qcd
+            # in case a shape channel is given -- find the qcd there and normalize to this yield
+            if args.shape:
+                shape_qcd = datadriven_qcd(args.shape, distr, 'NOMINAL') # nominal only for now
+                shape_qcd.Scale(qcd_hist.Integral() / shape_qcd.Integral())
+                qcd_hist = shape_qcd
+            
             for bini in range(qcd_hist.GetSize()):
                 if qcd_hist.GetBinContent(bini) < 0:
                     qcd_hist.SetBinContent(bini, 0)
@@ -382,6 +411,7 @@ hs_sums2 = []
 
 hs_sums_noqcd = []
 
+# calculate MC sum and substitute data driven qcd
 for distr, histos in used_histos_per_distr:
     # loop through normal list
     hs_sum2 = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
@@ -392,8 +422,8 @@ for distr, histos in used_histos_per_distr:
     hs_sum_noqcd.SetName('mc_sum_noqcd')
     hs_sum_noqcd.Reset()
 
+    # substitute QCD
     for i, (h, nick, channel) in enumerate(histos[0:]):
-        # substitute QCD
         if args.qcd > 0. and nick == 'qcd':
             # then take the qcd from the differences in ss region
             h = qcd_hists[(distr, channel + '_ss')]
