@@ -71,7 +71,8 @@ for i, fileparameter in enumerate(args.input_files):
     logging.debug("%s" % histo_path)
     histo = tfile.Get(histo_path)
 
-    logging.debug("histo integral: %20s %f" % (nick, histo.Integral()))
+    logging.debug("histo    : %20s" % nick)
+    logging.debug("integral : %f" % histo.Integral())
     histo.SetDirectory(0)
     histo.SetLineColor(1 + i)
     histo.Scale(1./histo.Integral())
