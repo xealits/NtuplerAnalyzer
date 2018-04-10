@@ -255,7 +255,7 @@ for dtag in requested_dtags:
 
     job_submisions = [join(job_dirname, d) for d in listdir(job_dirname)]
     if len(job_submisions) != 1:
-        logging.warning('not 1 dir: %d picking up the last one' % len(job_submisions))
+        logging.warning('not 1 dir: %d picking up the last one %s' % (len(job_submisions), dtag))
     job_dirname = job_submisions[0]
     logging.debug(job_dirname)
 

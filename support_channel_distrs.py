@@ -3862,11 +3862,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 # (taumatched jets go too)
                 with_all_permutation_masses = True
                 # order: not-b-taged, b-taged
-                # only medium b-tags p8
-                #lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.loose + jets.old.taumatched[1], jets.old.medium + jets.old.taumatched[0], with_all_permutation_masses, isMC)
+                # only medium b-tags p8 p9
+                lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.loose + jets.old.taumatched[1], jets.old.medium + jets.old.taumatched[0], with_all_permutation_masses, isMC)
                 # medium and loose b-tags
                 # but tau-matches are done to Medium b!
-                lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.taumatched[1], jets.old.medium + jets.old.loose + jets.old.taumatched[0], with_all_permutation_masses, isMC)
+                #lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.taumatched[1], jets.old.medium + jets.old.loose + jets.old.taumatched[0], with_all_permutation_masses, isMC)
                 n_bjets_used_in_lj = len(jets.old.medium) + len(jets.old.loose) + len(jets.old.taumatched[0])
                 lj_cut = 60.
                 large_lj = lj_var > lj_cut
