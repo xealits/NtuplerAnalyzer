@@ -92,7 +92,10 @@ Fit MC to Data with all nuisances, storing NLL of each variation:
     combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.txt --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name MuShapes
 
 
-if needed --freezeNuisanceGroup tt_th_frag,tt_th_match
+if needed
+
+    --freezeNuisanceGroup tt_th_frag,tt_th_match
+    --setParameters TOPPT=1
 
 -- `--algo grid` runs the fit over #N points (given by `--points N`) in the space of nuisance parameters.
 2000 is many, usually 100 is ok to check.
@@ -489,6 +492,9 @@ Examples:
 also notice:
  WARNING --  From combine v7, method MaxLikelihoodFit has been renamed to FitDiagnostics
 
+stacking script:
+
+    python stack_postfit.py fitDiagnosticsMuShapes.root ctr_old_mu_sel_lj --mu
 
 
 
