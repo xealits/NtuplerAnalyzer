@@ -94,7 +94,8 @@ Fit MC to Data with all nuisances, storing NLL of each variation:
 
 if needed
 
-    --freezeNuisanceGroup tt_th_frag,tt_th_match
+    --freezeNuisanceGroup tt_th_frag,tt_th_match,tt_th_pdf
+    --freezeParameters "lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JES,JER,TauES,bSF,PU"
     --setParameters TOPPT=1
 
 -- `--algo grid` runs the fit over #N points (given by `--points N`) in the space of nuisance parameters.
