@@ -22,7 +22,7 @@ parser.add_argument("--x-title",     type=str,      help="title of X axis")
 
 parser.add_argument('--formula',  type=str, help="to plot h1 overlayed with 123*h2+982*h3: `h1 : 123 h2 , 982h3`")
 
-parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename[:s,SYSNAME]`""")
+parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename[:chan,proc,sys]`""")
 
 args = parser.parse_args()
 
@@ -58,12 +58,18 @@ for i, fileparameter in enumerate(args.input_files):
         logging.info("missing: " + filename)
         continue
 
-    tfile = TFile(filename)
+    channel    = args.channel
+    process    = args.process
     systematic = args.systematic
+
     if opts:
-        systematic = opts.replace('s,', '')
-    logging.debug("sys:%s" % systematic)
-    histo = tfile.Get("{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=args.channel, proc=args.process, sys=systematic, distr=args.distr))
+        channel, process, systematic = opts.split(',')
+
+    histo_path = "{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=channel, proc=process, sys=systematic, distr=args.distr)
+
+    tfile = TFile(filename)
+    logging.debug("%s" % histo_path)
+    histo = tfile.Get(histo_path)
 
     logging.debug("histo integral: %20s %f" % (nick, histo.Integral()))
     histo.SetDirectory(0)
@@ -112,7 +118,7 @@ else:
         nicks = [nick for nick in histos.keys() if nick in subform]
         logging.debug(nicks)
         nick_pairs = []
-        for nick_pair in subform.split(','):
+        for nick_pair in subform.split('+'):
             for nick in nicks:
                 if nick in nick_pair:
                     logging.debug("nick_pair " + nick_pair)
