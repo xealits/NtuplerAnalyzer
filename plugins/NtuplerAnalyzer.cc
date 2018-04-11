@@ -2070,105 +2070,106 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// the referense of all events
 		// and the weights for the rate of each systematic
 		// multiply the rates and compensate them in proc
+		double nominal_syst_weight = (aMCatNLO? weight_Gen : 1);
 		systematic_weights->Fill(NOM_EVENTS);
-		systematic_weights->Fill(NOMINAL, (aMCatNLO? weight_Gen : 1));
+		systematic_weights->Fill(NOMINAL, nominal_syst_weight);
 
 		if (NT_nvtx_gen < MAX_NVTX)
 			{
-			systematic_weights->Fill(MU_PU     , pu_vector_mu[NT_nvtx_gen]);
-			systematic_weights->Fill(MU_PUUp   , pu_vector_mu_up[NT_nvtx_gen]);
-			systematic_weights->Fill(MU_PUDown , pu_vector_mu_down[NT_nvtx_gen]);
-			systematic_weights->Fill(El_PU     , pu_vector_el[NT_nvtx_gen]);
-			systematic_weights->Fill(El_PUUp   , pu_vector_el_up[NT_nvtx_gen]);
-			systematic_weights->Fill(El_PUDown , pu_vector_el_down[NT_nvtx_gen]);
+			systematic_weights->Fill(MU_PU     , nominal_syst_weight * pu_vector_mu[NT_nvtx_gen]);
+			systematic_weights->Fill(MU_PUUp   , nominal_syst_weight * pu_vector_mu_up[NT_nvtx_gen]);
+			systematic_weights->Fill(MU_PUDown , nominal_syst_weight * pu_vector_mu_down[NT_nvtx_gen]);
+			systematic_weights->Fill(El_PU     , nominal_syst_weight * pu_vector_el[NT_nvtx_gen]);
+			systematic_weights->Fill(El_PUUp   , nominal_syst_weight * pu_vector_el_up[NT_nvtx_gen]);
+			systematic_weights->Fill(El_PUDown , nominal_syst_weight * pu_vector_el_down[NT_nvtx_gen]);
 			}
 		// else the PU weight = 0
 
 		if (isTT)
 			{
-			systematic_weights->Fill(TOPPT , weight_TopPT);
+			systematic_weights->Fill(TOPPT , nominal_syst_weight * weight_TopPT);
 
 			// renorm refact scales
-			systematic_weights->Fill(M_NOM   , NT_gen_weights_renorm_fact[MUf_nom_MUr_nom   ]);
-			systematic_weights->Fill(MrUp    , NT_gen_weights_renorm_fact[MUf_nom_MUr_up    ]);
-			systematic_weights->Fill(MrDown  , NT_gen_weights_renorm_fact[MUf_nom_MUr_down  ]);
-			systematic_weights->Fill(MfUp    , NT_gen_weights_renorm_fact[  MUf_up_MUr_nom  ]);
-			systematic_weights->Fill(MfDown  , NT_gen_weights_renorm_fact[MUf_down_MUr_nom  ]);
-			systematic_weights->Fill(MfrUp   , NT_gen_weights_renorm_fact[MUf_up_MUr_up     ]);
-			systematic_weights->Fill(MfrDown , NT_gen_weights_renorm_fact[MUf_down_MUr_down ]);
+			systematic_weights->Fill(M_NOM   , nominal_syst_weight * NT_gen_weights_renorm_fact[MUf_nom_MUr_nom   ]);
+			systematic_weights->Fill(MrUp    , nominal_syst_weight * NT_gen_weights_renorm_fact[MUf_nom_MUr_up    ]);
+			systematic_weights->Fill(MrDown  , nominal_syst_weight * NT_gen_weights_renorm_fact[MUf_nom_MUr_down  ]);
+			systematic_weights->Fill(MfUp    , nominal_syst_weight * NT_gen_weights_renorm_fact[  MUf_up_MUr_nom  ]);
+			systematic_weights->Fill(MfDown  , nominal_syst_weight * NT_gen_weights_renorm_fact[MUf_down_MUr_nom  ]);
+			systematic_weights->Fill(MfrUp   , nominal_syst_weight * NT_gen_weights_renorm_fact[MUf_up_MUr_up     ]);
+			systematic_weights->Fill(MfrDown , nominal_syst_weight * NT_gen_weights_renorm_fact[MUf_down_MUr_down ]);
 			// and these are fake
 			//NT_gen_weights_renorm_fact[MUf_down_MUr_up   ]
 			//NT_gen_weights_renorm_fact[MUf_up_MUr_down   ]
 
 			// fragmentatopn
-			systematic_weights->Fill(Central       , NT_gen_weight_centralFrag  );
-			systematic_weights->Fill(FragUp        , NT_gen_weight_FragUp       );
-			systematic_weights->Fill(FragDown      , NT_gen_weight_FragDown     );
-			systematic_weights->Fill(PetersonUp    , NT_gen_weight_PetersonFrag );
-			systematic_weights->Fill(SemilepBRUp   , NT_gen_weight_semilepbrUp  );
-			systematic_weights->Fill(SemilepBRDown , NT_gen_weight_semilepbrDown);
+			systematic_weights->Fill(Central       , nominal_syst_weight * NT_gen_weight_centralFrag  );
+			systematic_weights->Fill(FragUp        , nominal_syst_weight * NT_gen_weight_FragUp       );
+			systematic_weights->Fill(FragDown      , nominal_syst_weight * NT_gen_weight_FragDown     );
+			systematic_weights->Fill(PetersonUp    , nominal_syst_weight * NT_gen_weight_PetersonFrag );
+			systematic_weights->Fill(SemilepBRUp   , nominal_syst_weight * NT_gen_weight_semilepbrUp  );
+			systematic_weights->Fill(SemilepBRDown , nominal_syst_weight * NT_gen_weight_semilepbrDown);
 			// PDF and alphaS
-			systematic_weights->Fill(PDF_NOM       , NT_gen_weights_pdf_hessians[0]);
-			systematic_weights->Fill(AlphaSUp      , NT_gen_weight_alphas_1);
-			systematic_weights->Fill(AlphaSDown    , NT_gen_weight_alphas_2);
+			systematic_weights->Fill(PDF_NOM       , nominal_syst_weight * NT_gen_weights_pdf_hessians[0]);
+			systematic_weights->Fill(AlphaSUp      , nominal_syst_weight * NT_gen_weight_alphas_1);
+			systematic_weights->Fill(AlphaSDown    , nominal_syst_weight * NT_gen_weight_alphas_2);
 
 			// PDFs
-			systematic_weights->Fill(PDFCT14n1     , NT_gen_weights_pdf_hessians[1]);
-			systematic_weights->Fill(PDFCT14n2     , NT_gen_weights_pdf_hessians[2]);
-			systematic_weights->Fill(PDFCT14n3     , NT_gen_weights_pdf_hessians[3]);
-			systematic_weights->Fill(PDFCT14n4     , NT_gen_weights_pdf_hessians[4]);
-			systematic_weights->Fill(PDFCT14n5     , NT_gen_weights_pdf_hessians[5]);
-			systematic_weights->Fill(PDFCT14n6     , NT_gen_weights_pdf_hessians[6]);
-			systematic_weights->Fill(PDFCT14n7     , NT_gen_weights_pdf_hessians[7]);
-			systematic_weights->Fill(PDFCT14n8     , NT_gen_weights_pdf_hessians[8]);
-			systematic_weights->Fill(PDFCT14n9     , NT_gen_weights_pdf_hessians[9]);
-			systematic_weights->Fill(PDFCT14n10    , NT_gen_weights_pdf_hessians[10]);
-			systematic_weights->Fill(PDFCT14n11    , NT_gen_weights_pdf_hessians[11]);
-			systematic_weights->Fill(PDFCT14n12    , NT_gen_weights_pdf_hessians[12]);
-			systematic_weights->Fill(PDFCT14n13    , NT_gen_weights_pdf_hessians[13]);
-			systematic_weights->Fill(PDFCT14n14    , NT_gen_weights_pdf_hessians[14]);
-			systematic_weights->Fill(PDFCT14n15    , NT_gen_weights_pdf_hessians[15]);
-			systematic_weights->Fill(PDFCT14n16    , NT_gen_weights_pdf_hessians[16]);
-			systematic_weights->Fill(PDFCT14n17    , NT_gen_weights_pdf_hessians[17]);
-			systematic_weights->Fill(PDFCT14n18    , NT_gen_weights_pdf_hessians[18]);
-			systematic_weights->Fill(PDFCT14n19    , NT_gen_weights_pdf_hessians[19]);
-			systematic_weights->Fill(PDFCT14n20    , NT_gen_weights_pdf_hessians[20]);
-			systematic_weights->Fill(PDFCT14n21    , NT_gen_weights_pdf_hessians[21]);
-			systematic_weights->Fill(PDFCT14n22    , NT_gen_weights_pdf_hessians[22]);
-			systematic_weights->Fill(PDFCT14n23    , NT_gen_weights_pdf_hessians[23]);
-			systematic_weights->Fill(PDFCT14n24    , NT_gen_weights_pdf_hessians[24]);
-			systematic_weights->Fill(PDFCT14n25    , NT_gen_weights_pdf_hessians[25]);
-			systematic_weights->Fill(PDFCT14n26    , NT_gen_weights_pdf_hessians[26]);
-			systematic_weights->Fill(PDFCT14n27    , NT_gen_weights_pdf_hessians[27]);
-			systematic_weights->Fill(PDFCT14n28    , NT_gen_weights_pdf_hessians[28]);
-			systematic_weights->Fill(PDFCT14n29    , NT_gen_weights_pdf_hessians[29]);
-			systematic_weights->Fill(PDFCT14n30    , NT_gen_weights_pdf_hessians[30]);
-			systematic_weights->Fill(PDFCT14n31    , NT_gen_weights_pdf_hessians[31]);
-			systematic_weights->Fill(PDFCT14n32    , NT_gen_weights_pdf_hessians[32]);
-			systematic_weights->Fill(PDFCT14n33    , NT_gen_weights_pdf_hessians[33]);
-			systematic_weights->Fill(PDFCT14n34    , NT_gen_weights_pdf_hessians[34]);
-			systematic_weights->Fill(PDFCT14n35    , NT_gen_weights_pdf_hessians[35]);
-			systematic_weights->Fill(PDFCT14n36    , NT_gen_weights_pdf_hessians[36]);
-			systematic_weights->Fill(PDFCT14n37    , NT_gen_weights_pdf_hessians[37]);
-			systematic_weights->Fill(PDFCT14n38    , NT_gen_weights_pdf_hessians[38]);
-			systematic_weights->Fill(PDFCT14n39    , NT_gen_weights_pdf_hessians[39]);
-			systematic_weights->Fill(PDFCT14n40    , NT_gen_weights_pdf_hessians[40]);
-			systematic_weights->Fill(PDFCT14n41    , NT_gen_weights_pdf_hessians[41]);
-			systematic_weights->Fill(PDFCT14n42    , NT_gen_weights_pdf_hessians[42]);
-			systematic_weights->Fill(PDFCT14n43    , NT_gen_weights_pdf_hessians[43]);
-			systematic_weights->Fill(PDFCT14n44    , NT_gen_weights_pdf_hessians[44]);
-			systematic_weights->Fill(PDFCT14n45    , NT_gen_weights_pdf_hessians[45]);
-			systematic_weights->Fill(PDFCT14n46    , NT_gen_weights_pdf_hessians[46]);
-			systematic_weights->Fill(PDFCT14n47    , NT_gen_weights_pdf_hessians[47]);
-			systematic_weights->Fill(PDFCT14n48    , NT_gen_weights_pdf_hessians[48]);
-			systematic_weights->Fill(PDFCT14n49    , NT_gen_weights_pdf_hessians[49]);
-			systematic_weights->Fill(PDFCT14n50    , NT_gen_weights_pdf_hessians[50]);
-			systematic_weights->Fill(PDFCT14n51    , NT_gen_weights_pdf_hessians[51]);
-			systematic_weights->Fill(PDFCT14n52    , NT_gen_weights_pdf_hessians[52]);
-			systematic_weights->Fill(PDFCT14n53    , NT_gen_weights_pdf_hessians[53]);
-			systematic_weights->Fill(PDFCT14n54    , NT_gen_weights_pdf_hessians[54]);
-			systematic_weights->Fill(PDFCT14n55    , NT_gen_weights_pdf_hessians[55]);
-			systematic_weights->Fill(PDFCT14n56    , NT_gen_weights_pdf_hessians[56]);
+			systematic_weights->Fill(PDFCT14n1     , nominal_syst_weight * NT_gen_weights_pdf_hessians[1]);
+			systematic_weights->Fill(PDFCT14n2     , nominal_syst_weight * NT_gen_weights_pdf_hessians[2]);
+			systematic_weights->Fill(PDFCT14n3     , nominal_syst_weight * NT_gen_weights_pdf_hessians[3]);
+			systematic_weights->Fill(PDFCT14n4     , nominal_syst_weight * NT_gen_weights_pdf_hessians[4]);
+			systematic_weights->Fill(PDFCT14n5     , nominal_syst_weight * NT_gen_weights_pdf_hessians[5]);
+			systematic_weights->Fill(PDFCT14n6     , nominal_syst_weight * NT_gen_weights_pdf_hessians[6]);
+			systematic_weights->Fill(PDFCT14n7     , nominal_syst_weight * NT_gen_weights_pdf_hessians[7]);
+			systematic_weights->Fill(PDFCT14n8     , nominal_syst_weight * NT_gen_weights_pdf_hessians[8]);
+			systematic_weights->Fill(PDFCT14n9     , nominal_syst_weight * NT_gen_weights_pdf_hessians[9]);
+			systematic_weights->Fill(PDFCT14n10    , nominal_syst_weight * NT_gen_weights_pdf_hessians[10]);
+			systematic_weights->Fill(PDFCT14n11    , nominal_syst_weight * NT_gen_weights_pdf_hessians[11]);
+			systematic_weights->Fill(PDFCT14n12    , nominal_syst_weight * NT_gen_weights_pdf_hessians[12]);
+			systematic_weights->Fill(PDFCT14n13    , nominal_syst_weight * NT_gen_weights_pdf_hessians[13]);
+			systematic_weights->Fill(PDFCT14n14    , nominal_syst_weight * NT_gen_weights_pdf_hessians[14]);
+			systematic_weights->Fill(PDFCT14n15    , nominal_syst_weight * NT_gen_weights_pdf_hessians[15]);
+			systematic_weights->Fill(PDFCT14n16    , nominal_syst_weight * NT_gen_weights_pdf_hessians[16]);
+			systematic_weights->Fill(PDFCT14n17    , nominal_syst_weight * NT_gen_weights_pdf_hessians[17]);
+			systematic_weights->Fill(PDFCT14n18    , nominal_syst_weight * NT_gen_weights_pdf_hessians[18]);
+			systematic_weights->Fill(PDFCT14n19    , nominal_syst_weight * NT_gen_weights_pdf_hessians[19]);
+			systematic_weights->Fill(PDFCT14n20    , nominal_syst_weight * NT_gen_weights_pdf_hessians[20]);
+			systematic_weights->Fill(PDFCT14n21    , nominal_syst_weight * NT_gen_weights_pdf_hessians[21]);
+			systematic_weights->Fill(PDFCT14n22    , nominal_syst_weight * NT_gen_weights_pdf_hessians[22]);
+			systematic_weights->Fill(PDFCT14n23    , nominal_syst_weight * NT_gen_weights_pdf_hessians[23]);
+			systematic_weights->Fill(PDFCT14n24    , nominal_syst_weight * NT_gen_weights_pdf_hessians[24]);
+			systematic_weights->Fill(PDFCT14n25    , nominal_syst_weight * NT_gen_weights_pdf_hessians[25]);
+			systematic_weights->Fill(PDFCT14n26    , nominal_syst_weight * NT_gen_weights_pdf_hessians[26]);
+			systematic_weights->Fill(PDFCT14n27    , nominal_syst_weight * NT_gen_weights_pdf_hessians[27]);
+			systematic_weights->Fill(PDFCT14n28    , nominal_syst_weight * NT_gen_weights_pdf_hessians[28]);
+			systematic_weights->Fill(PDFCT14n29    , nominal_syst_weight * NT_gen_weights_pdf_hessians[29]);
+			systematic_weights->Fill(PDFCT14n30    , nominal_syst_weight * NT_gen_weights_pdf_hessians[30]);
+			systematic_weights->Fill(PDFCT14n31    , nominal_syst_weight * NT_gen_weights_pdf_hessians[31]);
+			systematic_weights->Fill(PDFCT14n32    , nominal_syst_weight * NT_gen_weights_pdf_hessians[32]);
+			systematic_weights->Fill(PDFCT14n33    , nominal_syst_weight * NT_gen_weights_pdf_hessians[33]);
+			systematic_weights->Fill(PDFCT14n34    , nominal_syst_weight * NT_gen_weights_pdf_hessians[34]);
+			systematic_weights->Fill(PDFCT14n35    , nominal_syst_weight * NT_gen_weights_pdf_hessians[35]);
+			systematic_weights->Fill(PDFCT14n36    , nominal_syst_weight * NT_gen_weights_pdf_hessians[36]);
+			systematic_weights->Fill(PDFCT14n37    , nominal_syst_weight * NT_gen_weights_pdf_hessians[37]);
+			systematic_weights->Fill(PDFCT14n38    , nominal_syst_weight * NT_gen_weights_pdf_hessians[38]);
+			systematic_weights->Fill(PDFCT14n39    , nominal_syst_weight * NT_gen_weights_pdf_hessians[39]);
+			systematic_weights->Fill(PDFCT14n40    , nominal_syst_weight * NT_gen_weights_pdf_hessians[40]);
+			systematic_weights->Fill(PDFCT14n41    , nominal_syst_weight * NT_gen_weights_pdf_hessians[41]);
+			systematic_weights->Fill(PDFCT14n42    , nominal_syst_weight * NT_gen_weights_pdf_hessians[42]);
+			systematic_weights->Fill(PDFCT14n43    , nominal_syst_weight * NT_gen_weights_pdf_hessians[43]);
+			systematic_weights->Fill(PDFCT14n44    , nominal_syst_weight * NT_gen_weights_pdf_hessians[44]);
+			systematic_weights->Fill(PDFCT14n45    , nominal_syst_weight * NT_gen_weights_pdf_hessians[45]);
+			systematic_weights->Fill(PDFCT14n46    , nominal_syst_weight * NT_gen_weights_pdf_hessians[46]);
+			systematic_weights->Fill(PDFCT14n47    , nominal_syst_weight * NT_gen_weights_pdf_hessians[47]);
+			systematic_weights->Fill(PDFCT14n48    , nominal_syst_weight * NT_gen_weights_pdf_hessians[48]);
+			systematic_weights->Fill(PDFCT14n49    , nominal_syst_weight * NT_gen_weights_pdf_hessians[49]);
+			systematic_weights->Fill(PDFCT14n50    , nominal_syst_weight * NT_gen_weights_pdf_hessians[50]);
+			systematic_weights->Fill(PDFCT14n51    , nominal_syst_weight * NT_gen_weights_pdf_hessians[51]);
+			systematic_weights->Fill(PDFCT14n52    , nominal_syst_weight * NT_gen_weights_pdf_hessians[52]);
+			systematic_weights->Fill(PDFCT14n53    , nominal_syst_weight * NT_gen_weights_pdf_hessians[53]);
+			systematic_weights->Fill(PDFCT14n54    , nominal_syst_weight * NT_gen_weights_pdf_hessians[54]);
+			systematic_weights->Fill(PDFCT14n55    , nominal_syst_weight * NT_gen_weights_pdf_hessians[55]);
+			systematic_weights->Fill(PDFCT14n56    , nominal_syst_weight * NT_gen_weights_pdf_hessians[56]);
 			}
 		}
 	weight_counter->Fill(event_checkpoint, weight);

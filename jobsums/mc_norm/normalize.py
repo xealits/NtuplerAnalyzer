@@ -262,13 +262,20 @@ for fname in files:
     weight_counter = f.Get('weight_counter')
     #weight_counter->GetBinContent(2)
     event_weight = weight_counter.GetBinContent(2)
+    # to include the "shapeness" of various th weight-base systematics
+    # since v25 now event_weight = nominal_w * PU_rate * sys_rate
+    # nominal_w is just amcatanlo
+    # PU rate and other sys rates are calculated as PU_weight / nominal_events <- IT DOES NOT INCLUDE -1 aMCatNLO!
+    # ok, in v25p1 leave at as is
+    #event_weight = 
     scale = xsecs[fname] / event_weight
+
 
     logging.info("%s %f %f" % (fname, scale, xsecs[fname]))
 
     for proc in list(f.GetListOfKeys()):
         process = proc.GetName()
-        if process in ('weight_counter', 'events_counter', 'control_counters'):
+        if process in ('weight_counter', 'events_counter', 'control_counters', 'systematic_weights'):
             continue
         #try:
         for chan in list(proc.ReadObj().GetListOfKeys()):
