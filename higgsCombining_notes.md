@@ -555,7 +555,26 @@ THIS DIDNT WORK, use the section "expected NLL".
                                   the specified signal strength.
 
 
-returns pdf tree_fit_sb.pdf
+returns pdf `tree_fit_sb.pdf`
+
+
+## toys impacts
+
+    ./scripts/text2workspace.py ttxsec/fit-stuff/datacard_AN_v2_mu
+
+Asimov toy
+
+    ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/datacard_AN_v2_mu.root -m 125 --robustFit 1 --doInitialFit
+    ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/datacard_AN_v2_mu.root -m 125 --robustFit 1 --doFits --parallel 5
+    ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/datacard_AN_v2_mu.root -m 125 -o latest_mu_toys_asimov_impacts.json
+    ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts.json -o latest_mu_toys_asimov_impacts
+
+1000 toys
+
+    ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t 100 --expectSignal 1 -d ttxsec/fit-stuff/datacard_AN_v2_mu.root -m 125 --robustFit 1 --doInitialFit
+    ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t 100 --expectSignal 1 -d ttxsec/fit-stuff/datacard_AN_v2_mu.root -m 125 --robustFit 1 --doFits --parallel 5
+    ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t 100 --expectSignal 1 -d ttxsec/fit-stuff/datacard_AN_v2_mu.root -m 125 -o latest_mu_toys_impacts.json
+    ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_impacts.json -o latest_mu_toys_impacts
 
 
 
@@ -576,7 +595,7 @@ electrons (I had some issues with these, but fixed them somehow):
     ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 -o latest_el_impacts.json
     ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o latest_el_impacts
 
-if needed --freezeNuisanceGroup tt_th_frag,tt_th_match
+if needed `--freezeNuisanceGroup tt_th_frag,tt_th_match`
 
 muons:
 
