@@ -22,6 +22,17 @@ from ROOT import TFile, TTree, TH1D, TH2D, TLorentzVector, TVector3, gROOT, gSys
 ROOT.gROOT.Reset()
 ROOT.gSystem.Load("libUserCodettbar-leptons-80X.so")
 
+# the names for the positions of renorm refact weights
+MUf_nom_MUr_nom    = 0
+MUf_up_MUr_nom     = 1
+MUf_down_MUr_nom   = 2
+MUf_nom_MUr_up     = 3
+MUf_up_MUr_up      = 4
+MUf_down_MUr_up    = 5
+MUf_nom_MUr_down   = 6
+MUf_up_MUr_down    = 7
+MUf_down_MUr_down  = 8
+
 pileup_ratio_h2 = array('d',
 [             0.,              0., 5.2880843860098, 1.9057428051882, 0.8279489845062, 1.0183017803649, 0.8886546873859, 0.4586617471559, 0.4516527021066,
  0.6156808676490, 0.1704361822954, 0.3242275168011, 0.5576231467578, 0.6113064296958, 0.6618982312954, 0.7238796620111, 0.7496036493902, 0.7527610638253,
@@ -2303,13 +2314,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                         i.e. they are not per-event normalized to the nominal weight
                         but they are normalized afterwards to the overall weight, i.e. to the average of the nominal
                     """
-                    weights_gen_weight_nom   = ev.gen_weights_renorm_fact[4] if ev.gen_weights_renorm_fact[4] > 0. else 0.00001
-                    weights_gen_weight_f_rUp = ev.gen_weights_renorm_fact[5]
-                    weights_gen_weight_f_rDn = ev.gen_weights_renorm_fact[3]
-                    weights_gen_weight_fUp_r = ev.gen_weights_renorm_fact[7]
-                    weights_gen_weight_fDn_r = ev.gen_weights_renorm_fact[1]
-                    weights_gen_weight_frUp  = ev.gen_weights_renorm_fact[8]
-                    weights_gen_weight_frDn  = ev.gen_weights_renorm_fact[0]
+                    weights_gen_weight_nom   = ev.gen_weights_renorm_fact[MUf_nom_MUr_nom] if ev.gen_weights_renorm_fact[MUf_nom_MUr_nom] > 0. else 0.00001
+                    weights_gen_weight_f_rUp = ev.gen_weights_renorm_fact[MUf_nom_MUr_up]
+                    weights_gen_weight_f_rDn = ev.gen_weights_renorm_fact[MUf_nom_MUr_down]
+                    weights_gen_weight_fUp_r = ev.gen_weights_renorm_fact[MUf_up_MUr_nom]
+                    weights_gen_weight_fDn_r = ev.gen_weights_renorm_fact[MUf_down_MUr_nom]
+                    weights_gen_weight_frUp  = ev.gen_weights_renorm_fact[MUf_up_MUr_up]
+                    weights_gen_weight_frDn  = ev.gen_weights_renorm_fact[MUf_down_MUr_down]
 
                     # sub to this naming in the following ntuple runs:
                     #weights_gen_weight_Frag = (ev.gen_weight_FragUp, ev.gen_weight_FragDown)

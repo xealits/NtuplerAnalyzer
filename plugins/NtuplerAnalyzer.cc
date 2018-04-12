@@ -461,16 +461,17 @@ enum nWeights {
 
 // substituting stuff with another enum
 enum names_Mfr {
-	MUf_down_MUr_down = 0,
-	MUf_down_MUr_nom  = 1,
-	MUf_down_MUr_up   = 2,
-	MUf_nom_MUr_down  = 3,
-	MUf_nom_MUr_nom   = 4,
-	MUf_nom_MUr_up    = 5,
-	MUf_up_MUr_down   = 6,
-	MUf_up_MUr_nom    = 7,
-	MUf_up_MUr_up     = 8
+	MUf_nom_MUr_nom    = 0,
+	MUf_up_MUr_nom     = 1,
+	MUf_down_MUr_nom   = 2,
+	MUf_nom_MUr_up     = 3,
+	MUf_up_MUr_up      = 4,
+	MUf_down_MUr_up    = 5,
+	MUf_nom_MUr_down   = 6,
+	MUf_up_MUr_down    = 7,
+	MUf_down_MUr_down  = 8
 };
+
 
 TRandom3 *r3 = new TRandom3();
 
@@ -1416,7 +1417,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			//NT_gen_weights_renorm_fact.push_back(muf_up_mur_nom_weight   );
 			//NT_gen_weights_renorm_fact.push_back(muf_up_mur_up_weight    ); // 8
 
-			NT_gen_weights_renorm_fact.reserve(9);
+			//LogInfo("Demo") << "renorm refact len " << NT_gen_weights_renorm_fact.size();
+			NT_gen_weights_renorm_fact.resize(9);
+			//LogInfo("Demo") << "renorm refact len " << NT_gen_weights_renorm_fact.size();
 			NT_gen_weights_renorm_fact[MUf_down_MUr_down ]  = muf_down_mur_down_weight ;
 			NT_gen_weights_renorm_fact[MUf_down_MUr_nom  ]  = muf_down_mur_nom_weight  ;
 			NT_gen_weights_renorm_fact[MUf_down_MUr_up   ]  = muf_down_mur_up_weight   ;
