@@ -1516,12 +1516,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         },
 
         'channels_full_sys_lep_selections' : {
-                'ctr_el_wjet':              (procs_el, systematic_names_pu),
-                'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
-                'ctr_old_el_presel':        (procs_el, systematic_names_pu_toppt),     # testing issue with event yield advantage
-                'ctr_old_el_presel_ss':     (procs_el, systematic_names_pu_toppt),
+                #'ctr_el_wjet':              (procs_el, systematic_names_pu),
+                #'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
+                #'ctr_old_el_presel':        (procs_el, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                #'ctr_old_el_presel_ss':     (procs_el, systematic_names_pu_toppt),
                 'ctr_old_el_selVloose':     (procs_el, systematic_names_all_with_th),
                 'ctr_old_el_selVloose_ss':  (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_selVloose_lj':     (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_selVloose_lj_ss':  (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_selVloose_ljout':     (procs_el, systematic_names_all_with_th),
+                'ctr_old_el_selVloose_ljout_ss':  (procs_el, systematic_names_all_with_th),
                 'ctr_old_el_sel':           (procs_el, systematic_names_all_with_th),
                 'ctr_old_el_sel_ss':        (procs_el, systematic_names_all_with_th),
                 'ctr_old_el_sel_lj':        (procs_el, systematic_names_all_with_th),
@@ -1529,12 +1533,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_old_el_sel_ljout':     (procs_el, systematic_names_all_with_th),
                 'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_all_with_th),
 
-                'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
-                'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
-                'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
-                'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
+                #'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
+                #'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
+                #'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                #'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
                 'ctr_old_mu_selVloose':     (procs_mu, systematic_names_all_with_th),
                 'ctr_old_mu_selVloose_ss':  (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_lj':        (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_lj_ss':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_ljout':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_ljout_ss':  (procs_mu, systematic_names_all_with_th),
                 'ctr_old_mu_sel':           (procs_mu, systematic_names_all_with_th),
                 'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_all_with_th),
                 'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_all_with_th),
@@ -1576,7 +1584,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
     with_AlphaS_sys  = True and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
     with_Frag_sys    = True and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
-    with_MEscale_sys = True and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
+    with_MEscale_sys = False and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
     with_PDF_sys     = True and ('PDF_TRIGGER'      in requested_systematics)
 
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
