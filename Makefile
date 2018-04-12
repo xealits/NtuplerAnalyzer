@@ -24,3 +24,20 @@ merge_tt:
 	hadd merge-sets/${nt}/${proc}/$$fl.root `sed 's,^,/lstore/cms/olek/outdirs/${nt}/${proc}/${dtag}/,' $$fl` & \
 	done
 
+
+resubmit:
+	for js in `ls crab_projects/crab_Ntupler_${nt}* -d`; \
+	do \
+	echo $$js ; \
+	crab resubmit -d $$js \
+	done
+
+
+status:
+	for js in `ls crab_projects/crab_Ntupler_${nt}* -d`; \
+	do \
+	echo $$js ; \
+	crab status -d $$js \
+	done
+
+
