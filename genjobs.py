@@ -172,6 +172,22 @@ dtags_updowns_old = [
 "TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8",
 ]
 
+dtags_updowns = [
+"MC2016_Summer16_TTJets_powheg_fsrdown",
+"MC2016_Summer16_TTJets_powheg_fsrup",
+"MC2016_Summer16_TTJets_powheg_isrdown",
+"MC2016_Summer16_TTJets_powheg_isrup",
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4down",
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4up",
+"MC2016_Summer16_TTJets_powheg_hdampDOWN",
+"MC2016_Summer16_TTJets_powheg_hdampUP",
+]
+
+# also
+"MC2016_Summer16_TTJets_amcatnlo_backup",
+"MC2016_Summer16_TTJets_powheg_herwigpp",
+"MC2016_Summer16_TTJets_powheg_GluonMoveCRTune",
+"MC2016_Summer16_TTJets_powheg_QCDCRTune",
 
 
 dtags_std_data_mu = [
@@ -203,7 +219,7 @@ dtags_std = dtags_std_mc + dtags_std_data
 
 
 dtag_groups = {'std': dtags_std, 'std_data': dtags_std_data, 'data_el': dtags_std_data_el, 'data_mu': dtags_std_data_mu,
-    'std_mc': dtags_std_mc, 'updowns': dtags_updowns_old,
+    'std_mc': dtags_std_mc, 'updowns': dtags_updowns,
     'singletop': dtags_singletop_mc,
     'wjets': dtags_wjets,
     'wjets_amcatnlo': dtags_wjets_amcatnlo,
