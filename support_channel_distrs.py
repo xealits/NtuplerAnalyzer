@@ -5165,8 +5165,10 @@ def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=20263
 
     events_counter = input_tfile.Get('ntupler/events_counter')
     weight_counter = input_tfile.Get('ntupler/weight_counter')
+    systematic_weights = input_tfile.Get('ntupler/systematic_weights')
     events_counter.SetDirectory(0)
     weight_counter.SetDirectory(0)
+    systematic_weights.SetDirectory(0)
 
     input_tfile.Close()
 
@@ -5239,6 +5241,7 @@ def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=20263
     fout.cd()
     events_counter.Write() # hopefully these go to the root of the tfile
     weight_counter.Write()
+    systematic_weights.Write()
     control_counters.Write()
 
     fout.Write()
