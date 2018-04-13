@@ -29,7 +29,7 @@ resubmit:
 	for js in `ls crab_projects/crab_Ntupler_${nt}* -d`; \
 	do \
 	echo $$js ; \
-	crab resubmit -d $$js \
+	crab resubmit -d $$js ; \
 	done
 
 
@@ -37,7 +37,7 @@ status:
 	for js in `ls crab_projects/crab_Ntupler_${nt}* -d`; \
 	do \
 	echo $$js ; \
-	crab status -d $$js \
+	crab status -d $$js ; \
 	done
 
 
