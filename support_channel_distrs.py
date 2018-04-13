@@ -562,7 +562,7 @@ yup:
 '''
 
 
-with_bSF = False # 0L2M issue seems to be real
+with_bSF = True # 0L2M issue seems to be real
 
 if with_bSF:
     logging.info("loading b-tagging SF stuff")
@@ -1613,9 +1613,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
     #selected_channels = channels_full_sys_electron_selections
     selected_channels = selection_definitions[channels_to_select]
 
-    with_JER   = isMC and False
-    with_JES   = isMC and False
-    with_TauES = isMC and False
+    with_JER   = isMC and True
+    with_JES   = isMC and True
+    with_TauES = isMC and True
 
     # find all requested systematics
     requested_systematics  = set()
@@ -1631,10 +1631,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
     with_JES_sys = with_JES and ('JESUp' in requested_systematics or 'JESDown' in requested_systematics)
     with_TauES_sys = with_TauES and ('TauESUp' in requested_systematics or 'TauESDown' in requested_systematics)
 
-    with_AlphaS_sys  = False and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
-    with_Frag_sys    = False and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
+    with_AlphaS_sys  = True and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
+    with_Frag_sys    = True and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
     with_MEscale_sys = True and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
-    with_PDF_sys     = False and ('PDF_TRIGGER'      in requested_systematics)
+    with_PDF_sys     = True and ('PDF_TRIGGER'      in requested_systematics)
 
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
     # all requested jet cuts
