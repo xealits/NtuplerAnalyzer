@@ -11,65 +11,49 @@ def rgb(r, g, b):
     '''
     return TColor.GetColor(r, g, b)
 
-nick_colour = {
-"data": kWhite,
-"dy": kGray,
-"dy_other": kGray,
-"dy_tautau": kGray+2,
-#"wjets": kRed+1,
-"wjets": kCyan+2,
-"wjets_tauh": kCyan+3,
-"wjets_taul": kCyan+4,
-"dibosons": kCyan,
-"singletop": kAzure,
-"s_top_eltau": kAzure,
-"s_top_mutau": kAzure,
-"s_top_elmu": kAzure+1,
-"s_top_lj": kAzure+2,
-"s_top_other": kAzure+3,
+nick_info = {
+"data":        {'color': kWhite,   'legend': 'data'},
+"dy":          {'color': kGray,    'legend': 'DY'},
+"dy_other":    {'color': kGray,    'legend': 'DY #rightarrow other'},
+"dy_tautau":   {'color': kGray+2,  'legend': 'DY #rightarrow #tau#tau'},
+"wjets":       {'color': kCyan+2,  'legend': 'W+jets#rightarrow l'},
+"wjets_tauh":  {'color': kCyan+3,  'legend': 'W+jets#rightarrow #tau_{h}'},
+"wjets_taul":  {'color': kCyan+4,  'legend': 'W+jets#rightarrow #tau_{l}'},
+"dibosons":    {'color': kCyan,    'legend': 'dibosons'},
+"singletop":   {'color': kAzure,   'legend': 'singletop'},
+"s_top_eltau": {'color': kAzure,   'legend': 's.top#rightarrow e#tau'},
+"s_top_mutau": {'color': kAzure,   'legend': 's.top#rightarrow #mu#tau'},
+"s_top_elmu":  {'color': kAzure+1, 'legend': 's.top#rightarrow e#mu'},
+"s_top_lj":    {'color': kAzure+2, 'legend': 's.top#rightarrow lj'},
+"s_top_other": {'color': kAzure+3, 'legend': 's.top#rightarrow other'},
 
-#"tt_taultauh" : kCyan-3,
-#"tt_jj": kGreen+4,
-#"tt_lj": kGreen+3,
-#"tt_em": kYellow-7,
-#"tt_{em}": kYellow-7,
-#"tt_ee": kAzure-9,
-#"tt_mm": kGreen-9,
-#"tt_eltau": kOrange+2,
-#"tt_mutau": kOrange+1,
-#"tt_{l\\tau-l}": kOrange+3,
-#"tt_other": kCyan-5,
+"tt_jj":         {'color': kGreen+4,  'legend': 'tt_jj'},
+"tt_em":         {'color': kYellow-7, 'legend': 'tt_em'},
+"tt_{em}":       {'color': kYellow-7, 'legend': 'tt_{em}'},
+"tt_ee":         {'color': kAzure-9,  'legend': 'tt_ee'},
+"tt_mm":         {'color': kGreen-9,  'legend': 'tt_mm'},
+"tt_{l\\tau-l}": {'color': kOrange+3, 'legend': 'tt_{l\\tau-l}'},
 
-"tt_jj": kGreen+4,
-"tt_em": kYellow-7,
-"tt_{em}": kYellow-7,
-"tt_ee": kAzure-9,
-"tt_mm": kGreen-9,
-"tt_{l\\tau-l}": kOrange+3,
-#"tt_mutau": kOrange+0,
-#"tt_eltau": kOrange+1,
-#"tt_taultauh" : kOrange+7,
-#"tt_lj": kRed+1, #kOrange+4,
-#"tt_other": kOrange+5,
+"tt_mutau3ch":   {'color': rgb(255, 255, 178), 'legend': 't#bar{t}#rightarrow #mu#tau_{3h}'},
+"tt_eltau3ch":   {'color': rgb(254,204,92),    'legend': 't#bar{t}#rightarrow e#tau_{3h}'},
 
-"tt_mutau3ch":    rgb(255, 255, 178),
-"tt_eltau3ch":    rgb(254,204,92),
+"tt_mutau":      {'color': rgb(255, 255, 178), 'legend': 't#bar{t}#rightarrow #mu#tau_{h}'},
+"tt_eltau":      {'color': rgb(254,204,92),    'legend': 't#bar{t}#rightarrow e#tau_{h}'},
+"tt_elmu":       {'color': rgb(254,224,210),   'legend': 't#bar{t}#rightarrow e#mu'},
+"tt_taultauh":   {'color': rgb(253,141,60),    'legend': 't#bar{t}#rightarrow #tau_{l}#tau_{h}'},
+"tt_ltaul":      {'color': rgb(252,146,114),   'legend': 't#bar{t}#rightarrow l#tau_{l}'},
+"tt_taueltaumu": {'color': rgb(252,146,114),   'legend': 't#bar{t}#rightarrow #tau){e}#tau_{#mu}'},
+"tt_ljw":        {'color': rgb(240,59,32),     'legend': 't#bar{t}#rightarrow ljw'},
+"tt_ljb":        {'color': rgb(240,59,32),     'legend': 't#bar{t}#rightarrow ljb'},
+"tt_ljo":        {'color': rgb(240,59,32),     'legend': 't#bar{t}#rightarrow ljo'},
+"tt_lj":         {'color': rgb(240,59,32),     'legend': 't#bar{t}#rightarrow lj'},
+"tt_taulj":      {'color': rgb(210,29,32),     'legend': 't#bar{t}#rightarrow #tau_{l}j'},
+"tt_other":      {'color': rgb(189,0,38),      'legend': 't#bar{t}#rightarrow other'},
 
-"tt_mutau":    rgb(255, 255, 178),
-"tt_eltau":    rgb(254,204,92),
-"tt_elmu":     rgb(254,224,210),
-"tt_taultauh": rgb(253,141,60),
-"tt_ltaul":    rgb(252,146,114),
-"tt_taueltaumu": rgb(252,146,114),
-"tt_ljw":       rgb(240,59,32),
-"tt_ljb":       rgb(240,59,32),
-"tt_ljo":       rgb(240,59,32),
-"tt_lj":        rgb(240,59,32),
-"tt_taulj":     rgb(210,29,32),
-"tt_other":     rgb(189,0,38),
-
-"qcd": kViolet,
+"qcd": {'color': kViolet, 'legend': 'qcd'},
 }
+
+nick_colour = {nick: nick_info[nick]['color'] for nick in nick_info}
 
 nick_order = {
 "qcd": 0,
@@ -105,7 +89,7 @@ nick_order = {
 "dibosons": -40,
 }
 
-def stack_n_legend(used_histos, shift=0.):
+def stack_n_legend(used_histos, shift=0., exp_legend=False):
     '''stack_n_legend(used_histos)
 
     used_histos = [(histo, nick of process, channel), ...]
@@ -120,7 +104,10 @@ def stack_n_legend(used_histos, shift=0.):
     # build Stach and legend
     hs = THStack("mc_stack", "mc_stack")
     #leg = TLegend(0.7 - (0.15 if not homogeneous_channels else 0.), 0.4, 0.89, 0.89)
-    leg = TLegend(0.7 - shift, 0.4, 0.89 - shift, 0.89)
+    if exp_legend:
+        leg = TLegend(0.8 - shift, 0.4, 1. - shift, 0.89)
+    else:
+        leg = TLegend(0.7 - shift, 0.4, 0.89 - shift, 0.89)
 
     process_counter = {} # for distinguishing processes in different channels
 
@@ -140,7 +127,7 @@ def stack_n_legend(used_histos, shift=0.):
     # to have legend in the same order
     for histo, nick, channel in sorted(used_histos, key=lambda h_n: -nick_order.get(h_n[1], 1)):
         if homogeneous_channels:
-            leg.AddEntry(histo, nick, "F")
+            leg.AddEntry(histo, nick_info[nick]['legend'], "F")
         else:
             leg.AddEntry(histo, "%s %s" % (nick, channel), "F")
 

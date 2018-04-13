@@ -33,6 +33,8 @@ parser.add_argument("--y-range",   type=str, help="set the range on Y axis `0,1.
 
 #parser.add_argument("--Vloose-shapes",   action='store_true', help="get TT proc shapes from selVloose")
 
+parser.add_argument("--exp-legend",   action='store_true', help="experimentary legend drawing")
+
 parser.add_argument("--no-data",   action='store_true', help="don't draw data")
 
 parser.add_argument("--bin-norm",  action='store_true', help="normalize per bin width")
@@ -504,9 +506,9 @@ if args.form_shapes:
 # get MC stack and legend for it
 #hs, leg = plotting_root.stack_n_legend(used_histos)
 if args.legend_shift:
-    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos, args.legend_shift)) for distr_name, histos in used_histos_per_distr]
+    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos, args.legend_shift, args.exp_legend)) for distr_name, histos in used_histos_per_distr]
 else:
-    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos)) for distr_name, histos in used_histos_per_distr]
+    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos, exp_legend=args.exp_legend)) for distr_name, histos in used_histos_per_distr]
 
 # sum of MC to get the sum of errors
 
@@ -793,7 +795,10 @@ else:
     from ROOT import gStyle, gROOT, TCanvas, TPad
     gROOT.SetBatch()
     gStyle.SetOptStat(0)
-    cst = TCanvas("cst","stacked hists",10,10,700,700)
+    if args.exp_legend:
+        cst = TCanvas("cst","stacked hists",10,10,1000,700)
+    else:
+        cst = TCanvas("cst","stacked hists",10,10,700,700)
 
     if args.title == 'default':
         title_plot = "%s %s" % (channel, sys_name)
@@ -803,9 +808,11 @@ else:
     title_x = args.title_x if args.title_x else args.distr_name
     title_y = args.title_y if args.title_y else "events/bin"
 
+    pad_right_edge = 0.8 if args.exp_legend else 1.
+
     if args.ratio and args.plot:
-        pad1 = TPad("pad1","This is pad1", 0., 0.3,  1., 1.)
-        pad2 = TPad("pad2","This is pad2", 0., 0.05,  1., 0.3)
+        pad1 = TPad("pad1","This is pad1", 0., 0.3,   pad_right_edge, 1.)
+        pad2 = TPad("pad2","This is pad2", 0., 0.05,  pad_right_edge, 0.3)
         #pad2.SetTopMargin(0.01) # doesn't work
         #gStyle.SetPadTopMargin(0.05) # nope
         #ROOT.gPad.SetTopMargin(0.01) # nope
@@ -817,16 +824,26 @@ else:
         # now set margins:
         pad1.cd()
         ROOT.gPad.SetBottomMargin(0.02)
+        if args.exp_legend:
+            ROOT.gPad.SetRightMargin(0.02)
         #ROOT.gPad.SetTopMargin(0.01)
         pad2.cd()
         #ROOT.gPad.SetBottomMargin(0.001)
         ROOT.gPad.SetTopMargin(0.02)
+        if args.exp_legend:
+            ROOT.gPad.SetRightMargin(0.02)
     elif args.ratio:
-        pad2 = TPad("pad2","This is pad2", 0., 0.05,  1., 1.)
+        pad2 = TPad("pad2","This is pad2", 0., 0.05,  pad_right_edge, 1.)
         pad2.Draw()
+        pad2.cd()
+        if args.exp_legend:
+            ROOT.gPad.SetRightMargin(0.02)
     else:
-        pad1 = TPad("pad1","This is pad1", 0., 0.,  1., 1.)
+        pad1 = TPad("pad1","This is pad1", 0., 0.,  pad_right_edge, 1.)
         pad1.Draw()
+        pad1.cd()
+        if args.exp_legend:
+            ROOT.gPad.SetRightMargin(0.02)
 
     # if fake rate then the sums should be divided by second distr sum
     if args.fake_rate:
@@ -1011,8 +1028,6 @@ else:
                 hs_sum1.Draw("same e2")
 
             histos_data_sum.Draw("same e1p")
-            if not args.fake_rate and not args.skip_legend:
-                leg.Draw("same")
         else:
             # the histogramStack cannot have title in root... therefore it cannot be plotted first..
             # thus I have to plot sum of MC first to get the titles right..
@@ -1039,9 +1054,6 @@ else:
                 # only error band in usual case
                 hs_sum1.Draw("same e2")
 
-            if not args.fake_rate and not args.skip_legend:
-                leg.Draw("same")
-
     '''
     cout << "setting title" << endl;
     // title for the plot
@@ -1053,7 +1065,10 @@ else:
     left_title->Draw("same");
     '''
 
-    left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
+    if args.exp_legend:
+        left_title = TPaveText(0.05, 0.9, 0.4, 0.94, "brNDC")
+    else:
+        left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
     left_title.AddText("CMS preliminary at 13 TeV")
     left_title.SetTextFont(1)
 
@@ -1067,13 +1082,21 @@ else:
     right_title->Draw("same");
     '''
 
-    right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
+    if args.exp_legend:
+        right_title = TPaveText(0.85, 0.9, 1.0, 0.94, "brNDC")
+    else:
+        right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
     right_title.AddText("L = %s fb^{-1}" % (args.lumi / 1000. if args.lumi else args.lumi_label))
     right_title.SetTextFont(132)
     right_title.SetFillColor(0)
 
     left_title .Draw("same")
     right_title.Draw("same")
+
+    cst.cd()
+    if not args.fake_rate and not args.skip_legend:
+       if args.exp_legend: leg.SetBorderSize(0)
+       leg.Draw("same")
 
     if args.output_name:
         cst.SaveAs(out_dir + args.output_name + '.png')
