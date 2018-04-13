@@ -562,7 +562,7 @@ yup:
 '''
 
 
-with_bSF = True # 0L2M issue seems to be real
+with_bSF = False # 0L2M issue seems to be real
 
 if with_bSF:
     logging.info("loading b-tagging SF stuff")
@@ -1095,6 +1095,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         systematic_names_all_with_th.extend(('MrUp', 'MrDown', 'MfUp', 'MfDown', 'MfrUp', 'MfrDown'))
         systematic_names_all_with_th.extend(('PDF_TRIGGER',))
 
+        systematic_names_th_renorm_refact = ['NOMINAL', 'MrUp', 'MrDown', 'MfUp', 'MfDown', 'MfrUp', 'MfrDown']
+
     if isMC:
         if isTT:
             # TODO: probably can clarify this
@@ -1560,6 +1562,42 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_all_with_th),
                 'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_all_with_th),
                 'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_all_with_th),
+        },
+
+        'channels_refact_sys_lep_selections' : {
+                #'ctr_el_wjet':              (procs_el, systematic_names_pu),
+                #'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
+                #'ctr_old_el_presel':        (procs_el, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                #'ctr_old_el_presel_ss':     (procs_el, systematic_names_pu_toppt),
+                'ctr_old_el_selVloose':     (procs_el, systematic_names_th_renorm_refact),
+                'ctr_old_el_selVloose_ss':  (procs_el, systematic_names_th_renorm_refact),
+                'ctr_old_el_selVloose_lj':     (procs_el, systematic_names_th_renorm_refact),
+                'ctr_old_el_selVloose_lj_ss':  (procs_el, systematic_names_th_renorm_refact),
+                'ctr_old_el_selVloose_ljout':     (procs_el, systematic_names_th_renorm_refact),
+                'ctr_old_el_selVloose_ljout_ss':  (procs_el, systematic_names_th_renorm_refact),
+                'ctr_old_el_sel':           (procs_el, systematic_names_th_renorm_refact),
+                'ctr_old_el_sel_ss':        (procs_el, systematic_names_th_renorm_refact),
+                'ctr_old_el_sel_lj':        (procs_el, systematic_names_th_renorm_refact),
+                'ctr_old_el_sel_lj_ss':     (procs_el, systematic_names_th_renorm_refact),
+                'ctr_old_el_sel_ljout':     (procs_el, systematic_names_th_renorm_refact),
+                'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_th_renorm_refact),
+
+                #'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
+                #'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
+                #'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                #'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
+                'ctr_old_mu_selVloose':     (procs_mu, systematic_names_th_renorm_refact),
+                'ctr_old_mu_selVloose_ss':  (procs_mu, systematic_names_th_renorm_refact),
+                'ctr_old_mu_selVloose_lj':        (procs_mu, systematic_names_th_renorm_refact),
+                'ctr_old_mu_selVloose_lj_ss':     (procs_mu, systematic_names_th_renorm_refact),
+                'ctr_old_mu_selVloose_ljout':     (procs_mu, systematic_names_th_renorm_refact),
+                'ctr_old_mu_selVloose_ljout_ss':  (procs_mu, systematic_names_th_renorm_refact),
+                'ctr_old_mu_sel':           (procs_mu, systematic_names_th_renorm_refact),
+                'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_th_renorm_refact),
+                'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_th_renorm_refact),
+                'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_th_renorm_refact),
+                'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_th_renorm_refact),
+                'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_th_renorm_refact),
         }
     }
 
@@ -1575,9 +1613,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
     #selected_channels = channels_full_sys_electron_selections
     selected_channels = selection_definitions[channels_to_select]
 
-    with_JER   = isMC and True
-    with_JES   = isMC and True
-    with_TauES = isMC and True
+    with_JER   = isMC and False
+    with_JES   = isMC and False
+    with_TauES = isMC and False
 
     # find all requested systematics
     requested_systematics  = set()
@@ -1593,10 +1631,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
     with_JES_sys = with_JES and ('JESUp' in requested_systematics or 'JESDown' in requested_systematics)
     with_TauES_sys = with_TauES and ('TauESUp' in requested_systematics or 'TauESDown' in requested_systematics)
 
-    with_AlphaS_sys  = True and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
-    with_Frag_sys    = True and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
-    with_MEscale_sys = False and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
-    with_PDF_sys     = True and ('PDF_TRIGGER'      in requested_systematics)
+    with_AlphaS_sys  = False and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
+    with_Frag_sys    = False and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
+    with_MEscale_sys = True and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
+    with_PDF_sys     = False and ('PDF_TRIGGER'      in requested_systematics)
 
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
     # all requested jet cuts
