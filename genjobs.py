@@ -52,6 +52,8 @@ parser.add_argument("--dtags", type=str, default='std',
 parser.add_argument("--without-dtags", type=str, default='',
         help='dtags or groups of dtags to remove from the submission list (default "")')
 
+parser.add_argument("--scheme", type=str, help="the scheme of queue as 5,5,0,15,15 for 1,2,3,4,5 nodes")
+
 parser.add_argument("--do-W-stitching", action='store_true', help="turn ON skipping NUP events of inclusive sample")
 parser.add_argument("-d", "--debug",    action='store_true', help="DEBUG level of logging")
 
@@ -287,7 +289,14 @@ scheme_one3 = {1:6, 2:6, 3:1, 4:14, 5:14}
 scheme_two3 = {1:6, 2:6, 3:2, 4:14, 5:14}
 scheme_no3 =  {1:6, 2:6, 3:0, 4:14, 5:14}
 scheme_no3_loaded =  {1:7, 2:7, 3:0, 4:15, 5:15}
+scheme_no3no5 =  {1:7, 2:7, 3:0, 4:15, 5:0}
 scheme = scheme_no3_loaded # standard_scheme
+
+if args.scheme:
+    custom_scheme = [int(i) for i in args.scheme.split(',')]
+    scheme = {i:custom_scheme[i-1] for i in range(1,6)}
+
+logging.info("scheme: %s" % str(scheme))
 
 n_queues = sum(scheme.values())
 
