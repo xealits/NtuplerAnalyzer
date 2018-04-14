@@ -26,6 +26,7 @@ parser.add_argument('-r', '--ratio', action='store_true', help="add ratio plot")
 parser.add_argument('--logy', action='store_true', help="log scale Y axis")
 
 parser.add_argument("-o", "--output-directory", type=str, default='./', help="optional output directory")
+parser.add_argument("--custom-filename", type=str, help="custom filename")
 
 parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
 #parser.add_argument("--y-max",       type=float,              help="set the maximum on Y axis")
@@ -158,5 +159,10 @@ if args.add_y_line:
 
 leg.Draw("same")
 
-cst.SaveAs(args.output_directory + '/ratios_%s_%s_%s_%s_%s.png' % (ref_chan, args.process, args.systematic, ref_distr, args.ratio_channel_distrs))
+if args.custom_filename:
+    filename = args.custom_filename + '.png'
+else:
+    filename = 'ratios_%s_%s_%s_%s_%s.png' % (ref_chan, args.process, args.systematic, ref_distr, args.ratio_channel_distrs)
+
+cst.SaveAs(args.output_directory + '/' + filename)
 

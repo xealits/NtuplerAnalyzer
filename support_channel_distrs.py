@@ -1106,6 +1106,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 systematic_names_pu       = [isTT_systematic]
                 systematic_names_all      = [isTT_systematic]
                 systematic_names_nominal  = [isTT_systematic]
+                systematic_names_all_with_th = [isTT_systematic]
+                systematic_names_th_renorm_refact = [isTT_systematic]
 
             procs_el     = tt_procs_el     =  (['tt_eltau', 'tt_lj', 'tt_taultauh', 'tt_taulj', 'tt_other'], 'tt_other')
             procs_mu     = tt_procs_mu     =  (['tt_mutau', 'tt_lj', 'tt_taultauh', 'tt_taulj', 'tt_other'], 'tt_other')

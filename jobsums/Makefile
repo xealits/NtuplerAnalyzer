@@ -59,6 +59,109 @@ plots_sel:
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir}  --lumi ${lumi} --output-name ${tag}_lj_Mt-lep-met    -p -r --qcd ${qcd} --title "" --title-x "bck. cat. M_{T}(l, MET)"  -c ${sel}_lj    -d Mt_lep_met  || true
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir}  --lumi ${lumi} --output-name ${tag}_ljout_Mt-lep-met -p -r --qcd ${qcd} --title "" --title-x "sig. cat. M_{T}(l, MET)"  -c ${sel}_ljout -d Mt_lep_met  || true
 
+current_wjets:
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name wjets_el_Mt_lep_met_datadriven_qcd --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_el_wjet -d Mt_lep_met_f --qcd 1. --wjet 0.85 --title "" --title-x "M_{T}(e, MET)"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name wjets_el_Mt_lep_met                --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_el_wjet -d Mt_lep_met_f --qcd-factor 2. --wjet 0.85 --title "" --title-x "M_{T}(e, MET)"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --output-name wjets_Mt_lep_met_datadriven_qcd    --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_mu_wjet -d Mt_lep_met_f --qcd 1. --wjet 0.8  --title "" --title-x "M_{T}(#mu, MET)"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --output-name wjets_Mt_lep_met                   --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_mu_wjet -d Mt_lep_met_f --qcd-factor 2. --wjet 0.8  --title "" --title-x "M_{T}(#mu, MET)"
+	# mu wjets lep, met
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --output-name wjets_lep_pt_datadriven_qcd --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_mu_wjet -d lep_pt --qcd 1.        --wjet 0.8  --title "" --title-x "#mu p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --output-name wjets_lep_pt                --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_mu_wjet -d lep_pt --qcd-factor 2. --wjet 0.8  --title "" --title-x "#mu p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --output-name wjets_met_datadriven_qcd    --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_mu_wjet -d met --qcd 1.        --wjet 0.8  --title "" --title-x "MET"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --output-name wjets_met                   --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_mu_wjet -d met --qcd-factor 2. --wjet 0.8  --title "" --title-x "MET"
+
+current_presel:
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d Mt_lep_met_f --qcd 1. --wjet 0.85 --title "" --title-x "M_{T}(e, MET)"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d Mt_lep_met_f --qcd-factor 2. --wjet 0.85 --title "" --title-x "M_{T}(e, MET)"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d lep_pt --qcd 1.        --wjet 0.8  --title "" --title-x "e p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d lep_pt --qcd-factor 2. --wjet 0.8  --title "" --title-x "e p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d met --qcd 1.        --wjet 0.8  --title "" --title-x "MET"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d met --qcd-factor 2. --wjet 0.8  --title "" --title-x "MET"
+	# mu
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_presel_Mt_lep_met        --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d Mt_lep_met_f --qcd 1. --wjet 0.8  --title "" --title-x "M_{T}(#mu, MET)"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_presel_Mt_lep_met_mc_qcd --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d Mt_lep_met_f --qcd-factor 2. --wjet 0.8  --title "" --title-x "M_{T}(#mu, MET)"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_presel_lep_pt_mc_qcd --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d lep_pt  --qcd-factor 2. --wjet 0.8  --title "" --title-x "#mu p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_presel_lep_pt        --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d lep_pt  --qcd 1.        --wjet 0.8  --title "" --title-x "#mu p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_presel_lep_eta       --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d lep_eta --qcd 1.        --wjet 0.8  --title "" --title-x "#mu #eta"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_presel_met           --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d met --qcd 1.        --wjet 0.8  --title "" --title-x "MET"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_presel_met_mc_qcd    --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d met --qcd-factor 2. --wjet 0.8  --title "" --title-x "MET"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_presel_bjet_pt       --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d bMjet_pt  --qcd 1.        --wjet 0.8  --title "" --title-x "leading b-jet p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_presel_bjet_eta      --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d bMjet_eta --qcd 1.        --wjet 0.8  --title "" --title-x "leading b-jet #eta"
+	#python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d bMjet_pt  --qcd-factor 2. --wjet 0.8  --title "" --title-x "leading b-jet p_{T}"
+	#python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d bMjet_eta --qcd-factor 2. --wjet 0.8  --title "" --title-x "leading b-jet #eta"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_presel_lep_pt     --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d lep_pt  --qcd 1.      --wjet 0.85  --title "" --title-x "e p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_presel_lep_eta    --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d lep_eta --qcd 1.      --wjet 0.85  --title "" --title-x "e #eta"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_presel_bjet_pt    --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d bMjet_pt  --qcd 1.    --wjet 0.85  --title "" --title-x "leading b-jet p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_presel_bjet_eta   --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d bMjet_eta --qcd 1.    --wjet 0.85  --title "" --title-x "leading b-jet #eta"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_presel_met        --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d met --qcd 1.          --wjet 0.85  --title "" --title-x "MET"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_presel_Mt_lep_met --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d Mt_lep_met_f --qcd 1. --wjet 0.85  --title "" --title-x "M_{T}(e, MET)"
+
+current_presel_lj:
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --bin-norm --output-name mu_presel_dijet_mc_qcd       --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d dijet_mass  --qcd-factor 2. --wjet 0.8  --title "" --title-x "di-jet mass"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --bin-norm --output-name mu_presel_dijet              --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d dijet_mass  --qcd        1. --wjet 0.8  --title "" --title-x "di-jet mass"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --bin-norm --output-name mu_presel_trijet_mc_qcd      --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d trijet_mass --qcd-factor 2. --wjet 0.8  --title "" --title-x "tri-jet mass"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --bin-norm --output-name mu_presel_trijet             --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d trijet_mass --qcd        1. --wjet 0.8  --title "" --title-x "tri-jet mass"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --bin-norm --output-name mu_presel_dijettrijet_mc_qcd --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d dijet_trijet_mass --qcd-factor 2. --wjet 0.8  --title "" --title-x "di-jet tri-jet cut parameter"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --bin-norm --output-name mu_presel_dijettrijet        --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d dijet_trijet_mass --qcd        1. --wjet 0.8  --title "" --title-x "di-jet tri-jet cut parameter"
+	#
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --bin-norm --output-name el_presel_dijet_mc_qcd       --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d dijet_mass  --qcd-factor 2. --wjet 0.8  --title "" --title-x "di-jet mass"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --bin-norm --output-name el_presel_dijet              --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d dijet_mass  --qcd        1. --wjet 0.8  --title "" --title-x "di-jet mass"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --bin-norm --output-name el_presel_trijet_mc_qcd      --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d trijet_mass --qcd-factor 2. --wjet 0.8  --title "" --title-x "tri-jet mass"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --bin-norm --output-name el_presel_trijet             --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d trijet_mass --qcd        1. --wjet 0.8  --title "" --title-x "tri-jet mass"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --bin-norm --output-name el_presel_dijettrijet_mc_qcd --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d dijet_trijet_mass --qcd-factor 2. --wjet 0.8  --title "" --title-x "di-jet tri-jet cut parameter"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --bin-norm --output-name el_presel_dijettrijet        --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d dijet_trijet_mass --qcd        1. --wjet 0.8  --title "" --title-x "di-jet tri-jet cut parameter"
+
+
+
+current_sel:
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_sel_lep_pt        --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_sel -d lep_pt  --qcd 1.      --wjet 0.8  --title "" --title-x "#mu p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_sel_lep_eta       --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_sel -d lep_eta --qcd 1.      --wjet 0.8  --title "" --title-x "#mu #eta"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_sel_bjet_pt       --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_sel -d bMjet_pt  --qcd 1.    --wjet 0.8  --title "" --title-x "leading b-jet p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_sel_bjet_eta      --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_sel -d bMjet_eta --qcd 1.    --wjet 0.8  --title "" --title-x "leading b-jet #eta"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_sel_met           --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_sel -d met --qcd 1.          --wjet 0.8  --title "" --title-x "MET"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_sel_Mt_lep_met    --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_sel -d Mt_lep_met_f --qcd 1. --wjet 0.8  --title "" --title-x "M_{T}(#mu, MET)" -x ctr_old_mu_selVloose
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_sel_lj_Mt_lep_met    --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_sel_lj    -d Mt_lep_met_f --qcd 1. --wjet 0.8  --title "" --title-x "M_{T}(#mu, MET)" -x ctr_old_mu_selVloose
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root --output-name mu_sel_ljout_Mt_lep_met --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_sel_ljout -d Mt_lep_met_f --qcd 1. --wjet 0.8  --title "" --title-x "M_{T}(#mu, MET)" -x ctr_old_mu_selVloose
+	#
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_sel_lep_pt     --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_sel -d lep_pt  --qcd 1.      --wjet 0.85  --title "" --title-x "e p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_sel_lep_eta    --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_sel -d lep_eta --qcd 1.      --wjet 0.85  --title "" --title-x "e #eta"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_sel_bjet_pt    --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_sel -d bMjet_pt  --qcd 1.    --wjet 0.85  --title "" --title-x "leading b-jet p_{T}"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_sel_bjet_eta   --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_sel -d bMjet_eta --qcd 1.    --wjet 0.85  --title "" --title-x "leading b-jet #eta"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_sel_met        --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_sel -d met --qcd 1.          --wjet 0.85  --title "" --title-x "MET"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_sel_Mt_lep_met --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_sel -d Mt_lep_met_f --qcd 1. --wjet 0.85  --title "" --title-x "M_{T}(e, MET)" -x ctr_old_el_selVloose
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_sel_lj_Mt_lep_met    --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_sel_lj    -d Mt_lep_met_f --qcd 1. --wjet 0.85  --title "" --title-x "M_{T}(e, MET)" -x ctr_old_el_selVloose
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_sel_ljout_Mt_lep_met --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_sel_ljout -d Mt_lep_met_f --qcd 1. --wjet 0.85  --title "" --title-x "M_{T}(e, MET)" -x ctr_old_el_selVloose
+	#
+
+current_pu:
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_sel_nvtx       --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_sel -d nvtx  --qcd 1. --wjet 0.85  --title "" --title-x "N vtx"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_sel_nvtx_up    --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_sel -d nvtx  --qcd 1. --wjet 0.85  --title "" --title-x "PU Up N vtx"   -s PUUp
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_sel_nvtx_down  --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_sel -d nvtx  --qcd 1. --wjet 0.85  --title "" --title-x "PU Down N vtx" -s PUDown
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --output-name mu_sel_nvtx       --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_sel -d nvtx  --qcd 1. --wjet 0.80  --title "" --title-x "N vtx"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --output-name mu_sel_nvtx_up    --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_sel -d nvtx  --qcd 1. --wjet 0.80  --title "" --title-x "PU Up N vtx"   -s PUUp
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --output-name mu_sel_nvtx_down  --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_sel -d nvtx  --qcd 1. --wjet 0.80  --title "" --title-x "PU Down N vtx" -s PUDown
+	#
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_presel_nvtx       --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d nvtx  --qcd 1. --wjet 0.85  --title "" --title-x "N vtx"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_presel_nvtx_up    --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d nvtx  --qcd 1. --wjet 0.85  --title "" --title-x "PU Up N vtx"   -s PUUp
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleElectron.root --output-name el_presel_nvtx_down  --exp-legend -o plots/current/ --lumi 31300 -p -r -c ctr_old_el_presel -d nvtx  --qcd 1. --wjet 0.85  --title "" --title-x "PU Down N vtx" -s PUDown
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --output-name mu_presel_nvtx       --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d nvtx  --qcd 1. --wjet 0.80  --title "" --title-x "N vtx"
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --output-name mu_presel_nvtx_up    --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d nvtx  --qcd 1. --wjet 0.80  --title "" --title-x "PU Up N vtx"   -s PUUp
+	python stack_plot.py mc_v25p1.root ../merge-sets/v25/p1/SingleMuon.root     --output-name mu_presel_nvtx_down  --exp-legend -o plots/current/ --lumi 35800 -p -r -c ctr_old_mu_presel -d nvtx  --qcd 1. --wjet 0.80  --title "" --title-x "PU Down N vtx" -s PUDown
+
+current_Mt_dep:
+	python distr_ratios.py mc_v25p1.root --custom-filename mu_Mt_tau_pt_lt -o plots/current/ -c ctr_old_mu_sel:Mt_lep_met_f -p tt_mutau --no-data --ratio-channel-distrs ctr_old_mu_sel:Mt_lep_met_t2,ctr_old_mu_sel:Mt_lep_met_t3,ctr_old_mu_sel:Mt_lep_met_t4,ctr_old_mu_sel:Mt_lep_met_t5
+	python distr_ratios.py mc_v25p1.root --custom-filename mu_Mt_tau_pt_lj -o plots/current/ -c ctr_old_mu_sel:Mt_lep_met_f -p tt_lj    --no-data --ratio-channel-distrs ctr_old_mu_sel:Mt_lep_met_t2,ctr_old_mu_sel:Mt_lep_met_t3,ctr_old_mu_sel:Mt_lep_met_t4,ctr_old_mu_sel:Mt_lep_met_t5
+	python distr_ratios.py mc_v25p1.root --custom-filename el_Mt_tau_pt_lt -o plots/current/ -c ctr_old_el_sel:Mt_lep_met_f -p tt_eltau --no-data --ratio-channel-distrs ctr_old_el_sel:Mt_lep_met_t2,ctr_old_el_sel:Mt_lep_met_t3,ctr_old_el_sel:Mt_lep_met_t4,ctr_old_el_sel:Mt_lep_met_t5
+	python distr_ratios.py mc_v25p1.root --custom-filename el_Mt_tau_pt_lj -o plots/current/ -c ctr_old_el_sel:Mt_lep_met_f -p tt_lj    --no-data --ratio-channel-distrs ctr_old_el_sel:Mt_lep_met_t2,ctr_old_el_sel:Mt_lep_met_t3,ctr_old_el_sel:Mt_lep_met_t4,ctr_old_el_sel:Mt_lep_met_t5
+	#
+	python distr_ratios.py mc_v25p1.root --custom-filename mu_presel_Mt_tau_pt_lt -o plots/current/ -c ctr_old_mu_presel:Mt_lep_met_f -p tt_mutau --no-data --ratio-channel-distrs ctr_old_mu_presel:Mt_lep_met_t2,ctr_old_mu_presel:Mt_lep_met_t3,ctr_old_mu_presel:Mt_lep_met_t4,ctr_old_mu_presel:Mt_lep_met_t5
+	python distr_ratios.py mc_v25p1.root --custom-filename mu_presel_Mt_tau_pt_lj -o plots/current/ -c ctr_old_mu_presel:Mt_lep_met_f -p tt_lj    --no-data --ratio-channel-distrs ctr_old_mu_presel:Mt_lep_met_t2,ctr_old_mu_presel:Mt_lep_met_t3,ctr_old_mu_presel:Mt_lep_met_t4,ctr_old_mu_presel:Mt_lep_met_t5
+	python distr_ratios.py mc_v25p1.root --custom-filename el_presel_Mt_tau_pt_lt -o plots/current/ -c ctr_old_el_presel:Mt_lep_met_f -p tt_eltau --no-data --ratio-channel-distrs ctr_old_el_presel:Mt_lep_met_t2,ctr_old_el_presel:Mt_lep_met_t3,ctr_old_el_presel:Mt_lep_met_t4,ctr_old_el_presel:Mt_lep_met_t5
+	python distr_ratios.py mc_v25p1.root --custom-filename el_presel_Mt_tau_pt_lj -o plots/current/ -c ctr_old_el_presel:Mt_lep_met_f -p tt_lj    --no-data --ratio-channel-distrs ctr_old_el_presel:Mt_lep_met_t2,ctr_old_el_presel:Mt_lep_met_t3,ctr_old_el_presel:Mt_lep_met_t4,ctr_old_el_presel:Mt_lep_met_t5
+
+
+
+
 plots_ctr: out_dir=./
 plots_ctr: qcd=1.
 plots_ctr: wjets=1.
@@ -222,6 +325,7 @@ plots_misc:
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ctr_mu_dy_tt_ss -d met
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ctr_mu_dy_tt    -d M_lep_tau
 	python stack_plot.py ${mc_in} ${data_in} -o ${out_dir} -p -r -c ctr_mu_dy_tt_ss -d M_lep_tau
+
 
 
 fit_datafile: data_in=../merge-sets/v23/p4/SingleMuon
