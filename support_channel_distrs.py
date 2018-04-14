@@ -1721,6 +1721,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
               'Mt_lep_met':   TH1D('%s_%s_%s_Mt_lep_met'   % (chan, proc, sys), '', 10, 0, 200),
               })
 
+        if 'PU' in sys:
+            distrs.update({
+              'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
+              })
+
         # here only obj syst:
         if sys in requested_objects:
           distrs.update({
@@ -4542,6 +4547,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                         out_hs[(chan, record_proc, weight_sys_name)]['met']          .Fill(met_pt,         record_weight_sys)
                         out_hs[(chan, record_proc, weight_sys_name)]['lep_pt']       .Fill(lep_p4[0].pt(), record_weight_sys)
 
+                        if sys_name == 'PUUp' or sys_name == 'PUDown':
+                            out_hs[(chan, record_proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight_sys)
+
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met']          .Fill(met_pt,         record_weight)
@@ -4985,6 +4993,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
                 out_hs[(chan, record_proc, sys_name)]['nvtx_raw'] .Fill(ev.nvtx, nom_sys_weight_without_PU * weight_bSF)
                 out_hs[(chan, record_proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight)
+
                 if isMC:
                     #out_hs[(chan, record_proc, sys_name)]['genproc_id']   .Fill(tt_ids[0], tt_ids[1])
                     out_hs[(chan, record_proc, sys_name)]['nvtx_gen'].Fill(ev.nvtx_gen, record_weight)
