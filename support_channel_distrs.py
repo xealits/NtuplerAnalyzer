@@ -1600,7 +1600,32 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_th_renorm_refact),
                 'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_th_renorm_refact),
                 'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_th_renorm_refact),
-        }
+        },
+
+        'channels_control_regions' : {
+                'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
+                'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
+                'ctr_el_wjet':              (procs_el, systematic_names_pu),
+                'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
+                'ctr_alliso_mu_wjet':       (procs_mu, systematic_names_nominal),
+                'ctr_alliso_mu_wjet_ss':    (procs_mu, systematic_names_nominal),
+
+                'ctr_mu_dy_mumu':           (procs_mu, systematic_names_pu),
+                'ctr_mu_dy_elel':           (procs_el, systematic_names_pu),
+                'ctr_mu_tt_em':             (procs_elmu, systematic_names_pu_toppt),
+                #'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_all_with_th), # for the ratio
+
+                'ctr_old_mu_presel_alliso':        (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_presel_alliso_ss':     (procs_mu, systematic_names_nominal),
+                'ctr_old_el_presel_alliso':        (procs_el, systematic_names_nominal),
+                'ctr_old_el_presel_alliso_ss':     (procs_el, systematic_names_nominal),
+
+                'ctr_old_mu_selVloose_alliso':      (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_selVloose_alliso_ss':   (procs_mu, systematic_names_nominal),
+                'ctr_old_el_selVloose_alliso':      (procs_el, systematic_names_nominal),
+                'ctr_old_el_selVloose_alliso_ss':   (procs_el, systematic_names_nominal),
+        },
+
     }
 
     print systematic_names_all_with_th
@@ -2149,7 +2174,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_el or pass_mu # passes_optimized
+        event_passes = pass_el or pass_mu or pass_elmu or pass_elel or pass_mumu # passes_optimized
 
         if not event_passes: continue
         control_counters.Fill(51)
