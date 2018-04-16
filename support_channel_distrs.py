@@ -1085,6 +1085,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
     systematic_names_toppt = ['NOMINAL']
 
     systematic_names_all_with_th = systematic_names_all[:]
+    systematic_names_th_renorm_refact = ['NOMINAL']
     if isTT:
         systematic_names_all.extend(('TOPPTUp', 'TOPPTDown'))
         systematic_names_toppt = ['NOMINAL', 'TOPPTUp']
@@ -1095,7 +1096,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         systematic_names_all_with_th.extend(('MrUp', 'MrDown', 'MfUp', 'MfDown', 'MfrUp', 'MfrDown'))
         systematic_names_all_with_th.extend(('PDF_TRIGGER',))
 
-        systematic_names_th_renorm_refact = ['NOMINAL', 'MrUp', 'MrDown', 'MfUp', 'MfDown', 'MfrUp', 'MfrDown']
+        systematic_names_th_renorm_refact.extend(['MrUp', 'MrDown', 'MfUp', 'MfDown', 'MfrUp', 'MfrDown'])
 
     if isMC:
         if isTT:
