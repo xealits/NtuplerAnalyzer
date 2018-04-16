@@ -255,16 +255,38 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                    tauIDSF_factor = 0.95
                else:
                    tauIDSF_factor = 1.
-               pu_factor = 1.
-               cor = 1.
-               if 'PUUp' in fixed_sys_name:
-                   pu_factor = cor * 1. / (1.01995 if '_el_' in channel else 0.9979) # 0.97 # 1./ 0.9979
-               elif 'PUDown' in fixed_sys_name:
-                   pu_factor = cor * 1. / (1.07766 if '_el_' in channel else 1.0485) # 1.17 # 1./ 1.485
-               else:
-                   pu_factor = cor * 1. / (1.04678 if '_el_' in channel else 1.022)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
 
-               histo.Scale(args.lumi * tauIDSF_factor * pu_factor)
+               pu_factor = 1.
+               if 'PUUp' in fixed_sys_name:
+                   pu_factor = 1. / (1.01995 if '_el_' in channel else 0.9979) # 0.97 # 1./ 0.9979
+               elif 'PUDown' in fixed_sys_name:
+                   pu_factor = 1. / (1.07766 if '_el_' in channel else 1.0485) # 1.17 # 1./ 1.485
+               else:
+                   pu_factor = 1. / (1.04678 if '_el_' in channel else 1.022)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
+
+               th_factor = 1.
+               if 'MrUp' in fixed_sys_name:
+                   th_factor = 1. / 0.8966
+               elif 'MrDown' in fixed_sys_name:
+                   th_factor = 1. / 1.1139
+               elif 'MfUp' in fixed_sys_name:
+                   th_factor = 1. / 0.9805
+               elif 'MfDown' in fixed_sys_name:
+                   th_factor = 1. / 1.0257
+               elif 'MfrUp' in fixed_sys_name:
+                   th_factor = 1. / 0.8747
+               elif 'MfrDown' in fixed_sys_name:
+                   th_factor = 1. / 1.1358
+               elif 'AlphaSUp' in fixed_sys_name:
+                   th_factor = 1. / 0.98
+               elif 'AlphaSDown' in fixed_sys_name:
+                   th_factor = 1. / 1.015
+               elif 'SemilepBRUp' in fixed_sys_name:
+                   th_factor = 1. / 1.0087
+               elif 'SemilepBRDown' in fixed_sys_name:
+                   th_factor = 1. / 0.987
+
+               histo.Scale(args.lumi * tauIDSF_factor * pu_factor * th_factor)
 
            # wjets normalization
            if args.wjets > 0 and nick == 'wjets':

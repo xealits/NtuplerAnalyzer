@@ -1661,7 +1661,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
     with_AlphaS_sys  = True and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
     with_Frag_sys    = True and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
-    with_MEscale_sys = True and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
+    with_MEscale_sys = False and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
     with_PDF_sys     = True and ('PDF_TRIGGER'      in requested_systematics)
 
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
@@ -2164,6 +2164,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
 
+        if pass_elmu:    control_counters.Fill(21)
+        if pass_mumu:    control_counters.Fill(22)
+        if pass_elel:    control_counters.Fill(23)
+        if pass_el_all:  control_counters.Fill(24)
+        if pass_mu_all:  control_counters.Fill(25)
+
         # minimum possible pt threshold -- 24 GeV, = to HLT and recorded in Ntupler
         pass_mu_id_iso = pass_mu_id and pass_mu_iso
         pass_min_mu     = pass_mu_id_iso and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_relIso[0] < 0.125
@@ -2175,7 +2181,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_el or pass_mu or pass_elmu or pass_elel or pass_mumu # passes_optimized
+        event_passes = passes_optimized
 
         if not event_passes: continue
         control_counters.Fill(51)
@@ -2357,12 +2363,22 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                         weights_gen_weight_norm = 0.00001
                     elif 0. > weights_gen_weight_norm > -0.00001:
                         weights_gen_weight_norm = -0.00001
+
                     #control_hs['weights_gen_weight_norm']   .Fill(ev.gen_weight_too)
                     control_hs['weights_gen_weight_too']        .Fill(ev.gen_weight_too)
                     control_hs['weights_gen_weight_norm']       .Fill(ev.gen_weight_norm)
                     control_hs['weights_gen_weight_average']    .Fill(weights_gen_weight_norm)
                     control_hs['weights_gen_weight_alphasUp']   .Fill(weights_gen_weight_alphas[0])
                     control_hs['weights_gen_weight_alphasDown'] .Fill(weights_gen_weight_alphas[1])
+
+                    weights_gen_weight_alphas_up = weights_gen_weight_alphas[0] / weights_gen_weight_norm
+                    weights_gen_weight_alphas_dn = weights_gen_weight_alphas[1] / weights_gen_weight_norm
+
+                    # sane high weight in tt->taumu tauh as in pdfs
+                    if weights_gen_weight_alphas_up > 2.:
+                        weights_gen_weight_alphas_up = 1.
+                    if weights_gen_weight_alphas_dn > 2.:
+                        weights_gen_weight_alphas_dn = 1.
 
                 if with_Frag_sys:
                     weights_gen_weight_centralFrag = ev.gen_weight_centralFrag if ev.gen_weight_centralFrag > 0. else 0.00001
@@ -3803,8 +3819,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 syst_weights['TOPPTUp']    = [weight, weight_pu, weight_top_pt, 1.]
                 syst_weights['TOPPTDown']  = [weight, weight_pu, 1.,            1.]
                 if with_AlphaS_sys:
-                    syst_weights['AlphaSUp']   = [weight, weight_pu, 1.,  weights_gen_weight_alphas[0] / weights_gen_weight_norm]
-                    syst_weights['AlphaSDown'] = [weight, weight_pu, 1.,  weights_gen_weight_alphas[1] / weights_gen_weight_norm]
+                    syst_weights['AlphaSUp']   = [weight, weight_pu, 1.,  weights_gen_weight_alphas_up]
+                    syst_weights['AlphaSDown'] = [weight, weight_pu, 1.,  weights_gen_weight_alphas_dn]
                 if with_Frag_sys:
                     syst_weights['FragUp']        = [weight, weight_pu, 1.,  weights_gen_weight_Frag[0] / weights_gen_weight_centralFrag]
                     syst_weights['FragDown']      = [weight, weight_pu, 1.,  weights_gen_weight_Frag[1] / weights_gen_weight_centralFrag]
