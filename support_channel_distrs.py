@@ -4336,13 +4336,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     else:
                         passed_channels.append(('ctr_old_el_sel_lj_ss', sel_b_weight, leps.iso, jets.old, taus.old))
 
-            ## save distrs
-            #for chan, proc in chan_subproc_pairs:
-            #    out_hs[(chan, proc, sys_name)]['met'].Fill(met_pt, weight)
-            #    out_hs[(chan, proc, sys_name)]['Mt_lep_met'].Fill(Mt_lep_met, weight)
-            #    out_hs[(chan, proc, sys_name)]['Mt_lep_met_d'].Fill(Mt_lep_met_d, weight)
-            #    out_hs[(chan, proc, sys_name)]['dijet_trijet_mass'].Fill(25, weight)
-
             for chan_i, (chan, _, sel_leps, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
                 # check for default proc
                 #if chan not in channels:
@@ -4514,24 +4507,24 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     # met prop = met nom + nom - factor
                     # met prop + factor = met nom + nom
 
-                ## and substitute the jet->tau in met p7 p9
+                ## and substitute the jet->tau in met p7 p9 -> v25 p2_tt_jtau
                 # this works very strangely: data is shifted to high Mt?
                 # but the study of jet/tau pt shows approximatly the same values in both MC and Data
-                #if sel_taus:
-                #    # only first tau is taken
-                #    tau_index = sel_taus[0][3]
-                #    the_tau_p4 = sel_taus[0][0] * sel_taus[0][1]
-                #    tau_jet_index   = ev.tau_dR_matched_jet[tau_index]
-                #    if tau_jet_index > -1:
-                #        # substitute the nominal jet
-                #        jer_factor = ev.jet_jer_factor[tau_jet_index]
-                #        jes_factor = ev.jet_jes_recorrection[tau_jet_index]
-                #        jes_uncorFactor = ev.jet_uncorrected_jecFactor[tau_jet_index]
-                #        en_factor = jer_factor * jes_factor * jes_uncorFactor
-                #        the_jet_p4 = miniaod_jets[tau_jet_index] * en_factor
-                #        substitution = the_tau_p4 - the_jet_p4
-                #        met_x_prop += substitution.X()
-                #        met_y_prop += substitution.Y()
+                if sel_taus:
+                    # only first tau is taken
+                    tau_index = sel_taus[0][3]
+                    the_tau_p4 = sel_taus[0][0] * sel_taus[0][1]
+                    tau_jet_index   = ev.tau_dR_matched_jet[tau_index]
+                    if tau_jet_index > -1:
+                        # substitute the nominal jet
+                        jer_factor = ev.jet_jer_factor[tau_jet_index]
+                        jes_factor = ev.jet_jes_recorrection[tau_jet_index]
+                        jes_uncorFactor = ev.jet_uncorrected_jecFactor[tau_jet_index]
+                        en_factor = jer_factor * jes_factor * jes_uncorFactor
+                        the_jet_p4 = miniaod_jets[tau_jet_index] * en_factor
+                        substitution = the_tau_p4 - the_jet_p4
+                        met_x_prop += substitution.X()
+                        met_y_prop += substitution.Y()
 
                 Mt_lep_met = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
                 # test on Mt fluctuation in mu_sel
