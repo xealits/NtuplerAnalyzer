@@ -4486,7 +4486,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
                 # PROPAGATE jet correcions
                 all_sel_jets = sel_jets.medium + sel_jets.loose + sel_jets.rest
-                if all_sel_jets:
+                #if all_sel_jets:
+                # propagation of corrections of all jets
+                if sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
                     #try:
                     sum_jets_init = all_sel_jets[0][0]
                     sum_jets_corr = all_sel_jets[0][0] * all_sel_jets[0][1]
