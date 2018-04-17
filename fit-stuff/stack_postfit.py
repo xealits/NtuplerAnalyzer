@@ -50,7 +50,7 @@ logging.basicConfig(level=logging.DEBUG)
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
     description = "stack the postfit distrs from higgsCombine",
-    #epilog = "Example:\n$ python job_submit.py ttbarleps80_eventSelection jobing/my_runAnalysis_cfg_NEWSUBMIT.templ.py bin/ttbar-leptons-80X/analysis/dsets_testing_noHLT_TTbar.json test/tests/outdir_test_v11_ttbar_v8.40/"
+    epilog = "Example:\npython stack_postfit.py fitDiagnosticsMuShapes.root ctr_old_mu_sel_lj --mu --y-max 4000 --coarse-bins --ratio"
     )
 
 parser.add_argument("data_file", help="data file name")
@@ -68,7 +68,10 @@ parser.add_argument("--title-x", type=str,   default='M_{T}',   help="optional t
 
 parser.add_argument("--mu", action='store_true', help="aim mu processes")
 
+parser.add_argument("--resum", action='store_true', help="resum the MC sum")
+
 parser.add_argument("--prefit", action='store_true', help="plot prefit instead")
+parser.add_argument("--prefit-process",  type=str,   help="take the prefit distr for this process")
 
 parser.add_argument("--no-data", action='store_true', help="don't plot data")
 
@@ -95,7 +98,8 @@ gStyle.SetOptStat(0)
 from plotting_root import nick_order, nick_colour, rgb
 
 fdata = TFile(args.data_file)
-chan_dir = fdata.Get(("shapes_prefit/" if args.prefit else "shapes_fit_s/") + args.channel)
+chan_dir   = fdata.Get(("shapes_prefit/" if args.prefit else "shapes_fit_s/") + args.channel)
+prefit_dir = fdata.Get("shapes_prefit/" + args.channel)
 
 
 mc_processes_mu = [
@@ -182,23 +186,17 @@ for bini in range(data.GetSize()):
 data.SetMarkerStyle(1)
 data.SetMarkerColor(0)
 
-# set mc_sum histogram
-for bini in range(mc_sum_higComb.GetSize()+1):
-    mc_sum.SetBinContent(bini,  mc_sum_higComb.GetBinContent(bini))
-    mc_sum.SetBinError  (bini,  mc_sum_higComb.GetBinError(bini))
-
-mc_sum.SetFillStyle(3004)
-mc_sum.SetFillColor(1)
-mc_sum.SetMarkerStyle(1)
-mc_sum.SetMarkerColor(0)
-
 
 hs = THStack("mc_stack", "mc_stack")
 
 mc_histos = []
 for nick in mc_processes:
     col = nick_colour[nick]
-    histo_higComb = chan_dir.Get(nick)
+
+    if args.prefit_process and nick == args.prefit_process:
+        histo_higComb = prefit_dir.Get(nick)
+    else:
+        histo_higComb = chan_dir.Get(nick)
 
     histo = th_postfit(histo_higComb.GetName() +'_u')
     for bini in range(histo_higComb.GetSize()+1):
@@ -213,6 +211,20 @@ for nick in mc_processes:
     #used_histos.append(histo) # hopefully root wont screw this up
     hs.Add(histo, "HIST")
     mc_histos.append(histo)
+
+    if args.resum:
+        mc_sum.Add(histo)
+
+# set mc_sum histogram
+if not args.resum:
+    for bini in range(mc_sum_higComb.GetSize()+1):
+        mc_sum.SetBinContent(bini,  mc_sum_higComb.GetBinContent(bini))
+        mc_sum.SetBinError  (bini,  mc_sum_higComb.GetBinError(bini))
+
+mc_sum.SetFillStyle(3004)
+mc_sum.SetFillColor(1)
+mc_sum.SetMarkerStyle(1)
+mc_sum.SetMarkerColor(0)
 
 cst = TCanvas("cst","stacked hists",10,10,700,700)
 
@@ -411,6 +423,9 @@ if args.ratio:
 out_file = args.output_directory + '/postfit-distr_%s_%s' % (args.data_file.split('.')[0], args.channel)
 if args.prefit:
     out_file += '_prefit'
+
+if args.prefit_process:
+    out_file += '_prefit-' + args.prefit_process
 
 out_file += '.png'
 

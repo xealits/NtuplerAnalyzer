@@ -9,18 +9,21 @@ logging.basicConfig(level=logging.DEBUG)
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
     description = "to compare shapes from different files",
-    #epilog = "Example:\n$ python job_submit.py ttbarleps80_eventSelection jobing/my_runAnalysis_cfg_NEWSUBMIT.templ.py bin/ttbar-leptons-80X/analysis/dsets_testing_noHLT_TTbar.json test/tests/outdir_test_v11_ttbar_v8.40/"
+    epilog = 'Example:\npython jobsums/get_shapes.py --formula "h1 : h2 " -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj h1:jobsums/AN-v1_mu_file-orig.root h2:merge-sets/v23/p10/MC2016_Summer16_TTJets_powheg.root'
     )
 
 parser.add_argument("-c", "--channel", type=str, default='mu_sel', help="channel")
 parser.add_argument("-p", "--process", type=str, default='tt_lj', help="process")
 parser.add_argument('-s', '--systematic',  type=str, default='NOMINAL', help="systematic")
 parser.add_argument('-d', '--distr',  type=str, default='Mt_lep_met_f', help="distr")
-parser.add_argument('--logy',  action='store_true', help="log Y")
+parser.add_argument('--logy',     action='store_true', help="log Y")
+parser.add_argument('--no-norm',  action='store_true', help="don't normalize to 1")
 parser.add_argument("--y-range",     type=str,      help="set Y range as `ymin,ymax`")
 parser.add_argument("--x-title",     type=str,      help="title of X axis")
 
 parser.add_argument('--formula',  type=str, help="to plot h1 overlayed with 123*h2+982*h3: `h1 : 123 h2 , 982h3`")
+
+parser.add_argument('--set-file',  type=str, help=" histos come from this file, skip filename in the input_files definition, but : must be there")
 
 parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename[:chan,proc,sys]`""")
 
@@ -54,16 +57,23 @@ for i, fileparameter in enumerate(args.input_files):
         nick, filename = pars
         opts = None
 
+    if args.set_file:
+        filename = args.set_file
+
     if not isfile(filename):
         logging.info("missing: " + filename)
         continue
 
-    channel    = args.channel
-    process    = args.process
-    systematic = args.systematic
-
+    channel = process = systematic = ''
     if opts:
         channel, process, systematic = opts.split(',')
+
+    if not channel:
+        channel    = args.channel
+    if not process:
+        process    = args.process
+    if not systematic:
+        systematic = args.systematic
 
     histo_path = "{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=channel, proc=process, sys=systematic, distr=args.distr)
 
@@ -71,11 +81,14 @@ for i, fileparameter in enumerate(args.input_files):
     logging.debug("%s" % histo_path)
     histo = tfile.Get(histo_path)
 
+    histo.Sumw2()
+
     logging.debug("histo    : %20s" % nick)
     logging.debug("integral : %f" % histo.Integral())
     histo.SetDirectory(0)
     histo.SetLineColor(1 + i)
-    histo.Scale(1./histo.Integral())
+    if not args.no_norm:
+        histo.Scale(1./histo.Integral())
     histo.SetName(nick)
     if y_max is not None and y_min is not None:
         histo.SetMaximum(y_max)
@@ -133,7 +146,8 @@ else:
         logging.debug(nick_pairs)
 
         # normalize the histo
-        histo.Scale(1./histo.Integral())
+        if not args.no_norm:
+            histo.Scale(1./histo.Integral())
 
         # construct the histo of the subform
         factor, nick = nick_pairs[0]
@@ -174,5 +188,5 @@ else:
 
 leg.Draw("same")
 
-cst.SaveAs('./compare_%s_%s_%s_%s_%s%s.png' % (args.channel, args.process, args.systematic, args.distr, ','.join(histos.keys()), '_formula' if args.formula else ''))
+cst.SaveAs('./compare_%s_%s_%s_%s_%s%s%s.png' % (args.channel, args.process, args.systematic, args.distr, ','.join(histos.keys()), '_formula' if args.formula else '', '_nonorm' if args.no_norm else ''))
 

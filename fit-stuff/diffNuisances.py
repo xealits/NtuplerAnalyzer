@@ -144,7 +144,7 @@ for i in range(fpf_s.getSize()):
                     #hist_prefit.SetBinContent         (nuis_i + 1, mean_p)
                     #hist_prefit.SetBinError           (nuis_i + 1, sigma_p)
                     #hist_prefit.GetXaxis().SetBinLabel(nuis_i + 1, name)
-                    logging.info('nuis %s %d %d' % (name, nuis_i, nuis_p_i))
+                    logging.info('nuis %s %d %d    %f %f' % (name, nuis_i, nuis_p_i, mean_p, sigma_p))
 
                 if sigma_p>0: 
 
@@ -167,6 +167,8 @@ for i in range(fpf_s.getSize()):
                     row[-1] += " (%+4.2fsig, %4.2f)" % (valShift, sigShift)
                 else:
                     row[-1] = " %+4.2f, %4.2f" % (valShift, sigShift)
+
+                logging.info('nuis val  sign  %f %f' % (valShift, sigShift))
 
                 if (abs(valShift) > options.vtol2 or abs(sigShift-1) > options.stol2):
 
@@ -266,9 +268,11 @@ elif options.format == 'html':
 
 names = table.keys()
 names.sort()
+print(names)
 highlighters = { 1:highlight, 2:morelight };
 for n in names:
     v = table[n]
+    #print(n, v)
     if options.format == "latex": n = n.replace(r"_", r"\_")
     if pmsub  != None: v = [ re.sub(pmsub[0],  pmsub[1],  i) for i in v ]
     if sigsub != None: v = [ re.sub(sigsub[0], sigsub[1], i) for i in v ]
