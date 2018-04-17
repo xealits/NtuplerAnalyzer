@@ -67,7 +67,7 @@ parser.add_argument("-d", "--distr",    type=str, default='Mt_lep_met', help="fi
 parser.add_argument("-s", "--sys",    type=str, default='NOMINAL', help="systematic shift to consider")
 parser.add_argument("-m", "--mu",  action = "store_true", help="muon channels: mu_lj, mu_lj_out")
 parser.add_argument("-e", "--el",  action = "store_true", help="electron channels: el_lj, el_lj_out")
-parser.add_argument("-v", "--verbose",  action = "store_true", help="log debug output")
+parser.add_argument("--debug",  action = "store_true", help="log debug output")
 #parser.add_argument("-y", "--event-yields", type=str, default='text', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-y", "--event-yields", action='store_true', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-r", "--ratios",       action='store_true', help="output ratios to data")
@@ -86,7 +86,7 @@ args = parser.parse_args()
 
 import logging
 
-if args.verbose:
+if args.debug:
     logging.basicConfig(level=logging.DEBUG)
 else:
     logging.basicConfig(level=logging.INFO)
@@ -212,6 +212,7 @@ for channel in channels:
     full_path = '%s/%s/%s/%s' % (channel, 'data', 'NOMINAL', histo_name)
     data_histo = fdata.Get(full_path)
 
+    logging.debug(full_path)
     data_yields[channel] = range_integral(data_histo)
 
     if not args.event_yields:
