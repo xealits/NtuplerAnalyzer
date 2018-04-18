@@ -4493,7 +4493,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     sum_jets_init = all_sel_jets[0][0]
                     sum_jets_corr = all_sel_jets[0][0] * all_sel_jets[0][1]
                     jet_cor = all_sel_jets[0][0] * (1. - all_sel_jets[0][1])
-                    for jet in all_sel_jets[1:]:
+                    #for jet in all_sel_jets[1:]:
+                    for jet in all_sel_jets[1:] + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
                         jet_cor += jet[0] * (1. - jet[1])
                         sum_jets_init += jet[0]
                         sum_jets_corr += jet[0] * jet[1]
