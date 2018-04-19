@@ -265,28 +265,35 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                    pu_factor = 1. / (1.04678 if '_el_' in channel else 1.022)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
 
                th_factor = 1.
-               if 'MrUp' in fixed_sys_name:
-                   th_factor = 1. / 0.8966
-               elif 'MrDown' in fixed_sys_name:
-                   th_factor = 1. / 1.1139
-               elif 'MfUp' in fixed_sys_name:
-                   th_factor = 1. / 0.9805
-               elif 'MfDown' in fixed_sys_name:
-                   th_factor = 1. / 1.0257
-               elif 'MfrUp' in fixed_sys_name:
-                   th_factor = 1. / 0.8747
-               elif 'MfrDown' in fixed_sys_name:
-                   th_factor = 1. / 1.1358
-               elif 'AlphaSUp' in fixed_sys_name:
-                   th_factor = 1. / 0.98
-               elif 'AlphaSDown' in fixed_sys_name:
-                   th_factor = 1. / 1.015
-               elif 'SemilepBRUp' in fixed_sys_name:
-                   th_factor = 1. / 1.0087
-               elif 'SemilepBRDown' in fixed_sys_name:
-                   th_factor = 1. / 0.987
+               if nick[:3] == 'tt_':
+                   # watch this tricky bit: Mfr come from v26p1
+                   # and something was not completely done there (which was fixed in p2 of v25)
+                   # hence there is a factor of difference, hopefuly the shape is not that much affected
+                   # 0.958
+                   if 'MrUp' in fixed_sys_name:
+                       th_factor = 1. / 0.8966
+                   elif 'MrDown' in fixed_sys_name:
+                       th_factor = 1. / 1.1139
+                   elif 'MfUp' in fixed_sys_name:
+                       th_factor = 1. / 0.9805
+                   elif 'MfDown' in fixed_sys_name:
+                       th_factor = 1. / 1.0257
+                   elif 'MfrUp' in fixed_sys_name:
+                       th_factor = 1. / 0.8747
+                   elif 'MfrDown' in fixed_sys_name:
+                       th_factor = 1. / 1.1358
+                   elif 'AlphaSUp' in fixed_sys_name:
+                       th_factor = 1. / 0.98
+                   elif 'AlphaSDown' in fixed_sys_name:
+                       th_factor = 1. / 1.015
+                   elif 'SemilepBRUp' in fixed_sys_name:
+                       th_factor = 1. / 1.0087
+                   elif 'SemilepBRDown' in fixed_sys_name:
+                       th_factor = 1. / 0.987
 
-               histo.Scale(args.lumi * tauIDSF_factor * pu_factor * th_factor)
+               final_factor = args.lumi * tauIDSF_factor * pu_factor * th_factor
+               logging.info("final factor %20s %20f %5f %5f %5f  %20f" % (nick, args.lumi, tauIDSF_factor, pu_factor, th_factor, final_factor))
+               histo.Scale(final_factor)
 
            # wjets normalization
            if args.wjets > 0 and nick == 'wjets':
@@ -537,7 +544,8 @@ else:
 # loop through TList
 hs_sums1 = []
 
-for _, (hs, _) in hs_legs_per_distr:
+for distr_name, (hs, _) in hs_legs_per_distr:
+    logging.info("summing hs_sum1 for %s" % distr_name)
     histos = hs.GetHists() # TList
     hs_sum1 = histos[0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
     hs_sum1.SetName('mc_sum1')
@@ -558,10 +566,12 @@ Otherwise plot just the 0th distr.
 TODO: somehow improve/simplify/make useful this system.
 '''
 
+logging.info("len hs_sums1 %d" % len(hs_sums1))
 hs_sum1 = hs_sums1[0]
 if len(histos_data_sums_per_distr) > 1:
     histos_data_sum2 = histos_data_sums_per_distr[1]
     hs_sum1_2 = hs_sums1[1]
+
 hs, leg =  hs_legs_per_distr[0][1]
 used_histos = used_histos_per_distr[0][1]
 #histos_data_per_distr[0][0][0].Print()

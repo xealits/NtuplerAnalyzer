@@ -1661,7 +1661,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
     with_AlphaS_sys  = True and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
     with_Frag_sys    = True and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
-    with_MEscale_sys = False and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
+    with_MEscale_sys = True and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
     with_PDF_sys     = True and ('PDF_TRIGGER'      in requested_systematics)
 
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
