@@ -175,6 +175,78 @@ if args.bin_norm:
 
 logging.info("# data histograms = %d" % len(histos_data_per_distr))
 
+syst_factors = {
+              "FragUp":             1.001123,
+            "FragDown":             0.999304,
+         "SemilepBRUp":             1.008565,
+       "SemilepBRDown":             0.987050,
+          "PetersonUp":             1.000032,
+                "MrUp":             0.896601,
+              "MrDown":             1.114154,
+                "MfUp":             0.980610,
+              "MfDown":             1.025511,
+               "MfrUp":             0.874602,
+             "MfrDown":             1.135832,
+          "AlphaSDown":             1.015573,
+            "AlphaSUp":             0.984924,
+         "PDFCT14n1Up":             0.999214,
+        "PDFCT14n10Up":             0.992985,
+        "PDFCT14n11Up":             1.011667,
+        "PDFCT14n12Up":             0.991012,
+        "PDFCT14n13Up":             1.011832,
+        "PDFCT14n14Up":             0.994285,
+        "PDFCT14n15Up":             1.020625,
+        "PDFCT14n16Up":             0.985324,
+        "PDFCT14n17Up":             0.986681,
+        "PDFCT14n18Up":             1.015958,
+        "PDFCT14n19Up":             0.999024,
+         "PDFCT14n2Up":             0.999610,
+        "PDFCT14n20Up":             1.001383,
+        "PDFCT14n21Up":             1.000811,
+        "PDFCT14n22Up":             0.998574,
+        "PDFCT14n23Up":             1.004126,
+        "PDFCT14n24Up":             0.996106,
+        "PDFCT14n25Up":             1.012630,
+        "PDFCT14n26Up":             0.987756,
+        "PDFCT14n27Up":             1.003978,
+        "PDFCT14n28Up":             0.994568,
+        "PDFCT14n29Up":             1.002681,
+         "PDFCT14n3Up":             0.991550,
+        "PDFCT14n30Up":             0.999111,
+        "PDFCT14n31Up":             1.001791,
+        "PDFCT14n32Up":             0.997694,
+        "PDFCT14n33Up":             0.996328,
+        "PDFCT14n34Up":             1.008113,
+        "PDFCT14n35Up":             0.985943,
+        "PDFCT14n36Up":             1.013638,
+        "PDFCT14n37Up":             0.993136,
+        "PDFCT14n38Up":             1.010604,
+        "PDFCT14n39Up":             0.995664,
+         "PDFCT14n4Up":             0.995349,
+        "PDFCT14n40Up":             1.004863,
+        "PDFCT14n41Up":             0.999538,
+        "PDFCT14n42Up":             1.000247,
+        "PDFCT14n43Up":             0.997833,
+        "PDFCT14n44Up":             1.005385,
+        "PDFCT14n45Up":             1.004722,
+        "PDFCT14n46Up":             1.001524,
+        "PDFCT14n47Up":             0.999380,
+        "PDFCT14n48Up":             0.993950,
+        "PDFCT14n49Up":             0.993164,
+         "PDFCT14n5Up":             0.994886,
+        "PDFCT14n50Up":             1.003200,
+        "PDFCT14n51Up":             1.001966,
+        "PDFCT14n52Up":             1.000614,
+        "PDFCT14n53Up":             0.968178,
+        "PDFCT14n54Up":             1.010604,
+        "PDFCT14n55Up":             0.992717,
+        "PDFCT14n56Up":             1.012645,
+         "PDFCT14n6Up":             1.004233,
+         "PDFCT14n7Up":             1.001432,
+         "PDFCT14n8Up":             0.992782,
+         "PDFCT14n9Up":             1.008439,
+}
+
 def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=False):
     """get_histos(infile)
 
@@ -270,26 +342,27 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                    # and something was not completely done there (which was fixed in p2 of v25)
                    # hence there is a factor of difference, hopefuly the shape is not that much affected
                    # 0.958
-                   if 'MrUp' in fixed_sys_name:
-                       th_factor = 1. / 0.8966
-                   elif 'MrDown' in fixed_sys_name:
-                       th_factor = 1. / 1.1139
-                   elif 'MfUp' in fixed_sys_name:
-                       th_factor = 1. / 0.9805
-                   elif 'MfDown' in fixed_sys_name:
-                       th_factor = 1. / 1.0257
-                   elif 'MfrUp' in fixed_sys_name:
-                       th_factor = 1. / 0.8747
-                   elif 'MfrDown' in fixed_sys_name:
-                       th_factor = 1. / 1.1358
-                   elif 'AlphaSUp' in fixed_sys_name:
-                       th_factor = 1. / 0.98
-                   elif 'AlphaSDown' in fixed_sys_name:
-                       th_factor = 1. / 1.015
-                   elif 'SemilepBRUp' in fixed_sys_name:
-                       th_factor = 1. / 1.0087
-                   elif 'SemilepBRDown' in fixed_sys_name:
-                       th_factor = 1. / 0.987
+                   #if 'MrUp' in fixed_sys_name:
+                   #    th_factor = 1. / 0.8966
+                   #elif 'MrDown' in fixed_sys_name:
+                   #    th_factor = 1. / 1.1139
+                   #elif 'MfUp' in fixed_sys_name:
+                   #    th_factor = 1. / 0.9805
+                   #elif 'MfDown' in fixed_sys_name:
+                   #    th_factor = 1. / 1.0257
+                   #elif 'MfrUp' in fixed_sys_name:
+                   #    th_factor = 1. / 0.8747
+                   #elif 'MfrDown' in fixed_sys_name:
+                   #    th_factor = 1. / 1.1358
+                   #elif 'AlphaSUp' in fixed_sys_name:
+                   #    th_factor = 1. / 0.98
+                   #elif 'AlphaSDown' in fixed_sys_name:
+                   #    th_factor = 1. / 1.015
+                   #elif 'SemilepBRUp' in fixed_sys_name:
+                   #    th_factor = 1. / 1.0087
+                   #elif 'SemilepBRDown' in fixed_sys_name:
+                   #    th_factor = 1. / 0.987
+                   th_factor = 1. / syst_factors.get(fixed_sys_name, 1.)
 
                final_factor = args.lumi * tauIDSF_factor * pu_factor * th_factor
                logging.info("final factor %20s %20f %5f %5f %5f  %20f" % (nick, args.lumi, tauIDSF_factor, pu_factor, th_factor, final_factor))
