@@ -93,7 +93,7 @@ def get_dset(dtag):
     return None
 
 
-dtags_std_mc = [
+dtags_std_mc_min = [
 "MC2016_Summer16_QCD_HT-100-200",
 "MC2016_Summer16_QCD_HT-1000-1500",
 "MC2016_Summer16_QCD_HT-1500-2000",
@@ -114,24 +114,29 @@ dtags_std_mc = [
 "MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg",
 "MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg",
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo",
-"MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_v1_ext1",
-"MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_v2",
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph",
-"MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1",
 "MC2016_Summer16_SingleT_tW_5FS_powheg",
 "MC2016_Summer16_SingleTbar_tW_5FS_powheg",
 "MC2016_Summer16_TTJets_powheg",
 "MC2016_Summer16_W1Jets_madgraph",
 "MC2016_Summer16_W2Jets_madgraph",
-"MC2016_Summer16_W2Jets_madgraph_ext1",
 "MC2016_Summer16_W3Jets_madgraph",
-"MC2016_Summer16_W3Jets_madgraph_ext1",
 "MC2016_Summer16_W4Jets_madgraph",
+"MC2016_Summer16_WJets_madgraph",
+]
+
+dtags_std_mc_ext = [
+"MC2016_Summer16_WJets_madgraph_ext2_v1",
 "MC2016_Summer16_W4Jets_madgraph_ext1",
 "MC2016_Summer16_W4Jets_madgraph_ext2",
-"MC2016_Summer16_WJets_madgraph",
-"MC2016_Summer16_WJets_madgraph_ext2_v1",
+"MC2016_Summer16_W3Jets_madgraph_ext1",
+"MC2016_Summer16_W2Jets_madgraph_ext1",
+"MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1",
+"MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_v1_ext1",
+"MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_v2",
 ]
+
+dtags_std_mc = dtags_std_mc_min + dtags_std_mc_ext
 
 dtags_wjets = [
 "MC2016_Summer16_W1Jets_madgraph",
@@ -215,10 +220,11 @@ dtags_std_data_el = [
 dtags_std_data = dtags_std_data_mu + dtags_std_data_el
 
 
-dtags_std = dtags_std_mc + dtags_std_data
+dtags_std     = dtags_std_mc     + dtags_std_data
+dtags_std_min = dtags_std_mc_min + dtags_std_data
 
 
-dtag_groups = {'std': dtags_std, 'std_data': dtags_std_data, 'data_el': dtags_std_data_el, 'data_mu': dtags_std_data_mu,
+dtag_groups = {'std': dtags_std, 'std_min': dtags_std_min, 'std_data': dtags_std_data, 'data_el': dtags_std_data_el, 'data_mu': dtags_std_data_mu,
     'std_mc': dtags_std_mc, 'updowns': dtags_updowns,
     'singletop': dtags_singletop_mc,
     'wjets': dtags_wjets,
@@ -269,12 +275,18 @@ for dtag in requested_dtags:
         continue
 
     job_dirname = job_dir_template.format(vntupler=args.vNtupler, dset=dset, dtag=dtag)
-    logging.debug(job_dirname)
+
+    if isdir(job_dirname):
+        logging.debug(job_dirname)
+    else:
+        logging.error('no directory ' + job_dirname)
+        continue
 
     # there might be several submisions
     # pick up the last one
 
     job_submisions = [join(job_dirname, d) for d in listdir(job_dirname)]
+
     if len(job_submisions) != 1:
         logging.warning('not 1 dir: %d picking up the last one %s' % (len(job_submisions), dtag))
     job_dirname = job_submisions[0]

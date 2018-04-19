@@ -4486,15 +4486,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
                 # PROPAGATE jet correcions
                 all_sel_jets = sel_jets.medium + sel_jets.loose + sel_jets.rest
-                #if all_sel_jets:
+                all_sel_jets_taumatched = sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]
+                #all_sel_jets = all_sel_jets_taumatched
                 # propagation of corrections of all jets
-                if sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
+                if all_sel_jets_taumatched:
                     #try:
-                    sum_jets_init = all_sel_jets[0][0]
-                    sum_jets_corr = all_sel_jets[0][0] * all_sel_jets[0][1]
-                    jet_cor = all_sel_jets[0][0] * (1. - all_sel_jets[0][1])
-                    #for jet in all_sel_jets[1:]:
-                    for jet in all_sel_jets[1:] + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
+                    sum_jets_init = all_sel_jets_taumatched[0][0]
+                    sum_jets_corr = all_sel_jets_taumatched[0][0] * all_sel_jets_taumatched[0][1]
+                    jet_cor = all_sel_jets_taumatched[0][0] * (1. - all_sel_jets_taumatched[0][1])
+                    #for jet in all_sel_jets[1:] + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
+                    for jet in all_sel_jets_taumatched[1:]:
                         jet_cor += jet[0] * (1. - jet[1])
                         sum_jets_init += jet[0]
                         sum_jets_corr += jet[0] * jet[1]
