@@ -2548,8 +2548,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         control_counters.Fill(52)
 
         # -------------------- LEPTONS
-        #leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR, ev.lep_id), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR, ev.lep_alliso_id))
-        leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR, ev.lep_id), alliso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR, ev.lep_id))
+        leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR, ev.lep_id), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR, ev.lep_alliso_id))
+        #leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR, ev.lep_id), alliso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR, ev.lep_id))
 
         # -------------------- TAUS
 
@@ -3954,8 +3954,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             pass_old_lep_presel = pass_old_mu_presel or pass_old_el_presel
 
             # alliso
-            pass_old_mu_presel_alliso = False and pass_mu_all and old_jet_sel_alliso and len(taus.presel_alliso) > 0
-            pass_old_el_presel_alliso = False and pass_el_all and old_jet_sel_alliso and len(taus.presel_alliso) > 0
+            pass_old_mu_presel_alliso = pass_mu_all and old_jet_sel_alliso and len(taus.presel_alliso) > 0
+            pass_old_el_presel_alliso = pass_el_all and old_jet_sel_alliso and len(taus.presel_alliso) > 0
 
             pass_old_mu_sel_Vloose_alliso = pass_mu_all and old_jet_sel_alliso and len(taus.oldVloose) > 0
             pass_old_el_sel_Vloose_alliso = pass_el_all and old_jet_sel_alliso and len(taus.oldVloose) > 0
