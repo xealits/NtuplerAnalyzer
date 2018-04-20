@@ -2131,11 +2131,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
         #pass_mu_all = pass_mu_id_kino and ev.lep_relIso[0] >= 0.125
 
-        pass_mu_id_all = False and abs(ev.leps_ID_allIso) == 13 and ev.HLT_mu and ev.lep_alliso_matched_HLT[0] and ev.nleps_veto_mu_all == 0 and ev.nleps_veto_el_all == 0
-        pass_el_id_all = False and abs(ev.leps_ID_allIso) == 11 and ev.HLT_el and ev.lep_alliso_matched_HLT[0] and ev.nleps_veto_el_all == 0 and ev.nleps_veto_mu_all == 0
+        pass_mu_id_all = abs(ev.leps_ID_allIso) == 13 and ev.HLT_mu and ev.lep_alliso_matched_HLT[0] and ev.nleps_veto_mu_all == 0 and ev.nleps_veto_el_all == 0
+        pass_el_id_all = abs(ev.leps_ID_allIso) == 11 and ev.HLT_el and ev.lep_alliso_matched_HLT[0] and ev.nleps_veto_el_all == 0 and ev.nleps_veto_mu_all == 0
 
-        pass_mu_kino_all = False and pass_mu_id_all and ev.lep_alliso_p4[0].pt() > 26. and abs(ev.lep_alliso_p4[0].eta()) < 2.4
-        pass_el_kino_all = False and pass_el_id_all and ev.lep_alliso_p4[0].pt() > 30. and abs(ev.lep_alliso_p4[0].eta()) < 2.4 and (abs(ev.lep_alliso_p4[0].eta()) < 1.4442 or abs(ev.lep_alliso_p4[0].eta()) > 1.5660)
+        pass_mu_kino_all = pass_mu_id_all and ev.lep_alliso_p4[0].pt() > 26. and abs(ev.lep_alliso_p4[0].eta()) < 2.4
+        pass_el_kino_all = pass_el_id_all and ev.lep_alliso_p4[0].pt() > 30. and abs(ev.lep_alliso_p4[0].eta()) < 2.4 and (abs(ev.lep_alliso_p4[0].eta()) < 1.4442 or abs(ev.lep_alliso_p4[0].eta()) > 1.5660)
 
         pass_mu_all = pass_mu_id_all and pass_mu_kino_all
         pass_el_all = pass_el_id_all and pass_el_kino_all
@@ -4170,7 +4170,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             if pass_elel:
                 passed_channels.append(('ctr_mu_dy_elel', 1., leps.iso, jets.old, taus.presel))
             if pass_elmu:
-                #passed_channels.append(('ctr_mu_tt_em', 1., leps.iso, jets.old, taus.presel))
+                passed_channels.append(('ctr_mu_tt_em', 1., leps.iso, jets.old, taus.presel))
                 # elmu selection with almost main jet requirements
                 #old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
                 # at least 2 jets (3-1 for missing tau jet) and 1 b-tagged
