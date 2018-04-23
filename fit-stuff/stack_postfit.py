@@ -95,7 +95,7 @@ import plotting_root
 gROOT.SetBatch()
 gStyle.SetOptStat(0)
 
-from plotting_root import nick_order, nick_colour, rgb
+from plotting_root import nick_order, nick_colour, nick_info, rgb
 
 fdata = TFile(args.data_file)
 chan_dir   = fdata.Get(("shapes_prefit/" if args.prefit else "shapes_fit_s/") + args.channel)
@@ -174,6 +174,10 @@ def th_postfit(name):
 data   = th_postfit(data_higComb.GetName() + '_u')
 mc_sum = th_postfit(mc_sum_higComb.GetName() + '_u')
 
+shift = 0.
+leg = TLegend(0.7 - shift, 0.4, 0.89 - shift, 0.89)
+leg.AddEntry(data, nick_info['data']['legend'], "e2 L")
+
 # convert the higcomb TGraph data to histogram
 for bini in range(data.GetSize()):
     tgraph_content = data_higComb.Eval(bini-0.5) # must fit the center of the bin in tgraph
@@ -211,6 +215,8 @@ for nick in mc_processes:
     #used_histos.append(histo) # hopefully root wont screw this up
     hs.Add(histo, "HIST")
     mc_histos.append(histo)
+
+    leg.AddEntry(histo, nick_info[nick]['legend'], "F")
 
     if args.resum:
         mc_sum.Add(histo)
@@ -309,6 +315,8 @@ mc_sum.Draw("same e2")
 if not args.no_data:
     data.SetLineWidth(3)
     data.Draw("same P")
+
+leg.Draw("same")
 
 left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
 left_title.AddText("CMS preliminary at 13 TeV")

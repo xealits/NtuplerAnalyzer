@@ -183,9 +183,9 @@ def plot(chan, plot_expected, plot_data):
    leg.Draw("same")
 
    plotted = ''
-   plotted += '_data' if plot_data else ''
    plotted += '_exp' if plot_expected else ''
-   c1.SaveAs("uncertainty-scans_%s%s.png" % (chan, plotted))
+   plotted += '_obs' if plot_data else ''
+   c1.SaveAs("uncertainty_scans_%s%s.png" % (chan, plotted))
 
 plot('mu', True, True)
 plot('el', True, True)
