@@ -45,6 +45,7 @@ parser.add_argument("--osss",     action='store_true', help="plot the ratio in O
 parser.add_argument("--osss-mc",  action='store_true', help="plot the ratio in OS/SS of MC QCD")
 
 parser.add_argument("--wjets", type=float, default=0., help="scale factor for wjets (from the control region)")
+parser.add_argument("--factor-dy", type=float, help="scale factor for dy (from the control region)")
 
 parser.add_argument("--draw-overflows", type=float, default=0., help="draw the overflow bin with the specified width")
 
@@ -319,14 +320,18 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
            # the fast normalization
            if args.lumi:
                tauIDSF_factor = 1.
-               if nick == 'none': #'tt_mutau':
-                   tauIDSF_factor = 0.90
-               elif nick in ('tt_mutau3ch', 'tt_eltau3ch', 'tt_mutau', 'tt_eltau', 'tt_taultauh', 'dy_tautau', 's_top_eltau', 's_top_mutau', 'dy_tautau'):
+               #if nick == 'none': #'tt_mutau':
+               #    tauIDSF_factor = 0.90
+               ##elif nick in ('tt_mutau3ch', 'tt_eltau3ch', 'tt_mutau', 'tt_eltau', 'tt_taultauh', 'dy_tautau', 's_top_eltau', 's_top_mutau', 'dy_tautau'):
+               ##    tauIDSF_factor = 0.95
+               #elif any(ch in nick for ch in ('ctr_old_mu_sel', 'ctr_old_mu_sel', 'ctr_old_el_sel', 'optel_tight_2L1M', 'optmu_tight_2L1M')):
+               #    tauIDSF_factor = 0.95
+               #else:
+               #    tauIDSF_factor = 1.
+               tau_selection = any(ch in channel for ch in ('ctr_old_mu_sel', 'ctr_old_mu_sel', 'ctr_old_el_sel', 'optel_tight_2L1M', 'optmu_tight_2L1M'))
+               tau_process   = nick in ('tt_mutau3ch', 'tt_eltau3ch', 'tt_mutau', 'tt_eltau', 'tt_taultauh', 'dy_tautau', 's_top_eltau', 's_top_mutau')
+               if tau_selection and tau_process:
                    tauIDSF_factor = 0.95
-               elif any(ch in nick for ch in ('ctr_old_mu_sel', 'ctr_old_mu_sel', 'ctr_old_el_sel', 'optel_tight_2L1M', 'optmu_tight_2L1M')):
-                   tauIDSF_factor = 0.95
-               else:
-                   tauIDSF_factor = 1.
 
                pu_factor = 1.
                if 'PUUp' in fixed_sys_name:
@@ -371,6 +376,10 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
            # wjets normalization
            if args.wjets > 0 and nick == 'wjets':
                histo.Scale(args.wjets)
+
+           # dy normalization
+           if args.factor_dy and 'dy' in nick:
+               histo.Scale(args.factor_dy)
 
            # mc qcd normalization
            if nick == 'qcd':

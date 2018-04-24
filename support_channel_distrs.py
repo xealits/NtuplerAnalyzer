@@ -1627,6 +1627,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_old_el_selVloose_alliso_ss':   (procs_el, systematic_names_nominal),
         },
 
+        'channels_control_regions_elmu' : {
+                'ctr_mu_tt_em':             (procs_elmu, systematic_names_pu_toppt),
+                'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_pu_toppt), # for the ratio
+        }
+
     }
 
     print systematic_names_all_with_th
@@ -2181,7 +2186,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = passes_optimized
+        event_passes = pass_elmu # passes_optimized
 
         if not event_passes: continue
         control_counters.Fill(51)
@@ -2525,9 +2530,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 if pass_elmu:
                     el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                     el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
-                    weight_lep_Up   *= weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
-                    weight_lep_Down *= weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
-                    weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+                    #weight_lep_Up   *= weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
+                    #weight_lep_Down *= weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+                    #weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+                    # w.o. el trig
+                    weight_lep_Up   *= weight * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
+                    weight_lep_Down *= weight * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+                    weight *= el_sfs_reco[0] * el_sfs_id[0]
 
                 weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
                              ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]

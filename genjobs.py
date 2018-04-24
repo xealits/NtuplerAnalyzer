@@ -136,7 +136,7 @@ dtags_std_mc_ext = [
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_v2",
 ]
 
-dtags_std_mc = dtags_std_mc_min + dtags_std_mc_ext
+dtags_std_mc          = dtags_std_mc_min + dtags_std_mc_ext
 
 dtags_wjets = [
 "MC2016_Summer16_W1Jets_madgraph",
@@ -155,6 +155,8 @@ dtags_wjets_amcatnlo = [
 "MC2016_Summer16_WJets_amcatnlo",
 "MC2016_Summer16_WJets_amcatnlo_ext2_v2",
 ]
+
+dtags_std_mc_amcatnlo = dtags_std_mc_min + dtags_std_mc_ext + dtags_wjets_amcatnlo
 
 dtags_singletop_mc = [
 "MC2016_Summer16_SingleT_tW_5FS_powheg",
@@ -188,11 +190,29 @@ dtags_updowns = [
 "MC2016_Summer16_TTJets_powheg_hdampUP",
 ]
 
+dtags_updowns_extra = [
+"MC2016_Summer16_TTJets_powheg_fsrdown_ext1",
+"MC2016_Summer16_TTJets_powheg_fsrdown_ext2",
+"MC2016_Summer16_TTJets_powheg_fsrup_ext1",
+"MC2016_Summer16_TTJets_powheg_fsrup_ext2",
+"MC2016_Summer16_TTJets_powheg_isrdown_ext1",
+"MC2016_Summer16_TTJets_powheg_isrdown_ext2",
+"MC2016_Summer16_TTJets_powheg_isrup_ext2",
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4down_ext1",
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4up_ext1",
+"MC2016_Summer16_TTJets_powheg_hdampDOWN_ext1",
+"MC2016_Summer16_TTJets_powheg_hdampUP_ext1",
+]
+
 # also
 "MC2016_Summer16_TTJets_amcatnlo_backup",
 "MC2016_Summer16_TTJets_powheg_herwigpp",
 "MC2016_Summer16_TTJets_powheg_GluonMoveCRTune",
 "MC2016_Summer16_TTJets_powheg_QCDCRTune",
+"MC2016_Summer16_TTJets_amcatnlo"
+"MC2016_Summer16_TTJets_powheg_QCDCRTune_ext1"
+"MC2016_Summer16_TTJets_powheg_herwigpp_ext2"
+"MC2016_Summer16_TTJets_powheg_herwigpp_ext3"
 
 
 dtags_std_data_mu = [
@@ -219,13 +239,14 @@ dtags_std_data_el = [
 
 dtags_std_data = dtags_std_data_mu + dtags_std_data_el
 
+dtags_std          = dtags_std_mc          + dtags_std_data
+dtags_std_amcatnlo = dtags_std_mc_amcatnlo + dtags_std_data
+dtags_std_min      = dtags_std_mc_min      + dtags_std_data
 
-dtags_std     = dtags_std_mc     + dtags_std_data
-dtags_std_min = dtags_std_mc_min + dtags_std_data
 
-
-dtag_groups = {'std': dtags_std, 'std_min': dtags_std_min, 'std_data': dtags_std_data, 'data_el': dtags_std_data_el, 'data_mu': dtags_std_data_mu,
-    'std_mc': dtags_std_mc, 'updowns': dtags_updowns,
+dtag_groups = {'std': dtags_std, 'std_amcatnlo': dtags_std_amcatnlo,
+    'std_min': dtags_std_min, 'std_data': dtags_std_data, 'data_el': dtags_std_data_el, 'data_mu': dtags_std_data_mu,
+    'std_mc': dtags_std_mc, 'updowns': dtags_updowns, 'updowns_extra': dtags_updowns_extra,
     'singletop': dtags_singletop_mc,
     'wjets': dtags_wjets,
     'wjets_amcatnlo': dtags_wjets_amcatnlo,
