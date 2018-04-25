@@ -151,17 +151,23 @@ data_yields = {} # channel: yield
 def range_integral(histo):
     if args.range_max or args.range_min:
         integral = 0.
+        uncertainty = 0.
         for bini in range(histo.GetSize()):
             bin_x   = histo.GetBinCenter(bini)
             if args.range_max and bin_x > args.range_max:
                 break
             if args.range_min and bin_x < args.range_min:
                 continue
-            integral += histo.GetBinContent(bini)
+            integral    += histo.GetBinContent(bini)
+            uncertainty += histo.GetBinError(bini)
     else:
         integral = histo.Integral()
+        uncertainty = 0.
+        for bini in range(histo.GetSize()):
+            bin_x   = histo.GetBinCenter(bini)
+            uncertainty += histo.GetBinError(bini)
 
-    return integral
+    return integral, uncertainty
 
 for channel in channels:
     chan = fdata.Get(channel)
@@ -230,13 +236,13 @@ for channel in channels:
         print 'bin           ' + ''.join('%-25s' % channel for _ in processes)
         print 'process       ' + ''.join('%-25s' % proc for proc in processes)
         print 'process       ' + ''.join('%-25d' % processes_id[proc] for proc in processes)
-        print 'rate          ' + ''.join('%-25.3f' % (proc_yields[proc][channel] if proc in proc_yields else 0) for proc in processes)
+        print 'rate          ' + ''.join('%-25.3f' % (proc_yields[proc][channel][0] if proc in proc_yields else 0) for proc in processes)
 
         print full_path
         #print 'obs %f' % data_histo.Integral()
         #print 'mc sum = %f' % sum(h.Integral() for h in histos)
-        print 'obs %f'      % data_yields[channel]
-        print 'mc sum = %f' % sum(proc[channel] for proc in proc_yields.values())
+        print 'obs %f'      % data_yields[channel][0]
+        print 'mc sum = %f' % sum(proc[channel][0] for proc in proc_yields.values())
 
 
 proc_s = '%40s'
@@ -262,26 +268,30 @@ if args.event_yields:
         if process in proc_yields:
             chan_d = proc_yields[process]
             line = proc_s % (process_latex_strings[process] if args.latex else process)
+            # check the process in each requested channel
+            # process = row
+            # channel = column
             for channel in channels:
                 #
-                integral = chan_d.get(channel)
-                data_yield = data_yields[channel]
+                integral  , uncertainty      = chan_d.get(channel)
+                data_yield, uncertainty_data = data_yields[channel]
                 if integral and args.ratios:
                     integral = integral / data_yield
-                line += separator + string_yield(integral)
+                line += separator + string_yield(integral) + ' \\pm ' + string_yield(uncertainty)
             print line + line_end
             # also calc sum
             for channel in channels:
-                mc_sums.setdefault(channel, 0)
-                mc_sums[channel] += chan_d.get(channel, 0)
+                mc_sums.setdefault(channel, [0, 0])
+                mc_sums[channel][0] += chan_d.get(channel, (0, 0))[0]
+                mc_sums[channel][1] += chan_d.get(channel, (0, 0))[1]
         else:
             continue
 
     if args.ratios:
-        print proc_s % 'mc_sum_ratio' + separator + separator.join([(item_s + '.3f') % (mc_sums[channel]/data_yields[channel]) for channel in channels]) + line_end
+        print proc_s % 'mc_sum_ratio' + separator + separator.join([(item_s + '.3f') % (mc_sums[channel][0]/data_yields[channel][0]) for channel in channels]) + line_end
     else:
-        print proc_s % 'mc_sum' + separator + separator.join([(item_s + '.1f') % mc_sums[channel] for channel in channels]) + line_end
-    print proc_s % 'data' + separator + separator.join([(item_s + '.1f') % data_yields[channel] for channel in channels]) + line_end
+        print proc_s % 'mc_sum' + separator + separator.join([(item_s + '.1f' + ' \\pm ' + item_s + '.1f') % tuple(mc_sums[channel]) for channel in channels]) + line_end
+    print proc_s % 'data' + separator + separator.join([(item_s + '.1f' + ' \\pm ' + item_s + '.1f') % data_yields[channel] for channel in channels]) + line_end
 
 
 

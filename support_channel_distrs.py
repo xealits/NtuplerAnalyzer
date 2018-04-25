@@ -1846,6 +1846,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         if sys == 'NOMINAL':
            distrs.update({
              'Mt_tau_lep':  TH1D('%s_%s_%s_Mt_tau_lep' % (chan, proc, sys), '', 20, 0, 300),
+              'yield':      TH1D('%s_%s_%s_yield' % (chan, proc, sys), '', 3, 0, 3),
 
              # control the tau/jet prop to met
              'met_prop_taus':      TH2D('%s_%s_%s_met_prop_taus'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
@@ -4626,6 +4627,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met']          .Fill(met_pt,         record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_pt']       .Fill(lep_p4[0].pt(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['yield']        .Fill(1, record_weight)
 
                 # all sum kind of should find:
                 # - which level of jet/met correction is the true "synchronized" one (just technical stuff)
