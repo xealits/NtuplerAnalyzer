@@ -1567,6 +1567,26 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_all_with_th),
         },
 
+        'channels_nominal_full_lep_selections' : {
+                'ctr_old_el_presel':        (procs_el, systematic_names_nominal),     # testing issue with event yield advantage
+                'ctr_old_el_presel_ss':     (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel':           (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_ss':        (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_lj':        (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_lj_ss':     (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_ljout':     (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_nominal),
+
+                'ctr_old_mu_presel':        (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel':           (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_nominal),
+        },
+
         'channels_refact_sys_lep_selections' : {
                 #'ctr_el_wjet':              (procs_el, systematic_names_pu),
                 #'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
@@ -1851,8 +1871,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              # control the tau/jet prop to met
              'met_prop_taus':      TH2D('%s_%s_%s_met_prop_taus'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
              'met_prop_jets':      TH2D('%s_%s_%s_met_prop_jets'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
-             'init_met':   TH1D('%s_%s_%s_init_met'   % (chan, proc, sys), '', 30, 0, 300),
-             'corr_met':   TH1D('%s_%s_%s_corr_met'   % (chan, proc, sys), '', 30, 0, 300),
+             'init_met':           TH1D('%s_%s_%s_init_met'   % (chan, proc, sys), '', 30, 0, 300),
+             'corr_met':           TH1D('%s_%s_%s_corr_met'   % (chan, proc, sys), '', 30, 0, 300),
+             'Mt_lep_met_init_f':  TH1D('%s_%s_%s_Mt_lep_met_init_f' % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_corr_f':  TH1D('%s_%s_%s_Mt_lep_met_corr_f' % (chan, proc, sys), '', 20, 0, 250),
              'all_sum_control':       TH1D('%s_%s_%s_all_sum_control'      % (chan, proc, sys), '', 100, 0, 100),
              'all_sum_control_init':  TH1D('%s_%s_%s_all_sum_control_init' % (chan, proc, sys), '', 100, 0, 100),
              'lep_pt_turn':TH1D('%s_%s_%s_lep_pt_turn'% (chan, proc, sys), '', 270, 23, 50),
@@ -4564,7 +4586,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 #        met_x_prop += substitution.X()
                 #        met_y_prop += substitution.Y()
 
-                Mt_lep_met = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
+                Mt_lep_met      = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
+                Mt_lep_met_init = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), ev.met_init.Px(), ev.met_init.Py())
+                Mt_lep_met_corr = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
                 # test on Mt fluctuation in mu_sel
                 #if Mt_lep_met < 1.:
                 #    continue
@@ -4673,6 +4697,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['met_prop_jets'].Fill(met_pt_init, met_pt_jets - met_pt_init, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['corr_met'].Fill(ev.met_corrected.pt(), record_weight) # for control
                 out_hs[(chan, record_proc, sys_name)]['init_met'].Fill(ev.met_init.pt(),      record_weight) # for control
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_init_f'] .Fill(Mt_lep_met_init,     record_weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_corr_f'] .Fill(Mt_lep_met_corr,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['all_sum_control']     .Fill(all_sum_control_pt, record_weight) # for control
                 out_hs[(chan, record_proc, sys_name)]['all_sum_control_init'].Fill(all_sum_control_init_pt, record_weight) # for control
                 out_hs[(chan, record_proc, sys_name)]['lep_eta'] .Fill(lep_p4[0].eta(), record_weight)
