@@ -1627,6 +1627,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_old_el_selVloose_alliso_ss':   (procs_el, systematic_names_nominal),
         },
 
+        'channels_presels' : {
+                'ctr_old_el_presel':        (procs_el, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                'ctr_old_el_presel_ss':     (procs_el, systematic_names_pu_toppt),
+                'ctr_old_mu_presel':        (procs_mu, systematic_names_pu_toppt),     # testing issue with event yield advantage
+                'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_pu_toppt),
+        },
+
         'channels_control_regions_elmu' : {
                 'ctr_mu_tt_em':             (procs_elmu, systematic_names_pu_toppt),
                 'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_pu_toppt), # for the ratio
@@ -2186,7 +2193,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_elmu # passes_optimized
+        event_passes = passes_optimized # pass_elmu #
 
         if not event_passes: continue
         control_counters.Fill(51)

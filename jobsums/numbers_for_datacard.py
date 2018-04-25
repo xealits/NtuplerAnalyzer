@@ -5,7 +5,15 @@ process     10        9         8         7             6           5           
 rate        117.997   10.96     417.34    169.45        29.42       205.302     25.73    228.08       3523.18   328.59    3750.46     ------------------------------------------------------------------------------------------------------------------------------------------------------------
 '''
 
-all_known_sorted_processes = [ 'dy_tautau', 'dy_other',  'wjets', 'wjets_taul', 'wjets_tauh', 'dibosons',  's_top_eltau',  's_top_mutau',   's_top_other', 's_top_lj',    'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'tt_eltau', 'tt_taulj', 'qcd']
+all_known_sorted_processes = [
+    'tt_mutau', 'tt_eltau',
+    'tt_taultauh',  'tt_lj', 'tt_taulj', 'tt_other',
+    's_top_eltau',  's_top_mutau',   's_top_other', 's_top_lj',
+    'dy_tautau', 'dy_other',
+    'wjets', 'wjets_taul', 'wjets_tauh',
+    'dibosons',
+    'qcd']
+
 # tt_taulj
 # wjets_taul
 # wjets_tauh
@@ -36,13 +44,13 @@ t\bar{t}\rightarrow{\mu\tau}
 
 process_latex_strings = {'dy_tautau': '\\text{dy}\\rightarrow{\\tau_{l}\\tau_{h}}',
     'dy_other':                       '\\text{dy}\\rightarrow{other}',
-    'wjets':                          '\\text{wjets}',
+    'wjets':                          '\\text{wjets} \\rightarrow\\ell',
     'wjets_taul':                     '\\text{wjets} \\rightarrow\\tau_{l}',
     'wjets_tauh':                     '\\text{wjets} \\rightarrow\\tau_{h}',
-    's_top_eltau':                    '\\text{top}^{single}\\rightarrow{e   \\tau}',
-    's_top_mutau':                    '\\text{top}^{single}\\rightarrow{\\mu\\tau}',
-    's_top_other':                    '\\text{top}^{single}\\rightarrow{other}',
-    's_top_lj':                       '\\text{top}^{single}\\rightarrow{\\ell j}',
+    's_top_eltau':                    '\\text{single top}\\rightarrow{e   \\tau}',
+    's_top_mutau':                    '\\text{single top}\\rightarrow{\\mu\\tau}',
+    's_top_other':                    '\\text{single top}\\rightarrow{other}',
+    's_top_lj':                       '\\text{single top}\\rightarrow{\\ell j}',
     'dibosons':                       '\\text{dibosons}',
     'tt_taultauh':                    't\\bar{t}\\rightarrow{\\tau_{l}\\tau_{h}}',
     'tt_taulj':                       't\\bar{t}\\rightarrow{\\tau_{l} j}',
