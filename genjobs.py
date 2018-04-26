@@ -93,7 +93,7 @@ def get_dset(dtag):
     return None
 
 
-dtags_std_mc_min = [
+dtags_std_mc_min_no_wjets = [
 "MC2016_Summer16_QCD_HT-100-200",
 "MC2016_Summer16_QCD_HT-1000-1500",
 "MC2016_Summer16_QCD_HT-1500-2000",
@@ -118,6 +118,9 @@ dtags_std_mc_min = [
 "MC2016_Summer16_SingleT_tW_5FS_powheg",
 "MC2016_Summer16_SingleTbar_tW_5FS_powheg",
 "MC2016_Summer16_TTJets_powheg",
+]
+
+dtags_wjets_madgraph = [
 "MC2016_Summer16_W1Jets_madgraph",
 "MC2016_Summer16_W2Jets_madgraph",
 "MC2016_Summer16_W3Jets_madgraph",
@@ -125,38 +128,35 @@ dtags_std_mc_min = [
 "MC2016_Summer16_WJets_madgraph",
 ]
 
-dtags_std_mc_ext = [
+dtags_std_mc_min = dtags_std_mc_min_no_wjets + dtags_wjets_madgraph
+
+dtags_std_mc_ext_wjets_madgraph = [
 "MC2016_Summer16_WJets_madgraph_ext2_v1",
 "MC2016_Summer16_W4Jets_madgraph_ext1",
 "MC2016_Summer16_W4Jets_madgraph_ext2",
 "MC2016_Summer16_W3Jets_madgraph_ext1",
 "MC2016_Summer16_W2Jets_madgraph_ext1",
+]
+
+dtags_std_mc_ext_dy = [
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1",
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_v1_ext1",
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_v2",
 ]
 
-dtags_std_mc          = dtags_std_mc_min + dtags_std_mc_ext
+dtags_std_mc_ext = dtags_std_mc_ext_wjets_madgraph + dtags_std_mc_ext_dy
 
-dtags_wjets = [
-"MC2016_Summer16_W1Jets_madgraph",
-"MC2016_Summer16_W2Jets_madgraph",
-"MC2016_Summer16_W2Jets_madgraph_ext1",
-"MC2016_Summer16_W3Jets_madgraph",
-"MC2016_Summer16_W3Jets_madgraph_ext1",
-"MC2016_Summer16_W4Jets_madgraph",
-"MC2016_Summer16_W4Jets_madgraph_ext1",
-"MC2016_Summer16_W4Jets_madgraph_ext2",
-"MC2016_Summer16_WJets_madgraph",
-"MC2016_Summer16_WJets_madgraph_ext2_v1",
-]
+dtags_std_mc     = dtags_std_mc_min + dtags_std_mc_ext
+
+dtags_wjets      = dtags_wjets_madgraph + dtags_std_mc_ext_wjets_madgraph
+
 
 dtags_wjets_amcatnlo = [
 "MC2016_Summer16_WJets_amcatnlo",
 "MC2016_Summer16_WJets_amcatnlo_ext2_v2",
 ]
 
-dtags_std_mc_amcatnlo = dtags_std_mc_min + dtags_std_mc_ext + dtags_wjets_amcatnlo
+dtags_std_mc_amcatnlo = dtags_std_mc_min_no_wjets + dtags_std_mc_ext_dy + dtags_wjets_amcatnlo
 
 dtags_singletop_mc = [
 "MC2016_Summer16_SingleT_tW_5FS_powheg",
@@ -274,6 +274,8 @@ for req in args.without_dtags.split(','):
         requested_dtags.difference_update([req])
 
 logging.info("got %d requested dtags" % len(requested_dtags))
+for dtag in requested_dtags:
+    logging.debug(dtag)
 
 
 # make the jobs

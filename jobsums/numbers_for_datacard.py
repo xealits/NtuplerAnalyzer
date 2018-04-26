@@ -169,6 +169,9 @@ def range_integral(histo):
 
     return integral, uncertainty
 
+# sumhistos in the channel
+mc_sums_sumhisto = {}
+
 for channel in channels:
     chan = fdata.Get(channel)
     #if chan.GetName() == 'weight_counter' or chan.GetName() == 'events_counter':
@@ -180,6 +183,11 @@ for channel in channels:
     if not chan:
         logging.warning('no channel %s' % channel)
         continue
+
+    # get sum from the sum histo
+    # sums_NOMINAL/mc_sum2_NOMINAL
+    sum_histo = chan.Get("sums_NOMINAL/mc_sum2_NOMINAL")
+    mc_sums_sumhisto[channel] = range_integral(sum_histo)
 
     histos = []
 
@@ -246,7 +254,7 @@ for channel in channels:
 
 
 proc_s = '%40s'
-item_s = '%20'
+item_s = '%10'
 
 def string_yield(integral):
     if integral is None:
@@ -263,7 +271,8 @@ line_end = ' \\\\' if args.latex else ''
 if args.event_yields:
     print proc_s % 'process' + separator + separator.join([(item_s + 's') % channel for channel in channels]) + line_end
     #for process, chan_d in proc_yields.items():
-    mc_sums = {} # channel: sum of integrals
+    mc_sums   = {} # channel: sum of integrals
+
     for process in all_known_sorted_processes:
         if process in proc_yields:
             chan_d = proc_yields[process]
@@ -277,7 +286,7 @@ if args.event_yields:
                 data_yield, uncertainty_data = data_yields[channel]
                 if integral and args.ratios:
                     integral = integral / data_yield
-                line += separator + string_yield(integral) + ' \\pm ' + string_yield(uncertainty)
+                line += separator + '$' + string_yield(integral) + ' \\pm ' + string_yield(uncertainty) + ' $'
             print line + line_end
             # also calc sum
             for channel in channels:
@@ -290,8 +299,9 @@ if args.event_yields:
     if args.ratios:
         print proc_s % 'mc_sum_ratio' + separator + separator.join([(item_s + '.3f') % (mc_sums[channel][0]/data_yields[channel][0]) for channel in channels]) + line_end
     else:
-        print proc_s % 'mc_sum' + separator + separator.join([(item_s + '.1f' + ' \\pm ' + item_s + '.1f') % tuple(mc_sums[channel]) for channel in channels]) + line_end
-    print proc_s % 'data' + separator + separator.join([(item_s + '.1f' + ' \\pm ' + item_s + '.1f') % data_yields[channel] for channel in channels]) + line_end
+        #print proc_s % 'mc_sum' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % tuple(mc_sums[channel]) for channel in channels]) + line_end
+        print proc_s % 'mc_sum' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % tuple(mc_sums_sumhisto[channel]) for channel in channels]) + line_end
+    print proc_s % 'data' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % data_yields[channel] for channel in channels]) + line_end
 
 
 

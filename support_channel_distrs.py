@@ -1647,6 +1647,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_old_el_selVloose_alliso_ss':   (procs_el, systematic_names_nominal),
         },
 
+        'channels_control_regions_wjets' : {
+                'ctr_mu_wjet':              (procs_mu, systematic_names_pu),
+                'ctr_mu_wjet_ss':           (procs_mu, systematic_names_pu),
+                'ctr_el_wjet':              (procs_el, systematic_names_pu),
+                'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
+                'ctr_alliso_mu_wjet':       (procs_mu, systematic_names_nominal),
+                'ctr_alliso_mu_wjet_ss':    (procs_mu, systematic_names_nominal),
+        },
+
         'channels_presels' : {
                 'ctr_old_el_presel':        (procs_el, systematic_names_pu_toppt),     # testing issue with event yield advantage
                 'ctr_old_el_presel_ss':     (procs_el, systematic_names_pu_toppt),
@@ -1855,7 +1864,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             #'tight_tau_jet_eta':  TH1D('%s_%s_%s_tight_tau_jet_eta'  % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
             #'vtight_tau_jet_pt':  TH1D('%s_%s_%s_vtight_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
             #'vtight_tau_jet_eta': TH1D('%s_%s_%s_vtight_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-            'Mt_tau_met':  TH1D('%s_%s_%s_Mt_tau_met' % (chan, proc, sys), '', 20, 0, 200),
+            'Mt_tau_met':      TH1D('%s_%s_%s_Mt_tau_met'     % (chan, proc, sys), '', 20, 0, 200),
+            'Mt_tau_met_lep':  TH2D('%s_%s_%s_Mt_tau_met_lep' % (chan, proc, sys), '', 20, 0, 300, 20, 0, 300),
 
             # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
             'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
@@ -4932,6 +4942,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
                     out_hs[(chan, record_proc, sys_name)]['M_lep_tau']  .Fill(lep_tau_mass, record_weight)
                     out_hs[(chan, record_proc, sys_name)]['Mt_tau_met'] .Fill(Mt_tau_met, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_tau_met_lep'] .Fill(Mt_tau_met, Mt_lep_met, record_weight)
 
                     # TODO: this calculation is saved only for NOMINAL syst, in principle it should not be done in other cases then
                     Mt_tau_lep = transverse_mass(corrected_tau, lep_p4[0])
