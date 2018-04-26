@@ -89,7 +89,7 @@ nick_order = {
 "dibosons": -40,
 }
 
-def stack_n_legend(used_histos, shift=0., exp_legend=False):
+def stack_n_legend(used_histos, shift=0., exp_legend=False, sort_dy=False):
     '''stack_n_legend(used_histos)
 
     used_histos = [(histo, nick of process, channel), ...]
@@ -111,7 +111,14 @@ def stack_n_legend(used_histos, shift=0., exp_legend=False):
 
     process_counter = {} # for distinguishing processes in different channels
 
-    for histo, nick, channel in sorted(used_histos, key=lambda h_n: nick_order.get(h_n[1], 1)):
+    def sort_w_dy_option(histo_nick):
+        order = nick_order.get(histo_nick, 1)
+        if sort_dy and 'dy' in histo_nick:
+            order = 0
+        return order
+
+    #for histo, nick, channel in sorted(used_histos, key=lambda h_n: nick_order.get(h_n[1], 1)):
+    for histo, nick, channel in sorted(used_histos, key=lambda h_n: sort_w_dy_option(h_n[1])):
         proc_ocurance = process_counter.setdefault(nick, 1)
         process_counter[nick] += 1
 
@@ -125,7 +132,7 @@ def stack_n_legend(used_histos, shift=0., exp_legend=False):
         hs.Add(histo, "HIST")
 
     # to have legend in the same order
-    for histo, nick, channel in sorted(used_histos, key=lambda h_n: -nick_order.get(h_n[1], 1)):
+    for histo, nick, channel in sorted(used_histos, key=lambda h_n: -sort_w_dy_option(h_n[1])):
         if homogeneous_channels:
             leg.AddEntry(histo, nick_info[nick]['legend'], "F")
         else:

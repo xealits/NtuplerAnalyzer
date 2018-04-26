@@ -35,6 +35,8 @@ parser.add_argument("--y-range",   type=str, help="set the range on Y axis `0,1.
 
 parser.add_argument("--exp-legend",   action='store_true', help="experimentary legend drawing")
 
+parser.add_argument("--sort-dy",   action='store_true', help="sort DY up")
+
 parser.add_argument("--no-data",   action='store_true', help="don't draw data")
 
 parser.add_argument("--bin-norm",  action='store_true', help="normalize per bin width")
@@ -617,9 +619,9 @@ if args.form_shapes:
 # get MC stack and legend for it
 #hs, leg = plotting_root.stack_n_legend(used_histos)
 if args.legend_shift:
-    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos, args.legend_shift, args.exp_legend)) for distr_name, histos in used_histos_per_distr]
+    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos, args.legend_shift, args.exp_legend, sort_dy=args.sort_dy)) for distr_name, histos in used_histos_per_distr]
 else:
-    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos, exp_legend=args.exp_legend)) for distr_name, histos in used_histos_per_distr]
+    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos, exp_legend=args.exp_legend, sort_dy=args.sort_dy)) for distr_name, histos in used_histos_per_distr]
 
 # sum of MC to get the sum of errors
 
