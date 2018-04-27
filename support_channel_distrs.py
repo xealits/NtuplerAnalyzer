@@ -1962,6 +1962,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              '2D_dijet_trijet':     TH2D('%s_%s_%s_2D_dijet_trijet'     % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
              '2D_dijet_trijet_all': TH2D('%s_%s_%s_2D_dijet_trijet_all' % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
              #'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
+             'combination_input_have': TH2D('%s_%s_%s_combination_input_have' % (chan, proc, sys), '', 7, 0, 7, 7, 0, 7),
              'lj_gens':             TH1D('%s_%s_%s_lj_gens' % (chan, proc, sys), '', 15, 0, 15),
              'lj_gens_b_gen':       TH1D('%s_%s_%s_lj_gens_b_gen' % (chan, proc, sys), '', 20, -10, 10),
              'lj_gens_w1_gen':      TH1D('%s_%s_%s_lj_gens_w1_gen' % (chan, proc, sys), '', 20, -10, 10),
@@ -4038,13 +4039,44 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 with_all_permutation_masses = True
                 # order: not-b-taged, b-taged
                 # only medium b-tags p8 p9
-                lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.loose + jets.old.taumatched[1], jets.old.medium + jets.old.taumatched[0], with_all_permutation_masses, isMC)
+                b_cand_jets     = jets.old.medium + jets.old.taumatched[0]
+                light_cand_jets = jets.old.rest + jets.old.loose + jets.old.taumatched[1]
+                lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, light_cand_jets, b_cand_jets, with_all_permutation_masses, isMC)
                 # medium and loose b-tags
                 # but tau-matches are done to Medium b!
                 #lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.old.rest + jets.old.taumatched[1], jets.old.medium + jets.old.loose + jets.old.taumatched[0], with_all_permutation_masses, isMC)
-                n_bjets_used_in_lj = len(jets.old.medium) + len(jets.old.loose) + len(jets.old.taumatched[0])
+                n_bjets_used_in_lj = len(b_cand_jets)
                 lj_cut = 60.
                 large_lj = lj_var > lj_cut
+
+                # for tt_lj MC truth find the jets in these groups
+                if (abs(ev.gen_t_w_decay_id) == 13 or abs(ev.gen_t_w_decay_id) == 11) and abs(ev.gen_tb_w_decay_id) == 1:
+                    # in tb the jets' genmatches are -6 (b) and -5 (w)
+                    propper_b = -6
+                    propper_w = -5
+                elif abs(ev.gen_t_w_decay_id) == 1 and (abs(ev.gen_tb_w_decay_id) == 13 or abs(ev.gen_tb_w_decay_id) == 11):
+                    propper_b = 6
+                    propper_w = 5
+                else:
+                    propper_b = 0
+                    propper_w = 0
+
+                jets_input_has = 0
+                #3*(lj_b_gen == propper_b) + (lj_w1_gen == propper_w) + (lj_w2_gen == propper_w)
+                #closest_pair_gens = (ev.jet_matching_gen[light_jets[i][6]], ev.jet_matching_gen[light_jets[u][6]])
+                if propper_b:
+                    for b_cand in b_cand_jets:
+                        if b_cand[6] == propper_b:
+                            jets_input_has += 3
+                            break
+
+                    found_light = False
+                    for cand in light_cand_jets:
+                        if cand[6] == propper_w:
+                            jets_input_has += 1
+                            if found_light: break
+                            found_light = True
+
 
             tauSign3 = False
             if len(taus.old) > 0:
@@ -5096,6 +5128,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                         lj_gen_var += 5
 
                     out_hs[(chan, record_proc, sys_name)]['lj_gens'].Fill(lj_gen_var, record_weight)
+
+                    # and new simple categorization, to not mix it with above:
+                    # has the combination propper b and propper Ws
+                    if propper_b:
+                        combination_has = 3*(lj_b_gen == propper_b) + (lj_w1_gen == propper_w) + (lj_w2_gen == propper_w)
+                        out_hs[(chan, record_proc, sys_name)]['combination_input_have'].Fill(combination_has, jets_input_has, record_weight)
 
                     # the following two make up probability to pass VS permutations
                     out_hs[(chan, record_proc, sys_name)]['dijet_trijet_mass_N_permutations']  .Fill(len(all_masses), record_weight)
