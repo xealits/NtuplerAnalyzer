@@ -69,7 +69,8 @@ import argparse
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
     description = "extract observed and expected values in el_lj/el_lj_out or mu_lj/mu_lj_out channels",
-    #epilog = "Example:\n$ python job_submit.py ttbarleps80_eventSelection jobing/my_runAnalysis_cfg_NEWSUBMIT.templ.py bin/ttbar-leptons-80X/analysis/dsets_testing_noHLT_TTbar.json test/tests/outdir_test_v11_ttbar_v8.40/"
+    epilog = """Example:
+python numbers_for_datacard.py histosel-roots/v25p3_yields/histosel_v25p3_yields.root -y -d yield -c ctr_old_mu_presel,ctr_old_mu_sel,ctr_old_mu_sel_lj,ctr_old_mu_sel_ljout --latex"""
     )
 
 parser.add_argument("data_file",    help="full Data+MC file name")

@@ -13,9 +13,10 @@ parser = argparse.ArgumentParser(
     )
 
 parser.add_argument("data_file", help="data file name")
-parser.add_argument("-c", "--channel", type=str, default='mu_sel', help="selection channels of events to consider (can be a list of channels for shape evolution study)")
-parser.add_argument("-d", "--distr", type=str, default='Mt_lep_met_f', help="distribution name")
-parser.add_argument('-s', '--systematic',  type=str, default=None, help="systematics to include (SYS1,SYS2,...)")
+parser.add_argument("-c", "--channel",    type=str, default='mu_sel', help="selection channels of events to consider (can be a list of channels for shape evolution study)")
+parser.add_argument("-d", "--distr",      type=str, default='Mt_lep_met_f', help="distribution name")
+parser.add_argument('-s', '--systematic', type=str, default=None, help="systematics to include (SYS1,SYS2,...)")
+parser.add_argument('-p', '--process',    type=str, default=None, help="process to target, if given only the process is taken instead of sum of MC")
 
 parser.add_argument('--no-data',     action='store_true', help="don't draw data")
 parser.add_argument('-r', '--ratio', action='store_true', help="add ratio plot")
@@ -50,7 +51,10 @@ leg = TLegend(0.6,0.6, 1.,1.)
 
 # get nominal MC
 sys = 'NOMINAL'
-nom_MC = fdata.Get(args.channel + '/sums_%s/mc_sum1_%s' % (sys, sys))
+if args.process:
+    nom_MC = fdata.Get('{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(chan=args.channel, proc=args.process, sys=sys, distr=args.distr))
+else:
+    nom_MC = fdata.Get(args.channel + '/sums_%s/mc_sum1_%s' % (sys, sys))
 nom_MC.Print()
 
 #leg.AddEntry(nom_MC, "MC NOMINAL", "L")
@@ -82,7 +86,10 @@ sys_color = {'TOPPTUp': kRed,
 sys_MCs = []
 # and systematic MC-s
 for sys in sys_names:
-    sys_MC = fdata.Get(args.channel + '/sums_%s/mc_sum1_%s' % (sys, sys))
+    if args.process:
+        sys_MC = fdata.Get('{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(chan=args.channel, proc=args.process, sys=sys, distr=args.distr))
+    else:
+        sys_MC = fdata.Get(args.channel + '/sums_%s/mc_sum1_%s' % (sys, sys))
     sys_MC.Print()
     sys_MC.SetLineColor(sys_color[sys])
     leg.AddEntry(sys_MC, "MC %s" % sys, "L")
@@ -160,5 +167,5 @@ if args.ratio:
         data_rel.Divide(nom_MC)
         data_rel.Draw("same")
 
-cst.SaveAs(args.output_directory + '/MC-systs_%s_%s_%s.png' % (args.channel, args.distr, args.systematic))
+cst.SaveAs(args.output_directory + '/MC-systs_%s_%s_%s_%s.png' % (args.data_file, args.channel, args.distr, args.systematic))
 

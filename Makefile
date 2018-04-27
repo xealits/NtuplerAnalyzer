@@ -12,6 +12,7 @@ sub_proc:
 #echo foo & \
 #
 
+#make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_ab nt=v25 proc=p3
 merge_proc:
 	for d in `cat ${dtags}`; \
 	do \

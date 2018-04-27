@@ -315,7 +315,10 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
 
                h_shape = infile.Get(h_shape_path)
                histo = h_shape.Clone()
-               histo.Scale(h_init.Integral() / h_shape.Integral())
+               if h_shape.Integral() == 0:
+                   print "both = 0: %f %f" % (h_init.Integral(), h_shape.Integral())
+               else:
+                   histo.Scale(h_init.Integral() / h_shape.Integral())
            else:
                histo = h_init
 
