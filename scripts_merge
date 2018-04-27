@@ -155,6 +155,17 @@ hadd MC2016_Summer16_W4Jets_madgraph.root ../MC2016_Summer16_W4Jets_madgraph*roo
 
 
 
+hadd MC2016_Summer16_TTJets_powheg_CUETP8M2T4down.root init/MC2016_Summer16_TTJets_powheg_CUETP8M2T4down*.root  &
+hadd MC2016_Summer16_TTJets_powheg_CUETP8M2T4up.root   init/MC2016_Summer16_TTJets_powheg_CUETP8M2T4up*.root    &
+hadd MC2016_Summer16_TTJets_powheg_fsrdown.root        init/MC2016_Summer16_TTJets_powheg_fsrdown*.root         &
+hadd MC2016_Summer16_TTJets_powheg_fsrup.root          init/MC2016_Summer16_TTJets_powheg_fsrup*.root           &
+hadd MC2016_Summer16_TTJets_powheg_hdampDOWN.root      init/MC2016_Summer16_TTJets_powheg_hdampDOWN*.root       &
+hadd MC2016_Summer16_TTJets_powheg_hdampUP.root        init/MC2016_Summer16_TTJets_powheg_hdampUP*.root         &
+hadd MC2016_Summer16_TTJets_powheg_isrdown.root        init/MC2016_Summer16_TTJets_powheg_isrdown*.root         &
+hadd MC2016_Summer16_TTJets_powheg_isrup.root          init/MC2016_Summer16_TTJets_powheg_isrup*.root           &
+
+
+
 hadd merge-sets/v14/raw2/SingleMuon2016H.root /lstore/cms/olek/outdirs/v14/proc-raw/SingleMuon/Data13TeV_SingleMuon2016H_03Feb2017_ver*root
 hadd merge-sets/v14/raw2/SingleMuon2016D.root /lstore/cms/olek/outdirs/v14/proc-raw/SingleMuon/Data13TeV_SingleMuon2016D*root  &
 hadd merge-sets/v14/raw2/SingleMuon2016E.root /lstore/cms/olek/outdirs/v14/proc-raw/SingleMuon/Data13TeV_SingleMuon2016E*root  &

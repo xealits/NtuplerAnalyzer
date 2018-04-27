@@ -1,3 +1,29 @@
+
+python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_el_sel:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_el_sel:Mt_lep_met_t2,ctr_old_el_sel:Mt_lep_met_t3,ctr_old_el_sel:Mt_lep_met_t4,ctr_old_el_sel:Mt_lep_met_t5,ctr_old_el_sel:Mt_lep_met_t6 --title "" --title-x "M_{T}(e, MET)"
+
+python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_el_sel:Mt_lep_met_f -p tt_eltau --ratio-channel-distrs ctr_old_el_sel:Mt_lep_met_t2,ctr_old_el_sel:Mt_lep_met_t3,ctr_old_el_sel:Mt_lep_met_t4,ctr_old_el_sel:Mt_lep_met_t5,ctr_old_el_sel:Mt_lep_met_t6 --title "" --title-x "M_{T}(e, MET)"
+
+
+
+python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_mu_sel:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_mu_sel:Mt_lep_met_t2,ctr_old_mu_sel:Mt_lep_met_t3,ctr_old_mu_sel:Mt_lep_met_t4,ctr_old_mu_sel:Mt_lep_met_t5,ctr_old_mu_sel:Mt_lep_met_t6 --title "" --title-x "M_{T}(#mu, MET)"
+
+python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_mu_sel:Mt_lep_met_f -p tt_mutau --ratio-channel-distrs ctr_old_mu_sel:Mt_lep_met_t2,ctr_old_mu_sel:Mt_lep_met_t3,ctr_old_mu_sel:Mt_lep_met_t4,ctr_old_mu_sel:Mt_lep_met_t5,ctr_old_mu_sel:Mt_lep_met_t6 --title "" --title-x "M_{T}(#mu, MET)"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 weights:
 weight         0.95
 pu             1.05

@@ -3076,7 +3076,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				}
 
 			// THUS MC was shifted by SF jer_factor -- it got corrected and the correction has to be propagated to MET
-			full_jet_corr += jet.p4() - jet_initial_p4; // initial jet + this difference = corrected jet
 	
 			// gen jet info only for MC
 			//NT_jet_matched_genjet_p4.push_back(gen_jet_p4);
@@ -3093,6 +3092,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_jet_matching_gen_dR.push_back(match.dR);
 			LogInfo ("Demo") << "matched gen";
 			}
+
+		// propagate the jet correction to met and whatnot
+		full_jet_corr += jet.p4() - jet_initial_p4; // initial jet + this difference = corrected jet
 
 		// the default jet is fully recorrected
 		// but the corrections can be repeated offline

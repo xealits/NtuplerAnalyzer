@@ -759,7 +759,6 @@ with PDFs
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters AlphaS -m 125 -o latest_mu_impacts.json            --name MuImpacts
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
 
-
 both
 
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters AlphaS -m 125 --robustFit 1 --doInitialFit         --name BothImpacts
@@ -768,6 +767,35 @@ both
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o latest_both_impacts
 
 
+
+
+mu without updowns tt_updowns and pdfs:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters AlphaS --freezeNuisanceGroup tt_updowns,tt_th_pdf,tt_th_match,tt_th_frag -m 125 --robustFit 1 --doInitialFit         --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters AlphaS --freezeNuisanceGroup tt_updowns,tt_th_pdf,tt_th_match,tt_th_frag -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters AlphaS --freezeNuisanceGroup tt_updowns,tt_th_pdf,tt_th_match,tt_th_frag -m 125 -o latest_mu_impacts.json            --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
+
+same el:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters AlphaS --freezeNuisanceGroup tt_updowns,tt_th_pdf,tt_th_match,tt_th_frag -m 125 --robustFit 1 --doInitialFit         --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters AlphaS --freezeNuisanceGroup tt_updowns,tt_th_pdf,tt_th_match,tt_th_frag -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters AlphaS --freezeNuisanceGroup tt_updowns,tt_th_pdf,tt_th_match,tt_th_frag -m 125 -o latest_el_impacts.json            --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o latest_el_impacts
+
+mu toys
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters AlphaS --freezeNuisanceGroup tt_updowns,tt_th_pdf,tt_th_match,tt_th_frag -m 125 --robustFit 1 --doInitialFit         --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters AlphaS --freezeNuisanceGroup tt_updowns,tt_th_pdf,tt_th_match,tt_th_frag -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters AlphaS --freezeNuisanceGroup tt_updowns,tt_th_pdf,tt_th_match,tt_th_frag -m 125 -o latest_mu_impacts_toys.json            --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_toys.json -o latest_mu_impacts_toys
+
+el toys
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters AlphaS --freezeNuisanceGroup tt_updowns,tt_th_pdf,tt_th_match,tt_th_frag -m 125 --robustFit 1 --doInitialFit         --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters AlphaS --freezeNuisanceGroup tt_updowns,tt_th_pdf,tt_th_match,tt_th_frag -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters AlphaS --freezeNuisanceGroup tt_updowns,tt_th_pdf,tt_th_match,tt_th_frag -m 125 -o latest_el_impacts_toys.json            --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_toys.json -o latest_el_impacts_toys
 
 
 
