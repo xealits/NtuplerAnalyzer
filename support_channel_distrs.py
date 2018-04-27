@@ -8,14 +8,15 @@ import ctypes
 
 
 OLD_MINIAOD_JETS = False
-
 DO_W_STITCHING = False
+ALL_JETS = False
 
 logging = Logging.getLogger("common")
 
 logging.info('importing ROOT')
 import ROOT
 from ROOT import TFile, TTree, TH1D, TH2D, TLorentzVector, TVector3, gROOT, gSystem, TCanvas, TGraphAsymmErrors, TMath, TString
+from ROOT.Math import LorentzVector
 
 # the lib is needed for BTagCalibrator and Recoil corrections
 # TODO: somehow these 2 CMSSW classes should be acceptable from pyROOT on its' own without the whole lib
@@ -1883,6 +1884,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'met_prop_jets':      TH2D('%s_%s_%s_met_prop_jets'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
              'init_met':           TH1D('%s_%s_%s_init_met'   % (chan, proc, sys), '', 30, 0, 300),
              'corr_met':           TH1D('%s_%s_%s_corr_met'   % (chan, proc, sys), '', 30, 0, 300),
+             'met_objects':        TH1D('%s_%s_%s_met_objects'% (chan, proc, sys), '', 30, 0, 300),
              'Mt_lep_met_init_f':  TH1D('%s_%s_%s_Mt_lep_met_init_f' % (chan, proc, sys), '', 20, 0, 250),
              'Mt_lep_met_corr_f':  TH1D('%s_%s_%s_Mt_lep_met_corr_f' % (chan, proc, sys), '', 20, 0, 250),
              'all_sum_control':       TH1D('%s_%s_%s_all_sum_control'      % (chan, proc, sys), '', 100, 0, 100),
@@ -1936,6 +1938,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              # TODO: add rho to ntuples
              'rho':         TH1D('%s_%s_%s_rho'        % (chan, proc, sys), '', 50, 0, 50),
 
+             'njets_event': TH1D('%s_%s_%s_njets_event'% (chan, proc, sys), '', 15, 0, 15),
              'njets':       TH1D('%s_%s_%s_njets'      % (chan, proc, sys), '', 10, 0, 10),
              'njets_all':   TH1D('%s_%s_%s_njets_all'      % (chan, proc, sys), '', 10, 0, 10),
              'nRjets':      TH1D('%s_%s_%s_nRjets'     % (chan, proc, sys), '', 10, 0, 10),
@@ -4552,15 +4555,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 # PROPAGATE jet correcions
                 all_sel_jets = sel_jets.medium + sel_jets.loose + sel_jets.rest
                 all_sel_jets_taumatched = sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]
-                #all_sel_jets = all_sel_jets_taumatched
+                jets_to_prop_met = all_sel_jets_taumatched if ALL_JETS else all_sel_jets
                 # propagation of corrections of all jets
-                if all_sel_jets_taumatched:
+                if jets_to_prop_met:
                     #try:
-                    sum_jets_init = all_sel_jets_taumatched[0][0]
-                    sum_jets_corr = all_sel_jets_taumatched[0][0] * all_sel_jets_taumatched[0][1]
-                    jet_cor = all_sel_jets_taumatched[0][0] * (1. - all_sel_jets_taumatched[0][1])
+                    sum_jets_init = jets_to_prop_met[0][0]
+                    sum_jets_corr = jets_to_prop_met[0][0] * jets_to_prop_met[0][1]
+                    jet_cor       = jets_to_prop_met[0][0] * (1. - jets_to_prop_met[0][1])
                     #for jet in all_sel_jets[1:] + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
-                    for jet in all_sel_jets_taumatched[1:]:
+                    for jet in jets_to_prop_met[1:]:
                         jet_cor += jet[0] * (1. - jet[1])
                         sum_jets_init += jet[0]
                         sum_jets_corr += jet[0] * jet[1]
@@ -4576,6 +4579,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     met_y_prop += jet_cor.Y()
                     # met prop = met nom + nom - factor
                     # met prop + factor = met nom + nom
+
+                # control over "objects' met"
+                #all_sel_objects = LorentzVector(lep_p4[0].X(), lep_p4[0].Y(), lep_p4[0].Z(), lep_p4[0].T())
+                #ROOT.Math.LorentzVector('ROOT::Math::PxPyPzE4D<double>')(100.,0.,1.,200.)
+                all_sel_objects = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(0.,0.,0.,0.)
+                for lep in lep_p4:
+                    all_sel_objects += lep
+                for tau in sel_taus:
+                    all_sel_objects += tau[0] * tau[1]
+                for jet in all_sel_jets:
+                    all_sel_objects += jet[0] * jet[1]
 
                 ### and substitute the jet->tau in met p7 p9 -> 1) v25 p2_tt_jtau, 2) v25 p2_jes_recor
                 ## this works very strangely: data is shifted to high Mt?
@@ -4662,6 +4676,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['met']          .Fill(met_pt,         record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_pt']       .Fill(lep_p4[0].pt(), record_weight)
                 out_hs[(chan, record_proc, sys_name)]['yield']        .Fill(1, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_objects']  .Fill(all_sel_objects.pt(), record_weight)
 
                 # all sum kind of should find:
                 # - which level of jet/met correction is the true "synchronized" one (just technical stuff)
@@ -5033,8 +5048,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 n_medium_jets = len(sel_jets.medium) # + len(sel_jets.taumatched[0])
                 n_loose_jets  = len(sel_jets.loose)
 
-                out_hs[(chan, record_proc, sys_name)]['njets']  .Fill(len(all_sel_jets),   record_weight)
-                out_hs[(chan, record_proc, sys_name)]['njets_all']  .Fill(len(all_sel_jets) + len(sel_jets.taumatched[0]) + len(sel_jets.taumatched[1]),   record_weight)
+                out_hs[(chan, record_proc, sys_name)]['njets_event'].Fill(ev.jet_p4.size(),   record_weight)
+                out_hs[(chan, record_proc, sys_name)]['njets']      .Fill(len(all_sel_jets),  record_weight)
+                out_hs[(chan, record_proc, sys_name)]['njets_all']  .Fill(len(all_sel_jets_taumatched), record_weight)
                 out_hs[(chan, record_proc, sys_name)]['nRjets'] .Fill(n_rest_jets   , record_weight)
                 out_hs[(chan, record_proc, sys_name)]['nMbjets'].Fill(n_medium_jets , record_weight)
                 out_hs[(chan, record_proc, sys_name)]['nLbjets'].Fill(n_loose_jets  , record_weight)

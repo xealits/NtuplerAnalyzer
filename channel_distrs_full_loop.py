@@ -28,7 +28,8 @@ if __name__ == '__main__':
     #parser.add_argument("-e", "--range-max",   type=int, default=None, help="number of event to end processing")
     parser.add_argument("-i", "--input-files", nargs='+', help='files to process (each is run in a thread)')
     parser.add_argument("--old-miniaod-jets",  action='store_true', help="the option to run on pre-v20 incorectly saved jets (initial empty, save in nominal jets)")
-    parser.add_argument("--do-W-stitching",  action='store_true', help="turn ON skipping NUP events of inclusive sample")
+    parser.add_argument("--do-W-stitching",    action='store_true', help="turn ON skipping NUP events of inclusive sample")
+    parser.add_argument("--all-jets",          action='store_true', help="propagate tau-jet correction too")
 
     args = parser.parse_args()
 
@@ -71,6 +72,7 @@ if __name__ == '__main__':
         from support_channel_distrs import main # ROOT stuff is loaded here
         support_channel_distrs.OLD_MINIAOD_JETS = args.old_miniaod_jets
         support_channel_distrs.W_STITCHING = args.do_W_stitching
+        support_channel_distrs.ALL_JETS = args.all_jets
         t = threading.Thread(target=main, args=(input_filename, fout_name, args.outdir, args.channels))
         t.start()
         log_common.info('started thread on %s' % input_filename)
