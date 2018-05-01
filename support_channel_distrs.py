@@ -1888,6 +1888,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'Mt_lep_met_init_f':  TH1D('%s_%s_%s_Mt_lep_met_init_f' % (chan, proc, sys), '', 20, 0, 250),
              'Mt_lep_met_corr_f':  TH1D('%s_%s_%s_Mt_lep_met_corr_f' % (chan, proc, sys), '', 20, 0, 250),
              'all_sum_control':       TH1D('%s_%s_%s_all_sum_control'      % (chan, proc, sys), '', 100, 0, 100),
+             'tau_cor_control':       TH1D('%s_%s_%s_tau_cor_control'      % (chan, proc, sys), '', 100, 0, 100),
              'all_sum_control_init':  TH1D('%s_%s_%s_all_sum_control_init' % (chan, proc, sys), '', 100, 0, 100),
              'lep_pt_turn':TH1D('%s_%s_%s_lep_pt_turn'% (chan, proc, sys), '', 270, 23, 50),
              'lep_pt_turn_raw':TH1D('%s_%s_%s_lep_pt_turn_raw' % (chan, proc, sys), '', 40, 20, 40),
@@ -2250,11 +2251,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             # no, recalculated them
 
             met_x = ROOT.met_pt_recoilcor_x(
-                ev.met_corrected.Px(),
-                ev.met_corrected.Py(),
+                #ev.met_corrected.Px(),
+                #ev.met_corrected.Py(),
                 # RECORRECTED
-                #ev.met_init.Px(), # uncorrected type I pf met px (float)
-                #ev.met_init.Py(), # uncorrected type I pf met py (float)
+                ev.met_init.Px(), # uncorrected type I pf met px (float)
+                ev.met_init.Py(), # uncorrected type I pf met py (float)
                 ev.gen_genPx, # generator Z/W/Higgs px (float)
                 ev.gen_genPy, # generator Z/W/Higgs py (float)
                 ev.gen_visPx, # generator visible Z/W/Higgs px (float)
@@ -2264,10 +2265,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 )
 
             met_y = ROOT.met_pt_recoilcor_y(
-                ev.met_corrected.Px(),
-                ev.met_corrected.Py(),
-                #ev.met_init.Px(), # uncorrected type I pf met px (float)
-                #ev.met_init.Py(), # uncorrected type I pf met py (float)
+                #ev.met_corrected.Px(),
+                #ev.met_corrected.Py(),
+                ev.met_init.Px(), # uncorrected type I pf met px (float)
+                ev.met_init.Py(), # uncorrected type I pf met py (float)
                 ev.gen_genPx, # generator Z/W/Higgs px (float)
                 ev.gen_genPy, # generator Z/W/Higgs py (float)
                 ev.gen_visPx, # generator visible Z/W/Higgs px (float)
@@ -2281,16 +2282,20 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             #Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px(), ev.tau_p4[0].Py(), ev.pfmetcorr_ex, ev.pfmetcorr_ey)
             # TODO: tau is corrected with systematic ES
 
+        elif not isMC:
+            met_x = ev.met_slimmedMETsMuEGClean.Px()
+            met_y = ev.met_slimmedMETsMuEGClean.Py()
+
         else:
             #met_x = ev.met_corrected.Px()
             #met_y = ev.met_corrected.Py()
             # RECORRECTED
             # use miniaod met and jets, reapply corrections of the passed jets to met
-            #met_x = ev.met_init.Px()
-            #met_y = ev.met_init.Py()
+            met_x = ev.met_init.Px()
+            met_y = ev.met_init.Py()
             # NOMINAL NTUPLE CORRECTED
-            met_x = ev.met_corrected.Px()
-            met_y = ev.met_corrected.Py()
+            #met_x = ev.met_corrected.Px()
+            #met_y = ev.met_corrected.Py()
 
             #Mt_lep_met_c   = ROOT.MTlep_c(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
             #Mt_lep_met_test = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x, met_y)
@@ -2299,24 +2304,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             #Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px(), ev.tau_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
         # also
         #Mt_lep_met_d = (ev.lep_p4[0] + ev.met_corrected).Mt()
-
-
-        #met_vector = TLorentzVector(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
-        #met_vector = ROOT.Math.LorentzVector(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
-        #met_vector = ROOT.Math.LorentzVector(ROOT.Math.PxPyPzE4D(float))(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
-        #met_vector = ROOT.Math.LorentzVector(ROOT.Math.PxPyPzE4D('double'))(met_x, met_y, 0, TMath.Sqrt(met_x*met_x + met_y*met_y))
-        #d_lep_met = ev.lep_p4[0] - met_vector
-        #dphi_lep_met = d_lep_met.Phi() # ev.lep_p4[0].Phi() - met_vector.Phi()
-        #cos_dphi_lep_met = TMath.Cos(dphi_lep_met)
-        #met_pt = TMath.Sqrt(met_x*met_x + met_y*met_y)
-
-        #float MTlep_met_pt_recoilcor(float lep_px, float lep_py,
-        #        float met_px, float met_py,
-        #        float gen_genPx, float gen_genPy, float gen_visPx, float gen_visPy,
-        #        int njets)
-        #Mt_lep_met_cos = TMath.Sqrt(2*ev.lep_p4[0].pt() * met_vector.pt() * (1 - cos_dphi_lep_met))
-        #Mt_lep_met_mth = abs((ev.lep_p4[0] - met_vector).Mt())
-        #Mt_lep_met_cos_c = ROOT.transverse_mass(ev.lep_p4[0], met_vector)
 
         # from PU tests, leaving it here for now
         if not isMC:
@@ -3098,7 +3085,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             #p4 = miniaod_jets[i]
 
             # nominally corrected jets in NTuple (v28 data and all previous for MC)
-            p4 = ev.jet_p4[i]
+            #p4 = ev.jet_p4[i]
+
+            # the default miniaod objects
+            p4 = ev.jet_initial_p4[i]
 
             pfid = ev.jet_PFID[i]
 
@@ -3137,6 +3127,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
                 # jer factor is needed for the syst variation
                 jer_factor = ev.jet_jer_factor[i]
+                # and let's try the new prescription: miniaod objects + jer
+                en_factor *= jer_factor
+                # this jer is calculated on top of recorected jes, let's hope it's fine
+                # (mostly depends on eta, dependence on pt is small)
+                # and the jes variation (jes_shift used in the following)
+                # is calculated in the recorrection procedure
+                # -- let's hope it is also adequate
 
                 HF = ev.jet_hadronFlavour[i]
                 PF = ev.jet_partonFlavour[i]
@@ -4573,10 +4570,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 sum_tau_init_X = 0.
                 sum_tau_init_Y = 0.
 
+                sum_tau_corr_pt = 0.
+
                 # PROPAGATE tau and jet systematic variations to met
                 # 
                 # taus = [(p4, TES_factor, tau_pdgID)]
-                if sel_taus and 'TauES' in sys_name:
+                # nominal taus do have a factor
+                if sel_taus: # and 'TauES' in sys_name:
                     #try:
                     sum_tau_init = sel_taus[0][0]
                     sum_tau_corr = sel_taus[0][0] * sel_taus[0][1]
@@ -4590,6 +4590,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     sum_tau_corr_Y = sum_tau_corr.Py()
                     sum_tau_init_X = sum_tau_init.Px()
                     sum_tau_init_Y = sum_tau_init.Py()
+
+                    sum_tau_corr_pt = tau_cor.pt()
 
                     #except IndexError:
                     #    print len(sel_taus), type(sel_taus)
@@ -4606,7 +4608,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 all_sel_jets_taumatched = sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]
                 jets_to_prop_met = all_sel_jets_taumatched if ALL_JETS else all_sel_jets
                 # propagation of corrections of all jets
-                if jets_to_prop_met and ('JES' in sys_name or 'JER' in sys_name):
+                # nominal jets have JER factor
+                if jets_to_prop_met: # and ('JES' in sys_name or 'JER' in sys_name):
                     #try:
                     sum_jets_init = jets_to_prop_met[0][0]
                     sum_jets_corr = jets_to_prop_met[0][0] * jets_to_prop_met[0][1]
@@ -4776,6 +4779,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_init_f'] .Fill(Mt_lep_met_init,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_corr_f'] .Fill(Mt_lep_met_corr,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['all_sum_control']     .Fill(all_sum_control_pt, record_weight) # for control
+                out_hs[(chan, record_proc, sys_name)]['tau_cor_control']     .Fill(sum_tau_corr_pt, record_weight) # for control
                 out_hs[(chan, record_proc, sys_name)]['all_sum_control_init'].Fill(all_sum_control_init_pt, record_weight) # for control
                 out_hs[(chan, record_proc, sys_name)]['lep_eta'] .Fill(lep_p4[0].eta(), record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_pt_turn'].Fill(lep_p4[0].pt(),  record_weight)
