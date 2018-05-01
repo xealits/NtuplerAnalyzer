@@ -64,9 +64,9 @@ for i, fileparameter in enumerate(args.input_files):
         logging.info("missing: " + filename)
         continue
 
-    channel = process = systematic = ''
+    channel = process = systematic = distr = ''
     if opts:
-        channel, process, systematic = opts.split(',')
+        channel, process, systematic, distr = opts.split(',')
 
     if not channel:
         channel    = args.channel
@@ -74,8 +74,10 @@ for i, fileparameter in enumerate(args.input_files):
         process    = args.process
     if not systematic:
         systematic = args.systematic
+    if not distr:
+        distr = args.distr
 
-    histo_path = "{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=channel, proc=process, sys=systematic, distr=args.distr)
+    histo_path = "{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=channel, proc=process, sys=systematic, distr=distr)
 
     tfile = TFile(filename)
     logging.debug("%s" % histo_path)

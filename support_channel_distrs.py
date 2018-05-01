@@ -3132,9 +3132,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             #genmatch = 0
             if isMC:
                 # ALREADY APPLIED
-                #jer_factor = ev.jet_jer_factor[i]
                 #jes_uncorFactor = ev.jet_uncorrected_jecFactor[i]
                 #en_factor *= jer_factor * jes_uncorFactor
+
+                # jer factor is needed for the syst variation
+                jer_factor = ev.jet_jer_factor[i]
 
                 HF = ev.jet_hadronFlavour[i]
                 PF = ev.jet_partonFlavour[i]
