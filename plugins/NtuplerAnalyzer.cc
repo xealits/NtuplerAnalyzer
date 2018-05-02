@@ -2966,7 +2966,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//jet.addUserFloat("jes_correction", jes_correction);
 		// TODO: compare jet_p4 (default MiniAOD jet) and uncorrected_p4 * jes_correction <- re-corrected jet
 		NT_jet_jes_recorrection.push_back(jes_correction);
-		jet.setP4(rawJet.p4()*jes_correction);
+		jet.setP4(rawJet*jes_correction);
 		// default jets are fully corrected, the initial slimmedJet is saved
 		// the raw is saved too
 		/*
