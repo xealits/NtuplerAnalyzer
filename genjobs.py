@@ -55,6 +55,7 @@ parser.add_argument("--without-dtags", type=str, default='',
 parser.add_argument("--scheme", type=str, help="the scheme of queue as 5,5,0,15,15 for 1,2,3,4,5 nodes")
 
 parser.add_argument("--do-W-stitching", action='store_true', help="turn ON skipping NUP events of inclusive sample")
+parser.add_argument("--all-jets",       action='store_true', help="propagate corrections to met from all selected jets, including lep and tau matched")
 parser.add_argument("-d", "--debug",    action='store_true', help="DEBUG level of logging")
 
 
@@ -281,10 +282,13 @@ for dtag in requested_dtags:
 # make the jobs
 job_dir_template = args.ntupler_dir + "/{vntupler}/{dset}/Ntupler_{vntupler}_{dtag}/" #*/0000/"
 # list this dir to get the available files
+add_options = ""
 if args.do_W_stitching:
-    job_template = "python channel_distrs_full_loop.py --do-W-stitching -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ {chans} -i {job_file}   || true"
-else:
-    job_template = "python channel_distrs_full_loop.py -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ {chans} -i {job_file}   || true"
+    add_options += "--do-W-stitching "
+if args.all_jets:
+    add_options += "--all-jets "
+
+job_template = "python channel_distrs_full_loop.py " + add_options + " -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ {chans} -i {job_file}   || true"
 
 # make just flat list of jobs commands
 job_commands = []
