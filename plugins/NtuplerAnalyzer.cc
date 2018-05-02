@@ -2966,9 +2966,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//jet.addUserFloat("jes_correction", jes_correction);
 		// TODO: compare jet_p4 (default MiniAOD jet) and uncorrected_p4 * jes_correction <- re-corrected jet
 		NT_jet_jes_recorrection.push_back(jes_correction);
-		jet.setP4(jet.p4()*jes_correction);
+		jet.setP4(rawJet.p4()*jes_correction);
 		// default jets are fully corrected, the initial slimmedJet is saved
 		// the raw is saved too
+		/*
+		 * I checked this re-correction compared to initial miniaod jets
+		 * -- the are equal, the miniaod jets correction is up to date
+		 * only the JER is missing in MC.
+		 */
 
 		// jet energy scale has uncertainty
 		//totalJESUnc->setJetEta(jet.eta());
@@ -3007,6 +3012,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			jet_resolution = jet_resolution_in_pt.getResolution({{JME::Binning::JetPt, jet.pt()},
 				{JME::Binning::JetEta, jet.eta()},
 				{JME::Binning::Rho, NT_fixedGridRhoFastjetAll}});
+			// here I use the jes-corrected jet pt
+			// TODO: maybe the uncorrected jet is needed? (difference is not big)
+
 			//jer_sf = resolution_sf.getScaleFactor({{JME::Binning::JetEta, jet.eta()}}, m_systematic_variation);
 			jer_sf      = jet_resolution_sf_per_eta.getScaleFactor({{JME::Binning::JetEta, jet.eta()}}, Variation::NOMINAL);
 			jer_sf_up   = jet_resolution_sf_per_eta.getScaleFactor({{JME::Binning::JetEta, jet.eta()}}, Variation::UP);
