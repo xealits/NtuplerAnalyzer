@@ -1588,6 +1588,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_nominal),
         },
 
+        'channels_nominal_full_mu_selections' : {
+                'ctr_old_mu_presel':        (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel':           (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_lj_ss':     (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_ljout':     (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_nominal),
+        },
+
         'channels_refact_sys_lep_selections' : {
                 #'ctr_el_wjet':              (procs_el, systematic_names_pu),
                 #'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
@@ -3088,7 +3099,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             #p4 = ev.jet_p4[i]
 
             # the default miniaod objects
-            p4 = ev.jet_initial_p4[i]
+            #p4 = ev.jet_initial_p4[i]
+            p4 = ev.jet_uncorrected_p4[i]
 
             pfid = ev.jet_PFID[i]
 
@@ -3112,8 +3124,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             # But the JES is re-correction
             # Thus also * UncorFactor
             en_factor = 1.
-            #jes_factor = ev.jet_jes_recorrection[i] # ALREADY APPLIED IN NTUPLER
-            #en_factor *= jes_factor
+
+            jes_factor = ev.jet_jes_recorrection[i] # ALREADY APPLIED IN NTUPLER
+            en_factor *= jes_factor
             # the idea is to match these jets with the full_corr met
 
             HF = -1
