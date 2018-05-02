@@ -1,4 +1,42 @@
 
+python sumup_ttree_distrs.py "jet_p4[0].pt()" --histo-range 200,0,300 --cond-com "\! jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_pt_nolep_1t3j1b_v25 --output tt_jet0_pt_nolep_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+python sumup_ttree_distrs.py "jet_initial_p4[0].pt()" --histo-range 200,0,300 --cond-com "\! jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_pt_initial_nolep_1t3j1b_v25 --output tt_jet0_pt_initial_nolep_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+python sumup_ttree_distrs.py "jet_uncorrected_p4[0].pt() * jet_jes_recorrection[0] * jet_jer_factor[0]" --histo-range 200,0,300 --cond-com "\! jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_pt_recor_nolep_1t3j1b_v25 --output tt_jet0_pt_recor_nolep_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+python sumup_ttree_distrs.py "jet_uncorrected_p4[0].pt() * jet_jer_factor[0]" --histo-range 200,0,300 --cond-com "\! jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_pt_recorJER_nolep_1t3j1b_v25 --output tt_jet0_pt_recorJER_nolep_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+python sumup_ttree_distrs.py "jet_uncorrected_p4[0].pt() * jet_jes_recorrection[0]" --histo-range 200,0,300 --cond-com "\! jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_pt_recorJES_nolep_1t3j1b_v25 --output tt_jet0_pt_recorJES_nolep_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+hadd tt_jet_distrs.root tt_jet0_pt_recorJER_nolep_1t3j1b_v25.root tt_jet0_pt_recor_nolep_1t3j1b_v25.root tt_jet0_pt_initial_nolep_1t3j1b_v25.root tt_jet0_pt_nolep_1t3j1b_v25.root tt_jet0_pt_recorJES_nolep_1t3j1b_v25.root
+
+
+
+python sumup_ttree_distrs.py "jet_initial_p4[0].pt() - jet_uncorrected_p4[0].pt() * jet_jes_recorrection[0]" --histo-range 200,-100,100 --cond-com "\! jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_diff_initJES_nolep_1t3j1b_v25 --output tt_jet0_diff_initJES_nolep_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+python sumup_ttree_distrs.py "jet_uncorrected_jecFactor[0] * jet_jes_recorrection[0]" --histo-range 200,-100,100 --cond-com "\! jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_uncorReJES_nolep_1t3j1b_v25 --output tt_jet0_uncorReJES_nolep_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+python sumup_ttree_distrs.py "jet_initial_p4[0].pt() - jet_uncorrected_p4[0].pt() * jet_jes_recorrection[0]" --histo-range 200,-100,100 --cond-com "\! jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name data_jet0_diff_initJES_nolep_1t3j1b_v25 --output data_jet0_diff_initJES_nolep_1t3j1b_v25.root gstore_outdirs/v25/SingleMuon/Ntupler_v25_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+
+
+
+python sumup_ttree_distrs.py "jet_uncorrected_p4[0].pt()" --histo-range 200,0,300 --cond-com "\! jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_pt_uncor_nolep_1t3j1b_v25 --output tt_jet0_pt_uncor_nolep_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+python sumup_ttree_distrs.py "jet_initial_p4[0].pt() * jet_uncorrected_jecFactor[0]" --histo-range 200,0,300 --cond-com "\! jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_pt_uncor2_nolep_1t3j1b_v25 --output tt_jet0_pt_uncor2_nolep_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+hadd tt_jets_uncor.root tt_jet0_pt_uncor_nolep_1t3j1b_v25.root tt_jet0_pt_uncor2_nolep_1t3j1b_v25.root
+
+
+
+
+
+
+
+
+
+
 python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_el_sel:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_el_sel:Mt_lep_met_t2,ctr_old_el_sel:Mt_lep_met_t3,ctr_old_el_sel:Mt_lep_met_t4,ctr_old_el_sel:Mt_lep_met_t5,ctr_old_el_sel:Mt_lep_met_t6 --title "" --title-x "M_{T}(e, MET)"
 
 python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_el_sel:Mt_lep_met_f -p tt_eltau --ratio-channel-distrs ctr_old_el_sel:Mt_lep_met_t2,ctr_old_el_sel:Mt_lep_met_t3,ctr_old_el_sel:Mt_lep_met_t4,ctr_old_el_sel:Mt_lep_met_t5,ctr_old_el_sel:Mt_lep_met_t6 --title "" --title-x "M_{T}(e, MET)"
@@ -8,14 +46,6 @@ python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_el_sel:Mt_lep_met_f -p tt_
 python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_mu_sel:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_mu_sel:Mt_lep_met_t2,ctr_old_mu_sel:Mt_lep_met_t3,ctr_old_mu_sel:Mt_lep_met_t4,ctr_old_mu_sel:Mt_lep_met_t5,ctr_old_mu_sel:Mt_lep_met_t6 --title "" --title-x "M_{T}(#mu, MET)"
 
 python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_mu_sel:Mt_lep_met_f -p tt_mutau --ratio-channel-distrs ctr_old_mu_sel:Mt_lep_met_t2,ctr_old_mu_sel:Mt_lep_met_t3,ctr_old_mu_sel:Mt_lep_met_t4,ctr_old_mu_sel:Mt_lep_met_t5,ctr_old_mu_sel:Mt_lep_met_t6 --title "" --title-x "M_{T}(#mu, MET)"
-
-
-
-
-
-
-
-
 
 
 
