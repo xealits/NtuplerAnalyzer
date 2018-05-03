@@ -5355,8 +5355,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
 
 #def main(input_dir, dtag, outdir, range_min, range_max):
-def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=20263.3, lumi_gh=16518.588):
-    '''main(input_filename, outdir, range_min, range_max, lumi_bcdef=20263.3, lumi_gh=16518.588)
+def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19252.03, lumi_gh=16290.02):
+    '''main(input_filename, outdir, range_min, range_max, lumi_bcdef=19252.03, lumi_gh=16290.02)
 
     lumi defaults are from _full_ golden json for muon
     -- the bad lumis don't reduce it that much, should not affect the ratio too much

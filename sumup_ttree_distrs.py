@@ -1,6 +1,6 @@
 import argparse
 import logging
-from os.path import isfile
+from os.path import isfile, basename
 
 
 
@@ -20,8 +20,9 @@ parser.add_argument('--histo-color', type=str, default=None, help='optional rgb 
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 parser.add_argument("--output", type=str, default="output.root", help="filename for output")
 
-parser.add_argument("--per-weight", action='store_true', help="normalize by event weight of datasets")
-parser.add_argument("--scan",       action='store_true', help="also scan events ant print out")
+parser.add_argument("--per-weight",  action='store_true', help="normalize by event weight of datasets")
+parser.add_argument("--scan",        action='store_true', help="also scan events ant print out")
+parser.add_argument("--get-maximum", action='store_true', help="just find maxima on the draw_com")
 
 parser.add_argument('input_files', nargs='+', help="""the files to sum up, passed by shell, as:
 
@@ -89,6 +90,9 @@ logging.debug("cond: " + args.cond_com)
 out_histo = None
 weight_counter = None
 
+if args.get_maximum:
+   maximum = -1111111.
+
 for filename in input_files:
     if not isfile(filename):
         logging.info("missing: " + filename)
@@ -102,28 +106,33 @@ for filename in input_files:
     # Draw the file and sum up
     # 
     # TOFIX: without explicit range the histos won't add up
-    ttree.Draw(draw_command,  args.cond_com)
+    if args.get_maximum:
+        m = ttree.GetMaximum(args.draw_com)
+        print "%30s %f" % (basename(filename), m)
+        maximum = max(m, maximum)
+    else:
+        ttree.Draw(draw_command,  args.cond_com)
+        histo = ttree.GetHistogram()
+        histo.SetDirectory(0)
+
+        if args.per_weight:
+            wcounter = tfile.Get('ntupler/weight_counter')
+            if not weight_counter:
+                weight_counter = wcounter
+                weight_counter.SetDirectory(0)
+                weight_counter.SetName("sumup_weight_counter")
+            else:
+                weight_counter.Add(wcounter)
+
+        if not out_histo:
+            out_histo = histo
+            out_histo.SetName(args.histo_name)
+        else:
+            out_histo.Add(histo)
+
     if args.scan:
         print filename
         ttree.Scan(args.draw_com, args.cond_com)
-
-    histo = ttree.GetHistogram()
-    histo.SetDirectory(0)
-
-    if args.per_weight:
-        wcounter = tfile.Get('ntupler/weight_counter')
-        if not weight_counter:
-            weight_counter = wcounter
-            weight_counter.SetDirectory(0)
-            weight_counter.SetName("sumup_weight_counter")
-        else:
-            weight_counter.Add(wcounter)
-
-    if not out_histo:
-        out_histo = histo
-        out_histo.SetName(args.histo_name)
-    else:
-        out_histo.Add(histo)
 
     tfile.Close()
 
@@ -134,6 +143,9 @@ if args.per_weight:
 if args.histo_color:
     out_histo.SetLineColor(rgb(*(int(i) for i in args.histo_color.split(','))))
 
+
+if args.get_maximum:
+   print "Max:", maximum
 
 ''' no legend for now
 leg = TLegend(0.5, 0.5, 0.9, 0.9)
