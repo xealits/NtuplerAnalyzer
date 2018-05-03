@@ -2316,6 +2316,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # also
         #Mt_lep_met_d = (ev.lep_p4[0] + ev.met_corrected).Mt()
 
+        proc_met         = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
+        proc_met_JERUp   = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
+        proc_met_JERDown = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
+        proc_met_JESUp   = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
+        proc_met_JESDown = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
+
         # from PU tests, leaving it here for now
         if not isMC:
             weight_pu_sum = 1.
@@ -3079,6 +3085,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # transition to v20-v21
         #miniaod_jets = ev.jet_p4 if OLD_MINIAOD_JETS else ev.jet_initial_p4
 
+        # MC jets are corrected for JER, which is propagated to met
+        #jet_cor
+
         for i in xrange(ev.jet_p4.size()):
             # discard jets if they match to lepton
             # TODO: turn it on in next NT
@@ -3147,6 +3156,22 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 # and the jes variation (jes_shift used in the following)
                 # is calculated in the recorrection procedure
                 # -- let's hope it is also adequate
+
+                # propagate the correction to met
+                proc_met -= p4 * (en_factor - 1.)
+
+                # and with systematic variations
+                if with_JER_sys:
+                    #jer_factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
+                    jer_up, jer_down = ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
+                    proc_met_JERUp   -= p4 * (jer_up - 1.)
+                    proc_met_JERDown -= p4 * (jer_down - 1.)
+
+                if with_JES_sys:
+                    #jes_shift = ev.jet_jes_correction_relShift[i]
+                    jes_shift = ev.jet_jes_uncertainty[i]
+                    proc_met_JESUp   -= p4 * (en_factor*(1 + jes_shift) - 1.)
+                    proc_met_JESDown -= p4 * (en_factor*(1 - jes_shift) - 1.)
 
                 HF = ev.jet_hadronFlavour[i]
                 PF = ev.jet_partonFlavour[i]
@@ -3910,19 +3935,19 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         syst_weights = {} # {'NOMINAL': syst_weights_nominal}
         # data and tt systematic datasets have all nominal systematic variations -- they are a systematic themselves
         if isTT_systematic:
-            syst_objects = {isTT_systematic: [jets_nom, taus_nom]}
+            syst_objects = {isTT_systematic: [jets_nom, taus_nom, proc_met]}
         elif not isMC:
-            syst_objects = {'NOMINAL': [jets_nom, taus_nom]}
+            syst_objects = {'NOMINAL': [jets_nom, taus_nom, proc_met]}
         elif isMC:
-            syst_objects = {'NOMINAL'  : [jets_nom,     taus_nom,    ],
-                           'JESUp'     : [jets_JESUp,   taus_nom,    ],
-                           'JESDown'   : [jets_JESDown, taus_nom,    ],
-                           'JERUp'     : [jets_JERUp,   taus_nom,    ],
-                           'JERDown'   : [jets_JERDown, taus_nom,    ],
-                           'TauESUp'   : [jets_nom,     taus_ESUp  , ],
-                           'TauESDown' : [jets_nom,     taus_ESDown, ],
-                           'bSFUp'     : [jets_bUp,     taus_nom,    ],
-                           'bSFDown'   : [jets_bDown,   taus_nom,    ],
+            syst_objects = {'NOMINAL'  : [jets_nom,     taus_nom,    proc_met    ],
+                           'JESUp'     : [jets_JESUp,   taus_nom,    proc_met_JESUp   ],
+                           'JESDown'   : [jets_JESDown, taus_nom,    proc_met_JESDown ],
+                           'JERUp'     : [jets_JERUp,   taus_nom,    proc_met_JERUp   ],
+                           'JERDown'   : [jets_JERDown, taus_nom,    proc_met_JERDown ],
+                           'TauESUp'   : [jets_nom,     taus_ESUp  , proc_met ],
+                           'TauESDown' : [jets_nom,     taus_ESDown, proc_met ],
+                           'bSFUp'     : [jets_bUp,     taus_nom,    proc_met ],
+                           'bSFDown'   : [jets_bDown,   taus_nom,    proc_met ],
                            }
             syst_weights.update({
                            'LEPUp'     : [weight_lep_Up,   weight_pu,    1, 1.],
@@ -3973,7 +3998,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
         control_counters.Fill(53)
 
-        for sys_i, (sys_name, (jets, taus)) in enumerate(syst_objects.items()):
+        for sys_i, (sys_name, (jets, taus, proc_met)) in enumerate(syst_objects.items()):
             #control_counters.Fill(4 + sys_i)
             '''
             1) for each variation of objects check if which channels pass
@@ -4585,14 +4610,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
                 # propagation of corrections to met
 
-                met_x_prop_taus = met_x
-                met_y_prop_taus = met_y
+                met_x_prop_taus = proc_met.Px() #met_x
+                met_y_prop_taus = proc_met.Py() #met_y
 
-                met_x_prop_jets = met_x
-                met_y_prop_jets = met_y
+                met_x_prop_jets = proc_met.Px() # met_x
+                met_y_prop_jets = proc_met.Py() # met_y
 
-                met_x_prop = met_x
-                met_y_prop = met_y
+                met_x_prop = proc_met.Px() # met_x
+                met_y_prop = proc_met.Py() # met_y
 
                 # visible particles + met sum control
                 sum_jets_corr_X = 0.
@@ -4642,30 +4667,31 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 all_sel_jets = sel_jets.medium + sel_jets.loose + sel_jets.rest
                 all_sel_jets_taumatched = sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]
                 jets_to_prop_met = sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1] + sel_jets.lepmatched if ALL_JETS else all_sel_jets
-                # propagation of corrections of all jets
-                # nominal jets have JER factor
-                if isMC and jets_to_prop_met: # and ('JES' in sys_name or 'JER' in sys_name):
-                    #try:
-                    sum_jets_init = jets_to_prop_met[0][0]
-                    sum_jets_corr = jets_to_prop_met[0][0] * jets_to_prop_met[0][1]
-                    jet_cor       = jets_to_prop_met[0][0] * (1. - jets_to_prop_met[0][1])
-                    #for jet in all_sel_jets[1:] + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
-                    for jet in jets_to_prop_met[1:]:
-                        jet_cor += jet[0] * (1. - jet[1])
-                        sum_jets_init += jet[0]
-                        sum_jets_corr += jet[0] * jet[1]
+                # propagate above
+                ## propagation of corrections of all jets
+                ## nominal jets have JER factor
+                #if isMC and jets_to_prop_met: # and ('JES' in sys_name or 'JER' in sys_name):
+                #    #try:
+                #    sum_jets_init = jets_to_prop_met[0][0]
+                #    sum_jets_corr = jets_to_prop_met[0][0] * jets_to_prop_met[0][1]
+                #    jet_cor       = jets_to_prop_met[0][0] * (1. - jets_to_prop_met[0][1])
+                #    #for jet in all_sel_jets[1:] + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
+                #    for jet in jets_to_prop_met[1:]:
+                #        jet_cor += jet[0] * (1. - jet[1])
+                #        sum_jets_init += jet[0]
+                #        sum_jets_corr += jet[0] * jet[1]
 
-                    sum_jets_corr_X = sum_jets_corr.Px()
-                    sum_jets_corr_Y = sum_jets_corr.Py()
-                    sum_jets_init_X = sum_jets_init.Px()
-                    sum_jets_init_Y = sum_jets_init.Py()
+                #    sum_jets_corr_X = sum_jets_corr.Px()
+                #    sum_jets_corr_Y = sum_jets_corr.Py()
+                #    sum_jets_init_X = sum_jets_init.Px()
+                #    sum_jets_init_Y = sum_jets_init.Py()
 
-                    met_x_prop_jets += jet_cor.X()
-                    met_y_prop_jets += jet_cor.Y()
-                    met_x_prop += jet_cor.X()
-                    met_y_prop += jet_cor.Y()
-                    # met prop = met nom + nom - factor
-                    # met prop + factor = met nom + nom
+                #    met_x_prop_jets += jet_cor.X()
+                #    met_y_prop_jets += jet_cor.Y()
+                #    met_x_prop += jet_cor.X()
+                #    met_y_prop += jet_cor.Y()
+                #    # met prop = met nom + nom - factor
+                #    # met prop + factor = met nom + nom
 
                 # control over "objects' met"
                 #all_sel_objects = LorentzVector(lep_p4[0].X(), lep_p4[0].Y(), lep_p4[0].Z(), lep_p4[0].T())
