@@ -5182,8 +5182,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                             m2 = (ev.tau_SV_fit_track_OS_p4[tau_refit_index] + ev.tau_SV_fit_track_SS2_p4[tau_refit_index]).mass()
                             out_hs[(chan, record_proc, sys_name)]['tau_dalitzes'].Fill(m1, m2, record_weight)
                         except IndexError:
-                            print "IndexError: %d, (%d, %d, %d, %d)" % (tau_refit_index, ev.tau_SV_fit_track_OS_p4.size(), ev.tau_SV_fit_track_SS1_p4.size(), ev.tau_SV_fit_track_SS2_p4.size(), ev.tau_p4.size())
-                            continue
+                            logger.write("IndexError  : %d, (%d, %d, %d, %d)" % (tau_refit_index, ev.tau_SV_fit_track_OS_p4.size(), ev.tau_SV_fit_track_SS1_p4.size(), ev.tau_SV_fit_track_SS2_p4.size(), ev.tau_p4.size()))
+                            logger.write("IndexError2 : %f, %f, %f, (%d, %d)" % (tau_pt, tau_eta, corrected_tau.phi(), ev.indexevents, iev))
+                            #continue
 
                         # dR matched jet
                         tau_jet_index   = ev.tau_dR_matched_jet[tau_index]

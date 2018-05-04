@@ -17,7 +17,8 @@ parser.add_argument("-p", "--process", type=str, default='tt_lj', help="process"
 parser.add_argument('-s', '--systematic',  type=str, default='NOMINAL', help="systematic")
 parser.add_argument('-d', '--distr',  type=str, default='Mt_lep_met_f', help="distr")
 parser.add_argument('--logy',     action='store_true', help="log Y")
-parser.add_argument('--no-norm',  action='store_true', help="don't normalize to 1")
+parser.add_argument('--no-norm',  action='store_true', help="don't normalize each histo to 1")
+parser.add_argument('--norm-formulas',     action='store_true', help="normalize the formulas of histos to 1")
 parser.add_argument("--y-range",     type=str,      help="set Y range as `ymin,ymax`")
 parser.add_argument("--x-title",     type=str,      help="title of X axis")
 
@@ -128,7 +129,8 @@ else:
     import re
     drawn = False
     form_histos = []
-    for subform in args.formula.split(':'): # sub-formulas
+
+    for form_i, subform in enumerate(args.formula.split(':')): # sub-formulas
         # ' number  nick ' pairs
         logging.debug("subform " + subform)
         nicks = [nick for nick in histos.keys() if nick in subform]
@@ -147,18 +149,24 @@ else:
 
         logging.debug(nick_pairs)
 
-        # normalize the histo
-        if not args.no_norm:
-            histo.Scale(1./histo.Integral())
+        ## normalize the histo
+        #if not args.no_norm:
+        #    histo.Scale(1./histo.Integral())
 
         # construct the histo of the subform
         factor, nick = nick_pairs[0]
-        histo = histos[nick]
+        histo = histos[nick].Clone()
+        histo.SetName("formula%d" % form_i)
+        histo.SetDirectory(0)
         histo.Scale(factor)
         for factor, nick in nick_pairs[1:]:
-            h = histos[nick]
+            # not sure if pyroot can do h += h2*factor correctly, without mutation
+            h = histos[nick].Clone()
             h.Scale(factor)
             histo.Add(h)
+
+        if args.norm_formulas:
+            histo.Scale(1./histo.Integral())
 
         logging.debug("histo %20s %f" % (nick, histo.Integral()))
 
