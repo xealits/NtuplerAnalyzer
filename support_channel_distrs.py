@@ -192,15 +192,21 @@ print type(muon_effs_tracking_BCDEF_graph)
 
 muon_effs_id_BCDEF_file  = TFile(muon_effs_dirname + "/2016_23Sep_MuonID_EfficienciesAndSF_BCDEF.root" )
 muon_effs_id_GH_file     = TFile(muon_effs_dirname + "/2016_23Sep_MuonID_EfficienciesAndSF_GH.root" )
-muon_effs_id_BCDEF_histo = muon_effs_id_BCDEF_file.Get("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta").Get("pt_abseta_ratio")
-muon_effs_id_GH_histo    = muon_effs_id_GH_file   .Get("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta").Get("pt_abseta_ratio")
+
+muon_effs_id_BCDEF_histo     = muon_effs_id_BCDEF_file.Get("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta").Get("pt_abseta_ratio")
+muon_effs_id_GH_histo        = muon_effs_id_GH_file   .Get("MC_NUM_TightID_DEN_genTracks_PAR_pt_eta").Get("pt_abseta_ratio")
+muon_effs_id_vtx_BCDEF_histo = muon_effs_id_BCDEF_file.Get("MC_NUM_TightID_DEN_genTracks_PAR_vtx")   .Get("tag_nVertices_ratio")
+muon_effs_id_vtx_GH_histo    = muon_effs_id_GH_file   .Get("MC_NUM_TightID_DEN_genTracks_PAR_vtx")   .Get("tag_nVertices_ratio")
 
 print type(muon_effs_id_BCDEF_histo)
 
 muon_effs_iso_BCDEF_file  = TFile(muon_effs_dirname + "/2016_23Sep_MuonISO_EfficienciesAndSF_BCDEF.root" )
 muon_effs_iso_GH_file     = TFile(muon_effs_dirname + "/2016_23Sep_MuonISO_EfficienciesAndSF_GH.root" )
-muon_effs_iso_BCDEF_histo = muon_effs_iso_BCDEF_file.Get("TightISO_TightID_pt_eta").Get("pt_abseta_ratio")
-muon_effs_iso_GH_histo    = muon_effs_iso_GH_file   .Get("TightISO_TightID_pt_eta").Get("pt_abseta_ratio")
+
+muon_effs_iso_BCDEF_histo     = muon_effs_iso_BCDEF_file.Get("TightISO_TightID_pt_eta").Get("pt_abseta_ratio")
+muon_effs_iso_GH_histo        = muon_effs_iso_GH_file   .Get("TightISO_TightID_pt_eta").Get("pt_abseta_ratio")
+muon_effs_iso_vtx_BCDEF_histo = muon_effs_iso_BCDEF_file.Get("TightISO_TightID_vtx").Get("tag_nVertices_ratio")
+muon_effs_iso_vtx_GH_histo    = muon_effs_iso_GH_file   .Get("TightISO_TightID_vtx").Get("tag_nVertices_ratio")
 
 print type(muon_effs_iso_BCDEF_histo)
 
@@ -299,6 +305,10 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     #h_weight_mu_idd_bcdef_pt .Fill(bin_x)
     #h_weight_mu_idd_bcdef_eta.Fill(bin_y)
 
+    # and add vtx ID SF
+    bcdef_weight_id     *= muon_effs_id_vtx_BCDEF_histo.GetBinContent (muon_effs_id_vtx_BCDEF_histo.FindBin(vtx))
+    #bcdef_weight_id_unc = muon_effs_id_vtx_BCDEF_histo.GetBinError   (id_bin) # TODO not adding the uncertainty yet
+
     # these too:
     if   pt < muon_effs_iso_BCDEF_histo_min_x:
       bin_x = muon_effs_iso_BCDEF_histo_min_x + 0.01
@@ -317,6 +327,9 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     #bin_x = (pt < muon_effs_iso_BCDEF_histo->GetXaxis()->GetXmax()      ? pt : muon_effs_iso_BCDEF_histo->GetXaxis()->GetXmax() - 1);
     #bin_y = (abs_eta < muon_effs_iso_BCDEF_histo->GetYaxis()->GetXmax() ? abs_eta : muon_effs_iso_BCDEF_histo->GetYaxis()->GetXmax() - 1);
     #bcdef_weight_iso = muon_effs_iso_BCDEF_histo->GetBinContent (muon_effs_iso_BCDEF_histo->FindBin(bin_x, bin_y));
+
+    # and vtx
+    bcdef_weight_iso     *= muon_effs_iso_vtx_BCDEF_histo.GetBinContent (muon_effs_iso_vtx_BCDEF_histo.FindBin(vtx))
 
     #fill_1d(string("weight_muon_effs_BCDEF_trk"),  200, 0., 1.1,   bcdef_weight_trk, 1);
     #fill_1d(string("weight_muon_effs_BCDEF_id"),   200, 0., 1.1,   bcdef_weight_id,  1);
@@ -343,6 +356,8 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     #h_weight_mu_idd_gh_pt .Fill(bin_x)
     #h_weight_mu_idd_gh_eta.Fill(bin_y)
 
+    gh_weight_id     *= muon_effs_id_vtx_GH_histo.GetBinContent (muon_effs_id_vtx_GH_histo.FindBin(vtx))
+
     # these too:
     if   pt < muon_effs_iso_GH_histo_min_x:
       bin_x = muon_effs_iso_GH_histo_min_x + 0.01
@@ -357,6 +372,8 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     gh_weight_iso_unc = muon_effs_iso_GH_histo.GetBinError   (iso_bin)
     #h_weight_mu_iso_gh_pt .Fill(bin_x)
     #h_weight_mu_iso_gh_eta.Fill(bin_y)
+
+    gh_weight_iso     *= muon_effs_iso_vtx_GH_histo.GetBinContent (muon_effs_iso_vtx_GH_histo.FindBin(vtx))
 
     return (bcdef_weight_trk, bcdef_weight_trk_vtx_gen, bcdef_weight_trk_vtx, (bcdef_weight_id, bcdef_weight_id_unc), (bcdef_weight_iso, bcdef_weight_iso_unc)), \
            (gh_weight_trk,    gh_weight_trk_vtx_gen, gh_weight_trk_vtx, (gh_weight_id, gh_weight_id_unc), (gh_weight_iso, gh_weight_iso_unc))
@@ -1591,6 +1608,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         'channels_nominal_full_mu_selections' : {
                 'ctr_old_mu_presel':        (procs_mu, systematic_names_nominal),
                 'ctr_old_mu_presel_ss':     (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_presel2b':      (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_presel2b_ss':   (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_selVloose':     (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_selVloose_ss':  (procs_mu, systematic_names_nominal),
                 'ctr_old_mu_sel':           (procs_mu, systematic_names_nominal),
                 'ctr_old_mu_sel_ss':        (procs_mu, systematic_names_nominal),
                 'ctr_old_mu_sel_lj':        (procs_mu, systematic_names_nominal),
@@ -2071,7 +2092,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
     out_hs = OrderedDict([format_distrs(chan, proc, sys)
          for chan, ((procs, _), systs) in selected_channels.items() for proc in procs for sys in systs if sys != 'PDF_TRIGGER'])
 
-    print "done non-PDF systs"
+    print "passed non-PDF systs"
     # add pdf uncertainties where requiested
     def pdf_sys_name_up(number):
         return 'PDFCT14n%dUp' % i
@@ -2081,6 +2102,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
     if with_PDF_sys:
         #pdf_sys_names_Up   = ['PDFCT14n%dUp'   % i for i in range(1,57)]
         #pdf_sys_names_Down = ['PDFCT14n%dDown' % i for i in range(1,57)]
+        print "making PDF systs"
         for chan, ((procs, _), systs) in selected_channels.items():
           for proc in procs:
             for sys in systs:
@@ -2090,7 +2112,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 # for 56 CT14 (not nominal) members
                 for i in range(1,57):
                     out_hs.update(OrderedDict([format_distrs(chan, proc, sys_name) for sys_name in ('PDFCT14n%dUp' % i, 'PDFCT14n%dDown' % i)]))
-    print "done PDF systs"
+    print "passed PDF systs"
 
     # strange, getting PyROOT_NoneObjects from these after output
     for _, histos in out_hs.items():
@@ -2251,7 +2273,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_elmu or pass_elmu_el # passes_optimized #
+        event_passes = pass_mu # pass_elmu or pass_elmu_el # passes_optimized #
 
         if not event_passes: continue
         control_counters.Fill(51)
@@ -4102,6 +4124,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             # separate b and tau tags
             old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
 
+            pass_2b = len(jets.old.medium) > 1
+
             old_jet_sel_alliso = len(jets.old_alliso.medium) > 0 and (len(jets.old_alliso.taumatched[0]) + len(jets.old_alliso.taumatched[1]) + len(jets.old_alliso.medium) + len(jets.old_alliso.loose) + len(jets.old_alliso.rest)) > 2
 
             if old_jet_sel:
@@ -4434,6 +4458,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     passed_channels.append(('ctr_old_mu_presel', sel_b_weight, leps.iso, jets.old, taus.presel))
                 else:
                     passed_channels.append(('ctr_old_mu_presel_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
+
+            if pass_old_mu_presel and pass_2b:
+                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
+                sel_b_weight = weight_bSF_old
+                if presel_os:
+                    passed_channels.append(('ctr_old_mu_presel2b', sel_b_weight, leps.iso, jets.old, taus.presel))
+                else:
+                    passed_channels.append(('ctr_old_mu_presel2b_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
 
             # presel alliso
             if pass_old_mu_presel_alliso:
