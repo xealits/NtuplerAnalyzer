@@ -1898,11 +1898,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'init_met':           TH1D('%s_%s_%s_init_met'   % (chan, proc, sys), '', 30, 0, 300),
              'corr_met':           TH1D('%s_%s_%s_corr_met'   % (chan, proc, sys), '', 30, 0, 300),
              'met_objects':        TH1D('%s_%s_%s_met_objects'% (chan, proc, sys), '', 30, 0, 300),
+             'met_lep_phi':        TH1D('%s_%s_%s_met_lep_phi'% (chan, proc, sys), '', 30, -3.2, 3.2),
+             'met_cancelation':    TH1D('%s_%s_%s_met_cancelation'% (chan, proc, sys), '', 30, 0, 30),
              'Mt_lep_met_init_f':  TH1D('%s_%s_%s_Mt_lep_met_init_f' % (chan, proc, sys), '', 20, 0, 250),
              'Mt_lep_met_corr_f':  TH1D('%s_%s_%s_Mt_lep_met_corr_f' % (chan, proc, sys), '', 20, 0, 250),
-             'all_sum_control':       TH1D('%s_%s_%s_all_sum_control'      % (chan, proc, sys), '', 100, 0, 100),
-             'tau_cor_control':       TH1D('%s_%s_%s_tau_cor_control'      % (chan, proc, sys), '', 100, 0, 100),
-             'all_sum_control_init':  TH1D('%s_%s_%s_all_sum_control_init' % (chan, proc, sys), '', 100, 0, 100),
+             'all_sum_control':       TH1D('%s_%s_%s_all_sum_control'      % (chan, proc, sys), '', 50, 0, 200),
+             'all_sum_control_init':  TH1D('%s_%s_%s_all_sum_control_init' % (chan, proc, sys), '', 50, 0, 200),
+             'tau_cor_control':       TH1D('%s_%s_%s_tau_cor_control'      % (chan, proc, sys), '', 20, 0, 5),
              'lep_pt_turn':TH1D('%s_%s_%s_lep_pt_turn'% (chan, proc, sys), '', 270, 23, 50),
              'lep_pt_turn_raw':TH1D('%s_%s_%s_lep_pt_turn_raw' % (chan, proc, sys), '', 40, 20, 40),
 
@@ -4783,6 +4785,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 met_pt_jets = TMath.Sqrt(met_x_prop_jets*met_x_prop_jets + met_y_prop_jets*met_y_prop_jets)
                 met_pt_init = TMath.Sqrt(met_x*met_x + met_y*met_y)
 
+                met_cancellation_x = met_x_prop + all_sel_objects.Px()
+                met_cancellation_y = met_y_prop + all_sel_objects.Py()
+                met_cancelation = TMath.Sqrt(met_cancellation_x*met_cancellation_x + met_cancellation_y*met_cancellation_y)
+
                 # SPECIAL block for weight-based systematics:
                 # in NOMINAL objects
                 # check which syst_weights are requested for the channel
@@ -4838,6 +4844,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['lep_pt']       .Fill(lep_p4[0].pt(), record_weight)
                 out_hs[(chan, record_proc, sys_name)]['yield']        .Fill(1, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_objects']  .Fill(all_sel_objects.pt(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_cancelation']  .Fill(met_cancelation, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_lep_phi']  .Fill((proc_met - lep_p4[0]).Phi(), record_weight)
 
                 # all sum kind of should find:
                 # - which level of jet/met correction is the true "synchronized" one (just technical stuff)
