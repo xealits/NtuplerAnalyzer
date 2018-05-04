@@ -1677,7 +1677,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
         'channels_control_regions_elmu' : {
                 'ctr_mu_tt_em':             (procs_elmu, systematic_names_pu_toppt),
-                'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_pu_toppt), # for the ratio
+                'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_pu_toppt),
+                'ctr_el_tt_em':             (procs_elmu, systematic_names_pu_toppt),
+                'ctr_el_tt_em_close':       (procs_elmu, systematic_names_pu_toppt),
         }
 
     }
@@ -2213,6 +2215,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
 
+        pass_elmu_el = ev.leps_ID == -11*13 and ev.HLT_el and ev.no_iso_veto_leps and \
+            (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 11 else ev.lep_matched_HLT[1]) and \
+            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
+            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
+
         pass_mumu = ev.leps_ID == -13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.15 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.15
@@ -2242,7 +2249,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = passes_optimized # pass_elmu #
+        event_passes = pass_elmu or pass_elmu_el # passes_optimized #
 
         if not event_passes: continue
         control_counters.Fill(51)
@@ -2591,7 +2598,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_alliso_p4[mu_n].eta()), ev.lep_alliso_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
                 (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_alliso_p4[mu_n].eta()), ev.lep_alliso_p4[mu_n].pt())
                 el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
-                el_trg_sf              = lepton_electron_trigger_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
+                #el_trg_sf              = lepton_electron_trigger_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
                 #weight_lep_Up   *= weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 #weight_lep_Down *= weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
                 #weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
@@ -2604,13 +2611,42 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 weight_lep_Down = weight * (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
                                                ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
 
-                weight_lep_Up   *= weight * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
-                weight_lep_Down *= weight * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+                weight_lep_Up   *= (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
+                weight_lep_Down *= (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
 
                 weight *= el_sfs_reco[0] * el_sfs_id[0]
 
                 weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
                           ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+
+            if pass_elmu_el:
+                # find which lepton is mu and which is el
+                mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
+                mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_alliso_p4[mu_n].eta()), ev.lep_alliso_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
+                #(mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_alliso_p4[mu_n].eta()), ev.lep_alliso_p4[mu_n].pt())
+                el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
+                el_trg_sf              = lepton_electron_trigger_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
+                #weight_lep_Up   *= weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
+                #weight_lep_Down *= weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+                #weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+
+                # w.o. mu trig
+                mu_b_trk = mu_sfs_b[0] * mu_sfs_b[1]
+                mu_h_trk = mu_sfs_h[0] * mu_sfs_h[1]
+
+                weight_lep_Up   = weight * (ratio_bcdef * mu_b_trk * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
+                                               ratio_gh * mu_h_trk * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
+                weight_lep_Down = weight * (ratio_bcdef * mu_b_trk * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
+                                               ratio_gh * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
+
+                weight_lep_Up   *= (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
+                weight_lep_Down *= (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+
+                weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+
+                weight *= ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                          ratio_gh    * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+
 
 
             if (pass_el_all or pass_el or pass_elel) and isMC:
@@ -4033,6 +4069,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             if pass_elmu:
                 control_counters.Fill(103)
 
+            if pass_elmu_el:
+                control_counters.Fill(104)
+
             if pass_mu_all:
                 control_counters.Fill(105)
 
@@ -4101,6 +4140,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             pass_old_el_sel_Vloose_alliso = pass_el_all and old_jet_sel_alliso and len(taus.oldVloose) > 0
 
             pass_elmu_close = pass_elmu and (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1
+
+            pass_elmu_el_close = pass_elmu_el and (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1
 
             #requires_lj = pass_elmu_close or pass_old_lep_presel or pass_old_mu_sel or pass_old_el_sel or ((pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus))
             requires_lj = pass_elmu_close or pass_old_lep_presel or pass_old_mu_sel or pass_old_el_sel # or ((pass_el_all or pass_mu_all) and has_lowest_2L1M and (has_tight_lowest_taus or has_loose_lowest_taus))
@@ -4349,6 +4390,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 #if len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1:
                 if pass_elmu_close:
                     passed_channels.append(('ctr_mu_tt_em_close', 1., leps.iso, jets.old, taus.presel))
+
+            if pass_elmu_el:
+                passed_channels.append(('ctr_el_tt_em', 1., leps.iso, jets.old, taus.presel))
+                if pass_elmu_el_close:
+                    passed_channels.append(('ctr_el_tt_em_close', 1., leps.iso, jets.old, taus.presel))
 
             #if pass_mu and nbjets == 0 and (Mt_lep_met > 50 or met_pt > 40): # skipped lep+tau mass -- hopefuly DY will be small (-- it became larger than tt)
             #    passed_channels.append('ctr_mu_wjet')
