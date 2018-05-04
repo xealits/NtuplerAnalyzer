@@ -1,3 +1,24 @@
+# tt in pf5
+
+
+python jobsums/get_shapes.py --formula "pF4:pF5" -c ctr_old_mu_sel -d Mt_lep_met_f -p tt_mutau pF4:merge-sets/v26/pF4/MC2016_Summer16_TTJets_powheg.root pF5:merge-sets/v26/pF5/MC2016_Summer16_TTJets_powheg.root
+
+
+
+
+# nvtx presel-sel
+
+python jobsums/get_shapes.py --formula "presel:sel" -c ctr_old_mu_sel -d nvtx -p data presel:merge-sets/v25/p3/SingleMuon.root:ctr_old_mu_presel,data,NOMINAL,nvtx  sel:merge-sets/v25/pF3/SingleMuon.root:ctr_old_mu_sel,data,NOMINAL,nvtx
+
+
+# Mt per era
+
+python jobsums/get_shapes.py --formula "B+C+D+E+F:G+H2+H3" -c ctr_old_mu_sel -d Mt_lep_met_f -p data B:merge-sets/v25/pF3/Data13TeV_SingleMuon2016B_03Feb2017_ver2.root  C:merge-sets/v25/pF3/Data13TeV_SingleMuon2016C_03Feb2017_v1.root    D:merge-sets/v25/pF3/Data13TeV_SingleMuon2016D_03Feb2017_v1.root    E:merge-sets/v25/pF3/Data13TeV_SingleMuon2016E_03Feb2017_v1.root    F:merge-sets/v25/pF3/Data13TeV_SingleMuon2016F_03Feb2017_v1.root G:merge-sets/v25/pF3/Data13TeV_SingleMuon2016G_03Feb2017_v1.root H2:merge-sets/v25/pF3/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root H3:merge-sets/v25/pF3/Data13TeV_SingleMuon2016H_03Feb2017_ver3.root
+
+
+
+
+
 
 python sumup_ttree_distrs.py "jet_matching_lep[0]" --histo-range 5,0,5 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_lepmatch_mu1t3j1b_v25 --output tt_jet0_lepmatch_mu1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
 
@@ -20,7 +41,29 @@ python sumup_ttree_distrs.py "jet_uncorrected_p4[0].pt() * jet_jer_factor[0]" --
 
 python sumup_ttree_distrs.py "jet_uncorrected_p4[0].pt() * jet_jes_recorrection[0]" --histo-range 200,0,300 --cond-com "\! jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_pt_recorJES_nolep_1t3j1b_v25 --output tt_jet0_pt_recorJES_nolep_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
 
-hadd tt_jet_distrs.root tt_jet0_pt_recorJER_nolep_1t3j1b_v25.root tt_jet0_pt_recor_nolep_1t3j1b_v25.root tt_jet0_pt_initial_nolep_1t3j1b_v25.root tt_jet0_pt_nolep_1t3j1b_v25.root tt_jet0_pt_recorJES_nolep_1t3j1b_v25.root
+
+# miniaod jet * jer -- the default recommendation
+
+python sumup_ttree_distrs.py "jet_initial_p4[0].pt() * jet_jer_factor[0]" --histo-range 200,0,300 --cond-com "\! jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_pt_CorJER_nolep_1t3j1b_v25 --output tt_jet0_pt_CorJER_nolep_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+
+hadd tt_jet_distrs.root tt_jet0_pt_recorJER_nolep_1t3j1b_v25.root tt_jet0_pt_recor_nolep_1t3j1b_v25.root tt_jet0_pt_initial_nolep_1t3j1b_v25.root tt_jet0_pt_nolep_1t3j1b_v25.root tt_jet0_pt_recorJES_nolep_1t3j1b_v25.root tt_jet0_pt_CorJER_nolep_1t3j1b_v25.root
+
+
+# lep matched jets
+
+python sumup_ttree_distrs.py "jet_initial_p4[0].pt() * jet_jer_factor[0]" --histo-range 200,0,300 --cond-com "jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_pt_CorJER_LepMatch_1t3j1b_v25 --output tt_jet0_pt_CorJER_LepMatch_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+
+python sumup_ttree_distrs.py "jet_initial_p4[0].pt()" --histo-range 200,0,300 --cond-com "jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_pt_initial_LepMatch_1t3j1b_v25 --output tt_jet0_pt_initial_LepMatch_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+
+python sumup_ttree_distrs.py "jet_p4[0].pt()" --histo-range 200,0,300 --cond-com "jet_matching_lep[0] && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_jet0_pt_LepMatch_1t3j1b_v25 --output tt_jet0_pt_LepMatch_1t3j1b_v25.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+hadd tt_jet_distrs_LepMatched.root tt_jet0_pt_LepMatch_1t3j1b_v25.root tt_jet0_pt_initial_LepMatch_1t3j1b_v25.root tt_jet0_pt_CorJER_LepMatch_1t3j1b_v25.root
+
+
+
 
 
 
