@@ -2608,7 +2608,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 else:
                     proc = 's_top_other'
 
-            if (pass_mu_all or pass_mu or pass_mumu or pass_mumu_ss) and isMC:
+            if isMC and (pass_mu_all or pass_mu or pass_mumu or pass_mumu_ss):
                 #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt()) # old
                 # 0, 1, 2 -- trk
                 # 3, 4    -- id, iso
@@ -2631,7 +2631,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
                              ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
-            if pass_elmu:
+            if isMC and pass_elmu:
                 # find which lepton is mu and which is el
                 mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
                 mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_alliso_p4[mu_n].eta()), ev.lep_alliso_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
@@ -2658,7 +2658,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
                           ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
-            if pass_elmu_el:
+            if isMC and pass_elmu_el:
                 # find which lepton is mu and which is el
                 mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
                 mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_alliso_p4[mu_n].eta()), ev.lep_alliso_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
@@ -2688,7 +2688,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
 
 
-            if (pass_el_all or pass_el or pass_elel) and isMC:
+            if isMC and (pass_el_all or pass_el or pass_elel):
                 if pass_el_all and not (pass_el or pass_elel):
                     el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt())
                     el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt())
