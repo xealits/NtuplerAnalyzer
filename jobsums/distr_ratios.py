@@ -9,7 +9,9 @@ logging.basicConfig(level=logging.DEBUG)
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
     description = "plot data and different SYS of MC sums w.r. to NOMINAL MC",
-    epilog = "Example:\npython distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_mu_sel:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_mu_sel:Mt_lep_met_t2,ctr_old_mu_sel:Mt_lep_met_t3,ctr_old_mu_sel:Mt_lep_met_t4,ctr_old_mu_sel:Mt_lep_met_t5,ctr_old_mu_sel:Mt_lep_met_t6"
+    epilog = '''Example:
+python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_mu_sel:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_mu_sel:Mt_lep_met_t2,ctr_old_mu_sel:Mt_lep_met_t3,ctr_old_mu_sel:Mt_lep_met_t4,ctr_old_mu_sel:Mt_lep_met_t5,ctr_old_mu_sel:Mt_lep_met_t6
+python distr_ratios.py mc_v25v26pF5.root -c ctr_old_mu_presel:tt_lj:met_lep_phi --ratio-channel-distrs ctr_old_mu_presel:tt_mutau:met_lep_phi,ctr_old_mu_presel:tt_taultauh:met_lep_phi,ctr_old_mu_presel:tt_other:met_lep_phi'''
     )
 
 parser.add_argument("data_file", help="data file name")
@@ -48,8 +50,13 @@ if args.title is not None:
 else:
     title = args.process
 
-
-ref_chan, ref_distr = args.channel_distr.split(':')
+refs = args.channel_distr.split(':')
+if len(refs) == 3:
+    ref_chan, ref_proc, ref_distr = refs
+else:
+    # assume the process is the same
+    ref_chan, ref_distr = refs
+    ref_proc = args.process
 
 if args.title_x is not None:
     title_x = args.title_x
@@ -82,7 +89,7 @@ distr_nick = {
 # get nominal MC
 sys = args.systematic
 
-nom_MC = fdata.Get(ref_chan + '/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(proc=args.process, chan=ref_chan, sys=args.systematic, distr=ref_distr))
+nom_MC = fdata.Get(ref_chan + '/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(proc=ref_proc, chan=ref_chan, sys=args.systematic, distr=ref_distr))
 nom_MC.Print()
 
 if args.leg_chan:
@@ -120,11 +127,16 @@ sys_color = {'TOPPTUp': kRed,
 
 histo_MCs = []
 # and systematic MC-s
-for i, (channel, distr) in enumerate(chd.split(':') for chd in args.ratio_channel_distrs.split(',')):
-    sys_MC = fdata.Get(channel + '/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(proc=args.process, chan=channel, sys=args.systematic, distr=distr))
+for i, chan_def in enumerate(chd.split(':') for chd in args.ratio_channel_distrs.split(',')):
+    if len(chan_def) == 3:
+        channel, proc, distr = chan_def
+    else:
+        channel, distr = chan_def
+        proc = args.process
+    sys_MC = fdata.Get(channel + '/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(proc=proc, chan=channel, sys=args.systematic, distr=distr))
     sys_MC.Print()
-    sys_MC.SetLineColor   (nick_colour[args.process]  + 1*i)
-    sys_MC.SetMarkerColor (nick_colour[args.process]  + 1*i)
+    sys_MC.SetLineColor   (nick_colour[proc]  + 1*i)
+    sys_MC.SetMarkerColor (nick_colour[proc]  + 1*i)
     sys_MC.Divide(nom_MC)
     sys_MC.Print()
     #sys_MC.SetFillColor(0)
