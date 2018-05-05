@@ -90,6 +90,34 @@ hadd tt_jets_uncor.root tt_jet0_pt_uncor_nolep_1t3j1b_v25.root tt_jet0_pt_uncor2
 
 
 
+# change in Mt shape with tau selection
+
+python distr_ratios.py --logy --leg-chan --y-range 0.001,100. ../merge-sets/v26/pF5/MC2016_Summer16_TTJets_powheg.root -c ctr_old_mu_presel:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_mu_presel2b:Mt_lep_met_f,ctr_old_mu_selVloose:Mt_lep_met_f,ctr_old_mu_sel:Mt_lep_met_f --title "" --title-x "M_{T}(#mu, MET)"
+
+python distr_ratios.py --logy --leg-chan --y-range 0.001,100. ../merge-sets/v26/pF5/MC2016_Summer16_TTJets_powheg.root -c ctr_old_mu_presel:Mt_lep_met_f -p tt_mutau --ratio-channel-distrs ctr_old_mu_presel2b:Mt_lep_met_f,ctr_old_mu_selVloose:Mt_lep_met_f,ctr_old_mu_sel:Mt_lep_met_f --title "" --title-x "M_{T}(#mu, MET)"
+
+missing these two:
+
+python distr_ratios.py --logy --leg-chan --y-range 0.001,100. ../merge-sets/v26/pF5/MC2016_Summer16_TTJets_powheg.root -c ctr_old_el_presel:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_el_presel2b:Mt_lep_met_f,ctr_old_el_selVloose:Mt_lep_met_f,ctr_old_el_sel:Mt_lep_met_f --title "" --title-x "M_{T}(e, MET)"
+
+python distr_ratios.py --logy --leg-chan --y-range 0.001,100. ../merge-sets/v26/pF5/MC2016_Summer16_TTJets_powheg.root -c ctr_old_el_presel:Mt_lep_met_f -p tt_eltau --ratio-channel-distrs ctr_old_el_presel2b:Mt_lep_met_f,ctr_old_el_selVloose:Mt_lep_met_f,ctr_old_el_sel:Mt_lep_met_f --title "" --title-x "M_{T}(e, MET)"
+
+instead for now:
+
+python distr_ratios.py --logy --leg-chan --y-range 0.001,100. ../merge-sets/v26/pF4/MC2016_Summer16_TTJets_powheg.root -c ctr_old_el_selVloose:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_el_sel:Mt_lep_met_f --title "" --title-x "M_{T}(e, MET)"
+
+python distr_ratios.py --logy --leg-chan --y-range 0.001,100. ../merge-sets/v26/pF4/MC2016_Summer16_TTJets_powheg.root -c ctr_old_el_selVloose:Mt_lep_met_f -p tt_eltau --ratio-channel-distrs ctr_old_el_sel:Mt_lep_met_f --title "" --title-x "M_{T}(e, MET)"
+
+and same with mu:
+
+python distr_ratios.py --logy --leg-chan --y-range 0.001,100. ../merge-sets/v26/pF4/MC2016_Summer16_TTJets_powheg.root -c ctr_old_mu_selVloose:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_mu_sel:Mt_lep_met_f --title "" --title-x "M_{T}(#mu, MET)"
+
+python distr_ratios.py --logy --leg-chan --y-range 0.001,100. ../merge-sets/v26/pF4/MC2016_Summer16_TTJets_powheg.root -c ctr_old_mu_selVloose:Mt_lep_met_f -p tt_mutau --ratio-channel-distrs ctr_old_mu_sel:Mt_lep_met_f --title "" --title-x "M_{T}(#mu, MET)"
+
+
+
+
+# Mt dependence on tau pt
 
 python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_el_sel:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_el_sel:Mt_lep_met_t2,ctr_old_el_sel:Mt_lep_met_t3,ctr_old_el_sel:Mt_lep_met_t4,ctr_old_el_sel:Mt_lep_met_t5,ctr_old_el_sel:Mt_lep_met_t6 --title "" --title-x "M_{T}(e, MET)"
 
