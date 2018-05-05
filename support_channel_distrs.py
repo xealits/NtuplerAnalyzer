@@ -1620,6 +1620,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_old_mu_sel_ljout_ss':  (procs_mu, systematic_names_nominal),
         },
 
+        'channels_nominal_full_el_selections' : {
+                'ctr_old_el_presel':        (procs_el, systematic_names_nominal),
+                'ctr_old_el_presel_ss':     (procs_el, systematic_names_nominal),
+                'ctr_old_el_presel2b':      (procs_el, systematic_names_nominal),
+                'ctr_old_el_presel2b_ss':   (procs_el, systematic_names_nominal),
+                'ctr_old_el_selVloose':     (procs_el, systematic_names_nominal),
+                'ctr_old_el_selVloose_ss':  (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel':           (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_ss':        (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_lj':        (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_lj_ss':     (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_ljout':     (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_ljout_ss':  (procs_el, systematic_names_nominal),
+        },
+
         'channels_refact_sys_lep_selections' : {
                 #'ctr_el_wjet':              (procs_el, systematic_names_pu),
                 #'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
@@ -2273,7 +2288,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_mu # pass_elmu or pass_elmu_el # passes_optimized #
+        event_passes = pass_mu or pass_el # pass_elmu or pass_elmu_el # passes_optimized #
 
         if not event_passes: continue
         control_counters.Fill(51)
@@ -4466,6 +4481,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     passed_channels.append(('ctr_old_mu_presel2b', sel_b_weight, leps.iso, jets.old, taus.presel))
                 else:
                     passed_channels.append(('ctr_old_mu_presel2b_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
+
+            if pass_old_el_presel and pass_2b:
+                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
+                sel_b_weight = weight_bSF_old
+                if presel_os:
+                    passed_channels.append(('ctr_old_el_presel2b', sel_b_weight, leps.iso, jets.old, taus.presel))
+                else:
+                    passed_channels.append(('ctr_old_el_presel2b_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
 
             # presel alliso
             if pass_old_mu_presel_alliso:

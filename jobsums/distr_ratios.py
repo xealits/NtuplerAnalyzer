@@ -25,6 +25,8 @@ parser.add_argument('-r', '--ratio', action='store_true', help="add ratio plot")
 
 parser.add_argument('--logy', action='store_true', help="log scale Y axis")
 
+parser.add_argument('--leg-chan', action='store_true', help="put channels in the legend")
+
 parser.add_argument("-o", "--output-directory", type=str, default='./', help="optional output directory")
 parser.add_argument("--custom-filename", type=str, help="custom filename")
 
@@ -82,7 +84,12 @@ sys = args.systematic
 
 nom_MC = fdata.Get(ref_chan + '/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(proc=args.process, chan=ref_chan, sys=args.systematic, distr=ref_distr))
 nom_MC.Print()
-leg.AddEntry(nom_MC, distr_nick.get(ref_distr, ref_distr), "L")
+
+if args.leg_chan:
+    leg_entry = ref_chan
+else:
+    leg_entry = distr_nick.get(ref_distr, ref_distr)
+leg.AddEntry(nom_MC, leg_entry, "L")
 
 #leg.AddEntry(nom_MC, "MC NOMINAL", "L")
 #leg.AddEntry(nom_MC, "MC NOMINAL", "f")
@@ -121,7 +128,12 @@ for i, (channel, distr) in enumerate(chd.split(':') for chd in args.ratio_channe
     sys_MC.Divide(nom_MC)
     sys_MC.Print()
     #sys_MC.SetFillColor(0)
-    leg.AddEntry(sys_MC, distr_nick.get(distr, distr), "L")
+
+    if args.leg_chan:
+        leg_entry = channel
+    else:
+        leg_entry = distr_nick.get(distr, distr)
+    leg.AddEntry(sys_MC, leg_entry, "L")
     histo_MCs.append(sys_MC)
 
 
