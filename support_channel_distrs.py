@@ -1814,6 +1814,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             pass
     #zero_out_distr = ZeroOutDistr()
 
+    # helper codes for phi distrs
+    pdgId_codes = {11: 'elP_phi', -11: 'elN_phi', 13: 'muP_phi', -13: 'muN_phi'}
+
     def format_distrs(chan, proc, sys):
         '''
         I don't need all distrs for all systematics, only some
@@ -1935,6 +1938,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'corr_met':           TH1D('%s_%s_%s_corr_met'   % (chan, proc, sys), '', 30, 0, 300),
              'met_objects':        TH1D('%s_%s_%s_met_objects'% (chan, proc, sys), '', 30, 0, 300),
              'met_lep_phi':        TH1D('%s_%s_%s_met_lep_phi'% (chan, proc, sys), '', 30, -3.2, 3.2),
+             'lep1_phi':           TH1D('%s_%s_%s_lep1_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
+             'lep2_phi':           TH1D('%s_%s_%s_lep2_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2), # tau in lep-tau channels
+             'met_phi':            TH1D('%s_%s_%s_met_phi'    % (chan, proc, sys), '', 30, -3.2, 3.2), # tau in lep-tau channels
+             'elP_phi':            TH1D('%s_%s_%s_elP_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
+             'muP_phi':            TH1D('%s_%s_%s_muP_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
+             'elN_phi':            TH1D('%s_%s_%s_elN_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
+             'muN_phi':            TH1D('%s_%s_%s_muN_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
+             'tau_phi':            TH1D('%s_%s_%s_tau_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
              'met_cancelation':    TH1D('%s_%s_%s_met_cancelation'% (chan, proc, sys), '', 30, 0, 150),
              'Mt_lep_met_init_f':  TH1D('%s_%s_%s_Mt_lep_met_init_f' % (chan, proc, sys), '', 20, 0, 250),
              'Mt_lep_met_corr_f':  TH1D('%s_%s_%s_Mt_lep_met_corr_f' % (chan, proc, sys), '', 20, 0, 250),
@@ -4901,6 +4912,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['met_objects']  .Fill(all_sel_objects.pt(), record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_cancelation']  .Fill(met_cancelation, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_lep_phi']  .Fill((proc_met - lep_p4[0]).Phi(), record_weight)
+
+                out_hs[(chan, record_proc, sys_name)]['lep1_phi']      .Fill(lep_p4[0].phi(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_phi']       .Fill(proc_met.phi(), record_weight)
+
+                if sel_taus:
+                    out_hs[(chan, record_proc, sys_name)]['lep2_phi'] .Fill(sel_taus[0][0].phi(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['tau_phi']  .Fill(sel_taus[0][0].phi(), record_weight)
+                elif len(lep_p4)>1:
+                    out_hs[(chan, record_proc, sys_name)]['lep2_phi']  .Fill(lep_p4[1].phi(), record_weight)
+
+                for i, pdgId in enumerate(lep_id[:2]):
+                    out_hs[(chan, record_proc, sys_name)][pdgId_codes[pdgId]]  .Fill(lep_p4[i].phi(), record_weight)
 
                 # all sum kind of should find:
                 # - which level of jet/met correction is the true "synchronized" one (just technical stuff)
