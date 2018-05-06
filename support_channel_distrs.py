@@ -738,8 +738,8 @@ def transverse_mass_pts(v1_x, v1_y, v2_x, v2_y):
     return TMath.Sqrt(2*(v1v2 - (v1_x*v2_x + v1_y*v2_y)))
 
 def transverse_cos(v1, v2):
-    met_lep_cos = (v1.Px()*v2.Px() + v1.Py()*v2.Py()) / TMath.Sqrt((v1.Px()*v1.Px() + v1.Py()*v1.Py())* (v2.Px()*v2.Px() + v2.Py()*v2.Py()))
-    return met_lep_cos
+    t_cos = (v1.Px()*v2.Px() + v1.Py()*v2.Py()) / TMath.Sqrt((v1.Px()*v1.Px() + v1.Py()*v1.Py())* (v2.Px()*v2.Px() + v2.Py()*v2.Py()))
+    return t_cos
 
 def calc_lj_var(ev, light_jets, b_jets, save_all_permutations=False, isMC=False):
     closest_pair_gens = (0, 0)
@@ -1947,6 +1947,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'lep1_phi':           TH1D('%s_%s_%s_lep1_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
              'lep2_phi':           TH1D('%s_%s_%s_lep2_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2), # tau in lep-tau channels
              'met_phi':            TH1D('%s_%s_%s_met_phi'    % (chan, proc, sys), '', 30, -3.2, 3.2), # tau in lep-tau channels
+             'met_lep_phis':       TH2D('%s_%s_%s_met_lep_phis' % (chan, proc, sys), '', 30, -3.2, 3.2, 30, -3.2, 3.2),
+             'met_allobj_phis':    TH2D('%s_%s_%s_met_allobj_phis' % (chan, proc, sys), '', 30, -3.2, 3.2, 30, -3.2, 3.2),
+             'met_allobj_pts':     TH2D('%s_%s_%s_met_allobj_pts'  % (chan, proc, sys), '', 20, 0., 200., 20, 0., 200.),
              'elP_phi':            TH1D('%s_%s_%s_elP_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
              'muP_phi':            TH1D('%s_%s_%s_muP_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
              'elN_phi':            TH1D('%s_%s_%s_elN_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
