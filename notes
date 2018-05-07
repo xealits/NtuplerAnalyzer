@@ -38,6 +38,8 @@ met_Py_elmuclose_tt->Draw("same")
 met_Px_elmuclose_data->Draw()
 met_Px_elmuclose_tt->Draw("same")
 
+
+
 same in tt-fsrup (does v25 have elmu?)
 
 python sumup_ttree_distrs.py "met_init.Px()" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.  --histo-name met_Px_elmuclose_tt_fsrup --output met_Px_elmuclose_tt_fsrup.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrup/*/0000/*root &
@@ -62,8 +64,60 @@ met_Phi_noreq_tt_fsrup->SetLineColor(kRed)
 
 
 
+the x-y shift of met
+
+python sumup_ttree_distrs.py "met_init.Px():met_init.Py()" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.,50,-150.,150.  --histo-name met_PxPy_elmuclose_tt --output met_PxPy_elmuclose_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "met_init.Px():met_init.Py()" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.,50,-150.,150.  --histo-name met_PxPy_elmuclose_data --output met_PxPy_elmuclose_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+-- seems like tt does have a bit larger shift
+
+Mt shape difference with met shifts.
+Mt in nominal TT
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,0.,250.  --histo-name met_Mt_nom_tt --output met_Mt_nom_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+shift +4 Px (to zero)
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt(((met_init.Px() + 4.)*(met_init.Px()+4.) + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - ((met_init.Px() + 4.)*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,0.,250.  --histo-name met_Mt_Px4_tt --output met_Mt_Px4_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+shift -4 Px
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt(((met_init.Px() - 4.)*(met_init.Px() - 4.) + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - ((met_init.Px() - 4.)*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,0.,250.  --histo-name met_Mt_PxN4_tt --output met_Mt_PxN4_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+by +10 (more than data)
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt(((met_init.Px() + 10.)*(met_init.Px() + 10.) + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - ((met_init.Px() + 10.)*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,0.,250.  --histo-name met_Mt_Px10_tt --output met_Mt_Px10_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
++20
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt(((met_init.Px() + 20.)*(met_init.Px() + 20.) + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - ((met_init.Px() + 20.)*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,0.,250.  --histo-name met_Mt_Px20_tt --output met_Mt_Px20_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+by +7.2 Px and +1.4 Py (like data)
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt(((met_init.Px() + 7.2)*(met_init.Px()+7.2) + (met_init.Py()+1.4)*(met_init.Py() + 1.4))*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - ((met_init.Px() + 7.2)*lep_p4[0].Px() + (met_init.Py() + 1.4)*lep_p4[0].Py())))" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,0.,250.  --histo-name met_Mt_PxToData_tt --output met_Mt_PxToData_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
 
 
+nominal in data
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,0.,250.  --histo-name met_Mt_nom_data --output met_Mt_nom_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+met_Mt_nom_data->Scale(1./met_Mt_nom_data->Integral())
+met_Mt_nom_tt  ->Scale(1./met_Mt_nom_tt  ->Integral())
+met_Mt_Px4_tt  ->Scale(1./met_Mt_Px4_tt  ->Integral())
+met_Mt_PxN4_tt ->Scale(1./met_Mt_PxN4_tt  ->Integral())
+met_Mt_Px10_tt ->Scale(1./met_Mt_Px10_tt  ->Integral())
+met_Mt_PxToData_tt ->Scale(1./met_Mt_PxToData_tt  ->Integral())
+
+met_Mt_nom_tt      ->SetLineColor(kRed)
+met_Mt_Px4_tt      ->SetLineColor(kRed+1)
+met_Mt_PxN4_tt     ->SetLineColor(kRed-1)
+met_Mt_Px10_tt     ->SetLineColor(kRed+2)
+met_Mt_PxToData_tt ->SetLineColor(kBlack)
+
+met_Mt_nom_tt      ->Draw()
+met_Mt_Px4_tt      ->Draw("same")
+met_Mt_PxN4_tt     ->Draw("same")
 
 
 # more met phi studies

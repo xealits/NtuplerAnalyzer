@@ -1920,8 +1920,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             #'tight_tau_jet_eta':  TH1D('%s_%s_%s_tight_tau_jet_eta'  % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
             #'vtight_tau_jet_pt':  TH1D('%s_%s_%s_vtight_tau_jet_pt'  % (chan, proc, sys), '', tau_fakerate_pts_n, tau_fakerate_pts),
             #'vtight_tau_jet_eta': TH1D('%s_%s_%s_vtight_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
-            'Mt_tau_met':      TH1D('%s_%s_%s_Mt_tau_met'     % (chan, proc, sys), '', 20, 0, 200),
-            'Mt_tau_met_lep':  TH2D('%s_%s_%s_Mt_tau_met_lep' % (chan, proc, sys), '', 20, 0, 300, 20, 0, 300),
+            'Mt_tau_met':         TH1D('%s_%s_%s_Mt_tau_met'     % (chan, proc, sys), '', 20, 0, 200),
+            'Mt_tau_met_lep':     TH2D('%s_%s_%s_Mt_tau_met_lep' % (chan, proc, sys), '', 20, 0, 300, 20, 0, 300),
+            'Mt_lep_met_shifted': TH1D('%s_%s_%s_Mt_lep_met_shifted'     % (chan, proc, sys), '', 20, 0, 250),
 
             # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
             'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
@@ -4866,8 +4867,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 Mt_lep_met_init = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), ev.met_init.Px(), ev.met_init.Py())
                 # at NOMINAL these two should be the same
                 # only systematic variations differ
-                Mt_lep_met      = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
-                Mt_lep_met_corr = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
+                Mt_lep_met         = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
+                if isMC:
+                    Mt_lep_met_shifted = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop + 7.2, met_y_prop + 1.4)
+                else:
+                     Mt_lep_met_shifted = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
+                Mt_lep_met_corr    = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
                 # test on Mt fluctuation in mu_sel
                 #if Mt_lep_met < 1.:
                 #    continue
@@ -4931,6 +4936,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                             out_hs[(chan, record_proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight_sys)
 
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met,     record_weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_shifted'] .Fill(Mt_lep_met_shifted,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met']          .Fill(met_pt,         record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_pt']       .Fill(lep_p4[0].pt(), record_weight)
