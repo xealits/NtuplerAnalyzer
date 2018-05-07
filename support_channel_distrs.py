@@ -1941,6 +1941,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'corr_met':           TH1D('%s_%s_%s_corr_met'   % (chan, proc, sys), '', 30, 0, 300),
              'met_objects':        TH1D('%s_%s_%s_met_objects'% (chan, proc, sys), '', 30, 0, 300),
              'met_lep_phi':        TH1D('%s_%s_%s_met_lep_phi'% (chan, proc, sys), '', 30, -3.2, 3.2),
+             'met_phi_met_pt':     TH2D('%s_%s_%s_met_phi_met_pt'% (chan, proc, sys), '', 30, -3.2, 3.2, 25, 0, 250),
+             'met_pt_smallphi':    TH1D('%s_%s_%s_met_pt_smallphi'   % (chan, proc, sys), '', 30, 0, 300),
+             'met_pt_largephi':    TH1D('%s_%s_%s_met_pt_largephi'   % (chan, proc, sys), '', 30, 0, 300),
              'met_lep_cos':        TH1D('%s_%s_%s_met_lep_cos'% (chan, proc, sys), '', 44, -1.1, 1.1),
              'rev_met_lep_cos':    TH1D('%s_%s_%s_rev_met_lep_cos'% (chan, proc, sys), '', 44, -1.1, 1.1),
              'allobj_lep_cos':     TH1D('%s_%s_%s_allobj_lep_cos'    % (chan, proc, sys), '', 44, -1.1, 1.1),
@@ -1966,6 +1969,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'met_cancelation_xy': TH2D('%s_%s_%s_met_cancelation_xy'% (chan, proc, sys), '', 20, -100, 100, 20, -100, 100),
              'met_cancelation_x_met_x': TH2D('%s_%s_%s_met_cancelation_x_met_x'% (chan, proc, sys), '', 20, -100, 100, 20, -100, 100),
              'met_cancelation_y_met_y': TH2D('%s_%s_%s_met_cancelation_y_met_y'% (chan, proc, sys), '', 20, -100, 100, 20, -100, 100),
+             'met_x': TH1D('%s_%s_%s_met_x' % (chan, proc, sys), '', 20, -100, 100),
+             'met_y': TH1D('%s_%s_%s_met_y' % (chan, proc, sys), '', 20, -100, 100),
+             'allobj_x': TH1D('%s_%s_%s_allobj_x' % (chan, proc, sys), '', 20, -100, 100),
+             'allobj_y': TH1D('%s_%s_%s_allobj_y' % (chan, proc, sys), '', 20, -100, 100),
              'Mt_lep_met_init_f':  TH1D('%s_%s_%s_Mt_lep_met_init_f' % (chan, proc, sys), '', 20, 0, 250),
              'Mt_lep_met_corr_f':  TH1D('%s_%s_%s_Mt_lep_met_corr_f' % (chan, proc, sys), '', 20, 0, 250),
              'all_sum_control':       TH1D('%s_%s_%s_all_sum_control'      % (chan, proc, sys), '', 50, 0, 200),
@@ -4935,6 +4942,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['met_cancelation_x_met_x']  .Fill(met_cancellation_x, met_x_prop, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_cancelation_y_met_y']  .Fill(met_cancellation_y, met_y_prop, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_lep_phi']  .Fill((proc_met - lep_p4[0]).Phi(), record_weight)
+
+                out_hs[(chan, record_proc, sys_name)]['met_phi_met_pt']  .Fill(proc_met.Phi(), proc_met.pt(), record_weight)
+                if abs(proc_met.Phi()) < 1.5:
+                    out_hs[(chan, record_proc, sys_name)]['met_pt_smallphi']  .Fill(proc_met.pt(), record_weight)
+                else:
+                    out_hs[(chan, record_proc, sys_name)]['met_pt_largephi']  .Fill(proc_met.pt(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_x']     .Fill(met_x_prop, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_y']     .Fill(met_y_prop, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['allobj_x']  .Fill(all_sel_objects.Px(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['allobj_y']  .Fill(all_sel_objects.Py(), record_weight)
 
                 met_lep_cos = transverse_cos(proc_met, lep_p4[0])
                 if isMC:
