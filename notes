@@ -1,3 +1,71 @@
+# met px py
+
+python sumup_ttree_distrs.py "met_init.Px()" --histo-range 50,-150.,150.  --histo-name met_Px_noreq_tt --output met_Px_noreq_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "met_init.Py()" --histo-range 50,-150.,150.  --histo-name met_Py_noreq_tt --output met_Py_noreq_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "met_init.Phi()" --histo-range 66,-3.3,3.3  --histo-name met_Phi_noreq_tt --output met_Phi_noreq_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+data
+
+python sumup_ttree_distrs.py "met_init.Px()" --histo-range 50,-150.,150.  --histo-name met_Px_noreq_data --output met_Px_noreq_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "met_init.Py()" --histo-range 50,-150.,150.  --histo-name met_Py_noreq_data --output met_Py_noreq_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+-- hard to compare them
+elmu close req
+
+python sumup_ttree_distrs.py "met_init.Px()" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.  --histo-name met_Px_elmuclose_tt --output met_Px_elmuclose_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "met_init.Py()" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.  --histo-name met_Py_elmuclose_tt --output met_Py_elmuclose_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "met_init.Px()" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.  --histo-name met_Px_elmuclose_data --output met_Px_elmuclose_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "met_init.Py()" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.  --histo-name met_Py_elmuclose_data --output met_Py_elmuclose_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+met_Py_elmuclose_tt->SetLineColor(kRed)
+met_Px_elmuclose_tt->SetLineColor(kRed)
+
+met_Py_elmuclose_tt->Scale(1./met_Py_elmuclose_tt->Integral())
+met_Px_elmuclose_tt->Scale(1./met_Px_elmuclose_tt->Integral())
+
+met_Py_elmuclose_data->Scale(1./met_Py_elmuclose_data->Integral())
+met_Px_elmuclose_data->Scale(1./met_Px_elmuclose_data->Integral())
+
+met_Py_elmuclose_data->Draw()
+met_Py_elmuclose_tt->Draw("same")
+
+met_Px_elmuclose_data->Draw()
+met_Px_elmuclose_tt->Draw("same")
+
+same in tt-fsrup (does v25 have elmu?)
+
+python sumup_ttree_distrs.py "met_init.Px()" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.  --histo-name met_Px_elmuclose_tt_fsrup --output met_Px_elmuclose_tt_fsrup.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrup/*/0000/*root &
+
+python sumup_ttree_distrs.py "met_init.Py()" --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.  --histo-name met_Py_elmuclose_tt_fsrup --output met_Py_elmuclose_tt_fsrup.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrup/*/0000/*root &
+
+no req
+
+python sumup_ttree_distrs.py "met_init.Px()" --histo-range 50,-150.,150.  --histo-name met_Px_noreq_tt_fsrup --output met_Px_noreq_tt_fsrup.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrup/*/0000/*root &
+
+python sumup_ttree_distrs.py "met_init.Py()" --histo-range 50,-150.,150.  --histo-name met_Py_noreq_tt_fsrup --output met_Py_noreq_tt_fsrup.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrup/*/0000/*root &
+
+python sumup_ttree_distrs.py "met_init.Phi()" --histo-range 66,-3.3,3.3  --histo-name met_Phi_noreq_tt_fsrup --output met_Phi_noreq_tt_fsrup.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrup/*/0000/*root &
+
+more stats:
+
+python sumup_ttree_distrs.py "met_init.Phi()" --histo-range 66,-3.3,3.3  --histo-name met_Phi_noreq_tt_fsrup --output met_Phi_noreq_tt_fsrup.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrup_ext2/*/0000/*root &
+
+met_Phi_noreq_tt->Scale(1./met_Phi_noreq_tt->Integral())
+met_Phi_noreq_tt_fsrup->Scale(1./met_Phi_noreq_tt_fsrup->Integral())
+met_Phi_noreq_tt_fsrup->SetLineColor(kRed)
+
+
+
+
+
+
+
 # more met phi studies
 
 python sumup_ttree_distrs.py "lep_p4[0].phi()" --histo-range 33,-3.3,3.3 --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-name met_lep0_phi_tt --output lep0_phi_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
