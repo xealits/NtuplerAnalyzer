@@ -1,3 +1,52 @@
+# more met phi studies
+
+python sumup_ttree_distrs.py "lep_p4[0].phi()" --histo-range 33,-3.3,3.3 --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-name met_lep0_phi_tt --output lep0_phi_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[1].phi()" --histo-range 33,-3.3,3.3 --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-name met_lep1_phi_tt --output lep1_phi_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "jet_p4[0].phi()" --histo-range 33,-3.3,3.3 --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-name met_jet0_phi_tt --output jet0_phi_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "jet_p4[1].phi()" --histo-range 33,-3.3,3.3 --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-name met_jet1_phi_tt --output jet1_phi_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "met_init.phi():met_init.pt()" --histo-range 25,0.,250.,33,-3.3,3.3 --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-name met_phi_VS_pt_tt --output met_phi_VS_pt_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "met_init.phi():(met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())/sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py()))" --histo-range 22,-1.1,1.1,33,-3.3,3.3 --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-name met_phi_VS_cos_tt --output met_phi_VS_cos_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+cos less than 0
+
+python sumup_ttree_distrs.py "met_init.phi()" --histo-range 33,-3.3,3.3 --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0 && (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())/sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) < 0." --histo-name met_phi_cosless0_tt --output met_phi_cosless0_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+faster
+
+python sumup_ttree_distrs.py "met_init.phi()" --histo-range 33,-3.3,3.3 --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0 && (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()) < 0." --histo-name met_phi_cosless0_tt --output met_phi_cosless0_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "met_init.phi():(met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())/sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py()))" --histo-range 22,-1.1,1.1,33,-3.3,3.3 --cond-com "leps_ID == -11*13 && abs(lep_id[0]) == 13 && HLT_mu && nbjets > 0" --histo-name met_phi_VS_cosmu_tt --output met_phi_VS_cosmu_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+cos to electrons:
+
+python sumup_ttree_distrs.py "met_init.phi():(met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())/sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py()))" --histo-range 22,-1.1,1.1,33,-3.3,3.3 --cond-com "leps_ID == -11*13 && abs(lep_id[0]) == 11 && HLT_mu && nbjets > 0" --histo-name met_phi_VS_cosel_tt --output met_phi_VS_cosel_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+-- no entries here, muons are stacked first, no sort pt after that
+
+python sumup_ttree_distrs.py "met_init.phi():(met_init.Px()*lep_p4[1].Px() + met_init.Py()*lep_p4[1].Py())/sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[1].Px()*lep_p4[1].Px() + lep_p4[1].Py()*lep_p4[1].Py()))" --histo-range 22,-1.1,1.1,33,-3.3,3.3 --cond-com "leps_ID == -11*13 && abs(lep_id[1]) == 11 && HLT_mu && nbjets > 0" --histo-name met_phi_VS_cosel_tt --output met_phi_VS_cosel_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+elel channel
+
+python sumup_ttree_distrs.py "met_init.phi()" --histo-range 33,-3.3,3.3 --cond-com "leps_ID == -11*11 && HLT_el && nbjets > 0" --histo-name met_phi_elel_tt --output met_phi_elel_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+mumu channel
+
+python sumup_ttree_distrs.py "met_init.phi()" --histo-range 33,-3.3,3.3 --cond-com "leps_ID == -13*13 && HLT_mu && nbjets > 0" --histo-name met_phi_mumu_tt --output met_phi_mumu_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+
+
+
+
+
+
+
+
+
 # tt in pf5
 
 
