@@ -1942,20 +1942,30 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'met_objects':        TH1D('%s_%s_%s_met_objects'% (chan, proc, sys), '', 30, 0, 300),
              'met_lep_phi':        TH1D('%s_%s_%s_met_lep_phi'% (chan, proc, sys), '', 30, -3.2, 3.2),
              'met_lep_cos':        TH1D('%s_%s_%s_met_lep_cos'% (chan, proc, sys), '', 44, -1.1, 1.1),
+             'rev_met_lep_cos':    TH1D('%s_%s_%s_rev_met_lep_cos'% (chan, proc, sys), '', 44, -1.1, 1.1),
              'allobj_lep_cos':     TH1D('%s_%s_%s_allobj_lep_cos'    % (chan, proc, sys), '', 44, -1.1, 1.1),
+             'allobj_met_lep_cos': TH1D('%s_%s_%s_allobj_met_lep_cos'% (chan, proc, sys), '', 44, -1.1, 1.1),
              'Mt_lep_allobj_met':  TH1D('%s_%s_%s_Mt_lep_allobj_met' % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_allobj':      TH1D('%s_%s_%s_Mt_lep_allobj'     % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_rev_met':     TH1D('%s_%s_%s_Mt_lep_rev_met'    % (chan, proc, sys), '', 20, 0, 250),
              'lep1_phi':           TH1D('%s_%s_%s_lep1_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
              'lep2_phi':           TH1D('%s_%s_%s_lep2_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2), # tau in lep-tau channels
-             'met_phi':            TH1D('%s_%s_%s_met_phi'    % (chan, proc, sys), '', 30, -3.2, 3.2), # tau in lep-tau channels
+             'met_phi':            TH1D('%s_%s_%s_met_phi'    % (chan, proc, sys), '', 30, -3.2, 3.2),
+             'rev_met_phi':        TH1D('%s_%s_%s_rev_met_phi'    % (chan, proc, sys), '', 30, -3.2, 3.2),
+             'allobj_phi':         TH1D('%s_%s_%s_allobj_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
              'met_lep_phis':       TH2D('%s_%s_%s_met_lep_phis' % (chan, proc, sys), '', 30, -3.2, 3.2, 30, -3.2, 3.2),
-             'met_allobj_phis':    TH2D('%s_%s_%s_met_allobj_phis' % (chan, proc, sys), '', 30, -3.2, 3.2, 30, -3.2, 3.2),
-             'met_allobj_pts':     TH2D('%s_%s_%s_met_allobj_pts'  % (chan, proc, sys), '', 20, 0., 200., 20, 0., 200.),
+             'met_allobj_met_phis':TH2D('%s_%s_%s_met_allobj_met_phis' % (chan, proc, sys), '', 30, -3.2, 3.2, 30, -3.2, 3.2),
+             'met_allobj_phis':    TH2D('%s_%s_%s_met_allobj_phis'     % (chan, proc, sys), '', 30, -3.2, 3.2, 30, -3.2, 3.2),
+             'met_allobj_met_pts': TH2D('%s_%s_%s_met_allobj_met_pts'  % (chan, proc, sys), '', 20, 0., 200., 20, 0., 200.),
              'elP_phi':            TH1D('%s_%s_%s_elP_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
              'muP_phi':            TH1D('%s_%s_%s_muP_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
              'elN_phi':            TH1D('%s_%s_%s_elN_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
              'muN_phi':            TH1D('%s_%s_%s_muN_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
              'tau_phi':            TH1D('%s_%s_%s_tau_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
-             'met_cancelation':    TH1D('%s_%s_%s_met_cancelation'% (chan, proc, sys), '', 30, 0, 150),
+             'met_cancelation':    TH1D('%s_%s_%s_met_cancelation'% (chan, proc, sys), '', 30, 0, 300),
+             'met_cancelation_xy': TH2D('%s_%s_%s_met_cancelation_xy'% (chan, proc, sys), '', 20, -100, 100, 20, -100, 100),
+             'met_cancelation_x_met_x': TH2D('%s_%s_%s_met_cancelation_x_met_x'% (chan, proc, sys), '', 20, -100, 100, 20, -100, 100),
+             'met_cancelation_y_met_y': TH2D('%s_%s_%s_met_cancelation_y_met_y'% (chan, proc, sys), '', 20, -100, 100, 20, -100, 100),
              'Mt_lep_met_init_f':  TH1D('%s_%s_%s_Mt_lep_met_init_f' % (chan, proc, sys), '', 20, 0, 250),
              'Mt_lep_met_corr_f':  TH1D('%s_%s_%s_Mt_lep_met_corr_f' % (chan, proc, sys), '', 20, 0, 250),
              'all_sum_control':       TH1D('%s_%s_%s_all_sum_control'      % (chan, proc, sys), '', 50, 0, 200),
@@ -2308,7 +2318,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_elmu or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+        event_passes = pass_mu # pass_elmu or pass_elmu_el # pass_mu or pass_el # passes_optimized #
 
         if not event_passes: continue
         control_counters.Fill(51)
@@ -4919,24 +4929,46 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['lep_pt']       .Fill(lep_p4[0].pt(), record_weight)
                 out_hs[(chan, record_proc, sys_name)]['yield']        .Fill(1, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_objects']  .Fill(all_sel_objects.pt(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['allobj_phi']   .Fill(all_sel_objects.Phi(), record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_cancelation']  .Fill(met_cancelation, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_cancelation_xy']  .Fill(met_cancellation_x, met_cancellation_y, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_cancelation_x_met_x']  .Fill(met_cancellation_x, met_x_prop, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_cancelation_y_met_y']  .Fill(met_cancellation_y, met_y_prop, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_lep_phi']  .Fill((proc_met - lep_p4[0]).Phi(), record_weight)
 
                 met_lep_cos = transverse_cos(proc_met, lep_p4[0])
+                if isMC:
+                    rev_met_lep_cos = transverse_cos(-proc_met, lep_p4[0])
+                    rev_met_phi = (-proc_met.Phi())
+                else:
+                    rev_met_phi = (proc_met.Phi())
+                    rev_met_lep_cos = transverse_cos(proc_met, lep_p4[0])
                 all_obj_met = -all_sel_objects
-                allobj_lep_cos = transverse_cos(all_obj_met, lep_p4[0])
+                allobj_met_lep_cos = transverse_cos(all_obj_met, lep_p4[0])
+                allobj_lep_cos = transverse_cos(all_sel_objects, lep_p4[0])
                 out_hs[(chan, record_proc, sys_name)]['met_lep_cos']     .Fill(met_lep_cos, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['rev_met_lep_cos']     .Fill(rev_met_lep_cos, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['allobj_met_lep_cos']  .Fill(allobj_met_lep_cos, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['allobj_lep_cos']  .Fill(allobj_lep_cos, record_weight)
-                Mt_lep_allobj_met      = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), all_obj_met.Px(), all_obj_met.Py())
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_allobj_met']   .Fill(Mt_lep_allobj_met,     record_weight)
+                Mt_lep_allobj_met  = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), all_obj_met.Px(), all_obj_met.Py())
+                Mt_lep_allobj      = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), all_sel_objects.Px(), all_sel_objects.Py())
+                if isMC:
+                    Mt_lep_rev_met     = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), -proc_met.Px(), -proc_met.Py())
+                else:
+                    Mt_lep_rev_met     = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met.Px(), proc_met.Py())
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_allobj_met'] .Fill(Mt_lep_allobj_met, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_allobj']     .Fill(Mt_lep_allobj,     record_weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_rev_met']    .Fill(Mt_lep_rev_met,    record_weight)
 
                 # 2D distrs
-                out_hs[(chan, record_proc, sys_name)]['met_lep_phis']    .Fill(proc_met.Phi(), lep_p4[0].Phi(), record_weight)
-                out_hs[(chan, record_proc, sys_name)]['met_allobj_phis'] .Fill(proc_met.Phi(), all_obj_met.Phi(), record_weight)
-                out_hs[(chan, record_proc, sys_name)]['met_allobj_pts']  .Fill(proc_met.pt(),  all_obj_met.pt(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_lep_phis']        .Fill(proc_met.Phi(), lep_p4[0].Phi(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_allobj_met_phis'] .Fill(proc_met.Phi(), all_obj_met.Phi(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_allobj_met_pts']  .Fill(proc_met.pt(),  all_obj_met.pt(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['met_allobj_phis']     .Fill(proc_met.Phi(), all_sel_objects.Phi(), record_weight)
 
                 out_hs[(chan, record_proc, sys_name)]['lep1_phi']      .Fill(lep_p4[0].phi(), record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_phi']       .Fill(proc_met.phi(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['rev_met_phi']   .Fill(rev_met_phi, record_weight)
 
                 if sel_taus:
                     out_hs[(chan, record_proc, sys_name)]['lep2_phi'] .Fill(sel_taus[0][0].phi(), record_weight)
