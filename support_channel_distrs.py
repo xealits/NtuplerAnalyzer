@@ -1922,8 +1922,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             #'vtight_tau_jet_eta': TH1D('%s_%s_%s_vtight_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
             'Mt_tau_met':         TH1D('%s_%s_%s_Mt_tau_met'     % (chan, proc, sys), '', 20, 0, 200),
             'Mt_tau_met_lep':     TH2D('%s_%s_%s_Mt_tau_met_lep' % (chan, proc, sys), '', 20, 0, 300, 20, 0, 300),
-	    'Mt_lep_met_shifted': TH1D('%s_%s_%s_Mt_lep_met_shifted'     % (chan, proc, sys), '', 20, 0, 250),
-            'Mt_lep_met_sublep':  TH1D('%s_%s_%s_Mt_lep_met_sublep'     % (chan, proc, sys), '', 20, 0, 250),
 
             # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
             'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
@@ -1982,6 +1980,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'tau_cor_control':       TH1D('%s_%s_%s_tau_cor_control'      % (chan, proc, sys), '', 20, 0, 5),
              'lep_pt_turn':TH1D('%s_%s_%s_lep_pt_turn'% (chan, proc, sys), '', 270, 23, 50),
              'lep_pt_turn_raw':TH1D('%s_%s_%s_lep_pt_turn_raw' % (chan, proc, sys), '', 40, 20, 40),
+
+             'Mt_lep_met_shifted': TH1D('%s_%s_%s_Mt_lep_met_shifted'    % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_sublep':  TH1D('%s_%s_%s_Mt_lep_met_sublep'     % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_30GeV':   TH1D('%s_%s_%s_Mt_lep_met_30GeV'      % (chan, proc, sys), '', 20, 0, 250),
+
+             'regMt_lep_pt':   TH1D('%s_%s_%s_regMt_lep_pt'      % (chan, proc, sys), '', 20, 0, 250),
+             'regMt_lep_eta':  TH1D('%s_%s_%s_regMt_lep_eta'      % (chan, proc, sys), '', 50, -2.5, 2.5),
+             'regMt_lep_phi':  TH1D('%s_%s_%s_regMt_lep_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
+             'regMt_met':      TH1D('%s_%s_%s_regMt_met'      % (chan, proc, sys), '', 20, 0, 250),
+             'regMt_met_phi':  TH1D('%s_%s_%s_regMt_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
+             'regMt_met_lep_cos':  TH1D('%s_%s_%s_regMt_lep_cos'      % (chan, proc, sys), '', 22, -1.1, 1.1),
 
              'b_discr_rest':  TH1D('%s_%s_%s_b_discr_rest'  % (chan, proc, sys), '', 30, 0., 1.),
              'b_discr_med':   TH1D('%s_%s_%s_b_discr_med'   % (chan, proc, sys), '', 30, 0., 1.),
@@ -3285,7 +3294,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             if sub_lep and match_lep:
                 # sub jet by lep
                 # works only for 1 lepton
-                proc_met_lepsub -= lep_p4[0] - p4
+                proc_met_lepsub -= ev.lep_p4[0] - p4
                 sub_lep = False
             else:
                 proc_met_lepsub -= p4 * (en_factor - 1.)
@@ -4948,6 +4957,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                             out_hs[(chan, record_proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight_sys)
 
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met,     record_weight)
+                if lep_p4[0].pt() > 30:
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_30GeV']  .Fill(Mt_lep_met,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_sublep']  .Fill(Mt_lep_met_sublep,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_shifted'] .Fill(Mt_lep_met_shifted,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met,     record_weight)
@@ -4995,6 +5006,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_allobj_met'] .Fill(Mt_lep_allobj_met, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_allobj']     .Fill(Mt_lep_allobj,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_rev_met']    .Fill(Mt_lep_rev_met,    record_weight)
+
+                if Mt_lep_met > 120. and Mt_lep_met < 200.:
+                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt']      .Fill(lep_p4[0].pt(),  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta']     .Fill(lep_p4[0].eta(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_phi']     .Fill(lep_p4[0].phi(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_met']         .Fill(met_pt,         record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_met_phi']     .Fill(proc_met.phi(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_met_lep_cos'] .Fill(met_lep_cos,    record_weight)
 
                 # 2D distrs
                 out_hs[(chan, record_proc, sys_name)]['met_lep_phis']        .Fill(proc_met.Phi(), lep_p4[0].Phi(), record_weight)
