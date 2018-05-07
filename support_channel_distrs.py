@@ -1922,7 +1922,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             #'vtight_tau_jet_eta': TH1D('%s_%s_%s_vtight_tau_jet_eta' % (chan, proc, sys), '', tau_fakerate_etas_n, tau_fakerate_etas),
             'Mt_tau_met':         TH1D('%s_%s_%s_Mt_tau_met'     % (chan, proc, sys), '', 20, 0, 200),
             'Mt_tau_met_lep':     TH2D('%s_%s_%s_Mt_tau_met_lep' % (chan, proc, sys), '', 20, 0, 300, 20, 0, 300),
-            'Mt_lep_met_shifted': TH1D('%s_%s_%s_Mt_lep_met_shifted'     % (chan, proc, sys), '', 20, 0, 250),
+	    'Mt_lep_met_shifted': TH1D('%s_%s_%s_Mt_lep_met_shifted'     % (chan, proc, sys), '', 20, 0, 250),
+            'Mt_lep_met_sublep':  TH1D('%s_%s_%s_Mt_lep_met_sublep'     % (chan, proc, sys), '', 20, 0, 250),
 
             # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
             'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
@@ -2405,6 +2406,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         proc_met_JERDown = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
         proc_met_JESUp   = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
         proc_met_JESDown = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
+        proc_met_lepsub  = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
 
         # from PU tests, leaving it here for now
         if not isMC:
@@ -3201,6 +3203,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # MC jets are corrected for JER, which is propagated to met
         #jet_cor
 
+        sub_lep = True
         for i in xrange(ev.jet_p4.size()):
             # discard jets if they match to lepton
             # TODO: turn it on in next NT
@@ -3269,29 +3272,37 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 # and the jes variation (jes_shift used in the following)
                 # is calculated in the recorrection procedure
                 # -- let's hope it is also adequate
-
-                # propagate the correction to met
-                proc_met -= p4 * (en_factor - 1.)
-
-                # and with systematic variations
-                if with_JER_sys:
-                    #jer_factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
-                    jer_up, jer_down = ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
-                    proc_met_JERUp   -= p4 * (jer_up - 1.)
-                    proc_met_JERDown -= p4 * (jer_down - 1.)
-
-                if with_JES_sys:
-                    #jes_shift = ev.jet_jes_correction_relShift[i]
-                    jes_shift = ev.jet_jes_uncertainty[i]
-                    proc_met_JESUp   -= p4 * (en_factor*(1 + jes_shift) - 1.)
-                    proc_met_JESDown -= p4 * (en_factor*(1 - jes_shift) - 1.)
-
                 HF = ev.jet_hadronFlavour[i]
                 PF = ev.jet_partonFlavour[i]
 
                 # this check is done online with dR 0.4
                 #if ev.jet_matching_gen_dR[i] < 0.3:
                     #genmatch = ev.jet_matching_gen[i]
+
+            # propagate the correction to met
+            proc_met -= p4 * (en_factor - 1.)
+
+            if sub_lep and match_lep:
+                # sub jet by lep
+                # works only for 1 lepton
+                proc_met_lepsub -= lep_p4[0] - p4
+                sub_lep = False
+            else:
+                proc_met_lepsub -= p4 * (en_factor - 1.)
+
+            # and with systematic variations
+            if isMC and with_JER_sys:
+                #jer_factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
+                jer_up, jer_down = ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
+                proc_met_JERUp   -= p4 * (jer_up - 1.)
+                proc_met_JERDown -= p4 * (jer_down - 1.)
+
+            if isMC and with_JES_sys:
+                #jes_shift = ev.jet_jes_correction_relShift[i]
+                jes_shift = ev.jet_jes_uncertainty[i]
+                proc_met_JESUp   -= p4 * (en_factor*(1 + jes_shift) - 1.)
+                proc_met_JESDown -= p4 * (en_factor*(1 - jes_shift) - 1.)
+
 
             jet_pt  = p4.pt() * en_factor
             jet_eta = p4.eta()
@@ -4876,6 +4887,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 # test on Mt fluctuation in mu_sel
                 #if Mt_lep_met < 1.:
                 #    continue
+                Mt_lep_met_sublep = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_lepsub.Px(), proc_met_lepsub.Py())
 
                 met_pt = TMath.Sqrt(met_x_prop*met_x_prop + met_y_prop*met_y_prop)
                 met_pt_taus = TMath.Sqrt(met_x_prop_taus*met_x_prop_taus + met_y_prop_taus*met_y_prop_taus)
@@ -4936,6 +4948,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                             out_hs[(chan, record_proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight_sys)
 
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met,     record_weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_sublep']  .Fill(Mt_lep_met_sublep,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_shifted'] .Fill(Mt_lep_met_shifted,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met']          .Fill(met_pt,         record_weight)
