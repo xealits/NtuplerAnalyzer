@@ -2656,6 +2656,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_dz  .push_back(selMuons[l].muonBestTrack()->dz (goodPV.position()));
 		NT_lep_dxy .push_back(selMuons[l].muonBestTrack()->dxy (goodPV.position()));
 		NT_lep_dB.push_back(selMuons[l].dB());
+		NT_lep_N_trackerLayersWithMeasurement .push_back(selMuons[l].innerTrack()->hitPattern().trackerLayersWithMeasurement());
+
 		float rel_iso = relIso(selMuons[l], NT_fixedGridRhoFastjetAll);
 		NT_lep_relIso.push_back(rel_iso);
 		// using old procedures for now
@@ -2683,6 +2685,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_dz  .push_back(selElectrons[l].gsfTrack()->dz (goodPV.position()));
 		NT_lep_dxy .push_back(selElectrons[l].gsfTrack()->dxy (goodPV.position()));
 		NT_lep_dB.push_back(selElectrons[l].dB());
+		NT_lep_N_trackerLayersWithMeasurement .push_back(selElectrons[l].gsfTrack()->hitPattern().trackerLayersWithMeasurement());
+
 		float rel_iso = relIso(selElectrons[l], NT_fixedGridRhoFastjetAll);
 		NT_lep_relIso.push_back(rel_iso);
 		//bool passIso = patUtils::passIso(selMuons[l], el_ISO, patUtils::CutVersion::Moriond17Cut, rho);
