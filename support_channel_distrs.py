@@ -2336,7 +2336,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_mu # pass_elmu or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+        event_passes = pass_el # pass_mu # pass_elmu or pass_elmu_el # pass_mu or pass_el # passes_optimized #
 
         if not event_passes: continue
         control_counters.Fill(51)
