@@ -1,0 +1,195 @@
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel -d Mt_lep_allobj_met
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel -d Mt_lep_allobj
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root -o plots/v25v26pF9/ --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel -d Mt_lep_met_f --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root -o plots/v25v26pF9/ --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd 1.05      -c ctr_old_mu_presel -d Mt_lep_met_f --ratio-range 0.2
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel -d lep_phi    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d lep_phi  --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d lep_phi --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d lep_phi       --ratio-range 0.2
+
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d regMt_lep_cos   --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d regMt_met       --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d regMt_phi       --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d regMt_lep_pt    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d regMt_lep_eta   --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d regMt_lep_phi   --ratio-range 0.2
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root -o plots/v25v26pF9/ --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel -d regMt_lep_cos   --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root -o plots/v25v26pF9/ --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel -d regMt_met       --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root -o plots/v25v26pF9/ --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel -d regMt_phi       --ratio-range 0.5
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root -o plots/v25v26pF9/ --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel -d regMt_lep_pt    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root -o plots/v25v26pF9/ --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel -d regMt_lep_eta   --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root -o plots/v25v26pF9/ --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel -d regMt_lep_phi   --ratio-range 0.5
+
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel -d Mt_lep_met_shifted --ratio-range 0.2
+
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d lep_pt             --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d lep_eta            --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d lep_phi            --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d met                --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d met_phi            --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d met_lep_cos        --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d Mt_lep_met_f       --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d Mt_lep_met_shifted --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d Mt_lep_met_sublep  --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d Mt_lep_met_30GeV   --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d Mt_lep_allobj_met  --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d Mt_lep_allobj      --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_presel2b -d Mt_lep_rev_met     --ratio-range 0.2
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d regMt_lep_cos    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d regMt_met        --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d regMt_phi        --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d regMt_lep_pt     --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d regMt_lep_eta    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d regMt_lep_phi    --ratio-range 0.2
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d lep_pt               --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d lep_eta              --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d lep_phi              --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d met                  --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d met_phi              --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d met_lep_cos          --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d Mt_lep_met_f         --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d Mt_lep_met_shifted   --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d Mt_lep_met_sublep    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d Mt_lep_met_30GeV     --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d Mt_lep_allobj_met    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d Mt_lep_allobj        --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_selVloose -d Mt_lep_rev_met       --ratio-range 0.2
+
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d regMt_lep_cos
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d regMt_met
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d regMt_phi
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d regMt_lep_pt
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d regMt_lep_eta
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d regMt_lep_phi
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d lep_pt
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d lep_eta
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d lep_phi
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d met
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d met_phi
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d met_lep_cos
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d Mt_lep_met_f
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d Mt_lep_met_shifted
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d Mt_lep_met_sublep
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d Mt_lep_met_30GeV
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d Mt_lep_allobj_met
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d Mt_lep_allobj
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d Mt_lep_rev_met
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root -o plots/v25v26pF9/ --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -x ctr_old_mu_selVloose -d Mt_lep_allobj_met --ratio-range 0.2
+
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d Mt_lep_met_f -x ctr_old_mu_selVloose       --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d Mt_lep_met_shifted -x ctr_old_mu_selVloose --ratio-range 0.2
+
+python stack_plot.py mc_v25v26pF9.root ../merge-sets/v25/pF9/SingleMuon.root --lumi 35500 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_mu_sel -d met_lep_cos -x ctr_old_mu_selVloose --ratio-range 0.2
+
+
+
+
+
+same in electrons
+
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel -d Mt_lep_allobj_met
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel -d Mt_lep_allobj
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel -d Mt_lep_met_f       --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd 1.05      -c ctr_old_el_presel -d Mt_lep_met_f       --ratio-range 0.2
+
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel -d lep1_phi    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d lep1_phi  --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d lep1_phi --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d lep1_phi       --ratio-range 0.2
+
+
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d regMt_lep_cos   --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d regMt_met       --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d regMt_phi       --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d regMt_lep_pt    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d regMt_lep_eta   --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d regMt_lep_phi   --ratio-range 0.2
+
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel -d regMt_lep_cos   --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel -d regMt_met       --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel -d regMt_phi       --ratio-range 0.5
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel -d regMt_lep_pt    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel -d regMt_lep_eta   --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel -d regMt_lep_phi   --ratio-range 0.5
+
+
+
+
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel -d Mt_lep_met_shifted --ratio-range 0.2
+
+
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d lep_pt             --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d lep_eta            --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d lep1_phi            --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d met                --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d met_phi            --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d met_lep_cos        --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d Mt_lep_met_f       --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d Mt_lep_met_shifted --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d Mt_lep_met_sublep  --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d Mt_lep_met_30GeV   --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d Mt_lep_allobj_met  --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d Mt_lep_allobj      --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_presel2b -d Mt_lep_rev_met     --ratio-range 0.2
+
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d regMt_lep_cos    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d regMt_met        --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d regMt_phi        --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d regMt_lep_pt     --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d regMt_lep_eta    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d regMt_lep_phi    --ratio-range 0.2
+
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d lep_pt               --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d lep_eta              --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d lep1_phi              --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d met                  --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d met_phi              --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d met_lep_cos          --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d Mt_lep_met_f         --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d Mt_lep_met_shifted   --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d Mt_lep_met_sublep    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d Mt_lep_met_30GeV     --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d Mt_lep_allobj_met    --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d Mt_lep_allobj        --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_selVloose -d Mt_lep_rev_met       --ratio-range 0.2
+
+
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d regMt_lep_cos
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d regMt_met
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d regMt_phi
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d regMt_lep_pt
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d regMt_lep_eta
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d regMt_lep_phi
+
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d lep_pt
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d lep_eta
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d lep1_phi
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d met
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d met_phi
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d met_lep_cos
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d Mt_lep_met_f
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d Mt_lep_met_shifted
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d Mt_lep_met_sublep
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d Mt_lep_met_30GeV
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d Mt_lep_allobj_met
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d Mt_lep_allobj
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d Mt_lep_rev_met
+
+
+
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d Mt_lep_met_f -x ctr_old_el_selVloose       --ratio-range 0.2
+python stack_plot.py mc_v25v26pF9_el.root ../merge-sets/v25/pF9_el/SingleElectron.root -o plots/v25v26pF9/ --lumi 31300 -p -r --wjet 0.8 --factor-dy 1.05 --qcd-factor 2. -c ctr_old_el_sel -d Mt_lep_met_shifted -x ctr_old_el_selVloose --ratio-range 0.2
+
+

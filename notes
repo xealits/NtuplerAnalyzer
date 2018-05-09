@@ -1,3 +1,128 @@
+# effect from SingleMuon RunG
+
+Data Mt with and without RunG
+
+python jobsums/get_shapes.py --formula "BCDEF:GH" -c ctr_old_mu_presel2b  -d Mt_lep_met_f -p data BCDEF:merge-sets/v25/pF9/SingleMuonBCDEF.root GH:merge-sets/v25/pF9/SingleMuonGH.root
+
+python jobsums/get_shapes.py --formula "BCDEF:GH" -c ctr_old_mu_sel       -d Mt_lep_met_f -p data BCDEF:merge-sets/v25/pF9/SingleMuonBCDEF.root GH:merge-sets/v25/pF9/SingleMuonGH.root
+
+
+
+
+python jobsums/get_shapes.py --formula "full:noG" -c ctr_old_mu_sel       -d Mt_lep_met_f -p data noG:merge-sets/v25/pF9/SingleMuonNoG.root full:merge-sets/v25/pF9/SingleMuon.root
+python jobsums/get_shapes.py --formula "full:noG" -c ctr_old_mu_selVloose -d Mt_lep_met_f -p data noG:merge-sets/v25/pF9/SingleMuonNoG.root full:merge-sets/v25/pF9/SingleMuon.root
+python jobsums/get_shapes.py --formula "full:noG" -c ctr_old_mu_presel    -d Mt_lep_met_f -p data noG:merge-sets/v25/pF9/SingleMuonNoG.root full:merge-sets/v25/pF9/SingleMuon.root
+python jobsums/get_shapes.py --formula "full:noG" -c ctr_old_mu_presel2b  -d Mt_lep_met_f -p data noG:merge-sets/v25/pF9/SingleMuonNoG.root full:merge-sets/v25/pF9/SingleMuon.root
+
+python jobsums/get_shapes.py --formula "runB:runC:runD:runE:runF:runG:runH" -c ctr_old_mu_presel2b  -d Mt_lep_met_f -p data runB:merge-sets/v25/pF9/Data13TeV_SingleMuon2016B_03Feb2017_ver2.root runC:merge-sets/v25/pF9/Data13TeV_SingleMuon2016C_03Feb2017_v1.root runD:merge-sets/v25/pF9/Data13TeV_SingleMuon2016D_03Feb2017_v1.root runE:merge-sets/v25/pF9/Data13TeV_SingleMuon2016E_03Feb2017_v1.root runF:merge-sets/v25/pF9/Data13TeV_SingleMuon2016F_03Feb2017_v1.root runG:merge-sets/v25/pF9/Data13TeV_SingleMuon2016G_03Feb2017_v1.root runH:merge-sets/v25/pF9/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root
+
+python jobsums/get_shapes.py --formula "runB:runC:runD:runE:runF:runG:runH" -c ctr_old_mu_selVloose  -d Mt_lep_met_f -p data runB:merge-sets/v25/pF9/Data13TeV_SingleMuon2016B_03Feb2017_ver2.root runC:merge-sets/v25/pF9/Data13TeV_SingleMuon2016C_03Feb2017_v1.root runD:merge-sets/v25/pF9/Data13TeV_SingleMuon2016D_03Feb2017_v1.root runE:merge-sets/v25/pF9/Data13TeV_SingleMuon2016E_03Feb2017_v1.root runF:merge-sets/v25/pF9/Data13TeV_SingleMuon2016F_03Feb2017_v1.root runG:merge-sets/v25/pF9/Data13TeV_SingleMuon2016G_03Feb2017_v1.root runH:merge-sets/v25/pF9/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root
+
+python jobsums/get_shapes.py --formula "runB:runC:runD:runE:runF:runG:runH" -c ctr_old_mu_sel  -d Mt_lep_met_f -p data runB:merge-sets/v25/pF9/Data13TeV_SingleMuon2016B_03Feb2017_ver2.root runC:merge-sets/v25/pF9/Data13TeV_SingleMuon2016C_03Feb2017_v1.root runD:merge-sets/v25/pF9/Data13TeV_SingleMuon2016D_03Feb2017_v1.root runE:merge-sets/v25/pF9/Data13TeV_SingleMuon2016E_03Feb2017_v1.root runF:merge-sets/v25/pF9/Data13TeV_SingleMuon2016F_03Feb2017_v1.root runG:merge-sets/v25/pF9/Data13TeV_SingleMuon2016G_03Feb2017_v1.root runH:merge-sets/v25/pF9/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root
+
+
+
+
+# mumu DY for detector response in muon phi
+
+python sumup_ttree_distrs.py "sqrt((lep_p4[0].E() + lep_p4[1].E())*(lep_p4[0].E() + lep_p4[1].E()) - (lep_p4[0].Px() + lep_p4[1].Px())*(lep_p4[0].Px() + lep_p4[1].Px()) - (lep_p4[0].Py() + lep_p4[1].Py())*(lep_p4[0].Py() + lep_p4[1].Py()) - (lep_p4[0].Pz() + lep_p4[1].Pz())*(lep_p4[0].Pz() + lep_p4[1].Pz()))" --cond-com "leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 50,0.,150  --histo-name mumu_mass_data --output mumu_mass_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].phi()" --cond-com "leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi0_data --output mumu_phi0_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[0].phi())" --cond-com "lep_p4[0].phi() > 0 && leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi0_pos_data --output mumu_phi0_pos_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[0].phi())" --cond-com "lep_p4[0].phi() < 0 && leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi0_neg_data --output mumu_phi0_neg_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[0].phi())" --cond-com " leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi0_abs_data --output mumu_phi0_abs_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(abs(lep_p4[0].phi()) - 3.1415)" --cond-com " leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi0_absinv_data --output mumu_phi0_absinv_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+
+
+
+phis in RunG (the one with kinks in Mt)
+
+python sumup_ttree_distrs.py "lep_p4[0].phi()" --cond-com "leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi0_dataG --output mumu_phi0_dataG.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016G*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[0].phi())" --cond-com "lep_p4[0].phi() > 0 && leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi0_pos_dataG --output mumu_phi0_pos_dataG.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016G*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[0].phi())" --cond-com "lep_p4[0].phi() < 0 && leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi0_neg_dataG --output mumu_phi0_neg_dataG.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016G*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[0].phi())" --cond-com " leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi0_abs_dataG --output mumu_phi0_abs_dataG.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016G*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(abs(lep_p4[0].phi()) - 3.1415)" --cond-com " leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi0_absinv_dataG --output mumu_phi0_absinv_dataG.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016G*/1*/*/*root &
+
+
+
+eta asym in all
+
+python sumup_ttree_distrs.py "abs(lep_p4[0].eta())" --cond-com "lep_p4[0].eta() < 0 && leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_eta0_neg_data --output mumu_eta0_neg_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[0].eta())" --cond-com "lep_p4[0].eta() > 0 && leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_eta0_pos_data --output mumu_eta0_pos_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()" --cond-com "leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 75,0.,150.0  --histo-name mumu_pt0_data --output mumu_pt0_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+
+python sumup_ttree_distrs.py "abs(lep_p4[1].eta())" --cond-com "lep_p4[1].eta() < 0 && leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_eta1_neg_data --output mumu_eta1_neg_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[1].eta())" --cond-com "lep_p4[1].eta() > 0 && leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_eta1_pos_data --output mumu_eta1_pos_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "lep_p4[1].pt()" --cond-com "leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 75,0.,150.0  --histo-name mumu_pt1_data --output mumu_pt1_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+
+
+
+and phi of lep1
+
+python sumup_ttree_distrs.py "abs(lep_p4[1].phi())" --cond-com "lep_p4[1].phi() > 0 && leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi1_pos_data --output mumu_phi1_pos_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[1].phi())" --cond-com "lep_p4[1].phi() < 0 && leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi1_neg_data --output mumu_phi1_neg_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[1].phi())" --cond-com " leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi1_abs_data --output mumu_phi1_abs_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(abs(lep_p4[1].phi()) - 3.1415)" --cond-com " leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi1_absinv_data --output mumu_phi1_absinv_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+and in runG:
+
+python sumup_ttree_distrs.py "abs(lep_p4[1].phi())" --cond-com "lep_p4[1].phi() > 0 && leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi1_pos_dataG --output mumu_phi1_pos_dataG.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016G*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[1].phi())" --cond-com "lep_p4[1].phi() < 0 && leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi1_neg_dataG --output mumu_phi1_neg_dataG.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016G*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[1].phi())" --cond-com " leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi1_abs_dataG --output mumu_phi1_abs_dataG.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016G*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(abs(lep_p4[1].phi()) - 3.1415)" --cond-com " leps_ID == -13*13 && HLT_mu && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name mumu_phi1_absinv_dataG --output mumu_phi1_absinv_dataG.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016G*/1*/*/*root &
+
+
+
+## elel phi modulations
+
+lep0
+
+python sumup_ttree_distrs.py "abs(lep_p4[0].phi())" --cond-com "lep_p4[0].phi() > 0 && leps_ID == -11*11 && HLT_el && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name elel_phi0_pos_data --output elel_phi0_pos_data.root gstore_outdirs/v27/SingleElectron/Ntupler_v27_Data13TeV_SingleElectron2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[0].phi())" --cond-com "lep_p4[0].phi() < 0 && leps_ID == -11*11 && HLT_el && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name elel_phi0_neg_data --output elel_phi0_neg_data.root gstore_outdirs/v27/SingleElectron/Ntupler_v27_Data13TeV_SingleElectron2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[0].phi())" --cond-com " leps_ID == -11*11 && HLT_el && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name elel_phi0_abs_data --output elel_phi0_abs_data.root gstore_outdirs/v27/SingleElectron/Ntupler_v27_Data13TeV_SingleElectron2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(abs(lep_p4[0].phi()) - 3.1415)" --cond-com " leps_ID == -11*11 && HLT_el && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name elel_phi0_absinv_data --output elel_phi0_absinv_data.root gstore_outdirs/v27/SingleElectron/Ntupler_v27_Data13TeV_SingleElectron2016*/1*/*/*root &
+
+
+lep1
+
+python sumup_ttree_distrs.py "abs(lep_p4[1].phi())" --cond-com "lep_p4[1].phi() > 0 && leps_ID == -11*11 && HLT_el && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name elel_phi1_pos_data --output elel_phi1_pos_data.root gstore_outdirs/v27/SingleElectron/Ntupler_v27_Data13TeV_SingleElectron2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[1].phi())" --cond-com "lep_p4[1].phi() < 0 && leps_ID == -11*11 && HLT_el && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name elel_phi1_neg_data --output elel_phi1_neg_data.root gstore_outdirs/v27/SingleElectron/Ntupler_v27_Data13TeV_SingleElectron2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(lep_p4[1].phi())" --cond-com " leps_ID == -11*11 && HLT_el && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name elel_phi1_abs_data --output elel_phi1_abs_data.root gstore_outdirs/v27/SingleElectron/Ntupler_v27_Data13TeV_SingleElectron2016*/1*/*/*root &
+
+python sumup_ttree_distrs.py "abs(abs(lep_p4[1].phi()) - 3.1415)" --cond-com " leps_ID == -11*11 && HLT_el && lep_matched_HLT[0]" --histo-range 66,-3.3,3.3  --histo-name elel_phi1_absinv_data --output elel_phi1_absinv_data.root gstore_outdirs/v27/SingleElectron/Ntupler_v27_Data13TeV_SingleElectron2016*/1*/*/*root &
+
+
+
+
+
+
+
 # met px py
 
 python sumup_ttree_distrs.py "met_init.Px()" --histo-range 50,-150.,150.  --histo-name met_Px_noreq_tt --output met_Px_noreq_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
@@ -120,7 +245,51 @@ met_Mt_Px4_tt      ->Draw("same")
 met_Mt_PxN4_tt     ->Draw("same")
 
 
-# more met phi studies
+## met shift at Mt region
+
+python sumup_ttree_distrs.py "met_init.Px():met_init.Py()" --cond-com "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.,50,-150.,150.  --histo-name met_PxPy_elmuclose_tt_Mt120 --output met_PxPy_elmuclose_tt_Mt120.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].Px():lep_p4[0].Py()" --cond-com "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.,50,-150.,150.  --histo-name met_lep0PxPy_elmuclose_tt_Mt120 --output met_lep0PxPy_elmuclose_tt_Mt120.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[1].Px():lep_p4[1].Py()" --cond-com "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.,50,-150.,150.  --histo-name met_lep1PxPy_elmuclose_tt_Mt120 --output met_lep1PxPy_elmuclose_tt_Mt120.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].pt():lep_p4[0].eta()" --cond-com "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-2.5.,2.5,50,-150.,150.  --histo-name met_lep0PtEta_elmuclose_tt_Mt120 --output met_lep0PtEta_elmuclose_tt_Mt120.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].eta()" --cond-com "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-2.5,2.5  --histo-name met_lep0Eta_elmuclose_tt_Mt120 --output met_lep0Eta_elmuclose_tt_Mt120.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[1].eta()" --cond-com "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-2.5,2.5  --histo-name met_lep1Eta_elmuclose_tt_Mt120 --output met_lep1Eta_elmuclose_tt_Mt120.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+
+
+python sumup_ttree_distrs.py "lep_p4[1].Px()" --cond-com "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-100.,100.  --histo-name met_lep1Px_elmuclose_tt_Mt120 --output met_lep1Px_elmuclose_tt_Mt120.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].Px()" --cond-com "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-100.,100.  --histo-name met_lep0Px_elmuclose_tt_Mt120 --output met_lep0Px_elmuclose_tt_Mt120.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[1].Py()" --cond-com "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-100.,100.  --histo-name met_lep1Py_elmuclose_tt_Mt120 --output met_lep1Py_elmuclose_tt_Mt120.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].Py()" --cond-com "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-100.,100.  --histo-name met_lep0Py_elmuclose_tt_Mt120 --output met_lep0Py_elmuclose_tt_Mt120.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+
+
+
+data
+
+python sumup_ttree_distrs.py "met_init.Px():met_init.Py()" --cond-com "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.,50,-150.,150.  --histo-name met_PxPy_elmuclose_data_Mt120 --output met_PxPy_elmuclose_data_Mt120.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+
+brinning MC to symmetry:
+
+python sumup_ttree_distrs.py "lep_p4[0].Px():lep_p4[0].Py()" --cond-com "sqrt(2*(sqrt(((met_init.Px() + 4.0)*(met_init.Px()+4.0) + (met_init.Py()-0.15)*(met_init.Py() - 0.15))*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - ((met_init.Px() + 4.0)*lep_p4[0].Px() + (met_init.Py() - 0.15)*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.,50,-150.,150.  --histo-name met_lep0PxPy_elmuclose_tt_Mt120_shifted --output met_lep0PxPy_elmuclose_tt_Mt120_shifted.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].Px()" --cond-com "sqrt(2*(sqrt(((met_init.Px() + 4.0)*(met_init.Px()+4.0) + (met_init.Py()-0.15)*(met_init.Py() - 0.15))*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - ((met_init.Px() + 4.0)*lep_p4[0].Px() + (met_init.Py() - 0.15)*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.  --histo-name met_lep0Px_elmuclose_tt_Mt120_shifted --output met_lep0Px_elmuclose_tt_Mt120_shifted.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].Py()" --cond-com "sqrt(2*(sqrt(((met_init.Px() + 4.0)*(met_init.Px()+4.0) + (met_init.Py()-0.15)*(met_init.Py() - 0.15))*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - ((met_init.Px() + 4.0)*lep_p4[0].Px() + (met_init.Py() - 0.15)*lep_p4[0].Py()))) > 120. && leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-range 50,-150.,150.  --histo-name met_lep0Py_elmuclose_tt_Mt120_shifted --output met_lep0Py_elmuclose_tt_Mt120_shifted.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+
+
+
+
+## more met phi studies
 
 python sumup_ttree_distrs.py "lep_p4[0].phi()" --histo-range 33,-3.3,3.3 --cond-com "leps_ID == -11*13 && HLT_mu && nbjets > 0" --histo-name met_lep0_phi_tt --output lep0_phi_tt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
 
