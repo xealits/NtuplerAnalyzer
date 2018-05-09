@@ -400,6 +400,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_matched_HLT_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_matching_gen_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_N_trackerLayersWithMeasurement)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_correction)
 
 // allIso LEPTONS
 Int_t_in_NTuple(OUTNTUPLE, leps_ID_allIso)

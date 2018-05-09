@@ -72,6 +72,9 @@
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingGenParticles.h"
 #include "UserCode/ttbar-leptons-80X/interface/ProcessingDRCleaning.h"
 
+//#include "UserCode/NtuplerAnalyzer/interface/RoccoR.cc"
+//#include "UserCode/NtuplerAnalyzer/interface/RoccoR.h"
+
 //#include "UserCode/NtuplerAnalyzer/interface/handy.h"
 
 static double pu_vector_NOMINAL[] = {0, 0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
@@ -474,6 +477,9 @@ enum names_Mfr {
 
 
 TRandom3 *r3 = new TRandom3();
+
+//RoccoR  rc("rcdata.2016.v3");
+//RoccoR  rc("UserCode/NtuplerAnalyzer/interface/rcdata.2016.v3");
 
 typedef ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag> ROOT_TTree_vector3D;
 
@@ -2669,6 +2675,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_lep_matching_gen   .push_back(match.closest);
 			NT_lep_matching_gen_dR.push_back(match.dR);
 			}
+		//double dataSF = rc.kScaleDT(selMuons[l].charge(), selMuons[l].pt(), selMuons[l].eta(), selMuons[l].phi(), 0, 0);
+		//NT_lep_correction.push_back(dataSF);
 		}
 
 	LogInfo ("Demo") << "saved muons";
