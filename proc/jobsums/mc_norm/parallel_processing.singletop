@@ -1,0 +1,2 @@
+python -W ignore normalize.py -f MC2016_Summer16_SingleT_tW_5FS_powheg      &
+python -W ignore normalize.py -f MC2016_Summer16_SingleTbar_tW_5FS_powheg   &

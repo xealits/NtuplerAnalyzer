@@ -1,0 +1,233 @@
+# pF3
+# only JER prop in MC
+# including lep matched and taumatched jets
+
+python genjobs.py v26 pF3 --do-W-stitching --all-jets channels_full_sys_lep_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,15
+make sub_proc nt=v26 proc=pF3 node=1
+
+python genjobs.py v25 pF3 --do-W-stitching --all-jets channels_full_sys_lep_selections --without-dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,15
+make sub_proc nt=v25 proc=pF3 node=1
+
+# another round with met corrected by all ntuple jets, not only selected ones
+python genjobs.py v26 pF4 --do-W-stitching --all-jets channels_full_sys_lep_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,15
+make sub_proc nt=v26 proc=pF4 node=1
+
+# still weird distrs
+# elmu(mu) had issues with lep pt and met -- let's look into that with correct jet corrs
+python genjobs.py v26 pF4_em --do-W-stitching channels_control_regions_elmu --dtags MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v26 proc=pF4_em node=1
+
+python genjobs.py v25 pF4_em --do-W-stitching channels_control_regions_elmu --without-dtags MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v25 proc=pF4_em node=1
+
+# v25 v26 don't have dileps
+python genjobs.py v27 pF4_em --do-W-stitching channels_control_regions_elmu --dtags std_min
+make sub_proc nt=v27 proc=pF4_em node=1
+
+# rerun with leptons and met phi distrs
+# --dtags std_data,MC2016_Summer16_TTJets_powheg --scheme 5,0,1,10,10
+python genjobs.py v27 pF7_em --do-W-stitching channels_control_regions_elmu --dtags std_min  --scheme 5,0,1,10,10
+make sub_proc nt=v27 proc=pF7_em node=1
+
+# more distrs in nominal mu
+python genjobs.py v26 pF8 --do-W-stitching channels_nominal_full_mu_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,15
+python genjobs.py v25 pF8 --do-W-stitching channels_nominal_full_mu_selections --without-dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,1,15,15
+
+# tests:
+# Mt with shifted met and with lep-sub met
+python genjobs.py v26 pF9 --do-W-stitching channels_nominal_full_mu_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,15
+# added Mt at 30GeV cut and 120-200 Mt lep-met controls
+python genjobs.py v25 pF9 --do-W-stitching channels_nominal_full_mu_selections --without-dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,1,15,15
+
+and el
+python genjobs.py v26 pF9_el --do-W-stitching channels_nominal_full_el_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,15
+python genjobs.py v25 pF9_el --do-W-stitching channels_nominal_full_el_selections --without-dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,1,15,15
+
+
+# ok, elmu is still werid
+# in singlemu it seems there is a cluster of mismatch in muon channel
+# at muon eta close to 0 (it is also assymetric), tau eta close to 0, high Mt lep-met and tau-met
+# and vtx SFs in ID and ISO (ID more pronounced) which, from prev, might correlated with Mt in exactly this manner
+# but not sure how it can correlate with tau eta close to 0
+# also added presel with 2b requirement to check tt without tau requirement more
+python genjobs.py v26 pF5 --do-W-stitching channels_nominal_full_mu_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,15
+python genjobs.py v25 pF5 --do-W-stitching channels_nominal_full_mu_selections --without-dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,1,15,15
+
+# same in el-tau
+python genjobs.py v26 pF6 --do-W-stitching channels_nominal_full_el_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,15
+python genjobs.py v25 pF6 --do-W-stitching channels_nominal_full_el_selections --without-dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,1,15,15
+
+
+
+
+# pF2 new jets-mets prescription: all miniaod objects (MuClean met in data) and JER factor only
+# v26 TT and v25 rest MC + data
+
+python genjobs.py v26 pF2 --do-W-stitching channels_full_sys_lep_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,15
+make sub_proc nt=v26 proc=pF2 node=1
+
+python genjobs.py v25 pF2 --do-W-stitching channels_full_sys_lep_selections --without-dtags MC2016_Summer16_TTJets_powheg --dtags std --scheme 7,7,2,15,15
+make sub_proc nt=v25 proc=pF2 node=1
+
+
+# check data jes recor in v27
+
+python genjobs.py v27 p3 --do-W-stitching channels_nominal_full_mu_selections --dtags data_mu --scheme 7,7,2,15,15
+make sub_proc nt=v27 proc=p3 node=1
+
+
+
+# running on nominal ntuple jets
+# idea is that there are residual differences from discarded jets which propagate to met and that's why met has a bit larger slope in mu channel
+# will see if the effect is indeed large enough
+# v28 p1_tt only refact renorm systematic
+python genjobs.py v28 pF --do-W-stitching channels_full_sys_lep_selections --dtags std_data --scheme 4,4,1,0,8
+make sub_proc nt=v28 proc=pF node=2
+
+python genjobs.py v26 pF --do-W-stitching channels_full_sys_lep_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 0,7,2,15,15
+make sub_proc nt=v26 proc=pF node=2
+
+python genjobs.py v25 pF --do-W-stitching channels_full_sys_lep_selections --without-dtags MC2016_Summer16_TTJets_powheg --dtags std_mc --scheme 7,7,2,15,15
+make sub_proc nt=v25 proc=pF node=1
+
+
+
+
+# v27 p1_tt only refact renorm systematic
+python genjobs.py v27 p1 --do-W-stitching channels_control_regions --dtags std_min
+make sub_proc nt=v27 proc=p1 node=2
+
+python genjobs.py v27 p1_wz --do-W-stitching channels_control_regions --dtags MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin
+make sub_proc nt=v27 proc=p1_wz node=2
+
+# without el trigger in elmu -- test1
+# and with correct other lep SFs -- test2
+python genjobs.py v27 p2 --do-W-stitching channels_control_regions_elmu --dtags std_min
+make sub_proc nt=v27 proc=p2 node=2
+
+# amcatnlo in control regions
+python genjobs.py v27 p1 --do-W-stitching channels_control_regions --dtags wjets_amcatnlo
+make sub_proc nt=v27 proc=p1 node=1
+
+
+
+
+
+# v26 p1_tt only refact renorm systematic
+python genjobs.py v26 p1_tt channels_refact_sys_lep_selections --dtags MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v26 proc=p1_tt node=2
+
+python genjobs.py v26 p2_tt channels_refact_sys_lep_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,1,15,15
+make sub_proc nt=v26 proc=p2_tt node=1
+
+
+
+
+
+# v25 p1 both el mu with new weights
+# no change in proc! -- will have to add something in mc_norm
+python genjobs.py v25 p1 channels_full_sys_lep_selections
+make sub_proc nt=v25 proc=p1 node=1
+
+# p2 includes Vloose for lj bins !
+python genjobs.py v25 p2_w0jets channels_full_sys_lep_selections --do-W-stitching --dtags MC2016_Summer16_WJets_madgraph
+
+# p3 just nominal full selection for correct yields
+python genjobs.py v25 p3 channels_nominal_full_lep_selections
+make sub_proc nt=v25 proc=p3 node=1
+
+
+
+
+# try new distrs in muon data
+python genjobs.py v25 p2_check_mudata --do-W-stitching channels_full_sys_lep_selections --dtags data_mu,MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v25 proc=p2_check_mudata node=1
+
+
+# and add presel selection for yields table
+python genjobs.py v25 p2_presels channels_presels --do-W-stitching
+make sub_proc nt=v25 proc=p2_presels node=1
+
+python genjobs.py v25 p2_updowns channels_full_sys_lep_selections --dtags updowns
+make sub_proc nt=v25 proc=p2_updowns node=1
+
+
+python genjobs.py v25 p2_controls --do-W-stitching channels_control_regions
+make sub_proc nt=v25 proc=p2_controls node=1
+
+# and just in case
+python genjobs.py v25 p2_control_amcatnlo --do-W-stitching channels_control_regions --dtags wjets_amcatnlo
+make sub_proc nt=v25 proc=p2_control_amcatnlo node=1
+
+# redo wjets control amcatnlo std_amcatnlo
+python genjobs.py v25 p2_recontrols --do-W-stitching channels_control_regions_wjets --dtags std_amcatnlo
+make sub_proc nt=v25 proc=p2_recontrols node=1
+
+
+python genjobs.py v25 p2_tt_jtau channels_full_sys_lep_selections --dtags MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v25 proc=p2_tt_jtau node=1
+
+python genjobs.py v25 p2_jes_recor channels_full_sys_lep_selections --dtags MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v25 proc=p2_jes_recor node=1
+
+python genjobs.py v25 p2_jes_recor_allj channels_full_sys_lep_selections --dtags MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v25 proc=p2_jes_recor_allj node=1
+
+python genjobs.py v25 p2_jes_recor_allj_data channels_full_sys_lep_selections --dtags std_data
+make sub_proc nt=v25 proc=p2_jes_recor_allj_data node=1
+# <-- this were not true allj! the variation was not propagated for taumatched!
+
+python genjobs.py v25 p2_jes_recor_data_trueallj channels_full_sys_lep_selections --dtags std_data --scheme 7,7,1,0,15
+make sub_proc nt=v25 proc=p2_jes_recor_data_trueallj node=1
+
+python genjobs.py v25 p2_jes_recor_tt_trueallj channels_full_sys_lep_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,1,15,15
+make sub_proc nt=v25 proc=p2_jes_recor_tt_trueallj node=1
+
+# finally extra
+python genjobs.py v25 p2_updowns_extra channels_full_sys_lep_selections --dtags updowns_extra
+make sub_proc nt=v25 proc=p2_updowns_extra node=1
+
+# updowns extra
+python genjobs.py v25 p2N_updowns_extra channels_full_sys_lep_selections --dtags updowns_extra
+make sub_proc nt=v25 proc=p2N_updowns_extra node=1
+
+# add these
+MC2016_Summer16_TTJets_powheg_CUETP8M2T4down_ext1
+MC2016_Summer16_TTJets_powheg_isrdown_ext2
+MC2016_Summer16_TTJets_powheg_CUETP8M2T4up_ext1
+MC2016_Summer16_TTJets_powheg_isrup_ext2
+MC2016_Summer16_TTJets_powheg_fsrup_ext2
+
+
+
+# b90a003e63be8134e03bca526aa864590e0a95c9
+# corrected alphaS ubnormal weight in couple tt->taumutauh events, same issue as in PDFs
+
+python genjobs.py v25 p2_rett --do-W-stitching channels_full_sys_lep_selections --dtags MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v25 proc=p2_rett node=1
+
+
+
+# checked the PDF weights -- seem ok both in mu and el channels -- ??
+# resub just tt for mu and v24 el selections
+
+python genjobs.py v23 p5 channels_full_sys_muon_selections --dtags MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v23 proc=p5 node=1
+
+python genjobs.py v23 p5_rest channels_full_sys_muon_selections --without-dtags MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v23 proc=p5_rest node=1
+
+
+python genjobs.py v24 p1 channels_full_sys_electron_selections --dtags MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v24 proc=p1 node=1
+
+python genjobs.py v24 p1_rest channels_full_sys_electron_selections --without-dtags MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v24 proc=p1_rest node=1
+
+
+# v23 p6
+# check PDF fix
+# and preparation of lj-binned shapes from Vloose
+python genjobs.py v23 p6 channels_full_sys_muon_selections --dtags MC2016_Summer16_TTJets_powheg
+make sub_proc nt=v23 proc=p6 node=1
+
