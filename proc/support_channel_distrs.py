@@ -20,20 +20,20 @@ import ROOT
 ROOT.gROOT.Reset()
 
 
-# maybe roccors are in tt lib now
-print '''loading Rochester Corrections'''
-#libpath = "roccor_wrapper_cc"
-#libpath = "RoccoR_cc"
-libpath = "RoccoR_cc.so"
-##cdll.LoadLibrary( libpath ) # TODO: if error -- break
-#roccor_lib = CDLL( libpath )
-#roccor_lib.wrapper_kScaleDT.restype         = c_double
-#roccor_lib.wrapper_kScaleFromGenMC.restype  = c_double
-#roccor_lib.wrapper_kScaleAndSmearMC.restype = c_double
-#ROOT.gROOT.ProcessLine(".L RoccoR.cc++")
-ROOT.gSystem.Load(libpath)
-# it crashes on exit for some root reason
-print '''Rochester Corrections loaded'''
+## maybe roccors are in tt lib now
+#print '''loading Rochester Corrections'''
+##libpath = "roccor_wrapper_cc"
+##libpath = "RoccoR_cc"
+#libpath = "RoccoR_cc.so"
+###cdll.LoadLibrary( libpath ) # TODO: if error -- break
+##roccor_lib = CDLL( libpath )
+##roccor_lib.wrapper_kScaleDT.restype         = c_double
+##roccor_lib.wrapper_kScaleFromGenMC.restype  = c_double
+##roccor_lib.wrapper_kScaleAndSmearMC.restype = c_double
+##ROOT.gROOT.ProcessLine(".L RoccoR.cc++")
+#ROOT.gSystem.Load(libpath)
+## it crashes on exit for some root reason
+#print '''Rochester Corrections loaded'''
 
 #ROOT.gSystem.Unload("RoccoR_cc")
 #print "test:2", roccors.kScaleDT(1, 40., 0.1, 0.3, 0, 0)
@@ -46,12 +46,12 @@ print '''loaded all libraries'''
 
 
 
-#ROOT.gSystem.Load("RoccoR_cc")
-# -- trying to add it into ttbar lib
-#roccors = ROOT.roccor_wrapper # wrapper does not work somehow
-roccors = ROOT.RoccoR("rcdata.2016.v3")
-## works as roccors.kScaleDT(1, 40., 0.1, 0.3, 0, 0)
-print "rochcor test:", roccors.kScaleDT(1, 40., 0.1, 0.3, 0, 0)
+##ROOT.gSystem.Load("RoccoR_cc")
+## -- trying to add it into ttbar lib
+##roccors = ROOT.roccor_wrapper # wrapper does not work somehow
+#roccors = ROOT.RoccoR("rcdata.2016.v3")
+### works as roccors.kScaleDT(1, 40., 0.1, 0.3, 0, 0)
+#print "rochcor test:", roccors.kScaleDT(1, 40., 0.1, 0.3, 0, 0)
 
 
 
@@ -70,7 +70,7 @@ MUf_up_MUr_down    = 7
 MUf_down_MUr_down  = 8
 
 pileup_ratio_h2 = array('d',
-[             0.,              0., 5.2880843860098, 1.9057428051882, 0.8279489845062, 1.0183017803649, 0.8886546873859, 0.4586617471559, 0.4516527021066,
+[       0., 5.2880843860098, 1.9057428051882, 0.8279489845062, 1.0183017803649, 0.8886546873859, 0.4586617471559, 0.4516527021066,
  0.6156808676490, 0.1704361822954, 0.3242275168011, 0.5576231467578, 0.6113064296958, 0.6618982312954, 0.7238796620111, 0.7496036493902, 0.7527610638253,
  0.7469665061269, 0.7399984493388, 0.7465103664963, 0.7983735170584, 0.8590931105313, 0.9034039953181, 0.9130886924812, 0.9080208719211, 0.9319379163103,
  0.9829435013036, 1.0322224123557, 1.1140955233618, 1.2058248250755, 1.2824965710179, 1.4313360174361, 1.5303677831147, 1.6810938978350, 1.8448654681967,
@@ -81,7 +81,7 @@ pileup_ratio_h2 = array('d',
  0.0000055513056, 0.0000033501883, 0.0000035220198, 0.0000009221242])
 
 pileup_ratio_b = array('d',
-[           0.,            0.,  1.1931990788,  1.1075569611,  1.0661905165,  1.6281619271,  1.5759491716,  1.1654388423,  1.9665149072,  6.4816307673,  4.6824471835,
+[       0.,  1.1931990788,  1.1075569611,  1.0661905165,  1.6281619271,  1.5759491716,  1.1654388423,  1.9665149072,  6.4816307673,  4.6824471835,
   3.5057573726,  2.7367422100,  2.0880922033,  1.8309627522,  1.7165427917,  1.6325677435,  1.5679104982,  1.5226132395,  1.4786172115,  1.4187556193,  1.3584199443,
   1.2535044794,  1.1332899913,  0.9984288822,  0.8518945520,  0.7154925510,  0.5827665258,  0.4457781053,  0.3302472894,  0.2310463295,  0.1498402182,  0.0965442096,
   0.0567106928,  0.0327699725,  0.0182363853,  0.0096751297,  0.0050124552,  0.0026185972,  0.0013947431,  0.0008483666,  0.0006315445,  0.0005978998,  0.0007339426,
@@ -90,7 +90,7 @@ pileup_ratio_b = array('d',
   5.5327398483,  5.2282218781,  5.8413138671,  4.8338755929,  8.7575484032,  5.8155542511,  5.9275685169,  6.8122980083, 13.7528845721,  6.9540203430,  ])
 
 pileup_ratio_sum = array('d',
-[       0.,        0., 2.7084899, 1.2387248, 0.8567540, 1.1319902, 1.0625620, 0.6788884, 0.6404915, 1.5813397, 1.2265823, 1.1225145, 1.1346217, 1.0804378, 1.0719238,
+[       0., 2.7084899, 1.2387248, 0.8567540, 1.1319902, 1.0625620, 0.6788884, 0.6404915, 1.5813397, 1.2265823, 1.1225145, 1.1346217, 1.0804378, 1.0719238,
  1.0481945, 1.0210914, 1.0035636, 0.9938051, 0.9824541, 0.9712776, 0.9866336, 0.9979909, 1.0111960, 1.0147509, 1.0078850, 1.0150851, 1.0273812, 1.0179873, 1.0242233,
  1.0233836, 0.9961096, 1.0091713, 0.9729596, 0.9599715, 0.9457656, 0.9168015, 0.8878596, 0.8702436, 0.8374816, 0.8195456, 0.7897366, 0.7430977, 0.7321259, 0.7130387,
  0.7051140, 0.6768290, 0.6399811, 0.6383632, 0.6289537, 0.6205741, 0.6051458, 0.6053456, 0.6291184, 0.6658740, 0.8105650, 0.9697623, 1.1145130, 1.2538530, 1.5301977,
@@ -99,7 +99,7 @@ pileup_ratio_sum = array('d',
 
 
 
-pileup_ratio = array('d', [0, 0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
+pileup_ratio = array('d', [0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
 0.884048630953726, 0.964813189764159, 1.07045369167689, 1.12497267309738, 1.17367530613108, 1.20239808206413, 1.20815108390021, 1.20049333094509, 1.18284686347315, 1.14408796655615,
 1.0962284704313, 1.06549162803223, 1.05151011089581, 1.05159666626121, 1.05064452078328, 1.0491726301522, 1.05772537082991, 1.07279673875566, 1.0837536468865, 1.09536667397119,
 1.10934472980173, 1.09375894592864, 1.08263679568271, 1.04289345879947, 0.9851490341672, 0.909983816540809, 0.821346330143864, 0.71704523475871, 0.609800913869359, 0.502935245638477,
@@ -107,12 +107,8 @@ pileup_ratio = array('d', [0, 0.360609416811339, 0.910848525427002, 1.2062996050
 0.00739933885813127, 0.00437426967257811, 0.00260473545284139, 0.00157047254226743, 0.000969500595715493, 0.000733193118123283, 0.000669817107713128, 0.000728548958604492, 0.000934559691182011, 0.00133719688378802,
 0.00186652283903214, 0.00314422244976771, 0.00406954793369611, 0.00467888840511915, 0.00505224284441512, 0.00562827194936864, 0.0055889504870752, 0.00522867039470319, 0.00450752163476433, 0.00395300774604375,
 0.00330577167682956, 0.00308353042577215, 0.00277846504893301, 0.00223943190687725, 0.00196650068765464, 0.00184742734258922,])
-# 0, 0, 0, 0,
-#0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-#0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-#0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-pileup_ratio_up = array('d', [0, 0.351377216124927, 0.717199649125846, 1.14121536968772, 0.84885826611733, 1.00700929402897, 1.03428595270903, 0.717444379696992, 0.344078389355127, 0.499570875027422,
+pileup_ratio_up = array('d', [0.351377216124927, 0.717199649125846, 1.14121536968772, 0.84885826611733, 1.00700929402897, 1.03428595270903, 0.717444379696992, 0.344078389355127, 0.499570875027422,
 0.606614916257104, 0.632584599390169, 0.731450949466174, 0.827511723989754, 0.910682115553867, 0.960170981598162, 0.988896170761361, 1.02468865580207, 1.05296667126403, 1.05112033565679,
 1.0269129153969, 1.00548641752714, 0.998316130432865, 1.01492587998551, 1.03753749807849, 1.05742218946485, 1.08503978097083, 1.12134132247053, 1.15585339474274, 1.19214399856171,
 1.23308400947467, 1.24528804633732, 1.26786364716917, 1.26101551498967, 1.23297806722714, 1.18042533075471, 1.10534683838101, 1.00275591661645, 0.889094305531985, 0.768791254270252,
@@ -120,12 +116,8 @@ pileup_ratio_up = array('d', [0, 0.351377216124927, 0.717199649125846, 1.1412153
 0.0323695027438475, 0.0216752397914914, 0.0145119352923332, 0.00961177893634792, 0.00615582219138384, 0.00430085627914427, 0.00305735512896403, 0.00223567790438986, 0.00189369737638594, 0.00199585978316291,
 0.00236236592656064, 0.00372472999463276, 0.00474687312579969, 0.00549508151576102, 0.00603023110946686, 0.0068545111910253, 0.00695838760530896, 0.00666224781277046, 0.00588243140681038, 0.00528714370892014,
 0.00453424615273565, 0.00433985030329723, 0.00401493171035719, 0.00332436608713241, 0.00300063798808221, 0.00289925128977536,])
-#0, 0, 0, 0,
-#0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-#0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-#0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-pileup_ratio_down = array('d', [0, 0.37361294640242, 1.1627791004568, 1.26890787896295, 1.10266790442705, 1.23456697093644, 1.26278991594152, 0.909648777562084, 0.759569490571151, 1.09035651921682,
+pileup_ratio_down = array('d', [0.37361294640242, 1.1627791004568, 1.26890787896295, 1.10266790442705, 1.23456697093644, 1.26278991594152, 0.909648777562084, 0.759569490571151, 1.09035651921682,
 1.34530547603283, 1.48713160105, 1.52535976889483, 1.49730550773404, 1.49792998045778, 1.49767851097519, 1.44431045398336, 1.3681909492045, 1.29912252494785, 1.2274279217797,
 1.16525969099909, 1.12531044676724, 1.09094501417685, 1.06405434433422, 1.03997120824565, 1.0185716022098, 1.00560949501652, 0.997570939806059, 0.985543761409897, 0.972557804582185,
 0.957832827239337, 0.9139572640153, 0.872252387173971, 0.808388185417578, 0.733817960498049, 0.650440963845892, 0.561688505024782, 0.466564380334112, 0.374428618658619, 0.28845274688129,
@@ -133,10 +125,6 @@ pileup_ratio_down = array('d', [0, 0.37361294640242, 1.1627791004568, 1.26890787
 0.00118249725637452, 0.000641889697310868, 0.000383647166012176, 0.000273637590071334, 0.000242902582071058, 0.000291239677209452, 0.000394091114279828, 0.000542541231466254, 0.000771067920964491, 0.00113596447675107,
 0.00158061353194779, 0.00261959852500539, 0.00331800452823827, 0.00372426930370732, 0.00392086545082614, 0.00425479965493548, 0.00411256966391362, 0.00374240422174387, 0.00313603438166934, 0.00267155793176928,
 0.00216878198028599, 0.00196249821290853, 0.00171433839159669, 0.00133866519755926, 0.00113810604240254, 0.00103447940224886,])
-#0, 0, 0, 0,
-#0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-#0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-#0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
 
 
@@ -154,7 +142,7 @@ pileup_ratio_down = array('d', [0, 0.37361294640242, 1.1627791004568, 1.26890787
 
 
 
-pileup_ratio_ele = array('d', [0,
+pileup_ratio_ele = array('d', [
    0.413231   ,    1.01701    ,    1.19502     ,   0.883906   ,    1.05852    ,    1.11823    ,    0.789439   ,    0.515477   ,    0.81338    ,    0.990148   ,
    1.0919     ,    1.21784    ,    1.28268     ,   1.33936    ,    1.37267    ,    1.38001    ,    1.37224    ,    1.35253    ,    1.30805    ,    1.25303    ,
    1.21761    ,    1.20085    ,    1.1987      ,   1.19257    ,    1.1807     ,    1.17079    ,    1.15238    ,    1.10667    ,    1.03375    ,    0.935086   ,
@@ -164,7 +152,7 @@ pileup_ratio_ele = array('d', [0,
    0.0035872  ,    0.00465614 ,    0.005359    ,   0.00578897 ,    0.00645001 ,    0.00640537 ,    0.00599263 ,    0.00516618 ,    0.00453067 ,    0.00378886 ,
    0.00353415 ,    0.00318451 ,    0.0025667   ,   0.00225388 ,    0.00211741 ,])
 
-pileup_ratio_up_ele = array('d', [0,
+pileup_ratio_up_ele = array('d', [
    0.402668    ,   0.803377   ,    1.15963    ,    0.764147   ,    0.966328    ,   0.995159   ,    0.71563    ,    0.354304   ,   0.541943   ,    0.674778   ,
    0.713035    ,   0.830366   ,    0.942616   ,    1.03882    ,    1.09589     ,   1.12909    ,    1.17068    ,    1.20376    ,   1.20191    ,    1.17404    ,
    1.14928     ,   1.14083    ,    1.15906    ,    1.18279    ,    1.20082     ,   1.22277    ,    1.24559    ,    1.25129    ,   1.23607    ,    1.19534    ,
@@ -174,7 +162,7 @@ pileup_ratio_up_ele = array('d', [0,
    0.00400894  ,   0.00530831 ,    0.00623822 ,    0.00688571 ,    0.00784455  ,   0.00797042 ,    0.00763388 ,    0.00674129 ,   0.00605947 ,    0.00519674 ,
    0.00497399  ,   0.00460162 ,    0.00381017 ,    0.00343914 ,    0.00332295  ,])
 
-pileup_ratio_down_ele = array('d', [0,
+pileup_ratio_down_ele = array('d', [
    0.428107   ,   1.29388    ,    1.22078   ,    1.02596    ,    1.1769     ,    1.24377    ,    0.921862   ,    0.814769   ,    1.20901   ,    1.51527   ,
    1.68838    ,   1.73792    ,    1.70826   ,    1.70984    ,    1.71038    ,    1.65067    ,    1.56442    ,    1.48535    ,    1.40303   ,    1.33164   ,
    1.28514    ,   1.24342    ,    1.20714   ,    1.16839    ,    1.12262    ,    1.06993    ,    0.999693   ,    0.900043   ,    0.778486  ,    0.644942  ,
@@ -1023,7 +1011,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
     ('weight_pu_h2',  TH1D("weight_pu_h2", "", 50, 0, 2)),
     ('weight_top_pt', TH1D("weight_top_pt", "", 50, 0, 2)),
 
-    ('roccor_factor', TH1D("roccor_factor", "", 50, 0, 2)),
+    #('roccor_factor', TH1D("roccor_factor", "", 50, 0, 2)),
 
     ('weights_gen_weight_too',         TH1D("weights_gen_weight_too",         "", 50, 0, 2)),
     ('weights_gen_weight_norm',        TH1D("weights_gen_weight_norm",        "", 50, 0, 2)),
@@ -2288,7 +2276,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         #ev = tree.GetEntry(iev)
 
         # plug roccor right here
-        roccor_factor = 1.
+        #roccor_factor = 1.
         for i in range(len(ev.lep_id)):
             if abs(ev.lep_id[i]) == 13:
                 #Q = c_int(ev.lep_id > 0)
@@ -2316,18 +2304,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 s = 0
                 m = 0
 
-                if isMC and ev.lep_matching_gen[i]:
-                    #roccor_factor = roccors.wrapper_kScaleFromGenMC(Q, pt, eta, phi, nl, genPt, u1, s, m)
-                    roccor_factor = roccors.kScaleFromGenMC(Q, pt, eta, phi, nl, genPt, u1, s, m)
-                elif isMC and not ev.lep_matching_gen[i]:
-                    #roccor_factor = roccors.wrapper_kScaleAndSmearMC(Q, pt, eta, phi, nl, u1, u2, s, m)
-                    roccor_factor = roccors.kScaleAndSmearMC(Q, pt, eta, phi, nl, u1, u2, s, m)
-                else:
-                    #roccor_factor = roccors.wrapper_kScaleDT(Q, pt, eta, phi, s, m)
-                    roccor_factor = roccors.kScaleDT(Q, pt, eta, phi, s, m)
+                #if isMC and ev.lep_matching_gen[i]:
+                #    #roccor_factor = roccors.wrapper_kScaleFromGenMC(Q, pt, eta, phi, nl, genPt, u1, s, m)
+                #    roccor_factor = roccors.kScaleFromGenMC(Q, pt, eta, phi, nl, genPt, u1, s, m)
+                #elif isMC and not ev.lep_matching_gen[i]:
+                #    #roccor_factor = roccors.wrapper_kScaleAndSmearMC(Q, pt, eta, phi, nl, u1, u2, s, m)
+                #    roccor_factor = roccors.kScaleAndSmearMC(Q, pt, eta, phi, nl, u1, u2, s, m)
+                #else:
+                #    #roccor_factor = roccors.wrapper_kScaleDT(Q, pt, eta, phi, s, m)
+                #    roccor_factor = roccors.kScaleDT(Q, pt, eta, phi, s, m)
 
-                #ev.lep_p4[i] *= roccor_factor
-                control_hs['roccor_factor'].Fill(roccor_factor)
+                ##ev.lep_p4[i] *= roccor_factor
+                #control_hs['roccor_factor'].Fill(roccor_factor)
 
         # the lepton requirements for all 1-lepton channels:
         # do relIso on 1/8 = 0.125, and "all iso" for QCD anti-iso factor
@@ -2362,8 +2350,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # suggested minimal offline
         # https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#2016_Data
         # pt > 25, eta < 2.4
-        #pass_mu_kino = pass_mu_id and ev.lep_p4[0].pt() > 26. and abs(ev.lep_p4[0].eta()) < 2.4
-        pass_mu_kino = pass_mu_id and ev.lep_p4[0].pt() * roccor_factor > 26. and abs(ev.lep_p4[0].eta()) < 2.4
+        pass_mu_kino = pass_mu_id and ev.lep_p4[0].pt() > 26. and abs(ev.lep_p4[0].eta()) < 2.4
+        #pass_mu_kino = pass_mu_id and ev.lep_p4[0].pt() * roccor_factor > 26. and abs(ev.lep_p4[0].eta()) < 2.4
         pass_el_kino = pass_el_id and ev.lep_p4[0].pt() > 30. and abs(ev.lep_p4[0].eta()) < 2.4 and (abs(ev.lep_p4[0].eta()) < 1.4442 or abs(ev.lep_p4[0].eta()) > 1.5660)
 
         # (did) for optimization testing minimum pt cut --- review it after test results
@@ -4872,12 +4860,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 #leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR))
                 lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = sel_leps
 
-                if roccor_factor != 1.:
-                    lep_p4[0] *= roccor_factor
-                    #lep_p4[0].SetPt(lep_p4.pt() * roccor_factor) # works only for 0
-                    proc_met -= lep_p4[0] * (roccor_factor - 1.)
-                    #met_x -=
-                    #met_x -=  * (en_factor - 1.)
+                #if roccor_factor != 1.:
+                #    lep_p4[0] *= roccor_factor
+                #    #lep_p4[0].SetPt(lep_p4.pt() * roccor_factor) # works only for 0
+                #    proc_met -= lep_p4[0] * (roccor_factor - 1.)
+                #    #met_x -=
+                #    #met_x -=  * (en_factor - 1.)
 
                 #control_counters.Fill(50 + 20*sys_i + 2*chan_i + 1)
 
@@ -5129,7 +5117,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_allobj']     .Fill(Mt_lep_allobj,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_rev_met']    .Fill(Mt_lep_rev_met,    record_weight)
 
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_rocc']    .Fill(Mt_lep_met,   roccor_factor)
+                #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_rocc']    .Fill(Mt_lep_met,   roccor_factor)
 
                 if Mt_lep_met > 120. and Mt_lep_met < 200.:
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt']      .Fill(lep_p4[0].pt(),  record_weight)
@@ -5139,7 +5127,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     out_hs[(chan, record_proc, sys_name)]['regMt_met_phi']     .Fill(proc_met.phi(), record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_met_lep_cos'] .Fill(met_lep_cos,    record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_init'] .Fill(lep_p4[0].pt())
-                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_rocc'] .Fill(lep_p4[0].pt(), roccor_factor)
+                    #out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_rocc'] .Fill(lep_p4[0].pt(), roccor_factor)
                     if isMC:
                         out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puM']    .Fill(lep_p4[0].pt(), weight_pu_mu)
                         out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puE']    .Fill(lep_p4[0].pt(), weight_pu_el)
@@ -5147,11 +5135,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                         out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puE_up'] .Fill(lep_p4[0].pt(), weight_pu_el_up)
                         out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puM_dn'] .Fill(lep_p4[0].pt(), weight_pu_mu_dn)
                         out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puE_dn'] .Fill(lep_p4[0].pt(), weight_pu_el_dn)
-                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta_init'].Fill(lep_p4[0].eta())
-                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta_rocc'].Fill(lep_p4[0].eta(), roccor_factor)
-                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_phi_init'].Fill(lep_p4[0].phi())
-                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_phi_rocc'].Fill(lep_p4[0].phi(), roccor_factor)
-                    out_hs[(chan, record_proc, sys_name)]['regMt_rocc']        .Fill(roccor_factor)
+                    #out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta_init'].Fill(lep_p4[0].eta())
+                    #out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta_rocc'].Fill(lep_p4[0].eta(), roccor_factor)
+                    #out_hs[(chan, record_proc, sys_name)]['regMt_lep_phi_init'].Fill(lep_p4[0].phi())
+                    #out_hs[(chan, record_proc, sys_name)]['regMt_lep_phi_rocc'].Fill(lep_p4[0].phi(), roccor_factor)
+                    #out_hs[(chan, record_proc, sys_name)]['regMt_rocc']        .Fill(roccor_factor)
 
                 # 2D distrs
                 out_hs[(chan, record_proc, sys_name)]['met_lep_phis']        .Fill(proc_met.Phi(), lep_p4[0].Phi(), record_weight)
@@ -5897,11 +5885,10 @@ def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19252
 
     fout.Write()
 
-    #
-    print "trying to exit without segfaults"
-    #ROOT.gSystem.Unload("libUserCodettbar-leptons-80X.so")
-    #ROOT.gSystem.Unload("RoccoR_cc")
-    ROOT.gROOT.Reset()
-
-    print "all commands done"
+    ##
+    #print "trying to exit without segfaults"
+    ##ROOT.gSystem.Unload("libUserCodettbar-leptons-80X.so")
+    ##ROOT.gSystem.Unload("RoccoR_cc")
+    #ROOT.gROOT.Reset()
+    #print "all commands done"
 
