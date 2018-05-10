@@ -5,7 +5,8 @@ from collections import OrderedDict, namedtuple, defaultdict
 import cProfile
 import logging as Logging
 import ctypes
-
+from ctypes import CDLL, cdll, c_double, c_int, POINTER
+from random import random as u_random
 
 OLD_MINIAOD_JETS = False
 DO_W_STITCHING = False
@@ -15,13 +16,47 @@ logging = Logging.getLogger("common")
 
 logging.info('importing ROOT')
 import ROOT
-from ROOT import TFile, TTree, TH1D, TH2D, TLorentzVector, TVector3, gROOT, gSystem, TCanvas, TGraphAsymmErrors, TMath, TString
-from ROOT.Math import LorentzVector
+
+ROOT.gROOT.Reset()
+
+
+# maybe roccors are in tt lib now
+print '''loading Rochester Corrections'''
+#libpath = "roccor_wrapper_cc"
+#libpath = "RoccoR_cc"
+libpath = "RoccoR_cc.so"
+##cdll.LoadLibrary( libpath ) # TODO: if error -- break
+#roccor_lib = CDLL( libpath )
+#roccor_lib.wrapper_kScaleDT.restype         = c_double
+#roccor_lib.wrapper_kScaleFromGenMC.restype  = c_double
+#roccor_lib.wrapper_kScaleAndSmearMC.restype = c_double
+#ROOT.gROOT.ProcessLine(".L RoccoR.cc++")
+ROOT.gSystem.Load(libpath)
+# it crashes on exit for some root reason
+print '''Rochester Corrections loaded'''
+
+#ROOT.gSystem.Unload("RoccoR_cc")
+#print "test:2", roccors.kScaleDT(1, 40., 0.1, 0.3, 0, 0)
 
 # the lib is needed for BTagCalibrator and Recoil corrections
 # TODO: somehow these 2 CMSSW classes should be acceptable from pyROOT on its' own without the whole lib
-ROOT.gROOT.Reset()
 ROOT.gSystem.Load("libUserCodettbar-leptons-80X.so")
+
+print '''loaded all libraries'''
+
+
+
+#ROOT.gSystem.Load("RoccoR_cc")
+# -- trying to add it into ttbar lib
+#roccors = ROOT.roccor_wrapper # wrapper does not work somehow
+roccors = ROOT.RoccoR("rcdata.2016.v3")
+## works as roccors.kScaleDT(1, 40., 0.1, 0.3, 0, 0)
+print "rochcor test:", roccors.kScaleDT(1, 40., 0.1, 0.3, 0, 0)
+
+
+
+from ROOT import TFile, TTree, TH1D, TH2D, TLorentzVector, TVector3, gROOT, gSystem, TCanvas, TGraphAsymmErrors, TMath, TString
+from ROOT.Math import LorentzVector
 
 # the names for the positions of renorm refact weights
 MUf_nom_MUr_nom    = 0
@@ -420,6 +455,9 @@ def lepton_muon_trigger_SF(abs_eta, pt): #, double SingleMuon_data_bcdef_fractio
     trg_bin_b = muon_effs_trg_BCDEF_histo.FindBin(bin_x, bin_y)
     trg_bin_h = muon_effs_trg_GH_histo.FindBin(bin_x, bin_y)
     return (muon_effs_trg_BCDEF_histo.GetBinContent(trg_bin_b), muon_effs_trg_BCDEF_histo.GetBinError(trg_bin_b)), (muon_effs_trg_GH_histo.GetBinContent(trg_bin_h), muon_effs_trg_GH_histo.GetBinError(trg_bin_h))
+
+
+
 
 
 '''
@@ -972,17 +1010,20 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
     control_hs = OrderedDict([
     ('weight_pu',     TH1D("weight_pu", "", 50, 0, 2)),
-    ('weight_pu_ele', TH1D("weight_pu_ele", "", 50, 0, 2)),
+    ('weight_pu_el', TH1D("weight_pu_el", "", 50, 0, 2)),
+    ('weight_pu_mu', TH1D("weight_pu_mu", "", 50, 0, 2)),
 
-    ('weight_pu_up',     TH1D("weight_pu_up", "", 50, 0, 2)),
-    ('weight_pu_dn',     TH1D("weight_pu_dn", "", 50, 0, 2)),
-    ('weight_pu_ele_up', TH1D("weight_pu_ele_up", "", 50, 0, 2)),
-    ('weight_pu_ele_dn', TH1D("weight_pu_ele_dn", "", 50, 0, 2)),
+    ('weight_pu_mu_up',     TH1D("weight_pu_up", "", 50, 0, 2)),
+    ('weight_pu_mu_dn',     TH1D("weight_pu_dn", "", 50, 0, 2)),
+    ('weight_pu_el_up', TH1D("weight_pu_ele_up", "", 50, 0, 2)),
+    ('weight_pu_el_dn', TH1D("weight_pu_ele_dn", "", 50, 0, 2)),
 
     ('weight_pu_sum', TH1D("weight_pu_sum", "", 50, 0, 2)),
     ('weight_pu_b',   TH1D("weight_pu_b", "", 50, 0, 2)),
     ('weight_pu_h2',  TH1D("weight_pu_h2", "", 50, 0, 2)),
     ('weight_top_pt', TH1D("weight_top_pt", "", 50, 0, 2)),
+
+    ('roccor_factor', TH1D("roccor_factor", "", 50, 0, 2)),
 
     ('weights_gen_weight_too',         TH1D("weights_gen_weight_too",         "", 50, 0, 2)),
     ('weights_gen_weight_norm',        TH1D("weights_gen_weight_norm",        "", 50, 0, 2)),
@@ -1992,6 +2033,23 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'regMt_met_phi':  TH1D('%s_%s_%s_regMt_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
              'regMt_met_lep_cos':  TH1D('%s_%s_%s_regMt_lep_cos'      % (chan, proc, sys), '', 22, -1.1, 1.1),
 
+             'regMt_lep_pt_puM'     TH1D('%s_%s_%s_regMt_lep_pt_puM'      % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_pt_puE'     TH1D('%s_%s_%s_regMt_lep_pt_puE'      % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_pt_puM_up'  TH1D('%s_%s_%s_regMt_lep_pt_puM_up'   % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_pt_puE_up'  TH1D('%s_%s_%s_regMt_lep_pt_puE_up'   % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_pt_puM_dn'  TH1D('%s_%s_%s_regMt_lep_pt_puM_dn'   % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_pt_puE_dn'  TH1D('%s_%s_%s_regMt_lep_pt_puE_dn'   % (chan, proc, sys), '', 20,    0, 250),
+
+             'regMt_lep_pt_init':   TH1D('%s_%s_%s_regMt_lep_pt_init'      % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_pt_rocc':   TH1D('%s_%s_%s_regMt_lep_pt_rocc'      % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_eta_init':  TH1D('%s_%s_%s_regMt_lep_eta_init'     % (chan, proc, sys), '', 50, -2.5, 2.5),
+             'regMt_lep_phi_init':  TH1D('%s_%s_%s_regMt_lep_phi_init'     % (chan, proc, sys), '', 66, -3.3, 3.3),
+             'regMt_lep_eta_rocc':  TH1D('%s_%s_%s_regMt_lep_eta_rocc'     % (chan, proc, sys), '', 50, -2.5, 2.5),
+             'regMt_lep_phi_rocc':  TH1D('%s_%s_%s_regMt_lep_phi_rocc'     % (chan, proc, sys), '', 66, -3.3, 3.3),
+             'regMt_rocc':          TH1D('%s_%s_%s_regMt_rocc'     % (chan, proc, sys), '', 50, 0.0, 2.0),
+             # compare to Mt_lep_met_f_init
+             'Mt_lep_met_f_rocc':   TH1D('%s_%s_%s_Mt_lep_met_f_rocc'      % (chan, proc, sys), '', 20, 0, 250),
+
              'b_discr_rest':  TH1D('%s_%s_%s_b_discr_rest'  % (chan, proc, sys), '', 30, 0., 1.),
              'b_discr_med':   TH1D('%s_%s_%s_b_discr_med'   % (chan, proc, sys), '', 30, 0., 1.),
              'b_discr_loose': TH1D('%s_%s_%s_b_discr_loose' % (chan, proc, sys), '', 30, 0., 1.),
@@ -2101,8 +2159,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'Mt_lep_met_f_w_mu_trk_h': TH1D('%s_%s_%s_Mt_lep_met_f_w_mu_trk_h' % (chan, proc, sys), '', 20, 0, 250),
              'Mt_lep_met_f_w_pu':       TH1D('%s_%s_%s_Mt_lep_met_f_w_pu'       % (chan, proc, sys), '', 20, 0, 250),
              'Mt_lep_met_f_w_pu_sum':   TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_sum'   % (chan, proc, sys), '', 20, 0, 250),
-             'Mt_lep_met_f_w_pu_b':     TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_b'     % (chan, proc, sys), '', 20, 0, 250),
-             'Mt_lep_met_f_w_pu_h2':    TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_h2'    % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_pu_mu':    TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_mu'    % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_pu_el':    TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_el'    % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_pu_mu_dn': TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_mu_dn' % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_pu_el_dn': TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_el_dn' % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_pu_mu_up': TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_mu_up' % (chan, proc, sys), '', 20, 0, 250),
+             'Mt_lep_met_f_w_pu_el_up': TH1D('%s_%s_%s_Mt_lep_met_f_w_pu_el_up' % (chan, proc, sys), '', 20, 0, 250),
              'Mt_lep_met_f_w_bf':       TH1D('%s_%s_%s_Mt_lep_met_f_w_bf'       % (chan, proc, sys), '', 20, 0, 250),
              'Mt_lep_met_f_w_bf_min':   TH1D('%s_%s_%s_Mt_lep_met_f_w_bf_min'   % (chan, proc, sys), '', 20, 0, 250),
              'Mt_lep_met_f_w_tp':       TH1D('%s_%s_%s_Mt_lep_met_f_w_tp'       % (chan, proc, sys), '', 20, 0, 250),
@@ -2220,8 +2282,50 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             if ev.gen_NUP > 5: continue
 
         #if iev <  range_min: continue
-        #if iev >= range_max: break
+        #if iev >= 10: break
         #ev = tree.GetEntry(iev)
+
+        # plug roccor right here
+        roccor_factor = 1.
+        for i in range(len(ev.lep_id)):
+            if abs(ev.lep_id[i]) == 13:
+                #Q = c_int(ev.lep_id > 0)
+                #pt = c_double(ev.lep_p4[i].pt())
+                #eta = c_double(ev.lep_p4[i].eta())
+                #phi = c_double(ev.lep_p4[i].phi())
+                ##nl = c_int(ev.lep_N_trackerLayersWithMeasurement[i])
+                #nl = c_int(14)
+                #genPt = pt
+                #u1 = c_double(0.5)
+                #u2 = c_double(0.5)
+                #s = c_int(0)
+                #m = c_int(0)
+
+                #
+                Q = int(ev.lep_id > 0)
+                pt  = ev.lep_p4[i].pt()
+                eta = ev.lep_p4[i].eta()
+                phi = ev.lep_p4[i].phi()
+                #nl = ev.lep_N_trackerLayersWithMeasurement[i]
+                nl = 12 # average in data and mc
+                genPt = pt # TODO add this
+                u1 = u_random() #0.5
+                u2 = u_random() #0.5
+                s = 0
+                m = 0
+
+                if isMC and ev.lep_matching_gen[i]:
+                    #roccor_factor = roccors.wrapper_kScaleFromGenMC(Q, pt, eta, phi, nl, genPt, u1, s, m)
+                    roccor_factor = roccors.kScaleFromGenMC(Q, pt, eta, phi, nl, genPt, u1, s, m)
+                elif isMC and not ev.lep_matching_gen[i]:
+                    #roccor_factor = roccors.wrapper_kScaleAndSmearMC(Q, pt, eta, phi, nl, u1, u2, s, m)
+                    roccor_factor = roccors.kScaleAndSmearMC(Q, pt, eta, phi, nl, u1, u2, s, m)
+                else:
+                    #roccor_factor = roccors.wrapper_kScaleDT(Q, pt, eta, phi, s, m)
+                    roccor_factor = roccors.kScaleDT(Q, pt, eta, phi, s, m)
+
+                #ev.lep_p4[i] *= roccor_factor
+                control_hs['roccor_factor'].Fill(roccor_factor)
 
         # the lepton requirements for all 1-lepton channels:
         # do relIso on 1/8 = 0.125, and "all iso" for QCD anti-iso factor
@@ -2256,7 +2360,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # suggested minimal offline
         # https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#2016_Data
         # pt > 25, eta < 2.4
-        pass_mu_kino = pass_mu_id and ev.lep_p4[0].pt() > 26. and abs(ev.lep_p4[0].eta()) < 2.4
+        #pass_mu_kino = pass_mu_id and ev.lep_p4[0].pt() > 26. and abs(ev.lep_p4[0].eta()) < 2.4
+        pass_mu_kino = pass_mu_id and ev.lep_p4[0].pt() * roccor_factor > 26. and abs(ev.lep_p4[0].eta()) < 2.4
         pass_el_kino = pass_el_id and ev.lep_p4[0].pt() > 30. and abs(ev.lep_p4[0].eta()) < 2.4 and (abs(ev.lep_p4[0].eta()) < 1.4442 or abs(ev.lep_p4[0].eta()) > 1.5660)
 
         # (did) for optimization testing minimum pt cut --- review it after test results
@@ -2297,10 +2402,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # TODO: need to check the trigger SF-s then......
         # for now I'm just trying to get rid of el-mu mix in MC
         #pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el and ev.no_iso_veto_leps and \
-        pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and ev.no_iso_veto_leps and \
+        pass_elmu_id = ev.leps_ID == -11*13 and ev.HLT_mu and ev.no_iso_veto_leps and \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
+
+        pass_elmu = pass_elmu_id and ((ev.lep_relIso[0] < 0.15 and ev.lep_relIso[1] < 0.0588) if abs(ev.lep_id[0]) == 13 else (ev.lep_relIso[1] < 0.15 and ev.lep_relIso[0] < 0.0588))
 
         pass_elmu_el = ev.leps_ID == -11*13 and ev.HLT_el and ev.no_iso_veto_leps and \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 11 else ev.lep_matched_HLT[1]) and \
@@ -2336,7 +2443,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_el # pass_mu # pass_elmu or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+        event_passes = pass_mu # pass_elmu # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
 
         if not event_passes: continue
         control_counters.Fill(51)
@@ -2432,20 +2539,26 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         weights_gen_weight_centralFrag   = 1.
         if isMC:
             try:
+                weight_pu_el    = pileup_ratio_ele     [ev.nvtx_gen]
+                weight_pu_el_up = pileup_ratio_up_ele  [ev.nvtx_gen]
+                weight_pu_el_dn = pileup_ratio_down_ele[ev.nvtx_gen]
+                weight_pu_mu    = pileup_ratio[ev.nvtx_gen]
+                weight_pu_mu_up = pileup_ratio_up[ev.nvtx_gen]
+                weight_pu_mu_dn = pileup_ratio_down[ev.nvtx_gen]
                 if passed_ele_event:
-                    weight_pu    = pileup_ratio_ele     [ev.nvtx_gen]
-                    weight_pu_up = pileup_ratio_up_ele  [ev.nvtx_gen]
-                    weight_pu_dn = pileup_ratio_down_ele[ev.nvtx_gen]
-                    control_hs['weight_pu_ele']   .Fill(weight_pu)
-                    control_hs['weight_pu_ele_up'].Fill(weight_pu_up)
-                    control_hs['weight_pu_ele_dn'].Fill(weight_pu_dn)
+                    weight_pu    = weight_pu_el   
+                    weight_pu_up = weight_pu_el_up
+                    weight_pu_dn = weight_pu_el_dn
+                    control_hs['weight_pu_el']   .Fill(weight_pu)
+                    control_hs['weight_pu_el_up'].Fill(weight_pu_up)
+                    control_hs['weight_pu_el_dn'].Fill(weight_pu_dn)
                 else:
-                    weight_pu    = pileup_ratio[ev.nvtx_gen]
-                    weight_pu_up = pileup_ratio_up[ev.nvtx_gen]
-                    weight_pu_dn = pileup_ratio_down[ev.nvtx_gen]
-                    control_hs['weight_pu']   .Fill(weight_pu)
-                    control_hs['weight_pu_up'].Fill(weight_pu_up)
-                    control_hs['weight_pu_dn'].Fill(weight_pu_dn)
+                    weight_pu    = weight_pu_mu   
+                    weight_pu_up = weight_pu_mu_up
+                    weight_pu_dn = weight_pu_mu_dn
+                    control_hs['weight_pu_mu']   .Fill(weight_pu)
+                    control_hs['weight_pu_mu_up'].Fill(weight_pu_up)
+                    control_hs['weight_pu_mu_dn'].Fill(weight_pu_dn)
                 # and the new PU-s
                 weight_pu_sum  = pileup_ratio_sum[ev.nvtx_gen]
                 weight_pu_b    = pileup_ratio_b[ev.nvtx_gen]
@@ -4757,6 +4870,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 #leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR))
                 lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = sel_leps
 
+                if roccor_factor != 1.:
+                    lep_p4[0] *= roccor_factor
+                    #lep_p4[0].SetPt(lep_p4.pt() * roccor_factor) # works only for 0
+                    proc_met -= lep_p4[0] * (roccor_factor - 1.)
+                    #met_x -=
+                    #met_x -=  * (en_factor - 1.)
+
                 #control_counters.Fill(50 + 20*sys_i + 2*chan_i + 1)
 
                 #record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
@@ -5007,6 +5127,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_allobj']     .Fill(Mt_lep_allobj,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_rev_met']    .Fill(Mt_lep_rev_met,    record_weight)
 
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_rocc']    .Fill(Mt_lep_met,   roccor_factor)
+
                 if Mt_lep_met > 120. and Mt_lep_met < 200.:
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt']      .Fill(lep_p4[0].pt(),  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta']     .Fill(lep_p4[0].eta(), record_weight)
@@ -5014,6 +5136,20 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     out_hs[(chan, record_proc, sys_name)]['regMt_met']         .Fill(met_pt,         record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_met_phi']     .Fill(proc_met.phi(), record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_met_lep_cos'] .Fill(met_lep_cos,    record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_init'] .Fill(lep_p4[0].pt())
+                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_rocc'] .Fill(lep_p4[0].pt(), roccor_factor)
+                    if isMC:
+                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puM']    .Fill(lep_p4[0].pt(), weight_pu_mu)
+                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puE']    .Fill(lep_p4[0].pt(), weight_pu_el)
+                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puM_up'] .Fill(lep_p4[0].pt(), weight_pu_mu_up)
+                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puE_up'] .Fill(lep_p4[0].pt(), weight_pu_el_up)
+                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puM_dn'] .Fill(lep_p4[0].pt(), weight_pu_mu_dn)
+                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puE_dn'] .Fill(lep_p4[0].pt(), weight_pu_el_dn)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta_init'].Fill(lep_p4[0].eta())
+                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta_rocc'].Fill(lep_p4[0].eta(), roccor_factor)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_phi_init'].Fill(lep_p4[0].phi())
+                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_phi_rocc'].Fill(lep_p4[0].phi(), roccor_factor)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_rocc']        .Fill(roccor_factor)
 
                 # 2D distrs
                 out_hs[(chan, record_proc, sys_name)]['met_lep_phis']        .Fill(proc_met.Phi(), lep_p4[0].Phi(), record_weight)
@@ -5221,18 +5357,24 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 # controls for effect from weights
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_init']      .Fill(Mt_lep_met)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_in']      .Fill(Mt_lep_met, weight)
+
                 if isMC and pass_mus:
-                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_mu_trk_b'].Fill(Mt_lep_met, mu_sfs_b[1])
-                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_mu_trk_h'].Fill(Mt_lep_met, mu_sfs_h[1])
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_bf']      .Fill(Mt_lep_met, weight_bSF)
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu']      .Fill(Mt_lep_met, weight_PU)
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_sum']  .Fill(Mt_lep_met, weight_pu_sum)
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_b']    .Fill(Mt_lep_met, weight_pu_b)
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_h2']   .Fill(Mt_lep_met, weight_pu_h2)
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_tp']      .Fill(Mt_lep_met, weight_top_pt)
-                #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, record_weight)
-                #out_hs[(chan, record_proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, record_weight)
-                #out_hs[(chan, record_proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, record_weight)
+                    if pass_mus:
+                        out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_mu_trk_b'].Fill(Mt_lep_met, mu_sfs_b[1])
+                        out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_mu_trk_h'].Fill(Mt_lep_met, mu_sfs_h[1])
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_bf']       .Fill(Mt_lep_met, weight_bSF)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu']       .Fill(Mt_lep_met, weight_PU)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_sum']   .Fill(Mt_lep_met, weight_pu_sum)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_mu']    .Fill(Mt_lep_met, weight_pu_mu)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_el']    .Fill(Mt_lep_met, weight_pu_el)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_mu_dn'] .Fill(Mt_lep_met, weight_pu_mu_dn)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_el_dn'] .Fill(Mt_lep_met, weight_pu_el_dn)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_mu_up'] .Fill(Mt_lep_met, weight_pu_mu_up)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_el_up'] .Fill(Mt_lep_met, weight_pu_el_up)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_tp']       .Fill(Mt_lep_met, weight_top_pt)
+                    #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met']    .Fill(Mt_lep_met, record_weight)
+                    #out_hs[(chan, record_proc, sys_name)]['dphi_lep_met']     .Fill(dphi_lep_met, record_weight)
+                    #out_hs[(chan, record_proc, sys_name)]['cos_dphi_lep_met'] .Fill(cos_dphi_lep_met, record_weight)
 
                 # checking the effect of mu trk SF
                 out_hs[(chan, record_proc, sys_name)]['nvtx_init']      .Fill(ev.nvtx)
@@ -5750,4 +5892,11 @@ def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19252
 
     fout.Write()
 
+    #
+    print "trying to exit without segfaults"
+    #ROOT.gSystem.Unload("libUserCodettbar-leptons-80X.so")
+    #ROOT.gSystem.Unload("RoccoR_cc")
+    ROOT.gROOT.Reset()
+
+    print "all commands done"
 
