@@ -1994,6 +1994,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'Mt_lep_rev_met':     TH1D('%s_%s_%s_Mt_lep_rev_met'    % (chan, proc, sys), '', 20, 0, 250),
              'lep1_phi':           TH1D('%s_%s_%s_lep1_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
              'lep2_phi':           TH1D('%s_%s_%s_lep2_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2), # tau in lep-tau channels
+             'lep1_eta':           TH1D('%s_%s_%s_lep1_eta'   % (chan, proc, sys), '', 50, -2.5, 2.5),
+             'lep2_eta':           TH1D('%s_%s_%s_lep2_eta'   % (chan, proc, sys), '', 50, -2.5, 2.5), # tau in lep-tau channels
              'met_phi':            TH1D('%s_%s_%s_met_phi'    % (chan, proc, sys), '', 30, -3.2, 3.2),
              'rev_met_phi':        TH1D('%s_%s_%s_rev_met_phi'    % (chan, proc, sys), '', 30, -3.2, 3.2),
              'allobj_phi':         TH1D('%s_%s_%s_allobj_phi'   % (chan, proc, sys), '', 30, -3.2, 3.2),
@@ -2033,12 +2035,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'regMt_met_phi':  TH1D('%s_%s_%s_regMt_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
              'regMt_met_lep_cos':  TH1D('%s_%s_%s_regMt_lep_cos'      % (chan, proc, sys), '', 22, -1.1, 1.1),
 
-             'regMt_lep_pt_puM'     TH1D('%s_%s_%s_regMt_lep_pt_puM'      % (chan, proc, sys), '', 20,    0, 250),
-             'regMt_lep_pt_puE'     TH1D('%s_%s_%s_regMt_lep_pt_puE'      % (chan, proc, sys), '', 20,    0, 250),
-             'regMt_lep_pt_puM_up'  TH1D('%s_%s_%s_regMt_lep_pt_puM_up'   % (chan, proc, sys), '', 20,    0, 250),
-             'regMt_lep_pt_puE_up'  TH1D('%s_%s_%s_regMt_lep_pt_puE_up'   % (chan, proc, sys), '', 20,    0, 250),
-             'regMt_lep_pt_puM_dn'  TH1D('%s_%s_%s_regMt_lep_pt_puM_dn'   % (chan, proc, sys), '', 20,    0, 250),
-             'regMt_lep_pt_puE_dn'  TH1D('%s_%s_%s_regMt_lep_pt_puE_dn'   % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_pt_puM'    :  TH1D('%s_%s_%s_regMt_lep_pt_puM'      % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_pt_puE'    :  TH1D('%s_%s_%s_regMt_lep_pt_puE'      % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_pt_puM_up' :  TH1D('%s_%s_%s_regMt_lep_pt_puM_up'   % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_pt_puE_up' :  TH1D('%s_%s_%s_regMt_lep_pt_puE_up'   % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_pt_puM_dn' :  TH1D('%s_%s_%s_regMt_lep_pt_puM_dn'   % (chan, proc, sys), '', 20,    0, 250),
+             'regMt_lep_pt_puE_dn' :  TH1D('%s_%s_%s_regMt_lep_pt_puE_dn'   % (chan, proc, sys), '', 20,    0, 250),
 
              'regMt_lep_pt_init':   TH1D('%s_%s_%s_regMt_lep_pt_init'      % (chan, proc, sys), '', 20,    0, 250),
              'regMt_lep_pt_rocc':   TH1D('%s_%s_%s_regMt_lep_pt_rocc'      % (chan, proc, sys), '', 20,    0, 250),
@@ -5158,14 +5160,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['met_allobj_phis']     .Fill(proc_met.Phi(), all_sel_objects.Phi(), record_weight)
 
                 out_hs[(chan, record_proc, sys_name)]['lep1_phi']      .Fill(lep_p4[0].phi(), record_weight)
+                out_hs[(chan, record_proc, sys_name)]['lep1_eta']      .Fill(lep_p4[0].eta(), record_weight)
                 out_hs[(chan, record_proc, sys_name)]['met_phi']       .Fill(proc_met.phi(), record_weight)
                 out_hs[(chan, record_proc, sys_name)]['rev_met_phi']   .Fill(rev_met_phi, record_weight)
 
-                if sel_taus:
+                if len(lep_p4)>1:
+                    out_hs[(chan, record_proc, sys_name)]['lep2_phi']  .Fill(lep_p4[1].phi(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['lep2_eta']  .Fill(lep_p4[1].eta(), record_weight)
+                elif sel_taus:
+		    out_hs[(chan, record_proc, sys_name)]['lep2_eta'] .Fill(sel_taus[0][0].eta(), record_weight)
                     out_hs[(chan, record_proc, sys_name)]['lep2_phi'] .Fill(sel_taus[0][0].phi(), record_weight)
                     out_hs[(chan, record_proc, sys_name)]['tau_phi']  .Fill(sel_taus[0][0].phi(), record_weight)
-                elif len(lep_p4)>1:
-                    out_hs[(chan, record_proc, sys_name)]['lep2_phi']  .Fill(lep_p4[1].phi(), record_weight)
 
                 for i, pdgId in enumerate(lep_id[:2]):
                     out_hs[(chan, record_proc, sys_name)][pdgId_codes[pdgId]]  .Fill(lep_p4[i].phi(), record_weight)

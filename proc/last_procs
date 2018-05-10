@@ -4,7 +4,7 @@
 python genjobs.py v27 pR1 --do-W-stitching channels_control_regions_elmu --dtags data_mu,MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,0
 make sub_proc nt=v27 proc=pR1 node=1
 
-python genjobs.py v26 pR2 --do-W-stitching channels_nominal_full_mu_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,0
+python genjobs.py v26 pR2 --do-W-stitching channels_nominal_full_mu_selections --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,1,15,0
 make sub_proc nt=v26 proc=pR2 node=1
 
 
