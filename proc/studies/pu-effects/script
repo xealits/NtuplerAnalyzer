@@ -1,0 +1,75 @@
+TH1D* reg_pt_init = (TH1D*) ctr_old_mu_presel->Get("tt_lj/NOMINAL/ctr_old_mu_presel_tt_lj_NOMINAL_regMt_lep_pt_init")
+TH1D* reg_pt_puM = (TH1D*) ctr_old_mu_presel->Get("tt_lj/NOMINAL/ctr_old_mu_presel_tt_lj_NOMINAL_regMt_lep_pt_puM")
+TH1D* reg_pt_puE = (TH1D*) ctr_old_mu_presel->Get("tt_lj/NOMINAL/ctr_old_mu_presel_tt_lj_NOMINAL_regMt_lep_pt_puE")
+TH1D* reg_pt_puM_up = (TH1D*) ctr_old_mu_presel->Get("tt_lj/NOMINAL/ctr_old_mu_presel_tt_lj_NOMINAL_regMt_lep_pt_puM_up")
+TH1D* reg_pt_puM_dn = (TH1D*) ctr_old_mu_presel->Get("tt_lj/NOMINAL/ctr_old_mu_presel_tt_lj_NOMINAL_regMt_lep_pt_puM_dn")
+TH1D* reg_pt_puE_up = (TH1D*) ctr_old_mu_presel->Get("tt_lj/NOMINAL/ctr_old_mu_presel_tt_lj_NOMINAL_regMt_lep_pt_puE_up")
+TH1D* reg_pt_puE_dn = (TH1D*) ctr_old_mu_presel->Get("tt_lj/NOMINAL/ctr_old_mu_presel_tt_lj_NOMINAL_regMt_lep_pt_puE_dn")
+
+
+reg_pt_puE->SetLineColor(kRed)
+reg_pt_puE_up->SetLineColor(kRed+2)
+reg_pt_puE_dn->SetLineColor(kYellow)
+
+reg_pt_puM_up->SetLineColor(kRed+2)
+reg_pt_puM_dn->SetLineColor(kYellow)
+
+
+reg_pt_puM->Divide(reg_pt_init)
+reg_pt_puM_up->Divide(reg_pt_init)
+reg_pt_puM_dn->Divide(reg_pt_init)
+reg_pt_puE->Divide(reg_pt_init)
+reg_pt_puE_up->Divide(reg_pt_init)
+reg_pt_puE_dn->Divide(reg_pt_init)
+
+reg_pt_puM->Draw()
+reg_pt_puE->Draw("same")
+
+reg_pt_puM->Draw()
+reg_pt_puM_up->Draw("same")
+reg_pt_puM_dn->Draw("same")
+
+
+
+
+
+lj at sel
+
+TH1D* reg_pt_init   = (TH1D*) ctr_old_mu_sel->Get("tt_lj/NOMINAL/ctr_old_mu_sel_tt_lj_NOMINAL_regMt_lep_pt_init")
+TH1D* reg_pt_puM    = (TH1D*) ctr_old_mu_sel->Get("tt_lj/NOMINAL/ctr_old_mu_sel_tt_lj_NOMINAL_regMt_lep_pt_puM")
+TH1D* reg_pt_puE    = (TH1D*) ctr_old_mu_sel->Get("tt_lj/NOMINAL/ctr_old_mu_sel_tt_lj_NOMINAL_regMt_lep_pt_puE")
+TH1D* reg_pt_puM_up = (TH1D*) ctr_old_mu_sel->Get("tt_lj/NOMINAL/ctr_old_mu_sel_tt_lj_NOMINAL_regMt_lep_pt_puM_up")
+TH1D* reg_pt_puM_dn = (TH1D*) ctr_old_mu_sel->Get("tt_lj/NOMINAL/ctr_old_mu_sel_tt_lj_NOMINAL_regMt_lep_pt_puM_dn")
+TH1D* reg_pt_puE_up = (TH1D*) ctr_old_mu_sel->Get("tt_lj/NOMINAL/ctr_old_mu_sel_tt_lj_NOMINAL_regMt_lep_pt_puE_up")
+TH1D* reg_pt_puE_dn = (TH1D*) ctr_old_mu_sel->Get("tt_lj/NOMINAL/ctr_old_mu_sel_tt_lj_NOMINAL_regMt_lep_pt_puE_dn")
+
+
+
+
+
+
+mutau at presel
+
+TH1D* reg_pt_init   = (TH1D*) ctr_old_mu_presel->Get("tt_mutau/NOMINAL/ctr_old_mu_presel_tt_mutau_NOMINAL_regMt_lep_pt_init")
+TH1D* reg_pt_puM    = (TH1D*) ctr_old_mu_presel->Get("tt_mutau/NOMINAL/ctr_old_mu_presel_tt_mutau_NOMINAL_regMt_lep_pt_puM")
+TH1D* reg_pt_puE    = (TH1D*) ctr_old_mu_presel->Get("tt_mutau/NOMINAL/ctr_old_mu_presel_tt_mutau_NOMINAL_regMt_lep_pt_puE")
+TH1D* reg_pt_puM_up = (TH1D*) ctr_old_mu_presel->Get("tt_mutau/NOMINAL/ctr_old_mu_presel_tt_mutau_NOMINAL_regMt_lep_pt_puM_up")
+TH1D* reg_pt_puM_dn = (TH1D*) ctr_old_mu_presel->Get("tt_mutau/NOMINAL/ctr_old_mu_presel_tt_mutau_NOMINAL_regMt_lep_pt_puM_dn")
+TH1D* reg_pt_puE_up = (TH1D*) ctr_old_mu_presel->Get("tt_mutau/NOMINAL/ctr_old_mu_presel_tt_mutau_NOMINAL_regMt_lep_pt_puE_up")
+TH1D* reg_pt_puE_dn = (TH1D*) ctr_old_mu_presel->Get("tt_mutau/NOMINAL/ctr_old_mu_presel_tt_mutau_NOMINAL_regMt_lep_pt_puE_dn")
+
+
+at sel
+
+TH1D* reg_pt_init   = (TH1D*) ctr_old_mu_sel->Get("tt_mutau/NOMINAL/ctr_old_mu_sel_tt_mutau_NOMINAL_regMt_lep_pt_init")
+TH1D* reg_pt_puM    = (TH1D*) ctr_old_mu_sel->Get("tt_mutau/NOMINAL/ctr_old_mu_sel_tt_mutau_NOMINAL_regMt_lep_pt_puM")
+TH1D* reg_pt_puE    = (TH1D*) ctr_old_mu_sel->Get("tt_mutau/NOMINAL/ctr_old_mu_sel_tt_mutau_NOMINAL_regMt_lep_pt_puE")
+TH1D* reg_pt_puM_up = (TH1D*) ctr_old_mu_sel->Get("tt_mutau/NOMINAL/ctr_old_mu_sel_tt_mutau_NOMINAL_regMt_lep_pt_puM_up")
+TH1D* reg_pt_puM_dn = (TH1D*) ctr_old_mu_sel->Get("tt_mutau/NOMINAL/ctr_old_mu_sel_tt_mutau_NOMINAL_regMt_lep_pt_puM_dn")
+TH1D* reg_pt_puE_up = (TH1D*) ctr_old_mu_sel->Get("tt_mutau/NOMINAL/ctr_old_mu_sel_tt_mutau_NOMINAL_regMt_lep_pt_puE_up")
+TH1D* reg_pt_puE_dn = (TH1D*) ctr_old_mu_sel->Get("tt_mutau/NOMINAL/ctr_old_mu_sel_tt_mutau_NOMINAL_regMt_lep_pt_puE_dn")
+
+
+
+
+
