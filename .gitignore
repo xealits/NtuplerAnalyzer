@@ -2,4 +2,5 @@
 *root
 *png
 !proc/studies/*png
+!proc/studies/*/*png
 
