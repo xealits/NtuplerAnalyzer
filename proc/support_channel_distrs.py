@@ -1595,6 +1595,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_old_mu_sel_ljout_ss':        (procs_mu, systematic_names_all_with_th),
         },
 
+        'channels_full_sys_muon_sel' : {
+                'ctr_old_mu_selVloose':           (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_ss':        (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_lj':        (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_lj_ss':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_ljout':     (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_selVloose_ljout_ss':  (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel':                 (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ss':              (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_lj':              (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_lj_ss':           (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ljout':           (procs_mu, systematic_names_all_with_th),
+                'ctr_old_mu_sel_ljout_ss':        (procs_mu, systematic_names_all_with_th),
+        },
+
         'channels_full_sys_lep_selections' : {
                 #'ctr_el_wjet':              (procs_el, systematic_names_pu),
                 #'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
@@ -2734,7 +2749,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     proc = 'tt_eltau'
                     if (t_wid >= 15*30 and tb_wid == 11) or (t_wid == 11 and tb_wid >= 15*30): # lt
                         micro_proc = 'tt_eltau3ch'
-                elif t_wid * tb_wid == 13*11:
+                elif ev.gen_t_w_decay_id * ev.gen_tb_w_decay_id == -13*11:
                     proc = 'tt_elmu'
                 #elif t_wid * tb_wid == 15*13*15*11: # this should work, but:
                 elif (t_wid == 15*13 and tb_wid == 15*11) or (t_wid == 15*11 and tb_wid == 15*13):
