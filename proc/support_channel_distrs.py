@@ -99,14 +99,28 @@ pileup_ratio_sum = array('d',
 
 
 
-pileup_ratio = array('d', [0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
-0.884048630953726, 0.964813189764159, 1.07045369167689, 1.12497267309738, 1.17367530613108, 1.20239808206413, 1.20815108390021, 1.20049333094509, 1.18284686347315, 1.14408796655615,
+pileup_ratio = array('d', [
+0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
+0.884048630953726,
+0.964813189764159, 1.07045369167689, 1.12497267309738, 1.17367530613108, 1.20239808206413, 1.20815108390021, 1.20049333094509, 1.18284686347315, 1.14408796655615,
 1.0962284704313, 1.06549162803223, 1.05151011089581, 1.05159666626121, 1.05064452078328, 1.0491726301522, 1.05772537082991, 1.07279673875566, 1.0837536468865, 1.09536667397119,
 1.10934472980173, 1.09375894592864, 1.08263679568271, 1.04289345879947, 0.9851490341672, 0.909983816540809, 0.821346330143864, 0.71704523475871, 0.609800913869359, 0.502935245638477,
 0.405579825620816, 0.309696044611377, 0.228191137503131, 0.163380359253309, 0.113368437957202, 0.0772279997453792, 0.0508111733313502, 0.0319007262683943, 0.0200879459309245, 0.0122753366005436,
 0.00739933885813127, 0.00437426967257811, 0.00260473545284139, 0.00157047254226743, 0.000969500595715493, 0.000733193118123283, 0.000669817107713128, 0.000728548958604492, 0.000934559691182011, 0.00133719688378802,
 0.00186652283903214, 0.00314422244976771, 0.00406954793369611, 0.00467888840511915, 0.00505224284441512, 0.00562827194936864, 0.0055889504870752, 0.00522867039470319, 0.00450752163476433, 0.00395300774604375,
 0.00330577167682956, 0.00308353042577215, 0.00277846504893301, 0.00223943190687725, 0.00196650068765464, 0.00184742734258922,])
+
+## recalc from ntuple, basically the same
+#pileup_ratio = array('d', [
+#0.344887, 0.869219, 1.12271, 0.968119, 1.04695, 1.10773, 0.740941, 0.477038, 0.719406, 0.857546,
+#0.938079, 1.04656, 1.09508, 1.14765, 1.17614, 1.18508, 1.17563, 1.16215, 1.12725, 1.08148,
+#1.05394, 1.04048, 1.04329, 1.04534, 1.04798, 1.05541, 1.07543, 1.08567, 1.10311, 1.11874,
+#1.10373, 1.09798, 1.05651, 1.00496, 0.931962, 0.842275, 0.736296, 0.626743, 0.520142, 0.419807,
+#0.323103, 0.239115, 0.170803, 0.119757, 0.0821237, 0.0541623, 0.0338, 0.0215088, 0.0131677, 0.00806879,
+#0.00477981, 0.00283188, 0.00173487, 0.00107583, 0.000821263, 0.000757651, 0.000829695, 0.00102146, 0.00152372, 0.00205202,
+#0.00372623, 0.00458362, 0.00632652, 0.00643546, 0.00646819, 0.00677855, 0.00618487, 0.00519075, 0.00488287, 0.00433706,
+#0.00335919, 0.00359263, 0.00266798, 0.00270629, 0.00261116,])
+
 
 pileup_ratio_up = array('d', [0.351377216124927, 0.717199649125846, 1.14121536968772, 0.84885826611733, 1.00700929402897, 1.03428595270903, 0.717444379696992, 0.344078389355127, 0.499570875027422,
 0.606614916257104, 0.632584599390169, 0.731450949466174, 0.827511723989754, 0.910682115553867, 0.960170981598162, 0.988896170761361, 1.02468865580207, 1.05296667126403, 1.05112033565679,
@@ -2018,11 +2032,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
              'regMt_lep_pt':   TH1D('%s_%s_%s_regMt_lep_pt'      % (chan, proc, sys), '', 20, 0, 250),
              'regMt_lep_eta':  TH1D('%s_%s_%s_regMt_lep_eta'      % (chan, proc, sys), '', 50, -2.5, 2.5),
+             'regMt_lep_eta_lowpt':  TH1D('%s_%s_%s_regMt_lep_eta_lowpt' % (chan, proc, sys), '', 50, -2.5, 2.5),
+             'regMt_Mt_lowpt':       TH1D('%s_%s_%s_regMt_Mt_lowpt'      % (chan, proc, sys), '', 20, 0, 250),
              'regMt_lep_phi':  TH1D('%s_%s_%s_regMt_lep_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
              'regMt_met':      TH1D('%s_%s_%s_regMt_met'      % (chan, proc, sys), '', 20, 0, 250),
              'regMt_met_phi':  TH1D('%s_%s_%s_regMt_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
              'regMt_met_lep_cos':  TH1D('%s_%s_%s_regMt_lep_cos'      % (chan, proc, sys), '', 22, -1.1, 1.1),
 
+             'regMt_lep_pt_eta':   TH2D('%s_%s_%s_regMt_lep_pt_eta'     % (chan, proc, sys), '', 15, 0, 250, 50, -2.5, 2.5),
+             'regMt_lep_pt_Mt':    TH2D('%s_%s_%s_regMt_lep_pt_Mt'      % (chan, proc, sys), '', 15, 0, 250, 15, 0, 250),
+
+             """
              'regMt_lep_pt_puM'    :  TH1D('%s_%s_%s_regMt_lep_pt_puM'      % (chan, proc, sys), '', 20,    0, 250),
              'regMt_lep_pt_puE'    :  TH1D('%s_%s_%s_regMt_lep_pt_puE'      % (chan, proc, sys), '', 20,    0, 250),
              'regMt_lep_pt_puM_up' :  TH1D('%s_%s_%s_regMt_lep_pt_puM_up'   % (chan, proc, sys), '', 20,    0, 250),
@@ -2039,6 +2059,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'regMt_rocc':          TH1D('%s_%s_%s_regMt_rocc'     % (chan, proc, sys), '', 50, 0.0, 2.0),
              # compare to Mt_lep_met_f_init
              'Mt_lep_met_f_rocc':   TH1D('%s_%s_%s_Mt_lep_met_f_rocc'      % (chan, proc, sys), '', 20, 0, 250),
+             """
 
              'b_discr_rest':  TH1D('%s_%s_%s_b_discr_rest'  % (chan, proc, sys), '', 30, 0., 1.),
              'b_discr_med':   TH1D('%s_%s_%s_b_discr_med'   % (chan, proc, sys), '', 30, 0., 1.),
@@ -5122,19 +5143,24 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 if Mt_lep_met > 120. and Mt_lep_met < 200.:
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt']      .Fill(lep_p4[0].pt(),  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta']     .Fill(lep_p4[0].eta(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_eta']  .Fill(lep_p4[0].pt(), lep_p4[0].eta(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_Mt']   .Fill(lep_p4[0].pt(), Mt_lep_met, record_weight)
+                    if lep_p4[0].pt() < 50.:
+                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta_lowpt'] .Fill(lep_p4[0].eta(), record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['regMt_Mt_lowpt']      .Fill(Mt_lep_met, record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_phi']     .Fill(lep_p4[0].phi(), record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_met']         .Fill(met_pt,         record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_met_phi']     .Fill(proc_met.phi(), record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_met_lep_cos'] .Fill(met_lep_cos,    record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_init'] .Fill(lep_p4[0].pt())
                     #out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_rocc'] .Fill(lep_p4[0].pt(), roccor_factor)
-                    if isMC:
-                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puM']    .Fill(lep_p4[0].pt(), weight_pu_mu)
-                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puE']    .Fill(lep_p4[0].pt(), weight_pu_el)
-                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puM_up'] .Fill(lep_p4[0].pt(), weight_pu_mu_up)
-                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puE_up'] .Fill(lep_p4[0].pt(), weight_pu_el_up)
-                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puM_dn'] .Fill(lep_p4[0].pt(), weight_pu_mu_dn)
-                        out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puE_dn'] .Fill(lep_p4[0].pt(), weight_pu_el_dn)
+                    #if isMC:
+                    #    out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puM']    .Fill(lep_p4[0].pt(), weight_pu_mu)
+                    #    out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puE']    .Fill(lep_p4[0].pt(), weight_pu_el)
+                    #    out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puM_up'] .Fill(lep_p4[0].pt(), weight_pu_mu_up)
+                    #    out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puE_up'] .Fill(lep_p4[0].pt(), weight_pu_el_up)
+                    #    out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puM_dn'] .Fill(lep_p4[0].pt(), weight_pu_mu_dn)
+                    #    out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_puE_dn'] .Fill(lep_p4[0].pt(), weight_pu_el_dn)
                     #out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta_init'].Fill(lep_p4[0].eta())
                     #out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta_rocc'].Fill(lep_p4[0].eta(), roccor_factor)
                     #out_hs[(chan, record_proc, sys_name)]['regMt_lep_phi_init'].Fill(lep_p4[0].phi())

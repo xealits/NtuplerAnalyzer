@@ -1,4 +1,5 @@
 *.pyc
 *root
 *png
+!proc/studies/*png
 
