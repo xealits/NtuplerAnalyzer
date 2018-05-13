@@ -1777,8 +1777,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_pu_toppt),
                 'ctr_el_tt_em':             (procs_elmu, systematic_names_pu_toppt),
                 'ctr_el_tt_em_close':       (procs_elmu, systematic_names_pu_toppt),
-        }
+        },
 
+        'channels_control_regions_dy' : {
+                'ctr_mu_dy_mumu':           (procs_mu, systematic_names_pu),
+                'ctr_mu_dy_elel':           (procs_el, systematic_names_pu),
+        }
     }
 
     print systematic_names_all_with_th
@@ -2469,7 +2473,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_mu # pass_elmu # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+        event_passes = pass_mumu or pass_elel # pass_elmu # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
 
         if not event_passes: continue
         control_counters.Fill(51)
@@ -2816,8 +2820,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 weight_lep_Down = weight * (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
                                                ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
 
-                weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                             ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                # test how much lepton SFs affect
+                #weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                #             ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
             if isMC and pass_elmu:
                 # find which lepton is mu and which is el
@@ -2886,7 +2891,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 # on 0 position is the value, on 1 is uncertainty
                 weight_lep_Up   = weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 weight_lep_Down = weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
-                weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+
+                # test how much leptons SFs affect
+                #weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
 
         control_counters.Fill(52)
 

@@ -9,6 +9,23 @@ python genjobs.py v25 pR5 --do-W-stitching channels_full_sys_muon_sel --dtags st
 make sub_proc nt=v25 proc=pR5 node=1
 
 
+# testing the elmu issue with mumu dy
+# in principle, the only recent change is the vtx in muon id and iso
+# and it can reduce muon mc by about 5%
+# which is exactly the excess i used to have in dy
+# so it should match now
+# if it does then the error is only in elmu
+# otherwise -- debug dy (less mc and data)
+python genjobs.py v27 pR5_dy --do-W-stitching channels_control_regions_dy --scheme 7,7,2,15,0
+make sub_proc nt=v27 proc=pR5_dy node=1
+
+# test without lepton SFs
+python genjobs.py v27     pR6_dy --do-W-stitching channels_control_regions_dy --scheme 7,7,2,15,0
+make sub_proc nt=v27 proc=pR6_dy node=1
+
+
+
+
 
 # pR3 fixed the shift in pu_ratio array
 #  -- no difference in shape
