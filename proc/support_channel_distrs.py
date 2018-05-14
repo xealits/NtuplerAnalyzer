@@ -2434,27 +2434,27 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         #pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el and ev.no_iso_veto_leps and \
         pass_elmu_id = ev.leps_ID == -11*13 and ev.HLT_mu and ev.no_iso_veto_leps and \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
-            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
-            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
+            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
+            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
 
         pass_elmu = pass_elmu_id and ((ev.lep_relIso[0] < 0.15 and ev.lep_relIso[1] < 0.0588) if abs(ev.lep_id[0]) == 13 else (ev.lep_relIso[1] < 0.15 and ev.lep_relIso[0] < 0.0588))
 
         pass_elmu_el = ev.leps_ID == -11*13 and ev.HLT_el and ev.no_iso_veto_leps and \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 11 else ev.lep_matched_HLT[1]) and \
-            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
-            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
+            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
+            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
 
         pass_mumu = ev.leps_ID == -13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
-            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.15 and \
-            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.15
+            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
+            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
 
         pass_elel = ev.leps_ID == -11*11 and (ev.HLT_el) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
-            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.059 and \
-            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.059
+            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
+            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
 
         pass_mumu_ss = ev.leps_ID == 13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
-            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4 and ev.lep_dxy[0] < 0.01 and ev.lep_dz[0] < 0.02) and ev.lep_relIso[0] < 0.125 and \
-            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4 and ev.lep_dxy[1] < 0.01 and ev.lep_dz[1] < 0.02) and ev.lep_relIso[1] < 0.125
+            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
+            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
 
         if pass_elmu:    control_counters.Fill(21)
         if pass_mumu:    control_counters.Fill(22)
