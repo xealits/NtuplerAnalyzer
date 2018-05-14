@@ -1906,9 +1906,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
               'Mt_lep_met':   TH1D('%s_%s_%s_Mt_lep_met'   % (chan, proc, sys), '', 10, 0, 200),
               })
 
-        if 'PU' in sys:
+        if 'PU' in sys or sys == 'NOMINAL':
             distrs.update({
               'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
+
+             'regMt_lep_pt':   TH1D('%s_%s_%s_regMt_lep_pt'      % (chan, proc, sys), '', 20, 0, 250),
+             'regMt_lep_eta':  TH1D('%s_%s_%s_regMt_lep_eta'      % (chan, proc, sys), '', 50, -2.5, 2.5),
+             'regMt_lep_eta_lowpt':  TH1D('%s_%s_%s_regMt_lep_eta_lowpt' % (chan, proc, sys), '', 50, -2.5, 2.5),
+             'regMt_Mt_lowpt':       TH1D('%s_%s_%s_regMt_Mt_lowpt'      % (chan, proc, sys), '', 20, 0, 250),
+             'regMt_lep_phi':  TH1D('%s_%s_%s_regMt_lep_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
+             'regMt_met':      TH1D('%s_%s_%s_regMt_met'      % (chan, proc, sys), '', 20, 0, 250),
+             'regMt_met_phi':  TH1D('%s_%s_%s_regMt_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
+             'regMt_met_lep_cos':  TH1D('%s_%s_%s_regMt_lep_cos'      % (chan, proc, sys), '', 22, -1.1, 1.1),
+
+             'regMt_lep_pt_eta':   TH2D('%s_%s_%s_regMt_lep_pt_eta'     % (chan, proc, sys), '', 15, 0, 250, 50, -2.5, 2.5),
+             'regMt_lep_pt_Mt':    TH2D('%s_%s_%s_regMt_lep_pt_Mt'      % (chan, proc, sys), '', 15, 0, 250, 15, 0, 250),
               })
 
         # here only obj syst:
@@ -2049,18 +2061,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'Mt_lep_met_sublep':  TH1D('%s_%s_%s_Mt_lep_met_sublep'     % (chan, proc, sys), '', 20, 0, 250),
              'Mt_lep_met_30GeV':   TH1D('%s_%s_%s_Mt_lep_met_30GeV'      % (chan, proc, sys), '', 20, 0, 250),
 
-             'regMt_lep_pt':   TH1D('%s_%s_%s_regMt_lep_pt'      % (chan, proc, sys), '', 20, 0, 250),
-             'regMt_lep_eta':  TH1D('%s_%s_%s_regMt_lep_eta'      % (chan, proc, sys), '', 50, -2.5, 2.5),
-             'regMt_lep_eta_lowpt':  TH1D('%s_%s_%s_regMt_lep_eta_lowpt' % (chan, proc, sys), '', 50, -2.5, 2.5),
-             'regMt_Mt_lowpt':       TH1D('%s_%s_%s_regMt_Mt_lowpt'      % (chan, proc, sys), '', 20, 0, 250),
-             'regMt_lep_phi':  TH1D('%s_%s_%s_regMt_lep_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
-             'regMt_met':      TH1D('%s_%s_%s_regMt_met'      % (chan, proc, sys), '', 20, 0, 250),
-             'regMt_met_phi':  TH1D('%s_%s_%s_regMt_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
-             'regMt_met_lep_cos':  TH1D('%s_%s_%s_regMt_lep_cos'      % (chan, proc, sys), '', 22, -1.1, 1.1),
-
-             'regMt_lep_pt_eta':   TH2D('%s_%s_%s_regMt_lep_pt_eta'     % (chan, proc, sys), '', 15, 0, 250, 50, -2.5, 2.5),
-             'regMt_lep_pt_Mt':    TH2D('%s_%s_%s_regMt_lep_pt_Mt'      % (chan, proc, sys), '', 15, 0, 250, 15, 0, 250),
-
              """
              'regMt_lep_pt_puM'    :  TH1D('%s_%s_%s_regMt_lep_pt_puM'      % (chan, proc, sys), '', 20,    0, 250),
              'regMt_lep_pt_puE'    :  TH1D('%s_%s_%s_regMt_lep_pt_puE'      % (chan, proc, sys), '', 20,    0, 250),
@@ -2120,7 +2120,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'tau_leng_energy':TH2D('%s_%s_%s_tau_leng_energy' % (chan, proc, sys), '', 21, -0.1, 1., 20, 20., 150.),
              'tau_pat_leng_energy':TH2D('%s_%s_%s_tau_pat_leng_energy' % (chan, proc, sys), '', 44, -0.01,  0.1,  20, 20., 150.),
              'tau_ref_leng_energy':TH2D('%s_%s_%s_tau_ref_leng_energy' % (chan, proc, sys), '', 44, -0.001, 0.01, 20, 20., 150.),
-             'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
+             #'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
              'nvtx_raw':    TH1D('%s_%s_%s_nvtx_raw'   % (chan, proc, sys), '', 50, 0, 50),
              'nvtx_gen':    TH1D('%s_%s_%s_nvtx_gen'   % (chan, proc, sys), '', 100, 0, 100),
              # TODO: add rho to ntuples

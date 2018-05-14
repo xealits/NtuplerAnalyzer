@@ -24,7 +24,7 @@ python genjobs.py v27     pR6_dy --do-W-stitching channels_control_regions_dy --
 make sub_proc nt=v27 proc=pR6_dy node=1
 
 # without impacts (correctly done in ntupler)
-python genjobs.py v27     pR7_dy --do-W-stitching channels_control_regions_dy --dtags data_mu,MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_DYJetsToLL_10to50_amcatnlo --scheme 7,7,2,15,0
+python genjobs.py v27     pR7_dy --do-W-stitching channels_control_regions_dy --dtags std_data,MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_DYJetsToLL_10to50_amcatnlo --scheme 7,7,2,15,0
 make sub_proc nt=v27 proc=pR7_dy node=1
 
 
