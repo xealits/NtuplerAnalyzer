@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.DEBUG)
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
     description = "plot data and different SYS of MC sums w.r. to NOMINAL MC",
-    epilog = "Example:\npython mc_per_sys.py histosel-roots/v25p2_mu_noqcd/histosels_v25p2_mu_ljbins.root -c ctr_old_mu_sel_lj -d Mt_lep_met_f -s PUUp,PUDown"
+    epilog = "Example:\npython mc_per_sys.py histosel-roots/v25p2_mu_noqcd/histosels_v25p2_mu_ljbins.root -p tt_lj -c ctr_old_mu_sel_lj -d Mt_lep_met_f -s PUUp,PUDown"
     )
 
 parser.add_argument("data_file", help="data file name")

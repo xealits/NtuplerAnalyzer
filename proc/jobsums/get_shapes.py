@@ -64,6 +64,7 @@ for i, fileparameter in enumerate(args.input_files):
     if not isfile(filename):
         logging.info("missing: " + filename)
         continue
+    logging.debug("%s" % filename)
 
     channel = process = systematic = distr = ''
     if opts:

@@ -8,19 +8,28 @@ logging.basicConfig(level=logging.DEBUG)
 
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
-    description = "plot data and different SYS of MC sums w.r. to NOMINAL MC",
+    description = "plot data and different SYS of MC sums w.r. to NOMINAL MC, all variations separately",
     epilog = '''Example:
-python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_mu_sel:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_mu_sel:Mt_lep_met_t2,ctr_old_mu_sel:Mt_lep_met_t3,ctr_old_mu_sel:Mt_lep_met_t4,ctr_old_mu_sel:Mt_lep_met_t5,ctr_old_mu_sel:Mt_lep_met_t6
-python distr_ratios.py mc_v25v26pF5.root -c ctr_old_mu_presel:tt_lj:met_lep_phi --ratio-channel-distrs ctr_old_mu_presel:tt_mutau:met_lep_phi,ctr_old_mu_presel:tt_taultauh:met_lep_phi,ctr_old_mu_presel:tt_other:met_lep_phi'''
+python distr_ratios.py mc_v25v26pR5.root -c ctr_old_mu_sel -d Mt_lep_met_f -p tt_lj --var-channel ctr_old_mu_sel:ctr_old_mu_sel_lj:ctr_old_mu_sel_ljout
+python distr_ratios.py mc_v25v26pR5.root -c ctr_old_mu_sel -d Mt_lep_met_f -p tt_lj --var-process tt_mutau:tt_other
+python distr_ratios.py mc_v25v26pR5.root -c ctr_old_mu_sel -d Mt_lep_met_f -p tt_lj --var-systematic PUUp:PUDown
+python distr_ratios.py mc_v25v26pR5.root -c ctr_old_mu_sel -d Mt_lep_met_f -p tt_lj --var-distr Mt_lep_met_t1:Mt_lep_met_t2:Mt_lep_met_t3:Mt_lep_met_t4:Mt_lep_met_t5:Mt_lep_met_t6
+'''
     )
+#python distr_ratios.py mc_v25p2_v26p2.root -c ctr_old_mu_sel:Mt_lep_met_f -p tt_lj --ratio-channel-distrs ctr_old_mu_sel:Mt_lep_met_t2,ctr_old_mu_sel:Mt_lep_met_t3,ctr_old_mu_sel:Mt_lep_met_t4,ctr_old_mu_sel:Mt_lep_met_t5,ctr_old_mu_sel:Mt_lep_met_t6
+#python distr_ratios.py mc_v25v26pF5.root -c ctr_old_mu_presel:tt_lj:met_lep_phi --ratio-channel-distrs ctr_old_mu_presel:tt_mutau:met_lep_phi,ctr_old_mu_presel:tt_taultauh:met_lep_phi,ctr_old_mu_presel:tt_other:met_lep_phi
 
 parser.add_argument("data_file", help="data file name")
-parser.add_argument("-c", "--channel-distr", type=str, default='mu_sel:Mt_lep_met_f', help="the reference channel:distr (mu_sel:Mt_lep_met_f)")
-#parser.add_argument("-d", "--distr", type=str, default='Mt_lep_met_f', help="distribution name")
+
+parser.add_argument("-c", "--channel", type=str, default='ctr_old_mu_sel', help="the reference channel")
+parser.add_argument("-d", "--distr", type=str, default='Mt_lep_met_f', help="distribution name")
 parser.add_argument("-p", "--process", type=str, default='tt_lj', help="process")
 parser.add_argument('-s', '--systematic',  type=str, default='NOMINAL', help="systematics to include (SYS1,SYS2,...)")
 
-parser.add_argument("--ratio-channel-distrs", type=str, default='mu_sel:Mt_lep_met_t2', help="distribution names")
+parser.add_argument("--var-distr",      type=str, default='', help="varied distribution names `distr1[:distr2]`")
+parser.add_argument("--var-channel",    type=str, default='', help="varied channels names `chan1[:chan2]`")
+parser.add_argument("--var-process",    type=str, default='', help="varied procs `p[:p2]`")
+parser.add_argument("--var-systematic", type=str, default='', help="varied systematics `sys1[:sys2]`")
 
 parser.add_argument('--no-data',     action='store_true', help="don't draw data")
 parser.add_argument('-r', '--ratio', action='store_true', help="add ratio plot")
@@ -50,13 +59,10 @@ if args.title is not None:
 else:
     title = args.process
 
-refs = args.channel_distr.split(':')
-if len(refs) == 3:
-    ref_chan, ref_proc, ref_distr = refs
-else:
-    # assume the process is the same
-    ref_chan, ref_distr = refs
-    ref_proc = args.process
+ref_proc  = args.process
+ref_sys   = args.systematic
+ref_chan  = args.channel
+ref_distr = args.distr
 
 if args.title_x is not None:
     title_x = args.title_x
@@ -84,12 +90,13 @@ distr_nick = {
     'Mt_lep_met_t4': 'pt < 70',
     'Mt_lep_met_t5': 'pt < 90',
     'Mt_lep_met_t6': 'pt > 90',
+
 }
 
 # get nominal MC
 sys = args.systematic
 
-nom_MC = fdata.Get(ref_chan + '/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(proc=ref_proc, chan=ref_chan, sys=args.systematic, distr=ref_distr))
+nom_MC = fdata.Get(ref_chan + '/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(proc=ref_proc, chan=ref_chan, sys=ref_sys, distr=ref_distr))
 nom_MC.Print()
 
 if args.leg_chan:
@@ -126,17 +133,13 @@ sys_color = {'TOPPTUp': kRed,
 }
 
 histo_MCs = []
-# and systematic MC-s
-for i, chan_def in enumerate(chd.split(':') for chd in args.ratio_channel_distrs.split(',')):
-    if len(chan_def) == 3:
-        channel, proc, distr = chan_def
-    else:
-        channel, distr = chan_def
-        proc = args.process
-    sys_MC = fdata.Get(channel + '/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(proc=proc, chan=channel, sys=args.systematic, distr=distr))
+# and varied MC-s
+# vary channel
+for i, var in enumerate(v for v in args.var_channel.split(':') if v):
+    sys_MC = fdata.Get('{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(proc=ref_proc, chan=var, sys=ref_sys, distr=ref_distr))
     sys_MC.Print()
-    sys_MC.SetLineColor   (nick_colour[proc]  + 1*i)
-    sys_MC.SetMarkerColor (nick_colour[proc]  + 1*i)
+    sys_MC.SetLineColor   (nick_colour[ref_proc]  + 1*i)
+    sys_MC.SetMarkerColor (nick_colour[ref_proc]  + 1*i)
     sys_MC.Divide(nom_MC)
     sys_MC.Print()
     #sys_MC.SetFillColor(0)
@@ -144,9 +147,63 @@ for i, chan_def in enumerate(chd.split(':') for chd in args.ratio_channel_distrs
     if args.leg_chan:
         leg_entry = channel
     else:
-        leg_entry = distr_nick.get(distr, distr)
+        leg_entry = distr_nick.get(var, var)
     leg.AddEntry(sys_MC, leg_entry, "L")
     histo_MCs.append(sys_MC)
+
+# vary proc
+for i, var in enumerate(v for v in args.var_process.split(':') if v):
+    sys_MC = fdata.Get('{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(proc=var, chan=ref_chan, sys=ref_sys, distr=ref_distr))
+    sys_MC.Print()
+    sys_MC.SetLineColor   (nick_colour[var]  + 1*i)
+    sys_MC.SetMarkerColor (nick_colour[var]  + 1*i)
+    sys_MC.Divide(nom_MC)
+    sys_MC.Print()
+    #sys_MC.SetFillColor(0)
+
+    if args.leg_chan:
+        leg_entry = channel
+    else:
+        leg_entry = distr_nick.get(var, var)
+    leg.AddEntry(sys_MC, leg_entry, "L")
+    histo_MCs.append(sys_MC)
+
+# vary syst
+for i, var in enumerate(v for v in args.var_systematic.split(':') if v):
+    sys_MC = fdata.Get('{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(proc=ref_proc, chan=ref_chan, sys=var, distr=ref_distr))
+    sys_MC.Print()
+    sys_MC.SetLineColor   (nick_colour[ref_proc]  + 1*i)
+    sys_MC.SetMarkerColor (nick_colour[ref_proc]  + 1*i)
+    sys_MC.Divide(nom_MC)
+    sys_MC.Print()
+    #sys_MC.SetFillColor(0)
+
+    if args.leg_chan:
+        leg_entry = channel
+    else:
+        leg_entry = distr_nick.get(var, var)
+    leg.AddEntry(sys_MC, leg_entry, "L")
+    histo_MCs.append(sys_MC)
+
+# vary distr
+for i, var in enumerate(v for v in args.var_distr.split(':') if v):
+    sys_MC = fdata.Get('{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}'.format(proc=ref_proc, chan=ref_chan, sys=ref_sys, distr=var))
+    sys_MC.Print()
+    sys_MC.SetLineColor   (nick_colour[ref_proc]  + 1*i)
+    sys_MC.SetMarkerColor (nick_colour[ref_proc]  + 1*i)
+    sys_MC.Divide(nom_MC)
+    sys_MC.Print()
+    #sys_MC.SetFillColor(0)
+
+    if args.leg_chan:
+        leg_entry = channel
+    else:
+        leg_entry = distr_nick.get(var, var)
+    leg.AddEntry(sys_MC, leg_entry, "L")
+    histo_MCs.append(sys_MC)
+
+
+
 
 
 cst = TCanvas("cst","stacked hists",10,10,700,700)
@@ -190,13 +247,13 @@ if args.logy:
 
 nom_MC.SetTitle(title)
 nom_MC.SetLineWidth(2)
-nom_MC.Draw("e")
+nom_MC.Draw("HIST")
 
 for histo in histo_MCs:
     histo.Print()
     histo.SetTitle(title)
     histo.SetLineWidth(2)
-    histo.Draw("same e")
+    histo.Draw("same HIST")
 
 if args.add_y_line:
     x_min = nom_MC.GetXaxis().GetXmin()
@@ -209,7 +266,8 @@ leg.Draw("same")
 if args.custom_filename:
     filename = args.custom_filename + '.png'
 else:
-    filename = 'ratios_%s_%s_%s_%s_%s.png' % (ref_chan, args.process, args.systematic, ref_distr, args.ratio_channel_distrs)
+    variations = ''.join(v for v in [args.var_channel, args.var_process, args.var_systematic, args.var_distr] if v)
+    filename = 'ratios_%s_%s_%s_%s_%s_%s.png' % (ref_chan, ref_chan, ref_proc, ref_sys, ref_distr, variations)
 
 cst.SaveAs(args.output_directory + '/' + filename)
 

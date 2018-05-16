@@ -1917,7 +1917,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'regMt_lep_phi':  TH1D('%s_%s_%s_regMt_lep_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
              'regMt_met':      TH1D('%s_%s_%s_regMt_met'      % (chan, proc, sys), '', 20, 0, 250),
              'regMt_met_phi':  TH1D('%s_%s_%s_regMt_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
-             'regMt_met_lep_cos':  TH1D('%s_%s_%s_regMt_lep_cos'      % (chan, proc, sys), '', 22, -1.1, 1.1),
+             'regMt_met_lep_cos':  TH1D('%s_%s_%s_regMt_lep_cos' % (chan, proc, sys), '', 22, -1.1, 1.1),
+             'regMt_nMbjets':   TH1D('%s_%s_%s_regMt_nMbjets'    % (chan, proc, sys), '', 10, 0, 10),
+             'regMt_nLbjets':   TH1D('%s_%s_%s_regMt_nLbjets'    % (chan, proc, sys), '', 10, 0, 10),
+             'regMt_nRbjets':   TH1D('%s_%s_%s_regMt_nRbjets'    % (chan, proc, sys), '', 10, 0, 10),
+             'regMt_bMjet_pt':  TH1D('%s_%s_%s_regMt_bMjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
 
              'regMt_lep_pt_eta':   TH2D('%s_%s_%s_regMt_lep_pt_eta'     % (chan, proc, sys), '', 15, 0, 250, 50, -2.5, 2.5),
              'regMt_lep_pt_Mt':    TH2D('%s_%s_%s_regMt_lep_pt_Mt'      % (chan, proc, sys), '', 15, 0, 250, 15, 0, 250),
@@ -2235,9 +2239,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'Mt_lep_met_f_VS_nvtx':      TH2D('%s_%s_%s_Mt_lep_met_f_VS_nvtx'  % (chan, proc, sys), '', 20, 0, 250, 50, 0, 50),
              'Mt_lep_met_f_VS_nvtx_gen':  TH2D('%s_%s_%s_Mt_lep_met_f_VS_nvtx_gen' % (chan, proc, sys), '', 20, 0, 250, 50, 0, 50),
 
+             'control_init_weight': TH1D('%s_%s_%s_control_init_weight' % (chan, proc, sys), '', 150, 0., 1.5),
              'control_bSF_weight':  TH1D('%s_%s_%s_control_bSF_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
              'control_PU_weight':   TH1D('%s_%s_%s_control_PU_weight'   % (chan, proc, sys), '', 150, 0., 1.5),
              'control_th_weight':   TH1D('%s_%s_%s_control_th_weight'   % (chan, proc, sys), '', 150, 0., 1.5),
+             'control_top_weight':  TH1D('%s_%s_%s_control_top_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
              'control_rec_weight':  TH1D('%s_%s_%s_control_rec_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
              })
 
@@ -2821,14 +2827,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                                                ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
 
                 # test how much lepton SFs affect
-                #weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                #             ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                             ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
             if isMC and pass_elmu:
                 # find which lepton is mu and which is el
                 mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
-                mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_alliso_p4[mu_n].eta()), ev.lep_alliso_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
-                (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_alliso_p4[mu_n].eta()), ev.lep_alliso_p4[mu_n].pt())
+                mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
+                (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt())
                 el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
                 #el_trg_sf              = lepton_electron_trigger_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
                 #weight_lep_Up   *= weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
@@ -2846,16 +2852,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 weight_lep_Up   *= (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 weight_lep_Down *= (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
 
-                weight *= el_sfs_reco[0] * el_sfs_id[0]
+                #weight *= el_sfs_reco[0] * el_sfs_id[0]
 
-                weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                          ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                #weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                #          ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
             if isMC and pass_elmu_el:
                 # find which lepton is mu and which is el
                 mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
-                mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_alliso_p4[mu_n].eta()), ev.lep_alliso_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
-                #(mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_alliso_p4[mu_n].eta()), ev.lep_alliso_p4[mu_n].pt())
+                mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
+                #(mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt())
                 el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
                 el_trg_sf              = lepton_electron_trigger_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
                 #weight_lep_Up   *= weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
@@ -2874,10 +2880,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 weight_lep_Up   *= (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 weight_lep_Down *= (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
 
-                weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+                #weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
 
-                weight *= ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                          ratio_gh    * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                #weight *= ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                #          ratio_gh    * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
 
 
@@ -4915,9 +4921,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 #record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
 
                 # nominal systematics
-                weight, weight_PU, weight_top_pt, weight_th = syst_weights_nominal
-                nom_sys_weight            = weight * weight_th * weight_PU * weight_top_pt
-                nom_sys_weight_without_PU = weight * weight_th * weight_top_pt # for PU tests
+                weight_init, weight_PU, weight_top_pt, weight_th = syst_weights_nominal
+                nom_sys_weight            = weight_init * weight_th * weight_PU * weight_top_pt
+                nom_sys_weight_without_PU = weight_init * weight_th * weight_top_pt # for PU tests
 
                 record_weight = nom_sys_weight * weight_bSF
 
@@ -5109,6 +5115,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                         if sys_name == 'PUUp' or sys_name == 'PUDown':
                             out_hs[(chan, record_proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight_sys)
 
+                n_rest_jets   = len(sel_jets.rest) #  + len(sel_jets.taumatched[1])
+                #n_medium_jets = len(sel_jets.medium)
+                n_medium_jets = len(sel_jets.medium) # + len(sel_jets.taumatched[0])
+                n_loose_jets  = len(sel_jets.loose)
+
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met,     record_weight)
                 if lep_p4[0].pt() > 30:
                     out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_30GeV']  .Fill(Mt_lep_met,     record_weight)
@@ -5188,6 +5199,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     #out_hs[(chan, record_proc, sys_name)]['regMt_lep_phi_init'].Fill(lep_p4[0].phi())
                     #out_hs[(chan, record_proc, sys_name)]['regMt_lep_phi_rocc'].Fill(lep_p4[0].phi(), roccor_factor)
                     #out_hs[(chan, record_proc, sys_name)]['regMt_rocc']        .Fill(roccor_factor)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_nMbjets'] .Fill(n_medium_jets,  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_nLbjets'] .Fill(n_loose_jets,   record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['regMt_nRbjets'] .Fill(n_rest_jets,    record_weight)
+                    if sel_jets.medium:
+                        out_hs[(chan, record_proc, sys_name)]['regMt_bMjet_pt'].Fill(sel_jets.medium[0][0].pt() * sel_jets.medium[0][1], record_weight)
 
                 # 2D distrs
                 out_hs[(chan, record_proc, sys_name)]['met_lep_phis']        .Fill(proc_met.Phi(), lep_p4[0].Phi(), record_weight)
@@ -5397,7 +5413,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_VS_nvtx_gen']      .Fill(Mt_lep_met, ev.nvtx_gen, 1.)
                 # controls for effect from weights
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_init']      .Fill(Mt_lep_met)
-                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_in']      .Fill(Mt_lep_met, weight)
+                out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_in']      .Fill(Mt_lep_met, weight_init)
 
                 if isMC and pass_mus:
                     if pass_mus:
@@ -5434,7 +5450,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_b'  ]  .Fill(lep_p4[0].pt(),  nom_sys_weight_without_PU * weight_pu_b  )
                 out_hs[(chan, record_proc, sys_name)]['lep_pt_pu_h2' ]  .Fill(lep_p4[0].pt(),  nom_sys_weight_without_PU * weight_pu_h2 )
 
-                if pass_mumu or pass_elmu:
+                if len(lep_p4)>1:
                     lep_lep = lep_p4[0] + lep_p4[1]
                     lep_lep_mass = lep_lep.mass()
                     out_hs[(chan, record_proc, sys_name)]['M_lep_lep']  .Fill(lep_lep_mass, record_weight)
@@ -5584,11 +5600,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 #'nLbjets':     TH1D('%s_%s_%s_nLbjets'   % (chan, record_proc, sys), '', 5, 0, 5),
                 #'ntaus':       TH1D('%s_%s_%s_ntaus'     % (chan, record_proc, sys), '', 5, 0, 5),
 
-                n_rest_jets   = len(sel_jets.rest) #  + len(sel_jets.taumatched[1])
-                #n_medium_jets = len(sel_jets.medium)
-                n_medium_jets = len(sel_jets.medium) # + len(sel_jets.taumatched[0])
-                n_loose_jets  = len(sel_jets.loose)
-
                 out_hs[(chan, record_proc, sys_name)]['njets_event'].Fill(ev.jet_p4.size(),   record_weight)
                 out_hs[(chan, record_proc, sys_name)]['njets']      .Fill(len(all_sel_jets),  record_weight)
                 out_hs[(chan, record_proc, sys_name)]['njets_all']  .Fill(len(all_sel_jets_taumatched), record_weight)
@@ -5716,9 +5727,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                         else:
                             out_hs[(chan, record_proc, sys_name)]['tau_genmatch_n'].Fill(tau_genmatch,  record_weight)
 
+                out_hs[(chan, record_proc, sys_name)]['control_init_weight'].Fill(weight_init)
                 out_hs[(chan, record_proc, sys_name)]['control_bSF_weight'].Fill(weight_bSF)
                 out_hs[(chan, record_proc, sys_name)]['control_PU_weight'] .Fill(weight_PU)
                 out_hs[(chan, record_proc, sys_name)]['control_th_weight'] .Fill(weight_th)
+                out_hs[(chan, record_proc, sys_name)]['control_top_weight'] .Fill(weight_top_pt)
                 out_hs[(chan, record_proc, sys_name)]['control_rec_weight'].Fill(record_weight)
 
         if save_weights:
@@ -5755,7 +5768,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             #control_hs['weight_mu_bSF_up']  .Fill(weight_bSF_up)
             #control_hs['weight_mu_bSF_down'].Fill(weight_bSF_down)
 
-          elif pass_el:
+          elif pass_el or pass_elel or pass_elmu_el:
             #el_sfs = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
             #el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
 

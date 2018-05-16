@@ -105,7 +105,7 @@ Fit MC to Data with all nuisances, storing NLL of each variation:
 
 if needed
 
-    --freezeNuisanceGroup tt_th_frag,tt_th_match,tt_th_pdf
+    --freezeNuisanceGroup tt_th_frag,tt_th_match,tt_th_pdf,tt_updowns
     --freezeParameters "lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JES,JER,TauES,bSF,PU"
     --setParameters TOPPT=1
 
@@ -737,6 +737,13 @@ if needed `--freezeNuisanceGroup tt_th_frag,tt_th_match`
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_th_pdf --freezeParameters AlphaS -m 125 --robustFit 1 --doInitialFit
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_th_pdf --freezeParameters AlphaS -m 125 --robustFit 1 --doFits --parallel 5
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_th_pdf --freezeParameters AlphaS -m 125 -o latest_mu_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
+
+freeze updowns:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_updowns -m 125 -o latest_mu_impacts.json
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
 
 
