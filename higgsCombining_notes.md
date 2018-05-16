@@ -689,6 +689,15 @@ mu
     ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 --freezeParameters AlphaS -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 -o latest_mu_toys_asimov_impacts.json
     ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts.json -o latest_mu_toys_asimov_impacts
 
+
+without updowns
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_updowns -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_updowns -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_updowns -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 -o latest_mu_toys_asimov_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts.json -o latest_mu_toys_asimov_impacts
+
+
 el
 
     ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doInitialFit
@@ -702,6 +711,13 @@ both
     ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpactsToys  -t -1 --expectSignal 1 --freezeParameters AlphaS -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 --robustFit 1 --doFits --parallel 5
     ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpactsToys  -t -1 --expectSignal 1 --freezeParameters AlphaS -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 -o latest_both_toys_asimov_impacts.json
     ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_toys_asimov_impacts.json -o latest_both_toys_asimov_impacts
+
+without updowns
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_updowns -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_updowns -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_updowns -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 -o latest_both_toys_asimov_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_toys_asimov_impacts.json -o latest_both_toys_asimov_impacts
 
 
 
@@ -772,6 +788,19 @@ both
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters AlphaS -m 125 --robustFit 1 --doFits --parallel 5  --name BothImpacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters AlphaS -m 125 -o latest_both_impacts.json          --name BothImpacts
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o latest_both_impacts
+
+without updowns
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doInitialFit         --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doFits --parallel 5  --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeNuisanceGroup tt_updowns -m 125 -o latest_both_impacts.json          --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o latest_both_impacts
+
+
+get the table
+
+python impact_table.py latest_both_impacts.json --merge-pdf
+
 
 
 

@@ -1,3 +1,53 @@
+# sumup test in tt em
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()" --histo-range 100,0.0,250. --cond "leps_ID == -13*11 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-name test_tt_em_lep_pt --output test_tt_em_lep_pt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/180416_131355/0000/MC2016_Summer16_TTJets_powheg_*.root &
+
+-- without reliso and eta crack stuff, since it is embedded in NT!
+
+python sumup_histo.py
+
+python sumup_histo.py ntupler/weight_counter --output test_tt_weight_counters.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/180416_131355/0000/MC2016_Summer16_TTJets_powheg_*.root &
+
+
+
+
+in mu data
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()" --histo-range 100,0.0,250. --cond "leps_ID == -13*11 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-name test_data_em_lep_pt --output test_data_em_lep_pt.root gstore_outdirs/v27/SingleMuon/*/*/*/*root
+
+python sumup_histo.py ntupler/weight_counter --output test_data_weight_counters.root gstore_outdirs/v27/SingleMuon/*/*/*/*root &
+
+
+
+
+
+
+# lep-jet dR
+
+python sumup_ttree_distrs.py "jet_matching_lep_dR[0]" --cond "leps_ID == -13*13 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-range 100,0.0,0.5 --histo-name mumu_hlt0_jetmatchdR0_dy --output mumu_hlt0_jetmatchdR0_dy.root gstore_outdirs/v27/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v27_MC2016_Summer16_DYJetsToLL_50toInf_madgraph/180416_124902/0000/*root &
+python sumup_ttree_distrs.py "jet_matching_lep_dR[1]" --cond "leps_ID == -13*13 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-range 100,0.0,0.5 --histo-name mumu_hlt0_jetmatchdR1_dy --output mumu_hlt0_jetmatchdR1_dy.root gstore_outdirs/v27/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v27_MC2016_Summer16_DYJetsToLL_50toInf_madgraph/180416_124902/0000/*root &
+
+python sumup_ttree_distrs.py "jet_matching_lep_dR[0]" --cond "leps_ID == -11*11 && (HLT_el) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-range 100,0.0,0.5 --histo-name elel_hlt0_jetmatchdR0_dy --output elel_hlt0_jetmatchdR0_dy.root gstore_outdirs/v27/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v27_MC2016_Summer16_DYJetsToLL_50toInf_madgraph/180416_124902/0000/*root &
+python sumup_ttree_distrs.py "jet_matching_lep_dR[1]" --cond "leps_ID == -11*11 && (HLT_el) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-range 100,0.0,0.5 --histo-name elel_hlt0_jetmatchdR1_dy --output elel_hlt0_jetmatchdR1_dy.root gstore_outdirs/v27/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v27_MC2016_Summer16_DYJetsToLL_50toInf_madgraph/180416_124902/0000/*root &
+
+
+
+
+data
+
+python sumup_ttree_distrs.py "jet_matching_lep_dR[0]" --cond "leps_ID == -13*13 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-range 100,0.0,0.5 --histo-name mumu_hlt0_jetmatchdR0_data --output mumu_hlt0_jetmatchdR0_data.root gstore_outdirs/v27/SingleMuon/*/*/*/*root &
+python sumup_ttree_distrs.py "jet_matching_lep_dR[1]" --cond "leps_ID == -13*13 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-range 100,0.0,0.5 --histo-name mumu_hlt0_jetmatchdR1_data --output mumu_hlt0_jetmatchdR1_data.root gstore_outdirs/v27/SingleMuon/*/*/*/*root &
+
+python sumup_ttree_distrs.py "jet_matching_lep_dR[0]" --cond "leps_ID == -11*11 && (HLT_el) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-range 100,0.0,0.5 --histo-name elel_hlt0_jetmatchdR0_data --output elel_hlt0_jetmatchdR0_data.root gstore_outdirs/v27/SingleElectron/*/*/*/*root &
+python sumup_ttree_distrs.py "jet_matching_lep_dR[1]" --cond "leps_ID == -11*11 && (HLT_el) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-range 100,0.0,0.5 --histo-name elel_hlt0_jetmatchdR1_data --output elel_hlt0_jetmatchdR1_data.root gstore_outdirs/v27/SingleElectron/*/*/*/*root &
+
+-- jets 0 and 1 have about 90% probability to match to lep
+2, 3 are 20 and 10 %
+
+
+
+
+
 # effect from SingleMuon RunG
 
 Data Mt with and without RunG
