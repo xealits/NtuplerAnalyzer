@@ -1,3 +1,23 @@
+# check the alliso 0 in elmu
+
+python sumup_ttree_distrs.py "lep_alliso_p4[0].pt()"  --histo-range 100,0.0,250. --cond "leps_ID == -13*11 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-name test_tt_em_alliso_lep_pt  --output test_tt_em_alliso_lep_pt.root  gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/180416_131355/0000/MC2016_Summer16_TTJets_powheg_*.root &
+python sumup_ttree_distrs.py "lep_alliso_p4[0].eta()" --histo-range 100,-2.5,2.5 --cond "leps_ID == -13*11 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-name test_tt_em_alliso_lep_eta --output test_tt_em_alliso_lep_eta.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/180416_131355/0000/MC2016_Summer16_TTJets_powheg_*.root &
+
+python sumup_ttree_distrs.py "lep_alliso_p4[0].pt()"  --histo-range 100,0.0,250. --cond "leps_ID == -13*11 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-name test_data_em_alliso_lep_pt  --output test_data_em_alliso_lep_pt.root  gstore_outdirs/v27/SingleMuon/*/*/*/*root &
+python sumup_ttree_distrs.py "lep_alliso_p4[0].eta()" --histo-range 100,-2.5,2.5 --cond "leps_ID == -13*11 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-name test_data_em_alliso_lep_eta --output test_data_em_alliso_lep_eta.root gstore_outdirs/v27/SingleMuon/*/*/*/*root &
+
+compare to actual muon on 0 position
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()"  --histo-range 100,0.0,250. --cond "leps_ID == -13*11 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-name test_tt_em_lep0_pt  --output test_tt_em_lep0_pt.root  gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/180416_131355/0000/MC2016_Summer16_TTJets_powheg_*.root &
+python sumup_ttree_distrs.py "lep_p4[0].eta()" --histo-range 100,-2.5,2.5 --cond "leps_ID == -13*11 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-name test_tt_em_lep0_eta --output test_tt_em_lep0_eta.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/180416_131355/0000/MC2016_Summer16_TTJets_powheg_*.root &
+
+
+
+
+
+
+
+
 # sumup test in tt em
 
 python sumup_ttree_distrs.py "lep_p4[0].pt()" --histo-range 100,0.0,250. --cond "leps_ID == -13*11 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-name test_tt_em_lep_pt --output test_tt_em_lep_pt.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/180416_131355/0000/MC2016_Summer16_TTJets_powheg_*.root &
