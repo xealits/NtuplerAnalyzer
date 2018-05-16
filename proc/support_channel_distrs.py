@@ -2481,7 +2481,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_elmu or pass_elmu_el # pass_mu # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+        event_passes = pass_elmu # or pass_elmu_el # pass_mu # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
 
         if not event_passes: continue
         control_counters.Fill(51)
@@ -2854,13 +2854,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 weight_lep_Up   *= (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 weight_lep_Down *= (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
 
-                #weight *= el_sfs_reco[0] * el_sfs_id[0]
+                weight *= el_sfs_reco[0] * el_sfs_id[0]
 
-                #weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                #          ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                          ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
             # FIXME: this thing might interfere with muonic elmu! run separately or fix
-            if isMC and pass_elmu_el:
+            if False and isMC and pass_elmu_el:
                 # find which lepton is mu and which is el
                 mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
                 mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
