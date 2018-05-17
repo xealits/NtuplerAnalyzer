@@ -11,6 +11,7 @@ from random import random as u_random
 OLD_MINIAOD_JETS = False
 DO_W_STITCHING = False
 ALL_JETS = False
+with_bSF = True
 
 logging = Logging.getLogger("common")
 
@@ -579,177 +580,9 @@ def lepton_electron_trigger_SF(eta, pt):
 
 
 
-'''
-b-tagging SF
-
-itak
-
-standalone even if you get to it and  run .L
-colapses with
-error: constructor for 'BTagCalibration' must explicitly
-      initialize the member 'data_'
-
--- same error as when the wrapper was made...
-
-it should work like:
-import ROOT
-
-ROOT.gROOT.ProcessLine('.L BTagCalibrationStandalone.cc+') 
-
-calib = ROOT.BTagCalibration("csv", "CSV.csv")
-reader = ROOT.BTagCalibrationReader(0, "central")  # 0 is for loose op
-reader.load(calib, 0, "comb")  # 0 is for b flavour, "comb" is the measurement type
-
-# in your event loop
-reader.eval(0, 1.2, 30.)  # jet flavor, eta, pt
-
--- maybe loading ttbar lib the calibrator class should be there?
-
-yup:
->>> import ROOT
->>> ROOT.gROOT.Reset()
->>> ROOT.gROOT.ProcessLine(".L pu_weight.C+") # this is also needed for stuf to run
-0L
->>> ROOT.gSystem.Load("libUserCodettbar-leptons-80X.so")
-0
->>> 
->>> ROOT.BTagCalibration
-<class 'ROOT.BTagCalibration'>
-
--- test tomorrow
-'''
-
-
-with_bSF = True # 0L2M issue seems to be real
 
 if with_bSF:
-    logging.info("loading b-tagging SF stuff")
-
-    #ROOT.gROOT.ProcessLine(".L pu_weight.C+") # this is also needed for stuf to run
-    # not sure I use it right now
-    #ROOT.gROOT.ProcessLine("set_bSF_calibrators()")
-
-
-    #calib = ROOT.BTagCalibration("csv", "CSV.csv")
-    #reader = ROOT.BTagCalibrationReader(0, "central")  # 0 is for loose op
-    #reader.load(calib, 0, "comb")  # 0 is for b flavour, "comb" is the measurement type
-
-    logging.info("loading b-tagging SF callibration")
-    #bCalib_filename = "${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/data/weights/CSVv2_Moriond17_B_H.csv"
-    bCalib_filename = environ['CMSSW_BASE'] + '/src/UserCode/ttbar-leptons-80X/data/weights/CSVv2_Moriond17_B_H.csv'
-    #gSystem.ExpandPathName(bCalib_filename)
-
-    logging.info("btag SFs from " + bCalib_filename)
-    btagCalib = ROOT.BTagCalibration("CSVv2", bCalib_filename)
-    #BTagCalibration* btagCalib; // ("CSVv2", string(std::getenv("CMSSW_BASE"))+"/src/UserCode/ttbar-leptons-80X/data/weights/CSVv2_Moriond17_B_H.csv");
-
-    logging.info("loading Reader")
-    btagCal_sys = ROOT.vector('string')()
-    btagCal_sys.push_back("up")
-    btagCal_sys.push_back("down")
-    btagCal = ROOT.BTagCalibrationReader(ROOT.BTagEntry.OP_MEDIUM,  # operating point
-    # BTagCalibrationReader btagCal(BTagEntry::OP_TIGHT,  // operating point
-                         "central",            # central sys type
-                         btagCal_sys)      # other sys types
-    # the type is:
-    # const std::vector<std::string> & otherSysTypes={}
-
-
-    logging.info("...flavours")
-    btagCal.load(btagCalib,        # calibration instance
-            ROOT.BTagEntry.FLAV_B,      # btag flavour
-    #            "comb");          # they say "comb" is better precision, but mujets are independent from ttbar dilepton channels
-            "mujets")              #
-    btagCal.load(btagCalib,        # calibration instance
-            ROOT.BTagEntry.FLAV_C,      # btag flavour
-            "mujets")              # measurement type
-    btagCal.load(btagCalib,        # calibration instance
-            ROOT.BTagEntry.FLAV_UDSG,   # btag flavour
-            "incl")                # measurement type
-
-    logging.info("loaded b-tagging callibration")
-
-    logging.info("loading b-tagging efficiencies")
-    #bTaggingEfficiencies_filename = std::string(std::getenv("CMSSW_BASE")) + "/src/UserCode/ttbar-leptons-80X/jobing/configs/b-tagging-efficiencies.root";
-    bTaggingEfficiencies_filename = '${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/analysis/b-tagging/v9.38-for-b-effs/beff_histos.root'
-    gSystem.ExpandPathName(bTaggingEfficiencies_filename)
-    bTaggingEfficiencies_file = TFile(bTaggingEfficiencies_filename)
-
-    bEff_histo_b = bTaggingEfficiencies_file.Get('MC2016_Summer16_TTJets_powheg_btag_b_hadronFlavour_candidates_tagged')
-    bEff_histo_c = bTaggingEfficiencies_file.Get('MC2016_Summer16_TTJets_powheg_btag_c_hadronFlavour_candidates_tagged')
-    bEff_histo_udsg = bTaggingEfficiencies_file.Get('MC2016_Summer16_TTJets_powheg_btag_udsg_hadronFlavour_candidates_tagged')
-
-    logging.info("loaded b-tagging efficiencies")
-
-    h_control_btag_eff_b    = TH1D("control_btag_eff_b",    "", 150, 0, 2)
-    h_control_btag_eff_c    = TH1D("control_btag_eff_c",    "", 150, 0, 2)
-    h_control_btag_eff_udsg = TH1D("control_btag_eff_udsg", "", 150, 0, 2)
-
-    h_control_btag_weight_b    = TH1D("control_btag_weight_b",    "", 150, 0, 2)
-    h_control_btag_weight_c    = TH1D("control_btag_weight_c",    "", 150, 0, 2)
-    h_control_btag_weight_udsg = TH1D("control_btag_weight_udsg", "", 150, 0, 2)
-
-    h_control_btag_weight_notag_b    = TH1D("control_btag_weight_notag_b",    "", 150, 0, 2)
-    h_control_btag_weight_notag_c    = TH1D("control_btag_weight_notag_c",    "", 150, 0, 2)
-    h_control_btag_weight_notag_udsg = TH1D("control_btag_weight_notag_udsg", "", 150, 0, 2)
-
-
-#def calc_btag_sf_weight(hasCSVtag: bool, flavId: int, pt: float, eta: float) -> float:
-def calc_btag_sf_weight(hasCSVtag, flavId, pt, eta, sys="central"):
-    # int flavId=jet.partonFlavour();
-    #int flavId=jet.hadronFlavour();
-    # also: patJet->genParton().pdgId()
-    # fill_btag_eff(string("mc_all_b_tagging_candidate_jets_pt_eta"), jet.pt(), eta, weight);
-
-    sf, eff = 1.0, 1.0
-    # If the jet is tagged -- weight *= SF of the jet
-    # if not weight *= (1 - eff*SF)/(1 - eff)
-    # 
-
-    if abs(flavId) == 5:
-        # get SF for the jet
-        sf = btagCal.eval_auto_bounds(sys, ROOT.BTagEntry.FLAV_B, eta, pt, 0.)
-        # get eff for the jet
-        #eff = bTagging_b_jet_efficiency(pt, eta)
-        eff = bEff_histo_b.GetBinContent(bEff_histo_b.FindBin(pt, eta))
-        h_control_btag_eff_b.Fill(eff)
-    elif abs(flavId) == 4:
-        sf = btagCal.eval_auto_bounds(sys, ROOT.BTagEntry.FLAV_C, eta, pt, 0.)
-        #eff = bTagging_c_jet_efficiency(pt, eta)
-        eff = bEff_histo_c.GetBinContent(bEff_histo_c.FindBin(pt, eta))
-        h_control_btag_eff_c.Fill(eff)
-    else:
-        sf = btagCal.eval_auto_bounds(sys, ROOT.BTagEntry.FLAV_UDSG, eta, pt, 0.)
-        #eff = bTagging_udsg_jet_efficiency(pt, eta)
-        eff = bEff_histo_udsg.GetBinContent(bEff_histo_udsg.FindBin(pt, eta))
-        h_control_btag_eff_udsg.Fill(eff)
-
-    jet_weight_factor = 1.
-    if hasCSVtag: # a tagged jet
-        jet_weight_factor = sf
-        if abs(flavId) == 5:
-            h_control_btag_weight_b.Fill(jet_weight_factor)
-        elif abs(flavId) == 4:
-            h_control_btag_weight_c.Fill(jet_weight_factor)
-        else:
-            h_control_btag_weight_udsg.Fill(jet_weight_factor)
-    else: # not tagged
-        # truncate efficiency to 0 and 0.99
-        #eff = 0. if eff < 0. else (0.999 if eff > 0.999 else eff)
-        if 1 - eff > 0:
-            jet_weight_factor = (1 - sf*eff) / (1 - eff)
-        else:
-            jet_weight_factor = 1
-        if abs(flavId) == 5:
-            h_control_btag_weight_notag_b.Fill(jet_weight_factor)
-        elif abs(flavId) == 4:
-            h_control_btag_weight_notag_c.Fill(jet_weight_factor)
-        else:
-            h_control_btag_weight_notag_udsg.Fill(jet_weight_factor)
-
-    return jet_weight_factor
-
-
+    from support_btagging_sf import calc_btag_sf_weight, bEff_histo_b, bEff_histo_c, bEff_histo_udsg
 
 def top_pT_SF(x):
     # the SF function is SF(x)=exp(a+bx)
@@ -1906,6 +1739,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
               'Mt_lep_met':   TH1D('%s_%s_%s_Mt_lep_met'   % (chan, proc, sys), '', 10, 0, 200),
               })
 
+        if 'TOPPT' in sys or 'PU' in sys or sys == 'NOMINAL':
+            distrs.update({
+            'bMjet_pt':   TH1D('%s_%s_%s_bMjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
+              })
+
         if 'PU' in sys or sys == 'NOMINAL':
             distrs.update({
               'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
@@ -1954,12 +1792,15 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             'Rjet_eta':   TH1D('%s_%s_%s_Rjet_eta'   % (chan, proc, sys), '', 50, -2.5, 2.5),
             'LRjet_pt':   TH1D('%s_%s_%s_LRjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
             'LRjet_eta':  TH1D('%s_%s_%s_LRjet_eta'  % (chan, proc, sys), '', 50, -2.5, 2.5),
-            'bMjet_pt':   TH1D('%s_%s_%s_bMjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
+            #'bMjet_pt':   TH1D('%s_%s_%s_bMjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
             'bMjet_eta':  TH1D('%s_%s_%s_bMjet_eta'  % (chan, proc, sys), '', 50, -2.5, 2.5),
             'bLjet_pt':   TH1D('%s_%s_%s_bLjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
             'bLjet_eta':  TH1D('%s_%s_%s_bLjet_eta'  % (chan, proc, sys), '', 20, -2.5, 2.5),
             'bL2jet_pt':  TH1D('%s_%s_%s_bL2jet_pt'  % (chan, proc, sys), '', 30, 0, 300),
             'bL2jet_eta': TH1D('%s_%s_%s_bL2jet_eta' % (chan, proc, sys), '', 20, -2.5, 2.5),
+            'bMjet0_hadronFlavour':   TH1D('%s_%s_%s_bMjet0_hadronFlavour'   % (chan, proc, sys), '', 20, -10, 10),
+            'bMjet1_hadronFlavour':   TH1D('%s_%s_%s_bMjet1_hadronFlavour'   % (chan, proc, sys), '', 20, -10, 10),
+            'bMjet2_hadronFlavour':   TH1D('%s_%s_%s_bMjet2_hadronFlavour'   % (chan, proc, sys), '', 20, -10, 10),
 
             ## OPTIMIZATION
             ## control the b-jet categories
@@ -2088,6 +1929,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'b_discr_med':   TH1D('%s_%s_%s_b_discr_med'   % (chan, proc, sys), '', 30, 0., 1.),
              'b_discr_loose': TH1D('%s_%s_%s_b_discr_loose' % (chan, proc, sys), '', 30, 0., 1.),
              'b_discr_LR':    TH1D('%s_%s_%s_b_discr_LR' % (chan, proc, sys), '', 30, 0., 1.),
+             'n_bMjets_hadronFlavour': TH2D('%s_%s_%s_n_bMjets_hadronFlavour'    % (chan, proc, sys), '', 10, 0, 10, 10, 0, 10),
 
              'tau_jetmatched':         TH1D('%s_%s_%s_tau_jetmatched'    % (chan, proc, sys), '', 3, -1, 2),
              'tau_jetmatched_VS_eta':  TH2D('%s_%s_%s_tau_jetmatched_VS_eta'    % (chan, proc, sys), '', 3, -1, 2, 50, -2.5, 2.5),
@@ -5122,6 +4964,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 #n_medium_jets = len(sel_jets.medium)
                 n_medium_jets = len(sel_jets.medium) # + len(sel_jets.taumatched[0])
                 n_loose_jets  = len(sel_jets.loose)
+                n_hadrFlavour5 = 0
+                for jet in sel_jets.rest + sel_jets.medium + sel_jets.loose:
+                    if abs(jet[4]) == 5:
+                        n_hadrFlavour5 += 1
 
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met,     record_weight)
                 if lep_p4[0].pt() > 30:
@@ -5365,9 +5211,27 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                         out_hs[(chan, record_proc, sys_name)]['b_discr_LR'] .Fill(sel_jets.loose[0][3], record_weight)
 
                 if sel_jets.medium:
-                    out_hs[(chan, record_proc, sys_name)]['bMjet_pt']  .Fill(sel_jets.medium[0][0].pt() * sel_jets.medium[0][1],  record_weight)
-                    out_hs[(chan, record_proc, sys_name)]['bMjet_eta'] .Fill(sel_jets.medium[0][0].eta(), record_weight)
+                    bMjet0_pt = sel_jets.medium[0][0].pt() * sel_jets.medium[0][1]
+                    # just to make sure the jets are sorted in both MC and Data
+                    if len(sel_jets.medium) > 1 and sel_jets.medium[1][0].pt() * sel_jets.medium[1][1] > bMjet0_pt:
+                        out_hs[(chan, record_proc, sys_name)]['bMjet_pt']  .Fill(sel_jets.medium[1][0].pt() * sel_jets.medium[1][1],  record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['bMjet_eta'] .Fill(sel_jets.medium[1][0].eta(), record_weight)
+                    else:
+                        out_hs[(chan, record_proc, sys_name)]['bMjet_eta'] .Fill(sel_jets.medium[0][0].eta(), record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['bMjet_pt']  .Fill(bMjet0_pt,  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['b_discr_med'] .Fill(sel_jets.medium[0][3], record_weight)
+
+                    out_hs[(chan, record_proc, sys_name)]['n_bMjets_hadronFlavour']  .Fill(n_medium_jets, n_hadrFlavour5,  record_weight)
+
+                    out_hs[(chan, record_proc, sys_name)]['bMjet0_hadronFlavour']  .Fill(sel_jets.medium[0][4],  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['bMjet0_pt']  .Fill(sel_jets.medium[0][0].pt() * sel_jets.medium[0][1],  record_weight)
+                    if len(sel_jets.medium) > 1:
+                        out_hs[(chan, record_proc, sys_name)]['bMjet1_hadronFlavour']  .Fill(sel_jets.medium[1][4],  record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['bMjet1_pt']  .Fill(sel_jets.medium[1][0].pt() * sel_jets.medium[1][1],  record_weight)
+                    if len(sel_jets.medium) > 2:
+                        out_hs[(chan, record_proc, sys_name)]['bMjet2_hadronFlavour']  .Fill(sel_jets.medium[2][4],  record_weight)
+                    if len(sel_jets.medium) > 3:
+                        out_hs[(chan, record_proc, sys_name)]['bMjet3_hadronFlavour']  .Fill(sel_jets.medium[3][4],  record_weight)
 
                 if sel_jets.loose:
                     out_hs[(chan, record_proc, sys_name)]['bLjet_pt']  .Fill(sel_jets.loose[0][0].pt() * sel_jets.loose[0][1],  record_weight)
@@ -5803,8 +5667,8 @@ def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19252
     -- the bad lumis don't reduce it that much, should not affect the ratio too much
     '''
 
-    print " OLD_MINIAOD_JETS DO_W_STITCHING ALL_JETS "
-    print OLD_MINIAOD_JETS, DO_W_STITCHING, ALL_JETS
+    print " OLD_MINIAOD_JETS DO_W_STITCHING ALL_JETS with_bSF"
+    print OLD_MINIAOD_JETS, DO_W_STITCHING, ALL_JETS, with_bSF
 
     input_tfile = TFile(input_filename)
     tree = input_tfile.Get('ntupler/reduced_ttree')

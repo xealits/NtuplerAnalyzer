@@ -67,6 +67,17 @@ make sub_proc nt=v27 proc=pR7_em node=1
 # only mu elmu with only mu elmu lep SF
 python genjobs.py v27 pR8_em --do-W-stitching channels_control_regions_elmu --scheme 7,7,2,15,0
 make sub_proc nt=v27 proc=pR8_em node=1
+# looks nice, it seems there is a problem with b SF
+
+# run without bSF
+python genjobs.py v27 pR9_em --without-bSF --do-W-stitching channels_control_regions_elmu --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,0
+python genjobs.py v27 pR9_em --without-bSF --do-W-stitching channels_control_regions_elmu --dtags singletop,data_mu --scheme 7,7,2,15,0
+make sub_proc nt=v27 proc=pR9_em node=1
+
+# check hadron flavours of bMjets
+# and also added the check for bMjet pt sorted
+python genjobs.py v27 pR9_em_hadronFlavours --without-bSF --do-W-stitching channels_control_regions_elmu --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,0
+make sub_proc nt=v27 proc=pR9_em_hadronFlavours node=1
 
 
 
