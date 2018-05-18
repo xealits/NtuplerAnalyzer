@@ -1799,6 +1799,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             'bLjet_eta':  TH1D('%s_%s_%s_bLjet_eta'  % (chan, proc, sys), '', 20, -2.5, 2.5),
             'bL2jet_pt':  TH1D('%s_%s_%s_bL2jet_pt'  % (chan, proc, sys), '', 30, 0, 300),
             'bL2jet_eta': TH1D('%s_%s_%s_bL2jet_eta' % (chan, proc, sys), '', 20, -2.5, 2.5),
+            'bMjet0_pt':  TH1D('%s_%s_%s_bMjet0_pt'   % (chan, proc, sys), '', 30, 0, 300),
+            'bMjet1_pt':  TH1D('%s_%s_%s_bMjet1_pt'   % (chan, proc, sys), '', 30, 0, 300),
+            'bMjet1_eta': TH1D('%s_%s_%s_bMjet1_eta'  % (chan, proc, sys), '', 50, -2.5, 2.5),
             'bMjet0_hadronFlavour':   TH1D('%s_%s_%s_bMjet0_hadronFlavour'   % (chan, proc, sys), '', 20, -10, 10),
             'bMjet1_hadronFlavour':   TH1D('%s_%s_%s_bMjet1_hadronFlavour'   % (chan, proc, sys), '', 20, -10, 10),
             'bMjet2_hadronFlavour':   TH1D('%s_%s_%s_bMjet2_hadronFlavour'   % (chan, proc, sys), '', 20, -10, 10),
@@ -2164,6 +2167,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         #if iev >= 10: break
         #ev = tree.GetEntry(iev)
 
+        '''
         # plug roccor right here
         #roccor_factor = 1.
         for i in range(len(ev.lep_id)):
@@ -2205,6 +2209,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
                 ##ev.lep_p4[i] *= roccor_factor
                 #control_hs['roccor_factor'].Fill(roccor_factor)
+        '''
 
         # the lepton requirements for all 1-lepton channels:
         # do relIso on 1/8 = 0.125, and "all iso" for QCD anti-iso factor
@@ -2325,6 +2330,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
         event_passes = pass_elmu # or pass_elmu_el # pass_mu # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+
+        if pass_elmu or pass_elmu_el or pass_mumu or pass_elel:
+            # check dR of leptons
+            tlep0_p4 = TLorentzVector(ev.lep_p4[0].X(), ev.lep_p4[0].Y(), ev.lep_p4[0].Z(), ev.lep_p4[0].T())
+            tlep1_p4 = TLorentzVector(ev.lep_p4[1].X(), ev.lep_p4[1].Y(), ev.lep_p4[1].Z(), ev.lep_p4[1].T())
+            if not tlep0_p4.DeltaR(tlep1_p4) > 0.3:
+                continue
 
         if not event_passes: continue
         control_counters.Fill(51)
@@ -5238,6 +5250,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     if len(sel_jets.medium) > 1:
                         out_hs[(chan, record_proc, sys_name)]['bMjet1_hadronFlavour']  .Fill(sel_jets.medium[1][4],  record_weight)
                         out_hs[(chan, record_proc, sys_name)]['bMjet1_pt']  .Fill(sel_jets.medium[1][0].pt() * sel_jets.medium[1][1],  record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['bMjet1_eta'] .Fill(sel_jets.medium[1][0].eta(),  record_weight)
                     if len(sel_jets.medium) > 2:
                         out_hs[(chan, record_proc, sys_name)]['bMjet2_hadronFlavour']  .Fill(sel_jets.medium[2][4],  record_weight)
                     if len(sel_jets.medium) > 3:
