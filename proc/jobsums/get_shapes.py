@@ -67,8 +67,12 @@ for i, fileparameter in enumerate(args.input_files):
     logging.debug("%s" % filename)
 
     channel = process = systematic = distr = ''
-    if opts:
+    if opts and len(opts.split(',')) == 4:
         channel, process, systematic, distr = opts.split(',')
+    elif opts and len(opts.split(',')) == 3:
+        channel, process, systematic = opts.split(',')
+    elif opts and len(opts.split(',')) == 2:
+        channel, process = opts.split(',')
 
     if not channel:
         channel    = args.channel

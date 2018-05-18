@@ -1742,6 +1742,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         if 'TOPPT' in sys or 'PU' in sys or sys == 'NOMINAL':
             distrs.update({
             'bMjet_pt':   TH1D('%s_%s_%s_bMjet_pt'   % (chan, proc, sys), '', 30, 0, 300),
+            'b1Mjet_pt':  TH1D('%s_%s_%s_b1Mjet_pt'  % (chan, proc, sys), '', 30, 0, 300),
               })
 
         if 'PU' in sys or sys == 'NOMINAL':
@@ -4956,6 +4957,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                         out_hs[(chan, record_proc, weight_sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met,     record_weight_sys)
                         out_hs[(chan, record_proc, weight_sys_name)]['met']          .Fill(met_pt,         record_weight_sys)
                         out_hs[(chan, record_proc, weight_sys_name)]['lep_pt']       .Fill(lep_p4[0].pt(), record_weight_sys)
+                        if sel_jets.medium:
+                            bMjet0_pt = sel_jets.medium[0][0].pt() * sel_jets.medium[0][1]
+                            out_hs[(chan, record_proc, weight_sys_name)]['bMjet_pt']  .Fill(bMjet0_pt,  record_weight_sys)
+                            if len(sel_jets.medium) == 1: # only 1 tagged jet in event
+                                out_hs[(chan, record_proc, weight_sys_name)]['b1Mjet_pt']  .Fill(bMjet0_pt,  record_weight_sys)
 
                         if sys_name == 'PUUp' or sys_name == 'PUDown':
                             out_hs[(chan, record_proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight_sys)
@@ -5212,13 +5218,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
                 if sel_jets.medium:
                     bMjet0_pt = sel_jets.medium[0][0].pt() * sel_jets.medium[0][1]
-                    # just to make sure the jets are sorted in both MC and Data
-                    if len(sel_jets.medium) > 1 and sel_jets.medium[1][0].pt() * sel_jets.medium[1][1] > bMjet0_pt:
-                        out_hs[(chan, record_proc, sys_name)]['bMjet_pt']  .Fill(sel_jets.medium[1][0].pt() * sel_jets.medium[1][1],  record_weight)
-                        out_hs[(chan, record_proc, sys_name)]['bMjet_eta'] .Fill(sel_jets.medium[1][0].eta(), record_weight)
-                    else:
-                        out_hs[(chan, record_proc, sys_name)]['bMjet_eta'] .Fill(sel_jets.medium[0][0].eta(), record_weight)
-                        out_hs[(chan, record_proc, sys_name)]['bMjet_pt']  .Fill(bMjet0_pt,  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['bMjet_pt']  .Fill(bMjet0_pt,  record_weight)
+                    if len(sel_jets.medium) == 1: # only 1 tagged jet in event
+                        out_hs[(chan, record_proc, sys_name)]['b1Mjet_pt']  .Fill(bMjet0_pt,  record_weight)
+                    # tested the sort in the following -- it doesn't matter
+                    ## just to make sure the jets are sorted in both MC and Data
+                    #if len(sel_jets.medium) > 1 and sel_jets.medium[1][0].pt() * sel_jets.medium[1][1] > bMjet0_pt:
+                    #    out_hs[(chan, record_proc, sys_name)]['bMjet_pt']  .Fill(sel_jets.medium[1][0].pt() * sel_jets.medium[1][1],  record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['bMjet_eta'] .Fill(sel_jets.medium[1][0].eta(), record_weight)
+                    #else:
+                    #    out_hs[(chan, record_proc, sys_name)]['bMjet_eta'] .Fill(sel_jets.medium[0][0].eta(), record_weight)
+                    #    out_hs[(chan, record_proc, sys_name)]['bMjet_pt']  .Fill(bMjet0_pt,  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['b_discr_med'] .Fill(sel_jets.medium[0][3], record_weight)
 
                     out_hs[(chan, record_proc, sys_name)]['n_bMjets_hadronFlavour']  .Fill(n_medium_jets, n_hadrFlavour5,  record_weight)

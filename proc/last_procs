@@ -75,9 +75,13 @@ python genjobs.py v27 pR9_em --without-bSF --do-W-stitching channels_control_reg
 make sub_proc nt=v27 proc=pR9_em node=1
 
 # check hadron flavours of bMjets
-# and also added the check for bMjet pt sorted
+# and also added the check for bMjet pt sorted -- sorting does not help
 python genjobs.py v27 pR9_em_hadronFlavours --without-bSF --do-W-stitching channels_control_regions_elmu --dtags MC2016_Summer16_TTJets_powheg --scheme 7,7,2,15,0
+python genjobs.py v27 pR9_em_hadronFlavours --without-bSF --do-W-stitching channels_control_regions_elmu --dtags MC2016_Summer16_TTJets_powheg,singletop --scheme 7,7,2,15,0
 make sub_proc nt=v27 proc=pR9_em_hadronFlavours node=1
+
+
+
 
 
 
