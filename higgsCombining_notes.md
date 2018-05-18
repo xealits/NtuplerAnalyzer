@@ -531,6 +531,7 @@ No need now with --noMCbonly -- no, it seems to not work.
 
     combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.txt --name MuShape  --noMCbonly 0  &
     combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.txt --name MuShape  --noMCbonly 0 --freezeParameters AlphaS &
+    combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.txt --name MuShape  --noMCbonly 0 --freezeNuisanceGroup tt_updowns &
     combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_both.txt --name BothShape  --noMCbonly 0 --freezeParameters AlphaS &
     combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_el.txt --name ElShape  --noMCbonly 0  &
 
@@ -592,6 +593,8 @@ Examples:
     combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.txt  --saveShapes --saveWithUncertainties --name MuShapes --freezeParameters AlphaS
     combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_el.txt  --saveShapes --saveWithUncertainties --name ElShapes
     ls fitDiagnosticsMu.root
+
+    combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.txt  --saveShapes --saveWithUncertainties --name MuShapes --freezeNuisanceGroup tt_updowns
 
 -- saves post-fit uncertainty, and then additional stack-plot should put the distr-s together
 
@@ -760,6 +763,13 @@ freeze updowns:
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doInitialFit
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doFits --parallel 5
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_updowns -m 125 -o latest_mu_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
+
+finally full mutau:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 -o latest_mu_impacts.json
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
 
 

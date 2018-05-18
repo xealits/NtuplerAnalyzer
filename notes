@@ -33,6 +33,33 @@ python sumup_ttree_distrs.py "pass_basic_METfilters + METfilterbadChCand + METfi
 -- out of nowhere TT also has 0.8% such events!
    it is MC! it does not have met filters!
 
+# elmu data dR between leptons
+
+python sumup_ttree_distrs.py "sqrt((lep_p4[0].eta() - lep_p4[1].eta())*(lep_p4[0].eta() - lep_p4[1].eta()) + (lep_p4[0].phi() - lep_p4[1].phi())*(lep_p4[0].phi() - lep_p4[1].phi()))" --histo-range 100,0.0,0.5 --cond "leps_ID == -13*11 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-name test_data_em_dR_leptons --output test_data_em_dR_leptons.root gstore_outdirs/v27/SingleMuon/*/*/*/*root &
+
+-- few events, 100/200k have dR < 0.05
+
+check same in TT:
+
+python sumup_ttree_distrs.py "sqrt((lep_p4[0].eta() - lep_p4[1].eta())*(lep_p4[0].eta() - lep_p4[1].eta()) + (lep_p4[0].phi() - lep_p4[1].phi())*(lep_p4[0].phi() - lep_p4[1].phi()))" --histo-range 100,0.0,0.5 --cond "leps_ID == -13*11 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-name test_tt_em_dR_leptons --output test_tt_em_dR_leptons.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/180416_131355/0000/MC2016_Summer16_TTJets_powheg_*.root &
+
+
+
+# elmu close bMjet pt in data and MC
+
+need quick script with loops over jets...
+
+
+
+
+
+# elmu selection with and without b SF
+
+python jobsums/get_shapes.py --formula "pR8:pR9" -c ctr_mu_tt_em  -d bMjet_pt  -p tt_elmu pR8:merge-sets/v27/pR8_em/MC2016_Summer16_TTJets_powheg.root pR9:merge-sets/v27/pR9_em/MC2016_Summer16_TTJets_powheg.root &
+python jobsums/get_shapes.py --formula "pR8:pR9" -c ctr_mu_tt_em  -d bMjet_eta -p tt_elmu pR8:merge-sets/v27/pR8_em/MC2016_Summer16_TTJets_powheg.root pR9:merge-sets/v27/pR9_em/MC2016_Summer16_TTJets_powheg.root &
+
+python jobsums/get_shapes.py --formula "pR8:pR9" -c ctr_mu_tt_em_close  -d bMjet_pt  -p tt_elmu pR8:merge-sets/v27/pR8_em/MC2016_Summer16_TTJets_powheg.root pR9:merge-sets/v27/pR9_em/MC2016_Summer16_TTJets_powheg.root &
+python jobsums/get_shapes.py --formula "pR8:pR9" -c ctr_mu_tt_em_close  -d bMjet_eta -p tt_elmu pR8:merge-sets/v27/pR8_em/MC2016_Summer16_TTJets_powheg.root pR9:merge-sets/v27/pR9_em/MC2016_Summer16_TTJets_powheg.root &
 
 
 
@@ -58,7 +85,6 @@ python sumup_ttree_distrs.py "lep_p4[0].pt()" --cond-com "nbjets > 0 && leps_ID 
 
 
 -- 0.5% less events in data after fix
-
 
 
 
