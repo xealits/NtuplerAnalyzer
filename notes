@@ -67,6 +67,172 @@ python sumup_ttree_distrs.py "jet_matching_lep_dR[1]" --cond "leps_ID == -11*11 
 
 
 
+# dR of HLT match
+
+mumu selection just to try
+
+python sumup_ttree_distrs.py "lep_matched_HLT_dR[0]" --cond-com "leps_ID == -13*13 && HLT_mu" --histo-range 100,0.0,0.4  --histo-name mumu_lepmatch_HLT_dR_data --output mumu_lepmatch_HLT_dR_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+python sumup_ttree_distrs.py "lep_matched_HLT_dR[0]" --cond-com "leps_ID == -13*13 && HLT_mu" --histo-range 100,0.0,0.4  --histo-name mumu_lepmatch_HLT_dR_tt   --output mumu_lepmatch_HLT_dR_tt.root   gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+how much are not matched?
+elmu HLT match
+
+python sumup_ttree_distrs.py "lep_matched_HLT[0]" --cond-com "leps_ID == -13*11 && HLT_mu" --histo-range 3,-1.,2 --histo-name elmu_lepmatch_HLT0_tt   --output elmu_lepmatch_HLT0_tt.root   gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+python sumup_ttree_distrs.py "lep_matched_HLT[0]" --cond-com "leps_ID == -13*11 && HLT_mu" --histo-range 3,-1.,2 --histo-name elmu_lepmatch_HLT0_data --output elmu_lepmatch_HLT0_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+-- both very good match
+14 / 523759.
+in tt
+16 / 257533.
+in data
+
+and el:
+
+python sumup_ttree_distrs.py "lep_matched_HLT[1]" --cond-com "leps_ID == -13*11 && HLT_mu" --histo-range 3,-1.,2 --histo-name elmu_lepmatch_HLT1_tt   --output elmu_lepmatch_HLT1_tt.root   gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+python sumup_ttree_distrs.py "lep_matched_HLT[1]" --cond-com "leps_ID == -13*11 && HLT_mu" --histo-range 3,-1.,2 --histo-name elmu_lepmatch_HLT1_data --output elmu_lepmatch_HLT1_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+67475.0 / 456298.
+in tt
+45813.0 / 211736.
+in data
+
+not matched 21% in data, 14% in tt
+
+check the muon:
+
+python sumup_ttree_distrs.py "abs(lep_id[0])" --cond-com "leps_ID == -13*11 && HLT_mu" --histo-range 21,-1.,20. --histo-name elmu_lepid0_tt   --output elmu_lepid0_tt.root   gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+python sumup_ttree_distrs.py "abs(lep_id[1])" --cond-com "leps_ID == -13*11 && HLT_mu" --histo-range 21,-1.,20. --histo-name elmu_lepid1_tt   --output elmu_lepid1_tt.root   gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "abs(lep_id[0])" --cond-com "leps_ID == -13*11 && HLT_mu" --histo-range 21,-1.,20. --histo-name elmu_lepid0_data --output elmu_lep0_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+python sumup_ttree_distrs.py "abs(lep_id[1])" --cond-com "leps_ID == -13*11 && HLT_mu" --histo-range 21,-1.,20. --histo-name elmu_lepid1_data --output elmu_lep1_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+tt:
+lep0 = 13
+lep1 = 11
+data:
+same
+
+check HLT match of electron with full elmu_close requirement
+
+python sumup_ttree_distrs.py "lep_matched_HLT[1]" --cond-com "leps_ID == -13*11 && HLT_mu && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-range 3,-1.,2 --histo-name elmu_close_lepmatch_HLT1_tt   --output elmu_close_lepmatch_HLT1_tt.root   gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+python sumup_ttree_distrs.py "lep_matched_HLT[1]" --cond-com "leps_ID == -13*11 && HLT_mu && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-range 3,-1.,2 --histo-name elmu_close_lepmatch_HLT1_data --output elmu_close_lepmatch_HLT1_data.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/1*/*/*root &
+
+(even if it works, then the problem: it breaks the equality of triggers with lep-tau proces...................)
+
+still:
+tt    12/100
+49227.0 / 385230.
+data  16/100
+28577.0 / 171436.
+
+how large is ele HLT SF?
+
+python module_leptons.py el_trigSF_in_elmu_close.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root
+
+for eta = 2.1, pt = 30.1
+sf, uncert = 0.8545982188646293, 0.02278517998528972
+
+why so large?
+-- check in the file
+
+about 0.975597
+
+and:
+
+bpython version 0.15 on top of Python 3.5.2 /usr/bin/python3
+>>> 49227.0 / 385230.
+0.12778599797523557
+>>> 385230. / (49227.0 + 385230.)
+0.8866930444209669
+>>> 
+>>> 171436. / (28577.0 + 171436.)
+0.8571242869213501
+>>> 0.8571242869213501 / 0.8866930444209669
+0.966652769314407
+
+-- so, 1 percent off
+
+
+
+
+# tt decayID check no default value
+
+if W_num < 0 continue
+
+gen_t_w_decay_id
+gen_t_w_decay_id
+
+-- then I'd have "tt_other"
+
+
+# what if
+
+muon objects are matched so well because of a mistake
+
+matched_muTriggerName1 = ""
+utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_MC1)
+
+   -> from llvv/src/MacroUtils.cc
+      if(tr.accept( pattern.c_str() ) ) { pathName = pattern; return true;}
+      else return false
+
+   can be false, ""
+   and another trig is true "foobar"
+   overl trigger is true and
+
+if overall_trigger = True:
+
+   Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs,  matched_muTriggerName1)
+   Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs2, matched_muTriggerName2)
+   mu_trig_objs.insert(mu_trig_objs.end(), mu_trig_objs2.begin(), mu_trig_objs2.end());
+
+   in Processing
+       -> is_our_hlt |= (obj.pathNames()[h].find(targetHLT) != std::string::npos);
+       -- if "" matches to all trig objects
+          then non-triggered objects will pass
+
+I have cases like:
+
+passed HLT 0 1(1,0); HLT_IsoMu24_v1,
+passed HLT 0 1(1,0); HLT_IsoMu24_v1,
+passed HLT 0 1(1,1); HLT_IsoMu24_v1,HLT_IsoTkMu24_v1
+passed HLT 0 1(1,1); HLT_IsoMu24_v1,HLT_IsoTkMu24_v1
+passed HLT 0 1(0,1); ,HLT_IsoTkMu24_v1
+
+-- debug N objects in each of muon collections
+
+passed HLT 0 1(0,1); ,HLT_IsoTkMu24_v1 0 6(4,2)
+passed HLT 0 1(1,0); HLT_IsoMu24_v1, 0 6(3,3)
+
+-- fixed it,
+now it's:
+
+passed HLT 0 1(0,1); ,HLT_IsoTkMu24_v1 0 2(0,2)
+passed HLT 0 1(1,0); HLT_IsoMu24_v1, 0 3(3,0)
+
+
+
+-- how lepons pass?
+
+-- hard to see elmu events and catch muons
+   in case of only 1 type of muon HLT
+   50-50% of these mouns pass selection or fall into veto leptons
+
+sub jobs anyway
+v31v27
+
+
+
+
+
+
+# PU and nvtx gen
+
+python sumup_ttree_distrs.py "nvtx_gen" --histo-range 75,0.,75. --histo-name tt_nvtx_gen --output tt_nvtx_gen.root gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root
+
+
+
+
 
 # effect from SingleMuon RunG
 
