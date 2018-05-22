@@ -2486,12 +2486,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NT_HLT_jets140 = jetsHLT140;
 	NT_HLT_jets400 = jetsHLT400;
 
-	LogInfo ("Demo") << "passed HLT " << eTrigger << ' ' << muTrigger << '(' << muTrigger1 << ',' << muTrigger2 << ')' << ';' << matched_elTriggerName << ' ' << matched_muTriggerName1 << ',' << matched_muTriggerName2;
-
 	// HLT matching
 	// objects of our triggers
 	vector<pat::TriggerObjectStandAlone> el_trig_objs;
-	vector<pat::TriggerObjectStandAlone> mu_trig_objs, mu_trig_objs2;
+	vector<pat::TriggerObjectStandAlone> mu_trig_objs, mu_trig_objs1, mu_trig_objs2;
 
 	if (withHLT)
 		{
@@ -2519,14 +2517,18 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		if (muTrigger)
 			{
-			Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs,  matched_muTriggerName1);
-			Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs2, matched_muTriggerName2);
+			if (muTrigger1)
+				{ Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs1, matched_muTriggerName1); }
+			if (muTrigger2)
+				{ Processing_selectHLTobjects(trig_objs, trigNames, mu_trig_objs2, matched_muTriggerName2); }
 			// vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
+			mu_trig_objs.insert(mu_trig_objs.end(), mu_trig_objs1.begin(), mu_trig_objs1.end());
 			mu_trig_objs.insert(mu_trig_objs.end(), mu_trig_objs2.begin(), mu_trig_objs2.end());
 			}
 		}
 
-	LogInfo ("Demo") << "our trigger objects: " << el_trig_objs.size() << ',' << mu_trig_objs.size();
+	LogInfo ("Demo") << "passed HLT " << eTrigger << ' ' << muTrigger << '(' << muTrigger1 << ',' << muTrigger2 << ')' << ';' << matched_elTriggerName << ' ' << matched_muTriggerName1 << ',' << matched_muTriggerName2 << ' ' << el_trig_objs.size() << ' ' << mu_trig_objs.size() << '(' << mu_trig_objs1.size() << ',' << mu_trig_objs2.size() << ')';
+	//LogInfo ("Demo") << "our trigger objects: " << el_trig_objs.size() << ' ' << mu_trig_objs.size();
 
 	// PRIMARY VERTEX
 	reco::VertexCollection vtx;

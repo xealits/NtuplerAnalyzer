@@ -7,6 +7,7 @@
 #include "TMath.h"
 #include "RoccoR.h"
 
+#include <iostream>
 
 int RocRes::getBin(double x, const int NN, const double *b) const{
     for(int i=0; i<NN; ++i) if(x<b[i+1]) return i;
