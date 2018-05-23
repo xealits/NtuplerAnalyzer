@@ -1,0 +1,27 @@
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 -o latest_el_impacts_asimov.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_asimov.json -o latest_el_impacts_asimov
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 -o latest_mu_impacts_asimov.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_asimov.json -o latest_mu_impacts_asimov
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 -o latest_both_impacts_asimov.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts_asimov.json -o latest_both_impacts_asimov
+
+
+combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.txt   --name MuShape   --noMCbonly 0 &
+combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_both.txt --name BothShape --noMCbonly 0 &
+combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_el.txt   --name ElShape   --noMCbonly 0 &
+
+python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsElShape.root   -g pulls_of_nuisances_el_shape.root -o
+python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsMuShape.root   -g pulls_of_nuisances_mu_shape.root -o
+python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsBothShape.root -g pulls_of_nuisances_both_shape.root -o
+
+
+
