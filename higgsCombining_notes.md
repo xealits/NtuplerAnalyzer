@@ -950,8 +950,9 @@ muon fit investigation:
 
 
 
+# Usual plots
 
 
-
+    combine -M MultiDimFit --algo grid --points  100 --rMin 0.7 --rMax 1.3 higgsCombineMuBestfit.MultiDimFit.mH120.root -m 120 --snapshotName MultiDimFit --freezeParameters all --fastScan -n MuNoSys
 
 
