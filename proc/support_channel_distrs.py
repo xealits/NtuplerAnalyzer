@@ -1622,7 +1622,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              '2D_dijet_trijet':     TH2D('%s_%s_%s_2D_dijet_trijet'     % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
              '2D_dijet_trijet_all': TH2D('%s_%s_%s_2D_dijet_trijet_all' % (chan, proc, sys), '', 20, 0, 200, 20, 0, 300),
              #'dijet_trijet_mass':   TH1D('%s_%s_%s_dijet_trijet_mass' % (chan, proc, sys), '', 20, 0, 400),
-             'combination_input_have': TH2D('%s_%s_%s_combination_input_have' % (chan, proc, sys), '', 7, 0, 7, 7, 0, 7),
+             'input_has':              TH1D('%s_%s_%s_input_has'       % (chan, proc, sys), '', 7, 0, 7),
+             'combination_has':        TH1D('%s_%s_%s_combination_has' % (chan, proc, sys), '', 7, 0, 7),
+             'combination_input_have': TH2D('%s_%s_%s_combination_input_have' % (chan, proc, sys), '', 8, 0, 8, 7, 0, 7),
              'lj_gens':             TH1D('%s_%s_%s_lj_gens' % (chan, proc, sys), '', 15, 0, 15),
              'lj_gens_b_gen':       TH1D('%s_%s_%s_lj_gens_b_gen' % (chan, proc, sys), '', 20, -10, 10),
              'lj_gens_w1_gen':      TH1D('%s_%s_%s_lj_gens_w1_gen' % (chan, proc, sys), '', 20, -10, 10),
@@ -5166,6 +5168,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     # has the combination propper b and propper Ws
                     if propper_b:
                         combination_has = 3*(lj_b_gen == propper_b) + (lj_w1_gen == propper_w) + (lj_w2_gen == propper_w)
+                        out_hs[(chan, record_proc, sys_name)]['combination_has']       .Fill(combination_has, record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['input_has']             .Fill(jets_input_has, record_weight)
                         out_hs[(chan, record_proc, sys_name)]['combination_input_have'].Fill(combination_has, jets_input_has, record_weight)
 
                     # the following two make up probability to pass VS permutations
