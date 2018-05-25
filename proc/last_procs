@@ -1,3 +1,9 @@
+# fixed mu HLT obj matching and met filters, also new separate lep module
+python genjobs.py v31v27 pMETfilt --do-W-stitching channels_control_regions_elmu --scheme 7,7,2,12,12
+make sub_proc nt=v31v27 proc=pMETfilt node=1
+
+
+
 # yep.. from pR4 it seems the per-vtx mu iso SF does reduce the difference well
 # and the fixed point of PU variation is good now, PU Down corrects only about 2%, when the mismatch in those bins is about 5%
 # hopefully top pt will also add to that
