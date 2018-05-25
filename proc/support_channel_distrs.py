@@ -1835,6 +1835,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 #control_hs['roccor_factor'].Fill(roccor_factor)
         '''
 
+        pass_met_filters = ev.pass_basic_METfilters and ev.METfilterbadChCand and ev.METfilterbadPFMuon
+        if not isMC and not pass_met_filters: continue
+
         # the lepton requirements for all 1-lepton channels:
         # do relIso on 1/8 = 0.125, and "all iso" for QCD anti-iso factor
 
