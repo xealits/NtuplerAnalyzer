@@ -205,6 +205,7 @@ from module_leptons import lepton_muon_SF, lepton_muon_trigger_SF, lepton_electr
 
 if with_bSF:
     from support_btagging_sf import calc_btag_sf_weight, bEff_histo_b, bEff_histo_c, bEff_histo_udsg
+    from support_btagging_sf import h_control_btag_eff_b, h_control_btag_eff_c, h_control_btag_eff_udsg, h_control_btag_weight_b, h_control_btag_weight_c, h_control_btag_weight_udsg, h_control_btag_weight_notag_b, h_control_btag_weight_notag_c, h_control_btag_weight_notag_udsg
 
 def top_pT_SF(x):
     # the SF function is SF(x)=exp(a+bx)
@@ -1834,6 +1835,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 ##ev.lep_p4[i] *= roccor_factor
                 #control_hs['roccor_factor'].Fill(roccor_factor)
         '''
+
+        pass_met_filters = ev.pass_basic_METfilters and ev.METfilterbadChCand and ev.METfilterbadPFMuon
+        if not isMC and not pass_met_filters: continue
 
         # the lepton requirements for all 1-lepton channels:
         # do relIso on 1/8 = 0.125, and "all iso" for QCD anti-iso factor
