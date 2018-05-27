@@ -2012,9 +2012,10 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             #Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px(), ev.tau_p4[0].Py(), ev.pfmetcorr_ex, ev.pfmetcorr_ey)
             # TODO: tau is corrected with systematic ES
 
-        elif not isMC:
-            met_x = ev.met_slimmedMETsMuEGClean.Px()
-            met_y = ev.met_slimmedMETsMuEGClean.Py()
+        #elif not isMC:
+        #    met_x = ev.met_slimmedMETsMuEGClean.Px()
+        #    met_y = ev.met_slimmedMETsMuEGClean.Py()
+        # to test: is it = met_init
 
         else:
             #met_x = ev.met_corrected.Px()
