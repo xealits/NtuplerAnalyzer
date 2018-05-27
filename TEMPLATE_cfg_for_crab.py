@@ -30,6 +30,7 @@ ivars.inputFiles=(
 # MC or Data is used everywhere
 isMC = {isMC}   # PARAMETER
 dtag = '{dtag}' # PARAMETER
+is2017rereco = {is2017rereco}
 
 #ivars.outputFile = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/MC2016_Summer16_TTJets_powheg_0.root'
 ivars.outputFile = dtag + '.root'
@@ -119,6 +120,7 @@ process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
 # NTUPLER
 process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 process.ntupler.isMC = cms.bool(isMC)
+process.ntupler.is2017rereco = cms.bool(is2017rereco)
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.dtag = cms.string(dtag)
 

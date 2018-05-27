@@ -46,7 +46,10 @@ input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/Data_SingleElectron_G_FAAE
 
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_165F54A0-A3BE-E611-B3F7-0025905A606A.root',), True, 'TTJets2'
 
-input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/Data_SingleMuon_B_3AFB9551-E6EB-E611-8EDA-0025905C3D98.root',), False, 'SingleMuon2016B'
+input_files, isMC, is2017rereco, dtag = ('file:/eos/user/o/otoldaie/Data_SingleMuon_B_Aug_D83FEA89-CC81-E711-83A8-008CFA197E74.root',), False, True,  'SingleMuon2016BAug'
+input_files, isMC, is2017rereco, dtag = ('file:/eos/user/o/otoldaie/Data_SingleMuon_B_3AFB9551-E6EB-E611-8EDA-0025905C3D98.root',),     False, False, 'SingleMuon2016B'
+input_files, isMC, is2017rereco, dtag = ('file:/eos/user/o/otoldaie/Data_SingleMuon_B_Aug_5ADCFC9D-4B81-E711-A19C-0CC47A4C8E8A.root',), False, True,  'SingleMuon2016BAug2'
+
 
 
 if any('2015' in infile for infile in input_files) or '2015' in dtag:
@@ -101,12 +104,12 @@ process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 
-process.MessageLogger.cerr.threshold = 'INFO'
-#process.MessageLogger.categories.append('Demo')
-process.MessageLogger.cerr.INFO = cms.untracked.PSet(
-    #limit = cms.untracked.int32(-1)
-    limit = cms.untracked.int32(10000)
-)
+#process.MessageLogger.cerr.threshold = 'INFO'
+##process.MessageLogger.categories.append('Demo')
+#process.MessageLogger.cerr.INFO = cms.untracked.PSet(
+#    #limit = cms.untracked.int32(-1)
+#    limit = cms.untracked.int32(10000)
+#)
 
 #process.MessageLogger = cms.Service("MessageLogger",
 #       destinations   = cms.untracked.vstring(
@@ -128,9 +131,9 @@ process.MessageLogger.cerr.INFO = cms.untracked.PSet(
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 
 
@@ -164,6 +167,7 @@ process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.isMC = cms.bool(isMC)
+process.ntupler.is2017rereco = cms.bool(is2017rereco)
 process.ntupler.isLocal = cms.bool(False)
 process.ntupler.withHLT = cms.bool(withHLT)
 process.ntupler.dtag = cms.string(dtag)
@@ -186,7 +190,7 @@ process.ntupler.HLT_source = cms.string(HLT_source)
 process.ntupler.input = cms.untracked.vstring(input_files)
 process.ntupler.outfile = cms.string(output_file)
 
-record_scheme = 'tauID' # Dilep MonitorHLT tauIDantiIso jets'
+record_scheme = 'tauID Dilep' # Dilep MonitorHLT tauIDantiIso jets'
 if record_scheme:
     process.ntupler.record_tauID         = cms.bool('tauID'         in record_scheme)
     process.ntupler.record_tauIDantiIso  = cms.bool('tauIDantiIso'  in record_scheme)

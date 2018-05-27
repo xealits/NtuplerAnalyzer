@@ -344,6 +344,12 @@ Bool_t_in_NTuple(OUTNTUPLE, filters_eebad            )
 Bool_t_in_NTuple(OUTNTUPLE, filters_halo             )
 Bool_t_in_NTuple(OUTNTUPLE, filters_halo_super       )
 
+Bool_t_in_NTuple(OUTNTUPLE, filters_noBadMuons       )
+Bool_t_in_NTuple(OUTNTUPLE, filters_duplicateMuons   )
+
+Bool_t_in_NTuple(OUTNTUPLE, BadChargedCandidateFilter )
+Bool_t_in_NTuple(OUTNTUPLE, BadPFMuonFilter           )
+
 Bool_t_in_NTuple(OUTNTUPLE, HLT_lepMonitor)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_el)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_mu)

@@ -878,7 +878,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	bool record_ElTau, record_MuTau, record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets;
 
 	TString dtag;
-	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop;
+	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop, is2017rereco;
 	bool isLocal;
 	bool withHLT;
 	string  HLT_source,
@@ -955,6 +955,7 @@ record_Dilep         (iConfig.getParameter<bool>("record_Dilep"))         ,
 record_jets          (iConfig.getParameter<bool>("record_jets"))         ,
 dtag       (iConfig.getParameter<std::string>("dtag")),
 isMC       (iConfig.getParameter<bool>("isMC")),
+is2017rereco       (iConfig.getParameter<bool>("is2017rereco")),
 isLocal    (iConfig.getParameter<bool>("isLocal")),
 withHLT    (iConfig.getParameter<bool>("withHLT")),
 HLT_source (iConfig.getParameter<std::string>("HLT_source")),
@@ -2266,8 +2267,18 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 *   https://hypernews.cern.ch/HyperNews/CMS/get/met.html
 	 */
 
-	//edm::TriggerResultsByName recoFilters = iEvent.triggerResultsByName("RECO"); //is present only if PAT (and miniAOD) is not run simultaniously with RECO
-	edm::TriggerResultsByName patFilters  = iEvent.triggerResultsByName("PAT"); //is present only if PAT (and miniAOD) is not run simultaniously with RECO
+	string filters_name = "";
+	// 2016 data, Aug 2017 rereco
+	if (is2017rereco)
+		{
+		filters_name = "RECO";
+		}
+	else
+		{
+		// 2016 data, Feb 2017 rereco
+		filters_name = "PAT";
+		}
+	edm::TriggerResultsByName patFilters = iEvent.triggerResultsByName(filters_name); //is present only if PAT (and miniAOD) is not run simultaniously with RECO
 	//if(!isMC && !metFilters.isValid()){metFilters = iEvent.triggerResultsByName("PAT");} //if not present, then it's part of RECO
 	//if(!isMC && !metFilters.isValid()){       
 	//	LogInfo("Demo") << "TriggerResultsByName for MET filters is not found in the process, as a consequence the MET filter is disabled for this event";
@@ -2286,9 +2297,23 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_filters_eebad            = utils::passTriggerPatterns(patFilters, "Flag_eeBadScFilter");
 		NT_filters_halo             = utils::passTriggerPatterns(patFilters, "Flag_globalTightHalo2016Filter");
 		NT_filters_halo_super       = utils::passTriggerPatterns(patFilters, "Flag_globalSuperTightHalo2016Filter");
+
 		// 2016 thing: bad muons
-		//bool flag_noBadMuons = utils::passTriggerPatterns(patFilters, "Flag_noBadMuons"); // <---- the bad muons are done on the fly with cfg.py thingy
-		//bool flag_duplicateMuons = utils::passTriggerPatterns(patFilters, "Flag_duplicateMuons");
+		if (is2017rereco)
+			{
+			NT_BadChargedCandidateFilter = utils::passTriggerPatterns(patFilters, "Flag_BadChargedCandidateFilter");
+			NT_BadPFMuonFilter           = utils::passTriggerPatterns(patFilters, "Flag_BadPFMuonFilter");
+			}
+		else
+			{
+			NT_filters_noBadMuons     = utils::passTriggerPatterns(patFilters, "Flag_noBadMuons"); // <---- the bad muons are done on the fly with cfg.py thingy
+			NT_filters_duplicateMuons = utils::passTriggerPatterns(patFilters, "Flag_duplicateMuons");
+			}
+		//NT_BadChargedCandidateFilter = utils::passTriggerPatterns(patFilters, "Flag_BadChargedCandidateFilter");
+		//NT_BadPFMuonFilter           = utils::passTriggerPatterns(patFilters, "Flag_BadPFMuonFilter");
+		//NT_filters_noBadMuons        = utils::passTriggerPatterns(patFilters, "Flag_noBadMuons"); // <---- the bad muons are done on the fly with cfg.py thingy
+		//NT_filters_duplicateMuons    = utils::passTriggerPatterns(patFilters, "Flag_duplicateMuons");
+
 		// from
 		// https://twiki.cern.ch/twiki/bin/view/CMSPublic/ReMiniAOD03Feb2017Notes#Event_flags
 		// Three flags are saved in the event:
@@ -2796,6 +2821,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		const pat::MET& MET = metsHandle_slimmedMETs->front();
 		NT_met_slimmedMets = MET.p4();
 		NT_met_init = MET.p4();
+		LogInfo ("Demo") << "met slimmed";
 		}
 	// LorentzVector met = mets_slimmedMETs[0].p4 ();
 
@@ -2804,6 +2830,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		{
 		const pat::MET& MET2 = metsHandle_slimmedMETsMuEGClean->front();
 		NT_met_slimmedMETsMuEGClean = MET2.p4();
+		LogInfo ("Demo") << "met MuEgClean";
 		}
 
 	// also for control let's get uncorrected met and compare the two:
@@ -2813,11 +2840,17 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		edm::Handle<pat::METCollection> mets_uncorrectedHandle;
 		//mets_uncorrectedHandle.getByLabel(ev, "slimmedMETsUncorrected");
 		iEvent.getByToken( mets_uncorrected_, mets_uncorrectedHandle);
-		if(mets_uncorrectedHandle.isValid() ) mets_uncorrected = *mets_uncorrectedHandle;
-		pat::MET met_uncorrected = mets_uncorrected[0];
-		NT_met_uncorrected = met_uncorrected.p4();
+		if(mets_uncorrectedHandle.isValid() )
+			{
+			mets_uncorrected = *mets_uncorrectedHandle;
+			pat::MET met_uncorrected = mets_uncorrected[0];
+			NT_met_uncorrected = met_uncorrected.p4();
+			LogInfo ("Demo") << "met uncor";
+			}
 		}
 
+
+	LogInfo ("Demo") << "passed mets";
 
 	// JETS
 	/* jets additionally need initialization of:

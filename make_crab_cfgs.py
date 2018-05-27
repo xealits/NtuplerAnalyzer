@@ -48,18 +48,20 @@ if __name__ == "__main__":
     isMC = dsets_info[dset]['isMC']
     LumiMask = dsets_info[dset]['LumiMask']
     withHLT = not args.without_HLT
+    is2017rereco = 'is2017rereco' in dsets_info[dset]
 
     logging.debug('dtag = ' + dtag)
     logging.debug('suffix = ' + suffix)
     logging.debug('LumiMask = ' + LumiMask)
     logging.debug('isMC = ' + str(isMC))
     logging.debug('withHLT = ' + str(withHLT))
+    logging.debug('is2017rereco = ' + str(is2017rereco))
 
     config_file = conf_dir + version + '/%s%s_cfg.py' % (dtag, suffix)
 
     template_crab = template_crab.format(LumiMask=LumiMask, dtag=dtag, suffix=suffix, version=version, dset=dset,
         config_file=config_file)
-    template_cfg = template_cfg .format(isMC=isMC, dtag=dtag, record_scheme=record_scheme, withHLT=withHLT)
+    template_cfg = template_cfg .format(isMC=isMC, dtag=dtag, record_scheme=record_scheme, withHLT=withHLT, is2017rereco=is2017rereco)
 
     if not os.path.exists(conf_dir + version):
         os.makedirs(conf_dir + version)
