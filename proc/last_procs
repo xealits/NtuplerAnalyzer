@@ -1,6 +1,13 @@
+# v32 data -- run on Aug rereco
+python genjobs.py v32 p1 --do-W-stitching channels_control_regions_elmu --dtags data_mu_aug --scheme 7,7,2,12,12
+make sub_proc  nt=v32 proc=p1 node=1
+
+
 # fixed mu HLT obj matching and met filters, also new separate lep module
 python genjobs.py v31v27 pMETfilt --do-W-stitching channels_control_regions_elmu --scheme 7,7,2,12,12
 make sub_proc nt=v31v27 proc=pMETfilt node=1
+
+
 
 
 
