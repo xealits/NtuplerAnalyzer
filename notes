@@ -1,3 +1,68 @@
+# search for lost met filters
+
+foreach ver (v17  v18  v19  v20  v21  v22  v23)
+python sumup_ttree_distrs.py "pass_basic_METfilters + METfilterbadChCand + METfilterbadPFMuon" --histo-range 5,-1.,4. --histo-name ${ver}_singlemu_met_filters --output ${ver}_singlemu_met_filters.root gstore_outdirs/${ver}/SingleMuon/Ntupler_${ver}_Data13TeV_SingleMuon2016*/*/*/*root &
+end
+
+foreach ver (v24  v25  v26  v27  v28  v29  v30  v31v27)
+python sumup_ttree_distrs.py "pass_basic_METfilters + METfilterbadChCand + METfilterbadPFMuon" --histo-range 5,-1.,4. --histo-name ${ver}_singlemu_met_filters --output ${ver}_singlemu_met_filters.root gstore_outdirs/${ver}/SingleMuon/Ntupler_${ver}_Data13TeV_SingleMuon2016*/*/*/*root &
+end
+
+ok, 0.2% in v31v27
+checking elmu close
+
+python sumup_ttree_distrs.py "pass_basic_METfilters + METfilterbadChCand + METfilterbadPFMuon" --histo-range 5,-1.,4. --cond-com "nbjets > 0 && leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-name v31v27_elmu_close_met_filters_data --output v31v27_elmu_close_met_filters_data.root gstore_outdirs/v31v27/SingleMuon/Ntupler_v31v27_Data13TeV_SingleMuon2016*/*/*/*root &
+
+python sumup_ttree_distrs.py "pass_basic_METfilters + METfilterbadChCand + METfilterbadPFMuon" --histo-range 5,-1.,4. --cond-com "leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-name v31v27_elmu_met_filters_data --output v31v27_elmu_met_filters_data.root gstore_outdirs/v31v27/SingleMuon/Ntupler_v31v27_Data13TeV_SingleMuon2016*/*/*/*root &
+
+-- 0.8 % close  (1124 events)
+   0.79% simple (1380 events)
+
+check which break:
+
+python sumup_ttree_distrs.py "pass_basic_METfilters" --histo-range 5,-1.,4. --cond-com "leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-name v31v27_elmu_met_filters_basic_data --output v31v27_elmu_met_filters_basic_data.root gstore_outdirs/v31v27/SingleMuon/Ntupler_v31v27_Data13TeV_SingleMuon2016*/*/*/*root &
+
+python sumup_ttree_distrs.py "METfilterbadChCand" --histo-range 5,-1.,4. --cond-com "leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-name v31v27_elmu_met_filters_badCh_data --output v31v27_elmu_met_filters_badCh_data.root gstore_outdirs/v31v27/SingleMuon/Ntupler_v31v27_Data13TeV_SingleMuon2016*/*/*/*root &
+
+python sumup_ttree_distrs.py "METfilterbadPFMuon" --histo-range 5,-1.,4. --cond-com "leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-name v31v27_elmu_met_filters_PFMuon_data --output v31v27_elmu_met_filters_PFMuon_data.root gstore_outdirs/v31v27/SingleMuon/Ntupler_v31v27_Data13TeV_SingleMuon2016*/*/*/*root &
+
+
+
+python sumup_ttree_distrs.py "pass_basic_METfilters + METfilterbadChCand + METfilterbadPFMuon" --histo-range 5,-1.,4. --cond-com "leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-name v31v27_elmu_met_filters_tt --output v31v27_elmu_met_filters_tt.root gstore_outdirs/v31v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v31v27_MC2016_Summer16_TTJets_powheg/180522_225221/0000/*root &
+
+-- out of nowhere TT also has 0.8% such events!
+   it is MC! it does not have met filters!
+
+
+
+
+
+
+# tt em close
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()" --cond-com "nbjets > 0 && leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-range 100,0.,250. --histo-name v31v27_elmu_close_lep0_pt_tt   --output v31v27_elmu_close_lep0_pt_tt.root   gstore_outdirs/v31v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v31v27_MC2016_Summer16_TTJets_powheg/180522_225221/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()" --cond-com "nbjets > 0 && leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-range 100,0.,250. --histo-name v31v27_elmu_close_lep0_pt_data --output v31v27_elmu_close_lep0_pt_data.root gstore_outdirs/v31v27/SingleMuon/Ntupler_v31v27_Data13TeV_SingleMuon2016*/*/*/*root &
+
+-- not all jobs now!!!
+
+old ntuples:
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()" --cond-com "nbjets > 0 && leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-range 100,0.,250. --histo-name v27_elmu_close_lep0_pt_tt_old   --output v27_elmu_close_lep0_pt_tt_old.root   gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()" --cond-com "nbjets > 0 && leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-range 100,0.,250. --histo-name v27_elmu_close_lep0_pt_data_old --output v27_elmu_close_lep0_pt_data_old.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016*/*/*/*root &
+
+old w.o. D:
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()" --cond-com "nbjets > 0 && leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-range 100,0.,250. --histo-name v27_elmu_close_lep0_pt_data_old_noD --output v27_elmu_close_lep0_pt_data_old_noD.root gstore_outdirs/v27/SingleMuon/Ntupler_v27_Data13TeV_SingleMuon2016[BCEFGH]*/*/*/*root &
+
+
+-- 0.5% less events in data after fix
+
+
+
+
+
 # check the alliso 0 in elmu
 
 python sumup_ttree_distrs.py "lep_alliso_p4[0].pt()"  --histo-range 100,0.0,250. --cond "leps_ID == -13*11 && (HLT_mu) && (lep_matched_HLT[0]) && no_iso_veto_leps && (lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4) && (lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4)" --histo-name test_tt_em_alliso_lep_pt  --output test_tt_em_alliso_lep_pt.root  gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/180416_131355/0000/MC2016_Summer16_TTJets_powheg_*.root &
