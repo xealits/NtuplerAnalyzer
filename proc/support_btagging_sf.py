@@ -173,6 +173,6 @@ def calc_btag_sf_weight(hasCSVtag, flavId, pt, eta, sys="central"):
         else:
             h_control_btag_weight_notag_udsg.Fill(jet_weight_factor)
 
-    return jet_weight_factor
+    return jet_weight_factor, sf, eff
 
 

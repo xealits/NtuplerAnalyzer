@@ -1,11 +1,21 @@
+# nominal mu with aug rereco
+python genjobs.py v32 p2_mu --do-W-stitching channels_nominal_full_mu_selections --dtags data_mu_aug --scheme 6,6,1,12,12
+make sub_proc nt=v32 proc=p2_mu node=1
+
+
 # v32 data -- run on Aug rereco
 python genjobs.py v32 p1 --do-W-stitching channels_control_regions_elmu --dtags data_mu_aug --scheme 7,7,2,12,12
 make sub_proc  nt=v32 proc=p1 node=1
+# -- same bMjet_pt in elmu close
 
 
 # fixed mu HLT obj matching and met filters, also new separate lep module
 python genjobs.py v31v27 pMETfilt --do-W-stitching channels_control_regions_elmu --scheme 7,7,2,12,12
 make sub_proc nt=v31v27 proc=pMETfilt node=1
+
+# with HLT mu and el and matching, no b
+python genjobs.py v31v27 pBothHLT --without-bSF --do-W-stitching channels_control_regions_elmu --scheme 7,7,2,12,12
+make sub_proc nt=v31v27 proc=pBothHLT node=1
 
 
 
