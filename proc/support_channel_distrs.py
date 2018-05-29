@@ -1470,7 +1470,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             'Mt_tau_met_lep':     TH2D('%s_%s_%s_Mt_tau_met_lep' % (chan, proc, sys), '', 20, 0, 300, 20, 0, 300),
 
             # for dileptons, it is practically the same as lep+tau, but for simplicity keeping them separate
-            'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 150),
+            'M_lep_lep':   TH1D('%s_%s_%s_M_lep_lep'  % (chan, proc, sys), '', 20, 0, 250),
             'M_lep_tau':   TH1D('%s_%s_%s_M_lep_tau'  % (chan, proc, sys), '', 20, 0, 200),
             })
 
@@ -1480,6 +1480,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'Mt_tau_lep':  TH1D('%s_%s_%s_Mt_tau_lep' % (chan, proc, sys), '', 20, 0, 300),
               'yield':      TH1D('%s_%s_%s_yield' % (chan, proc, sys), '', 3, 0, 3),
 
+             'bMjet_pt_nocor':     TH1D('%s_%s_%s_bMjet_pt_nocor'   % (chan, proc, sys), '', 30, 0, 300),
              # control the tau/jet prop to met
              'met_prop_taus':      TH2D('%s_%s_%s_met_prop_taus'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
              'met_prop_jets':      TH2D('%s_%s_%s_met_prop_jets'  % (chan, proc, sys), '', 20, 0, 300, 20, -5., 5.),
@@ -1836,8 +1837,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 #control_hs['roccor_factor'].Fill(roccor_factor)
         '''
 
-        pass_met_filters = ev.pass_basic_METfilters and ev.METfilterbadChCand and ev.METfilterbadPFMuon
-        if not isMC and not pass_met_filters: continue
+        if not isMC:
+            if not (ev.pass_basic_METfilters and ev.METfilterbadChCand and ev.METfilterbadPFMuon):
+                continue
 
         # the lepton requirements for all 1-lepton channels:
         # do relIso on 1/8 = 0.125, and "all iso" for QCD anti-iso factor
@@ -1914,15 +1916,18 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # TODO: need to check the trigger SF-s then......
         # for now I'm just trying to get rid of el-mu mix in MC
         #pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el and ev.no_iso_veto_leps and \
-        pass_elmu_id = ev.leps_ID == -11*13 and ev.HLT_mu and ev.no_iso_veto_leps and \
+        pass_elmu_id = ev.leps_ID == -11*13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.no_iso_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
 
         #   (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
 
         #pass_elmu = pass_elmu_id and ((ev.lep_relIso[0] < 0.15 and ev.lep_relIso[1] < 0.0588) if abs(ev.lep_id[0]) == 13 else (ev.lep_relIso[1] < 0.15 and ev.lep_relIso[0] < 0.0588))
+
         # these are done in NT
         pass_elmu = pass_elmu_id
+        # both HLTs
+        #pass_elmu = pass_elmu_id and ev.lep_matched_HLT[0] and ev.HLT_el and ev.lep_matched_HLT[1]
 
         pass_elmu_el = ev.leps_ID == -11*13 and ev.HLT_el and ev.no_iso_veto_leps and \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 11 else ev.lep_matched_HLT[1]) and \
@@ -1958,7 +1963,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_elmu # or pass_elmu_el # pass_mu # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+        event_passes = pass_elmu # pass_mu # or pass_elmu_el # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
 
         if pass_elmu or pass_elmu_el or pass_mumu or pass_elel:
             # check dR of leptons
@@ -2016,9 +2021,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             #Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px(), ev.tau_p4[0].Py(), ev.pfmetcorr_ex, ev.pfmetcorr_ey)
             # TODO: tau is corrected with systematic ES
 
-        #elif not isMC:
-        #    met_x = ev.met_slimmedMETsMuEGClean.Px()
-        #    met_y = ev.met_slimmedMETsMuEGClean.Py()
+        elif not isMC:
+            met_x = ev.met_slimmedMETsMuEGClean.Px()
+            met_y = ev.met_slimmedMETsMuEGClean.Py()
         # to test: is it = met_init
 
         else:
@@ -3012,11 +3017,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     if with_bSF:
                         # for now I calculate only the old b SF scheme with only medium b WP
                         # TODO: add the 2L1M b SF scheme
-                        jet_weight_bSF_nom = calc_btag_sf_weight(b_tagged_medium, flavId, jet_pt, jet_eta)
+                        jet_weight_bSF_nom, _, _ = calc_btag_sf_weight(b_tagged_medium, flavId, jet_pt, jet_eta)
                         if with_bSF_sys:
                             # again only old scheme
-                            jet_weight_bSFUp   = calc_btag_sf_weight(b_tagged, flavId, jet_pt, jet_eta, "up")
-                            jet_weight_bSFDown = calc_btag_sf_weight(b_tagged, flavId, jet_pt, jet_eta, "down")
+                            jet_weight_bSFUp  , _, _ = calc_btag_sf_weight(b_tagged, flavId, jet_pt, jet_eta, "up")
+                            jet_weight_bSFDown, _, _ = calc_btag_sf_weight(b_tagged, flavId, jet_pt, jet_eta, "down")
 
                     if with_JER_sys:
                         #jer_factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
@@ -4117,11 +4122,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             """
 
             if pass_mumu:
-                passed_channels.append(('ctr_mu_dy_mumu', 1., leps.iso, jets.old, taus.presel))
+                passed_channels.append(('ctr_mu_dy_mumu', False, leps.iso, jets.old, taus.presel))
             if pass_elel:
-                passed_channels.append(('ctr_mu_dy_elel', 1., leps.iso, jets.old, taus.presel))
+                passed_channels.append(('ctr_mu_dy_elel', False, leps.iso, jets.old, taus.presel))
             if pass_elmu:
-                passed_channels.append(('ctr_mu_tt_em', 1., leps.iso, jets.old, taus.presel))
+                passed_channels.append(('ctr_mu_tt_em', False, leps.iso, jets.old, taus.presel))
                 # elmu selection with almost main jet requirements
                 #old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
                 # at least 2 jets (3-1 for missing tau jet) and 1 b-tagged
@@ -4131,7 +4136,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     passed_channels.append(('ctr_mu_tt_em_close', 1., leps.iso, jets.old, taus.old))
 
             if pass_elmu_el:
-                passed_channels.append(('ctr_el_tt_em', 1., leps.iso, jets.old, taus.presel))
+                passed_channels.append(('ctr_el_tt_em', False, leps.iso, jets.old, taus.presel))
                 if pass_elmu_el_close:
                     passed_channels.append(('ctr_el_tt_em_close', 1., leps.iso, jets.old, taus.old))
 
@@ -4309,7 +4314,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     else:
                         passed_channels.append(('ctr_old_el_sel_lj_ss', sel_b_weight, leps.iso, jets.old, taus.old))
 
-            for chan_i, (chan, _, sel_leps, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
+            for chan_i, (chan, apply_bSF, sel_leps, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
                 # check for default proc
                 #if chan not in channels:
                     #continue
@@ -4387,12 +4392,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     continue # it doesn't change amount of computing, systematics are calculated per each event if at all requested
                     # but they are stored per channel and per histogram
 
-                weight_bSF = 1.
+                weight_bSF = weight_bSF_to_apply = 1.
                 # consider tau-matched jets too as in:
                 #old_jet_sel = (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
                 # -- TODO: by the way this is a weird part for b-tagging -- are there studies of b-taging for true taus?
                 for _, _, jet_weight, _, _, _, _ in sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
                     weight_bSF *= jet_weight
+                if apply_bSF:
+                    weight_bSF_to_apply = weight_bSF
 
                 #leps = LeptonSelection(iso=(ev.lep_p4, ev.lep_relIso, ev.lep_matching_gen, ev.lep_matching_gen_dR), alliso=(ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR))
                 lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = sel_leps
@@ -4413,7 +4420,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 nom_sys_weight            = weight_init * weight_th * weight_PU * weight_top_pt
                 nom_sys_weight_without_PU = weight_init * weight_th * weight_top_pt # for PU tests
 
-                record_weight = nom_sys_weight * weight_bSF
+                record_weight = nom_sys_weight * weight_bSF_to_apply
 
 
                 # propagation of corrections to met
@@ -4594,7 +4601,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                             control_hs[weight_sys_name].Fill(sys_weight_th)
 
                         sys_weight       *= sys_weight_th * sys_weight_PU * sys_weight_top_pt
-                        record_weight_sys = sys_weight * weight_bSF
+                        record_weight_sys = sys_weight * weight_bSF_to_apply
                         out_hs[(chan, record_proc, weight_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met,     record_weight_sys)
                         out_hs[(chan, record_proc, weight_sys_name)]['Mt_lep_met']   .Fill(Mt_lep_met,     record_weight_sys)
                         out_hs[(chan, record_proc, weight_sys_name)]['met']          .Fill(met_pt,         record_weight_sys)
@@ -4861,6 +4868,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 if sel_jets.medium:
                     bMjet0_pt = sel_jets.medium[0][0].pt() * sel_jets.medium[0][1]
                     out_hs[(chan, record_proc, sys_name)]['bMjet_pt']  .Fill(bMjet0_pt,  record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['bMjet_pt_nocor']  .Fill(sel_jets.medium[0][0].pt(),  record_weight)
                     if len(sel_jets.medium) == 1: # only 1 tagged jet in event
                         out_hs[(chan, record_proc, sys_name)]['b1Mjet_pt']  .Fill(bMjet0_pt,  record_weight)
                     # tested the sort in the following -- it doesn't matter
