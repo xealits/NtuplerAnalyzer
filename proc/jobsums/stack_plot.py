@@ -345,6 +345,7 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                    pu_factor = 1. / (1.07766 if '_el_' in channel else 1.0485) # 1.17 # 1./ 1.485
                else:
                    pu_factor = 1. / (1.04678 if '_el_' in channel else 1.022)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
+                   #pu_factor = 1. / (1.04678 if '_el_' in channel else 1.014)
 
                th_factor = 1.
                if nick[:3] == 'tt_':
@@ -373,6 +374,9 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                    #elif 'SemilepBRDown' in fixed_sys_name:
                    #    th_factor = 1. / 0.987
                    th_factor = 1. / syst_factors.get(fixed_sys_name, 1.)
+
+               ## TODO: remove this, just testing the bSF normalization from simle elmu to close elmu
+               #th_factor *= 1. / 0.984960
 
                final_factor = args.lumi * tauIDSF_factor * pu_factor * th_factor
                logging.info("final factor %20s %20f %5f %5f %5f  %20f" % (nick, args.lumi, tauIDSF_factor, pu_factor, th_factor, final_factor))
