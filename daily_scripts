@@ -1,0 +1,99 @@
+
+
+add lep and tau pt cut:
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --histo-range 20,0,250 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && njets > 2 && nbjets > 0" --histo-name tt_mu1t3j1b_leptaucuts_ttnom_Mt --output tt_mu1t3j1b_leptaucuts_ttnom_Mt.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --histo-range 20,0,250 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && njets > 2 && nbjets > 0 " --histo-name tt_mu1t3j1b_leptaucuts_ttfsr_Mt --output tt_mu1t3j1b_leptaucuts_ttfsr_Mt.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrdown_ext2/180411_005426/0000/*root &
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --histo-range 20,0,250 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && njets > 2 && nbjets > 0 " --histo-name tt_mu1t3j1b_leptaucuts_ttfsrup_Mt --output tt_mu1t3j1b_leptaucuts_ttfsrup_Mt.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrup_ext2/*/0000/*root &
+
+
+
+
+
+
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --histo-range 250,0,200 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0" --histo-name tt_mu1t3j1b_ttnom_Mt --output tt_mu1t3j1b_ttnom_Mt.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --histo-range 250,0,200 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0 " --histo-name tt_mu1t3j1b_ttfsr_Mt --output tt_mu1t3j1b_ttfsr_Mt.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrdown_ext2/180411_005426/0000/*root &
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --histo-range 250,0,200 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0 " --histo-name tt_mu1t3j1b_ttfsrup_Mt --output tt_mu1t3j1b_ttfsrup_Mt.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrup_ext2/*/0000/*root &
+
+
+
+
+
+
+
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()" --histo-range 200,0,200 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 110" --histo-name tt_mu1t3j1b_ttnom_leppt --output tt_mu1t3j1b_ttnom_leppt.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()" --histo-range 200,0,200 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && njets > 2 && nbjets > 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) > 110" --histo-name tt_mu1t3j1b_ttfsr_leppt --output tt_mu1t3j1b_ttfsr_leppt.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrdown_ext2/180411_005426/0000/*root &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : FSRUp : FSRDown" -d regMt_lep_pt -p tt_mutau -c ctr_old_mu_selVloose_ljout NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,NOMINAL FSRUp:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,FSRUp FSRDown:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,FSRDown
+
+
+
+
+
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : ISRUp : ISRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_ljout NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,NOMINAL ISRUp:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,ISRUp ISRDown:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,ISRDown
+
+
+
+
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_ljout NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,NOMINAL FSRUp:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,FSRUp FSRDown:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,FSRDown
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_lj NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_mutau,NOMINAL FSRUp:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_mutau,FSRUp FSRDown:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_mutau,FSRDown
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_lj -c ctr_old_mu_selVloose_lj NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_lj,NOMINAL FSRUp:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_lj,FSRUp FSRDown:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_lj,FSRDown
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_lj -c ctr_old_mu_selVloose_ljout NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_lj,NOMINAL FSRUp:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_lj,FSRUp FSRDown:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_lj,FSRDown
+
+
+
+
+
+
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : HDAMPUp : HDAMPDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_ljout NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,NOMINAL HDAMPUp:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,HDAMPUp HDAMPDown:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,HDAMPDown
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : HDAMPUp : HDAMPDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_lj NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_mutau,NOMINAL HDAMPUp:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_mutau,HDAMPUp HDAMPDown:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_mutau,HDAMPDown
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : HDAMPUp : HDAMPDown" -d Mt_lep_met_f -p tt_lj -c ctr_old_mu_selVloose_lj NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_lj,NOMINAL HDAMPUp:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_lj,HDAMPUp HDAMPDown:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_lj,HDAMPDown
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : HDAMPUp : HDAMPDown" -d Mt_lep_met_f -p tt_lj -c ctr_old_mu_selVloose_ljout NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_lj,NOMINAL HDAMPUp:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_lj,HDAMPUp HDAMPDown:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_lj,HDAMPDown
+
+
+
+
+
+
+
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : TuneCUETP8M2T4Up : TuneCUETP8M2T4Down" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_ljout NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,NOMINAL TuneCUETP8M2T4Up:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,TuneCUETP8M2T4Up TuneCUETP8M2T4Down:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_mutau,TuneCUETP8M2T4Down
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : TuneCUETP8M2T4Up : TuneCUETP8M2T4Down" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_lj NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_mutau,NOMINAL TuneCUETP8M2T4Up:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_mutau,TuneCUETP8M2T4Up TuneCUETP8M2T4Down:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_mutau,TuneCUETP8M2T4Down
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : TuneCUETP8M2T4Up : TuneCUETP8M2T4Down" -d Mt_lep_met_f -p tt_lj -c ctr_old_mu_selVloose_lj NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_lj,NOMINAL TuneCUETP8M2T4Up:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_lj,TuneCUETP8M2T4Up TuneCUETP8M2T4Down:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_lj,tt_lj,TuneCUETP8M2T4Down
+
+python jobsums/get_shapes.py --no-norm --formula "NOM : TuneCUETP8M2T4Up : TuneCUETP8M2T4Down" -d Mt_lep_met_f -p tt_lj -c ctr_old_mu_selVloose_ljout NOM:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_lj,NOMINAL TuneCUETP8M2T4Up:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_lj,TuneCUETP8M2T4Up TuneCUETP8M2T4Down:jobsums/mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose_ljout,tt_lj,TuneCUETP8M2T4Down
+
+
+
+

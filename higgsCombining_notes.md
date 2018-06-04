@@ -758,12 +758,97 @@ if needed `--freezeNuisanceGroup tt_th_frag,tt_th_match`
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_th_pdf --freezeParameters AlphaS -m 125 -o latest_mu_impacts.json
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
 
+
+
 freeze updowns:
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doInitialFit
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doFits --parallel 5
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeNuisanceGroup tt_updowns -m 125 -o latest_mu_impacts.json
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root   --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root   --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root   --freezeNuisanceGroup tt_updowns -m 125 -o latest_mu_impacts.json
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
+
+freeze HDAMP and Tune
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root   --freezeParameters HDAMP,TuneCUETP8M2T4 -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root   --freezeParameters HDAMP,TuneCUETP8M2T4 -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root   --freezeParameters HDAMP,TuneCUETP8M2T4 -m 125 -o latest_mu_impacts_HDAMP-Tune.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_HDAMP-Tune.json -o latest_mu_impacts_HDAMP-Tune
+
+freeze FSR
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root   --freezeParameters FSR -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root   --freezeParameters FSR -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root   --freezeParameters FSR -m 125 -o latest_mu_impacts_FSR.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_FSR.json -o latest_mu_impacts_FSR
+
+
+
+
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root   --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root   --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root   --freezeNuisanceGroup tt_updowns -m 125 -o latest_el_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o latest_el_impacts
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root   --freezeNuisanceGroup tt_updowns,tt_th_pdf -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root   --freezeNuisanceGroup tt_updowns,tt_th_pdf -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root   --freezeNuisanceGroup tt_updowns,tt_th_pdf -m 125 -o latest_el_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o latest_el_impacts
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root   --freezeNuisanceGroup tt_updowns --freezeParameters qcd_norm -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root   --freezeNuisanceGroup tt_updowns --freezeParameters qcd_norm -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root   --freezeNuisanceGroup tt_updowns --freezeParameters qcd_norm -m 125 -o latest_el_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o latest_el_impacts
+
+try previous wel behaived el:
+v25p2_el_1.txt
+./scripts/text2workspace.py ttxsec/fit-stuff/v25p2_el_1.txt
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/v25p2_el_1.root    -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/v25p2_el_1.root    -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/v25p2_el_1.root    -m 125 -o latest_el_impacts_v25p2_el_1.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_v25p2_el_1.json -o latest_el_impacts_v25p2_el_1
+
+-- best fit = 0.86
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/v25p2_el_1.root    -m 125 --freezeNuisanceGroup tt_th_pdf,tt_th_match,tt_th_frag --freezeParameters AlphaS --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/v25p2_el_1.root    -m 125 --freezeNuisanceGroup tt_th_pdf,tt_th_match,tt_th_frag --freezeParameters AlphaS --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/v25p2_el_1.root    -m 125 --freezeNuisanceGroup tt_th_pdf,tt_th_match,tt_th_frag --freezeParameters AlphaS -o latest_el_impacts_v25p2_el_1.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_v25p2_el_1.json -o latest_el_impacts_v25p2_el_1
+
+
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeNuisanceGroup tt_updowns -m 125 -o latest_both_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o latest_both_impacts
+
+
+
+
+
+and comparison to full case:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root    -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root    -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root    -m 125 -o latest_mu_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root    -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root    -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root    -m 125 -o latest_el_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o latest_el_impacts
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root  -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root  -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root  -m 125 -o latest_both_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o latest_both_impacts
+
+
+
+
 
 finally full mutau:
 
@@ -954,6 +1039,7 @@ muon fit investigation:
 
 ## table of impacts
 
+    python impact_table.py --merge-pdfs latest_mu_impacts.json
 
 
 
