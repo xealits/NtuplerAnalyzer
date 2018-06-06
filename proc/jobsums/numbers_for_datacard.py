@@ -79,7 +79,8 @@ parser.add_argument("-d", "--distr",    type=str, default='Mt_lep_met', help="fi
 parser.add_argument("-s", "--sys",    type=str, default='NOMINAL', help="systematic shift to consider")
 parser.add_argument("-m", "--mu",  action = "store_true", help="muon channels: mu_lj, mu_lj_out")
 parser.add_argument("-e", "--el",  action = "store_true", help="electron channels: el_lj, el_lj_out")
-parser.add_argument("--debug",  action = "store_true", help="log debug output")
+parser.add_argument("--debug",     action = "store_true", help="log debug output")
+parser.add_argument("--no-sums",   action = "store_false", default=True, help="don't collect MC sum")
 #parser.add_argument("-y", "--event-yields", type=str, default='text', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-y", "--event-yields", action='store_true', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-r", "--ratios",       action='store_true', help="output ratios to data")
@@ -138,10 +139,14 @@ elif not args.channels and args.el:
 elif args.channels:
     channels = args.channels.split(',')
 
+logging.debug("data file " + args.data_file)
+
 fdata = TFile(args.data_file)
 
-sys_name = args.sys # 'NOMINAL'
+sys_name   = args.sys
 distr_name = args.distr
+
+logging.debug("%s %s" % (sys_name, distr_name))
 
 #if args.event_yields:
 #proc_yields = [] #[('channel', [(proc_nick, yield)...]) ...]
@@ -187,8 +192,9 @@ for channel in channels:
 
     # get sum from the sum histo
     # sums_NOMINAL/mc_sum2_NOMINAL
-    sum_histo = chan.Get("sums_NOMINAL/mc_sum2_NOMINAL")
-    mc_sums_sumhisto[channel] = range_integral(sum_histo)
+    if args.no_sums:
+        sum_histo = chan.Get("sums_NOMINAL/mc_sum2_NOMINAL")
+        mc_sums_sumhisto[channel] = range_integral(sum_histo)
 
     histos = []
 
@@ -297,11 +303,14 @@ if args.event_yields:
         else:
             continue
 
-    if args.ratios:
-        print proc_s % 'mc_sum_ratio' + separator + separator.join([(item_s + '.3f') % (mc_sums[channel][0]/data_yields[channel][0]) for channel in channels]) + line_end
-    else:
-        #print proc_s % 'mc_sum' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % tuple(mc_sums[channel]) for channel in channels]) + line_end
-        print proc_s % 'mc_sum' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % tuple(mc_sums_sumhisto[channel]) for channel in channels]) + line_end
+
+    if args.no_sums:
+        if args.ratios:
+            print proc_s % 'mc_sum_ratio' + separator + separator.join([(item_s + '.3f') % (mc_sums[channel][0]/data_yields[channel][0]) for channel in channels]) + line_end
+        else:
+            #print proc_s % 'mc_sum' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % tuple(mc_sums[channel]) for channel in channels]) + line_end
+            print proc_s % 'mc_sum' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % tuple(mc_sums_sumhisto[channel]) for channel in channels]) + line_end
+
     print proc_s % 'data' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % data_yields[channel] for channel in channels]) + line_end
 
 

@@ -1066,6 +1066,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_old_mu_sel_ljout_ss':        (procs_mu, systematic_names_all_with_th),
         },
 
+        'channels_nom_sys_muon_sel' : {
+                'ctr_old_mu_selVloose':           (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_selVloose_ss':        (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_selVloose_lj':        (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_selVloose_lj_ss':     (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_selVloose_ljout':     (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_selVloose_ljout_ss':  (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel':                 (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_ss':              (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_lj':              (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_lj_ss':           (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_ljout':           (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_ljout_ss':        (procs_mu, systematic_names_nominal),
+        },
+
         'channels_full_sys_lep_selections' : {
                 #'ctr_el_wjet':              (procs_el, systematic_names_pu),
                 #'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
@@ -1713,6 +1728,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
              'control_init_weight': TH1D('%s_%s_%s_control_init_weight' % (chan, proc, sys), '', 150, 0., 1.5),
              'control_bSF_weight':  TH1D('%s_%s_%s_control_bSF_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
+             'control_bSF_weight_applied':  TH1D('%s_%s_%s_control_bSF_weight_applied'  % (chan, proc, sys), '', 150, 0., 1.5),
              'control_PU_weight':   TH1D('%s_%s_%s_control_PU_weight'   % (chan, proc, sys), '', 150, 0., 1.5),
              'control_th_weight':   TH1D('%s_%s_%s_control_th_weight'   % (chan, proc, sys), '', 150, 0., 1.5),
              'control_top_weight':  TH1D('%s_%s_%s_control_top_weight'  % (chan, proc, sys), '', 150, 0., 1.5),
@@ -1963,7 +1979,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_elmu # pass_mu # or pass_elmu_el # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+        event_passes = pass_mu # pass_elmu # or pass_elmu_el # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
 
         if pass_elmu or pass_elmu_el or pass_mumu or pass_elel:
             # check dR of leptons
@@ -4555,7 +4571,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 met_pt = TMath.Sqrt(met_x_prop*met_x_prop + met_y_prop*met_y_prop)
                 met_pt_taus = TMath.Sqrt(met_x_prop_taus*met_x_prop_taus + met_y_prop_taus*met_y_prop_taus)
                 met_pt_jets = TMath.Sqrt(met_x_prop_jets*met_x_prop_jets + met_y_prop_jets*met_y_prop_jets)
-                met_pt_init = TMath.Sqrt(met_x*met_x + met_y*met_y)
+                met_pt_init = proc_met.pt() # TMath.Sqrt(met_x*met_x + met_y*met_y)
 
                 met_cancellation_x = met_x_prop + all_sel_objects.Px()
                 met_cancellation_y = met_y_prop + all_sel_objects.Py()
@@ -4947,7 +4963,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     if pass_mus:
                         out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_mu_trk_b'].Fill(Mt_lep_met, mu_sfs_b[1])
                         out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_mu_trk_h'].Fill(Mt_lep_met, mu_sfs_h[1])
-                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_bf']       .Fill(Mt_lep_met, weight_bSF)
+                    out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_bf']       .Fill(Mt_lep_met, weight_bSF_to_apply)
                     out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu']       .Fill(Mt_lep_met, weight_PU)
                     out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_sum']   .Fill(Mt_lep_met, weight_pu_sum)
                     out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_w_pu_mu']    .Fill(Mt_lep_met, weight_pu_mu)
@@ -5206,7 +5222,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
                 out_hs[(chan, record_proc, sys_name)]['ntaus']  .Fill(len(sel_taus),  record_weight)
 
-                out_hs[(chan, record_proc, sys_name)]['nvtx_raw'] .Fill(ev.nvtx, nom_sys_weight_without_PU * weight_bSF)
+                out_hs[(chan, record_proc, sys_name)]['nvtx_raw'] .Fill(ev.nvtx, nom_sys_weight_without_PU * weight_bSF_to_apply)
                 out_hs[(chan, record_proc, sys_name)]['nvtx']     .Fill(ev.nvtx, record_weight)
 
                 if isMC:
@@ -5259,6 +5275,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
                 out_hs[(chan, record_proc, sys_name)]['control_init_weight'].Fill(weight_init)
                 out_hs[(chan, record_proc, sys_name)]['control_bSF_weight'].Fill(weight_bSF)
+                out_hs[(chan, record_proc, sys_name)]['control_bSF_weight_applied'].Fill(weight_bSF_to_apply)
                 out_hs[(chan, record_proc, sys_name)]['control_PU_weight'] .Fill(weight_PU)
                 out_hs[(chan, record_proc, sys_name)]['control_th_weight'] .Fill(weight_th)
                 out_hs[(chan, record_proc, sys_name)]['control_top_weight'] .Fill(weight_top_pt)
