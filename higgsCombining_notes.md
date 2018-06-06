@@ -598,12 +598,25 @@ Examples:
 
 -- saves post-fit uncertainty, and then additional stack-plot should put the distr-s together
 
+with workspace file:
+
+    combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.root --saveShapes --saveWithUncertainties --name MuShapesNoUpDownsMCStatsWorkspace --freezeNuisanceGroup tt_updowns
+
+the autostats directive:
+
+    * autoMCStats 0
+
+
 also notice:
  WARNING --  From combine v7, method MaxLikelihoodFit has been renamed to FitDiagnostics
 
 stacking script:
 
     python stack_postfit.py fitDiagnosticsMuShapes.root ctr_old_mu_sel_lj --mu
+
+just in case, the convertion of txt -> workspace.root:
+
+    ./scripts/text2workspace.py ttxsec/fit-stuff/latest_datacard_mu.txt
 
 
 
@@ -687,10 +700,23 @@ Asimov toy
 
 mu
 
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 -o latest_mu_toys_asimov_impacts_full.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full.json -o latest_mu_toys_asimov_impacts_full
+
     ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 --freezeParameters AlphaS -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doInitialFit
     ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 --freezeParameters AlphaS -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doFits --parallel 5
     ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 --freezeParameters AlphaS -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 -o latest_mu_toys_asimov_impacts.json
     ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts.json -o latest_mu_toys_asimov_impacts
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 -o latest_mu_toys_asimov_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts.json -o latest_mu_toys_asimov_impacts
+
+
 
 
 without updowns
@@ -703,10 +729,10 @@ without updowns
 
 el
 
-    ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doInitialFit
-    ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doFits --parallel 5
-    ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 -o latest_el_toys_asimov_impacts.json
-    ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_toys_asimov_impacts.json -o latest_el_toys_asimov_impacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 -o latest_el_toys_asimov_impacts_full.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_toys_asimov_impacts_full.json -o latest_el_toys_asimov_impacts_full
 
 both
 
@@ -733,9 +759,9 @@ Uses Harvester script to produce impacts diagram
 
 First produce `.root` workspace file:
 
-    ./scripts/text2workspace.py ttxsec/fit-stuff/latest_datacard_mu.txt
-    ./scripts/text2workspace.py ttxsec/fit-stuff/latest_datacard_el.txt
-    ./scripts/text2workspace.py ttxsec/fit-stuff/latest_datacard_both.txt
+./scripts/text2workspace.py ttxsec/fit-stuff/latest_datacard_mu.txt
+./scripts/text2workspace.py ttxsec/fit-stuff/latest_datacard_el.txt
+./scripts/text2workspace.py ttxsec/fit-stuff/latest_datacard_both.txt
 
 electrons (I had some issues with these, but fixed them somehow):
 
@@ -759,6 +785,12 @@ if needed `--freezeNuisanceGroup tt_th_frag,tt_th_match`
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
 
 
+full
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root    -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root    -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root    -m 125 -o latest_mu_impacts_full.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_full.json -o latest_mu_impacts_full
 
 freeze updowns:
 
@@ -785,6 +817,11 @@ freeze FSR
 
 
 
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root    -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root    -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root    -m 125 -o latest_el_impacts_full.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_full.json -o latest_el_impacts_full
 
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root   --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doInitialFit
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root   --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doFits --parallel 5
@@ -852,9 +889,9 @@ and comparison to full case:
 
 finally full mutau:
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doInitialFit
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doFits --parallel 5
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 -o latest_mu_impacts.json
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root    -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root    -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root    -m 125 -o latest_mu_impacts.json
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
 
 
