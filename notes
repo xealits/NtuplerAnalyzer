@@ -1,3 +1,93 @@
+# DY and QCD tau SV in 2015 and 2016
+
+DY
+take true taus?
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > 0" --histo-name tauSV_dy_amcatnlo_tauID1_2015 --output tauSV_dy_amcatnlo_tauID1_2015.root gstore_outdirs/v22/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v22_MC2015_Spring16_DYJetsToLL_50toInf_amcatnlo*/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > 0" --histo-name tauSV_dy_madgraph_tauID1_2015 --output tauSV_dy_madgraph_tauID1_2015.root gstore_outdirs/v22/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2015_Spring16_DYJetsToLL_50toInf_madgraph*/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > 0" --histo-name tauSV_dy_amcatnlo_tauID1_2016 --output tauSV_dy_amcatnlo_tauID1_2016.root gstore_outdirs/v22/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v22_MC2016_Summer16_DYJetsToLL_50toInf_amcatnlo*/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > 0" --histo-name tauSV_dy_madgraph_tauID1_2016 --output tauSV_dy_madgraph_tauID1_2016.root gstore_outdirs/v22/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/*/*root &
+
+without tau ID:
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_dy_amcatnlo_tauID0_2015 --output tauSV_dy_amcatnlo_tauID0_2015.root gstore_outdirs/v22/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v22_MC2015_Spring16_DYJetsToLL_50toInf_amcatnlo*/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_dy_madgraph_tauID0_2015 --output tauSV_dy_madgraph_tauID0_2015.root gstore_outdirs/v22/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2015_Spring16_DYJetsToLL_50toInf_madgraph*/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_dy_amcatnlo_tauID0_2016 --output tauSV_dy_amcatnlo_tauID0_2016.root gstore_outdirs/v22/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v22_MC2016_Summer16_DYJetsToLL_50toInf_amcatnlo*/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_dy_madgraph_tauID0_2016 --output tauSV_dy_madgraph_tauID0_2016.root gstore_outdirs/v22/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/*/*root &
+
+
+QCD:
+
+Ntupler_v22_MC2015_Spring16_QCD_HT-100-200    Ntupler_v22_MC2016_Summer16_QCD_HT-100-200
+Ntupler_v22_MC2015_Spring16_QCD_HT-300-500    Ntupler_v22_MC2016_Summer16_QCD_HT-300-500
+Ntupler_v22_MC2015_Spring16_QCD_HT-700-1000   Ntupler_v22_MC2016_Summer16_QCD_HT-700-1000
+Ntupler_v22_MC2015_Spring16_QCD_HT-1000-1500  Ntupler_v22_MC2016_Summer16_QCD_HT-1000-1500
+Ntupler_v22_MC2015_Spring16_QCD_HT-2000-Inf   Ntupler_v22_MC2016_Summer16_QCD_HT-2000-Inf
+
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_qcd100_madgraph_tauID0_2015 --output tauSV_qcd100_madgraph_tauID0_2015.root gstore_outdirs/v22/QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2015_Spring16_QCD_HT-100-200/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_qcd100_madgraph_tauID0_2016 --output tauSV_qcd100_madgraph_tauID0_2016.root gstore_outdirs/v22/QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2016_Summer16_QCD_HT-100-200/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_qcd300_madgraph_tauID0_2015 --output tauSV_qcd300_madgraph_tauID0_2015.root gstore_outdirs/v22/QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2015_Spring16_QCD_HT-300-500/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_qcd300_madgraph_tauID0_2016 --output tauSV_qcd300_madgraph_tauID0_2016.root gstore_outdirs/v22/QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2016_Summer16_QCD_HT-300-500/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_qcd700_madgraph_tauID0_2015 --output tauSV_qcd700_madgraph_tauID0_2015.root gstore_outdirs/v22/QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2015_Spring16_QCD_HT-700-1000/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_qcd700_madgraph_tauID0_2016 --output tauSV_qcd700_madgraph_tauID0_2016.root gstore_outdirs/v22/QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2016_Summer16_QCD_HT-700-1000/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_qcd1000_madgraph_tauID0_2015 --output tauSV_qcd1000_madgraph_tauID0_2015.root gstore_outdirs/v22/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2015_Spring16_QCD_HT-1000-1500/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_qcd1000_madgraph_tauID0_2016 --output tauSV_qcd1000_madgraph_tauID0_2016.root gstore_outdirs/v22/QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2016_Summer16_QCD_HT-1000-1500/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_qcd2000_madgraph_tauID0_2015 --output tauSV_qcd2000_madgraph_tauID0_2015.root gstore_outdirs/v22/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2015_Spring16_QCD_HT-2000-Inf/*/*/*root &
+
+python sumup_ttree_distrs.py "tau_flightLengthSignificance[0]" --histo-range 60,-10.,50. --cond-com "abs(leps_ID) == 13 && HLT_mu && tau_IDlev[0] > -1" --histo-name tauSV_qcd2000_madgraph_tauID0_2016 --output tauSV_qcd2000_madgraph_tauID0_2016.root gstore_outdirs/v22/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v22_MC2016_Summer16_QCD_HT-2000-Inf/*/*/*root &
+
+
+tauSV_dy_amcatnlo_tauID0_2015->SetLineColor(kRed)
+tauSV_dy_amcatnlo_tauID1_2015->SetLineColor(kRed)
+tauSV_dy_madgraph_tauID0_2015->SetLineColor(kRed)
+tauSV_dy_madgraph_tauID1_2015->SetLineColor(kRed)
+tauSV_qcd1000_madgraph_tauID0_2015->SetLineColor(kRed)
+tauSV_qcd100_madgraph_tauID0_2015->SetLineColor(kRed)
+tauSV_qcd2000_madgraph_tauID0_2015->SetLineColor(kRed)
+tauSV_qcd300_madgraph_tauID0_2015->SetLineColor(kRed)
+tauSV_qcd700_madgraph_tauID0_2015->SetLineColor(kRed)
+
+tauSV_dy_amcatnlo_tauID0_2015      ->Scale(1./tauSV_dy_amcatnlo_tauID0_2015      ->Integral())
+tauSV_dy_amcatnlo_tauID0_2016      ->Scale(1./tauSV_dy_amcatnlo_tauID0_2016->Integral())
+tauSV_dy_amcatnlo_tauID1_2015      ->Scale(1./tauSV_dy_amcatnlo_tauID1_2015->Integral())
+tauSV_dy_amcatnlo_tauID1_2016      ->Scale(1./tauSV_dy_amcatnlo_tauID1_2016->Integral())
+tauSV_dy_madgraph_tauID0_2015      ->Scale(1./tauSV_dy_madgraph_tauID0_2015->Integral())
+tauSV_dy_madgraph_tauID0_2016      ->Scale(1./tauSV_dy_madgraph_tauID0_2016->Integral())
+tauSV_dy_madgraph_tauID1_2015      ->Scale(1./tauSV_dy_madgraph_tauID1_2015->Integral())
+tauSV_dy_madgraph_tauID1_2016      ->Scale(1./tauSV_dy_madgraph_tauID1_2016->Integral())
+tauSV_qcd1000_madgraph_tauID0_2015 ->Scale(1./tauSV_qcd1000_madgraph_tauID0_2015->Integral())
+tauSV_qcd1000_madgraph_tauID0_2016 ->Scale(1./tauSV_qcd1000_madgraph_tauID0_2016->Integral())
+tauSV_qcd100_madgraph_tauID0_2015  ->Scale(1./tauSV_qcd100_madgraph_tauID0_2015->Integral())
+tauSV_qcd100_madgraph_tauID0_2016  ->Scale(1./tauSV_qcd100_madgraph_tauID0_2016->Integral())
+tauSV_qcd2000_madgraph_tauID0_2015 ->Scale(1./tauSV_qcd2000_madgraph_tauID0_2015->Integral())
+tauSV_qcd2000_madgraph_tauID0_2016 ->Scale(1./tauSV_qcd2000_madgraph_tauID0_2016->Integral())
+tauSV_qcd300_madgraph_tauID0_2015  ->Scale(1./tauSV_qcd300_madgraph_tauID0_2015->Integral())
+tauSV_qcd300_madgraph_tauID0_2016  ->Scale(1./tauSV_qcd300_madgraph_tauID0_2016->Integral())
+tauSV_qcd700_madgraph_tauID0_2015  ->Scale(1./tauSV_qcd700_madgraph_tauID0_2015->Integral())
+tauSV_qcd700_madgraph_tauID0_2016  ->Scale(1./tauSV_qcd700_madgraph_tauID0_2016->Integral())
+
+
+
+
+
+
+
+
 # search for lost met filters
 
 foreach ver (v17  v18  v19  v20  v21  v22  v23)
