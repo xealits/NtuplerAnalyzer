@@ -875,7 +875,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//RecoilCorrector* recoilPFMetCorrector;
 	//TH2D* zPtMass_histo;
 
-	bool record_ElTau, record_MuTau, record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets;
+	bool record_ElTau, record_MuTau, record_tauCands, record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets;
 
 	TString dtag;
 	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop, is2017rereco;
@@ -946,13 +946,14 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 NtuplerAnalyzer::NtuplerAnalyzer(const edm::ParameterSet& iConfig) :
 record_ElTau         (iConfig.getParameter<bool>("record_ElTau"))         ,
 record_MuTau         (iConfig.getParameter<bool>("record_MuTau"))         ,
+record_tauCands      (iConfig.getParameter<bool>("record_tauCands"))      ,
 record_tauID         (iConfig.getParameter<bool>("record_tauID"))         ,
 record_tauIDantiIso  (iConfig.getParameter<bool>("record_tauIDantiIso"))  ,
 record_bPreselection (iConfig.getParameter<bool>("record_bPreselection")) ,
 record_MonitorHLT    (iConfig.getParameter<bool>("record_MonitorHLT"))    ,
 record_ElMu          (iConfig.getParameter<bool>("record_ElMu"))          ,
 record_Dilep         (iConfig.getParameter<bool>("record_Dilep"))         ,
-record_jets          (iConfig.getParameter<bool>("record_jets"))         ,
+record_jets          (iConfig.getParameter<bool>("record_jets"))          ,
 dtag       (iConfig.getParameter<std::string>("dtag")),
 isMC       (iConfig.getParameter<bool>("isMC")),
 is2017rereco       (iConfig.getParameter<bool>("is2017rereco")),
@@ -1505,6 +1506,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			//get the original mc replica weights
 			//unsigned int nNNPPDF3Weights_ = 100, pdfWeightOffset_ = 9, nPdfEigWeights_ = 60; // as in example
 			// -- for NNPDF3
+			// save nominal NNPDF30 weight
+			//NT_gen_weight_pdf_nn30_nominal = lheEPHandle->weights()[9].wgt;
+			// -- there is no nominal value 260000, only 260001+
+
 			unsigned int nPdfWeights_ = 57, pdfWeightOffset_ = 9 + 100 + 2; // already, nPdfEigWeights_ = 60; // as in example
 			// -- for CT pdf
 			// pdf offset skips the renorm/fact weights
@@ -2288,7 +2293,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//if (!isMC && metFilters.isValid())
 	// apparently MET POG suggests trying and looking at filters in MC
 	// and they are there, in patFilters
-	if (patFilters.isValid())
+	if (!isMC && patFilters.isValid())
 		{
 		// event is good if all filters ar true
 		NT_filters_hbhe             = utils::passTriggerPatterns(patFilters, "Flag_HBHENoiseFilter*", "Flag_HBHENoiseIsoFilter*");
@@ -2630,11 +2635,40 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//LogInfo ("Demo") << "selected leptons: " << '(' << selIDElectrons.size() << ',' << selIDMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE << ',' << nVetoMu;
 	LogInfo ("Demo") << "selected leptons: " << '(' << selElectrons.size() << ',' << selMuons.size() << ')' <<  selLeptons.size() << ' ' << nVetoE_Iso << ',' << nVetoMu_Iso;
 
+	/*
+	 * TAUS preliminary
+	 */
+	//string tau_Loose_ID("byLooseCombinedIsolationDeltaBetaCorr3Hits");
+	string tau_VLoose_ID ("byVLooseIsolationMVArun2v1DBoldDMwLT");
+	string tau_Loose_ID  ("byLooseIsolationMVArun2v1DBoldDMwLT");
+	string tau_Medium_ID ("byMediumIsolationMVArun2v1DBoldDMwLT");
+	string tau_Tight_ID  ("byTightIsolationMVArun2v1DBoldDMwLT");
+	string tau_VTight_ID ("byVTightIsolationMVArun2v1DBoldDMwLT");
+	string tau_decayMode       ("decayModeFinding");
+	string tau_againstMuon     ("againstMuonTight3");
+	string tau_againstElectron ("againstElectronTightMVA6");
+
+	pat::TauCollection IDtaus, selTaus;
+	processTaus_ID    (taus,   weight, tau_decayMode, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
+	//processTaus_ID_ISO    (taus,   weight, tau_decayMode, tau_VLoose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
+	processTaus_Kinematics(IDtaus, weight, tau_kino_cuts_pt, tau_kino_cuts_eta, selTaus,      false, false);
+
+	//pat::TauCollection selTausNoLep;
+	//crossClean_in_dR(selTaus,       selLeptons, 0.4, selTausNoLep,        weight, string("selTausNoLep"),        false, false);
+	//NT_ntaus = 0;
+	NT_ntaus = selTaus.size(); // all tau before MVA anti-jet iso
+
+	// and these are the NT output taus
+	// taus are sorted py pt
+	std::sort (selTaus.begin(),  selTaus.end(),  utils::sort_CandidatesByPt);
+
+
 	//bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0; // veto on std iso veto leptons
 	//bool clean_lep_conditions = nVetoE_all==0 && nVetoMu_all==0 && nGoodPV != 0; // veto on all iso veto leptons
 	bool clean_lep_conditions = nGoodPV != 0; // just good PV, the loosest req,save bit if no veto leps
 	//if (!(clean_lep_conditions && ((selLeptons.size() > 0 && selLeptons.size() < 3 && nVetoE_Iso == 0 && nVetoMu_Iso == 0) || (selLeptons_allIso.size() == 1 && nVetoE_all == 0 && nVetoMu_all == 0)) )) return;
-	if (!(clean_lep_conditions && ((selLeptons.size() > 0 && selLeptons.size() < 3) || (selLeptons_allIso.size() == 1)) )) return;
+	if (!clean_lep_conditions) return;
+	if (!((selLeptons.size() > 0 && selLeptons.size() < 3) || selLeptons_allIso.size() == 1 || selTaus.size() > 0)) return;
 	// exit now to reduce computation -- all record schemes have this requirement
 
 	event_counter ->Fill(event_checkpoint++);
@@ -3272,31 +3306,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 
 	/*
-	 * TAUS
+	 * TAUS final
 	 */
 	//LogInfo("Demo") << "taus.size() = "<< taus.size();
-	//string tau_Loose_ID("byLooseCombinedIsolationDeltaBetaCorr3Hits");
-	string tau_VLoose_ID ("byVLooseIsolationMVArun2v1DBoldDMwLT");
-	string tau_Loose_ID  ("byLooseIsolationMVArun2v1DBoldDMwLT");
-	string tau_Medium_ID ("byMediumIsolationMVArun2v1DBoldDMwLT");
-	string tau_Tight_ID  ("byTightIsolationMVArun2v1DBoldDMwLT");
-	string tau_VTight_ID ("byVTightIsolationMVArun2v1DBoldDMwLT");
-	string tau_decayMode       ("decayModeFinding");
-	string tau_againstMuon     ("againstMuonTight3");
-	string tau_againstElectron ("againstElectronTightMVA6");
-
-	pat::TauCollection IDtaus, selTaus;
-	processTaus_ID    (taus,   weight, tau_decayMode, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
-	//processTaus_ID_ISO    (taus,   weight, tau_decayMode, tau_VLoose_ID, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
-	processTaus_Kinematics(IDtaus, weight, tau_kino_cuts_pt, tau_kino_cuts_eta, selTaus,      false, false);
-
-	//pat::TauCollection selTausNoLep;
-	//crossClean_in_dR(selTaus,       selLeptons, 0.4, selTausNoLep,        weight, string("selTausNoLep"),        false, false);
-
-	// and these are the NT output taus
-	// taus are sorted py pt
-	std::sort (selTaus.begin(),  selTaus.end(),  utils::sort_CandidatesByPt);
-
 	// PREPARE TRACKS AND STUFF for REFITTING TAU SV AND PV
 
 	// BEAMSPOT
@@ -3347,8 +3359,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		allTracks.push_back(*((*track_cands)[i].bestTrack()));
 		}
 
-	//NT_ntaus = 0;
-	NT_ntaus = selTaus.size(); // all tau before MVA anti-jet iso
 	std::vector<double > tracksToBeRemoved_PV; // compared by Pt due to the conflict of comparing const and not const iterators
 	// these tracks correspond to all 3pi tau tracks in the event
 	// without considering the ID of these taus
@@ -3771,6 +3781,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	event_checkpoint++;
 
+	if (record_tauCands)
+		{
+		record_ntuple |= NT_ntaus > 0;
+		}
+
 	if (record_tauID)
 		{
 		/*
@@ -3829,7 +3844,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	if (record_ntuple)
 		{
-		LogInfo ("Demo") << "recording " << record_tauID << record_bPreselection << record_MonitorHLT << record_ElMu << record_Dilep;
+		LogInfo ("Demo") << "recording " << record_tauCands << record_tauID << record_bPreselection << record_MonitorHLT << record_ElMu << record_Dilep;
 		event_counter ->Fill(event_checkpoint++);
 		weight_counter->Fill(event_checkpoint, weight);
 

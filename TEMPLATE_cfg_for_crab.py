@@ -152,6 +152,7 @@ record_scheme = '{record_scheme}' # PARAMETER
 if record_scheme:
     process.ntupler.record_ElTau         = cms.bool('ElTau'         in record_scheme)
     process.ntupler.record_MuTau         = cms.bool('MuTau'         in record_scheme)
+    process.ntupler.record_tauCands      = cms.bool('tauCands'      in record_scheme)
     process.ntupler.record_tauID         = cms.bool('tauID'         in record_scheme)
     process.ntupler.record_tauIDantiIso  = cms.bool('tauIDantiIso'  in record_scheme)
     process.ntupler.record_bPreselection = cms.bool('bPreselection' in record_scheme)

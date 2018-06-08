@@ -366,6 +366,12 @@ if (isMC)
 
 	LHERunInfoProduct myLHERunInfoProduct = *(run.product());
 
+	// nominal PDF in the generation
+	//int pdfidx = lheRunInfo->heprup().PDFSUP.first;
+	// it's the label "externalLHEProducer"
+	// which is lheRPToken_ here
+	std::cout << "nominal pdf " << myLHERunInfoProduct.heprup().PDFSUP.first << std::endl;
+
 	std::cout << "labels of PDF weights" << std::endl;
 	typedef std::vector<LHERunInfoProduct::Header>::const_iterator headers_const_iterator;
 	for (headers_const_iterator iter=myLHERunInfoProduct.headers_begin(); iter!=myLHERunInfoProduct.headers_end(); iter++)

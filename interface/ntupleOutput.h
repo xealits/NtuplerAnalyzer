@@ -322,6 +322,7 @@ Float_t_in_NTuple(OUTNTUPLE, fixedGridRhoFastjetAll)
 Float_t_in_NTuple(OUTNTUPLE, gen_weight_norm)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, gen_weights_renorm_fact)   // the envelope weights
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, gen_weights_pdf_hessians)  // the PDF weights
+Float_t_in_NTuple(OUTNTUPLE, gen_weight_pdf_nn30_nominal)
 Float_t_in_NTuple(OUTNTUPLE, gen_weight_alphas_1)
 Float_t_in_NTuple(OUTNTUPLE, gen_weight_alphas_2)
 Float_t_in_NTuple(OUTNTUPLE, gen_weight_too)
