@@ -1250,6 +1250,13 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_el_tt_em_close':       (procs_elmu, systematic_names_pu_toppt),
         },
 
+        'channels_control_regions_elmu_allsys' : {
+                'ctr_mu_tt_em':             (procs_elmu, systematic_names_all_with_th),
+                'ctr_mu_tt_em_close':       (procs_elmu, systematic_names_all_with_th),
+                'ctr_el_tt_em':             (procs_elmu, systematic_names_all_with_th),
+                'ctr_el_tt_em_close':       (procs_elmu, systematic_names_all_with_th),
+        },
+
         'channels_control_regions_dy' : {
                 'ctr_mu_dy_mumu':           (procs_mu, systematic_names_pu),
                 'ctr_mu_dy_elel':           (procs_el, systematic_names_pu),
@@ -1979,7 +1986,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_mu # pass_elmu # or pass_elmu_el # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+        event_passes = pass_elmu # pass_mu # or pass_elmu_el # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
 
         if pass_elmu or pass_elmu_el or pass_mumu or pass_elel:
             # check dR of leptons

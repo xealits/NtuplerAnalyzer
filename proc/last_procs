@@ -8,6 +8,9 @@ make sub_proc nt=v25 proc=pCheckNomFSR node=1
 python genjobs.py v31v27 pFullElMu --without-bSF --do-W-stitching channels_control_regions_elmu --scheme 6,6,2,12,12
 make sub_proc nt=v31v27 proc=pFullElMu node=1
 
+# and now really with all systematics
+python genjobs.py v31v27 pAllElMu --without-bSF --do-W-stitching channels_control_regions_elmu_allsys --scheme 6,6,2,12,12
+make sub_proc nt=v31v27 proc=pAllElMu node=1
 
 
 # nominal mu with aug rereco
