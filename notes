@@ -86,6 +86,92 @@ tauSV_qcd700_madgraph_tauID0_2016  ->Scale(1./tauSV_qcd700_madgraph_tauID0_2016-
 
 
 
+# b sf info
+
+bMjet_pt_events
+
+bMjet_pt_nbtags               ->Divide(bMjet_pt_njets)
+bMjet_pt_flav_nb              ->Divide(bMjet_pt_njets)
+bMjet_pt_flav_nc              ->Divide(bMjet_pt_njets)
+bMjet_pt_flav_nudsg           ->Divide(bMjet_pt_njets)
+bMjet_pt_flav_sf_b            ->Divide(bMjet_pt_njets)
+bMjet_pt_flav_sf_c            ->Divide(bMjet_pt_njets)
+bMjet_pt_flav_sf_udsg         ->Divide(bMjet_pt_njets)
+bMjet_pt_flav_eff_b           ->Divide(bMjet_pt_njets)
+bMjet_pt_flav_eff_c           ->Divide(bMjet_pt_njets)
+bMjet_pt_flav_eff_udsg        ->Divide(bMjet_pt_njets)
+bMjet_pt_flav_weight_b        ->Divide(bMjet_pt_njets)
+bMjet_pt_flav_weight_c        ->Divide(bMjet_pt_njets)
+bMjet_pt_flav_weight_udsg     ->Divide(bMjet_pt_njets)
+
+bMjet_pt_bSF_weight  ->Divide(bMjet_pt_events)
+bMjet_pt_bSF_b       ->Divide(bMjet_pt_events)
+bMjet_pt_bSF_c       ->Divide(bMjet_pt_events)
+bMjet_pt_bSF_udsg    ->Divide(bMjet_pt_events)
+
+bMjet_pt_njets ->Divide(bMjet_pt_events)
+
+bMjet_pt_flav_sf_udsg         ->Divide(bMjet_pt_flav_nudsg)
+bMjet_pt_flav_eff_udsg        ->Divide(bMjet_pt_flav_nudsg)
+bMjet_pt_flav_weight_udsg     ->Divide(bMjet_pt_flav_nudsg)
+
+
+
+
+weight_all_simple ->Draw()
+weight_all ->Draw()
+weight_b ->Draw()
+weight_c ->Draw()
+weight_udsg ->Draw()
+bMjet0_flavour ->Draw()
+bMjet1_flavour ->Draw()
+bRjet0_flavour ->Draw()
+
+bMjet_pt_events ->Draw()
+
+bMjet_pt_nbtags               ->Draw()
+bMjet_pt_flav_nb              ->Draw()
+bMjet_pt_flav_nc              ->Draw()
+bMjet_pt_flav_nudsg           ->Draw()
+bMjet_pt_flav_sf_b            ->Draw()
+bMjet_pt_flav_sf_c            ->Draw()
+bMjet_pt_flav_sf_udsg         ->Draw()
+bMjet_pt_flav_eff_b           ->Draw()
+bMjet_pt_flav_eff_c           ->Draw()
+bMjet_pt_flav_eff_udsg        ->Draw()
+bMjet_pt_flav_weight_b        ->Draw()
+bMjet_pt_flav_weight_c        ->Draw()
+bMjet_pt_flav_weight_udsg     ->Draw()
+
+bMjet_pt_bSF_weight  ->Draw()
+bMjet_pt_bSF_b       ->Draw()
+bMjet_pt_bSF_c       ->Draw()
+bMjet_pt_bSF_udsg    ->Draw()
+
+bMjet_pt_njets ->Draw()
+
+weight_all_simple ->Draw()
+weight_all->Draw()
+weight_b->Draw()
+weight_c->Draw()
+weight_udsg->Draw()
+bMjet0_flavour->Draw()
+bMjet1_flavour->Draw()
+bRjet0_flavour->Draw()
+
+
+
+
+
+
+#
+
+python sumup_ttree_distrs.py "BadPFMuonFilter" --histo-range 5,-1.,4. --cond-com "leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-name v32_BadPFMuonFilter --output v32_BadPFMuonFilter.root gstore_outdirs/v32/SingleMuon/Ntupler_v32_Data13TeV_SingleMuon2016*/*/*/*root &
+
+python sumup_ttree_distrs.py "BadChargedCandidateFilter" --histo-range 5,-1.,4. --cond-com "leps_ID == -13*11 && HLT_mu && lep_matched_HLT[0] && no_iso_veto_leps && lep_p4[0].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[1].eta()) < 2.4" --histo-name v32_BadChargedCandidateFilter --output v32_BadChargedCandidateFilter.root gstore_outdirs/v32/SingleMuon/Ntupler_v32_Data13TeV_SingleMuon2016*/*/*/*root &
+
+
+python jobsums/get_shapes.py --formula "v32:pR9" -c ctr_mu_tt_em_close -d bMjet_pt -p data v32:merge-sets/v32/p1/SingleMuon.root pR9:merge-sets/v27/pR9_em_hadronFlavours/SingleMuon.root
 
 
 # search for lost met filters
