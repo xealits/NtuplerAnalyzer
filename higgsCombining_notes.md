@@ -91,6 +91,7 @@ general command is `combineCards.py Name1=card1.txt Name2=card2.txt .... > card.
 
     combineCards.py mu=ttxsec/fit-stuff/latest_datacard_mu.txt el=ttxsec/fit-stuff/latest_datacard_el.txt > ttxsec/fit-stuff/latest_datacard_both.txt
 
+    combineCards.py mu=ttxsec/fit-stuff/ratio_v31v27pFullElMu_v25v26pR5_mu.txt elmu=ttxsec/fit-stuff/ratio_v31v27pFullElMu_v25v26pR5_elmu.txt > ttxsec/fit-stuff/ratio_both.txt
 
 
 
@@ -107,6 +108,9 @@ also in ratio now:
     combine -M MultiDimFit ttxsec/fit-stuff/ratio_v31v27pFullElMu_v25v26pR5_mu.txt   --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name RatioMuShapes
     combine -M MultiDimFit ttxsec/fit-stuff/ratio_v31v27pFullElMu_v25v26pR5_elmu.txt --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name RatioElMuShapes
 
+and with ratio as signal
+
+    combine -M MultiDimFit ttxsec/fit-stuff/ratio_both_1.txt --algo grid --points 100 --redefineSignalPOIs tau_ratio --freezeParameters tt_mutau,tt_elmu --rMin 0.5 --rMax 1.5 --name RatioElMuShapes
 
 if needed
 
