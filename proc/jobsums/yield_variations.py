@@ -80,5 +80,5 @@ for sys in args.sys.split(','):
             var_down = sys_down_yield / reference
             sys_variations.append((var_up, var_down))
 
-    print ('%20s  ' % sys) + '  '.join(('%20s' % ('%f/%f' % (var_up, var_down)) for var_up, var_down in sys_variations))
+    print ('%20s  ' % sys) + '  '.join(('%20s' % ('%.3f/%.3f' % (var_down, var_up)) for var_up, var_down in sys_variations))
 

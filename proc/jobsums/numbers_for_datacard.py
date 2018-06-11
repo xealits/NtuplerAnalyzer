@@ -7,7 +7,9 @@ rate        117.997   10.96     417.34    169.45        29.42       205.302     
 
 all_known_sorted_processes = [
     'tt_mutau', 'tt_eltau',
+    'tt_elmu',  'tt_ltaul', 'tt_taueltaumu',
     'tt_taultauh',  'tt_lj', 'tt_taulj', 'tt_other',
+    's_top_elmu',
     's_top_eltau',  's_top_mutau',   's_top_other', 's_top_lj',
     'dy_tautau', 'dy_other',
     'wjets', 'wjets_taul', 'wjets_tauh',
@@ -25,6 +27,15 @@ processes_mu_id = {'qcd': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets': 11,  'w
 processes_el = ['dy_tautau', 'dy_other',  'wjets', 'wjets_taul', 'wjets_tauh',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau', 'tt_taulj', 'qcd']
 #processes_el = set(['dy_tautau', 'dy_other',  'wjets',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau'])
 processes_el_id = {'qcd': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets': 11,  'wjets_taul': 10,  'wjets_tauh': 9,     's_top_eltau': 8,   's_top_other': 7, 's_top_lj': 6,    'dibosons': 5,     'tt_other': 4, 'tt_taultauh': 3, 'tt_taulj': 2,  'tt_lj': 1,  'tt_eltau':0}
+
+processes_id = {'qcd': 18, 'dy_tautau': 17, 'dy_other': 16,
+   'wjets': 15,  'wjets_taul': 14,  'wjets_tauh': 13,
+   's_top_eltau': 12, 's_top_mutau': 11, 's_top_elmu': 10,
+   's_top_other': 9, 's_top_lj': 8,
+   'dibosons': 7,
+   'tt_other': 6, 'tt_taultauh': 5, 'tt_taulj': 4,  'tt_lj': 3,
+   'tt_ltaul': 2, 'tt_taueltaumu': 1,
+   'tt_eltau': 0, 'tt_mutau':0, 'tt_elmu':0}
 
 """
 \text{dy}\rightarrow{\tau\tau}
@@ -197,13 +208,14 @@ for channel in channels:
         mc_sums_sumhisto[channel] = range_integral(sum_histo)
 
     histos = []
+    processes = []
 
-    if 'mu' in channel:
-        processes = processes_mu
-        processes_id = processes_mu_id
-    else:
-        processes = processes_el
-        processes_id = processes_el_id
+    #if 'mu' in channel:
+    #    processes = processes_mu
+    #    processes_id = processes_mu_id
+    #else:
+    #    processes = processes_el
+    #    processes_id = processes_el_id
 
     #proc_yields.append((channel, []))
 
@@ -211,11 +223,16 @@ for channel in channels:
     #processes_keys = list(chan.GetListOfKeys())
     #sorted_pkeys = sorted(processes_keys, key=lambda pkey: pkey.GetName() if pkey.GetName() not in ('qcd') else 'z_' + pkey.GetName())
     #for process in sorted_pkeys:
-    for process in processes:
+    #for process in processes:
+    for process in (p.GetName() for p in list(chan.GetListOfKeys())):
        # if the channel with shapes for dy and wjets are given
        # don't use other channels
        #if shape_channel and nick in ('dy', 'wjets') and chan.GetName() != shape_channel:
        #    continue
+       logging.debug(process)
+
+       if process not in all_known_sorted_processes:
+           continue
 
        if args.skip_procs and process in args.skip_procs:
            continue
@@ -231,6 +248,7 @@ for channel in channels:
            logging.info('no %s' % histo_name)
            continue
        logging.debug(histo.Integral())
+       processes.append(process)
 
        if 'wjet' in process and args.wjets:
            histo.Scale(args.wjets)
