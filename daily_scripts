@@ -7,22 +7,24 @@ rate_mutau              rateParam  mu   tt_mutau 13609.554
 
 tau_ratio               param                    1.         0.1
 
+./scripts/text2workspace.py ttxsec/fit-stuff/ratio_both_0.txt
 
-combine -M MultiDimFit ttxsec/fit-stuff/ratio_both_1.txt --algo grid --points 100 --redefineSignalPOIs tau_ratio --freezeParameters tt_mutau,tt_elmu --saveSpecifiedNuis dilep_norm --rMin 0.5 --rMax 1.5 --name RatioElMuShapes
+combine -M MultiDimFit ttxsec/fit-stuff/ratio_both_0.txt --algo grid --points 100 --redefineSignalPOIs tau_ratio --freezeParameters r --saveSpecifiedNuis dilep_norm --rMin 0.5 --rMax 1.5 --name RatioElMuShapes
 
 --expectSignal 1
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters tt_mutau,tt_elmu -t -1 --setParameters tt_mutau=1.0,tt_elmu=1.0 -d ttxsec/fit-stuff/ratio_both_1.root -m 125 --robustFit 1 --doInitialFit
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters tt_mutau,tt_elmu -t -1 --setParameters tt_mutau=1.0,tt_elmu=1.0 -d ttxsec/fit-stuff/ratio_both_1.root -m 125 --robustFit 1 --doFits --parallel 5
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters tt_mutau,tt_elmu -t -1 --setParameters tt_mutau=1.0,tt_elmu=1.0 -d ttxsec/fit-stuff/ratio_both_1.root -m 125 -o latest_ratio_toys_asimov_impacts.json
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r -t -1  -d ttxsec/fit-stuff/ratio_both_0.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r -t -1  -d ttxsec/fit-stuff/ratio_both_0.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r -t -1  -d ttxsec/fit-stuff/ratio_both_0.root -m 125 -o latest_ratio_toys_asimov_impacts.json
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratio_toys_asimov_impacts.json -o latest_ratio_toys_asimov_impacts
 
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters tt_mutau,tt_elmu --freezeNuisanceGroup tt_updowns -t -1 --setParameters tt_mutau=1.0,tt_elmu=1.0 -d ttxsec/fit-stuff/ratio_both_1.root -m 125 --robustFit 1 --doInitialFit
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters tt_mutau,tt_elmu --freezeNuisanceGroup tt_updowns -t -1 --setParameters tt_mutau=1.0,tt_elmu=1.0 -d ttxsec/fit-stuff/ratio_both_1.root -m 125 --robustFit 1 --doFits --parallel 5
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters tt_mutau,tt_elmu --freezeNuisanceGroup tt_updowns -t -1 --setParameters tt_mutau=1.0,tt_elmu=1.0 -d ttxsec/fit-stuff/ratio_both_1.root -m 125 -o latest_ratio_toys_asimov_impacts_no_updowns.json
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --freezeNuisanceGroup tt_updowns -t -1  -d ttxsec/fit-stuff/ratio_both_0.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --freezeNuisanceGroup tt_updowns -t -1  -d ttxsec/fit-stuff/ratio_both_0.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --freezeNuisanceGroup tt_updowns -t -1  -d ttxsec/fit-stuff/ratio_both_0.root -m 125 -o latest_ratio_toys_asimov_impacts_no_updowns.json
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratio_toys_asimov_impacts_no_updowns.json -o latest_ratio_toys_asimov_impacts_no_updowns
 
+--setParameters tt_elmu=1.0,tt_mutau=1.0
 
 
 
