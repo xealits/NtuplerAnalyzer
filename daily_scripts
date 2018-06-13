@@ -1,3 +1,147 @@
+
+Fit only ljout
+
+./scripts/text2workspace.py ttxsec/fit-stuff/v25p2_mu_2_recor_ljoutonly.txt
+
+combine -M MultiDimFit ttxsec/fit-stuff/v25p2_mu_2_recor_ljoutonly.txt --algo grid --points 100 --freezeNuisanceGroup tt_th_pdf --rMin 0.5 --rMax 1.5 --name MuShapesOnlyOut
+
+-- 
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/v25p2_mu_2_recor_ljoutonly.root --freezeNuisanceGroup tt_th_pdf  -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/v25p2_mu_2_recor_ljoutonly.root --freezeNuisanceGroup tt_th_pdf  -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/v25p2_mu_2_recor_ljoutonly.root --freezeNuisanceGroup tt_th_pdf  -m 125 -o v25p2_mu_2_recor_ljoutonly.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i v25p2_mu_2_recor_ljoutonly.json -o v25p2_mu_2_recor_ljoutonly
+
+
+
+
+
+
+
+
+event weight fluctuations
+
+python distr_ratios.py mc_norm/mc_v25pCheckNomFSR.root -c ctr_old_mu_sel_lj -d Mt_lep_met_f_init -p tt_mutau --var-distr Mt_lep_met_f --y-range 0.8,1.1 --add-x-line 40,130
+python distr_ratios.py mc_norm/mc_v25pCheckNomFSR.root -c ctr_old_mu_sel -d Mt_lep_met_f_init -p tt_mutau --var-distr Mt_lep_met_f --y-range 0.8,1.1 --add-x-line 40,130
+python distr_ratios.py mc_norm/mc_v25pCheckNomFSR.root -c ctr_old_mu_selVloose -d Mt_lep_met_f_init -p tt_mutau --var-distr Mt_lep_met_f --y-range 0.8,1.1 --add-x-line 40,130
+python distr_ratios.py mc_norm/mc_v25pCheckNomFSR.root -c ctr_old_mu_selVloose_lj -d Mt_lep_met_f_init -p tt_mutau --var-distr Mt_lep_met_f --y-range 0.8,1.1 --add-x-line 40,130
+
+python distr_ratios.py mc_norm/mc_v25pCheckNomFSR.root -c ctr_old_mu_sel_ljout       -d Mt_lep_met_f_init -p tt_mutau --var-distr Mt_lep_met_f --y-range 0.8,1.1 --add-x-line 40,130
+python distr_ratios.py mc_norm/mc_v25pCheckNomFSR.root -c ctr_old_mu_selVloose_ljout -d Mt_lep_met_f_init -p tt_mutau --var-distr Mt_lep_met_f --y-range 0.8,1.1 --add-x-line 40,130
+
+
+b weight fluctuations -- the fluctuations of b efficiencies are different in updown
+
+python distr_ratios.py mc_norm/mc_v25pCheckNomFSR.root -c ctr_old_mu_sel_ljout       -d Mt_lep_met_f_init -p tt_mutau --var-distr Mt_lep_met_f:Mt_lep_met_f_w_in:Mt_lep_met_f_w_bf:Mt_lep_met_f_w_pu --y-range 0.8,1.1 --add-x-line 40,130
+python distr_ratios.py mc_norm/mc_v25pCheckNomFSR.root -c ctr_old_mu_selVloose_ljout -d Mt_lep_met_f_init -p tt_mutau --var-distr Mt_lep_met_f:Mt_lep_met_f_w_in:Mt_lep_met_f_w_bf:Mt_lep_met_f_w_pu --y-range 0.8,1.1 --add-x-line 40,130
+
+python distr_ratios.py mc_norm/mc_v25pCheckNomFSR.root -c ctr_old_mu_sel       -d Mt_lep_met_f_init -p tt_mutau --var-distr Mt_lep_met_f:Mt_lep_met_f_w_in:Mt_lep_met_f_w_bf:Mt_lep_met_f_w_pu --y-range 0.8,1.1 --add-x-line 40,130
+python distr_ratios.py mc_norm/mc_v25pCheckNomFSR.root -c ctr_old_mu_selVloose -d Mt_lep_met_f_init -p tt_mutau --var-distr Mt_lep_met_f:Mt_lep_met_f_w_in:Mt_lep_met_f_w_bf:Mt_lep_met_f_w_pu --y-range 0.8,1.1 --add-x-line 40,130
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+check norm and shapes of all proc in NOM VS FSR
+
+results:
+the yields are ok in all processes for FSR
+this process did change them a little, maybe the shapes got shifted a bit,
+but main issue with couple bins in mu selection is still there
+(Vloose and main sel, in lj category and inclusive)
+
+v25/pCheckNomFSR
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_ljout reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_ljout,tt_mutau,NOMINAL FSRUp:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_ljout,tt_mutau,FSRUp FSRDown:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_ljout,tt_mutau,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_lj reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_lj,tt_mutau,NOMINAL FSRUp:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_lj,tt_mutau,FSRUp FSRDown:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_lj,tt_mutau,FSRDown
+
+
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_sel_ljout reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_ljout,tt_mutau,NOMINAL FSRUp:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_sel_ljout,tt_mutau,FSRUp FSRDown:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_sel_ljout,tt_mutau,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_sel_lj reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_lj,tt_mutau,NOMINAL FSRUp:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_sel_lj,tt_mutau,FSRUp FSRDown:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_sel_lj,tt_mutau,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_lj -c ctr_old_mu_sel_ljout reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_ljout,tt_lj,NOMINAL FSRUp:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_sel_ljout,tt_lj,FSRUp FSRDown:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_sel_ljout,tt_lj,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_lj -c ctr_old_mu_sel_lj reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_lj,tt_lj,NOMINAL FSRUp:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_sel_lj,tt_lj,FSRUp FSRDown:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_sel_lj,tt_lj,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_taultauh -c ctr_old_mu_sel_ljout reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_ljout,tt_taultauh,NOMINAL FSRUp:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_sel_ljout,tt_taultauh,FSRUp FSRDown:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_sel_ljout,tt_taultauh,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_taultauh -c ctr_old_mu_sel_lj reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_lj,tt_taultauh,NOMINAL FSRUp:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_sel_lj,tt_taultauh,FSRUp FSRDown:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_sel_lj,tt_taultauh,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_taulj -c ctr_old_mu_sel_ljout reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_ljout,tt_taulj,NOMINAL FSRUp:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_sel_ljout,tt_taulj,FSRUp FSRDown:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_sel_ljout,tt_taulj,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_taulj -c ctr_old_mu_sel_lj reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_lj,tt_taulj,NOMINAL FSRUp:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_sel_lj,tt_taulj,FSRUp FSRDown:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_sel_lj,tt_taulj,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_other -c ctr_old_mu_sel_ljout reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_ljout,tt_other,NOMINAL FSRUp:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_sel_ljout,tt_other,FSRUp FSRDown:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_sel_ljout,tt_other,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_other -c ctr_old_mu_sel_lj reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_lj,tt_other,NOMINAL FSRUp:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_sel_lj,tt_other,FSRUp FSRDown:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_sel_lj,tt_other,FSRDown
+
+
+
+
+
+problematic bins in inclusive sel and Vloose
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_lj reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_lj,tt_mutau,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_lj,tt_mutau,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_lj,tt_mutau,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_sel_lj reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_lj,tt_mutau,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_sel_lj,tt_mutau,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_sel_lj,tt_mutau,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose,tt_mutau,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose,tt_mutau,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose,tt_mutau,FSRDown
+
+python jobsums/get_shapes.py --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_sel reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_sel,tt_mutau,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_sel,tt_mutau,FSRDown
+
+
+no norm all chan in Vloose
+
+python jobsums/get_shapes.py --no-norm --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_ljout reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_ljout,tt_mutau,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_ljout,tt_mutau,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_ljout,tt_mutau,FSRDown
+
+python jobsums/get_shapes.py --no-norm --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_lj reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_lj,tt_mutau,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_lj,tt_mutau,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_lj,tt_mutau,FSRDown
+
+
+python jobsums/get_shapes.py --no-norm --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_lj -c ctr_old_mu_selVloose_ljout reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_ljout,tt_lj,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_ljout,tt_lj,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_ljout,tt_lj,FSRDown
+
+python jobsums/get_shapes.py --no-norm --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_lj -c ctr_old_mu_selVloose_lj reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_lj,tt_lj,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_lj,tt_lj,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_lj,tt_lj,FSRDown
+
+
+python jobsums/get_shapes.py --no-norm --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_taultauh -c ctr_old_mu_selVloose_ljout reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_ljout,tt_taultauh,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_ljout,tt_taultauh,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_ljout,tt_taultauh,FSRDown
+
+python jobsums/get_shapes.py --no-norm --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_taultauh -c ctr_old_mu_selVloose_lj reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_lj,tt_taultauh,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_lj,tt_taultauh,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_lj,tt_taultauh,FSRDown
+
+
+python jobsums/get_shapes.py --no-norm --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_taulj -c ctr_old_mu_selVloose_ljout reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_ljout,tt_taulj,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_ljout,tt_taulj,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_ljout,tt_taulj,FSRDown
+
+python jobsums/get_shapes.py --no-norm --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_taulj -c ctr_old_mu_selVloose_lj reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_lj,tt_taulj,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_lj,tt_taulj,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_lj,tt_taulj,FSRDown
+
+
+python jobsums/get_shapes.py --no-norm --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_other -c ctr_old_mu_selVloose_ljout reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_ljout,tt_other,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_ljout,tt_other,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_ljout,tt_other,FSRDown
+
+python jobsums/get_shapes.py --no-norm --formula "reNOM : FSRUp : FSRDown" -d Mt_lep_met_f -p tt_other -c ctr_old_mu_selVloose_lj reNOM:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_lj,tt_other,NOMINAL FSRUp:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup.root:ctr_old_mu_selVloose_lj,tt_other,FSRUp FSRDown:jobsums/mc_norm/v25pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrdown.root:ctr_old_mu_selVloose_lj,tt_other,FSRDown
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 rateParams for ratio
 
 dilep_norm              lnU         -              -              -              -              -              -              -              -              -              -              -              -              -              -     
