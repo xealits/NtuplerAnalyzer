@@ -383,7 +383,7 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                histo.Scale(final_factor)
 
            # wjets normalization
-           if args.wjets > 0 and nick == 'wjets':
+           if args.wjets > 0 and 'wjets' in nick:
                histo.Scale(args.wjets)
 
            # dy normalization

@@ -49,6 +49,7 @@ parser.add_argument("--title",   type=str, default=None, help="title for the plo
 parser.add_argument("--title-x", type=str, default=None, help="title for the plot")
 
 parser.add_argument("--add-y-line", type=float, help="add horizontal line at the given Y value")
+parser.add_argument("--add-x-line", type=str,   help="add verticle lines at the given X values separated by coma (x1,x2,x3)")
 
 args = parser.parse_args()
 
@@ -260,6 +261,14 @@ if args.add_y_line:
     x_max = nom_MC.GetXaxis().GetXmax()
     l = TLine(x_min, args.add_y_line, x_max, args.add_y_line)
     l.Draw("same")
+
+if args.add_x_line:
+    y_min = nom_MC.GetYaxis().GetXmin()
+    y_max = nom_MC.GetYaxis().GetXmax()
+    for x in (float(val) for val in args.add_x_line.split(',')):
+        logging.debug("drawing x line: %f, %f - %f" % (x, y_min, y_max))
+        l = TLine(x, y_min, x, y_max)
+        l.Draw("same")
 
 leg.Draw("same")
 
