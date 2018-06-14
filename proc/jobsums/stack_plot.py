@@ -711,6 +711,7 @@ if not args.plot and not args.ratio:
 
     options = ""
     options += "_data-qcd" if args.qcd > 0. else ""
+    options += ("_shape-%s" % args.shape) if args.shape else ""
 
     filename = out_dir + args.mc_file.split('.root')[0] + '_HISTOSEL_%s_%s_%s%s.root' % (distr_name, channel, sys_name, options)
     logging.info('saving root %s' % filename)
