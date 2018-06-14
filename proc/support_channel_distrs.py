@@ -1404,7 +1404,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
               'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
 
              'regMt_tau_pt':   TH1D('%s_%s_%s_regMt_tau_pt'      % (chan, proc, sys), '', 20, 0, 150),
-             'regMt_tau_substitution':      TH1D('%s_%s_%s_regMt_tau_substitution'     % (chan, proc, sys), '', 20, 0, 10.),
+             'regMt_tau_substitution':      TH1D('%s_%s_%s_regMt_tau_substitution'     % (chan, proc, sys), '', 20, 0, 50.),
              'regMt_lep_pt':   TH1D('%s_%s_%s_regMt_lep_pt'      % (chan, proc, sys), '', 20, 0, 250),
              'regMt_lep_eta':  TH1D('%s_%s_%s_regMt_lep_eta'      % (chan, proc, sys), '', 50, -2.5, 2.5),
              'regMt_lep_eta_lowpt':  TH1D('%s_%s_%s_regMt_lep_eta_lowpt' % (chan, proc, sys), '', 50, -2.5, 2.5),
@@ -1562,7 +1562,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'all_sum_control':       TH1D('%s_%s_%s_all_sum_control'      % (chan, proc, sys), '', 50, 0, 200),
              'all_sum_control_init':  TH1D('%s_%s_%s_all_sum_control_init' % (chan, proc, sys), '', 50, 0, 200),
              'tau_cor_control':       TH1D('%s_%s_%s_tau_cor_control'      % (chan, proc, sys), '', 20, 0, 5),
-             'tau_substitution':      TH1D('%s_%s_%s_tau_substitution'     % (chan, proc, sys), '', 20, 0, 10.),
+             'tau_substitution':      TH1D('%s_%s_%s_tau_substitution'     % (chan, proc, sys), '', 20, 0, 50.),
              'lep_pt_turn':TH1D('%s_%s_%s_lep_pt_turn'% (chan, proc, sys), '', 270, 23, 50),
              'lep_pt_turn_raw':TH1D('%s_%s_%s_lep_pt_turn_raw' % (chan, proc, sys), '', 40, 20, 40),
 
@@ -4537,8 +4537,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     # - what is to include in met
                     substitution = the_jet_p4 - the_tau_p4
                     substitution_pt = substitution.pt()
-                    met_x_prop += substitution.X()
-                    met_y_prop += substitution.Y()
+                    #met_x_prop += substitution.X()
+                    #met_y_prop += substitution.Y()
 
                 # PROPAGATE jet correcions
                 all_sel_jets = sel_jets.medium + sel_jets.loose + sel_jets.rest
