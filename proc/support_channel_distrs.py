@@ -1404,14 +1404,17 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
               'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
 
              'regMt_tau_pt':   TH1D('%s_%s_%s_regMt_tau_pt'      % (chan, proc, sys), '', 20, 0, 150),
+             'regMt_tau_substitution':      TH1D('%s_%s_%s_regMt_tau_substitution'     % (chan, proc, sys), '', 20, 0, 10.),
              'regMt_lep_pt':   TH1D('%s_%s_%s_regMt_lep_pt'      % (chan, proc, sys), '', 20, 0, 250),
              'regMt_lep_eta':  TH1D('%s_%s_%s_regMt_lep_eta'      % (chan, proc, sys), '', 50, -2.5, 2.5),
              'regMt_lep_eta_lowpt':  TH1D('%s_%s_%s_regMt_lep_eta_lowpt' % (chan, proc, sys), '', 50, -2.5, 2.5),
              'regMt_Mt_lowpt':       TH1D('%s_%s_%s_regMt_Mt_lowpt'      % (chan, proc, sys), '', 20, 0, 250),
              'regMt_lep_phi':  TH1D('%s_%s_%s_regMt_lep_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
              'regMt_met':      TH1D('%s_%s_%s_regMt_met'      % (chan, proc, sys), '', 20, 0, 250),
-             'regMt_met_phi':  TH1D('%s_%s_%s_regMt_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
-             'regMt_met_lep_cos':  TH1D('%s_%s_%s_regMt_lep_cos' % (chan, proc, sys), '', 22, -1.1, 1.1),
+             'regMt_met_phi':  TH1D('%s_%s_%s_regMt_met_phi'      % (chan, proc, sys), '', 66, -3.3, 3.3),
+             'regMt_met_lep_cos':  TH1D('%s_%s_%s_regMt_met_lep_cos' % (chan, proc, sys), '', 22, -1.1, 1.1),
+             'regMt_tau_lep_cos':  TH1D('%s_%s_%s_regMt_tau_lep_cos' % (chan, proc, sys), '', 22, -1.1, 1.1),
+             'regMt_tau_jet_scale':  TH1D('%s_%s_%s_regMt_tau_jet_scale' % (chan, proc, sys), '', 22, 0.0, 2.0),
              'regMt_nMbjets':   TH1D('%s_%s_%s_regMt_nMbjets'    % (chan, proc, sys), '', 10, 0, 10),
              'regMt_nLbjets':   TH1D('%s_%s_%s_regMt_nLbjets'    % (chan, proc, sys), '', 10, 0, 10),
              'regMt_nRbjets':   TH1D('%s_%s_%s_regMt_nRbjets'    % (chan, proc, sys), '', 10, 0, 10),
@@ -1559,6 +1562,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
              'all_sum_control':       TH1D('%s_%s_%s_all_sum_control'      % (chan, proc, sys), '', 50, 0, 200),
              'all_sum_control_init':  TH1D('%s_%s_%s_all_sum_control_init' % (chan, proc, sys), '', 50, 0, 200),
              'tau_cor_control':       TH1D('%s_%s_%s_tau_cor_control'      % (chan, proc, sys), '', 20, 0, 5),
+             'tau_substitution':      TH1D('%s_%s_%s_tau_substitution'     % (chan, proc, sys), '', 20, 0, 10.),
              'lep_pt_turn':TH1D('%s_%s_%s_lep_pt_turn'% (chan, proc, sys), '', 270, 23, 50),
              'lep_pt_turn_raw':TH1D('%s_%s_%s_lep_pt_turn_raw' % (chan, proc, sys), '', 40, 20, 40),
 
@@ -2532,7 +2536,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             pt_cut_cuts = 22.
             pt_cut_old  = 30.
 
-            jetmatched = ev.tau_dR_matched_jet[i] > -1
+            jetmatched = ev.tau_dR_matched_jet[i] # > -1
 
             match_lep        = ev.tau_matching_lep[i]
             match_lep_alliso = ev.tau_matching_allIso_lep[i]
@@ -4480,6 +4484,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 sum_tau_init_Y = 0.
 
                 sum_tau_corr_pt = 0.
+                substitution_pt = 0.
 
                 # PROPAGATE tau and jet systematic variations to met
                 # 
@@ -4511,6 +4516,29 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     met_y_prop_taus += tau_cor.Y()
                     met_x_prop += tau_cor.X()
                     met_y_prop += tau_cor.Y()
+
+                ### and substitute the jet->tau in met p7 p9 -> 1) v25 p2_tt_jtau, 2) v25 p2_jes_recor
+                ## this works very strangely: data is shifted to high Mt?
+                ## but the study of jet/tau pt shows approximatly the same values in both MC and Data
+                if sel_taus and if sel_taus[0][4] > -1:
+                    # only first tau is taken
+                    tau_index = sel_taus[0][3]
+                    the_tau_p4 = sel_taus[0][0] * sel_taus[0][1]
+                    tau_jet_index   = sel_taus[0][4]
+
+                    # substitute the nominal jet
+                    jer_factor = ev.jet_jer_factor[tau_jet_index]
+                    #jes_factor = ev.jet_jes_recorrection[tau_jet_index]
+                    #jes_uncorFactor = ev.jet_uncorrected_jecFactor[tau_jet_index]
+                    en_factor = jer_factor # * jes_factor * jes_uncorFactor
+                    the_jet_p4 = ev.jet_initial_p4[tau_jet_index] * en_factor #miniaod_jets[tau_jet_index]
+                    #substitution = the_tau_p4 - the_jet_p4
+                    # + what is to remove from met
+                    # - what is to include in met
+                    substitution = the_jet_p4 - the_tau_p4
+                    substitution_pt = substitution.pt()
+                    met_x_prop += substitution.X()
+                    met_y_prop += substitution.Y()
 
                 # PROPAGATE jet correcions
                 all_sel_jets = sel_jets.medium + sel_jets.loose + sel_jets.rest
@@ -4552,25 +4580,6 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     all_sel_objects += tau[0] * tau[1]
                 for jet in all_sel_jets:
                     all_sel_objects += jet[0] * jet[1]
-
-                ### and substitute the jet->tau in met p7 p9 -> 1) v25 p2_tt_jtau, 2) v25 p2_jes_recor
-                ## this works very strangely: data is shifted to high Mt?
-                ## but the study of jet/tau pt shows approximatly the same values in both MC and Data
-                #if sel_taus:
-                #    # only first tau is taken
-                #    tau_index = sel_taus[0][3]
-                #    the_tau_p4 = sel_taus[0][0] * sel_taus[0][1]
-                #    tau_jet_index   = ev.tau_dR_matched_jet[tau_index]
-                #    if tau_jet_index > -1:
-                #        # substitute the nominal jet
-                #        jer_factor = ev.jet_jer_factor[tau_jet_index]
-                #        jes_factor = ev.jet_jes_recorrection[tau_jet_index]
-                #        jes_uncorFactor = ev.jet_uncorrected_jecFactor[tau_jet_index]
-                #        en_factor = jer_factor * jes_factor * jes_uncorFactor
-                #        the_jet_p4 = miniaod_jets[tau_jet_index] * en_factor
-                #        substitution = the_tau_p4 - the_jet_p4
-                #        met_x_prop += substitution.X()
-                #        met_y_prop += substitution.Y()
 
                 Mt_lep_met_init = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), ev.met_init.Px(), ev.met_init.Py())
                 # at NOMINAL these two should be the same
@@ -4721,6 +4730,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 if Mt_lep_met > 120. and Mt_lep_met < 200.:
                     if sel_taus:
                         out_hs[(chan, record_proc, sys_name)]['regMt_tau_pt']  .Fill(tau_pt,  record_weight)
+                        out_hs[(chan, record_proc, sys_name)]['regMt_tau_substitution']  .Fill(substitution_pt,  record_weight)
+                        tau_lep_cos = transverse_cos(sel_taus[0][0], lep_p4[0])
+                        out_hs[(chan, record_proc, sys_name)]['regMt_tau_lep_cos'] .Fill(tau_lep_cos,    record_weight)
+                        #if tau_ID > 3 and not match_lep: taus_ESDown.old.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                        jetmatched_i = sel_taus[0][4]
+                        out_hs[(chan, record_proc, sys_name)]['regMt_tau_jet_scale'] .Fill(tau_energy/ev.jet_p4[jetmatched_i].energy(),    record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt']      .Fill(lep_p4[0].pt(),  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta']     .Fill(lep_p4[0].eta(), record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_eta']  .Fill(lep_p4[0].pt(), lep_p4[0].eta(), record_weight)
@@ -4821,8 +4836,9 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_init_f'] .Fill(Mt_lep_met_init,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_corr_f'] .Fill(Mt_lep_met_corr,     record_weight)
                 out_hs[(chan, record_proc, sys_name)]['all_sum_control']     .Fill(all_sum_control_pt, record_weight) # for control
-                out_hs[(chan, record_proc, sys_name)]['tau_cor_control']     .Fill(sum_tau_corr_pt, record_weight) # for control
-                out_hs[(chan, record_proc, sys_name)]['all_sum_control_init'].Fill(all_sum_control_init_pt, record_weight) # for control
+                out_hs[(chan, record_proc, sys_name)]['tau_cor_control']     .Fill(sum_tau_corr_pt, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['tau_substitution']    .Fill(substitution_pt, record_weight)
+                out_hs[(chan, record_proc, sys_name)]['all_sum_control_init'].Fill(all_sum_control_init_pt, record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_eta'] .Fill(lep_p4[0].eta(), record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_pt_turn'].Fill(lep_p4[0].pt(),  record_weight)
                 out_hs[(chan, record_proc, sys_name)]['lep_pt_turn_raw'].Fill(lep_p4[0].pt())
@@ -5110,8 +5126,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     out_hs[(chan, record_proc, sys_name)]['tau_pt']  .Fill(corrected_tau.pt(),  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['tau_eta'] .Fill(corrected_tau.eta(), record_weight)
 
-                    out_hs[(chan, record_proc, sys_name)]['tau_jetmatched']        .Fill(sel_taus[0][4], record_weight)
-                    out_hs[(chan, record_proc, sys_name)]['tau_jetmatched_VS_eta'] .Fill(sel_taus[0][4], corrected_tau.eta(), record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['tau_jetmatched']        .Fill(sel_taus[0][4] > -1, record_weight)
+                    out_hs[(chan, record_proc, sys_name)]['tau_jetmatched_VS_eta'] .Fill(sel_taus[0][4] > -1, corrected_tau.eta(), record_weight)
 
                     # don't do these in OPTIMIZATION
                     ##out_hs[(chan, record_proc, sys_name)]['tau_pat_Sign']  .Fill(zero_tau_pat_Sign,  record_weight)

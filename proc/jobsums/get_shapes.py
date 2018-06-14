@@ -139,7 +139,7 @@ else:
         # ' number  nick ' pairs
         logging.debug("subform " + subform)
         nicks = [nick for nick in histos.keys() if nick in subform]
-        logging.debug(nicks)
+        logging.debug("nicks %s" % str(nicks))
         nick_pairs = []
         for nick_pair in subform.split('+'):
             for nick in nicks:
