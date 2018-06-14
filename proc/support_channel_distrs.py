@@ -1394,6 +1394,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             distrs.update({
               'nvtx':        TH1D('%s_%s_%s_nvtx'       % (chan, proc, sys), '', 50, 0, 50),
 
+             'regMt_tau_pt':   TH1D('%s_%s_%s_regMt_tau_pt'      % (chan, proc, sys), '', 20, 0, 150),
              'regMt_lep_pt':   TH1D('%s_%s_%s_regMt_lep_pt'      % (chan, proc, sys), '', 20, 0, 250),
              'regMt_lep_eta':  TH1D('%s_%s_%s_regMt_lep_eta'      % (chan, proc, sys), '', 50, -2.5, 2.5),
              'regMt_lep_eta_lowpt':  TH1D('%s_%s_%s_regMt_lep_eta_lowpt' % (chan, proc, sys), '', 50, -2.5, 2.5),
@@ -1986,7 +1987,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_elmu # pass_mu # or pass_elmu_el # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+        event_passes = pass_mu # pass_elmu # or pass_elmu_el # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
 
         if pass_elmu or pass_elmu_el or pass_mumu or pass_elel:
             # check dR of leptons
@@ -2545,6 +2546,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     factor_down = 1.006 - 0.012
                 tau_pt_up   = tau_pt * factor_up
                 tau_pt_down = tau_pt * factor_down
+                TES_factor  = factor
                 tau_pt     *= factor
 
             # I store only 1 ID per selection
@@ -4700,7 +4702,16 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
 
                 #out_hs[(chan, record_proc, sys_name)]['Mt_lep_met_f_rocc']    .Fill(Mt_lep_met,   roccor_factor)
 
+                if sel_taus:
+                    corrected_tau = sel_taus[0][0] * sel_taus[0][1]
+
+                    tau_pt     = corrected_tau.pt()
+                    tau_eta    = corrected_tau.eta()
+                    tau_energy = corrected_tau.energy()
+
                 if Mt_lep_met > 120. and Mt_lep_met < 200.:
+                    if sel_taus:
+                        out_hs[(chan, record_proc, sys_name)]['regMt_tau_pt']  .Fill(tau_pt,  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt']      .Fill(lep_p4[0].pt(),  record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_eta']     .Fill(lep_p4[0].eta(), record_weight)
                     out_hs[(chan, record_proc, sys_name)]['regMt_lep_pt_eta']  .Fill(lep_p4[0].pt(), lep_p4[0].eta(), record_weight)
@@ -5037,11 +5048,11 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 #if len(ev.tau_p4) > 0:
                     #lep_tau = lep_p4[0] + taus[0][0] # done above
                     #out_hs[(chan, record_proc, sys_name)]['M_lep_tau']  .Fill(lep_tau.mass(), record_weight)
-                    corrected_tau = sel_taus[0][0] * sel_taus[0][1]
+                    #corrected_tau = sel_taus[0][0] * sel_taus[0][1]
 
-                    tau_pt     = corrected_tau.pt()
-                    tau_eta    = corrected_tau.eta()
-                    tau_energy = corrected_tau.energy()
+                    #tau_pt     = corrected_tau.pt()
+                    #tau_eta    = corrected_tau.eta()
+                    #tau_energy = corrected_tau.energy()
 
                     # TODO: not fully corrected met
                     Mt_tau_met = transverse_mass(corrected_tau, ev.met_corrected)

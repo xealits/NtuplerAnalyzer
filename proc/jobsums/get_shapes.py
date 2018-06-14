@@ -26,7 +26,7 @@ parser.add_argument('--formula',  type=str, help="to plot h1 overlayed with 123*
 
 parser.add_argument('--set-file',  type=str, help=" histos come from this file, skip filename in the input_files definition, but : must be there")
 
-parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename[:chan,proc,sys]`""")
+parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename[:chan,proc,sys[,distr]]`""")
 
 args = parser.parse_args()
 
