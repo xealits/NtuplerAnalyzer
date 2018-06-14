@@ -1,4 +1,104 @@
 
+continueing met phis
+
+python jobsums/get_shapes.py --formula "reNOM : shifted " -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose,tt_mutau,NOMINAL shifted:merge-sets/v26/pF9/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose,tt_mutau,NOMINAL,Mt_lep_met_shifted 
+
+python jobsums/get_shapes.py --formula "reNOM : shifted " -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_sel reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL shifted:merge-sets/v26/pF9/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL,Mt_lep_met_shifted 
+
+python jobsums/get_shapes.py --formula "reNOM : shifted " -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_sel_lj reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_lj,tt_mutau,NOMINAL shifted:merge-sets/v26/pF9/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_lj,tt_mutau,NOMINAL,Mt_lep_met_shifted 
+
+python jobsums/get_shapes.py --formula "reNOM : shifted " -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_sel_ljout reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_ljout,tt_mutau,NOMINAL shifted:merge-sets/v26/pF9/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_ljout,tt_mutau,NOMINAL,Mt_lep_met_shifted 
+
+
+python jobsums/get_shapes.py --formula "reNOM : shifted_reNOM " -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_sel_ljout reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_ljout,tt_mutau,NOMINAL shifted_reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel_ljout,tt_mutau,NOMINAL,Mt_lep_met_shifted 
+
+the shifts seem to correct bin 130,but not 120 (and not 140, which is not significant)
+although not sure if the shift is large enough etc
+(judging by the means of met x/y distrs it should be enough, but visually not sure)
+
+finally the test of phi difference
+
+!!! rev_met_phi !!!
+-- did not work?
+-- it just flips + to -
+
+python stack_plot.py mc_v25v26pR5_updowns.root ../merge-sets/v25/pR5/SingleMuon.root --lumi 35800 --wjet 0.8 --factor-dy 1.05 -c ctr_old_mu_sel -d regMt_phi
+python stack_plot.py mc_v25v26pR5_updowns.root ../merge-sets/v25/pR5/SingleMuon.root --lumi 35800 --wjet 0.8 --factor-dy 1.05 -c ctr_old_mu_sel -d met_phi
+
+
+merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root
+
+./mc_v25v26pR5_updowns_HISTOSEL_regMt_phi_ctr_old_mu_sel_NOMINAL.root
+./mc_v25v26pR5_updowns_HISTOSEL_met_phi_ctr_old_mu_sel_NOMINAL.root
+
+ctr_old_mu_sel->Get("data/NOMINAL/ctr_old_mu_sel_data_NOMINAL_met_phi")
+ctr_old_mu_sel->Get("sums_NOMINAL/mc_sum2_NOMINAL")
+
+python flip_met_phi.py ./mc_v25v26pR5_updowns_HISTOSEL_met_phi_ctr_old_mu_sel_NOMINAL.root   output_met_phi.root
+python flip_met_phi.py ./mc_v25v26pR5_updowns_HISTOSEL_regMt_phi_ctr_old_mu_sel_NOMINAL.root output_regMt_phi.root -d regMt_phi
+
+flipped_mc->SetLineColor(kRed)
+flipped_mc_2->SetLineColor(kRed)
+flipped_mc_3->SetLineColor(kRed)
+flipped_data->SetLineColor(kRed)
+
+
+ctr_old_mu_sel_data_NOMINAL_met_phi->Draw()
+flipped_mc->Draw("same")
+
+ctr_old_mu_sel_data_NOMINAL_met_phi->Draw()
+flipped_mc_2->Draw("same")
+
+ctr_old_mu_sel_data_NOMINAL_met_phi->Draw()
+flipped_data->Draw("same")
+
+mc_sum2_NOMINAL->Draw()
+flipped_mc_3->Draw("same")
+
+
+ctr_old_mu_sel_data_NOMINAL_regMt_phi->Draw()
+flipped_mc->Draw("same")
+
+ctr_old_mu_sel_data_NOMINAL_regMt_phi->Draw()
+flipped_mc_2->Draw("same")
+
+ctr_old_mu_sel_data_NOMINAL_regMt_phi->Draw()
+flipped_data->Draw("same")
+
+-- seems like there is slight disagreement at positive phis in the sel (data>mc),
+but in regMt it is leveled out, but slight disagreement (mc>data) apears at negative phis
+as if data just moved down
+
+there is slight asymetry in phi in data: more on positive side
+no assymetry in mc
+
+are there 2 minima in MC and omly 1 in data?
+
+python stack_plot.py mc_v25v26pR4.root ../merge-sets/v25/pR4/SingleMuon.root --lumi 35800 --wjet 0.8 --factor-dy 1.05 -c ctr_old_mu_presel -d met_phi -p -r --exp-leg
+
+-- no, the #2 in MC is confusion due to zoomed scale and fluctuations and shift
+
+the magnitude of the shift, the width seem equal in mc and data
+
+
+python stack_plot.py mc_v25v26pR4.root ../merge-sets/v25/pR4/SingleMuon.root --lumi 35800 --wjet 0.8 --factor-dy 1.05 -c ctr_old_mu_presel -d met_phi
+
+
+side check:
+
+python stack_plot.py mc_v25v26pR5_updowns.root ../merge-sets/v25/pR5/SingleMuon.root --lumi 35800 --wjet 0.8 --factor-dy 1.05 -c ctr_old_mu_sel -d tau_cor_control -p -r --exp-leg
+
+
+
+
+
+
+
+
+
+
+
+
 Fit only ljout
 
 ./scripts/text2workspace.py ttxsec/fit-stuff/v25p2_mu_2_recor_ljoutonly.txt
