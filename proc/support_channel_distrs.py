@@ -4520,14 +4520,14 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 ### and substitute the jet->tau in met p7 p9 -> 1) v25 p2_tt_jtau, 2) v25 p2_jes_recor
                 ## this works very strangely: data is shifted to high Mt?
                 ## but the study of jet/tau pt shows approximatly the same values in both MC and Data
-                if sel_taus and if sel_taus[0][4] > -1:
+                if sel_taus and sel_taus[0][4] > -1:
                     # only first tau is taken
                     tau_index = sel_taus[0][3]
                     the_tau_p4 = sel_taus[0][0] * sel_taus[0][1]
                     tau_jet_index   = sel_taus[0][4]
 
                     # substitute the nominal jet
-                    jer_factor = ev.jet_jer_factor[tau_jet_index]
+                    jer_factor = ev.jet_jer_factor[tau_jet_index] if isMC else 1.
                     #jes_factor = ev.jet_jes_recorrection[tau_jet_index]
                     #jes_uncorFactor = ev.jet_uncorrected_jecFactor[tau_jet_index]
                     en_factor = jer_factor # * jes_factor * jes_uncorFactor
