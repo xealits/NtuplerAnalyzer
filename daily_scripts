@@ -98,6 +98,48 @@ python stack_plot.py mc_v25v26pR5_updowns.root ../merge-sets/v25/pR5/SingleMuon.
 
 
 
+ compare to jet-tau substituted tt
+
+python jobsums/get_shapes.py --formula "norm : subst" -d regMt_lep_pt -p tt_mutau -c ctr_old_mu_sel norm:merge-sets/v25/pCheckTight2/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL subst:merge-sets/v25/pCheckTight3/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL
+
+python jobsums/get_shapes.py --formula "norm : subst" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_sel norm:merge-sets/v25/pCheckTight2/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL subst:merge-sets/v25/pCheckTight3/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL
+
+compare data distr
+
+python jobsums/get_shapes.py --formula "norm : subst" -d regMt_lep_pt -p data -c ctr_old_mu_sel norm:merge-sets/v25/pCheckTight2/SingleMuon.root:ctr_old_mu_sel,data,NOMINAL subst:merge-sets/v25/pCheckTight3/SingleMuon.root:ctr_old_mu_sel,data,NOMINAL
+
+python jobsums/get_shapes.py --formula "norm : subst" -d Mt_lep_met_f -p data -c ctr_old_mu_sel norm:merge-sets/v25/pCheckTight2/SingleMuon.root:ctr_old_mu_sel,data,NOMINAL subst:merge-sets/v25/pCheckTight3/SingleMuon.root:ctr_old_mu_sel,data,NOMINAL
+
+
+
+
+
+python jobsums/get_shapes.py --formula "data : 0.921 tt_mutau + 0.079 tt_lj" -d regMt_tau_jet_scale -p tt_mutau -c ctr_old_mu_sel data:merge-sets/v25/pCheckTight2/SingleMuon.root:ctr_old_mu_sel,data,NOMINAL tt_mutau:merge-sets/v25/pCheckTight2/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL tt_lj:merge-sets/v25/pCheckTight2/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_lj,NOMINAL
+
+
+
+
+
+
+
+
+met phi stuff
+
+python distr_ratios.py mc_v25v26pR5_updowns.root -c ctr_old_mu_sel -d met -p tt_mutau --var-distr met_pt_smallphi:met_pt_largephi
+
+ --y-range 0.8,1.1 --add-x-line 40,130
+
+python stack_plot.py mc_v25v26pR5_updowns.root ../merge-sets/v25/pR5/SingleMuon.root --lumi 35800 --qcd 1.05 --wjet 0.8 --factor-dy 1.05 -c ctr_old_mu_sel -p -r --exp-leg -d lep1_phi
+
+python stack_plot.py mc_v25v26pR5_updowns.root ../merge-sets/v25/pR5/SingleMuon.root --lumi 35800 --qcd 1.05 --wjet 0.8 --factor-dy 1.05 -c ctr_old_mu_sel -p -r --exp-leg -d met_phi
+
+
+
+
+
+
+
+
 
 Fit only ljout
 
