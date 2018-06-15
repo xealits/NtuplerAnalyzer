@@ -2977,7 +2977,8 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             if sub_lep and match_lep:
                 # sub jet by lep
                 # works only for 1 lepton
-                proc_met_lepsub -= ev.lep_p4[0] - p4
+                #proc_met_lepsub -= ev.lep_p4[0] - p4
+                proc_met_lepsub += p4
                 sub_lep = False
             else:
                 proc_met_lepsub -= p4 * (en_factor - 1.)

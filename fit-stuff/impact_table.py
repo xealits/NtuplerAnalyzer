@@ -34,6 +34,8 @@ impact_name_dictionary = {
 "tauID_eff"   : "Tau ID efficiency",
 "tau_fakes"   : "Tau mis-ID probability",
 "dy_norm"     : "DY normalization",
+"stop_norm"   : "Single Top normalization",
+"dibos_norm"  : "Dibosons normalization",
 "wjets_norm"  : "W+jets normalization",
 "qcd_norm"    : "QCD normalization",
 "bSF"         : "b-tagging efficiency",

@@ -1,3 +1,8 @@
+
+# sublep with only removing the jet
+python genjobs.py v25 pCheckTight4SubLep --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_TTJets_powheg --scheme 6,6,2,14,14
+make sub_proc nt=v25 proc=pCheckTight4SubLep node=1
+
 # checking the effect of Tight tau ID on regMT params
 python genjobs.py v25 pCheckTight --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_TTJets_powheg --scheme 7,0,2,15,15
 make sub_proc nt=v25 proc=pCheckTight node=1
