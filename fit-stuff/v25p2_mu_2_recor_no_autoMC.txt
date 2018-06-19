@@ -3,8 +3,6 @@ imax 2 number of bins
 jmax 13 number of processes minus 1
 kmax 73 number of nuisance parameters
 
-autoMCStats 0
-
 ----------------------------------------------------------------------------------------------------------------------------------
 shapes *         ctr_old_mu_sel_lj     histosels_v25v26pR5_mu_noqcd_recor_w-qcd-prop.root    ctr_old_mu_sel_lj/$PROCESS/NOMINAL/ctr_old_mu_sel_lj_$PROCESS_NOMINAL_Mt_lep_met_f          ctr_old_mu_sel_lj/$PROCESS/$SYSTEMATIC/ctr_old_mu_sel_lj_$PROCESS_$SYSTEMATIC_Mt_lep_met_f
 shapes data_obs  ctr_old_mu_sel_lj     histosels_v25v26pR5_mu_noqcd_recor_w-qcd-prop.root    ctr_old_mu_sel_lj/data/NOMINAL/ctr_old_mu_sel_lj_data_NOMINAL_Mt_lep_met_f                  ctr_old_mu_sel_lj/data/$SYSTEMATIC/ctr_old_mu_sel_lj_data_$SYSTEMATIC_Mt_lep_met_f
