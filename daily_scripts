@@ -1,4 +1,108 @@
 
+shape of Mt with lep-jet
+
+in TT
+
+python jobsums/get_shapes.py --formula "reNOM : lepJet " -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_sel reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL lepJet:merge-sets/v25/pCheckTight4SubLep/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL 
+
+-- pract no difference
+
+
+run in Data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+testing autoMC 0 for MC stat uncertainty
+
+produce post-fit distrs
+check the uncertainties in bins
+
+./scripts/text2workspace.py ttxsec/fit-stuff/v25p2_mu_2_recor.txt
+./scripts/text2workspace.py ttxsec/fit-stuff/v25p2_mu_2_recor_no_autoMC.txt
+
+combine -M FitDiagnostics ttxsec/fit-stuff/v25p2_mu_2_recor.root --saveShapes --saveWithUncertainties --name MuShapesTestWithAutoMC --freezeParameters lumi_13TeV
+
+Best fit r: 0.959184  -0.0719329/+0.0876966  (68% CL)
+Done in 0.24 min (cpu), 0.24 min (real)
+
+combine -M FitDiagnostics ttxsec/fit-stuff/v25p2_mu_2_recor_no_autoMC.root --saveShapes --saveWithUncertainties --name MuShapesTestNoAutoMC --freezeParameters lumi_13TeV
+
+Best fit r: 0.959184  -0.0719329/+0.0876966  (68% CL)
+
+
+python stack_postfit.py fitDiagnosticsMuShapesTestWithAutoMC.root ctr_old_mu_sel_lj    --mu --ratio 
+python stack_postfit.py fitDiagnosticsMuShapesTestWithAutoMC.root ctr_old_mu_sel_ljout --mu --ratio 
+python stack_postfit.py fitDiagnosticsMuShapesTestNoAutoMC.root   ctr_old_mu_sel_lj    --mu --ratio 
+python stack_postfit.py fitDiagnosticsMuShapesTestNoAutoMC.root   ctr_old_mu_sel_ljout --mu --ratio 
+
+root -l fitDiagnosticsMuShapesTestWithAutoMC.root
+
+((TH1D*) shapes_fit_s->Get("ctr_old_mu_sel_lj/wjets"))->GetBinContent(7)
+(Double_t) 54.8818
+((TH1D*) shapes_fit_s->Get("ctr_old_mu_sel_lj/wjets"))->GetBinError(7)
+(Double_t) 7.46415
+
+root -l fitDiagnosticsMuShapesTestNoAutoMC.root
+((TH1D*) shapes_fit_s->Get("ctr_old_mu_sel_lj/wjets"))->GetBinContent(7)
+(Double_t) 54.8818
+((TH1D*) shapes_fit_s->Get("ctr_old_mu_sel_lj/wjets"))->GetBinError(7)
+(Double_t) 7.46415
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 continueing met phis
 
 python jobsums/get_shapes.py --formula "reNOM : shifted " -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose,tt_mutau,NOMINAL shifted:merge-sets/v26/pF9/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose,tt_mutau,NOMINAL,Mt_lep_met_shifted 

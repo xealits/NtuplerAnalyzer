@@ -155,6 +155,24 @@ tauSVgeom_qcd300_madgraph_tauID0_2016  ->Draw("same")
 tauSVgeom_qcd700_madgraph_tauID0_2015  ->Draw("same")
 tauSVgeom_qcd700_madgraph_tauID0_2016  ->Draw("same")
 
+TH1D* cum_geom_DY  = (TH1D*) tauSVgeom_dy_madgraph_tau3ch_2016->GetCumulative(kFALSE)
+TH1D* cum_geom_QCD = (TH1D*) tauSVgeom_qcd100_madgraph_tauID0_2016->GetCumulative(kFALSE)
+
+cum_geom_QCD->SetLineColor(kRed)
+
+cum_geom_DY->Draw()
+cum_geom_QCD->Draw("same")
+
+TH1D* cum_pat_DY  = (TH1D*) tauSV_dy_madgraph_tau3ch_2016->GetCumulative(kFALSE)
+TH1D* cum_pat_QCD = (TH1D*) tauSV_qcd100_madgraph_tauID0_2016->GetCumulative(kFALSE)
+
+cum_pat_QCD->SetLineColor(kRed)
+
+cum_pat_DY->Draw()
+cum_pat_QCD->Draw("same")
+
+
+cum_pat_DY->Divide( cum_pat_QCD)
 
 
 
