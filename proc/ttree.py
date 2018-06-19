@@ -2,6 +2,7 @@ import ctypes
 import logging
 from array import array
 from ctypes import POINTER
+from random import random
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -58,8 +59,11 @@ for i in range(25):
    for j in range(n[0]):
       d[j] = i*0.1+j
    lorvecS.clear()
-   some_lorvector = LorentzVector_Class(20., 33., 0., 0.)
+   some_lorvector = LorentzVector_Class(random(), 33., 0., 0.)
    lorvecS.push_back(some_lorvector)
+   some_lorvector = LorentzVector_Class(random(), random(), 0., 0.)
+   lorvecS.push_back(some_lorvector)
+
    t.Fill()
 
 outfile = TFile("outfile_ttree.root", "RECREATE")

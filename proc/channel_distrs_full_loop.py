@@ -69,14 +69,14 @@ if __name__ == '__main__':
             print "output file exists: %s" % (args.outdir + '/' + fout_name)
             continue
 
-        import support_channel_distrs
-        from support_channel_distrs import main # ROOT stuff is loaded here
-        support_channel_distrs.OLD_MINIAOD_JETS = args.old_miniaod_jets
-        support_channel_distrs.W_STITCHING = args.do_W_stitching
-        support_channel_distrs.ALL_JETS = args.all_jets
-        support_channel_distrs.ALL_JETS = args.all_jets
+        import stage2
+        from stage2 import main # ROOT stuff is loaded here
+        stage2.OLD_MINIAOD_JETS = args.old_miniaod_jets
+        stage2.W_STITCHING = args.do_W_stitching
+        stage2.ALL_JETS = args.all_jets
+        stage2.ALL_JETS = args.all_jets
         if args.without_bSF:
-            support_channel_distrs.with_bSF = False
+            stage2.with_bSF = False
 
         t = threading.Thread(target=main, args=(input_filename, fout_name, args.outdir, args.channels))
         t.start()
