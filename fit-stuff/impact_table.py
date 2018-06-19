@@ -21,15 +21,7 @@ args = parser.parse_args()
 
 assert isfile(args.impacts_file)
 
-f = open(args.impacts_file)
-
-impacts_js = (json.loads(f.read()))['params']
-
-impacts = {param['name']: param['impact_r'] for param in impacts_js}
-
-table_row_format = "\\lstinline!%25s!  & %4.2f \\\\"
-
-impact_name_dictionary = {
+impact_name_exp = {
 "lumi_13TeV"  : "Luminosity",
 "tauID_eff"   : "Tau ID efficiency",
 "tau_fakes"   : "Tau mis-ID probability",
@@ -45,6 +37,9 @@ impact_name_dictionary = {
 "TauES"       : "Tau Energy Scale",
 "PU"          : "Pile-Up uncertainty",
 "TOPPT"       : "Top $p_{T}$",
+}
+
+impact_name_th = {
 "Frag"        : "b fragmentation",
 "Peterson"    : "b frag., Peterson variation",
 "SemilepBR"   : "b decay tables, Semileptonic BR",
@@ -57,18 +52,40 @@ impact_name_dictionary = {
 "TuneCUETP8M2T4" : "Underlying event (Pythia tune)",
 }
 
+impact_name_dictionary = {}
+
+impact_name_dictionary.update(impact_name_exp)
+impact_name_dictionary.update(impact_name_th)
+
+f = open(args.impacts_file)
+
+impacts_js = (json.loads(f.read()))['params']
+
+impacts_exp = {param['name']: param['impact_r'] for param in impacts_js if param['name'] in impact_name_exp.keys()}
+impacts_th  = {param['name']: param['impact_r'] for param in impacts_js if param['name'] not in impact_name_exp.keys()}
+
+table_row_format = "\\lstinline!%25s!  & %4.2f \\\\"
+
 if not args.merge_pdfs:
     for name, imp in sorted(impacts.items(), key=lambda k: k[1], reverse=True):
         print table_row_format % (name, imp*100)
 
 else:
     pdf_quadrature_sum = 0.
-    for nick, imp in sorted(impacts.items(), key=lambda k: k[1], reverse=True):
+    for nick, imp in sorted(impacts_exp.items(), key=lambda k: k[1], reverse=True):
         if 'PDF' in nick or 'AlphaS' in nick:
             pdf_quadrature_sum += imp**2
             continue
         name = impact_name_dictionary.get(nick, nick)
         print table_row_format % (name, imp*100)
+
+    for nick, imp in sorted(impacts_th.items(), key=lambda k: k[1], reverse=True):
+        if 'PDF' in nick or 'AlphaS' in nick:
+            pdf_quadrature_sum += imp**2
+            continue
+        name = impact_name_dictionary.get(nick, nick)
+        print table_row_format % (name, imp*100)
+
     pdf_impact = pdf_quadrature_sum**0.5
     print table_row_format % ('PDF', pdf_impact*100)
 

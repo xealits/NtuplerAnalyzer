@@ -77,7 +77,9 @@ def plot(chan, plot_expected, plot_data):
            n = ttree_stat.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
            g_stat = TGraph(n, ttree_stat.GetV2(), ttree_stat.GetV1())
 
-           g_full.SetLineWidth(2)
+           g_full.SetLineWidth(3)
+           g_notau.SetLineWidth(2)
+           g_stat.SetLineWidth(2)
            g_stat.SetLineStyle(7)
 
            # removing the title
@@ -107,7 +109,9 @@ def plot(chan, plot_expected, plot_data):
            n = exp_ttree_stat.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
            exp_g_stat = TGraph(n, exp_ttree_stat.GetV2(), exp_ttree_stat.GetV1())
 
-           exp_g_full.SetLineWidth(2)
+           exp_g_full.SetLineWidth(3)
+           exp_g_notau.SetLineWidth(2)
+           exp_g_stat.SetLineWidth(2)
            exp_g_stat.SetLineStyle(7)
 
            exp_g_full .SetLineColor(43)
