@@ -13,6 +13,29 @@ DO_W_STITCHING = False
 ALL_JETS = False
 with_bSF = True
 
+def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el):
+    return pass_mu
+
+def passes_muon_selection(passed_triggers, jets, taus, proc_met):
+    channel_stage = 0
+    pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el = passed_triggers
+
+    old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
+    pass_old_mu_presel = pass_mu and old_jet_sel and len(taus.presel) > 0
+    pass_old_mu_sel    = pass_mu and old_jet_sel and len(taus.old) > 0
+
+    if pass_old_mu_sel:
+        channel_stage = 3
+    elif pass_old_mu_presel:
+        channel_stage = 2
+
+    return channel_stage
+
+
+channel_selection_functions = {
+    'channels_nom_sys_muon_sel' : passes_muon_selection,
+    }
+
 logging = Logging.getLogger("common")
 
 logging.info('importing ROOT')
@@ -1312,6 +1335,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         }
     }
 
+    PASSES_CHANNEL = channel_selection_functions['channels_nom_sys_muon_sel']
+
     print systematic_names_all_with_th
     print systematic_names_pu_toppt
     print systematic_names_pu
@@ -1643,8 +1668,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         #passes = pass_min_mu or pass_min_mu_all or pass_mu_all or pass_mu or pass_el or pass_mumu or pass_mumu_ss or pass_elmu or pass_mu_id_iso
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
-        passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_mu # pass_elmu # or pass_elmu_el # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+        #passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
+        #event_passes = pass_mu # pass_elmu # or pass_elmu_el # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+        passed_triggers = (pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el)
+        event_passes = PASSES_FUNC(*passed_triggers)
 
         if pass_elmu or pass_elmu_el or pass_mumu or pass_elel:
             # check dR of leptons
@@ -3229,209 +3256,15 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                             found_light = True
 
 
-            tauSign3 = False
-            if len(taus.old) > 0:
-                # tau original index
-                # taus_nom.old .append((p4, TES_factor, tau_pdgID, i))
-                if ev.tau_refited_index[taus.old[0][3]] >= 0:
-                    tauSign3 = ev.tau_SV_geom_flightLenSign[ev.tau_refited_index[taus.old[0][3]]] > 3.
+            # final CHANNEL SELECTION decision
+            channel_stage = PASSES_CHANNEL(passed_triggers, jets, taus, proc_met)
+            if channel_stage < 1:
+                continue
 
-            if pass_mumu:
-                passed_channels.append(('ctr_mu_dy_mumu', False, leps.iso, jets.old, taus.presel))
-            if pass_elel:
-                passed_channels.append(('ctr_mu_dy_elel', False, leps.iso, jets.old, taus.presel))
-            if pass_elmu:
-                passed_channels.append(('ctr_mu_tt_em', False, leps.iso, jets.old, taus.presel))
-                # elmu selection with almost main jet requirements
-                #old_jet_sel = len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
-                # at least 2 jets (3-1 for missing tau jet) and 1 b-tagged
-                # the selection should be close to lep+tau but there is another lepton instead of tau
-                #if len(jets.old.medium) > 0 and (len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 1:
-                if pass_elmu_close:
-                    passed_channels.append(('ctr_mu_tt_em_close', 1., leps.iso, jets.old, taus.old))
-
-            if pass_elmu_el:
-                passed_channels.append(('ctr_el_tt_em', False, leps.iso, jets.old, taus.presel))
-                if pass_elmu_el_close:
-                    passed_channels.append(('ctr_el_tt_em_close', 1., leps.iso, jets.old, taus.old))
-
-            #if pass_mu and nbjets == 0 and (Mt_lep_met > 50 or met_pt > 40): # skipped lep+tau mass -- hopefuly DY will be small (-- it became larger than tt)
-            #    passed_channels.append('ctr_mu_wjet')
-            #if pass_mu_all and len(jets.old.medium) == 0 and (Mt_lep_met > 50 or met_pt > 40) and taus.presel:
-            if pass_mu_all and len(jets.old_alliso.medium) == 0 and taus.presel_alliso:
-                presel_os = taus.presel_alliso[0][2] * ev.lep_alliso_id[0] < 0
-                sel_b_weight = weight_bSF_lowest
-                if presel_os:
-                    passed_channels.append(('ctr_alliso_mu_wjet', sel_b_weight, leps.alliso, jets.old_alliso, taus.presel_alliso))
-                else:
-                    passed_channels.append(('ctr_alliso_mu_wjet_ss', sel_b_weight, leps.alliso, jets.old_alliso, taus.presel_alliso))
-
-            if pass_mu and len(jets.old.medium) == 0 and taus.presel:
-                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
-                sel_b_weight = weight_bSF_lowest
-                if presel_os:
-                    passed_channels.append(('ctr_mu_wjet', sel_b_weight, leps.iso, jets.old, taus.presel))
-                else:
-                    passed_channels.append(('ctr_mu_wjet_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
-
-            if pass_el and len(jets.old.medium) == 0 and taus.presel:
-                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
-                sel_b_weight = weight_bSF_lowest
-
-                if presel_os:
-                    passed_channels.append(('ctr_el_wjet', sel_b_weight, leps.iso, jets.old, taus.presel))
-                else:
-                    passed_channels.append(('ctr_el_wjet_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
-
-
-            if pass_old_mu_presel:
-                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
-                sel_b_weight = weight_bSF_old
-                if presel_os:
-                    passed_channels.append(('ctr_old_mu_presel', sel_b_weight, leps.iso, jets.old, taus.presel))
-                else:
-                    passed_channels.append(('ctr_old_mu_presel_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
-
-            if pass_old_mu_presel and pass_2b:
-                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
-                sel_b_weight = weight_bSF_old
-                if presel_os:
-                    passed_channels.append(('ctr_old_mu_presel2b', sel_b_weight, leps.iso, jets.old, taus.presel))
-                else:
-                    passed_channels.append(('ctr_old_mu_presel2b_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
-
-            if pass_old_el_presel and pass_2b:
-                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
-                sel_b_weight = weight_bSF_old
-                if presel_os:
-                    passed_channels.append(('ctr_old_el_presel2b', sel_b_weight, leps.iso, jets.old, taus.presel))
-                else:
-                    passed_channels.append(('ctr_old_el_presel2b_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
-
-            # presel alliso
-            if pass_old_mu_presel_alliso:
-                presel_os = taus.presel_alliso[0][2] * ev.lep_alliso_id[0] < 0
-                sel_b_weight = weight_bSF_old_alliso
-                if presel_os:
-                    passed_channels.append(('ctr_old_mu_presel_alliso', sel_b_weight, leps.alliso, jets.old_alliso, taus.presel_alliso))
-                else:
-                    passed_channels.append(('ctr_old_mu_presel_alliso_ss', sel_b_weight, leps.alliso, jets.old_alliso, taus.presel_alliso))
-
-            if pass_old_el_presel_alliso:
-                presel_os = taus.presel_alliso[0][2] * ev.lep_alliso_id[0] < 0
-                sel_b_weight = weight_bSF_old_alliso
-                if presel_os:
-                    passed_channels.append(('ctr_old_el_presel_alliso', sel_b_weight, leps.alliso, jets.old_alliso, taus.presel_alliso))
-                else:
-                    passed_channels.append(('ctr_old_el_presel_alliso_ss', sel_b_weight, leps.alliso, jets.old_alliso, taus.presel_alliso))
-
-            # VLoose alliso
-            if pass_old_mu_sel_Vloose_alliso:
-                presel_os = taus.oldVloose[0][2] * ev.lep_alliso_id[0] < 0
-                sel_b_weight = weight_bSF_old_alliso
-                if presel_os:
-                    passed_channels.append(('ctr_old_mu_selVloose_alliso', sel_b_weight, leps.alliso, jets.old_alliso, taus.oldVloose))
-                else:
-                    passed_channels.append(('ctr_old_mu_selVloose_alliso_ss', sel_b_weight, leps.alliso, jets.old_alliso, taus.oldVloose))
-
-            if pass_old_el_sel_Vloose_alliso:
-                presel_os = taus.oldVloose[0][2] * ev.lep_alliso_id[0] < 0
-                sel_b_weight = weight_bSF_old_alliso
-                if presel_os:
-                    passed_channels.append(('ctr_old_el_selVloose_alliso', sel_b_weight, leps.alliso, jets.old_alliso, taus.oldVloose))
-                else:
-                    passed_channels.append(('ctr_old_el_selVloose_alliso_ss', sel_b_weight, leps.alliso, jets.old_alliso, taus.oldVloose))
-
-            #pass_single_lep_presel = large_met and has_3jets and has_bjets and (pass_el or pass_mu) #and os_lep_med_tau
-            #pass_single_lep_sel = pass_single_lep_presel and os_lep_med_tau
-            #if pass_mu and old_jet_sel and met_pt > 40 and len(taus.old) > 0:
-            if pass_old_mu_sel:
-                # actually I should add ev.lep_p4[0].pt() > 27
-                old_os = taus.old[0][2] * ev.lep_id[0] < 0
-                sel_b_weight = weight_bSF_old
-                if old_os:
-                    passed_channels.append(('ctr_old_mu_sel', sel_b_weight, leps.iso, jets.old, taus.old))
-                    if large_lj:
-                        passed_channels.append(('ctr_old_mu_sel_ljout', sel_b_weight, leps.iso, jets.old, taus.old))
-                    else:
-                        passed_channels.append(('ctr_old_mu_sel_lj', sel_b_weight, leps.iso, jets.old, taus.old))
-                else:
-                    passed_channels.append(('ctr_old_mu_sel_ss', sel_b_weight, leps.iso, jets.old, taus.old))
-                    if large_lj:
-                        passed_channels.append(('ctr_old_mu_sel_ljout_ss', sel_b_weight, leps.iso, jets.old, taus.old))
-                    else:
-                        passed_channels.append(('ctr_old_mu_sel_lj_ss', sel_b_weight, leps.iso, jets.old, taus.old))
-
-            if pass_old_mu_sel_Vloose:
-                # actually I should add ev.lep_p4[0].pt() > 27
-                old_os = taus.oldVloose[0][2] * ev.lep_id[0] < 0
-                sel_b_weight = weight_bSF_old
-                if old_os:
-                    passed_channels.append(('ctr_old_mu_selVloose', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                    if large_lj:
-                        passed_channels.append(('ctr_old_mu_selVloose_ljout', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                    else:
-                        passed_channels.append(('ctr_old_mu_selVloose_lj', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                else:
-                    passed_channels.append(('ctr_old_mu_selVloose_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                    if large_lj:
-                        passed_channels.append(('ctr_old_mu_selVloose_ljout_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                    else:
-                        passed_channels.append(('ctr_old_mu_selVloose_lj_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-
-            if pass_old_el_sel_Vloose:
-                # actually I should add ev.lep_p4[0].pt() > 27
-                old_os = taus.oldVloose[0][2] * ev.lep_id[0] < 0
-                sel_b_weight = weight_bSF_old
-                if old_os:
-                    passed_channels.append(('ctr_old_el_selVloose', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                    if large_lj:
-                        passed_channels.append(('ctr_old_el_selVloose_ljout', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                    else:
-                        passed_channels.append(('ctr_old_el_selVloose_lj', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                else:
-                    passed_channels.append(('ctr_old_el_selVloose_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                    if large_lj:
-                        passed_channels.append(('ctr_old_el_selVloose_ljout_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-                    else:
-                        passed_channels.append(('ctr_old_el_selVloose_lj_ss', sel_b_weight, leps.iso, jets.old, taus.oldVloose))
-
-            if pass_old_mu_sel and tauSign3:
-                old_os = taus.old[0][2] * ev.lep_id[0] < 0
-                sel_b_weight = weight_bSF_old
-                if old_os:
-                    passed_channels.append(('ctr_old_mu_sel_tauSign3',    sel_b_weight, leps.iso, jets.old, taus.old))
-                else:
-                    passed_channels.append(('ctr_old_mu_sel_tauSign3_ss', sel_b_weight, leps.iso, jets.old, taus.old))
-
-            if pass_old_el_presel:
-                presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
-                sel_b_weight = weight_bSF_old
-                if presel_os:
-                    passed_channels.append(('ctr_old_el_presel', sel_b_weight, leps.iso, jets.old, taus.presel))
-                else:
-                    passed_channels.append(('ctr_old_el_presel_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
-
-            if pass_old_el_sel:
-                # actually I should add ev.lep_p4[0].pt() > 27
-                old_os = taus.old[0][2] * ev.lep_id[0] < 0
-                sel_b_weight = weight_bSF_old
-                if old_os:
-                    passed_channels.append(('ctr_old_el_sel', sel_b_weight, leps.iso, jets.old, taus.old))
-                    if large_lj:
-                        passed_channels.append(('ctr_old_el_sel_ljout', sel_b_weight, leps.iso, jets.old, taus.old))
-                    else:
-                        passed_channels.append(('ctr_old_el_sel_lj', sel_b_weight, leps.iso, jets.old, taus.old))
-                else:
-                    passed_channels.append(('ctr_old_el_sel_ss', sel_b_weight, leps.iso, jets.old, taus.old))
-                    if large_lj:
-                        passed_channels.append(('ctr_old_el_sel_ljout_ss', sel_b_weight, leps.iso, jets.old, taus.old))
-                    else:
-                        passed_channels.append(('ctr_old_el_sel_lj_ss', sel_b_weight, leps.iso, jets.old, taus.old))
 
             # SAVE SELECTION, objects and weights
 
-            selection_stage[0] = 10
+            selection_stage[0] = channel_stage
 
             # objects
             selection_objects = leps.iso, jets.old, taus.old
@@ -3719,6 +3552,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             event_met.SetPy(met_y_prop)
 
         ttree_out.Fill()
+
+
+
+
 
         if save_weights:
           #weight_bSF = 1.
