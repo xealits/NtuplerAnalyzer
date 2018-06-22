@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 from os import environ
 from array import array
@@ -1489,7 +1490,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 record distr-s for each
         '''
 
-        #if iev > 10000: break
+        if iev > 10000: break
         control_counters.Fill(0)
 
         for vector_branch in all_vector_branches:
@@ -3488,6 +3489,8 @@ def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19252
     print " OLD_MINIAOD_JETS DO_W_STITCHING ALL_JETS with_bSF"
     print OLD_MINIAOD_JETS, DO_W_STITCHING, ALL_JETS, with_bSF
 
+    start_time = datetime.now()
+
     input_tfile = TFile(input_filename)
     tree = input_tfile.Get('ntupler/reduced_ttree')
 
@@ -3535,6 +3538,7 @@ def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19252
 
     #dtag = input_filename.split('/')[-1].split('.')[0]
     #logger.write("dtag = " + dtag)
+    logger.write("%s\n" % str(start_time))
     logger.write("input file = %s\n" % input_filename)
     logger.write("output dir = %s\n" % outdir)
     #f = TFile('outdir/v12.3/merged-sets/MC2016_Summer16_TTJets_powheg.root')
@@ -3594,6 +3598,8 @@ def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19252
     control_counters.Write()
 
     fout.Write()
+
+    logger.write("time elapsed %s\n" % str(datetime.now() - start_time))
 
     ##
     #print "trying to exit without segfaults"
