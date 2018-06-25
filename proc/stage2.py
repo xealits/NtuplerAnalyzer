@@ -21,15 +21,23 @@ TAUS_PT_CUT = 30.
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el):
     return pass_mu
 
-def passes_muon_selection(passed_triggers, jets, taus, proc_met):
+def passes_muon_selection(passed_triggers, leps, jets, taus, proc_met):
     channel_stage = 0
     pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el = passed_triggers
 
     old_jet_sel = len(jets.medium) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 2
-    pass_old_mu_presel = pass_mu and old_jet_sel and len(taus.candidates) > 0
+    pass_old_mu_presel    = pass_mu and old_jet_sel and len(taus.candidates) > 0
+    pass_old_mu_presel_os = pass_old_mu_presel and leps[4][0] * taus.candidates[0][2] < 0
     pass_old_mu_sel    = pass_mu and old_jet_sel and len(taus.medium) > 0
+    pass_old_mu_sel_os = pass_old_mu_sel and leps[4][0] * taus.medium[0][2] < 0
+    #lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = leps
+    # taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
-    if pass_old_mu_sel:
+    if pass_old_mu_sel_os:
+        channel_stage = 5
+    elif pass_old_mu_sel:
+        channel_stage = 4
+    elif pass_old_mu_presel_os:
         channel_stage = 3
     elif pass_old_mu_presel:
         channel_stage = 2
@@ -1430,20 +1438,27 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     LorentzVector_Class = LorentzVector('ROOT::Math::PxPyPzE4D<double>')
     # vector of these for particles
     ROOT.gROOT.ProcessLine("typedef std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >> LorentzVectorS;")
+    ROOT.gROOT.ProcessLine("typedef std::vector<int> ObjectIDs;")
 
     # met lorentzvector
     event_met = LorentzVector_Class(0., 0., 0., 0.)
     ttree_out.Branch("event_met", event_met)
 
-    all_vector_branches = []
+    all_vector_branches = [] # for resetting them on each event
 
     event_leptons = ROOT.LorentzVectorS()
     ttree_out.Branch("event_leptons", event_leptons)
     all_vector_branches.append(event_leptons)
+    event_leptons_ids = ROOT.ObjectIDs()
+    ttree_out.Branch("event_leptons_ids", event_leptons_ids)
+    all_vector_branches.append(event_leptons_ids)
 
     event_taus = ROOT.LorentzVectorS()
     ttree_out.Branch("event_taus", event_taus)
     all_vector_branches.append(event_taus)
+    event_taus_ids = ROOT.ObjectIDs()
+    ttree_out.Branch("event_taus_ids", event_taus_ids)
+    all_vector_branches.append(event_taus_ids)
 
     event_taus_l = ROOT.LorentzVectorS()
     ttree_out.Branch("event_taus_l", event_taus_l)
@@ -1490,7 +1505,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 record distr-s for each
         '''
 
-        if iev > 10000: break
+        #if iev > 10000: break
         control_counters.Fill(0)
 
         for vector_branch in all_vector_branches:
@@ -3121,7 +3136,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
 
             # final CHANNEL SELECTION decision
-            channel_stage = PASSES_CHANNEL(passed_triggers, jets, taus, proc_met)
+            channel_stage = PASSES_CHANNEL(passed_triggers, leps, jets, taus, proc_met)
             if channel_stage < 1:
                 continue
 
@@ -3131,9 +3146,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             selection_stage[0] = channel_stage
 
             # objects
-            selection_objects = leps, jets, taus.medium
+            #selection_objects = leps, jets, taus.medium
             selection_requires_b = True
-            sel_leps, sel_jets, sel_taus = selection_objects
+            sel_leps, sel_jets, sel_taus = leps, jets, taus.medium
             #for chan_i, (chan, apply_bSF, sel_leps, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
 
             '''
@@ -3156,8 +3171,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             '''
 
             lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = sel_leps
-            for p4 in lep_p4:
-                event_leptons.push_back(p4)
+            for i, p4 in enumerate(lep_p4):
+                event_leptons    .push_back(p4)
+                event_leptons_ids.push_back(lep_id[i])
 
             # if sel_jets.medium:
             #     bMjet0_pt = sel_jets.medium[0][0].pt() * sel_jets.medium[0][1]
@@ -3182,8 +3198,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 event_jets_l.push_back(corrected_jet_p4)
 
             # taus
+            # taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
             for tau in sel_taus:
-                event_taus.push_back(tau[0] * tau[1])
+                event_taus    .push_back(tau[0] * tau[1])
+                event_taus_ids.push_back(tau[2])
 
 
             # also if there are taus and it's tt_lj than try to specify the origin of the fake
