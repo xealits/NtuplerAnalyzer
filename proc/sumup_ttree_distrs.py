@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('draw_com', type=str, help='Draw("??")')
 parser.add_argument('--cond-com', type=str, default="", help='Draw("", "??")')
+parser.add_argument('--ttree',    type=str, default="ntupler/reduced_ttree", help='path to the TTree in the file')
 parser.add_argument('--histo-name',  type=str, default="out_histo", help='the ROOTName for output')
 parser.add_argument('--histo-range', type=str, default=None, help='optionally set the range')
 parser.add_argument('--histo-color', type=str, default=None, help='optional rgb color, like `255,255,255`')
@@ -101,7 +102,7 @@ for filename in input_files:
     logging.debug(filename)
 
     tfile = TFile(filename)
-    ttree = tfile.Get("ntupler/reduced_ttree")
+    ttree = tfile.Get(args.ttree)
 
     # Draw the file and sum up
     # 

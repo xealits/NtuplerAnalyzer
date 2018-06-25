@@ -2926,6 +2926,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         syst_weights_nominal = [weight, weight_pu, 1., 1.]
         syst_weights = {} # {'NOMINAL': syst_weights_nominal}
+        syst_objects = {'NOMINAL': [jets_nom, taus_nom, proc_met]}
+        '''
         # data and tt systematic datasets have all nominal systematic variations -- they are a systematic themselves
         if isTT_systematic:
             syst_objects = {isTT_systematic: [jets_nom, taus_nom, proc_met]}
@@ -2979,6 +2981,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         for name, _ in syst_weights.items():
             if name not in requested_systematics:
                 syst_weights.pop(name)
+        '''
 
         #print syst_objects.keys()
         #print syst_weights.keys()
@@ -2991,446 +2994,447 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         control_counters.Fill(53)
 
-        for sys_i, (sys_name, (jets, taus, proc_met)) in enumerate(syst_objects.items()):
-            #control_counters.Fill(4 + sys_i)
-            '''
-            1) for each variation of objects check if which channels pass
-            2) then in the recording make a special section to fill histos with systematic weights
-            3) for the rest use only the nominal weights
+        #for sys_i, (sys_name, (jets, taus, proc_met)) in enumerate(syst_objects.items()):
+        sys_i, (sys_name, (jets, taus, proc_met)) = 0, syst_objects.items()[0]
+        #control_counters.Fill(4 + sys_i)
+        '''
+        1) for each variation of objects check if which channels pass
+        2) then in the recording make a special section to fill histos with systematic weights
+        3) for the rest use only the nominal weights
 
-            from the object I only need the weight of bSF?
-            routine to record a histo with all sys weights?
-            and to create that histo with all sys weights?
-            -- already the histos are created only for certain systs
-            '''
-            # -- I miss the bSF weight
-            # TODO: in principle it should be added according to the b-s used in the selection and passed down to the channel
-            #       notice the b SF are calculated in old scheme, for medium jets only
-            #       so for now I'll use this weight everywhere
-            weight_bSF = 1.
-            #sys_weight_min = weight * weight_bSF_min * weight_PU * weight_top_pt
-            # pass reco selections
-
-            # all the channel selections follow
-            passed_channels = []
-
-            if sys_i == 0:
-                control_counters.Fill(100)
-
-            if pass_mu:
-                control_counters.Fill(101)
-
-            if pass_el:
-                control_counters.Fill(102)
-
-            if pass_elmu:
-                control_counters.Fill(103)
-
-            if pass_elmu_el:
-                control_counters.Fill(104)
-
-            if pass_mu_all:
-                control_counters.Fill(105)
-
-            if pass_el_all:
-                control_counters.Fill(106)
-
-            #has_lowest_2L1M = len(jets.lowest.medium) > 0 and (len(jets.lowest.medium) + len(jets.lowest.loose)) > 1 
-
-            weight_bSF_lowest = 1.
-            # p4, energy factor, b SF weight, ID lev
-            #for _, _, jet_weight, _, _, _, _ in jets.lowest.medium + jets.lowest.loose + jets.lowest.rest:
-            #    weight_bSF_lowest *= jet_weight
-
-            weight_bSF_old = 1.
-            for _, _, jet_weight, _, _, _, _ in jets.medium + jets.loose + jets.rest:
-                weight_bSF_old *= jet_weight
-
-            weight_bSF_old_alliso = 1.
-            for _, _, jet_weight, _, _, _, _ in jets.medium + jets.loose + jets.rest:
-                weight_bSF_old_alliso *= jet_weight
-
-
-            # separate b and tau tags
-            old_jet_sel = len(jets.medium) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 2
-
-            pass_2b = len(jets.medium) > 1
-
-            old_jet_sel_alliso = len(jets.medium) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 2
-
-            if old_jet_sel:
-                control_counters.Fill(111)
-
-            if len(taus.medium) > 0:
-                control_counters.Fill(112)
-
-            if pass_mu and old_jet_sel:
-                control_counters.Fill(203)
-
-            if pass_el and old_jet_sel:
-                control_counters.Fill(303)
-
-            if pass_mu and old_jet_sel and len(taus.medium) > 0:
-                control_counters.Fill(304)
-
-            if pass_el and old_jet_sel and len(taus.medium) > 0:
-                control_counters.Fill(304)
-
-            # 3 jets (2b and 1 tau) and 1 b-tagged
-            # TODO: compare with previous result with only 2 jets and 1 b-tagged -- check njets distrs
-            pass_old_mu_sel = pass_mu and old_jet_sel and len(taus.medium) > 0 # and no met cut
-            pass_old_el_sel = pass_el and old_jet_sel and len(taus.medium) > 0 # and no met cut
-
-            pass_old_mu_presel = pass_mu and old_jet_sel and len(taus.candidates) > 0
-            pass_old_el_presel = pass_el and old_jet_sel and len(taus.candidates) > 0
-            pass_old_lep_presel = pass_old_mu_presel or pass_old_el_presel
-
-            pass_elmu_close = pass_elmu and (len(jets.medium) + len(jets.taumatched[0])) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 1
-
-            pass_elmu_el_close = pass_elmu_el and (len(jets.medium) + len(jets.taumatched[0])) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 1
-
-            requires_lj = pass_elmu_close or pass_old_lep_presel or pass_old_mu_sel or pass_old_el_sel
-            if requires_lj:
-                # all jets, without regard to tau in the event go into the calculation
-                # (taumatched jets go too)
-                with_all_permutation_masses = True
-                # order: not-b-taged, b-taged
-                # only medium b-tags p8 p9
-                b_cand_jets     = jets.medium + jets.taumatched[0]
-                light_cand_jets = jets.rest + jets.loose + jets.taumatched[1]
-                lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, light_cand_jets, b_cand_jets, with_all_permutation_masses, isMC)
-                # medium and loose b-tags
-                # but tau-matches are done to Medium b!
-                #lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.rest + jets.taumatched[1], jets.medium + jets.loose + jets.taumatched[0], with_all_permutation_masses, isMC)
-                n_bjets_used_in_lj = len(b_cand_jets)
-                lj_cut = 60.
-                large_lj = lj_var > lj_cut
-
-                # for tt_lj MC truth find the jets in these groups
-                if (abs(ev.gen_t_w_decay_id) == 13 or abs(ev.gen_t_w_decay_id) == 11) and abs(ev.gen_tb_w_decay_id) == 1:
-                    # in tb the jets' genmatches are -6 (b) and -5 (w)
-                    propper_b = -6
-                    propper_w = -5
-                elif abs(ev.gen_t_w_decay_id) == 1 and (abs(ev.gen_tb_w_decay_id) == 13 or abs(ev.gen_tb_w_decay_id) == 11):
-                    propper_b = 6
-                    propper_w = 5
-                else:
-                    propper_b = 0
-                    propper_w = 0
-
-                jets_input_has = 0
-                #3*(lj_b_gen == propper_b) + (lj_w1_gen == propper_w) + (lj_w2_gen == propper_w)
-                #closest_pair_gens = (ev.jet_matching_gen[light_jets[i][6]], ev.jet_matching_gen[light_jets[u][6]])
-                if propper_b:
-                    for b_cand in b_cand_jets:
-                        if b_cand[6] == propper_b:
-                            jets_input_has += 3
-                            break
-
-                    found_light = False
-                    for cand in light_cand_jets:
-                        if cand[6] == propper_w:
-                            jets_input_has += 1
-                            if found_light: break
-                            found_light = True
-
-
-            # final CHANNEL SELECTION decision
-            channel_stage = PASSES_CHANNEL(passed_triggers, leps, jets, taus, proc_met)
-            if channel_stage < 1:
-                continue
-
-
-            # SAVE SELECTION, objects and weights
-
-            selection_stage[0] = channel_stage
-
-            # objects
-            #selection_objects = leps, jets, taus.medium
-            selection_requires_b = True
-            sel_leps, sel_jets, sel_taus = leps, jets, taus.medium
-            #for chan_i, (chan, apply_bSF, sel_leps, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
-
-            '''
-            leptons = ROOT.LorentzVectorS()
-            ttree_out.Branch("leptons", leptons)
-
-            taus = ROOT.LorentzVectorS()
-            ttree_out.Branch("taus", taus)
-            taus_l = ROOT.LorentzVectorS()
-            ttree_out.Branch("taus_l", taus_l)
-
-            jets_b = ROOT.LorentzVectorS()
-            ttree_out.Branch("jets_b", jets_b)
-            jets_r = ROOT.LorentzVectorS()
-            ttree_out.Branch("jets_r", jets_r)
-            jets_l = ROOT.LorentzVectorS()
-            ttree_out.Branch("jets_l", jets_l)
-            jets_t = ROOT.LorentzVectorS()
-            ttree_out.Branch("jets_t", jets_t)
-            '''
-
-            lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = sel_leps
-            for i, p4 in enumerate(lep_p4):
-                event_leptons    .push_back(p4)
-                event_leptons_ids.push_back(lep_id[i])
-
-            # if sel_jets.medium:
-            #     bMjet0_pt = sel_jets.medium[0][0].pt() * sel_jets.medium[0][1]
-            #  n_rest_jets   = len(sel_jets.rest) #  + len(sel_jets.taumatched[1])
-            #  #n_medium_jets = len(sel_jets.medium)
-            #  n_medium_jets = len(sel_jets.medium) # + len(sel_jets.taumatched[0])
-            #  n_loose_jets  = len(sel_jets.loose)
-            # jets_to_prop_met = sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1] + sel_jets.lepmatched if ALL_JETS else all_sel_jets
-            for jet in sel_jets.medium:
-                corrected_jet_p4 = jet[0] * jet[1]
-                event_jets_b.push_back(corrected_jet_p4)
-            for jet in sel_jets.rest + sel_jets.loose:
-                corrected_jet_p4 = jet[0] * jet[1]
-                event_jets_r.push_back(corrected_jet_p4)
-
-            for jet in sel_jets.taumatched[0] + sel_jets.taumatched[1]:
-                corrected_jet_p4 = jet[0] * jet[1]
-                event_jets_t.push_back(corrected_jet_p4)
-
-            for jet in sel_jets.lepmatched:
-                corrected_jet_p4 = jet[0] * jet[1]
-                event_jets_l.push_back(corrected_jet_p4)
-
-            # taus
-            # taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-            for tau in sel_taus:
-                event_taus    .push_back(tau[0] * tau[1])
-                event_taus_ids.push_back(tau[2])
-
-
-            # also if there are taus and it's tt_lj than try to specify the origin of the fake
-            # if it is required by the procs
-            if isTT and sel_taus and gen_proc_id[0] == genproc_tt_lj:
-
-                '''
-                # the 0 tau is used
-                # sadly root...
-                # I have to convert ALL lorentzvectors to TLorentzVectors to have convenient dR
-                tau_p4 = TLorentzVector(sel_taus[0][0].X(), sel_taus[0][0].Y(), sel_taus[0][0].Z(), sel_taus[0][0].T())
-                # all gen products are in
-                # gen_t_w1_final_p4s gen_t_w2_final_p4s gen_tb_w1_final_p4s gen_tb_w2_final_p4s
-                # gen_t_b_final_p4s gen_tb_b_final_p4s
-                # but neutrinos are also there the ID to check:
-                # gen_t_w1_final_pdgIds etc
-                gen_match_cut = 0.4
-                matched_w = False
-                for w_prod, w_prod_ID in zip(ev.gen_t_w1_final_p4s, ev.gen_t_w1_final_pdgIds) + zip(ev.gen_t_w2_final_p4s, ev.gen_t_w2_final_pdgIds) + \
-                                         zip(ev.gen_tb_w1_final_p4s, ev.gen_tb_w1_final_pdgIds) + zip(ev.gen_tb_w2_final_p4s, ev.gen_tb_w2_final_pdgIds):
-                    if abs(w_prod_ID) in (12, 14, 16):
-                        continue
-                    w_prod_p4 = TLorentzVector(w_prod.X(), w_prod.Y(), w_prod.Z(), w_prod.T())
-                    if w_prod_p4.DeltaR(tau_p4) < gen_match_cut:
-                        matched_w = True
-                        break
-
-                matched_b = False
-                for b_prod, b_prod_ID in zip(ev.gen_t_b_final_p4s, ev.gen_t_b_final_pdgIds) + zip(ev.gen_tb_b_final_p4s, ev.gen_tb_b_final_pdgIds):
-                    if abs(b_prod_ID) in (12, 14, 16):
-                        continue
-                    b_prod_p4 = TLorentzVector(b_prod.X(), b_prod.Y(), b_prod.Z(), b_prod.T())
-                    if b_prod_p4.DeltaR(tau_p4) < gen_match_cut:
-                        matched_b = True
-                        break
-                '''
-                # the same using genmatch info
-                tau_index = sel_taus[0][3]
-                gen_dR = ev.tau_matching_gen_dR[tau_index]
-                gen_id = ev.tau_matching_gen[tau_index]
-
-                matched_w = gen_dR < 0.3 and abs(gen_id) == 5
-                matched_b = gen_dR < 0.3 and abs(gen_id) == 6
-
-                if matched_w and matched_b:
-                    record_proc = 'tt_ljo'
-                    gen_proc_id[0] = genproc_tt_ljo
-                elif matched_w:
-                    record_proc = 'tt_ljw'
-                    gen_proc_id[0] = genproc_tt_ljw
-                elif matched_b:
-                    record_proc = 'tt_ljb'
-                    gen_proc_id[0] = genproc_tt_ljb
-
-            weight_bSF = weight_bSF_to_apply = 1.
-            # consider tau-matched jets too as in:
-            #old_jet_sel = (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
-            # -- TODO: by the way this is a weird part for b-tagging -- are there studies of b-taging for true taus?
-            for _, _, jet_weight, _, _, _, _ in sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
-                weight_bSF *= jet_weight
-            if selection_requires_b:
-                weight_bSF_to_apply = weight_bSF
-
-            #if roccor_factor != 1.:
-            #    lep_p4[0] *= roccor_factor
-            #    #lep_p4[0].SetPt(lep_p4.pt() * roccor_factor) # works only for 0
-            #    proc_met -= lep_p4[0] * (roccor_factor - 1.)
-            #    #met_x -=
-            #    #met_x -=  * (en_factor - 1.)
-
-            #control_counters.Fill(50 + 20*sys_i + 2*chan_i + 1)
-
-            #record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
-
-            # nominal systematics
-            weight_init, weight_PU, weight_top_pt, weight_th = syst_weights_nominal
-            nom_sys_weight            = weight_init * weight_th * weight_PU * weight_top_pt
-            nom_sys_weight_without_PU = weight_init * weight_th * weight_top_pt # for PU tests
-
-            event_weight[0] = nom_sys_weight * weight_bSF_to_apply
-
-
-            # propagation of corrections to met
-
-            met_x_prop_taus = proc_met.Px() #met_x
-            met_y_prop_taus = proc_met.Py() #met_y
-
-            met_x_prop_jets = proc_met.Px() # met_x
-            met_y_prop_jets = proc_met.Py() # met_y
-
-            met_x_prop = proc_met.Px() # met_x
-            met_y_prop = proc_met.Py() # met_y
-
-            # visible particles + met sum control
-            sum_jets_corr_X = 0.
-            sum_jets_corr_Y = 0.
-            sum_jets_init_X = 0.
-            sum_jets_init_Y = 0.
-            #
-            sum_tau_corr_X = 0.
-            sum_tau_corr_Y = 0.
-            sum_tau_init_X = 0.
-            sum_tau_init_Y = 0.
-
-            sum_tau_corr_pt = 0.
-            substitution_pt = 0.
-
-            # PROPAGATE tau and jet systematic variations to met
-            # 
-            # taus = [(p4, TES_factor, tau_pdgID)]
-            # nominal taus do have a factor
-            if isMC and sel_taus: # and 'TauES' in sys_name:
-                #try:
-                sum_tau_init = sel_taus[0][0]
-                sum_tau_corr = sel_taus[0][0] * sel_taus[0][1]
-                tau_cor = sel_taus[0][0] * (1. - sel_taus[0][1])
-                for tau in sel_taus[1:]:
-                    tau_cor += tau[0] * (1. - tau[1])
-                    sum_tau_init += tau[0]
-                    sum_tau_corr += tau[0] * tau[1]
-
-                sum_tau_corr_X = sum_tau_corr.Px()
-                sum_tau_corr_Y = sum_tau_corr.Py()
-                sum_tau_init_X = sum_tau_init.Px()
-                sum_tau_init_Y = sum_tau_init.Py()
-
-                sum_tau_corr_pt = tau_cor.pt()
-
-                #except IndexError:
-                #    print len(sel_taus), type(sel_taus)
-                #    print sel_taus
-                #    print len(sel_taus[0])
-                #    raise IndexError
-                met_x_prop_taus += tau_cor.X()
-                met_y_prop_taus += tau_cor.Y()
-                met_x_prop += tau_cor.X()
-                met_y_prop += tau_cor.Y()
-
-            ### and substitute the jet->tau in met p7 p9 -> 1) v25 p2_tt_jtau, 2) v25 p2_jes_recor
-            ## this works very strangely: data is shifted to high Mt?
-            ## but the study of jet/tau pt shows approximatly the same values in both MC and Data
-            if sel_taus and sel_taus[0][4] > -1:
-                # only first tau is taken
-                tau_index = sel_taus[0][3]
-                the_tau_p4 = sel_taus[0][0] * sel_taus[0][1]
-                tau_jet_index   = sel_taus[0][4]
-
-                # substitute the nominal jet
-                jer_factor = ev.jet_jer_factor[tau_jet_index] if isMC else 1.
-                #jes_factor = ev.jet_jes_recorrection[tau_jet_index]
-                #jes_uncorFactor = ev.jet_uncorrected_jecFactor[tau_jet_index]
-                en_factor = jer_factor # * jes_factor * jes_uncorFactor
-                the_jet_p4 = ev.jet_initial_p4[tau_jet_index] * en_factor #miniaod_jets[tau_jet_index]
-                #substitution = the_tau_p4 - the_jet_p4
-                # + what is to remove from met
-                # - what is to include in met
-                substitution = the_jet_p4 - the_tau_p4
-                substitution_pt = substitution.pt()
-                #met_x_prop += substitution.X()
-                #met_y_prop += substitution.Y()
-
-            # PROPAGATE jet correcions
-            all_sel_jets = sel_jets.medium + sel_jets.loose + sel_jets.rest
-            all_sel_jets_taumatched = sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]
-            jets_to_prop_met = sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1] + sel_jets.lepmatched if ALL_JETS else all_sel_jets
-            # propagate above
-            ## propagation of corrections of all jets
-            ## nominal jets have JER factor
-            #if isMC and jets_to_prop_met: # and ('JES' in sys_name or 'JER' in sys_name):
-            #    #try:
-            #    sum_jets_init = jets_to_prop_met[0][0]
-            #    sum_jets_corr = jets_to_prop_met[0][0] * jets_to_prop_met[0][1]
-            #    jet_cor       = jets_to_prop_met[0][0] * (1. - jets_to_prop_met[0][1])
-            #    #for jet in all_sel_jets[1:] + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
-            #    for jet in jets_to_prop_met[1:]:
-            #        jet_cor += jet[0] * (1. - jet[1])
-            #        sum_jets_init += jet[0]
-            #        sum_jets_corr += jet[0] * jet[1]
-
-            #    sum_jets_corr_X = sum_jets_corr.Px()
-            #    sum_jets_corr_Y = sum_jets_corr.Py()
-            #    sum_jets_init_X = sum_jets_init.Px()
-            #    sum_jets_init_Y = sum_jets_init.Py()
-
-            #    met_x_prop_jets += jet_cor.X()
-            #    met_y_prop_jets += jet_cor.Y()
-            #    met_x_prop += jet_cor.X()
-            #    met_y_prop += jet_cor.Y()
-            #    # met prop = met nom + nom - factor
-            #    # met prop + factor = met nom + nom
-
-            # control over "objects' met"
-            #all_sel_objects = LorentzVector(lep_p4[0].X(), lep_p4[0].Y(), lep_p4[0].Z(), lep_p4[0].T())
-            #ROOT.Math.LorentzVector('ROOT::Math::PxPyPzE4D<double>')(100.,0.,1.,200.)
-            all_sel_objects = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(0.,0.,0.,0.)
-            for lep in lep_p4:
-                all_sel_objects += lep
-            for tau in sel_taus:
-                all_sel_objects += tau[0] * tau[1]
-            for jet in all_sel_jets:
-                all_sel_objects += jet[0] * jet[1]
-
-            '''
-            Mt_lep_met_init = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), ev.met_init.Px(), ev.met_init.Py())
-            # at NOMINAL these two should be the same
-            # only systematic variations differ
-            Mt_lep_met         = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
-            if isMC:
-                Mt_lep_met_shifted = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop + 7.2, met_y_prop + 1.4)
+        from the object I only need the weight of bSF?
+        routine to record a histo with all sys weights?
+        and to create that histo with all sys weights?
+        -- already the histos are created only for certain systs
+        '''
+        # -- I miss the bSF weight
+        # TODO: in principle it should be added according to the b-s used in the selection and passed down to the channel
+        #       notice the b SF are calculated in old scheme, for medium jets only
+        #       so for now I'll use this weight everywhere
+        weight_bSF = 1.
+        #sys_weight_min = weight * weight_bSF_min * weight_PU * weight_top_pt
+        # pass reco selections
+
+        # all the channel selections follow
+        passed_channels = []
+
+        if sys_i == 0:
+            control_counters.Fill(100)
+
+        if pass_mu:
+            control_counters.Fill(101)
+
+        if pass_el:
+            control_counters.Fill(102)
+
+        if pass_elmu:
+            control_counters.Fill(103)
+
+        if pass_elmu_el:
+            control_counters.Fill(104)
+
+        if pass_mu_all:
+            control_counters.Fill(105)
+
+        if pass_el_all:
+            control_counters.Fill(106)
+
+        #has_lowest_2L1M = len(jets.lowest.medium) > 0 and (len(jets.lowest.medium) + len(jets.lowest.loose)) > 1 
+
+        weight_bSF_lowest = 1.
+        # p4, energy factor, b SF weight, ID lev
+        #for _, _, jet_weight, _, _, _, _ in jets.lowest.medium + jets.lowest.loose + jets.lowest.rest:
+        #    weight_bSF_lowest *= jet_weight
+
+        weight_bSF_old = 1.
+        for _, _, jet_weight, _, _, _, _ in jets.medium + jets.loose + jets.rest:
+            weight_bSF_old *= jet_weight
+
+        weight_bSF_old_alliso = 1.
+        for _, _, jet_weight, _, _, _, _ in jets.medium + jets.loose + jets.rest:
+            weight_bSF_old_alliso *= jet_weight
+
+
+        # separate b and tau tags
+        old_jet_sel = len(jets.medium) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 2
+
+        pass_2b = len(jets.medium) > 1
+
+        old_jet_sel_alliso = len(jets.medium) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 2
+
+        if old_jet_sel:
+            control_counters.Fill(111)
+
+        if len(taus.medium) > 0:
+            control_counters.Fill(112)
+
+        if pass_mu and old_jet_sel:
+            control_counters.Fill(203)
+
+        if pass_el and old_jet_sel:
+            control_counters.Fill(303)
+
+        if pass_mu and old_jet_sel and len(taus.medium) > 0:
+            control_counters.Fill(304)
+
+        if pass_el and old_jet_sel and len(taus.medium) > 0:
+            control_counters.Fill(304)
+
+        # 3 jets (2b and 1 tau) and 1 b-tagged
+        # TODO: compare with previous result with only 2 jets and 1 b-tagged -- check njets distrs
+        pass_old_mu_sel = pass_mu and old_jet_sel and len(taus.medium) > 0 # and no met cut
+        pass_old_el_sel = pass_el and old_jet_sel and len(taus.medium) > 0 # and no met cut
+
+        pass_old_mu_presel = pass_mu and old_jet_sel and len(taus.candidates) > 0
+        pass_old_el_presel = pass_el and old_jet_sel and len(taus.candidates) > 0
+        pass_old_lep_presel = pass_old_mu_presel or pass_old_el_presel
+
+        pass_elmu_close = pass_elmu and (len(jets.medium) + len(jets.taumatched[0])) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 1
+
+        pass_elmu_el_close = pass_elmu_el and (len(jets.medium) + len(jets.taumatched[0])) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 1
+
+        requires_lj = pass_elmu_close or pass_old_lep_presel or pass_old_mu_sel or pass_old_el_sel
+        if requires_lj:
+            # all jets, without regard to tau in the event go into the calculation
+            # (taumatched jets go too)
+            with_all_permutation_masses = True
+            # order: not-b-taged, b-taged
+            # only medium b-tags p8 p9
+            b_cand_jets     = jets.medium + jets.taumatched[0]
+            light_cand_jets = jets.rest + jets.loose + jets.taumatched[1]
+            lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, light_cand_jets, b_cand_jets, with_all_permutation_masses, isMC)
+            # medium and loose b-tags
+            # but tau-matches are done to Medium b!
+            #lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.rest + jets.taumatched[1], jets.medium + jets.loose + jets.taumatched[0], with_all_permutation_masses, isMC)
+            n_bjets_used_in_lj = len(b_cand_jets)
+            lj_cut = 60.
+            large_lj = lj_var > lj_cut
+
+            # for tt_lj MC truth find the jets in these groups
+            if (abs(ev.gen_t_w_decay_id) == 13 or abs(ev.gen_t_w_decay_id) == 11) and abs(ev.gen_tb_w_decay_id) == 1:
+                # in tb the jets' genmatches are -6 (b) and -5 (w)
+                propper_b = -6
+                propper_w = -5
+            elif abs(ev.gen_t_w_decay_id) == 1 and (abs(ev.gen_tb_w_decay_id) == 13 or abs(ev.gen_tb_w_decay_id) == 11):
+                propper_b = 6
+                propper_w = 5
             else:
-                 Mt_lep_met_shifted = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
-            Mt_lep_met_corr    = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
-            # test on Mt fluctuation in mu_sel
-            #if Mt_lep_met < 1.:
-            #    continue
-            Mt_lep_met_sublep = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_lepsub.Px(), proc_met_lepsub.Py())
+                propper_b = 0
+                propper_w = 0
 
-            met_pt = TMath.Sqrt(met_x_prop*met_x_prop + met_y_prop*met_y_prop)
-            met_pt_taus = TMath.Sqrt(met_x_prop_taus*met_x_prop_taus + met_y_prop_taus*met_y_prop_taus)
-            met_pt_jets = TMath.Sqrt(met_x_prop_jets*met_x_prop_jets + met_y_prop_jets*met_y_prop_jets)
-            met_pt_init = proc_met.pt() # TMath.Sqrt(met_x*met_x + met_y*met_y)
+            jets_input_has = 0
+            #3*(lj_b_gen == propper_b) + (lj_w1_gen == propper_w) + (lj_w2_gen == propper_w)
+            #closest_pair_gens = (ev.jet_matching_gen[light_jets[i][6]], ev.jet_matching_gen[light_jets[u][6]])
+            if propper_b:
+                for b_cand in b_cand_jets:
+                    if b_cand[6] == propper_b:
+                        jets_input_has += 3
+                        break
 
-            met_cancellation_x = met_x_prop + all_sel_objects.Px()
-            met_cancellation_y = met_y_prop + all_sel_objects.Py()
-            met_cancelation = TMath.Sqrt(met_cancellation_x*met_cancellation_x + met_cancellation_y*met_cancellation_y)
+                found_light = False
+                for cand in light_cand_jets:
+                    if cand[6] == propper_w:
+                        jets_input_has += 1
+                        if found_light: break
+                        found_light = True
+
+
+        # final CHANNEL SELECTION decision
+        channel_stage = PASSES_CHANNEL(passed_triggers, leps, jets, taus, proc_met)
+        if channel_stage < 1:
+            continue
+
+
+        # SAVE SELECTION, objects and weights
+
+        selection_stage[0] = channel_stage
+
+        # objects
+        #selection_objects = leps, jets, taus.medium
+        selection_requires_b = True
+        sel_leps, sel_jets, sel_taus = leps, jets, taus.medium
+        #for chan_i, (chan, apply_bSF, sel_leps, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
+
+        '''
+        leptons = ROOT.LorentzVectorS()
+        ttree_out.Branch("leptons", leptons)
+
+        taus = ROOT.LorentzVectorS()
+        ttree_out.Branch("taus", taus)
+        taus_l = ROOT.LorentzVectorS()
+        ttree_out.Branch("taus_l", taus_l)
+
+        jets_b = ROOT.LorentzVectorS()
+        ttree_out.Branch("jets_b", jets_b)
+        jets_r = ROOT.LorentzVectorS()
+        ttree_out.Branch("jets_r", jets_r)
+        jets_l = ROOT.LorentzVectorS()
+        ttree_out.Branch("jets_l", jets_l)
+        jets_t = ROOT.LorentzVectorS()
+        ttree_out.Branch("jets_t", jets_t)
+        '''
+
+        lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = sel_leps
+        for i, p4 in enumerate(lep_p4):
+            event_leptons    .push_back(p4)
+            event_leptons_ids.push_back(lep_id[i])
+
+        # if sel_jets.medium:
+        #     bMjet0_pt = sel_jets.medium[0][0].pt() * sel_jets.medium[0][1]
+        #  n_rest_jets   = len(sel_jets.rest) #  + len(sel_jets.taumatched[1])
+        #  #n_medium_jets = len(sel_jets.medium)
+        #  n_medium_jets = len(sel_jets.medium) # + len(sel_jets.taumatched[0])
+        #  n_loose_jets  = len(sel_jets.loose)
+        # jets_to_prop_met = sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1] + sel_jets.lepmatched if ALL_JETS else all_sel_jets
+        for jet in sel_jets.medium:
+            corrected_jet_p4 = jet[0] * jet[1]
+            event_jets_b.push_back(corrected_jet_p4)
+        for jet in sel_jets.rest + sel_jets.loose:
+            corrected_jet_p4 = jet[0] * jet[1]
+            event_jets_r.push_back(corrected_jet_p4)
+
+        for jet in sel_jets.taumatched[0] + sel_jets.taumatched[1]:
+            corrected_jet_p4 = jet[0] * jet[1]
+            event_jets_t.push_back(corrected_jet_p4)
+
+        for jet in sel_jets.lepmatched:
+            corrected_jet_p4 = jet[0] * jet[1]
+            event_jets_l.push_back(corrected_jet_p4)
+
+        # taus
+        # taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+        for tau in sel_taus:
+            event_taus    .push_back(tau[0] * tau[1])
+            event_taus_ids.push_back(tau[2])
+
+
+        # also if there are taus and it's tt_lj than try to specify the origin of the fake
+        # if it is required by the procs
+        if isTT and sel_taus and gen_proc_id[0] == genproc_tt_lj:
+
             '''
+            # the 0 tau is used
+            # sadly root...
+            # I have to convert ALL lorentzvectors to TLorentzVectors to have convenient dR
+            tau_p4 = TLorentzVector(sel_taus[0][0].X(), sel_taus[0][0].Y(), sel_taus[0][0].Z(), sel_taus[0][0].T())
+            # all gen products are in
+            # gen_t_w1_final_p4s gen_t_w2_final_p4s gen_tb_w1_final_p4s gen_tb_w2_final_p4s
+            # gen_t_b_final_p4s gen_tb_b_final_p4s
+            # but neutrinos are also there the ID to check:
+            # gen_t_w1_final_pdgIds etc
+            gen_match_cut = 0.4
+            matched_w = False
+            for w_prod, w_prod_ID in zip(ev.gen_t_w1_final_p4s, ev.gen_t_w1_final_pdgIds) + zip(ev.gen_t_w2_final_p4s, ev.gen_t_w2_final_pdgIds) + \
+                                     zip(ev.gen_tb_w1_final_p4s, ev.gen_tb_w1_final_pdgIds) + zip(ev.gen_tb_w2_final_p4s, ev.gen_tb_w2_final_pdgIds):
+                if abs(w_prod_ID) in (12, 14, 16):
+                    continue
+                w_prod_p4 = TLorentzVector(w_prod.X(), w_prod.Y(), w_prod.Z(), w_prod.T())
+                if w_prod_p4.DeltaR(tau_p4) < gen_match_cut:
+                    matched_w = True
+                    break
 
-            event_met.SetPx(met_x_prop)
-            event_met.SetPy(met_y_prop)
+            matched_b = False
+            for b_prod, b_prod_ID in zip(ev.gen_t_b_final_p4s, ev.gen_t_b_final_pdgIds) + zip(ev.gen_tb_b_final_p4s, ev.gen_tb_b_final_pdgIds):
+                if abs(b_prod_ID) in (12, 14, 16):
+                    continue
+                b_prod_p4 = TLorentzVector(b_prod.X(), b_prod.Y(), b_prod.Z(), b_prod.T())
+                if b_prod_p4.DeltaR(tau_p4) < gen_match_cut:
+                    matched_b = True
+                    break
+            '''
+            # the same using genmatch info
+            tau_index = sel_taus[0][3]
+            gen_dR = ev.tau_matching_gen_dR[tau_index]
+            gen_id = ev.tau_matching_gen[tau_index]
+
+            matched_w = gen_dR < 0.3 and abs(gen_id) == 5
+            matched_b = gen_dR < 0.3 and abs(gen_id) == 6
+
+            if matched_w and matched_b:
+                record_proc = 'tt_ljo'
+                gen_proc_id[0] = genproc_tt_ljo
+            elif matched_w:
+                record_proc = 'tt_ljw'
+                gen_proc_id[0] = genproc_tt_ljw
+            elif matched_b:
+                record_proc = 'tt_ljb'
+                gen_proc_id[0] = genproc_tt_ljb
+
+        weight_bSF = weight_bSF_to_apply = 1.
+        # consider tau-matched jets too as in:
+        #old_jet_sel = (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
+        # -- TODO: by the way this is a weird part for b-tagging -- are there studies of b-taging for true taus?
+        for _, _, jet_weight, _, _, _, _ in sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
+            weight_bSF *= jet_weight
+        if selection_requires_b:
+            weight_bSF_to_apply = weight_bSF
+
+        #if roccor_factor != 1.:
+        #    lep_p4[0] *= roccor_factor
+        #    #lep_p4[0].SetPt(lep_p4.pt() * roccor_factor) # works only for 0
+        #    proc_met -= lep_p4[0] * (roccor_factor - 1.)
+        #    #met_x -=
+        #    #met_x -=  * (en_factor - 1.)
+
+        #control_counters.Fill(50 + 20*sys_i + 2*chan_i + 1)
+
+        #record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
+
+        # nominal systematics
+        weight_init, weight_PU, weight_top_pt, weight_th = syst_weights_nominal
+        nom_sys_weight            = weight_init * weight_th * weight_PU * weight_top_pt
+        nom_sys_weight_without_PU = weight_init * weight_th * weight_top_pt # for PU tests
+
+        event_weight[0] = nom_sys_weight * weight_bSF_to_apply
+
+
+        # propagation of corrections to met
+
+        met_x_prop_taus = proc_met.Px() #met_x
+        met_y_prop_taus = proc_met.Py() #met_y
+
+        met_x_prop_jets = proc_met.Px() # met_x
+        met_y_prop_jets = proc_met.Py() # met_y
+
+        met_x_prop = proc_met.Px() # met_x
+        met_y_prop = proc_met.Py() # met_y
+
+        # visible particles + met sum control
+        sum_jets_corr_X = 0.
+        sum_jets_corr_Y = 0.
+        sum_jets_init_X = 0.
+        sum_jets_init_Y = 0.
+        #
+        sum_tau_corr_X = 0.
+        sum_tau_corr_Y = 0.
+        sum_tau_init_X = 0.
+        sum_tau_init_Y = 0.
+
+        sum_tau_corr_pt = 0.
+        substitution_pt = 0.
+
+        # PROPAGATE tau and jet systematic variations to met
+        # 
+        # taus = [(p4, TES_factor, tau_pdgID)]
+        # nominal taus do have a factor
+        if isMC and sel_taus: # and 'TauES' in sys_name:
+            #try:
+            sum_tau_init = sel_taus[0][0]
+            sum_tau_corr = sel_taus[0][0] * sel_taus[0][1]
+            tau_cor = sel_taus[0][0] * (1. - sel_taus[0][1])
+            for tau in sel_taus[1:]:
+                tau_cor += tau[0] * (1. - tau[1])
+                sum_tau_init += tau[0]
+                sum_tau_corr += tau[0] * tau[1]
+
+            sum_tau_corr_X = sum_tau_corr.Px()
+            sum_tau_corr_Y = sum_tau_corr.Py()
+            sum_tau_init_X = sum_tau_init.Px()
+            sum_tau_init_Y = sum_tau_init.Py()
+
+            sum_tau_corr_pt = tau_cor.pt()
+
+            #except IndexError:
+            #    print len(sel_taus), type(sel_taus)
+            #    print sel_taus
+            #    print len(sel_taus[0])
+            #    raise IndexError
+            met_x_prop_taus += tau_cor.X()
+            met_y_prop_taus += tau_cor.Y()
+            met_x_prop += tau_cor.X()
+            met_y_prop += tau_cor.Y()
+
+        ### and substitute the jet->tau in met p7 p9 -> 1) v25 p2_tt_jtau, 2) v25 p2_jes_recor
+        ## this works very strangely: data is shifted to high Mt?
+        ## but the study of jet/tau pt shows approximatly the same values in both MC and Data
+        if sel_taus and sel_taus[0][4] > -1:
+            # only first tau is taken
+            tau_index = sel_taus[0][3]
+            the_tau_p4 = sel_taus[0][0] * sel_taus[0][1]
+            tau_jet_index   = sel_taus[0][4]
+
+            # substitute the nominal jet
+            jer_factor = ev.jet_jer_factor[tau_jet_index] if isMC else 1.
+            #jes_factor = ev.jet_jes_recorrection[tau_jet_index]
+            #jes_uncorFactor = ev.jet_uncorrected_jecFactor[tau_jet_index]
+            en_factor = jer_factor # * jes_factor * jes_uncorFactor
+            the_jet_p4 = ev.jet_initial_p4[tau_jet_index] * en_factor #miniaod_jets[tau_jet_index]
+            #substitution = the_tau_p4 - the_jet_p4
+            # + what is to remove from met
+            # - what is to include in met
+            substitution = the_jet_p4 - the_tau_p4
+            substitution_pt = substitution.pt()
+            #met_x_prop += substitution.X()
+            #met_y_prop += substitution.Y()
+
+        # PROPAGATE jet correcions
+        all_sel_jets = sel_jets.medium + sel_jets.loose + sel_jets.rest
+        all_sel_jets_taumatched = sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]
+        jets_to_prop_met = sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1] + sel_jets.lepmatched if ALL_JETS else all_sel_jets
+        # propagate above
+        ## propagation of corrections of all jets
+        ## nominal jets have JER factor
+        #if isMC and jets_to_prop_met: # and ('JES' in sys_name or 'JER' in sys_name):
+        #    #try:
+        #    sum_jets_init = jets_to_prop_met[0][0]
+        #    sum_jets_corr = jets_to_prop_met[0][0] * jets_to_prop_met[0][1]
+        #    jet_cor       = jets_to_prop_met[0][0] * (1. - jets_to_prop_met[0][1])
+        #    #for jet in all_sel_jets[1:] + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
+        #    for jet in jets_to_prop_met[1:]:
+        #        jet_cor += jet[0] * (1. - jet[1])
+        #        sum_jets_init += jet[0]
+        #        sum_jets_corr += jet[0] * jet[1]
+
+        #    sum_jets_corr_X = sum_jets_corr.Px()
+        #    sum_jets_corr_Y = sum_jets_corr.Py()
+        #    sum_jets_init_X = sum_jets_init.Px()
+        #    sum_jets_init_Y = sum_jets_init.Py()
+
+        #    met_x_prop_jets += jet_cor.X()
+        #    met_y_prop_jets += jet_cor.Y()
+        #    met_x_prop += jet_cor.X()
+        #    met_y_prop += jet_cor.Y()
+        #    # met prop = met nom + nom - factor
+        #    # met prop + factor = met nom + nom
+
+        # control over "objects' met"
+        #all_sel_objects = LorentzVector(lep_p4[0].X(), lep_p4[0].Y(), lep_p4[0].Z(), lep_p4[0].T())
+        #ROOT.Math.LorentzVector('ROOT::Math::PxPyPzE4D<double>')(100.,0.,1.,200.)
+        all_sel_objects = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(0.,0.,0.,0.)
+        for lep in lep_p4:
+            all_sel_objects += lep
+        for tau in sel_taus:
+            all_sel_objects += tau[0] * tau[1]
+        for jet in all_sel_jets:
+            all_sel_objects += jet[0] * jet[1]
+
+        '''
+        Mt_lep_met_init = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), ev.met_init.Px(), ev.met_init.Py())
+        # at NOMINAL these two should be the same
+        # only systematic variations differ
+        Mt_lep_met         = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
+        if isMC:
+            Mt_lep_met_shifted = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop + 7.2, met_y_prop + 1.4)
+        else:
+             Mt_lep_met_shifted = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), met_x_prop, met_y_prop)
+        Mt_lep_met_corr    = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
+        # test on Mt fluctuation in mu_sel
+        #if Mt_lep_met < 1.:
+        #    continue
+        Mt_lep_met_sublep = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_lepsub.Px(), proc_met_lepsub.Py())
+
+        met_pt = TMath.Sqrt(met_x_prop*met_x_prop + met_y_prop*met_y_prop)
+        met_pt_taus = TMath.Sqrt(met_x_prop_taus*met_x_prop_taus + met_y_prop_taus*met_y_prop_taus)
+        met_pt_jets = TMath.Sqrt(met_x_prop_jets*met_x_prop_jets + met_y_prop_jets*met_y_prop_jets)
+        met_pt_init = proc_met.pt() # TMath.Sqrt(met_x*met_x + met_y*met_y)
+
+        met_cancellation_x = met_x_prop + all_sel_objects.Px()
+        met_cancellation_y = met_y_prop + all_sel_objects.Py()
+        met_cancelation = TMath.Sqrt(met_cancellation_x*met_cancellation_x + met_cancellation_y*met_cancellation_y)
+        '''
+
+        event_met.SetPx(met_x_prop)
+        event_met.SetPy(met_y_prop)
 
         ttree_out.Fill()
 
