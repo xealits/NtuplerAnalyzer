@@ -2642,7 +2642,6 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             #if p4.pt() > 30: # nominal jet
             # TODO: for optimization tests I reduced the cut, review it with the test results
             if jet_pt > 20: # nominal jet
-                tj_p4 = TLorentzVector(p4.X(), p4.Y(), p4.Z(), p4.T())
                 #for ttau_p4 in taus_nom_TLorentz.lowest:
                 #    if tj_p4.DeltaR(ttau_p4) < 0.3:
                 #        tau_match_lowest = True
@@ -2658,7 +2657,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 #        tau_match_medium = True
                 #        break
 
+                jet_tau_match_old = False
                 if not tau_match_medium:
+                    tj_p4 = TLorentzVector(p4.X(), p4.Y(), p4.Z(), p4.T())
                     tau_match_medium    = jet_tau_match_old    = any(tj_p4.DeltaR(ttau_p4) < tau_dR_jet_min for ttau_p4 in taus_nom_TLorentz.medium)
 
                 # jet passed ID, eta, lowest pt threshold and doesn't match to a Loose tau
@@ -3072,13 +3073,13 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             control_counters.Fill(203)
 
         if pass_el and old_jet_sel:
-            control_counters.Fill(303)
+            control_counters.Fill(204)
 
         if pass_mu and old_jet_sel and len(taus.medium) > 0:
             control_counters.Fill(304)
 
         if pass_el and old_jet_sel and len(taus.medium) > 0:
-            control_counters.Fill(304)
+            control_counters.Fill(305)
 
         # 3 jets (2b and 1 tau) and 1 b-tagged
         # TODO: compare with previous result with only 2 jets and 1 b-tagged -- check njets distrs
