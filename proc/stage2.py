@@ -17,6 +17,7 @@ with_bSF = True
 ISO_LEPS    = True
 JETS_PT_CUT = 30.
 TAUS_PT_CUT = 30.
+TAUS_ID_CUT = 2
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el):
     return pass_mu
@@ -2257,14 +2258,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             # nominals
             if tau_pt > 20. and not match_lep:
                 taus_nom.candidates.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-                #if tau_ID > 1: tausL_nom.lowest.append((p4, TES_factor))
-                #if tau_ID > 2: tausM_nom.lowest.append((p4, TES_factor))
-                #if tau_ID > 1 and not match_lep: taus_nom.loose.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-                #if tau_ID > 3 and not match_lep: taus_nom.lowest.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-            #if tau_pt > pt_cut_cuts and not match_lep:
-            #    if tau_ID > 3: taus_nom.cuts.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-
-            if tau_pt > TAUS_PT_CUT and tau_ID > 3 and not match_lep:
+            if tau_pt > TAUS_PT_CUT and tau_ID > TAUS_ID_CUT and not match_lep:
                 taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
             # TES
@@ -2273,81 +2267,14 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 TES_factor = factor_up
                 if tau_pt_up > 20. and not match_lep:
                     taus_ESUp.candidates.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-                if tau_pt_up > TAUS_PT_CUT and tau_ID > 3 and not match_lep:
+                if tau_pt_up > TAUS_PT_CUT and tau_ID > TAUS_ID_CUT and not match_lep:
                     taus_ESUp.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
                 TES_factor = factor_down
                 if tau_pt_down > 20. and not match_lep:
                     taus_ESDown.candidates.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-                if tau_pt_down > TAUS_PT_CUT and tau_ID > 3 and not match_lep:
+                if tau_pt_down > TAUS_PT_CUT and tau_ID > TAUS_ID_CUT and not match_lep:
                     taus_ESDown.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-
-            """
-            usual_pt_cut = 20. # TODO: cut for optimization study, review it after results
-            if not isMC:
-                if tau_pt > usual_pt_cut:
-                    taus_all_foropt.append((tau_p4, 1., tau_ID, tau_pdgID))
-                    if tau_ID > 2:
-                        taus_nominal.append((tau_p4, 1.))
-                if tau_pt > 20. and tau_ID > 1: # Loose taus
-                    taus_nominal_min.append((tau_p4, 1.))
-            else:
-
-                # only nominal for min taus
-                if tau_p4 * factor > usual_pt_cut:
-                    taus_all_foropt.append((tau_p4, factor, tau_ID, tau_pdgID))
-                    if tau_ID > 1:
-                        taus_nominal_min.append((tau_p4, factor))
-
-                ## calculate it later, inplace of record
-                #if not Mt_tau_met_nominal:
-                #    Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px()*factor, ev.tau_p4[0].Py()*factor, met_x, met_y)
-                #has_tau_es_up   = (ev.tau_p4[0].pt() * factor_up  ) > 30
-                #has_tau_es_down = (ev.tau_p4[0].pt() * factor_down) > 30
-                if tau_ID > 2:
-                    if tau_pt * factor > usual_pt_cut:
-                        taus_nominal.append((tau_p4, factor))
-                    if tau_pt * factor_up > usual_pt_cut:
-                        taus_es_up.append((tau_p4, factor_up))
-                    if tau_pt * factor_down > usual_pt_cut:
-                        taus_es_down.append((tau_p4, factor_down))
-                #if not Mt_tau_met_up:
-                #    Mt_tau_met_up   = transverse_mass_pts(ev.tau_p4[0].Px()*factor_up, ev.tau_p4[0].Py()*factor_up, met_x, met_y)
-                #    Mt_tau_met_down = transverse_mass_pts(ev.tau_p4[0].Px()*factor_down, ev.tau_p4[0].Py()*factor_down, met_x, met_y)
-
-        # OPTIMIZATION
-        taus_all_foropt.sort(key=lambda tau: tau[2], reverse=True) # sort by IDlev
-        n_presel_taus = n_loose_taus = n_medium_taus = n_tight_taus = 0
-        n_presel_tau_i = n_loose_tau_i = n_medium_tau_i = n_tight_tau_i = -1
-        n_presel_tau_pdg = n_loose_tau_pdg = n_medium_tau_pdg = n_tight_tau_pdg = 0
-        for i, (_, _, IDlev, pdgID) in enumerate(taus_all_foropt):
-            n_presel_taus += 1
-            if i == 0:
-                n_presel_tau_i = 0
-                n_presel_tau_pdg = pdgID
-            if IDlev > 3:
-                n_loose_taus  += 1
-                n_medium_taus += 1
-                n_tight_taus  += 1
-            elif IDlev == 3:
-                n_loose_taus  += 1
-                n_medium_taus += 1
-            elif IDlev == 2:
-                n_loose_taus  += 1
-
-            # damn, I also need tau pdg ID for OS to lepton...
-            # and I want to know the tau index in the tau list -- is it always the 0 tau which is picked up?
-            if n_loose_taus == 1:
-                n_loose_tau_i = i
-                n_loose_tau_pdg = pdgID
-            if n_medium_taus == 1:
-                n_medium_tau_i = i
-                n_medium_tau_pdg = pdgID
-            if n_tight_taus == 1:
-                n_tight_tau_i = i
-                n_tight_tau_pdg = pdgID
-            """
-
 
         # sort by pt
         taus_nom    .candidates.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
@@ -2365,30 +2292,12 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         # jets save (p4, factor) and (..., dR_far_of_tau) for adv selection -- counting tau-cleaned jets for Loose2
         # TODO: add jet b-discr or b-ID, also consider adding dR to tau (to which tau? loose? medium? save the ID of dR-ed tau?)
-
-        """
-        all_jets_b_discrs = []
-        lead_jet_b_discr = -1.
-
-        # OPTIMIZATION
-        # similar procedure for bjets as in tau
-        bjets_all_foropt = []
-        """
-
         ##SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
         #jets_all_optimized          = SystematicJets('nom'=[], sys_JERUp=[], sys_JERDown=[], sys_JESUp=[], sys_JESDown=[], sys_bUp=[], sys_bDown=[])
         #jets_all_optimized_cuts     = SystematicJets('nom'=[], sys_JERUp=[], sys_JERDown=[], sys_JESUp=[], sys_JESDown=[], sys_bUp=[], sys_bDown=[])
         #jets_all_optimized_old_cuts = SystematicJets('nom'=[], sys_JERUp=[], sys_JERDown=[], sys_JESUp=[], sys_JESDown=[], sys_bUp=[], sys_bDown=[])
         ## each systematic is a list of jets with
         ## p4, energy factor, b SF weight, b ID level
-
-        #JetCutsPerSystematic = namedtuple('Jets', 'lowest cuts old')
-        # collection holds jet info per 1 systematic
-        # for each of the requested cuts
-        # -- so that I still can loop over systematics
-        #    and keep it extendable
-        # each jet collection holds:
-        #    p4, energy factor, b SF weight, b ID level
 
         # each selection needs b-jets (loose and medium) and other jets
         # -- for lj calculations and b-jet control
