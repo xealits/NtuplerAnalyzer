@@ -1431,15 +1431,22 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     selection_stage = array( 'i', [ 0 ] )
     ttree_out.Branch( 'selection_stage', selection_stage, 'selection_stage/I' )
 
+    nup = array( 'i', [ 0 ] )
+    ttree_out.Branch( 'nup', nup, 'nup/I' )
+
     # nominal weight of the event
     event_weight = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_weight', event_weight, 'event_weight/f' )
+
+    amcatnlo_w = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'amcatnlo_w', amcatnlo_w, 'amcatnlo_w/f' )
 
     # lor vector for selected objects (particles and met)
     LorentzVector_Class = LorentzVector('ROOT::Math::PxPyPzE4D<double>')
     # vector of these for particles
     ROOT.gROOT.ProcessLine("typedef std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >> LorentzVectorS;")
-    ROOT.gROOT.ProcessLine("typedef std::vector<int> ObjectIDs;")
+    ROOT.gROOT.ProcessLine("typedef std::vector<int> IntVector;")
+    ROOT.gROOT.ProcessLine("typedef std::vector<double> DoubleVector;")
 
     # met lorentzvector
     event_met = LorentzVector_Class(0., 0., 0., 0.)
@@ -1450,36 +1457,110 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     event_leptons = ROOT.LorentzVectorS()
     ttree_out.Branch("event_leptons", event_leptons)
     all_vector_branches.append(event_leptons)
-    event_leptons_ids = ROOT.ObjectIDs()
+    event_leptons_ids = ROOT.IntVector()
     ttree_out.Branch("event_leptons_ids", event_leptons_ids)
     all_vector_branches.append(event_leptons_ids)
+
+    # lep_dB -- 3D impact, there is also dxy and dz, from tau SV experience dz is very not precise and needs smart corrections
+    # therefore store dxy
+    event_leptons_dxy = ROOT.DoubleVector()
+    ttree_out.Branch("event_leptons_dxy", event_leptons_dxy)
+    all_vector_branches.append(event_leptons_dxy)
+    # lep_matching_gen
+    event_leptons_genmatch = ROOT.IntVector()
+    ttree_out.Branch("event_leptons_genmatch", event_leptons_genmatch)
+    all_vector_branches.append(event_leptons_genmatch)
+
 
     event_taus = ROOT.LorentzVectorS()
     ttree_out.Branch("event_taus", event_taus)
     all_vector_branches.append(event_taus)
-    event_taus_ids = ROOT.ObjectIDs()
+    event_taus_ids = ROOT.IntVector()
     ttree_out.Branch("event_taus_ids", event_taus_ids)
     all_vector_branches.append(event_taus_ids)
+    # tau_matching_gen
+    event_taus_genmatch = ROOT.IntVector()
+    ttree_out.Branch("event_taus_genmatch", event_taus_genmatch)
+    all_vector_branches.append(event_taus_genmatch)
+
+    # 3ch info
+    # sign
+    event_taus_sv_sign = ROOT.DoubleVector()
+    ttree_out.Branch("event_taus_sv_sign", event_taus_sv_sign)
+    all_vector_branches.append(event_taus_sv_sign)
+    # length
+    event_taus_sv_leng = ROOT.DoubleVector()
+    ttree_out.Branch("event_taus_sv_leng", event_taus_sv_leng)
+    all_vector_branches.append(event_taus_sv_leng)
+    # dalitz m1
+    event_taus_sv_dalitz_m1 = ROOT.DoubleVector()
+    ttree_out.Branch("event_taus_sv_dalitz_m1", event_taus_sv_dalitz_m1)
+    all_vector_branches.append(event_taus_sv_dalitz_m1)
+    # dalitz m2
+    event_taus_sv_dalitz_m2 = ROOT.DoubleVector()
+    ttree_out.Branch("event_taus_sv_dalitz_m2", event_taus_sv_dalitz_m2)
+    all_vector_branches.append(event_taus_sv_dalitz_m2)
+    # sum of track energies
+    event_taus_track_energy = ROOT.DoubleVector()
+    ttree_out.Branch("event_taus_track_energy", event_taus_track_energy)
+    all_vector_branches.append(event_taus_track_energy)
+    # b discriminant of matching jet
+    event_taus_jet_bdiscr = ROOT.DoubleVector()
+    ttree_out.Branch("event_taus_jet_bdiscr", event_taus_jet_bdiscr)
+    all_vector_branches.append(event_taus_jet_bdiscr)
 
     event_taus_l = ROOT.LorentzVectorS()
     ttree_out.Branch("event_taus_l", event_taus_l)
     all_vector_branches.append(event_taus_l)
 
+
     event_jets_b = ROOT.LorentzVectorS()
     ttree_out.Branch("event_jets_b", event_jets_b)
     all_vector_branches.append(event_jets_b)
+    # b discriminant the jet
+    event_jets_b_bdiscr = ROOT.DoubleVector()
+    ttree_out.Branch("event_jets_b_bdiscr", event_jets_b_bdiscr)
+    all_vector_branches.append(event_jets_b_bdiscr)
+    # genmatch
+    event_jets_b_genmatch = ROOT.IntVector()
+    ttree_out.Branch("event_jets_b_genmatch", event_jets_b_genmatch)
+    all_vector_branches.append(event_jets_b_genmatch)
 
     event_jets_r = ROOT.LorentzVectorS()
     ttree_out.Branch("event_jets_r", event_jets_r)
     all_vector_branches.append(event_jets_r)
+    # b discriminant the jet
+    event_jets_r_bdiscr = ROOT.DoubleVector()
+    ttree_out.Branch("event_jets_r_bdiscr", event_jets_r_bdiscr)
+    all_vector_branches.append(event_jets_r_bdiscr)
+    # genmatch
+    event_jets_r_genmatch = ROOT.IntVector()
+    ttree_out.Branch("event_jets_r_genmatch", event_jets_r_genmatch)
+    all_vector_branches.append(event_jets_r_genmatch)
 
     event_jets_l = ROOT.LorentzVectorS()
     ttree_out.Branch("event_jets_l", event_jets_l)
     all_vector_branches.append(event_jets_l)
+    # b discriminant the jet
+    event_jets_l_bdiscr = ROOT.DoubleVector()
+    ttree_out.Branch("event_jets_l_bdiscr", event_jets_l_bdiscr)
+    all_vector_branches.append(event_jets_l_bdiscr)
+    # genmatch
+    event_jets_l_genmatch = ROOT.IntVector()
+    ttree_out.Branch("event_jets_l_genmatch", event_jets_l_genmatch)
+    all_vector_branches.append(event_jets_l_genmatch)
 
     event_jets_t = ROOT.LorentzVectorS()
     ttree_out.Branch("event_jets_t", event_jets_t)
     all_vector_branches.append(event_jets_t)
+    # b discriminant the jet
+    event_jets_t_bdiscr = ROOT.DoubleVector()
+    ttree_out.Branch("event_jets_t_bdiscr", event_jets_t_bdiscr)
+    all_vector_branches.append(event_jets_t_bdiscr)
+    # genmatch
+    event_jets_t_genmatch = ROOT.IntVector()
+    ttree_out.Branch("event_jets_t_genmatch", event_jets_t_genmatch)
+    all_vector_branches.append(event_jets_t_genmatch)
 
     # <<<<<<<<<<<<<<
 
@@ -1513,8 +1594,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             vector_branch.clear()
 
         # NUP stitching for WJets
-        if isWJetsInclusive and DO_W_STITCHING:
-            if ev.gen_NUP > 5: continue
+        #if isWJetsInclusive and DO_W_STITCHING:
+        #    if ev.gen_NUP > 5: continue
+        nup[0] = ev.gen_NUP
 
         #if iev <  range_min: continue
         #if iev >= 10: break
@@ -1828,8 +1910,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 #print i, ev.nvtx
                 continue
 
-            if aMCatNLO and ev.aMCatNLO_weight < 0:
-                weight *= -1
+            if aMCatNLO:
+                amcatnlo_w[0] = ev.aMCatNLO_weight
+                if ev.aMCatNLO_weight < 0:
+                    weight *= -1
 
             weight_z_mass_pt = 1.
             if isDY:
@@ -3088,6 +3172,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         for i, p4 in enumerate(lep_p4):
             event_leptons    .push_back(p4)
             event_leptons_ids.push_back(lep_id[i])
+            event_leptons_dxy     .push_back(ev.lep_dxy[i])
+            if isMC:
+                event_leptons_genmatch.push_back(lep_matching_gen[i])
 
         # if sel_jets.medium:
         #     bMjet0_pt = sel_jets.medium[0][0].pt() * sel_jets.medium[0][1]
@@ -3096,27 +3183,84 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         #  n_medium_jets = len(sel_jets.medium) # + len(sel_jets.taumatched[0])
         #  n_loose_jets  = len(sel_jets.loose)
         # jets_to_prop_met = sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1] + sel_jets.lepmatched if ALL_JETS else all_sel_jets
+        # jets_nom.taumatched[1].append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, jet_index))
         for jet in sel_jets.medium:
             corrected_jet_p4 = jet[0] * jet[1]
             event_jets_b.push_back(corrected_jet_p4)
+            jet_bdiscr, jet_index = jet[3], jet[6]
+            event_jets_b_bdiscr   .push_back(jet_bdiscr)
+            if isMC:
+                event_jets_b_genmatch .push_back(ev.jet_matching_gen[jet_index])
+
         for jet in sel_jets.rest + sel_jets.loose:
             corrected_jet_p4 = jet[0] * jet[1]
             event_jets_r.push_back(corrected_jet_p4)
+            jet_bdiscr, jet_index = jet[3], jet[6]
+            event_jets_r_bdiscr   .push_back(jet_bdiscr)
+            if isMC:
+                event_jets_r_genmatch .push_back(ev.jet_matching_gen[jet_index])
 
         for jet in sel_jets.taumatched[0] + sel_jets.taumatched[1]:
             corrected_jet_p4 = jet[0] * jet[1]
             event_jets_t.push_back(corrected_jet_p4)
+            jet_bdiscr, jet_index = jet[3], jet[6]
+            event_jets_t_bdiscr   .push_back(jet_bdiscr)
+            if isMC:
+                event_jets_t_genmatch .push_back(ev.jet_matching_gen[jet_index])
 
         for jet in sel_jets.lepmatched:
             corrected_jet_p4 = jet[0] * jet[1]
             event_jets_l.push_back(corrected_jet_p4)
+            jet_bdiscr, jet_index = jet[3], jet[6]
+            event_jets_l_bdiscr   .push_back(jet_bdiscr)
+            if isMC:
+                event_jets_l_genmatch .push_back(ev.jet_matching_gen[jet_index])
 
         # taus
         # taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
         for tau in sel_taus:
+            tau_index = tau[3]
             event_taus    .push_back(tau[0] * tau[1])
             event_taus_ids.push_back(tau[2])
+            if isMC:
+                event_taus_genmatch.push_back(ev.tau_matching_gen[tau_index])
 
+            # save 3ch info if possible
+            tau_SV_sign = -11.
+            tau_SV_leng = -11.
+            dalitz_m1 = -11.
+            dalitz_m2 = -11.
+            track_energy = -11.
+            tau_jet_bdiscr = -11.
+
+            tau_refit_index = ev.tau_refited_index[tau_index] # tau id in the original vector
+            # require refit and dR quality of refit
+            refitted = tau_refit_index > -1 and ev.tau_SV_fit_track_OS_matched_track_dR[tau_refit_index] + ev.tau_SV_fit_track_SS1_matched_track_dR[tau_refit_index] + ev.tau_SV_fit_track_SS2_matched_track_dR[tau_refit_index] < 0.002
+            if refitted:
+              try:
+                tau_SV_sign    = ev.tau_SV_geom_flightLenSign [tau_refit_index]
+                tau_SV_leng    = ev.tau_SV_geom_flightLen     [tau_refit_index]
+                dalitz_m1 = (ev.tau_SV_fit_track_OS_p4[tau_refit_index] + ev.tau_SV_fit_track_SS1_p4[tau_refit_index]).mass()
+                dalitz_m2 = (ev.tau_SV_fit_track_OS_p4[tau_refit_index] + ev.tau_SV_fit_track_SS2_p4[tau_refit_index]).mass()
+                track_sum = ev.tau_SV_fit_track_OS_p4[tau_refit_index] + ev.tau_SV_fit_track_SS1_p4[tau_refit_index] + ev.tau_SV_fit_track_SS2_p4[tau_refit_index]
+                track_energy = track_sum.energy()
+              except IndexError:
+                  logging.error("IndexError  : %d, (%d, %d, %d, %d)" % (tau_refit_index, ev.tau_SV_fit_track_OS_p4.size(), ev.tau_SV_fit_track_SS1_p4.size(), ev.tau_SV_fit_track_SS2_p4.size(), ev.tau_p4.size()))
+                  logging.error("IndexError2 : %d, %d" % (ev.indexevents, iev))
+
+            event_taus_sv_sign.push_back(tau_SV_sign)
+            event_taus_sv_leng.push_back(tau_SV_leng)
+            event_taus_sv_dalitz_m1.push_back(dalitz_m1)
+            event_taus_sv_dalitz_m2.push_back(dalitz_m2)
+            event_taus_track_energy.push_back(track_energy)
+
+            # dR matched jet
+            tau_jet_index   = ev.tau_dR_matched_jet[tau_index]
+            if tau_jet_index > -1:
+                tau_jet_bdiscr = ev.jet_b_discr[tau_jet_index]
+                # can recalculate dR if needed
+
+            event_taus_jet_bdiscr.push_back(tau_jet_bdiscr)
 
         # also if there are taus and it's tt_lj than try to specify the origin of the fake
         # if it is required by the procs
@@ -3161,13 +3305,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             matched_b = gen_dR < 0.3 and abs(gen_id) == 6
 
             if matched_w and matched_b:
-                record_proc = 'tt_ljo'
                 gen_proc_id[0] = genproc_tt_ljo
             elif matched_w:
-                record_proc = 'tt_ljw'
                 gen_proc_id[0] = genproc_tt_ljw
             elif matched_b:
-                record_proc = 'tt_ljb'
                 gen_proc_id[0] = genproc_tt_ljb
 
         weight_bSF = weight_bSF_to_apply = 1.
