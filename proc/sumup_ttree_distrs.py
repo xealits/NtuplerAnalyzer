@@ -8,7 +8,8 @@ from os.path import isfile, basename
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
     description = "sumup TTree Draw",
-    epilog = """Example:\npython sumup_ttree_distrs.py "met_init.pt()" --histo-range 200,0,200 --histo-name data_met_init --output data_met_init.root gstore_outdirs/v28/SingleMuon/Ntupler_v28_Data13TeV_SingleMuon2016*/1*/*/*root"""
+    epilog = """Example:\npython sumup_ttree_distrs.py "met_init.pt()" --histo-range 200,0,200 --histo-name data_met_init --output data_met_init.root gstore_outdirs/v28/SingleMuon/Ntupler_v28_Data13TeV_SingleMuon2016*/1*/*/*root
+python sumup_ttree_distrs.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "selection_stage == 5" --histo-range 50,0,200 --output test1_lep_pt.root --histo-name foo/bar/test1_lep_pt --save-weight MC2016_Summer16_TTJets_powheg_test1.root """
     )
 
 parser.add_argument('draw_com', type=str, help='Draw("??")')
@@ -21,6 +22,7 @@ parser.add_argument('--histo-color', type=str, default=None, help='optional rgb 
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 parser.add_argument("--output", type=str, default="output.root", help="filename for output")
 
+parser.add_argument("--save-weight", action='store_true', help="save the weight counters in the output file")
 parser.add_argument("--per-weight",  action='store_true', help="normalize by event weight of datasets")
 parser.add_argument("--scan",        action='store_true', help="also scan events ant print out")
 parser.add_argument("--get-maximum", action='store_true', help="just find maxima on the draw_com")
@@ -37,6 +39,11 @@ if args.debug:
 else:
     logging.basicConfig(level=logging.INFO)
 
+# [/]histo_path/histo_name
+histo_name = args.histo_name.split('/')[-1]
+histo_path = args.histo_name.split('/')[:-1]
+# skip empty parts in the path (sequences of ////)
+histo_path = [part for part in histo_path if part]
 
 logging.info("import ROOT")
 
@@ -116,8 +123,12 @@ for filename in input_files:
         histo = ttree.GetHistogram()
         histo.SetDirectory(0)
 
-        if args.per_weight:
+        if args.per_weight or args.save_weight:
             wcounter = tfile.Get('ntupler/weight_counter')
+            if not wcounter:
+                # try top level
+                wcounter = tfile.Get('weight_counter')
+            assert bool(wcounter)
             if not weight_counter:
                 weight_counter = wcounter
                 weight_counter.SetDirectory(0)
@@ -127,7 +138,7 @@ for filename in input_files:
 
         if not out_histo:
             out_histo = histo
-            out_histo.SetName(args.histo_name)
+            out_histo.SetName(histo_name)
         else:
             out_histo.Add(histo)
 
@@ -172,7 +183,43 @@ leg2.AddEntry(tau_w_notc , "tt->lj, SS, w, not C", 'L')
 fout = TFile(args.output, "RECREATE")
 fout.Write()
 
+fout.cd()
+
+# corresponding to old protocol everything is saved as
+# channel/process/systematic/channel_process_systematic_distr
+# -- the final part is the name of the histogram, which must be unique in root
+#    the rest is for convenience
+# in principle, root handles many same name histos in different directories, but can run into some weirdness on practice
+# that's why this protocol is still kept
+
+# check if this directory already exists in the file (a feature for future)
+out_dir_name = ''.join(part + '/' for part in histo_path)
+if out_dir_name and fout.Get(out_dir_name):
+    logging.debug('found  ' + out_dir_name)
+    out_dir = fout.Get(out_dir_name)
+else:
+    logging.debug('making ' + out_dir_name)
+    # iteratively create each directory fout -> part0 -> part1 -> ...
+    # somehow root did not work for creating them in 1 go
+    out_dir = fout
+    for directory in histo_path:
+        nested_dir = out_dir.Get(directory) if out_dir.Get(directory) else out_dir.mkdir(directory)
+        nested_dir.cd()
+        out_dir = nested_dir
+
+# save the histogram in this nested directory
+#for histo in histos.values():
+#    histo.SetDirectory(out_dir)
+#    histo.Write()
+
+out_histo.SetDirectory(out_dir)
 out_histo.Write()
+
+# save weight counters etc in the top directory in the file
+if args.save_weight:
+    fout.cd()
+    weight_counter.SetName('weight_counter')
+    weight_counter.Write()
 
 fout.Write()
 fout.Close()
