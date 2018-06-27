@@ -187,11 +187,51 @@ the magnitude of the shift, the width seem equal in mc and data
 
 python stack_plot.py mc_v25v26pR4.root ../merge-sets/v25/pR4/SingleMuon.root --lumi 35800 --wjet 0.8 --factor-dy 1.05 -c ctr_old_mu_presel -d met_phi
 
+python stack_plot.py mc_v25v26pR4.root ../merge-sets/v25/pR4/SingleMuon.root --lumi 35800 --wjet 0.8 --factor-dy 1.05 -c ctr_old_mu_presel -d Mt_lep_met_shifted -p -r --exp-leg
+-- the shift barely changes Mt in presel
 
-side check:
+python jobsums/get_shapes.py --formula "reNOM : shiftedMt" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_sel reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL shiftedMt:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL,Mt_lep_met_shifted 
+
+jet -> lep sub
+Mt_lep_met_sublep
+
+python stack_plot.py mc_v25v26pR5_updowns.root ../merge-sets/v25/pR5/SingleMuon.root --lumi 35800 --wjet 0.8 --factor-dy 1.05 -c ctr_old_mu_sel -d Mt_lep_met_sublep -p -r --exp-leg
+
+-- same divergence in 120-130, but couple percent smaller
+
+python get_shapes.py --formula "dataOut : dataVlooseOut" -d Mt_lep_met_f -p data -c ctr_old_mu_sel dataOut:../merge-sets/v25/pR5/SingleMuon.root:ctr_old_mu_sel_ljout,data,NOMINAL dataVlooseOut:../merge-sets/v25/pR5/SingleMuon.root:ctr_old_mu_selVloose_ljout,data,NOMINAL
+
+-- data shape is from sel, but it should be right
+
+-- in Vloose the bins seem to agree well, but data-qcd spoils the agreement a bit...
+   and regMt_lep_pt seems much better, close to error bars and only 95 events more in MC
+   in sel MC has 190 more events
+
+
+compare shape to tight:
+
+merge-sets/v25/pCheckTight/MC2016_Summer16_TTJets_powheg.root
+
+python get_shapes.py --formula "mediumTau : tight : Vloose" -d regMt_lep_pt -p tt_mutau -c ctr_old_mu_sel mediumTau:mc_v25v26pR5_updowns.root:ctr_old_mu_sel,tt_mutau,NOMINAL Vloose:mc_v25v26pR5_updowns.root:ctr_old_mu_selVloose,tt_mutau,NOMINAL tight:mc_norm/v25pCheckTight/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL
+
+-- same distr in all three selections
+
+
+
+
+
+side check of nominal TES:
 
 python stack_plot.py mc_v25v26pR5_updowns.root ../merge-sets/v25/pR5/SingleMuon.root --lumi 35800 --wjet 0.8 --factor-dy 1.05 -c ctr_old_mu_sel -d tau_cor_control -p -r --exp-leg
 
+merge-sets/v25/pCheckNomTES/MC2016_Summer16_TTJets_powheg.root
+
+python jobsums/get_shapes.py --formula "reNOM : nomTES" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_selVloose_ljout reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_ljout,tt_mutau,NOMINAL nomTES:merge-sets/v25/pCheckNomTES/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_selVloose_ljout,tt_mutau,NOMINAL 
+
+python jobsums/get_shapes.py --formula "reNOM : nomTES" -d Mt_lep_met_f -p tt_mutau -c ctr_old_mu_sel reNOM:merge-sets/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL nomTES:merge-sets/v25/pCheckNomTES/MC2016_Summer16_TTJets_powheg.root:ctr_old_mu_sel,tt_mutau,NOMINAL 
+
+-- no difference
+regMt_tau_pt has peak at 30 and fall by hyperbola
 
 
 
