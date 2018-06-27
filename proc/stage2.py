@@ -1438,6 +1438,17 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     event_weight = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_weight', event_weight, 'event_weight/f' )
 
+    event_weight_init = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_init', event_weight_init, 'event_weight_init/f' )
+    event_weight_pu = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_pu', event_weight_pu, 'event_weight_pu/f' )
+    event_weight_th = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_th', event_weight_th, 'event_weight_th/f' )
+    event_weight_bSF = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_bSF', event_weight_bSF, 'event_weight_bSF/f' )
+    event_weight_toppt = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_toppt', event_weight_toppt, 'event_weight_toppt/f' )
+
     amcatnlo_w = array( 'f', [ 0 ] )
     ttree_out.Branch( 'amcatnlo_w', amcatnlo_w, 'amcatnlo_w/f' )
 
@@ -1525,6 +1536,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     event_jets_b_genmatch = ROOT.IntVector()
     ttree_out.Branch("event_jets_b_genmatch", event_jets_b_genmatch)
     all_vector_branches.append(event_jets_b_genmatch)
+    # b SF weight
+    event_jets_b_bSFweight = ROOT.DoubleVector()
+    ttree_out.Branch("event_jets_b_bSFweight", event_jets_b_bSFweight)
+    all_vector_branches.append(event_jets_b_bSFweight)
 
     event_jets_r = ROOT.LorentzVectorS()
     ttree_out.Branch("event_jets_r", event_jets_r)
@@ -1537,6 +1552,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     event_jets_r_genmatch = ROOT.IntVector()
     ttree_out.Branch("event_jets_r_genmatch", event_jets_r_genmatch)
     all_vector_branches.append(event_jets_r_genmatch)
+    # b SF weight
+    event_jets_r_bSFweight = ROOT.DoubleVector()
+    ttree_out.Branch("event_jets_r_bSFweight", event_jets_r_bSFweight)
+    all_vector_branches.append(event_jets_r_bSFweight)
 
     event_jets_l = ROOT.LorentzVectorS()
     ttree_out.Branch("event_jets_l", event_jets_l)
@@ -1549,6 +1568,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     event_jets_l_genmatch = ROOT.IntVector()
     ttree_out.Branch("event_jets_l_genmatch", event_jets_l_genmatch)
     all_vector_branches.append(event_jets_l_genmatch)
+    # b SF weight
+    event_jets_l_bSFweight = ROOT.DoubleVector()
+    ttree_out.Branch("event_jets_l_bSFweight", event_jets_l_bSFweight)
+    all_vector_branches.append(event_jets_l_bSFweight)
 
     event_jets_t = ROOT.LorentzVectorS()
     ttree_out.Branch("event_jets_t", event_jets_t)
@@ -1561,6 +1584,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     event_jets_t_genmatch = ROOT.IntVector()
     ttree_out.Branch("event_jets_t_genmatch", event_jets_t_genmatch)
     all_vector_branches.append(event_jets_t_genmatch)
+    # b SF weight
+    event_jets_t_bSFweight = ROOT.DoubleVector()
+    ttree_out.Branch("event_jets_t_bSFweight", event_jets_t_bSFweight)
+    all_vector_branches.append(event_jets_t_bSFweight)
 
     # <<<<<<<<<<<<<<
 
@@ -3187,34 +3214,38 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         for jet in sel_jets.medium:
             corrected_jet_p4 = jet[0] * jet[1]
             event_jets_b.push_back(corrected_jet_p4)
-            jet_bdiscr, jet_index = jet[3], jet[6]
+            jet_bSFweight_nom, jet_bdiscr, jet_index = jet[2], jet[3], jet[6]
             event_jets_b_bdiscr   .push_back(jet_bdiscr)
             if isMC:
                 event_jets_b_genmatch .push_back(ev.jet_matching_gen[jet_index])
+                event_jets_b_bSFweight.push_back(jet_bSFweight_nom)
 
         for jet in sel_jets.rest + sel_jets.loose:
             corrected_jet_p4 = jet[0] * jet[1]
             event_jets_r.push_back(corrected_jet_p4)
-            jet_bdiscr, jet_index = jet[3], jet[6]
+            jet_bSFweight_nom, jet_bdiscr, jet_index = jet[2], jet[3], jet[6]
             event_jets_r_bdiscr   .push_back(jet_bdiscr)
             if isMC:
                 event_jets_r_genmatch .push_back(ev.jet_matching_gen[jet_index])
+                event_jets_r_bSFweight.push_back(jet_bSFweight_nom)
 
         for jet in sel_jets.taumatched[0] + sel_jets.taumatched[1]:
             corrected_jet_p4 = jet[0] * jet[1]
             event_jets_t.push_back(corrected_jet_p4)
-            jet_bdiscr, jet_index = jet[3], jet[6]
+            jet_bSFweight_nom, jet_bdiscr, jet_index = jet[2], jet[3], jet[6]
             event_jets_t_bdiscr   .push_back(jet_bdiscr)
             if isMC:
                 event_jets_t_genmatch .push_back(ev.jet_matching_gen[jet_index])
+                event_jets_t_bSFweight.push_back(jet_bSFweight_nom)
 
         for jet in sel_jets.lepmatched:
             corrected_jet_p4 = jet[0] * jet[1]
             event_jets_l.push_back(corrected_jet_p4)
-            jet_bdiscr, jet_index = jet[3], jet[6]
+            jet_bSFweight_nom, jet_bdiscr, jet_index = jet[2], jet[3], jet[6]
             event_jets_l_bdiscr   .push_back(jet_bdiscr)
             if isMC:
                 event_jets_l_genmatch .push_back(ev.jet_matching_gen[jet_index])
+                event_jets_l_bSFweight.push_back(jet_bSFweight_nom)
 
         # taus
         # taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
@@ -3337,6 +3368,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         nom_sys_weight_without_PU = weight_init * weight_th * weight_top_pt # for PU tests
 
         event_weight[0] = nom_sys_weight * weight_bSF_to_apply
+        event_weight_init[0] = weight_init
+        event_weight_pu[0]   = weight_PU
+        event_weight_th[0]   = weight_th
+        event_weight_bSF[0]  = weight_bSF_to_apply
+        event_weight_toppt[0] = weight_top_pt
 
 
         # propagation of corrections to met
