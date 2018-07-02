@@ -86,7 +86,7 @@ dtags = {
 }
 
 
-command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out --histo-range {histo_range} --cond-com "{selection}" --output test1_lep_pt_{dtag}_{proc}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight {dtag_file}"""
+command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out --histo-range {histo_range} --cond-com "{selection}" --output test1_lep_pt_{dtag}_{proc}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight --per-weight {dtag_file}"""
 
 for input_file in args.input_files:
     matching_dtags = [dtag for dtag in dtags.keys() if dtag in input_file]
