@@ -1,4 +1,132 @@
 
+# test of nominal with full event weight
+
+lep pt and Mt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# again event yields disagreement in pStage2Test3 (false alarm)
+
+comparison with v25pF4 fails
+in mu_sel TT lj
+
+comparison betweeen Test2 (Tight tau ID) and v25pCheckTight3 worked
+
+compare Test3 to both
+
+lstore_outdirs/v25/pStage2Test3/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_61.root
+
+lstore_outdirs/v25/pCheckTight3/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_61.root
+lstore_outdirs/v26/pF4/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_61.root
+
+ctr_old_mu_sel->Get("tt_lj/NOMINAL/ctr_old_mu_sel_tt_lj_NOMINAL_yield")->Print()
+
+v26pF4
+TH1.Print Name  = ctr_old_mu_sel_tt_lj_NOMINAL_yield, Entries= 189, Total sum= 172.785
+
+v25pCheckTight3
+TH1.Print Name  = ctr_old_mu_sel_tt_lj_NOMINAL_yield, Entries= 120, Total sum= 109.168
+
+
+Test3:
+ttree_out->Draw("selection_stage", "selection_stage==5")
+668
+
+(none)
+ttree_out->Draw("selection_stage", "selection_stage==5 && (gen_proc_id == 21)")
+42
+
+(other = both w and b)
+ttree_out->Draw("selection_stage", "selection_stage==5 && (gen_proc_id == 22)")
+0
+(w)
+ttree_out->Draw("selection_stage", "selection_stage==5 && (gen_proc_id == 23)")
+114
+(b)
+ttree_out->Draw("selection_stage", "selection_stage==5 && (gen_proc_id == 24)")
+33
+
+ttree_out->Draw("selection_stage", "selection_stage==5 && (gen_proc_id == 24 || gen_proc_id == 23 || gen_proc_id == 22 || gen_proc_id == 21)")
+189
+
+
+-- exact with v26pF4!
+
+
+compare hadd-s
+-- forgot Test3 TT hadd!
+
+   [ hadd takes about 30 seconds ]
+
+19784 events
+19784 in v26pF4
+
+all ok!
+
+-- run selections on TT
+   and lep_pt in lj:
+
+root [2] ctr_old_mu_sel->Get("tt_lj/NOMINAL/ctr_old_mu_sel_tt_lj_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = ctr_old_mu_sel_tt_lj_NOMINAL_lep_pt, Entries= 19784, Total sum= 0.000251543
+
+root [3] 0.000251543 * 831 * 35800
+(double) 7483.35
+
+all ok!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 shape of lep_pt and second lepton pt
 
 python get_shapes.py --formula "ltaul : elmu " -d lep_pt -p tt_mutau -c ctr_mu_tt_em_close elmu:mc_v31v27_pAllElMu.root:,tt_elmu,NOMINAL ltaul:mc_v31v27_pAllElMu.root:,tt_ltaul,NOMINAL 
