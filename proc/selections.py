@@ -16,6 +16,7 @@ python sumup_ttree_distrs.py "event_leptons[0].pt()" --ttree ttree_out --cond-co
 
 parser.add_argument('draw_com', type=str, help='Draw("??") definition of the distribution')
 parser.add_argument('--cond-com', type=str, default="", help='Draw("", "??") definition of the selected channel')
+parser.add_argument('--weight',   type=str, default="", help='Draw("", "?? * ()") definition of the weight for the selection')
 parser.add_argument('--ttree',    type=str, default="ntupler/reduced_ttree", help='path to the TTree in the file')
 parser.add_argument('--distr',  type=str, default="lep_pt", help='the name of the distribution')
 parser.add_argument('--sys',    type=str, default="NOMINAL", help='the systematic')
@@ -122,9 +123,13 @@ for input_file in args.input_files:
         else:
             proc_selection = '!(%s)' % (" || ".join('gen_proc_id == %d' % an_id for an_id in included_ids))
 
+        full_selection = args.cond_com + ' && ' + proc_selection
+        if args.weight:
+            full_selection = "%s * (%s)" % (args.weight, full_selection)
+
         proc_command = command.format(draw_com = args.draw_com,
                                       histo_range = args.histo_range,
-                                      selection = args.cond_com + ' && ' + proc_selection,
+                                      selection = full_selection,
                                       dtag = dtag,
                                       chan  = args.chan,
                                       proc  = main_name + '_' + proc_name,

@@ -3,6 +3,11 @@
 
 lep pt and Mt
 
+python selections.py --debug "event_leptons[0].pt()" --cond-com "selection_stage == 5" --histo-range 50,0,200 merge-sets/v25/pStage2Test2/MC2016_Summer16_*root
+python selections.py --debug "event_leptons[0].pt()" --cond-com "selection_stage == 5" --histo-range 50,0,200 merge-sets/v25/pStage2Test3/MC2016_Summer16_*root
+
+python selections.py --debug "event_leptons[0].pt()" --weight "event_weight" --cond-com "selection_stage == 5" --histo-range 50,0,200 merge-sets/v25/pStage2Test3/MC2016_Summer16_TTJets_powheg.root
+
 
 
 
