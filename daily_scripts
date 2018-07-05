@@ -12,6 +12,7 @@ dalitzes in mutau, ljb and ljw
 
 python sumup_ttree_distrs.py "event_taus_sv_dalitz_m1:event_taus_sv_dalitz_m2" --ttree ttree_out --histo-range 20,0,2,20,0,2 --cond-com "selection_stage == 5 && gen_proc_id == 24" --output test2_dalitzes_tt_ljb.root  --histo-name dalitzes_tt_ljb  --save-weight --per-weight merge-sets/v25/pStage2Test3/MC2016_Summer16_TTJets_powheg.root &
 python sumup_ttree_distrs.py "event_taus_sv_dalitz_m1:event_taus_sv_dalitz_m2" --ttree ttree_out --histo-range 20,0,2,20,0,2 --cond-com "selection_stage == 5 && gen_proc_id == 23" --output test2_dalitzes_tt_ljw.root  --histo-name dalitzes_tt_ljw  --save-weight --per-weight merge-sets/v25/pStage2Test3/MC2016_Summer16_TTJets_powheg.root &
+python sumup_ttree_distrs.py "event_taus_sv_dalitz_m1:event_taus_sv_dalitz_m2" --ttree ttree_out --histo-range 20,0,2,20,0,2 --cond-com "selection_stage == 5 && gen_proc_id == 22" --output test2_dalitzes_tt_ljo.root  --histo-name dalitzes_tt_ljo  --save-weight --per-weight merge-sets/v25/pStage2Test3/MC2016_Summer16_TTJets_powheg.root &
 python sumup_ttree_distrs.py "event_taus_sv_dalitz_m1:event_taus_sv_dalitz_m2" --ttree ttree_out --histo-range 20,0,2,20,0,2 --cond-com "selection_stage == 5 && gen_proc_id == 32" --output test2_dalitzes_tt_mutau3ch.root  --histo-name dalitzes_tt_mutau3ch  --save-weight --per-weight merge-sets/v25/pStage2Test3/MC2016_Summer16_TTJets_powheg.root &
 
 

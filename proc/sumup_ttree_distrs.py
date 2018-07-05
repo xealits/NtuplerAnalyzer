@@ -1,6 +1,7 @@
 import argparse
 import logging
 from os.path import isfile, basename
+import ctypes
 
 
 
@@ -16,8 +17,9 @@ parser.add_argument('draw_com', type=str, help='Draw("??")')
 parser.add_argument('--cond-com', type=str, default="", help='Draw("", "??")')
 parser.add_argument('--ttree',    type=str, default="ntupler/reduced_ttree", help='path to the TTree in the file')
 parser.add_argument('--histo-name',  type=str, default="out_histo", help='the ROOTName for output')
-parser.add_argument('--histo-range', type=str, default=None, help='optionally set the range')
 parser.add_argument('--histo-color', type=str, default=None, help='optional rgb color, like `255,255,255`')
+parser.add_argument('--histo-range',  type=str, default=None, help='optionally set the range')
+parser.add_argument('--custom-range', type=str, default=None, help='optionally set the range in custom bins')
 
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 parser.add_argument("--output", type=str, default="output.root", help="filename for output")
@@ -84,9 +86,57 @@ if args.histo_color:
 else:
     logging.debug("no color")
 
+'''
+root [4] double pt_bins[] = {20, 30, 40, 50, 70, 90, 120, 150, 200, 300, 2000};
+root [5] 
+root [5] sizeof
+ROOT_prompt_5:2:1: error: expected expression
+;
+^
+root [6] sizeof(pt_bins)
+(unsigned long) 88
+root [7] 
+root [7] sizeof(double)
+(unsigned long) 8
+root [8] 
+root [8] int pt_bins_n = 10
+(int) 10
+root [9] 
+root [9] 
+root [9] TH1D* hpts = new TH1D("hpts", "", pt_bins_n, pt_bins)
+(TH1D *) 0x4db6750
+root [10] hpts
+(TH1D *) 0x4db6750
+root [11] 
+root [11] 
+root [11] ttree_out->Draw("event_leptons[0].pt()>>hpts")
+'''
+
 # Draw command
 # 
-if args.histo_range:
+temp_output_histo = None # histo-template for custom bins
+if args.custom_range:
+    bin_edges = [float(b) for b in args.custom_range.split(',')]
+    n_bin_edges = len(bin_edges)
+    n_bins = n_bin_edges - 1
+    logging.debug("making %d bins from %s" % (n_bins, args.custom_range))
+
+    # first method
+    #root_bin_edges = (ctypes.c_double * n_bin_edges)(*bin_edges)
+    #temp_output_histo = TH1D(histo_name + "temp", "", n_bins, root_bin_edges) # root commands can access it by the name
+    #draw_command = args.draw_com + '>>' + histo_name + "temp"
+
+    # no, this natural logic does not work in root
+    # the names of objects don't provide any additional access, they are there just for anoyment
+    # let's run through groot
+    ROOT.gROOT.ProcessLine("double bins{num}[] = {{{bins}}};".format(num=1, bins   = args.custom_range))
+    ROOT.gROOT.ProcessLine("int  n_bins{num}   = {n_bins};"  .format(num=1, n_bins = n_bins))
+    ROOT.gROOT.ProcessLine('TH1D* histotemp = new TH1D("histotemp", "", n_bins{num}, bins{num})'.format(num=1))
+    temp_output_histo = ROOT.histotemp
+    #temp_output_histo.SetDirectory(ROOT.gROOT) # now this is really retarded
+    #draw_command = args.draw_com + '>>' + "histotemp"
+    draw_command = args.draw_com
+elif args.histo_range:
     draw_command = args.draw_com + ">>h(%s)" % args.histo_range
 else:
     # TOFIX: without explicit range the histos won't add up
@@ -94,6 +144,12 @@ else:
 
 logging.debug("draw: " + draw_command)
 logging.debug("cond: " + args.cond_com)
+if temp_output_histo:
+    logging.debug("temp: " + temp_output_histo.GetName())
+    #temp_output_histo.SetDirectory(0)
+    # and some preparation for root stuff
+    ROOT.gROOT.ProcessLine('TFile* intfile;')
+    ROOT.gROOT.ProcessLine('TTree* inttree;')
 
 out_histo = None
 weight_counter = None
@@ -108,8 +164,17 @@ for filename in input_files:
 
     logging.debug(filename)
 
-    tfile = TFile(filename)
-    ttree = tfile.Get(args.ttree)
+    if temp_output_histo:
+        # case of custom bin ranges
+        ROOT.gROOT.ProcessLine('intfile = new TFile("%s");' % filename)
+        ROOT.gROOT.ProcessLine('inttree = (TTree*) intfile->Get("%s");' % args.ttree)
+        tfile = ROOT.intfile
+        ttree = ROOT.inttree
+        #temp_output_histo.SetDirectory(ROOT.gDirectory) # now this is really retarded
+        temp_output_histo.SetDirectory(tfile) # now this is really retarded
+    else:
+        tfile = TFile(filename)
+        ttree = tfile.Get(args.ttree)
 
     # Draw the file and sum up
     # 
@@ -119,9 +184,15 @@ for filename in input_files:
         print "%30s %f" % (basename(filename), m)
         maximum = max(m, maximum)
     else:
-        ttree.Draw(draw_command,  args.cond_com)
-        histo = ttree.GetHistogram()
-        histo.SetDirectory(0)
+        if temp_output_histo:
+            ROOT.gROOT.ProcessLine('inttree->Draw("{draw_com}>>+histotemp", "{cond_com}")'.format(draw_com=draw_command, cond_com=args.cond_com))
+            logging.debug(temp_output_histo.Integral())
+            logging.debug(ROOT.histotemp.Integral())
+            histo = temp_output_histo
+        else:
+            ttree.Draw(draw_command,  args.cond_com)
+            histo = ttree.GetHistogram()
+            histo.SetDirectory(0)
 
         if args.per_weight or args.save_weight:
             wcounter = tfile.Get('ntupler/weight_counter')
@@ -137,8 +208,9 @@ for filename in input_files:
                 weight_counter.Add(wcounter)
 
         if not out_histo:
-            out_histo = histo
+            out_histo = histo.Clone()
             out_histo.SetName(histo_name)
+            out_histo.SetDirectory(0)
         else:
             out_histo.Add(histo)
 
@@ -150,7 +222,7 @@ for filename in input_files:
 
 if args.per_weight:
     #weight_counter = tfile.Get('ntupler/weight_counter')
-    histo.Scale(1./weight_counter.GetBinContent(2))
+    out_histo.Scale(1./weight_counter.GetBinContent(2))
 
 if args.histo_color:
     out_histo.SetLineColor(rgb(*(int(i) for i in args.histo_color.split(','))))
