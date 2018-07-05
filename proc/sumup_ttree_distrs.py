@@ -122,20 +122,10 @@ if args.custom_range:
     logging.debug("making %d bins from %s" % (n_bins, args.custom_range))
 
     # first method
-    #root_bin_edges = (ctypes.c_double * n_bin_edges)(*bin_edges)
-    #temp_output_histo = TH1D(histo_name + "temp", "", n_bins, root_bin_edges) # root commands can access it by the name
-    #draw_command = args.draw_com + '>>' + histo_name + "temp"
+    root_bin_edges = (ctypes.c_double * n_bin_edges)(*bin_edges)
+    temp_output_histo = TH1D("histotemp", "", n_bins, root_bin_edges) # root commands can access it by the name
 
-    # no, this natural logic does not work in root
-    # the names of objects don't provide any additional access, they are there just for anoyment
-    # let's run through groot
-    ROOT.gROOT.ProcessLine("double bins{num}[] = {{{bins}}};".format(num=1, bins   = args.custom_range))
-    ROOT.gROOT.ProcessLine("int  n_bins{num}   = {n_bins};"  .format(num=1, n_bins = n_bins))
-    ROOT.gROOT.ProcessLine('TH1D* histotemp = new TH1D("histotemp", "", n_bins{num}, bins{num})'.format(num=1))
-    temp_output_histo = ROOT.histotemp
-    #temp_output_histo.SetDirectory(ROOT.gROOT) # now this is really retarded
-    #draw_command = args.draw_com + '>>' + "histotemp"
-    draw_command = args.draw_com
+    draw_command = args.draw_com + '>>' + "histotemp"
 elif args.histo_range:
     draw_command = args.draw_com + ">>h(%s)" % args.histo_range
 else:
@@ -164,33 +154,32 @@ for filename in input_files:
 
     logging.debug(filename)
 
+    tfile = TFile(filename)
+    ttree = tfile.Get(args.ttree)
     if temp_output_histo:
-        # case of custom bin ranges
-        ROOT.gROOT.ProcessLine('intfile = new TFile("%s");' % filename)
-        ROOT.gROOT.ProcessLine('inttree = (TTree*) intfile->Get("%s");' % args.ttree)
-        tfile = ROOT.intfile
-        ttree = ROOT.inttree
-        #temp_output_histo.SetDirectory(ROOT.gDirectory) # now this is really retarded
-        temp_output_histo.SetDirectory(tfile) # now this is really retarded
-    else:
-        tfile = TFile(filename)
-        ttree = tfile.Get(args.ttree)
+        temp_output_histo.SetDirectory(tfile)
+        # in ROOT the TTree.Draw command "sees" only histograms in current working directory
+        # after opening new file ROOT moves working directory into that file
+        # therefore move temp tehre too
+        # probably it moving current directory to some 0 directory could work
+        # and as probable is the possibility to bring more troubles that way
 
     # Draw the file and sum up
     # 
-    # TOFIX: without explicit range the histos won't add up
+    # TOFIX: without explicit range the histos won't add up, need to pick up the range of the first histo and propagate to the following?
     if args.get_maximum:
         m = ttree.GetMaximum(args.draw_com)
         print "%30s %f" % (basename(filename), m)
         maximum = max(m, maximum)
     else:
+        ttree.Draw(draw_command,  args.cond_com)
+
         if temp_output_histo:
-            ROOT.gROOT.ProcessLine('inttree->Draw("{draw_com}>>+histotemp", "{cond_com}")'.format(draw_com=draw_command, cond_com=args.cond_com))
+            # if there is temp histo then the histo was written there
             logging.debug(temp_output_histo.Integral())
             logging.debug(ROOT.histotemp.Integral())
             histo = temp_output_histo
         else:
-            ttree.Draw(draw_command,  args.cond_com)
             histo = ttree.GetHistogram()
             histo.SetDirectory(0)
 
@@ -217,6 +206,11 @@ for filename in input_files:
     if args.scan:
         print filename
         ttree.Scan(args.draw_com, args.cond_com)
+
+    # on closing the file all objects in it might be deleted
+    # therefore move away the temp histo
+    if temp_output_histo:
+        temp_output_histo.SetDirectory(0)
 
     tfile.Close()
 

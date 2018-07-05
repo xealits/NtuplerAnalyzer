@@ -1,3 +1,10 @@
+# test of custom bins
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --custom-range 1,20,40,60,80,100,130,160,200,250 --cond-com "((abs(gen_t_w_decay_id) == 13 && abs(gen_tb_w_decay_id) > 15*15) || (abs(gen_tb_w_decay_id) == 13 && abs(gen_t_w_decay_id) > 15*15)) && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && njets > 2 && nbjets > 0" --histo-name  tt_mutau_mu1t3j1b_leptaucuts_ttnom_Mt   --output tt_mutau_mu1t3j1b_leptaucuts_ttnom_Mt.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root
+
+
+
+
 
 # test of nominal with full event weight
 
