@@ -98,3 +98,7 @@ tt_th_match group = Mfr Mf Mr
 tt_th_frag group = Frag SemilepBR Peterson
 exp group = JER JES qcd_norm tauID_eff bSF dy_norm TOPPT PU tau_fakes wjets_norm TauES
 tau group = tauID_eff tau_fakes
+mu_ctr_old_mu_sel_ljout autoMCStats 0 0 1
+el_ctr_old_el_sel_ljout autoMCStats 0 0 1
+el_ctr_old_el_sel_lj autoMCStats 0 0 1
+mu_ctr_old_mu_sel_lj autoMCStats 0 0 1
