@@ -1,3 +1,30 @@
+
+# Mt VS eta and Mt with tau
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --custom-range 1,20,40,60,80,100,130,160,200,250 --cond-com "((abs(gen_t_w_decay_id) == 13 && abs(gen_tb_w_decay_id) > 15*15) || (abs(gen_tb_w_decay_id) == 13 && abs(gen_t_w_decay_id) > 15*15)) && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && njets > 2 && nbjets > 0" --histo-name  tt_mutau_mu1t3j1b_leptaucuts_ttnom_Mt   --output tt_mutau_mu1t3j1b_leptaucuts_ttnom_Mt.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root
+
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py()))):event_leptons[0].eta()" --cond-com "selection_stage == 5 && gen_proc_id > 30" --histo-range 10,-2.5,2.5,20,0,250 --ttree ttree_out --output test_shapes_mutau.root --histo-name mt_lepeta_tt_mutau merge-sets/v25/pStage2Test3/MC2016_Summer16_TTJets_powheg.root &
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py()))):event_leptons[0].eta()" --cond-com "selection_stage == 5 && gen_proc_id < 30" --histo-range 10,-2.5,2.5,20,0,250 --ttree ttree_out --output test_shapes_notmutau.root --histo-name mt_lepeta_tt_notmutau merge-sets/v25/pStage2Test3/MC2016_Summer16_TTJets_powheg.root &
+
+
+with tau
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py()))):sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_taus[0].Px()*event_taus[0].Px() + event_taus[0].Py()*event_taus[0].Py())) - (event_met.Px()*event_taus[0].Px() + event_met.Py()*event_taus[0].Py())))" --cond-com "selection_stage == 5 && gen_proc_id > 30" --histo-range 20,0,250,20,0,250    --ttree ttree_out --output test_shapes_mutau_mttau.root    --histo-name mt_lepeta_tt_mutau_mttau    merge-sets/v25/pStage2Test3/MC2016_Summer16_TTJets_powheg.root &
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py()))):sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_taus[0].Px()*event_taus[0].Px() + event_taus[0].Py()*event_taus[0].Py())) - (event_met.Px()*event_taus[0].Px() + event_met.Py()*event_taus[0].Py())))" --cond-com "selection_stage == 5 && gen_proc_id < 30" --histo-range 20,0,250,20,0,250 --ttree ttree_out --output test_shapes_notmutau_mttau.root --histo-name mt_lepeta_tt_notmutau_mttau merge-sets/v25/pStage2Test3/MC2016_Summer16_TTJets_powheg.root &
+
+
+-- no clear distinction
+maybe some correlation in mt-lep - mt-tau
+
+
+
+
+
+
+
 # test of custom bins
 
 python sumup_ttree_distrs.py "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py())))" --custom-range 1,20,40,60,80,100,130,160,200,250 --cond-com "((abs(gen_t_w_decay_id) == 13 && abs(gen_tb_w_decay_id) > 15*15) || (abs(gen_tb_w_decay_id) == 13 && abs(gen_t_w_decay_id) > 15*15)) && abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && njets > 2 && nbjets > 0" --histo-name  tt_mutau_mu1t3j1b_leptaucuts_ttnom_Mt   --output tt_mutau_mu1t3j1b_leptaucuts_ttnom_Mt.root gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg/180409_022217/0000/*root

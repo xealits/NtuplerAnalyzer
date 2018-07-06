@@ -103,6 +103,11 @@ Fit MC to Data with all nuisances, storing NLL of each variation:
 
     combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.txt --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name MuShapes
 
+frozen lumi and .root:
+
+    combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.root --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name MuShapes --freezeParameters lumi_13TeV
+    combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_el.root --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name ElShapes --freezeParameters lumi_13TeV
+
 also in ratio now:
 
     combine -M MultiDimFit ttxsec/fit-stuff/ratio_v31v27pFullElMu_v25v26pR5_mu.txt   --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name RatioMuShapes
