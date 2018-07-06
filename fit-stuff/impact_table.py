@@ -71,6 +71,7 @@ if not args.merge_pdfs:
         print table_row_format % (name, imp*100)
 
 else:
+    mcstat_quadrature_sum = 0.
     pdf_quadrature_sum = 0.
     for nick, imp in sorted(impacts_exp.items(), key=lambda k: k[1], reverse=True):
         if 'PDF' in nick or 'AlphaS' in nick:
@@ -83,9 +84,17 @@ else:
         if 'PDF' in nick or 'AlphaS' in nick:
             pdf_quadrature_sum += imp**2
             continue
+        # the MC stat systematics
+        if "_bin" in nick:
+            mcstat_quadrature_sum += imp**2
+            continue
+
         name = impact_name_dictionary.get(nick, nick)
         print table_row_format % (name, imp*100)
 
     pdf_impact = pdf_quadrature_sum**0.5
     print table_row_format % ('PDF', pdf_impact*100)
+
+    mcstat_impact = mcstat_quadrature_sum**0.5
+    print table_row_format % ('MC stats', mcstat_impact*100)
 
