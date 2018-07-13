@@ -39,15 +39,16 @@ from plotting_root import rgb
 gROOT.SetBatch()
 
 
+# output histograms
+#                                  n bins  first  last
+histo_sig = TH1D("tau_pt_sig", "", 200,    0.,    250.)
+histo_bck = TH1D("tau_pt_bck", "", 200,    0.,    250.)
+
 
 input_filename, ttree_path = args.input.split(':')
 
 input_file = TFile(input_filename)
 ttree      = input_file.Get(ttree_path)
-
-#                                  n bins  first  last
-histo_sig = TH1D("tau_pt_sig", "", 200,    0.,    250.)
-histo_bck = TH1D("tau_pt_bck", "", 200,    0.,    250.)
 
 for event in ttree:
     # you can find what the ttree contains by running in ROOT interpreter:
@@ -120,6 +121,14 @@ for event in ttree:
 
 '''
 Try comparing pt of tau -- maybe fake taus and true taus have different distribution?
+In root interpreter you can normalize the shapes of distributions:
+root [6] tau_pt_sig->Scale(1./tau_pt_sig->Integral())
+root [7] tau_pt_bck->Scale(1./tau_pt_bck->Integral())
+
+and draw them on the same canvas:
+root [8] tau_pt_sig->Draw()
+root [9] tau_pt_bck->Draw("same")
+
 Try plotting other distributions, like eta of tau:
 event_taus[0].eta()
 
@@ -129,7 +138,7 @@ Or try making 2D distributions.
 For example, couple interesting ones are special parameters of taus:
  event_taus_sv_dalitz_m1[0] and event_taus_sv_dalitz_m2[0].
 In root interpreter you can see it as:
-ttree_out->Draw("event_taus_sv_dalitz_m1[0]:event_taus_sv_dalitz_m2[0]>>h(20,0,2,20,0,2)", "(gen_proc_id == 32 || gen_proc_id == 31)", "col")
+ttree_out->Draw("event_taus_sv_dalitz_m1[0]:event_taus_sv_dalitz_m2[0]>>h(20,0,2,20,0,2)", "gen_proc_id == 32 || gen_proc_id == 31", "col")
 '''
 
 input_file.Close()
