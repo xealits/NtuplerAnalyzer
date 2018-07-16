@@ -1195,6 +1195,7 @@ else:
         left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
     left_title.AddText("CMS preliminary at 13 TeV")
     left_title.SetTextFont(1)
+    left_title.SetFillColor(0)
 
     '''
     TPaveText* right_title = new TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC");
