@@ -1,11 +1,11 @@
 
 tau
 
-python stack_plot.py mc_v25p2_v26p2_updowns2.root ../merge-sets/v25/p2/SingleElectron.root --lumi 31300 --wjet 0.85 --factor-dy 1.05 -p -r -c ctr_old_el_sel --qcd 1.05 --title "" --title-x "tau p_{T}" -d tau_pt
-python stack_plot.py mc_v25p2_v26p2_updowns2.root ../merge-sets/v25/p2/SingleElectron.root --lumi 31300 --wjet 0.85 --factor-dy 1.05 -p -r -c ctr_old_el_sel --qcd 1.05 --title "" --title-x "tau #eta"  -d tau_eta
+python stack_plot.py mc_v25p2_v26p2_updowns2.root ../merge-sets/v25/p2/SingleElectron.root -o plots/paper-draft-1_an-version-3/ --lumi 31300 --wjet 0.85 --factor-dy 1.05 -p -r -c ctr_old_el_sel --qcd 1.05 --title "" --title-x "tau p_{T}" -d tau_pt
+python stack_plot.py mc_v25p2_v26p2_updowns2.root ../merge-sets/v25/p2/SingleElectron.root -o plots/paper-draft-1_an-version-3/ --lumi 31300 --wjet 0.85 --factor-dy 1.05 -p -r -c ctr_old_el_sel --qcd 1.05 --title "" --title-x "tau #eta"  -d tau_eta
 
-python stack_plot.py mc_v25v26pR5.root ../merge-sets/v25/pR5/SingleMuon.root     -o histosel-roots/v25v26pR5_mu_noqcd_recor_mu_sel/ --lumi 35800 -c ctr_old_mu_sel   --qcd 1.05 --wjet 0.8  -x ctr_old_mu_selVloose    -s NOMINAL --title "" -p -r --title-x "tau p_{T}"  -d tau_pt
-python stack_plot.py mc_v25v26pR5.root ../merge-sets/v25/pR5/SingleMuon.root     -o histosel-roots/v25v26pR5_mu_noqcd_recor_mu_sel/ --lumi 35800 -c ctr_old_mu_sel   --qcd 1.05 --wjet 0.8  -x ctr_old_mu_selVloose    -s NOMINAL --title "" -p -r --title-x "tau #eta"   -d tau_eta
+python stack_plot.py mc_v25v26pR5.root ../merge-sets/v25/pR5/SingleMuon.root     -o plots/paper-draft-1_an-version-3/ --lumi 35800 -c ctr_old_mu_sel   --qcd 1.05 --wjet 0.8  -x ctr_old_mu_selVloose    -s NOMINAL --title "" -p -r --title-x "tau p_{T}"  -d tau_pt
+python stack_plot.py mc_v25v26pR5.root ../merge-sets/v25/pR5/SingleMuon.root     -o plots/paper-draft-1_an-version-3/ --lumi 35800 -c ctr_old_mu_sel   --qcd 1.05 --wjet 0.8  -x ctr_old_mu_selVloose    -s NOMINAL --title "" -p -r --title-x "tau #eta"   -d tau_eta
 
 leptons
 
