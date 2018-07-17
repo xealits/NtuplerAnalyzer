@@ -1,3 +1,9 @@
+# first acceptance run
+
+python genjobs.py v34 t1 --acceptance-study channels_nom_sys_both_sel_main --dtags MC2016_Summer16_TTJets_powheg,updowns,updowns_extra --scheme 5,5,2,12,12
+make sub_proc nt=v34 proc=t1 node=1
+
+
 # rerun the old full nominal final selection in mu and el
 
 python genjobs.py v25 pOld1 --old-loop --do-W-stitching channels_nom_sys_both_sel_main --dtags std_mc,data_mu --scheme 5,5,2,12,12

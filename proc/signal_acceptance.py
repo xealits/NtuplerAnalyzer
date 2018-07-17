@@ -1,8 +1,10 @@
 import argparse
 import logging
+import os
 from os.path import isfile, basename
 import ctypes
 from array import array
+from sys import exit
 
 
 
@@ -10,16 +12,15 @@ from array import array
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
     description = "signal acceptance study",
-    epilog = """Example:\npython signal_acceptance.py --output out_signal_accept_v34.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_90.root
+    epilog = """Example:\npython signal_acceptance.py --output temp/ gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_90.root
 """
     )
 
-parser.add_argument("output",  type=str, default="output.root", help="filename for output")
+parser.add_argument("output_dir",  type=str, default="temp/", help="the path of output directory")
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 
-parser.add_argument('input_files', nargs='+', help="""the job files to process:
-
-/gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_*.root""")
+parser.add_argument('input_file', help="""the job files to process: 
+/gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_0.root""")
 
 
 args = parser.parse_args()
@@ -131,7 +132,6 @@ and the separate datasets
 
 
 
-input_files = args.input_files
 
 # for all systematic weights
 histo_all_ev_eltau = TH1D("all_ev_eltau", "", 201, 0, 200)
@@ -147,105 +147,116 @@ def round_pdf_weight(pdf_w):
         pdf_w = 1.
     return pdf_w
 
-for filename in input_files:
-    if not isfile(filename):
-        logging.info("missing: " + filename)
-        continue
+input_filename = args.input_file
+if not isfile(input_filename):
+    logging.info("missing: " + input_filename)
+    exit(1)
 
-    logging.debug(filename)
+logging.debug(input_filename)
 
-    tfile = TFile(filename)
-    ttree = tfile.Get('ntupler/reduced_ttree')
+tfile = TFile(input_filename)
+ttree = tfile.Get('ntupler/reduced_ttree')
 
-    for iev, event in enumerate(ttree):
-        is_eltau = abs(event.gen_t_w_decay_id) == 11 or abs(event.gen_tb_w_decay_id) == 11
-        all_histo, cut_histo = el_histos if is_eltau else mu_histos
+for iev, event in enumerate(ttree):
+    is_eltau = abs(event.gen_t_w_decay_id) == 11 or abs(event.gen_tb_w_decay_id) == 11
+    all_histo, cut_histo = el_histos if is_eltau else mu_histos
 
-        # the nominal event weight
-        # consists of only PU (no amcatnlo, z or recoil for ttbar)
-        if is_eltau:
-            the_mc_weight = pileup_ratio_ele[event.nvtx_gen]
-            #weight_pu_el_up = pileup_ratio_up_ele  [ev.nvtx_gen]
-            #weight_pu_el_dn = pileup_ratio_down_ele[ev.nvtx_gen]
-        else:
-            the_mc_weight = pileup_ratio[event.nvtx_gen]
-            #weight_pu_mu_up = pileup_ratio_up[ev.nvtx_gen]
-            #weight_pu_mu_dn = pileup_ratio_down[ev.nvtx_gen]
+    # the nominal event weight
+    # consists of only PU (no amcatnlo, z or recoil for ttbar)
+    if is_eltau:
+        the_mc_weight = pileup_ratio_ele[event.nvtx_gen]
+        #weight_pu_el_up = pileup_ratio_up_ele  [ev.nvtx_gen]
+        #weight_pu_el_dn = pileup_ratio_down_ele[ev.nvtx_gen]
+    else:
+        the_mc_weight = pileup_ratio[event.nvtx_gen]
+        #weight_pu_mu_up = pileup_ratio_up[ev.nvtx_gen]
+        #weight_pu_mu_dn = pileup_ratio_down[ev.nvtx_gen]
 
-        # get systematic weights
-        weights_gen_weight_nom   = event.gen_weights_renorm_fact[MUf_nom_MUr_nom] if event.gen_weights_renorm_fact[MUf_nom_MUr_nom] > 0. else 0.00001
-        # the nominal is found to be always == 1
-        weights_gen_weight_f_rUp = event.gen_weights_renorm_fact[MUf_nom_MUr_up]
-        weights_gen_weight_f_rDn = event.gen_weights_renorm_fact[MUf_nom_MUr_down]
-        weights_gen_weight_fUp_r = event.gen_weights_renorm_fact[MUf_up_MUr_nom]
-        weights_gen_weight_fDn_r = event.gen_weights_renorm_fact[MUf_down_MUr_nom]
-        weights_gen_weight_frUp  = event.gen_weights_renorm_fact[MUf_up_MUr_up]
-        weights_gen_weight_frDn  = event.gen_weights_renorm_fact[MUf_down_MUr_down]
-        w_scale = [weights_gen_weight_f_rUp, weights_gen_weight_f_rDn, weights_gen_weight_fUp_r, weights_gen_weight_fDn_r, weights_gen_weight_frUp, weights_gen_weight_frDn]
+    # get systematic weights
+    weights_gen_weight_nom   = event.gen_weights_renorm_fact[MUf_nom_MUr_nom] if event.gen_weights_renorm_fact[MUf_nom_MUr_nom] > 0. else 0.00001
+    # the nominal is found to be always == 1
+    weights_gen_weight_f_rUp = event.gen_weights_renorm_fact[MUf_nom_MUr_up]
+    weights_gen_weight_f_rDn = event.gen_weights_renorm_fact[MUf_nom_MUr_down]
+    weights_gen_weight_fUp_r = event.gen_weights_renorm_fact[MUf_up_MUr_nom]
+    weights_gen_weight_fDn_r = event.gen_weights_renorm_fact[MUf_down_MUr_nom]
+    weights_gen_weight_frUp  = event.gen_weights_renorm_fact[MUf_up_MUr_up]
+    weights_gen_weight_frDn  = event.gen_weights_renorm_fact[MUf_down_MUr_down]
+    w_scale = [weights_gen_weight_f_rUp, weights_gen_weight_f_rDn, weights_gen_weight_fUp_r, weights_gen_weight_fDn_r, weights_gen_weight_frUp, weights_gen_weight_frDn]
 
-        # pdf CT14 nominal
-        weights_gen_weight_norm = event.gen_weights_pdf_hessians[0]
-        # norm is the nominal PDF
-        if 0. <= weights_gen_weight_norm < 0.00001:
-            weights_gen_weight_norm = 0.00001
-        elif 0. > weights_gen_weight_norm > -0.00001:
-            weights_gen_weight_norm = -0.00001
+    # pdf CT14 nominal
+    weights_gen_weight_norm = event.gen_weights_pdf_hessians[0]
+    # norm is the nominal PDF
+    if 0. <= weights_gen_weight_norm < 0.00001:
+        weights_gen_weight_norm = 0.00001
+    elif 0. > weights_gen_weight_norm > -0.00001:
+        weights_gen_weight_norm = -0.00001
 
-        w_pdf = [round_pdf_weight(event.gen_weights_pdf_hessians[i] / weights_gen_weight_norm) for i in range(1,57)]
+    w_pdf = [round_pdf_weight(event.gen_weights_pdf_hessians[i] / weights_gen_weight_norm) for i in range(1,57)]
 
-        # alphaS
-        #weights_gen_weight_alphas = (event.gen_weight_alphas_1, event..gen_weight_alphas_2)
-        weights_gen_weight_alphas_up = event.gen_weight_alphas_1  / weights_gen_weight_norm
-        weights_gen_weight_alphas_dn = event.gen_weight_alphas_2  / weights_gen_weight_norm
+    # alphaS
+    #weights_gen_weight_alphas = (event.gen_weight_alphas_1, event..gen_weight_alphas_2)
+    weights_gen_weight_alphas_up = event.gen_weight_alphas_1  / weights_gen_weight_norm
+    weights_gen_weight_alphas_dn = event.gen_weight_alphas_2  / weights_gen_weight_norm
 
-        # sane high weight in tt->taumu tauh as in pdfs
-        if weights_gen_weight_alphas_up > 2.:
-            weights_gen_weight_alphas_up = 1.
-        if weights_gen_weight_alphas_dn > 2.:
-            weights_gen_weight_alphas_dn = 1.
+    # sane high weight in tt->taumu tauh as in pdfs
+    if weights_gen_weight_alphas_up > 2.:
+        weights_gen_weight_alphas_up = 1.
+    if weights_gen_weight_alphas_dn > 2.:
+        weights_gen_weight_alphas_dn = 1.
 
-        w_alphas = [weights_gen_weight_alphas_up, weights_gen_weight_alphas_dn]
+    w_alphas = [weights_gen_weight_alphas_up, weights_gen_weight_alphas_dn]
 
-        # save the overall number of events
-        # and events passing cuts
-        # events must be weighted with their weights
-        for sys_i, sys_w in enumerate([the_mc_weight] + w_scale + w_alphas + w_pdf):
-            all_histo.Fill(sys_i, sys_w)
+    # save the overall number of events
+    # and events passing cuts
+    # events must be weighted with their weights
+    for sys_i, sys_w in enumerate([the_mc_weight] + w_scale + w_alphas + w_pdf):
+        all_histo.Fill(sys_i, sys_w)
 
-        # there is always 1 lepton and 1 tau in signal:
-        if not (len(event.gen2_leptons_p4) > 0 and len(event.gen_tt_tau_vis_p4) > 0): continue
+    # there is always 1 lepton and 1 tau in signal:
+    if not (len(event.gen2_leptons_p4) > 0 and len(event.gen_tt_tau_vis_p4) > 0): continue
 
-        # lepton cuts
-        if       is_eltau and not (event.gen2_leptons_p4[0].pt() > 30 and abs(event.gen2_leptons_p4[0].eta()) < 2.4): continue
-        elif not is_eltau and not (event.gen2_leptons_p4[0].pt() > 26 and abs(event.gen2_leptons_p4[0].eta()) < 2.4 and (abs(event.gen2_leptons_p4[0].eta()) < 1.442 or abs(event.gen2_leptons_p4[0].eta()) > 1.566)): continue
+    # lepton cuts
+    if       is_eltau and not (event.gen2_leptons_p4[0].pt() > 30 and abs(event.gen2_leptons_p4[0].eta()) < 2.4): continue
+    elif not is_eltau and not (event.gen2_leptons_p4[0].pt() > 26 and abs(event.gen2_leptons_p4[0].eta()) < 2.4 and (abs(event.gen2_leptons_p4[0].eta()) < 1.442 or abs(event.gen2_leptons_p4[0].eta()) > 1.566)): continue
 
-        # tau cuts
-        if not (event.gen_tt_tau_vis_p4[0].pt() > 30 and abs(event.gen_tt_tau_vis_p4[0].eta()) < 2.4): continue
+    # tau cuts
+    if not (event.gen_tt_tau_vis_p4[0].pt() > 30 and abs(event.gen_tt_tau_vis_p4[0].eta()) < 2.4): continue
 
-        # jet cuts
-        n_jets_pass = 0
-        n_b_jets_pass = 0
-        for jet_p4, jet_pdgId in zip(event.gen2_jets_p4, event.gen2_jets_pdgId):
-            if jet_p4.pt() > 30 and abs(jet_p4.eta()) < 2.5:
-                n_jets_pass += 1
-                if jet_pdgId == 5:
-                    n_b_jets_pass += 1
+    # jet cuts
+    n_jets_pass = 0
+    n_b_jets_pass = 0
+    for jet_p4, jet_pdgId in zip(event.gen2_jets_p4, event.gen2_jets_pdgId):
+        if jet_p4.pt() > 30 and abs(jet_p4.eta()) < 2.5:
+            n_jets_pass += 1
+            if jet_pdgId == 5:
+                n_b_jets_pass += 1
 
-        if not n_jets_pass > 2: continue
+    if not n_jets_pass > 2: continue
 
-        # b-jet
-        if not n_b_jets_pass > 0: continue
+    # b-jet
+    if not n_b_jets_pass > 0: continue
 
-        for sys_i, sys_w in enumerate([the_mc_weight] + w_scale + w_alphas + w_pdf):
-            cut_histo.Fill(sys_i, sys_w)
-
-
+    for sys_i, sys_w in enumerate([the_mc_weight] + w_scale + w_alphas + w_pdf):
+        cut_histo.Fill(sys_i, sys_w)
 
 
 
 
 
-fout = TFile(args.output, "RECREATE")
+
+job_filename = input_filename.split('/')[-1]
+output_path = args.output_dir + '/' + job_filename
+logging.debug(output_path)
+
+# make job dir if needed
+if not os.path.isdir(args.output_dir):
+    try:
+        os.makedirs(args.output_dir)
+
+    except OSError as e:
+        print e.errno, e.strerror
+
+fout = TFile(output_path, "RECREATE")
 fout.Write()
 
 fout.cd()
