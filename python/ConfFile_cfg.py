@@ -44,9 +44,6 @@ input_files, isMC, is2017rereco, dtag = ('file:/eos/user/o/otoldaie/Data_SingleM
 input_files, isMC, is2017rereco, dtag = ('file:/eos/user/o/otoldaie/Data_SingleMuon_B_3AFB9551-E6EB-E611-8EDA-0025905C3D98.root',),     False, False, 'SingleMuon2016B'
 input_files, isMC, is2017rereco, dtag = ('file:/eos/user/o/otoldaie/Data_SingleMuon_B_Aug_5ADCFC9D-4B81-E711-A19C-0CC47A4C8E8A.root',), False, True,  'SingleMuon2016BAug2'
 
-input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_165F54A0-A3BE-E611-B3F7-0025905A606A.root',), True, 'TTJets2'
-input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8_9EAC0046-06B7-E611-AF76-141877411FED.root',), True, 'TTJets_fsrdown'
-
 # DY file
 input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/MC2015_Spring16_reHLT_DY-50_amcatnlo_00200284-F15C-E611-AA9B-002590574776.root",), True, 'DYJets2015_amcatnlo'
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/MC2016_Summer16_DY50_amcatnlo_0EE8D393-D0DE-E611-9106-A4BF0101202F.root',), True, 'DYJets'
@@ -55,11 +52,14 @@ input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/MC2016_Summer16_DY50_amcat
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/QCD2015_HT100to200_48346CCA-B351-E611-8851-C4346BC8D390.root',), True, "QCD2015-100-200"
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/QCD2016_HT100to200_E4183151-F8BD-E611-8228-002590207E3C.root',), True, "QCD2016-100-200"
 
+input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8_9EAC0046-06B7-E611-AF76-141877411FED.root',), True, 'TTJets_fsrdown'
+input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_165F54A0-A3BE-E611-B3F7-0025905A606A.root',), True, 'TTJets2'
+
 
 if any('2015' in infile for infile in input_files) or '2015' in dtag:
     HLT_source = 'HLT2'
 
-record_scheme = 'tauID' # 'tauCands' #  Dilep MonitorHLT tauIDantiIso jets'
+record_scheme = 'signal' # 'tauID' # 'tauCands' #  Dilep MonitorHLT tauIDantiIso jets'
 
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/26ABF488-A0BE-E611-BEEB-0CC47A4D7640.root'
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root'
@@ -81,7 +81,7 @@ ivars.inputFiles = input_files
 
 to_tag = True
 
-output_file = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/NtuplerAnalyzer_test_METfilters%s_%s_%s.root' % ('OFF' if to_tag else 'ON', dtag, record_scheme)
+output_file = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_29/src/UserCode/NtuplerAnalyzer/NtuplerAnalyzer_test_METfilters%s_%s_%s.root' % ('OFF' if to_tag else 'ON', dtag, record_scheme)
 print output_file
 ivars.outputFile = output_file
 # get and parse the command line arguments
@@ -137,9 +137,9 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 
 
@@ -156,14 +156,22 @@ process.source = cms.Source("PoolSource",
 
 # the fragmentation systematics calculator
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
-process.mergedGenParticles = cms.EDProducer("MergedGenParticleProducer",
-                    inputPruned = cms.InputTag("prunedGenParticles"),
-                        inputPacked = cms.InputTag("packedGenParticles"),
-)
-from GeneratorInterface.RivetInterface.genParticles2HepMC_cfi import genParticles2HepMC
-process.genParticles2HepMC = genParticles2HepMC.clone( genParticles = cms.InputTag("mergedGenParticles") )
-process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
-process.particleLevel.excludeNeutrinosFromJetClustering = False
+
+#from doc on particlelevel https://twiki.cern.ch/twiki/bin/viewauth/CMS/ParticleLevelProducer
+process.load("GeneratorInterface.RivetInterface.mergedGenParticles_cfi")
+process.load("GeneratorInterface.RivetInterface.genParticles2HepMC_cfi")
+process.genParticles2HepMC.genParticles = cms.InputTag("mergedGenParticles")
+process.load("GeneratorInterface.RivetInterface.particleLevel_cfi") 
+
+# from b-frag example https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer
+#process.mergedGenParticles = cms.EDProducer("MergedGenParticleProducer",
+#                    inputPruned = cms.InputTag("prunedGenParticles"),
+#                        inputPacked = cms.InputTag("packedGenParticles"),
+#)
+#from GeneratorInterface.RivetInterface.genParticles2HepMC_cfi import genParticles2HepMC
+#process.genParticles2HepMC = genParticles2HepMC.clone( genParticles = cms.InputTag("mergedGenParticles") )
+#process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
+#process.particleLevel.excludeNeutrinosFromJetClustering = False
 process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
 
 
@@ -196,6 +204,7 @@ process.ntupler.HLT_source = cms.string(HLT_source)
 process.ntupler.input = cms.untracked.vstring(input_files)
 process.ntupler.outfile = cms.string(output_file)
 
+print 'record_scheme', record_scheme
 if record_scheme:
     process.ntupler.record_tauID         = cms.bool('tauID'         in record_scheme)
     process.ntupler.record_tauCands      = cms.bool('tauCands'      in record_scheme)
@@ -205,6 +214,7 @@ if record_scheme:
     process.ntupler.record_ElMu          = cms.bool('ElMu'          in record_scheme)
     process.ntupler.record_Dilep         = cms.bool('Dilep'         in record_scheme)
     process.ntupler.record_jets          = cms.bool('jets'          in record_scheme)
+    process.ntupler.record_signal        = cms.bool('signal'        in record_scheme)
 
 #process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.Tracer = cms.Service("Tracer")

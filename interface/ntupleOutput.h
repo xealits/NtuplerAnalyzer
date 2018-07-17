@@ -267,6 +267,18 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_wdecays_IDs) // ID-s of the prompt
 Int_t_in_NTuple(OUTNTUPLE, gen_N_zdecays)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_zdecays_IDs)
 
+// gen2 (from rivet this with particlelevel thing) leptons and jets
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   gen2_jets_pdgId)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  gen2_jets_lep_dR_matched)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, gen2_jets_lep_dR)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   gen2_leptons_pdgId)
+
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen2_jets_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen2_leptons_p4)
+
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen2_fatjets_pdgId)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen2_fatjets_p4)
+
 /*
  * new homogeneous gen final states
  * should substitute all the above
@@ -469,6 +481,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_partonFlavour)
 
 // GEN TAUS
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tau_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tt_tau_vis_p4)
 
 // TAUS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_id)

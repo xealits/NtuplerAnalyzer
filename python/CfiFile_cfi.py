@@ -5,8 +5,8 @@ import FWCore.ParameterSet.Config as cms
 #)
 
 ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
-    record_ElTau         = cms.bool(True)  ,
-    record_MuTau         = cms.bool(True)  ,
+    record_ElTau         = cms.bool(False)  ,
+    record_MuTau         = cms.bool(False)  ,
     record_tauCands      = cms.bool(False) ,
     record_tauID         = cms.bool(True)  ,
     record_tauIDantiIso  = cms.bool(False) ,
@@ -15,6 +15,7 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     record_ElMu          = cms.bool(False) ,
     record_Dilep         = cms.bool(False) ,
     record_jets          = cms.bool(False) ,
+    record_signal        = cms.bool(False) ,
 
     isMC = cms.bool(False),
     is2017rereco = cms.bool(False),

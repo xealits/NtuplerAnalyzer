@@ -867,7 +867,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//genJetsHandle.getByLabel(ev, "slimmedGenJets");
 	edm::EDGetTokenT<pat::JetCollection> jets_;
 	//jetsHandle.getByLabel(ev, "slimmedJets");
-	edm::EDGetTokenT<std::vector<reco::GenJet>  > genJetsToken_; // there is a twist why
+	edm::EDGetTokenT<std::vector<reco::GenJet>  > genLepsToken_, genJetsToken_, genFatJetsToken_; // there is a twist why
 
 	//edm::EDGetTokenT<edm::ValueMap<float> > petersonFragToken_;
 	edm::EDGetTokenT<edm::ValueMap<float> > upFragToken_, centralFragToken_, downFragToken_, PetersonFragToken_, semilepbrUpToken_, semilepbrDownToken_;
@@ -875,7 +875,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//RecoilCorrector* recoilPFMetCorrector;
 	//TH2D* zPtMass_histo;
 
-	bool record_ElTau, record_MuTau, record_tauCands, record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets;
+	bool record_ElTau, record_MuTau, record_tauCands, record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets, record_signal;
 
 	TString dtag;
 	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop, is2017rereco;
@@ -954,6 +954,7 @@ record_MonitorHLT    (iConfig.getParameter<bool>("record_MonitorHLT"))    ,
 record_ElMu          (iConfig.getParameter<bool>("record_ElMu"))          ,
 record_Dilep         (iConfig.getParameter<bool>("record_Dilep"))         ,
 record_jets          (iConfig.getParameter<bool>("record_jets"))          ,
+record_signal        (iConfig.getParameter<bool>("record_signal"))        ,
 dtag       (iConfig.getParameter<std::string>("dtag")),
 isMC       (iConfig.getParameter<bool>("isMC")),
 is2017rereco       (iConfig.getParameter<bool>("is2017rereco")),
@@ -1032,7 +1033,9 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	mets_uncorrected_ = consumes<pat::METCollection>(edm::InputTag("slimmedMETsUncorrected"));
 
 	genJets_ = consumes<vector<reco::GenJet>>(edm::InputTag("slimmedGenJets"));
+	genLepsToken_ = consumes<std::vector<reco::GenJet> >(edm::InputTag("particleLevel:leptons"));
 	genJetsToken_ = consumes<std::vector<reco::GenJet> >(edm::InputTag("particleLevel:jets")); // not sure if it is different from previous one
+	genFatJetsToken_ = consumes<std::vector<reco::GenJet> >(edm::InputTag("particleLevel:fatjets"));
 	jets_    = consumes<pat::JetCollection>(edm::InputTag("slimmedJets"));
 
 	//petersonFragToken_(consumes<edm::ValueMap<float> >(edm::InputTag("bfragWgtProducer:PetersonFrag"))),
@@ -1316,11 +1319,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// lep tau tau3ch b    W
 	// 1   2   4      8   16
 	//vector<const reco::Candidate*> gen_leps, gen_taus, gen_tau3ch, gen_w_prods, gen_b_prods;
-	vector<LorentzVector> gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods;
+	vector<LorentzVector> gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gen_tt_tau_prods;
 	// parallel provenance ids
 	// save the corresponding ID of the particle
 	// -- to match b to W+ and b-bar to W- etc
 	vector<int>           gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods;
+
+	bool isTTSignal = false;
 
 	// couple things for MC:
 	//  - gen aMCatNLO
@@ -1557,6 +1562,26 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			LogInfo("Demo") << "MC systematic weights";
 			}
 
+		// gen2 leptons for signal acceptance info
+		edm::Handle<std::vector<reco::GenJet>> genLeps2;
+		iEvent.getByToken( genLepsToken_, genLeps2);
+
+		for(auto genLep=genLeps2->begin(); genLep!=genLeps2->end(); ++genLep)
+			{
+			// this jet should have some info on whether it's b jet
+			NT_gen2_leptons_pdgId.push_back(genLep->pdgId());
+			NT_gen2_leptons_p4.push_back(genLep->p4());
+			}
+
+		//// fatjets just in case
+		//edm::Handle<std::vector<reco::GenJet>> genFatJets2;
+		//iEvent.getByToken( genFatJetsToken_, genFatJets2);
+		//for(auto genFatJet=genFatJets2->begin(); genFatJet!=genFatJets2->end(); ++genFatJet)
+		//	{
+		//	// this jet should have some info on whether it's b jet
+		//	NT_gen2_fatjets_pdgId.push_back(genFatJet->pdgId());
+		//	}
+
 		// fragmentation and decay tables (of b->hadron) systematics
 		edm::Handle<std::vector<reco::GenJet>> genJets2;
 		iEvent.getByToken( genJetsToken_, genJets2);
@@ -1585,6 +1610,21 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		double weight_upFrag = 1, weight_centralFrag = 1, weight_downFrag = 1, weight_PetersonFrag = 1, weight_semilepbrUp = 1, weight_semilepbrDown = 1;
 		for(auto genJet=genJets2->begin(); genJet!=genJets2->end(); ++genJet)
 			{
+			// this jet should have some info on whether it's b jet
+			NT_gen2_jets_pdgId.push_back(genJet->pdgId());
+			NT_gen2_jets_p4.push_back(genJet->p4());
+
+			// get matching to gen leptons
+			Float_t dR_to_sel = 999.;
+			for(size_t l=0; l<NT_gen2_leptons_p4.size(); ++l)
+				{
+				double dR = reco::deltaR(genJet->p4(), NT_gen2_leptons_p4[l]);
+				if (dR < dR_to_sel)
+					dR_to_sel = dR;
+				}
+			NT_gen2_jets_lep_dR.push_back(dR_to_sel);
+			NT_gen2_jets_lep_dR_matched.push_back(dR_to_sel < 0.4);
+
 			edm::Ref<std::vector<reco::GenJet> > genJetRef(genJets2, genJet - genJets2->begin()); // this looks really weird
 			//cout << "pt=" << genJet->pt() << " id=" << genJet->pdgId() << " petersonFragWeight=" << (*petersonFrag)[genJetRef] << endl;
 			//...
@@ -1851,6 +1891,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						if (fabs(d_i_pdgId) == 15)
 							{
 							int tau_id = simple_tau_decay_id(W_final->daughter(d_i));
+
+							// save the visible part of the tt tau (all gen taus grab not-tt stuff
+							LorentzVector gen_tt_tau_vis(0,0,0,0);
+							sum_final_cands(W_final->daughter(d_i), gen_tt_tau_prods, gen_tt_tau_vis);
+							NT_gen_tt_tau_vis_p4.push_back(gen_tt_tau_vis);
+
 							// = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
 							// 20 + 10
 							LogInfo ("Demo") << "tau decay w ID " << tau_id;
@@ -2077,7 +2123,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				//NT_zPtWeight = zPtMass_histo->GetBinContent(zPtMass_histo->GetXaxis()->FindBin(NT_genMass), zPtMass_histo->GetYaxis()->FindBin(NT_genPt));
 				}
 
-			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id;
+			if (isTT)
+				{
+				// lepton+tauh decay
+				isTTSignal |= (abs(NT_gen_t_w_decay_id) == 11 || abs(NT_gen_t_w_decay_id) == 13)   && (abs(NT_gen_tb_w_decay_id) > 15*15);
+				isTTSignal |= (abs(NT_gen_tb_w_decay_id) == 11 || abs(NT_gen_tb_w_decay_id) == 13) && (abs(NT_gen_t_w_decay_id) > 15*15);
+				}
+			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id << " is Sig " << isTTSignal;
 			}
 
 		weight = pu_vector_NOMINAL[NT_nvtx_gen] * (aMCatNLO? weight_Gen : 1) * weight_TopPT;
@@ -2506,7 +2558,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	event_checkpoint++;
 
-	if (!(eTrigger || muTrigger || lepMonitorTrigger || jetsHLT)) return; // orthogonalization is done afterwards
+	if (!record_signal && !(eTrigger || muTrigger || lepMonitorTrigger || jetsHLT)) return; // orthogonalization is done afterwards
 	event_counter ->Fill(event_checkpoint++);
 	weight_counter->Fill(event_checkpoint, weight);
 
@@ -2667,8 +2719,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//bool clean_lep_conditions = nVetoE_all==0 && nVetoMu_all==0 && nGoodPV != 0; // veto on all iso veto leptons
 	bool clean_lep_conditions = nGoodPV != 0; // just good PV, the loosest req,save bit if no veto leps
 	//if (!(clean_lep_conditions && ((selLeptons.size() > 0 && selLeptons.size() < 3 && nVetoE_Iso == 0 && nVetoMu_Iso == 0) || (selLeptons_allIso.size() == 1 && nVetoE_all == 0 && nVetoMu_all == 0)) )) return;
-	if (!clean_lep_conditions) return;
-	if (!((selLeptons.size() > 0 && selLeptons.size() < 3) || selLeptons_allIso.size() == 1 || selTaus.size() > 0)) return;
+	if (!record_signal && !clean_lep_conditions) return;
+	if (!record_signal && !((selLeptons.size() > 0 && selLeptons.size() < 3) || selLeptons_allIso.size() == 1 || selTaus.size() > 0)) return;
 	// exit now to reduce computation -- all record schemes have this requirement
 
 	event_counter ->Fill(event_checkpoint++);
@@ -3841,10 +3893,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		{
 		record_ntuple |= jetsHLT && selJets.size() > 0; // these are all-eta jets with pt-cut, anti-lep dR and Loose ID..
 		}
+	if (record_signal && isTTSignal)
+		{
+		record_ntuple = true; // all events of signal
+		}
 
 	if (record_ntuple)
 		{
-		LogInfo ("Demo") << "recording " << record_tauCands << record_tauID << record_bPreselection << record_MonitorHLT << record_ElMu << record_Dilep;
+		LogInfo ("Demo") << "recording " << NT_indexevents << ' ' << record_tauCands << record_tauID << record_tauIDantiIso << record_bPreselection << record_MonitorHLT << record_ElMu << record_Dilep << record_jets << record_signal << isTTSignal;
 		event_counter ->Fill(event_checkpoint++);
 		weight_counter->Fill(event_checkpoint, weight);
 

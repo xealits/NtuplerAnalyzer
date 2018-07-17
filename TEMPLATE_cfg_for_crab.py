@@ -106,14 +106,22 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(ivar
 
 # the fragmentation systematics calculator
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
-process.mergedGenParticles = cms.EDProducer("MergedGenParticleProducer",
-                    inputPruned = cms.InputTag("prunedGenParticles"),
-                        inputPacked = cms.InputTag("packedGenParticles"),
-)
-from GeneratorInterface.RivetInterface.genParticles2HepMC_cfi import genParticles2HepMC
-process.genParticles2HepMC = genParticles2HepMC.clone( genParticles = cms.InputTag("mergedGenParticles") )
-process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
-process.particleLevel.excludeNeutrinosFromJetClustering = False
+
+#from doc on particlelevel https://twiki.cern.ch/twiki/bin/viewauth/CMS/ParticleLevelProducer
+process.load("GeneratorInterface.RivetInterface.mergedGenParticles_cfi")
+process.load("GeneratorInterface.RivetInterface.genParticles2HepMC_cfi")
+process.genParticles2HepMC.genParticles = cms.InputTag("mergedGenParticles")
+process.load("GeneratorInterface.RivetInterface.particleLevel_cfi") 
+
+# from b-frag example https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer
+#process.mergedGenParticles = cms.EDProducer("MergedGenParticleProducer",
+#                    inputPruned = cms.InputTag("prunedGenParticles"),
+#                        inputPacked = cms.InputTag("packedGenParticles"),
+#)
+#from GeneratorInterface.RivetInterface.genParticles2HepMC_cfi import genParticles2HepMC
+#process.genParticles2HepMC = genParticles2HepMC.clone( genParticles = cms.InputTag("mergedGenParticles") )
+#process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
+#process.particleLevel.excludeNeutrinosFromJetClustering = False
 process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
 
 
@@ -160,6 +168,7 @@ if record_scheme:
     process.ntupler.record_ElMu          = cms.bool('ElMu'          in record_scheme)
     process.ntupler.record_Dilep         = cms.bool('Dilep'         in record_scheme)
     process.ntupler.record_jets          = cms.bool('jets'          in record_scheme)
+    process.ntupler.record_signal        = cms.bool('signal'        in record_scheme)
 
 
 
