@@ -31,6 +31,7 @@ if __name__ == '__main__':
     parser.add_argument("--do-W-stitching",    action='store_true', help="turn ON skipping NUP events of inclusive sample")
     parser.add_argument("--all-jets",          action='store_true', help="propagate tau-jet correction too")
     parser.add_argument("--without-bSF",       action='store_true', help="don't apply b tagging SF")
+    parser.add_argument("--old-loop",          action='store_true', help="run on old full selection")
 
     args = parser.parse_args()
 
@@ -69,14 +70,24 @@ if __name__ == '__main__':
             print "output file exists: %s" % (args.outdir + '/' + fout_name)
             continue
 
-        import stage2
-        from stage2 import main # ROOT stuff is loaded here
-        stage2.OLD_MINIAOD_JETS = args.old_miniaod_jets
-        stage2.W_STITCHING = args.do_W_stitching
-        stage2.ALL_JETS = args.all_jets
-        stage2.ALL_JETS = args.all_jets
-        if args.without_bSF:
-            stage2.with_bSF = False
+        if args.old_loop:
+            import full_selection
+            from full_selection import main # ROOT stuff is loaded here
+            full_selection.OLD_MINIAOD_JETS = args.old_miniaod_jets
+            full_selection.W_STITCHING = args.do_W_stitching
+            full_selection.ALL_JETS = args.all_jets
+            full_selection.ALL_JETS = args.all_jets
+            if args.without_bSF:
+                full_selection.with_bSF = False
+        else:
+            import stage2
+            from stage2 import main # ROOT stuff is loaded here
+            stage2.OLD_MINIAOD_JETS = args.old_miniaod_jets
+            stage2.W_STITCHING = args.do_W_stitching
+            stage2.ALL_JETS = args.all_jets
+            stage2.ALL_JETS = args.all_jets
+            if args.without_bSF:
+                stage2.with_bSF = False
 
         t = threading.Thread(target=main, args=(input_filename, fout_name, args.outdir, args.channels))
         t.start()

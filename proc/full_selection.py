@@ -1090,6 +1090,21 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 'ctr_old_mu_sel_ljout_ss':        (procs_mu, systematic_names_nominal),
         },
 
+        'channels_nom_sys_both_sel_main' : {
+                'ctr_old_mu_sel':                 (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_ss':              (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_lj':              (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_lj_ss':           (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_ljout':           (procs_mu, systematic_names_nominal),
+                'ctr_old_mu_sel_ljout_ss':        (procs_mu, systematic_names_nominal),
+                'ctr_old_el_sel':                 (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_ss':              (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_lj':              (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_lj_ss':           (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_ljout':           (procs_el, systematic_names_nominal),
+                'ctr_old_el_sel_ljout_ss':        (procs_el, systematic_names_nominal),
+        },
+
         'channels_full_sys_lep_selections' : {
                 #'ctr_el_wjet':              (procs_el, systematic_names_pu),
                 #'ctr_el_wjet_ss':           (procs_el, systematic_names_pu),
