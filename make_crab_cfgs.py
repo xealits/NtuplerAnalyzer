@@ -5,7 +5,6 @@ from yaml import load
 import os
 
 
-logging.basicConfig(level=logging.DEBUG)
 
 # TEMPLATE_cfg_for_crab.py  TEMPLATE_crabConf.py
 with open('TEMPLATE_crabConf.py') as f:
@@ -31,9 +30,15 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--suffix", type=str, default='', help="suffix for dataset, used for ext MC datasets")
     parser.add_argument("-d", "--dsets-info", type=str, default='dsets_info.yaml', help="file with info on datasets: xsec, dtag, isMC, possible LumiMask")
     parser.add_argument("--without-HLT", action="store_true", default=False, help="turn off HLT in events (to support noHLT MC in 2015)")
+    parser.add_argument("--debug", action="store_true", help="debug logging")
     #parser.add_argument("-o", "--output-dir", type=str, default='python/crab_cfgs/', help="directory where config files are created for this vertsion (in version/ subdir)")
 
     args = parser.parse_args()
+
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
 
     version = args.version
     dset    = args.dataset
