@@ -1,4 +1,15 @@
 
+# the names for the positions of renorm refact weights
+MUf_nom_MUr_nom    = 0
+MUf_up_MUr_nom     = 1
+MUf_down_MUr_nom   = 2
+MUf_nom_MUr_up     = 3
+MUf_up_MUr_up      = 4
+MUf_down_MUr_up    = 5
+MUf_nom_MUr_down   = 6
+MUf_up_MUr_down    = 7
+MUf_down_MUr_down  = 8
+
 # >>>>>>>>>>>>>> gen procs defs
 genproc_dy_tautau = 1
 genproc_dy_other  = 0

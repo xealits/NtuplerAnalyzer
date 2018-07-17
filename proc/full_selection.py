@@ -60,6 +60,9 @@ from ROOT import TFile, TTree, TH1D, TH2D, TLorentzVector, TVector3, gROOT, gSys
 from ROOT.Math import LorentzVector
 
 # the names for the positions of renorm refact weights
+from gen_proc_defs import MUf_nom_MUr_nom  , MUf_up_MUr_nom   , MUf_down_MUr_nom , MUf_nom_MUr_up   , MUf_up_MUr_up    , MUf_down_MUr_up  , MUf_nom_MUr_down , MUf_up_MUr_down  , MUf_down_MUr_down
+
+'''
 MUf_nom_MUr_nom    = 0
 MUf_up_MUr_nom     = 1
 MUf_down_MUr_nom   = 2
@@ -69,6 +72,7 @@ MUf_down_MUr_up    = 5
 MUf_nom_MUr_down   = 6
 MUf_up_MUr_down    = 7
 MUf_down_MUr_down  = 8
+'''
 
 pileup_ratio_h2 = array('d',
 [       0., 5.2880843860098, 1.9057428051882, 0.8279489845062, 1.0183017803649, 0.8886546873859, 0.4586617471559, 0.4516527021066,
