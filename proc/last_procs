@@ -9,6 +9,9 @@ make sub_proc nt=v34 proc=t1 node=1
 python genjobs.py v25 pOld1 --old-loop --do-W-stitching channels_nom_sys_both_sel_main --dtags std_mc,data_mu --scheme 5,5,2,12,12
 make sub_proc nt=v25 proc=pOld1 node=1
 
+python genjobs.py v25 pOld1 --old-loop --do-W-stitching channels_nom_sys_both_sel_main --dtags data_el --scheme 5,5,2,12,12
+make sub_proc nt=v25 proc=pOld1 node=1
+
 
 
 

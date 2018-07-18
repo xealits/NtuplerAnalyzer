@@ -2019,7 +2019,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
         # OPTIMIZATION tests are done only on pass_mu
         #passes_optimized = pass_mu_all or pass_el_all or pass_mumu or pass_elmu
         passes_optimized = pass_mu or pass_el or pass_mumu or pass_elmu or pass_mu_all or pass_el_all or pass_elel
-        event_passes = pass_mu # pass_elmu # or pass_elmu_el # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
+        event_passes = pass_mu or pass_el # pass_elmu # or pass_elmu_el # pass_mumu or pass_elel # pass_el # or pass_elmu_el # pass_mu or pass_el # passes_optimized #
 
         if pass_elmu or pass_elmu_el or pass_mumu or pass_elel:
             # check dR of leptons
@@ -2448,7 +2448,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 weight_lep_Down = weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
 
                 # test how much leptons SFs affect
-                #weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+                weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
 
         control_counters.Fill(52)
 
@@ -2595,12 +2595,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                 #if tau_ID > 1: tausL_nom.lowest.append((p4, TES_factor))
                 #if tau_ID > 2: tausM_nom.lowest.append((p4, TES_factor))
                 if tau_ID > 1 and not match_lep: taus_nom.loose.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-                if tau_ID > 3 and not match_lep: taus_nom.lowest.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                if tau_ID > 2 and not match_lep: taus_nom.lowest.append((p4, TES_factor, tau_pdgID, i, jetmatched))
             #if tau_pt > pt_cut_cuts and not match_lep:
             #    if tau_ID > 3: taus_nom.cuts.append((p4, TES_factor, tau_pdgID, i, jetmatched))
             if tau_pt > pt_cut_old:
                 if tau_ID > 0 and not match_lep: taus_nom.oldVloose .append((p4, TES_factor, tau_pdgID, i, jetmatched))
-                if tau_ID > 3 and not match_lep: taus_nom.old .append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                if tau_ID > 2 and not match_lep: taus_nom.old .append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
             # TES
             if isMC and with_TauES_sys:
@@ -2612,12 +2612,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     if not match_lep_alliso:
                         taus_ESUp               .presel_alliso.append((p4, TES_factor, tau_pdgID, i, jetmatched))
                     if tau_ID > 1 and not match_lep: taus_ESUp.loose.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-                    if tau_ID > 3 and not match_lep: taus_ESUp.lowest.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                    if tau_ID > 2 and not match_lep: taus_ESUp.lowest.append((p4, TES_factor, tau_pdgID, i, jetmatched))
                 #if tau_pt_up > pt_cut_cuts and not match_lep:
                 #    if tau_ID > 3: taus_ESUp.cuts.append((p4, TES_factor, tau_pdgID, i, jetmatched))
                 if tau_pt_up > pt_cut_old:
                     if tau_ID > 0 and not match_lep: taus_ESUp.oldVloose.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-                    if tau_ID > 3 and not match_lep: taus_ESUp.old.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                    if tau_ID > 2 and not match_lep: taus_ESUp.old.append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
                 TES_factor = factor_down
                 if tau_pt_down > 20.:
@@ -2626,12 +2626,12 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
                     if not match_lep_alliso:
                         taus_ESDown               .presel_alliso.append((p4, TES_factor, tau_pdgID, i, jetmatched))
                     if tau_ID > 1 and not match_lep: taus_ESDown.loose.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-                    if tau_ID > 3 and not match_lep: taus_ESDown.lowest.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                    if tau_ID > 2 and not match_lep: taus_ESDown.lowest.append((p4, TES_factor, tau_pdgID, i, jetmatched))
                 #if tau_pt_down > pt_cut_cuts and not match_lep:
                 #    if tau_ID > 3: taus_ESDown.cuts.append((p4, TES_factor, tau_pdgID, i, jetmatched))
                 if tau_pt_down > pt_cut_old:
                     if tau_ID > 0 and not match_lep: taus_ESDown.oldVloose.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-                    if tau_ID > 3 and not match_lep: taus_ESDown.old.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                    if tau_ID > 2 and not match_lep: taus_ESDown.old.append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
             """
             usual_pt_cut = 20. # TODO: cut for optimization study, review it after results
