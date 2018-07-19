@@ -33,7 +33,6 @@ parser.add_argument("--y-range",   type=str, help="set the range on Y axis `0,1.
 
 #parser.add_argument("--Vloose-shapes",   action='store_true', help="get TT proc shapes from selVloose")
 
-parser.add_argument("--exp-legend",   action='store_true', help="experimentary legend drawing")
 
 parser.add_argument("--sort-dy",   action='store_true', help="sort DY up")
 
@@ -61,10 +60,11 @@ parser.add_argument("-f", "--form-shapes", action='store_true', help="plot the s
 #parser.add_argument("-e", "--shape-evolution", type=str, default='usual', help="plot the same distr in different channels normalized to 1")
 parser.add_argument("--processes", type=str, default='all', help="set processes to consider (all by default)")
 
-parser.add_argument("--skip-legend", action='store_true', help="don't plot the legend (full view of distribution)")
-parser.add_argument("--skip-QCD", action='store_true', help="skip MC QCD")
+parser.add_argument("--exp-legend",   action='store_true', help="experimentary legend drawing")
+parser.add_argument("--legend-shift", type=float,          help="shift legend on X axis")
+parser.add_argument("--skip-legend",  action='store_true', help="don't plot the legend (full view of distribution)")
 
-parser.add_argument("--legend-shift", type=float, help="shift legend on X axis")
+parser.add_argument("--skip-QCD", action='store_true', help="skip MC QCD")
 
 parser.add_argument("--drop-bin", type=float, help="drop values in the bin")
 
@@ -155,7 +155,10 @@ for distr_name in distr_names:
         histos_data_distrs.append((data_distr_name, [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
 
     if args.qcd > 0. or args.osss or args.osss_mc:
-        histos_data_distrs_ss.append((data_distr_name, [(fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
+        if args.draw_overflows:
+            histos_data_distrs_ss.append((data_distr_name, [(DrawOverflow(fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', data_distr_name])), args.draw_overflows), 'data', channel) for channel in channels]))
+        else:
+            histos_data_distrs_ss.append((data_distr_name, [(fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
 
 if args.cumulative:
     histos_data_per_distr    = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs]
@@ -443,9 +446,14 @@ hs_sums2_ss = [] # these will be sums of no-QCD MC in SS region
 
 # sum all MC except qcd
 def datadriven_qcd(channel, distr, sys):
+    logging.warning("datadriven qcd")
     # get SS data and MC
     used_histos_per_distr_ss = get_histos(f, [channel + '_ss'], args.shape, sys, distr)
     data_hist = fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', distr]))
+
+    if args.draw_overflows:
+        h_overflows = DrawOverflow(data_hist, args.draw_overflows)
+        data_hist = h_overflows
 
     # find QCD shape in SS
     mc_hist = used_histos_per_distr_ss[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
@@ -454,6 +462,7 @@ def datadriven_qcd(channel, distr, sys):
         if nick == 'qcd': continue # don't include QCD MC -- its sum of no-QCD MC
         mc_hist.Add(h)
 
+    logging.warning("qcd hist  %d  %d" % (data_hist.GetEntries(), mc_hist.GetEntries()))
     qcd_hist = data_hist - mc_hist
     # scale by the given factor and return
     qcd_hist.Scale(args.qcd)
@@ -493,6 +502,8 @@ if args.qcd > 0.:
     qcd_hists = {} # distr, channel: qcd hist
     for (distr, mc_sums), (_, datas) in zip(hs_sums2_ss, histos_data_per_distr_ss):
         for (mc_hist, _, channel), (data_hist, _, _) in zip(mc_sums, datas):
+            logging.debug('calulating qcd  %d  %d' % (data_hist.GetSize(), mc_hist.GetSize()))
+
             qcd_hist = data_hist - mc_hist
             # negative qcd bins are equalized to zero:
             '''
@@ -513,7 +524,9 @@ if args.qcd > 0.:
                 shape_qcd = datadriven_qcd(args.shape, distr, 'NOMINAL') # nominal only for now
                 shape_qcd.Scale(qcd_hist.Integral() / shape_qcd.Integral())
                 qcd_hist = shape_qcd
-            
+
+            logging.debug('data qcd got shape')
+
             for bini in range(qcd_hist.GetSize()):
                 if qcd_hist.GetBinContent(bini) < 0:
                     qcd_hist.SetBinContent(bini, 0)
@@ -1108,11 +1121,23 @@ else:
         histos_data_sum.GetYaxis().SetTitleFont(63)
         histos_data_sum.GetYaxis().SetTitleSize(20)
 
+        #histos_data_sum.GetYaxis().SetLabelFont(63)
+        #histos_data_sum.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
+
         # axis labels
-        hs_sum1.GetYaxis().SetLabelSize(0.02)
-        hs_sum1.GetXaxis().SetLabelSize(0.02)
-        histos_data_sum.GetYaxis().SetLabelSize(0.02)
-        histos_data_sum.GetXaxis().SetLabelSize(0.02)
+        #hs_sum1.GetYaxis().SetLabelSize(0.02)
+        #hs_sum1.GetXaxis().SetLabelSize(0.02)
+        #histos_data_sum.GetYaxis().SetLabelSize(0.02)
+        #histos_data_sum.GetXaxis().SetLabelSize(0.02)
+
+        hs_sum1.GetYaxis().SetLabelFont(63)
+        hs_sum1.GetXaxis().SetLabelFont(63)
+        hs_sum1.GetYaxis().SetLabelSize(14)
+        hs_sum1.GetXaxis().SetLabelSize(14)
+        histos_data_sum.GetYaxis().SetLabelFont(63)
+        histos_data_sum.GetXaxis().SetLabelFont(63)
+        histos_data_sum.GetYaxis().SetLabelSize(14)
+        histos_data_sum.GetXaxis().SetLabelSize(14)
 
         #hs             .GetYaxis().SetTitleOffset(1.4)
         hs_sum1        .GetYaxis().SetTitleOffset(1.5) # place the title not overlapping with labels...
@@ -1192,8 +1217,10 @@ else:
     if args.exp_legend:
         left_title = TPaveText(0.05, 0.9, 0.4, 0.94, "brNDC")
     else:
-        left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
-    left_title.AddText("CMS preliminary at 13 TeV")
+        #left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
+        left_title = TPaveText(0.12, 0.8, 0.2, 0.88, "brNDC")
+
+    left_title.AddText("CMS")
     left_title.SetTextFont(1)
     left_title.SetFillColor(0)
 
@@ -1208,10 +1235,10 @@ else:
     '''
 
     if args.exp_legend:
-        right_title = TPaveText(0.85, 0.9, 1.0, 0.94, "brNDC")
+        right_title = TPaveText(0.85, 0.9, 1.0, 0.96, "brNDC")
     else:
-        right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
-    right_title.AddText("L = %s fb^{-1}" % (args.lumi / 1000. if args.lumi else args.lumi_label))
+        right_title = TPaveText(0.65, 0.9, 0.9, 0.95, "brNDC")
+    right_title.AddText("%s fb^{-1} (13 TeV)" % (args.lumi / 1000. if args.lumi else args.lumi_label))
     right_title.SetTextFont(132)
     right_title.SetFillColor(0)
 
