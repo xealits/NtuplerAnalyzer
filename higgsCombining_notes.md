@@ -520,10 +520,123 @@ combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombi
 combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit -n BothFullUncertaintyWLumi
 combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit -n BothFullUncertaintyNoLumi --freezeParameters lumi_13TeV
 
+
+
+
+
+
+
+
+
+final systematics
+
+combine -M MultiDimFit --algo none -t -1 --expectSignal 1 --rMin 0.5 --rMax 1.5 ttxsec/fit-stuff/latest_datacard_el.root --saveWorkspace -n ExpectedElBestfit
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.5 --rMax 1.5 higgsCombineExpectedElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan -n ExpectedElNoSysWLumi
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.5 --rMax 1.5 higgsCombineExpectedElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff,tau_fakes,lumi_13TeV,AlphaS" --freezeNuisanceGroup tt_th_pdf,tt_th_match -n ExpectedElNoTauWLumi
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.5 --rMax 1.5 higgsCombineExpectedElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "AlphaS"            --freezeNuisanceGroup tt_th_pdf,tt_th_match -n ExpectedElFullUncertaintyWLumi
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.5 --rMax 1.5 higgsCombineExpectedElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,AlphaS" --freezeNuisanceGroup tt_th_pdf,tt_th_match -n ExpectedElFullUncertaintyNoLumi
+
+    plot1DScan.py higgsCombineExpectedElFullUncertaintyWLumi.MultiDimFit.mH120.root --others 'higgsCombineExpectedElFullUncertaintyNoLumi.MultiDimFit.mH120.root:lumi:4' 'higgsCombineExpectedElNoSys.MultiDimFit.mH120.root:stat:2' --breakdown lumi,syst,stat
+
+mv scan.pdf scan_el_exp.pdf
+mv scan.png scan_el_exp.png
+
+
+
+combine -M MultiDimFit --algo none --rMin 0.5 --rMax 1.5 ttxsec/fit-stuff/latest_datacard_el.root --saveWorkspace -n ElBestfit
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan -n ElNoSysWLumi
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff,tau_fakes,lumi_13TeV,AlphaS" --freezeNuisanceGroup tt_th_pdf,tt_th_match -n ElNoTauWLumi
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "AlphaS"            --freezeNuisanceGroup tt_th_pdf,tt_th_match -n ElFullUncertaintyWLumi
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineElBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,AlphaS" --freezeNuisanceGroup tt_th_pdf,tt_th_match -n ElFullUncertaintyNoLumi
+
+
+    plot1DScan.py higgsCombineElFullUncertaintyWLumi.MultiDimFit.mH120.root --others 'higgsCombineElFullUncertaintyNoLumi.MultiDimFit.mH120.root:lumi:4' 'higgsCombineElNoSys.MultiDimFit.mH120.root:stat:2' --breakdown lumi,syst,stat
+
+mv scan.pdf scan_el_obs.pdf
+mv scan.png scan_el_obs.png
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+combine -M MultiDimFit --algo none -t -1 --expectSignal 1 --rMin 0.5 --rMax 1.5 ttxsec/fit-stuff/latest_datacard_mu.root --saveWorkspace -n ExpectedMuBestfit
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.5 --rMax 1.5 higgsCombineExpectedMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan -n ExpectedMuNoSysWLumi
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.5 --rMax 1.5 higgsCombineExpectedMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff,tau_fakes,lumi_13TeV,AlphaS" --freezeNuisanceGroup tt_th_pdf,tt_th_match -n ExpectedMuNoTauWLumi
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.5 --rMax 1.5 higgsCombineExpectedMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "AlphaS"            --freezeNuisanceGroup tt_th_pdf,tt_th_match -n ExpectedMuFullUncertaintyWLumi
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.5 --rMax 1.5 higgsCombineExpectedMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,AlphaS" --freezeNuisanceGroup tt_th_pdf,tt_th_match -n ExpectedMuFullUncertaintyNoLumi
+
+    plot1DScan.py higgsCombineExpectedMuFullUncertaintyWLumi.MultiDimFit.mH120.root --others 'higgsCombineExpectedMuFullUncertaintyNoLumi.MultiDimFit.mH120.root:lumi:4' 'higgsCombineExpectedMuNoSys.MultiDimFit.mH120.root:stat:2' --breakdown lumi,syst,stat
+
+mv scan.pdf scan_mu_exp.pdf
+mv scan.png scan_mu_exp.png
+
+
+
+combine -M MultiDimFit --algo none --rMin 0.5 --rMax 1.5 ttxsec/fit-stuff/latest_datacard_mu.root --saveWorkspace -n MuBestfit
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan -n MuNoSysWLumi
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff,tau_fakes,lumi_13TeV,AlphaS" --freezeNuisanceGroup tt_th_pdf,tt_th_match -n MuNoTauWLumi
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "AlphaS"            --freezeNuisanceGroup tt_th_pdf,tt_th_match -n MuFullUncertaintyWLumi
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineMuBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,AlphaS" --freezeNuisanceGroup tt_th_pdf,tt_th_match -n MuFullUncertaintyNoLumi
+
+
+    plot1DScan.py higgsCombineMuFullUncertaintyWLumi.MultiDimFit.mH120.root --others 'higgsCombineMuFullUncertaintyNoLumi.MultiDimFit.mH120.root:lumi:4' 'higgsCombineMuNoSys.MultiDimFit.mH120.root:stat:2' --breakdown lumi,syst,stat
+
+mv scan.pdf scan_mu_obs.pdf
+mv scan.png scan_mu_obs.png
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+combine -M MultiDimFit --algo none -t -1 --expectSignal 1 --rMin 0.5 --rMax 1.5 ttxsec/fit-stuff/latest_datacard_both.root --saveWorkspace -n ExpectedBothBestfit
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.5 --rMax 1.5 higgsCombineExpectedBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan -n ExpectedBothNoSysWLumi
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.5 --rMax 1.5 higgsCombineExpectedBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff,tau_fakes,lumi_13TeV,AlphaS" --freezeNuisanceGroup tt_th_pdf,tt_th_match -n ExpectedBothNoTauWLumi
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.5 --rMax 1.5 higgsCombineExpectedBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "AlphaS"            --freezeNuisanceGroup tt_th_pdf,tt_th_match -n ExpectedBothFullUncertaintyWLumi
+combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.5 --rMax 1.5 higgsCombineExpectedBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,AlphaS" --freezeNuisanceGroup tt_th_pdf,tt_th_match -n ExpectedBothFullUncertaintyNoLumi
+
+    plot1DScan.py higgsCombineExpectedBothFullUncertaintyWLumi.MultiDimFit.mH120.root --others 'higgsCombineExpectedBothFullUncertaintyNoLumi.MultiDimFit.mH120.root:lumi:4' 'higgsCombineExpectedBothNoSys.MultiDimFit.mH120.root:stat:2' --breakdown lumi,syst,stat
+
+mv scan.pdf scan_both_exp.pdf
+mv scan.png scan_both_exp.png
+
+
+
+combine -M MultiDimFit --algo none --rMin 0.5 --rMax 1.5 ttxsec/fit-stuff/latest_datacard_both.root --saveWorkspace -n BothBestfit
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan -n BothNoSysWLumi
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff,tau_fakes,lumi_13TeV,AlphaS" --freezeNuisanceGroup tt_th_pdf,tt_th_match -n BothNoTauWLumi
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "AlphaS"            --freezeNuisanceGroup tt_th_pdf,tt_th_match -n BothFullUncertaintyWLumi
+combine -M MultiDimFit --algo grid --points 100 --rMin 0.5 --rMax 1.5 higgsCombineBothBestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,AlphaS" --freezeNuisanceGroup tt_th_pdf,tt_th_match -n BothFullUncertaintyNoLumi
+
+
     plot1DScan.py higgsCombineBothFullUncertaintyWLumi.MultiDimFit.mH120.root --others 'higgsCombineBothFullUncertaintyNoLumi.MultiDimFit.mH120.root:lumi:4' 'higgsCombineBothNoSys.MultiDimFit.mH120.root:stat:2' --breakdown lumi,syst,stat
 
-mv scan.pdf scan_both.pdf
-mv scan.png scan_both.png
+mv scan.pdf scan_both_obs.pdf
+mv scan.png scan_both_obs.png
 
 
 
@@ -821,6 +934,50 @@ without updowns
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_updowns -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 --robustFit 1 --doFits --parallel 5
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_updowns -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 -o latest_both_toys_asimov_impacts.json
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_toys_asimov_impacts.json -o latest_both_toys_asimov_impacts
+
+
+
+
+
+
+
+final systematcs:
+without updowns, scale, pdf, lumi
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 -o latest_both_toys_asimov_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_toys_asimov_impacts.json -o latest_both_toys_asimov_impacts
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 -o latest_el_toys_asimov_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_toys_asimov_impacts.json -o latest_el_toys_asimov_impacts
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 -o latest_mu_toys_asimov_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts.json -o latest_mu_toys_asimov_impacts
+
+
+and to data:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpacts   --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpacts   --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name BothImpacts   --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_both.root -m 125 -o latest_both_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o latest_both_impacts
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpacts   --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpacts   --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name ElImpacts   --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 -o latest_el_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o latest_el_impacts
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpacts   --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpacts   --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpacts   --freezeNuisanceGroup tt_th_pdf,tt_th_match --freezeParameters AlphaS,lumi_13TeV -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 -o latest_mu_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
+
+
 
 
 
