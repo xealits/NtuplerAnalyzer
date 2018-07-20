@@ -48,7 +48,7 @@ the_files_expected = {
 
 
 
-def plot(chan, plot_expected, plot_data):
+def plot(chan, plot_expected, plot_data, report_lumi=True):
    gROOT.SetBatch();
    gStyle.SetOptStat(0);
 
@@ -84,9 +84,18 @@ def plot(chan, plot_expected, plot_data):
 
            # removing the title
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
-           g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
+           #g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
+           g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
            g_notau.SetTitle(";;")
            g_stat .SetTitle(";;")
+
+           #g_full .GetXaxis().SetRange(0.75, 1.35)
+           #g_notau.GetXaxis().SetRange(0.75, 1.35)
+           #g_stat .GetXaxis().SetRange(0.75, 1.35)
+           g_full .GetXaxis().SetRangeUser(0.75, 1.35)
+           g_notau.GetXaxis().SetRangeUser(0.75, 1.35)
+           g_stat .GetXaxis().SetRangeUser(0.75, 1.35)
+
            print "set up data plots", g_full
 
    # prepare expected files
@@ -110,19 +119,28 @@ def plot(chan, plot_expected, plot_data):
            exp_g_stat = TGraph(n, exp_ttree_stat.GetV2(), exp_ttree_stat.GetV1())
 
            exp_g_full.SetLineWidth(3)
+           exp_g_full.SetLineStyle(7)
            exp_g_notau.SetLineWidth(2)
            exp_g_stat.SetLineWidth(2)
            exp_g_stat.SetLineStyle(7)
 
-           exp_g_full .SetLineColor(43)
+           #exp_g_full .SetLineColor(43)
            exp_g_notau.SetLineColor(43)
            exp_g_stat .SetLineColor(43)
 
            # removing the title
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
-           exp_g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
+           #exp_g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
+           exp_g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
            exp_g_notau.SetTitle(";;")
            exp_g_stat .SetTitle(";;")
+
+           #exp_g_full .GetXaxis().SetRange(0.75, 1.35)
+           #exp_g_notau.GetXaxis().SetRange(0.75, 1.35)
+           #exp_g_stat .GetXaxis().SetRange(0.75, 1.35)
+           exp_g_full .GetXaxis().SetRangeUser(0.75, 1.35)
+           exp_g_notau.GetXaxis().SetRangeUser(0.75, 1.35)
+           exp_g_stat .GetXaxis().SetRangeUser(0.75, 1.35)
 
            print "set up expectation plots", exp_g_full
 
@@ -138,17 +156,17 @@ def plot(chan, plot_expected, plot_data):
       exp_g_full .Draw("ap") # this cast makes the following work
       exp_g_full .Draw("L")
       #exp_g_notau.Draw("L same")
-      exp_g_stat .Draw("L same")
+      #exp_g_stat .Draw("L same")
 
       leg.AddEntry(exp_g_full, "exp. full unc.", "L")
-      leg.AddEntry(exp_g_stat, "exp. stat unc.", "L")
+      #leg.AddEntry(exp_g_stat, "exp. stat unc.", "L")
 
       g_full .Draw("L same")
       #g_notau.Draw("L same")
-      g_stat .Draw("L same")
+      #g_stat .Draw("L same")
 
       leg.AddEntry(g_full, "fitted full unc.", "L")
-      leg.AddEntry(g_stat, "fitted stat unc.", "L")
+      #leg.AddEntry(g_stat, "fitted stat unc.", "L")
 
    elif plot_data:
       print "plotting data"
@@ -172,16 +190,28 @@ def plot(chan, plot_expected, plot_data):
       leg.AddEntry(exp_g_notau, "#splitline{exp. unc.}{w.o. tau ID}", "L")
       leg.AddEntry(exp_g_stat,  "exp. stat unc.", "L")
 
-   left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
-   left_title.AddText("CMS preliminary at 13 TeV")
-   left_title.SetTextFont(1)
+   #left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
+   #left_title.AddText("CMS preliminary at 13 TeV")
+   #left_title.SetTextFont(1)
 
-   right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
-   right_title.AddText("L = %s fb^{-1}" % (31.3 if chan == 'el' else 35.8))
+   left_title = TPaveText(0.15, 0.82, 0.3, 0.88, "brNDC")
+   left_title.AddText("CMS")
+   left_title.SetTextFont(1)
+   left_title.SetFillColor(0)
+   left_title.Draw("same")
+
+   #right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
+   #right_title.AddText("L = %s fb^{-1}" % (31.3 if chan == 'el' else 35.8))
+   #right_title.SetTextFont(132)
+   #right_title.SetFillColor(0)
+
+   right_title = TPaveText(0.5, 0.9, 0.9, 0.95, "brNDC")
+   if report_lumi:
+       right_title.AddText("%s fb^{-1} (13 TeV)" % (31.3 if chan == 'el' else 35.8))
+   else:
+       right_title.AddText("(13 TeV)")
    right_title.SetTextFont(132)
    right_title.SetFillColor(0)
-
-   left_title .Draw("same")
    right_title.Draw("same")
 
    leg.Draw("same")
@@ -202,6 +232,6 @@ plot('el', False, True)
 
 
 # 
-plot('both', True, True)
-plot('both', True, False)
+plot('both', True, True , False)
+plot('both', True, False, False)
 
