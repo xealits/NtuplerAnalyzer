@@ -68,7 +68,7 @@ parser.add_argument("--skip-QCD", action='store_true', help="skip MC QCD")
 
 parser.add_argument("--drop-bin", type=float, help="drop values in the bin")
 
-parser.add_argument("--lumi-label", type=float, default=35.8, help="set lumi label on the plot")
+parser.add_argument("--lumi-label", type=float, help="set lumi label on the plot")
 parser.add_argument("--title-x", type=str, default="", help="set title of X axis on the plot")
 parser.add_argument("--title-y", type=str, default="", help="set title of Y axis on the plot")
 parser.add_argument("--title",   type=str, default="default", help="set title of the plot")
@@ -904,12 +904,17 @@ elif args.osss or args.osss_mc:
     histo_diff_os.SetTitle(title_plot)
     histo_diff_os.Draw()
 
-    left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
-    left_title.AddText("CMS preliminary at 13 TeV")
+    #left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
+    #left_title.AddText("CMS preliminary at 13 TeV")
+    left_title = TPaveText(0.12, 0.82, 0.2, 0.89, "brNDC")
+    left_title.AddText("CMS")
     left_title.SetTextFont(1)
+    left_title.SetFillColor(0)
 
-    right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
-    right_title.AddText("L = %s fb^{-1}" % (args.lumi / 1000. if args.lumi else args.lumi_label))
+    #right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
+    #right_title.AddText("L = %s fb^{-1}" % (args.lumi / 1000. if args.lumi else args.lumi_label))
+    right_title = TPaveText(0.65, 0.9, 0.9, 0.95, "brNDC")
+    right_title.AddText("%s fb^{-1} (13 TeV)" % (args.lumi_label / 1000. if args.lumi_label else args.lumi / 1000.))
     right_title.SetTextFont(132)
     right_title.SetFillColor(0)
 
