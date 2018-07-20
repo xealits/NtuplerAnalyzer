@@ -1,4 +1,41 @@
 
+redo electron osss
+
+python stack_plot.py v23p1_mc.root ../merge-sets/v23/p1_data/SingleElectron.root -o plots/paper-draft-1_an-version-3/ --lumi 31300 --osss -c ctr_old_el_presel_alliso -p -d lep_relIso_el
+
+python stack_plot.py mc_v27p1.root ../merge-sets/v27/p1/SingleElectron.root -o plots/paper-draft-1_an-version-3/ --lumi 30000 --osss -c ctr_old_el_presel_alliso -p -d lep_relIso_el --wjets 0.8 --factor-dy 1.05 
+
+
+final with all wjet/dy factors:
+
+python stack_plot.py v23p1_mc.root ../merge-sets/v23/p1_data/SingleElectron.root -o plots/paper-draft-1_an-version-3/ --lumi 30000 --osss -c ctr_old_el_presel_alliso -p -d lep_relIso_el --lumi 30000 --wjets 0.8 --factor-dy 1.05 --lumi-label 31300 --title "" --title-x "relative Isolation of electron" --y-range 0,1.2
+
+
+
+muons
+
+python stack_plot.py v23p1_mc.root ../merge-sets/v23/p1_data/SingleMuon.root     -o plots/paper-draft-1_an-version-3/ --lumi 32800 --osss -c ctr_old_mu_presel_alliso -p -d lep_relIso --wjets 0.8 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "relative Isolation of muon" --y-range 0,1.2
+
+
+and in v27
+
+python stack_plot.py mc_v27p1.root ../merge-sets/v27/p1/SingleElectron.root -o plots/paper-draft-1_an-version-3/ --lumi 31300 --osss -c ctr_old_el_presel_alliso -p -d lep_relIso_el --wjets 0.8 --factor-dy 1.05 --y-range 0,1.4
+
+-- last bin is a bit off
+
+python stack_plot.py mc_v27p1.root ../merge-sets/v27/p1/SingleMuon.root          -o plots/paper-draft-1_an-version-3/ --lumi 34800 --osss -c ctr_old_mu_presel_alliso -p -d lep_relIso --wjets 0.8 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "relative Isolation of muon" --y-range 0,1.2
+
+-- flat
+
+
+
+
+
+
+
+
+
+
 python stack_plot.py mc_v25pOld1.root ../merge-sets/v25/pOld1/SingleElectron.root -o plots/paper-draft-1_an-version-3/ --lumi 31300 -c ctr_old_el_sel --qcd 1.05 --wjet 0.85 -s NOMINAL --title "" -p -r --title-x "tau p_{T}" -d tau_pt --draw-overflows 2 --legend-shift "0.01"
 
 python stack_plot.py mc_v25pOld1.root ../merge-sets/v25/pOld1/SingleMuon.root -o plots/paper-draft-1_an-version-3/ --lumi 35800 -c ctr_old_mu_sel --qcd 1.05 --wjet 0.8 -s NOMINAL --title "" -p -r --title-x "tau p_{T}" -d tau_pt --draw-overflows 2 --legend-shift "0.01"
