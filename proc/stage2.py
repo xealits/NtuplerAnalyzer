@@ -21,35 +21,40 @@ TAUS_PT_CUT = 30.
 TAUS_ID_CUT = 2
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el):
-    return pass_mu
+    return pass_mu or pass_el
 
-def passes_muon_selection(passed_triggers, leps, jets, taus, proc_met):
+def passes_tt_selection_stages(passed_triggers, leps, jets, taus, proc_met):
     channel_stage = 0
     pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el = passed_triggers
 
     old_jet_sel = len(jets.medium) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 2
-    pass_old_mu_presel    = pass_mu and old_jet_sel and len(taus.candidates) > 0
-    pass_old_mu_presel_os = pass_old_mu_presel and leps[4][0] * taus.candidates[0][2] < 0
-    pass_old_mu_sel    = pass_mu and old_jet_sel and len(taus.medium) > 0
-    pass_old_mu_sel_os = pass_old_mu_sel and leps[4][0] * taus.medium[0][2] < 0
+    pass_old_presel    = old_jet_sel and len(taus.candidates) > 0
+    pass_old_presel_os = pass_old_presel and leps[4][0] * taus.candidates[0][2] < 0
+    pass_old_sel       = old_jet_sel and len(taus.medium) > 0
+    pass_old_sel_os    = pass_old_sel and leps[4][0] * taus.medium[0][2] < 0
     #lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = leps
     # taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
-    if pass_old_mu_sel_os:
+    if   pass_mu and pass_old_sel_os:
         channel_stage = 5
-    elif pass_old_mu_sel:
+    elif pass_mu and pass_old_sel:
         channel_stage = 4
-    elif pass_old_mu_presel_os:
+    elif pass_mu and pass_old_presel_os:
         channel_stage = 3
-    elif pass_old_mu_presel:
+    elif pass_mu and pass_old_presel:
         channel_stage = 2
+
+    elif pass_el and pass_old_sel_os:
+        channel_stage = 15
+    elif pass_el and pass_old_sel:
+        channel_stage = 14
+    elif pass_el and pass_old_presel_os:
+        channel_stage = 13
+    elif pass_el and pass_old_presel:
+        channel_stage = 12
 
     return channel_stage
 
-
-channel_selection_functions = {
-    'channels_nom_sys_muon_sel' : passes_muon_selection,
-    }
 
 logging = Logging.getLogger("common")
 
@@ -1310,7 +1315,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         }
     }
 
-    PASSES_CHANNEL = channel_selection_functions['channels_nom_sys_muon_sel']
+    PASSES_CHANNEL = passes_tt_selection_stages
 
     print systematic_names_all_with_th
     print systematic_names_pu_toppt
@@ -1391,6 +1396,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     # therefore selection stage would be apropriate
     selection_stage = array( 'i', [ 0 ] )
     ttree_out.Branch( 'selection_stage', selection_stage, 'selection_stage/I' )
+
+    selection_stage_dy = array( 'i', [ 0 ] )
+    ttree_out.Branch( 'selection_stage_dy', selection_stage_dy, 'selection_stage_dy/I' )
 
     nup = array( 'i', [ 0 ] )
     ttree_out.Branch( 'nup', nup, 'nup/I' )
@@ -2436,7 +2444,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             lead_jet_b_discr = ev.jet_b_discr[0]
 
         b_tag_wp_loose  = 0.460
-        b_tag_wp_medium = 0.8 #0.8484
+        b_tag_wp_medium = 0.8484 #0.8
         b_tag_wp_tight  = 0.935
         b_tag_wp = b_tag_wp_medium
 
@@ -3122,14 +3130,14 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
 
         # final CHANNEL SELECTION decision
-        channel_stage = PASSES_CHANNEL(passed_triggers, leps, jets, taus, proc_met)
-        if channel_stage < 1:
+        tt_channel_stage = passes_tt_selection_stages(passed_triggers, leps, jets, taus, proc_met)
+        if tt_channel_stage < 1:
             continue
 
 
         # SAVE SELECTION, objects and weights
 
-        selection_stage[0] = channel_stage
+        selection_stage[0] = tt_channel_stage
 
         # objects
         #selection_objects = leps, jets, taus.medium

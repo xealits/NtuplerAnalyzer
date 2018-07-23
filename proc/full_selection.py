@@ -2834,7 +2834,7 @@ def full_loop(tree, dtag, lumi_bcdef, lumi_gh, logger, channels_to_select):
             lead_jet_b_discr = ev.jet_b_discr[0]
 
         b_tag_wp_loose  = 0.460
-        b_tag_wp_medium = 0.8 #0.8484
+        b_tag_wp_medium = 0.8484 #0.8 #
         b_tag_wp_tight  = 0.935
         b_tag_wp = b_tag_wp_medium
 
