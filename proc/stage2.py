@@ -28,30 +28,30 @@ def passes_tt_selection_stages(passed_triggers, leps, jets, taus, proc_met):
     pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el = passed_triggers
 
     old_jet_sel = len(jets.medium) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 2
-    pass_old_presel    = old_jet_sel and len(taus.candidates) > 0
-    pass_old_presel_os = pass_old_presel and leps[4][0] * taus.candidates[0][2] < 0
-    pass_old_sel       = old_jet_sel and len(taus.medium) > 0
-    pass_old_sel_os    = pass_old_sel and leps[4][0] * taus.medium[0][2] < 0
+    #pass_old_presel    = old_jet_sel and len(taus_candidates) > 0
+    #pass_old_presel_os = pass_old_presel and leps[4][0] * taus_candidates[0][2] < 0
+    pass_old_sel       = old_jet_sel and len(taus) > 0
+    pass_old_sel_os    = pass_old_sel and leps[4][0] * taus[0][2] < 0
     #lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = leps
     # taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
     if   pass_mu and pass_old_sel_os:
-        channel_stage = 5
-    elif pass_mu and pass_old_sel:
-        channel_stage = 4
-    elif pass_mu and pass_old_presel_os:
         channel_stage = 3
-    elif pass_mu and pass_old_presel:
+    elif pass_mu and pass_old_sel:
         channel_stage = 2
+    #elif pass_mu and pass_old_presel_os:
+    #    channel_stage = 3
+    #elif pass_mu and pass_old_presel:
+    #    channel_stage = 2
 
     elif pass_el and pass_old_sel_os:
-        channel_stage = 15
-    elif pass_el and pass_old_sel:
-        channel_stage = 14
-    elif pass_el and pass_old_presel_os:
         channel_stage = 13
-    elif pass_el and pass_old_presel:
+    elif pass_el and pass_old_sel:
         channel_stage = 12
+    #elif pass_el and pass_old_presel_os:
+    #    channel_stage = 13
+    #elif pass_el and pass_old_presel:
+    #    channel_stage = 12
 
     return channel_stage
 
@@ -1348,7 +1348,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     with_TauES_sys = with_TauES and ('TauESUp' in requested_systematics or 'TauESDown' in requested_systematics)
 
     with_AlphaS_sys  = True and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
-    with_Frag_sys    = True and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
+    with_Frag_sys    = True # and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
     with_MEscale_sys = True and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
     with_PDF_sys     = True and ('PDF_TRIGGER'      in requested_systematics)
 
@@ -1394,8 +1394,12 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     # here I use the simplest appropriate method
     # usually I save linear sequences of selctions, tighter at each stage
     # therefore selection stage would be apropriate
-    selection_stage = array( 'i', [ 0 ] )
-    ttree_out.Branch( 'selection_stage', selection_stage, 'selection_stage/I' )
+    selection_stage = array( 'i', [ 0 ])
+    ttree_out.Branch('selection_stage', selection_stage, 'selection_stage/I')
+    selection_stage_TESUp = array( 'i', [ 0 ])
+    ttree_out.Branch('selection_stage_TESUp', selection_stage_TESUp, 'selection_stage_TESUp/I')
+    selection_stage_TESDown = array( 'i', [ 0 ])
+    ttree_out.Branch('selection_stage_TESDown', selection_stage_TESDown, 'selection_stage_TESDown/I')
 
     selection_stage_dy = array( 'i', [ 0 ] )
     ttree_out.Branch( 'selection_stage_dy', selection_stage_dy, 'selection_stage_dy/I' )
@@ -1409,14 +1413,36 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
     event_weight_init = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_weight_init', event_weight_init, 'event_weight_init/f' )
-    event_weight_pu = array( 'f', [ 0 ] )
-    ttree_out.Branch( 'event_weight_pu', event_weight_pu, 'event_weight_pu/f' )
+    event_weight_PU = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_PU', event_weight_PU, 'event_weight_PU/f' )
     event_weight_th = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_weight_th', event_weight_th, 'event_weight_th/f' )
     event_weight_bSF = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_weight_bSF', event_weight_bSF, 'event_weight_bSF/f' )
     event_weight_toppt = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_weight_toppt', event_weight_toppt, 'event_weight_toppt/f' )
+
+    event_weight_LEPUp = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_LEPUp', event_weight_LEPUp, 'event_weight_LEPUp/f' )
+    event_weight_LEPDown = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_LEPDown', event_weight_LEPDown, 'event_weight_LEPDown/f' )
+    event_weight_PUUp = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_PUUp', event_weight_PUUp, 'event_weight_PUUp/f' )
+    event_weight_PUDown = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_PUDown', event_weight_PUDown, 'event_weight_PUDown/f' )
+
+    event_weight_PetersonUp = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_PetersonUp', event_weight_PetersonUp, 'event_weight_PetersonUp/f' )
+    event_weight_FragUp = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_FragUp', event_weight_FragUp, 'event_weight_FragUp/f' )
+    event_weight_FragDown = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_FragDown', event_weight_FragDown, 'event_weight_FragDown/f' )
+
+    event_weight_SemilepBRUp = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_SemilepBRUp', event_weight_SemilepBRUp, 'event_weight_SemilepBRUp/f' )
+    event_weight_SemilepBRDown = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_SemilepBRDown', event_weight_SemilepBRDown, 'event_weight_SemilepBRDown/f' )
+
 
     amcatnlo_w = array( 'f', [ 0 ] )
     ttree_out.Branch( 'amcatnlo_w', amcatnlo_w, 'amcatnlo_w/f' )
@@ -1452,12 +1478,27 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     all_vector_branches.append(event_leptons_genmatch)
 
 
+    event_candidate_taus = ROOT.LorentzVectorS()
+    ttree_out.Branch("event_candidate_taus", event_candidate_taus)
+    all_vector_branches.append(event_candidate_taus)
+    event_candidate_taus_ids = ROOT.IntVector()
+    ttree_out.Branch("event_candidate_taus_ids", event_candidate_taus_ids)
+    all_vector_branches.append(event_candidate_taus_ids)
+
     event_taus = ROOT.LorentzVectorS()
     ttree_out.Branch("event_taus", event_taus)
     all_vector_branches.append(event_taus)
     event_taus_ids = ROOT.IntVector()
     ttree_out.Branch("event_taus_ids", event_taus_ids)
     all_vector_branches.append(event_taus_ids)
+
+    event_taus_TES_up = ROOT.DoubleVector()
+    ttree_out.Branch("event_taus_TES_up", event_taus_TES_up)
+    all_vector_branches.append(event_taus_TES_up)
+    event_taus_TES_down = ROOT.DoubleVector()
+    ttree_out.Branch("event_taus_TES_down", event_taus_TES_down)
+    all_vector_branches.append(event_taus_TES_down)
+
     # tau_matching_gen
     event_taus_genmatch = ROOT.IntVector()
     ttree_out.Branch("event_taus_genmatch", event_taus_genmatch)
@@ -2109,6 +2150,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 else:
                     gen_proc_id[0] = genproc_stop_other
 
+            # LEPTON SFs
             if isMC and (pass_mu_all or pass_mu or pass_mumu or pass_mumu_ss):
                 #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt()) # old
                 # 0, 1, 2 -- trk
@@ -2124,14 +2166,14 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 # with gen_nvtx for tracking eff
                 mu_b_trk = mu_sfs_b[0] * mu_sfs_b[1]
                 mu_h_trk = mu_sfs_h[0] * mu_sfs_h[1]
-                weight_lep_Up   = weight * (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
-                                               ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
-                weight_lep_Down = weight * (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
-                                               ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
+                weight_lep_Up   = (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
+                                      ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
+                weight_lep_Down = (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
+                                      ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
 
                 # test how much lepton SFs affect
-                weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                             ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                weight_lep = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                                ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
             if isMC and pass_elmu:
                 # find which lepton is mu and which is el
@@ -2147,18 +2189,18 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 mu_b_trk = mu_sfs_b[0] * mu_sfs_b[1]
                 mu_h_trk = mu_sfs_h[0] * mu_sfs_h[1]
 
-                weight_lep_Up   = weight * (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
-                                               ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
-                weight_lep_Down = weight * (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
-                                               ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
+                weight_lep_Up   = (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
+                                      ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
+                weight_lep_Down = (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
+                                      ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
 
                 weight_lep_Up   *= (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 weight_lep_Down *= (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
 
-                weight *= el_sfs_reco[0] * el_sfs_id[0]
+                weight_lep = el_sfs_reco[0] * el_sfs_id[0]
 
-                weight *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                          ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                weight_lep = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                             ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
             # FIXME: this thing might interfere with muonic elmu! run separately or fix
             if False and isMC and pass_elmu_el:
@@ -2176,10 +2218,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 mu_b_trk = mu_sfs_b[0] * mu_sfs_b[1]
                 mu_h_trk = mu_sfs_h[0] * mu_sfs_h[1]
 
-                weight_lep_Up   = weight * (ratio_bcdef * mu_b_trk * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
-                                               ratio_gh * mu_h_trk * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
-                weight_lep_Down = weight * (ratio_bcdef * mu_b_trk * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
-                                               ratio_gh * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
+                weight_lep_Up   = (ratio_bcdef * mu_b_trk * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
+                                      ratio_gh * mu_h_trk * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
+                weight_lep_Down = (ratio_bcdef * mu_b_trk * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
+                                      ratio_gh * mu_h_trk * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
 
                 weight_lep_Up   *= (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 weight_lep_Down *= (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
@@ -2199,11 +2241,13 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                     el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                     el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 # on 0 position is the value, on 1 is uncertainty
-                weight_lep_Up   = weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
-                weight_lep_Down = weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+                weight_lep_Up   = (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
+                weight_lep_Down = (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
 
                 # test how much leptons SFs affect
-                #weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+                weight_lep = el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+
+            weight *= weight_lep
 
         control_counters.Fill(52)
 
@@ -2233,48 +2277,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         # lowest and cuts -- tight
         # old -- medium
         # I also need preselection for WJets SS and preselection SS (for QCD)
-        taus_nom    = TauSplit(candidates=[], medium=[]) #TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], oldVloose=[], presel_alliso=[], presel=[])
-        taus_ESUp   = TauSplit(candidates=[], medium=[]) #TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], oldVloose=[], presel_alliso=[], presel=[])
-        taus_ESDown = TauSplit(candidates=[], medium=[]) #TauCutsPerSystematic(lowest=[], loose=[], cuts=[], old=[], oldVloose=[], presel_alliso=[], presel=[])
+        taus_main       = []
+        taus_candidates = []
 
         # each tau is
         # p4, ES factor (ID lev is per collection), pdg ID (for OS, SS)
-
-        """
-        tausP_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
-        tausL_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
-        tausM_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
-        tausT_nom    = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
-
-        tausP_ESUp   = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
-        tausL_ESUp   = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
-        tausM_ESUp   = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
-        tausT_ESUp   = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
-
-        tausP_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
-        tausL_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
-        tausM_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
-        tausT_ESDown = TauCutsPerSystematic(lowest=[], cuts=[], old=[])
-        """
-
-        """
-        # p4 momenta of taus and the Energy Scale factor
-        taus_nominal_min = []
-        taus_nominal = []
-        taus_es_up   = []
-        taus_es_down = []
-
-        # OPTIMIZATION
-        # I assume tau is usually only 1 in the event
-        # to control it I can:
-        #   keep a counter of N loow, medium and tight taus, but I'll use only the first tau
-        #   or
-        #   return list of taus with their IDlev... -- for each ES variation pssing the pt cut
-        #   ..also my ES variations are for Medium WP only?
-        #     and I don't really need it for optimization tests....
-        taus_all_foropt = []
-        """
-
         # only top pt tau is treated but that's fine
         '''IDlev
         1 VLoose
@@ -2306,29 +2313,34 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
             tau_pt = p4.pt()
             TES_factor = 1. # this factor exists for nominal taus
+            TES_factor_up = 1.
+            TES_factor_dn = 1.
 
             jetmatched = ev.tau_dR_matched_jet[i] # > -1
 
             match_lep        = ev.tau_matching_lep[i] if ISO_LEPS else ev.tau_matching_allIso_lep[i]
 
+            pass_pt = False
             # MC corrections
             if isMC: # and with_TauES_sys:
                 if tau_DM == 0:
-                    factor = 0.995
-                    factor_up   = 0.995 + 0.012
-                    factor_down = 0.995 - 0.012
+                    TES_factor = 0.995
+                    TES_factor_up = 0.995 + 0.012
+                    TES_factor_dn = 0.995 - 0.012
                 elif tau_DM < 10:
-                    factor = 1.011
-                    factor_up   = 1.011 + 0.012
-                    factor_down = 1.011 - 0.012
+                    TES_factor = 1.011
+                    TES_factor_up = 1.011 + 0.012
+                    TES_factor_dn = 1.011 - 0.012
                 else:
-                    factor = 1.006
-                    factor_up   = 1.006 + 0.012
-                    factor_down = 1.006 - 0.012
-                tau_pt_up   = tau_pt * factor_up
-                tau_pt_down = tau_pt * factor_down
-                TES_factor  = factor
-                tau_pt     *= factor
+                    TES_factor = 1.006
+                    TES_factor_up = 1.006 + 0.012
+                    TES_factor_dn = 1.006 - 0.012
+                tau_pt_up   = tau_pt * TES_factor_up
+                tau_pt_down = tau_pt * TES_factor_dn
+                tau_pt     *= TES_factor
+                pass_pt = any(pt_var > TAUS_PT_CUT for pt_var in (tau_pt, tau_pt_up, tau_pt_down))
+            else:
+                pass_pt = tau_pt > TAUS_PT_CUT
 
             # I store only 1 ID per selection
             # tight for lowest and cuts
@@ -2337,35 +2349,14 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
             # nominals
             if tau_pt > 20. and not match_lep:
-                taus_nom.candidates.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-            if tau_pt > TAUS_PT_CUT and tau_ID > TAUS_ID_CUT and not match_lep:
-                taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+                taus_candidates.append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
-            # TES
-            if isMC and with_TauES_sys:
-
-                TES_factor = factor_up
-                if tau_pt_up > 20. and not match_lep:
-                    taus_ESUp.candidates.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-                if tau_pt_up > TAUS_PT_CUT and tau_ID > TAUS_ID_CUT and not match_lep:
-                    taus_ESUp.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-
-                TES_factor = factor_down
-                if tau_pt_down > 20. and not match_lep:
-                    taus_ESDown.candidates.append((p4, TES_factor, tau_pdgID, i, jetmatched))
-                if tau_pt_down > TAUS_PT_CUT and tau_ID > TAUS_ID_CUT and not match_lep:
-                    taus_ESDown.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+            if pass_pt and tau_ID > TAUS_ID_CUT and not match_lep:
+                taus_main.append((p4, (TES_factor, TES_factor_up, TES_factor_dn), tau_pdgID, i, jetmatched))
 
         # sort by pt
-        taus_nom    .candidates.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
-        taus_nom    .medium    .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
-
-        # TES
-        if isMC and with_TauES_sys:
-            taus_ESUp   .candidates.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
-            taus_ESDown .candidates.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
-            taus_ESUp   .medium .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
-            taus_ESDown .medium .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        #taus_candidates.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+        #taus_main      .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
 
 
         # ---------- JETS
@@ -2444,7 +2435,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             lead_jet_b_discr = ev.jet_b_discr[0]
 
         b_tag_wp_loose  = 0.460
-        b_tag_wp_medium = 0.8484 #0.8
+        b_tag_wp_medium = 0.8 # 0.8484 #0.8
         b_tag_wp_tight  = 0.935
         b_tag_wp = b_tag_wp_medium
 
@@ -2501,13 +2492,12 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         # just lists of tlorentz vectors
         # in lowest and cuts we use tight tau
         # -- using only the first tau in the list -- the target one!
-        for tau_p4, _, _, _, _ in taus_nom.candidates[:1]:
+        for tau_p4, _, _, _, _ in taus_candidates[:1]:
             taus_nom_TLorentz.candidates.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
 
         # in old we use medium tau
-        for tau_p4, _, _, _, _ in taus_nom.medium[:1]:
+        for tau_p4, _, _, _, _ in taus_main[:1]:
             taus_nom_TLorentz.medium.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
-        #for tau_p4, _, _, _, _ in taus_nom.oldVloose[:1]:
         #    taus_nom_TLorentz.oldVloose.append(TLorentzVector(tau_p4.X(), tau_p4.Y(), tau_p4.Z(), tau_p4.T()))
         # in principle I should also change TES -- but this effect is very second order
 
@@ -2914,9 +2904,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         #nominal systematics
         # jet pts, tau pts, b weight (=1 for data), pu weight (=1 for data)
 
-        syst_weights_nominal = [weight, weight_pu, 1., 1.]
+        syst_weights_nominal = [weight, 1., 1.]
         syst_weights = {} # {'NOMINAL': syst_weights_nominal}
-        syst_objects = {'NOMINAL': [jets_nom, taus_nom, proc_met]}
+        syst_objects = {'NOMINAL': [jets_nom, taus_main, taus_candidates, proc_met]}
         '''
         # data and tt systematic datasets have all nominal systematic variations -- they are a systematic themselves
         if isTT_systematic:
@@ -2985,7 +2975,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         control_counters.Fill(53)
 
         #for sys_i, (sys_name, (jets, taus, proc_met)) in enumerate(syst_objects.items()):
-        sys_i, (sys_name, (jets, taus, proc_met)) = 0, syst_objects.items()[0]
+        sys_i, (sys_name, (jets, sel_taus, sel_tau_candidates, proc_met)) = 0, syst_objects.items()[0]
         #control_counters.Fill(4 + sys_i)
         '''
         1) for each variation of objects check if which channels pass
@@ -3055,7 +3045,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         if old_jet_sel:
             control_counters.Fill(111)
 
-        if len(taus.medium) > 0:
+        if len(sel_taus) > 0:
             control_counters.Fill(112)
 
         if pass_mu and old_jet_sel:
@@ -3064,19 +3054,19 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         if pass_el and old_jet_sel:
             control_counters.Fill(204)
 
-        if pass_mu and old_jet_sel and len(taus.medium) > 0:
+        if pass_mu and old_jet_sel and len(sel_taus) > 0:
             control_counters.Fill(304)
 
-        if pass_el and old_jet_sel and len(taus.medium) > 0:
+        if pass_el and old_jet_sel and len(sel_taus) > 0:
             control_counters.Fill(305)
 
         # 3 jets (2b and 1 tau) and 1 b-tagged
         # TODO: compare with previous result with only 2 jets and 1 b-tagged -- check njets distrs
-        pass_old_mu_sel = pass_mu and old_jet_sel and len(taus.medium) > 0 # and no met cut
-        pass_old_el_sel = pass_el and old_jet_sel and len(taus.medium) > 0 # and no met cut
+        pass_old_mu_sel = pass_mu and old_jet_sel and len(sel_taus) > 0 # and no met cut
+        pass_old_el_sel = pass_el and old_jet_sel and len(sel_taus) > 0 # and no met cut
 
-        pass_old_mu_presel = pass_mu and old_jet_sel and len(taus.candidates) > 0
-        pass_old_el_presel = pass_el and old_jet_sel and len(taus.candidates) > 0
+        pass_old_mu_presel = pass_mu and old_jet_sel and len(sel_tau_candidates) > 0
+        pass_old_el_presel = pass_el and old_jet_sel and len(sel_tau_candidates) > 0
         pass_old_lep_presel = pass_old_mu_presel or pass_old_el_presel
 
         pass_elmu_close = pass_elmu and (len(jets.medium) + len(jets.taumatched[0])) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 1
@@ -3130,19 +3120,36 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
 
         # final CHANNEL SELECTION decision
-        tt_channel_stage = passes_tt_selection_stages(passed_triggers, leps, jets, taus, proc_met)
-        if tt_channel_stage < 1:
+        tt_channel_presel_stage = passes_tt_selection_stages(passed_triggers, leps, jets, taus_candidates, proc_met)
+        # nominal
+        tt_channel_sel_stage    = passes_tt_selection_stages(passed_triggers, leps, jets, [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_TESUp    = passes_tt_selection_stages(passed_triggers, leps, jets, [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_TESDown  = passes_tt_selection_stages(passed_triggers, leps, jets, [tau for tau in sel_taus if (tau[0]*tau[1][2]).pt() > TAUS_PT_CUT], proc_met)
+
+        if tt_channel_sel_stage > 0:
+            tt_channel_stage = 2 + tt_channel_sel_stage
+        else:
+            tt_channel_stage = tt_channel_presel_stage
+
+        if tt_channel_sel_stage_TESUp > 0:
+            tt_channel_sel_stage_TESUp += 2
+        if tt_channel_sel_stage_TESDown > 0:
+            tt_channel_sel_stage_TESDown += 2
+
+        if tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1:
             continue
 
 
         # SAVE SELECTION, objects and weights
 
         selection_stage[0] = tt_channel_stage
+        selection_stage_TESUp[0]   = tt_channel_sel_stage_TESUp
+        selection_stage_TESDown[0] = tt_channel_sel_stage_TESDown
 
         # objects
         #selection_objects = leps, jets, taus.medium
         selection_requires_b = True
-        sel_leps, sel_jets, sel_taus = leps, jets, taus.medium
+        sel_leps, sel_jets = leps, jets
         #for chan_i, (chan, apply_bSF, sel_leps, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
 
         '''
@@ -3216,11 +3223,20 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 event_jets_l_genmatch .push_back(ev.jet_matching_gen[jet_index])
                 event_jets_l_bSFweight.push_back(jet_bSFweight_nom)
 
+        # taus candidates
+        for tau in sel_tau_candidates:
+            #tau_index = tau[3]
+            event_candidate_taus    .push_back(tau[0] * tau[1])
+            event_candidate_taus_ids.push_back(tau[2])
+
         # taus
         # taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
         for tau in sel_taus:
             tau_index = tau[3]
-            event_taus    .push_back(tau[0] * tau[1])
+            TES_nom, TES_up, TES_down = tau[1]
+            event_taus          .push_back(tau[0] * TES_nom)
+            event_taus_TES_up   .push_back(TES_up / TES_nom)
+            event_taus_TES_down .push_back(TES_down / TES_nom)
             event_taus_ids.push_back(tau[2])
             if isMC:
                 event_taus_genmatch.push_back(ev.tau_matching_gen[tau_index])
@@ -3332,17 +3348,29 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         #record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
 
         # nominal systematics
-        weight_init, weight_PU, weight_top_pt, weight_th = syst_weights_nominal
-        nom_sys_weight            = weight_init * weight_th * weight_PU * weight_top_pt
+        weight_init, weight_top_pt, weight_th = syst_weights_nominal
+        nom_sys_weight            = weight_init * weight_th * weight_pu * weight_top_pt
         nom_sys_weight_without_PU = weight_init * weight_th * weight_top_pt # for PU tests
 
         event_weight[0] = nom_sys_weight * weight_bSF_to_apply
-        event_weight_init[0] = weight_init
-        event_weight_pu[0]   = weight_PU
-        event_weight_th[0]   = weight_th
-        event_weight_bSF[0]  = weight_bSF_to_apply
-        event_weight_toppt[0] = weight_top_pt
+        event_weight_init[0]  = weight_init
+        event_weight_PU[0]    = weight_pu
+        event_weight_th[0]    = weight_th
+        event_weight_bSF[0]   = weight_bSF_to_apply
 
+        # systematic variation of the event weight
+        event_weight_toppt[0] = weight_top_pt
+        event_weight_LEPUp[0]   = (weight_lep_Up   / weight_lep) if weight_lep > 0. else 0.
+        event_weight_LEPDown[0] = (weight_lep_Down / weight_lep) if weight_lep > 0. else 0.
+        event_weight_PUUp[0]    = weight_pu_up
+        event_weight_PUDown[0]  = weight_pu_dn
+
+        if with_Frag_sys:
+            event_weight_PetersonUp[0] = weights_gen_weight_Peterson / weights_gen_weight_centralFrag
+            event_weight_FragUp  [0]   = weights_gen_weight_Frag[0]  / weights_gen_weight_centralFrag
+            event_weight_FragDown[0]   = weights_gen_weight_Frag[1]  / weights_gen_weight_centralFrag
+            event_weight_SemilepBRUp  [0] = weights_gen_weight_semilepbr[0] / weights_gen_weight_centralFrag
+            event_weight_SemilepBRDown[0] = weights_gen_weight_semilepbr[1] / weights_gen_weight_centralFrag
 
         # propagation of corrections to met
 
@@ -3376,12 +3404,12 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         if isMC and sel_taus: # and 'TauES' in sys_name:
             #try:
             sum_tau_init = sel_taus[0][0]
-            sum_tau_corr = sel_taus[0][0] * sel_taus[0][1]
-            tau_cor = sel_taus[0][0] * (1. - sel_taus[0][1])
+            sum_tau_corr = sel_taus[0][0] * sel_taus[0][1][0]
+            tau_cor = sel_taus[0][0] * (1. - sel_taus[0][1][0])
             for tau in sel_taus[1:]:
-                tau_cor += tau[0] * (1. - tau[1])
+                tau_cor += tau[0] * (1. - tau[1][0])
                 sum_tau_init += tau[0]
-                sum_tau_corr += tau[0] * tau[1]
+                sum_tau_corr += tau[0] * tau[1][0]
 
             sum_tau_corr_X = sum_tau_corr.Px()
             sum_tau_corr_Y = sum_tau_corr.Py()
@@ -3406,7 +3434,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         if sel_taus and sel_taus[0][4] > -1:
             # only first tau is taken
             tau_index = sel_taus[0][3]
-            the_tau_p4 = sel_taus[0][0] * sel_taus[0][1]
+            the_tau_p4 = sel_taus[0][0] * sel_taus[0][1][0]
             tau_jet_index   = sel_taus[0][4]
 
             # substitute the nominal jet
@@ -3460,7 +3488,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         for lep in lep_p4:
             all_sel_objects += lep
         for tau in sel_taus:
-            all_sel_objects += tau[0] * tau[1]
+            all_sel_objects += tau[0] * tau[1][0]
         for jet in all_sel_jets:
             all_sel_objects += jet[0] * jet[1]
 
