@@ -1496,6 +1496,18 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     # met lorentzvector
     event_met = LorentzVector_Class(0., 0., 0., 0.)
     ttree_out.Branch("event_met", event_met)
+    event_met_JERUp = LorentzVector_Class(0., 0., 0., 0.)
+    ttree_out.Branch("event_met_JERUp", event_met_JERUp)
+    event_met_JERDown = LorentzVector_Class(0., 0., 0., 0.)
+    ttree_out.Branch("event_met_JERDown", event_met_JERDown)
+    event_met_JESUp = LorentzVector_Class(0., 0., 0., 0.)
+    ttree_out.Branch("event_met_JESUp", event_met_JESUp)
+    event_met_JESDown = LorentzVector_Class(0., 0., 0., 0.)
+    ttree_out.Branch("event_met_JESDown", event_met_JESDown)
+    event_met_TESUp = LorentzVector_Class(0., 0., 0., 0.)
+    ttree_out.Branch("event_met_TESUp", event_met_TESUp)
+    event_met_TESDown = LorentzVector_Class(0., 0., 0., 0.)
+    ttree_out.Branch("event_met_TESDown", event_met_TESDown)
 
     all_vector_branches = [] # for resetting them on each event
 
@@ -1951,6 +1963,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         proc_met_JERDown = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
         proc_met_JESUp   = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
         proc_met_JESDown = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
+        proc_met_TESUp   = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
+        proc_met_TESDown = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
         proc_met_lepsub  = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
 
         # from PU tests, leaving it here for now
@@ -2408,6 +2422,18 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             if pass_pt and tau_ID > TAUS_ID_CUT and not match_lep:
                 taus_main.append((p4, (TES_factor, TES_factor_up, TES_factor_dn), tau_pdgID, i, jetmatched))
 
+            if tau_pt > TAUS_PT_CUT:
+                proc_met         -= p4 * (TES_factor - 1.)
+                proc_met_JERUp   -= p4 * (TES_factor - 1.)
+                proc_met_JERDown -= p4 * (TES_factor - 1.)
+                proc_met_JESUp   -= p4 * (TES_factor - 1.)
+                proc_met_JESDown -= p4 * (TES_factor - 1.)
+
+            if tau_pt_up > TAUS_PT_CUT:
+                proc_met_TESUp   -=  p4 * (TES_factor_up - 1.)
+            if tau_pt_down > TAUS_PT_CUT:
+                proc_met_TESDown -=  p4 * (TES_factor_dn - 1.)
+
         # sort by pt
         #taus_candidates.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
         #taus_main      .sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
@@ -2672,9 +2698,6 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 #if ev.jet_matching_gen_dR[i] < 0.3:
                     #genmatch = ev.jet_matching_gen[i]
 
-            # propagate the correction to met
-            proc_met -= p4 * (en_factor - 1.)
-
             if sub_lep and match_lep:
                 # sub jet by lep
                 # works only for 1 lepton
@@ -2684,18 +2707,21 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             else:
                 proc_met_lepsub -= p4 * (en_factor - 1.)
 
-            # and with systematic variations
-            if isMC and with_JER_sys:
-                #jer_factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
-                jer_up, jer_down = ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
-                proc_met_JERUp   -= p4 * (jer_up - 1.)
-                proc_met_JERDown -= p4 * (jer_down - 1.)
+            ## propagate the correction to met
+            #proc_met -= p4 * (en_factor - 1.)
 
-            if isMC and with_JES_sys:
-                #jes_shift = ev.jet_jes_correction_relShift[i]
-                jes_shift = ev.jet_jes_uncertainty[i]
-                proc_met_JESUp   -= p4 * (en_factor*(1 + jes_shift) - 1.)
-                proc_met_JESDown -= p4 * (en_factor*(1 - jes_shift) - 1.)
+            ## and with systematic variations
+            #if isMC and with_JER_sys:
+            #    #jer_factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
+            #    jer_up, jer_down = ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
+            #    proc_met_JERUp   -= p4 * (jer_up - 1.)
+            #    proc_met_JERDown -= p4 * (jer_down - 1.)
+
+            #if isMC and with_JES_sys:
+            #    #jes_shift = ev.jet_jes_correction_relShift[i]
+            #    jes_shift = ev.jet_jes_uncertainty[i]
+            #    proc_met_JESUp   -= p4 * (en_factor*(1 + jes_shift) - 1.)
+            #    proc_met_JESDown -= p4 * (en_factor*(1 - jes_shift) - 1.)
 
 
             jet_pt  = p4.pt() * en_factor
@@ -2791,16 +2817,23 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
                   # multiply the b weights for all possible combinations
                   if jet_pt > JETS_PT_CUT:
+                      proc_met -= p4 * (en_factor - 1.)
                       weight_bSF *= jet_weight_bSF_nom
                       weight_bSFUp *= jet_weight_bSFUp
                       weight_bSFDown *= jet_weight_bSFDown
+
                   if jet_pt_JERUp > JETS_PT_CUT:
+                      proc_met_JERUp -= p4 * (jet_factor_JERUp - 1.)
                       weight_bSF_JERUp *= jet_weight_bSF_nom
                   if jet_pt_JERDown > JETS_PT_CUT:
+                      proc_met_JERDown -= p4 * (jet_factor_JERDown - 1.)
                       weight_bSF_JERDown *= jet_weight_bSF_nom
+
                   if jet_pt_JESUp > JETS_PT_CUT:
+                      proc_met_JESUp -= p4 * (jet_factor_JESUp - 1.)
                       weight_bSF_JESUp *= jet_weight_bSF_nom
                   if jet_pt_JESDown > JETS_PT_CUT:
+                      proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
                       weight_bSF_JESDown *= jet_weight_bSF_nom
 
                   # match tau
@@ -3598,28 +3631,28 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             met_x_prop += tau_cor.X()
             met_y_prop += tau_cor.Y()
 
-        ### and substitute the jet->tau in met p7 p9 -> 1) v25 p2_tt_jtau, 2) v25 p2_jes_recor
-        ## this works very strangely: data is shifted to high Mt?
-        ## but the study of jet/tau pt shows approximatly the same values in both MC and Data
-        if sel_taus and sel_taus[0][4] > -1:
-            # only first tau is taken
-            tau_index = sel_taus[0][3]
-            the_tau_p4 = sel_taus[0][0] * sel_taus[0][1][0]
-            tau_jet_index   = sel_taus[0][4]
+        #### and substitute the jet->tau in met p7 p9 -> 1) v25 p2_tt_jtau, 2) v25 p2_jes_recor
+        ### this works very strangely: data is shifted to high Mt?
+        ### but the study of jet/tau pt shows approximatly the same values in both MC and Data
+        #if sel_taus and sel_taus[0][4] > -1:
+        #    # only first tau is taken
+        #    tau_index = sel_taus[0][3]
+        #    the_tau_p4 = sel_taus[0][0] * sel_taus[0][1][0]
+        #    tau_jet_index   = sel_taus[0][4]
 
-            # substitute the nominal jet
-            jer_factor = ev.jet_jer_factor[tau_jet_index] if isMC else 1.
-            #jes_factor = ev.jet_jes_recorrection[tau_jet_index]
-            #jes_uncorFactor = ev.jet_uncorrected_jecFactor[tau_jet_index]
-            en_factor = jer_factor # * jes_factor * jes_uncorFactor
-            the_jet_p4 = ev.jet_initial_p4[tau_jet_index] * en_factor #miniaod_jets[tau_jet_index]
-            #substitution = the_tau_p4 - the_jet_p4
-            # + what is to remove from met
-            # - what is to include in met
-            substitution = the_jet_p4 - the_tau_p4
-            substitution_pt = substitution.pt()
-            #met_x_prop += substitution.X()
-            #met_y_prop += substitution.Y()
+        #    # substitute the nominal jet
+        #    jer_factor = ev.jet_jer_factor[tau_jet_index] if isMC else 1.
+        #    #jes_factor = ev.jet_jes_recorrection[tau_jet_index]
+        #    #jes_uncorFactor = ev.jet_uncorrected_jecFactor[tau_jet_index]
+        #    en_factor = jer_factor # * jes_factor * jes_uncorFactor
+        #    the_jet_p4 = ev.jet_initial_p4[tau_jet_index] * en_factor #miniaod_jets[tau_jet_index]
+        #    #substitution = the_tau_p4 - the_jet_p4
+        #    # + what is to remove from met
+        #    # - what is to include in met
+        #    substitution = the_jet_p4 - the_tau_p4
+        #    substitution_pt = substitution.pt()
+        #    #met_x_prop += substitution.X()
+        #    #met_y_prop += substitution.Y()
 
         # PROPAGATE jet correcions
         all_sel_jets = sel_jets.medium + sel_jets.loose + sel_jets.rest
@@ -3687,8 +3720,26 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         met_cancelation = TMath.Sqrt(met_cancellation_x*met_cancellation_x + met_cancellation_y*met_cancellation_y)
         '''
 
-        event_met.SetPx(met_x_prop)
-        event_met.SetPy(met_y_prop)
+        #event_met.SetPx(met_x_prop)
+        #event_met.SetPy(met_y_prop)
+
+        event_met.SetPx(proc_met.Px())
+        event_met.SetPy(proc_met.Py())
+
+        event_met_JERUp.SetPx(proc_met_JERUp.Px())
+        event_met_JERUp.SetPy(proc_met_JERUp.Py())
+        event_met_JERDown.SetPx(proc_met_JERDown.Px())
+        event_met_JERDown.SetPy(proc_met_JERDown.Py())
+
+        event_met_JESUp.SetPx(proc_met_JESUp.Px())
+        event_met_JESUp.SetPy(proc_met_JESUp.Py())
+        event_met_JESDown.SetPx(proc_met_JESDown.Px())
+        event_met_JESDown.SetPy(proc_met_JESDown.Py())
+
+        event_met_TESUp.SetPx(proc_met_TESUp.Px())
+        event_met_TESUp.SetPy(proc_met_TESUp.Py())
+        event_met_TESDown.SetPx(proc_met_TESDown.Px())
+        event_met_TESDown.SetPy(proc_met_TESDown.Py())
 
         ttree_out.Fill()
 
