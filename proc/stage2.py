@@ -1384,6 +1384,12 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     # >>>>>>>>>>>>>> make output tree of the stage2 selection
 
     #ttree_out = TTree( 'ttree_out', 'tree with stage2 selection' ) # INPUT NOW
+    indexevents  = array( 'i', [ 0 ] )
+    ttree_out.Branch( 'indexevents', indexevents, 'indexevents/I' )
+    runNumber  = array( 'i', [ 0 ] )
+    ttree_out.Branch( 'runNumber', runNumber, 'runNumber/I' )
+    lumi  = array( 'i', [ 0 ] )
+    ttree_out.Branch( 'lumi', lumi, 'lumi/I' )
 
     # ID of the process in this particular MC
     gen_proc_id = array( 'i', [ 0 ] )   # taken from the standard example, array is needed to pass the pointer to branch
@@ -1417,6 +1423,14 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
     nup = array( 'i', [ 0 ] )
     ttree_out.Branch( 'nup', nup, 'nup/I' )
+
+    # lj_var of the jets in the event
+    event_jets_lj_var = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_jets_lj_var', event_jets_lj_var, 'event_jets_lj_var/f' )
+    event_jets_input_has = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_jets_input_has', event_jets_input_has, 'event_jets_input_has/f' )
+    event_jets_found_has = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_jets_found_has', event_jets_found_has, 'event_jets_found_has/f' )
 
     # nominal weight of the event
     event_weight = array( 'f', [ 0 ] )
@@ -3151,52 +3165,6 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         pass_elmu_el_close = pass_elmu_el and (len(jets.medium) + len(jets.taumatched[0])) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 1
 
-        requires_lj = pass_elmu_close or pass_old_lep_presel or pass_old_mu_sel or pass_old_el_sel
-        if requires_lj:
-            # all jets, without regard to tau in the event go into the calculation
-            # (taumatched jets go too)
-            with_all_permutation_masses = True
-            # order: not-b-taged, b-taged
-            # only medium b-tags p8 p9
-            b_cand_jets     = jets.medium + jets.taumatched[0]
-            light_cand_jets = jets.rest + jets.loose + jets.taumatched[1]
-            lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, light_cand_jets, b_cand_jets, with_all_permutation_masses, isMC)
-            # medium and loose b-tags
-            # but tau-matches are done to Medium b!
-            #lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.rest + jets.taumatched[1], jets.medium + jets.loose + jets.taumatched[0], with_all_permutation_masses, isMC)
-            n_bjets_used_in_lj = len(b_cand_jets)
-            lj_cut = 60.
-            large_lj = lj_var > lj_cut
-
-            # for tt_lj MC truth find the jets in these groups
-            if (abs(ev.gen_t_w_decay_id) == 13 or abs(ev.gen_t_w_decay_id) == 11) and abs(ev.gen_tb_w_decay_id) == 1:
-                # in tb the jets' genmatches are -6 (b) and -5 (w)
-                propper_b = -6
-                propper_w = -5
-            elif abs(ev.gen_t_w_decay_id) == 1 and (abs(ev.gen_tb_w_decay_id) == 13 or abs(ev.gen_tb_w_decay_id) == 11):
-                propper_b = 6
-                propper_w = 5
-            else:
-                propper_b = 0
-                propper_w = 0
-
-            jets_input_has = 0
-            #3*(lj_b_gen == propper_b) + (lj_w1_gen == propper_w) + (lj_w2_gen == propper_w)
-            #closest_pair_gens = (ev.jet_matching_gen[light_jets[i][6]], ev.jet_matching_gen[light_jets[u][6]])
-            if propper_b:
-                for b_cand in b_cand_jets:
-                    if b_cand[6] == propper_b:
-                        jets_input_has += 3
-                        break
-
-                found_light = False
-                for cand in light_cand_jets:
-                    if cand[6] == propper_w:
-                        jets_input_has += 1
-                        if found_light: break
-                        found_light = True
-
-
         sel_leps, sel_jets = leps, jets_nom
 
         # final CHANNEL SELECTION decision
@@ -3245,6 +3213,73 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         selection_stage_JESDown[0] = tt_channel_sel_stage_JESDown
         selection_stage_JERUp[0]   = tt_channel_sel_stage_JERUp
         selection_stage_JERDown[0] = tt_channel_sel_stage_JERDown
+
+        runNumber[0]   = ev.runNumber
+        indexevents[0] = ev.indexevents
+        lumi[0]        = ev.lumi
+
+        # calc lj var
+        requires_lj = True # pass_elmu_close or pass_old_lep_presel or pass_old_mu_sel or pass_old_el_sel
+        jets_input_has = -11
+        jets_found_has = -11
+        lj_var = -11.
+        if requires_lj:
+            # all jets, without regard to tau in the event go into the calculation
+            # (taumatched jets go too)
+            with_all_permutation_masses = True
+            # order: not-b-taged, b-taged
+            # only medium b-tags p8 p9
+            b_cand_jets     = jets.medium + jets.taumatched[0]
+            light_cand_jets = jets.rest + jets.loose + jets.taumatched[1]
+            lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, light_cand_jets, b_cand_jets, with_all_permutation_masses, isMC)
+            # medium and loose b-tags
+            # but tau-matches are done to Medium b!
+            #lj_var, w_mass, t_mass, lj_gens, all_masses = calc_lj_var(ev, jets.rest + jets.taumatched[1], jets.medium + jets.loose + jets.taumatched[0], with_all_permutation_masses, isMC)
+            n_bjets_used_in_lj = len(b_cand_jets)
+            lj_cut = 60.
+            large_lj = lj_var > lj_cut
+
+            # for tt_lj MC truth find the jets in these groups
+            if (abs(ev.gen_t_w_decay_id) == 13 or abs(ev.gen_t_w_decay_id) == 11) and abs(ev.gen_tb_w_decay_id) == 1:
+                # in tb the jets' genmatches are -6 (b) and -5 (w)
+                propper_b = -6
+                propper_w = -5
+            elif abs(ev.gen_t_w_decay_id) == 1 and (abs(ev.gen_tb_w_decay_id) == 13 or abs(ev.gen_tb_w_decay_id) == 11):
+                propper_b = 6
+                propper_w = 5
+            else:
+                propper_b = 0
+                propper_w = 0
+
+            jets_input_has = 0
+            #3*(lj_b_gen == propper_b) + (lj_w1_gen == propper_w) + (lj_w2_gen == propper_w)
+            #closest_pair_gens = (ev.jet_matching_gen[light_jets[i][6]], ev.jet_matching_gen[light_jets[u][6]])
+            if propper_b:
+                # what was in the input
+                for b_cand in b_cand_jets:
+                    if b_cand[6] == propper_b:
+                        jets_input_has += 3
+                        break
+
+                found_light = False
+                for cand in light_cand_jets:
+                    if cand[6] == propper_w:
+                        jets_input_has += 1
+                        if found_light: break
+                        found_light = True
+
+                # what was found in lj minimization
+                (found_w1, found_w2), found_b = lj_gens
+                if found_b  == propper_b:
+                    jets_found_has += 3
+                if found_w1 == propper_w:
+                    jets_found_has += 1
+                if found_w2 == propper_w:
+                    jets_found_has += 1
+
+        event_jets_lj_var[0] = lj_var
+        event_jets_input_has[0] = jets_input_has
+        event_jets_found_has[0] = jets_found_has
 
         # objects
         #selection_objects = leps, jets, taus.medium
