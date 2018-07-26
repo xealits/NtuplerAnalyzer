@@ -57,6 +57,31 @@ def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
 
     return channel_stage
 
+def passes_dy_tautau_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
+    channel_stage = 0
+    pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el = passed_triggers
+
+    # muon and OS tau and no b
+    pass_dy_objects_mu = pass_mu and len(taus) > 0 and leps[4][0] * taus[0][2] < 0 and N_jets[0] == 0
+    pass_dy_objects_el = pass_el and len(taus) > 0 and leps[4][0] * taus[0][2] < 0 and N_jets[0] == 0
+    pass_dy_mass = False
+    if pass_dy_objects_mu or pass_dy_objects_el:
+        nom_tau = taus[0][0]*taus[0][1][0]
+        pair    = leps[0][0] + nom_tau
+        pair_mass = pair.mass()
+        pass_dy_mass = 75. < pair_mass < 105.
+
+    if   pass_dy_objects_mu and pass_dy_mass:
+        channel_stage = 103
+    elif pass_dy_objects_mu:
+        channel_stage = 102
+    elif pass_dy_objects_el and pass_dy_mass:
+        channel_stage = 113
+    elif pass_dy_objects_el:
+        channel_stage = 112
+
+    return channel_stage
+
 
 logging = Logging.getLogger("common")
 
@@ -3204,6 +3229,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         # final CHANNEL SELECTION decision
         tt_channel_presel_stage = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), taus_candidates, proc_met)
+
         # nominal
         tt_channel_sel_stage    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
         tt_channel_sel_stage_TESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
@@ -3213,6 +3239,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         tt_channel_sel_stage_JERDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERDown_med, N_jets_JERDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
         tt_channel_sel_stage_JESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESUp_med,   N_jets_JESUp_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
         tt_channel_sel_stage_JESDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESDown_med, N_jets_JESDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+
+        # only nominal DY
+        dy_channel_sel_stage = passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
         if tt_channel_sel_stage > 0:
             tt_channel_stage = 2 + tt_channel_sel_stage
@@ -3234,7 +3263,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         if tt_channel_sel_stage_JERDown > 0:
             tt_channel_sel_stage_JERDown += 2
 
-        if tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1:
+        #passes = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and dy_channel_sel_stage < 1
+        passes = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1
+        if passes:
             continue
 
 
@@ -3248,6 +3279,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         selection_stage_JESDown[0] = tt_channel_sel_stage_JESDown
         selection_stage_JERUp[0]   = tt_channel_sel_stage_JERUp
         selection_stage_JERDown[0] = tt_channel_sel_stage_JERDown
+
+        selection_stage_dy[0] = dy_channel_sel_stage
 
         runNumber[0]   = ev.runNumber
         indexevents[0] = ev.indexevents
@@ -3883,6 +3916,7 @@ def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19252
 
     fout = TFile(outdir + '/' + fout_name, "RECREATE")
     ttree_out = TTree( 'ttree_out', 'tree with stage2 selection' ) # INPUT NOW
+    ttree_out.SetDirectory(fout)
 
     #logger.write("range = %d, %d\n" % (range_min, range_max))
 
@@ -3923,11 +3957,13 @@ def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19252
     #fout = TFile(outdir + '/' + dtag + "_%d-%d.root" % (range_min, range_max), "RECREATE")
     #fout_name = outdir + '/' + 
     fout.Write()
+
+    fout.cd()
+
     ttree_out.Write()
 
     #events_counter.SetDirectory()
     #weight_counter.SetDirectory()
-    fout.cd()
     events_counter.Write() # hopefully these go to the root of the tfile
     weight_counter.Write()
     systematic_weights.Write()
