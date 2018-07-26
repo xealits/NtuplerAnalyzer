@@ -21,7 +21,8 @@ parser.add_argument('--ttree',    type=str, default="ntupler/reduced_ttree", hel
 parser.add_argument('--distr',  type=str, default="lep_pt", help='the name of the distribution')
 parser.add_argument('--sys',    type=str, default="NOMINAL", help='the systematic')
 parser.add_argument('--chan',   type=str, default="ctr_old_mu_sel", help='the name of the channel')
-parser.add_argument('--histo-range', type=str, default=None, help='optionally set the range')
+parser.add_argument('--histo-range',  type=str, default=None, help='optionally set the range')
+parser.add_argument('--custom-range', type=str, default=None, help='optionally set the custom range')
 #parser.add_argument('--histo-color', type=str, default=None, help='optional rgb color, like `255,255,255`')
 
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
@@ -87,7 +88,10 @@ dtags = {
 }
 
 
-command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out --histo-range {histo_range} --cond-com "{selection}" --output test1_lep_pt_{dtag}_{proc}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight --per-weight {dtag_file}"""
+if args.custom_range:
+    command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out """ + "--custom-range {}".format(args.custom_range) + """ --cond-com "{selection}" --output test1_lep_pt_{dtag}_{proc}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight --per-weight {dtag_file}"""
+else:
+    command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out """ + "--histo-range {}".format(args.histo_range) + """ --cond-com "{selection}" --output test1_lep_pt_{dtag}_{proc}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight --per-weight {dtag_file}"""
 
 for input_file in args.input_files:
     matching_dtags = [dtag for dtag in dtags.keys() if dtag in input_file]
@@ -128,7 +132,6 @@ for input_file in args.input_files:
             full_selection = "%s * (%s)" % (args.weight, full_selection)
 
         proc_command = command.format(draw_com = args.draw_com,
-                                      histo_range = args.histo_range,
                                       selection = full_selection,
                                       dtag = dtag,
                                       chan  = args.chan,

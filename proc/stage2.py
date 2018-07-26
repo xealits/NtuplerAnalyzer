@@ -1384,8 +1384,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     # >>>>>>>>>>>>>> make output tree of the stage2 selection
 
     #ttree_out = TTree( 'ttree_out', 'tree with stage2 selection' ) # INPUT NOW
-    indexevents  = array( 'i', [ 0 ] )
-    ttree_out.Branch( 'indexevents', indexevents, 'indexevents/I' )
+    indexevents  = array( 'L', [ 0 ] )
+    ttree_out.Branch( 'indexevents', indexevents, 'indexevents/l' )
     runNumber  = array( 'i', [ 0 ] )
     ttree_out.Branch( 'runNumber', runNumber, 'runNumber/I' )
     lumi  = array( 'i', [ 0 ] )
@@ -2380,6 +2380,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             #    continue
 
             tau_pt = p4.pt()
+            tau_pt_up   = tau_pt
+            tau_pt_down = tau_pt
             TES_factor = 1. # this factor exists for nominal taus
             TES_factor_up = 1.
             TES_factor_dn = 1.
@@ -2403,9 +2405,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                     TES_factor = 1.006
                     TES_factor_up = 1.006 + 0.012
                     TES_factor_dn = 1.006 - 0.012
-                tau_pt_up   = tau_pt * TES_factor_up
-                tau_pt_down = tau_pt * TES_factor_dn
-                tau_pt     *= TES_factor
+                tau_pt_up   *= TES_factor_up
+                tau_pt_down *= TES_factor_dn
+                tau_pt      *= TES_factor
                 pass_pt = any(pt_var > TAUS_PT_CUT for pt_var in (tau_pt, tau_pt_up, tau_pt_down))
             else:
                 pass_pt = tau_pt > TAUS_PT_CUT
@@ -3562,18 +3564,25 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         event_weight_bSF_JESDown[0] = weight_bSF_JESDown
 
         # systematic variation of the event weight
-        event_weight_toppt[0] = weight_top_pt
-        event_weight_LEPUp[0]   = (weight_lep_Up   / weight_lep) if weight_lep > 0. else 0.
-        event_weight_LEPDown[0] = (weight_lep_Down / weight_lep) if weight_lep > 0. else 0.
-        event_weight_PUUp[0]    = weight_pu_up
-        event_weight_PUDown[0]  = weight_pu_dn
+        if isMC:
+            event_weight_toppt[0] = weight_top_pt if isTT else 1.
+            event_weight_LEPUp[0]   = (weight_lep_Up   / weight_lep) if weight_lep > 0. else 0.
+            event_weight_LEPDown[0] = (weight_lep_Down / weight_lep) if weight_lep > 0. else 0.
+            event_weight_PUUp[0]    = weight_pu_up
+            event_weight_PUDown[0]  = weight_pu_dn
 
-        if with_Frag_sys:
+        if with_Frag_sys and isTT:
             event_weight_PetersonUp[0] = weights_gen_weight_Peterson / weights_gen_weight_centralFrag
             event_weight_FragUp  [0]   = weights_gen_weight_Frag[0]  / weights_gen_weight_centralFrag
             event_weight_FragDown[0]   = weights_gen_weight_Frag[1]  / weights_gen_weight_centralFrag
             event_weight_SemilepBRUp  [0] = weights_gen_weight_semilepbr[0] / weights_gen_weight_centralFrag
             event_weight_SemilepBRDown[0] = weights_gen_weight_semilepbr[1] / weights_gen_weight_centralFrag
+        else:
+            event_weight_PetersonUp[0]    = 1.0
+            event_weight_FragUp  [0]      = 1.0
+            event_weight_FragDown[0]      = 1.0
+            event_weight_SemilepBRUp  [0] = 1.0
+            event_weight_SemilepBRDown[0] = 1.0
 
         # propagation of corrections to met
 
