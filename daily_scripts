@@ -1,4 +1,94 @@
 
+
+
+
+
+
+
+
+
+Mt of full run with stage
+
+time python sumup_ttree_distrs.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --custom-range 1,20,40,60,80,100,130,160,200,250 --cond-com "selection_stage == 5" --ttree ttree_out --histo-name  tt_mutau_mu1t3j1b_leptaucuts_ttnom_Mt   --output tt_mutau_mu1t3j1b_leptaucuts_ttnom_Mt.root merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+-- 14 seconds
+
+time python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --histo-range 50,0,200 merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+-- 1m13s
+
+custom bins for selections
+all selections in loop?
+
+time python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+-- 1m20s
+
+all MC:
+
+time python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 merge-sets/v25/pStage2Run1/MC*.root
+
+and data:
+
+-- data failed, fixed, reran 1 job in 1m33s
+
+also some QCD and WZ failed
+
+MC2016_Summer16_WWToLNuQQ_powheg
+MC2016_Summer16_WZTo3LNu_powheg
+
+MC2016_Summer16_QCD_HT-1000-1500.root
+MC2016_Summer16_QCD_HT-2000-Inf.root
+MC2016_Summer16_QCD_HT-700-1000.root
+
+source remaining_jobs_aa &
+source remaining_jobs_ab &
+source remaining_jobs_ac &
+source remaining_jobs_ad &
+source remaining_jobs_ae &
+source remaining_jobs_af &
+source remaining_jobs_ag &
+source remaining_jobs_ah &
+source remaining_jobs_ai &
+source remaining_jobs_aj &
+source remaining_jobs_ak &
+source remaining_jobs_al &
+source remaining_jobs_am &
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+the rebinning to 1 bin for cut-n-count MC statistics test
+
+python rebin_to_one.py Mt_lep_met_f fit-stuff/histosels_mc_v25p2_v26p2_updowns2_el_w-qcd-prop_bin1.root
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 redo electron osss
 
 python stack_plot.py v23p1_mc.root ../merge-sets/v23/p1_data/SingleElectron.root -o plots/paper-draft-1_an-version-3/ --lumi 31300 --osss -c ctr_old_el_presel_alliso -p -d lep_relIso_el

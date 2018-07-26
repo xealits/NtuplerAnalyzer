@@ -50,6 +50,9 @@ input_filename, ttree_path = args.input.split(':')
 input_file = TFile(input_filename)
 ttree      = input_file.Get(ttree_path)
 
+histo_file = TFile("test_histo_save2.root")
+r_histo = histo_file.Get("h")
+
 for event in ttree:
     # you can find what the ttree contains by running in ROOT interpreter:
     # root -l MC2016_Summer16_TTJets_powheg.root
