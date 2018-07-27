@@ -17,8 +17,10 @@ nick_info = {
 "dy_other":    {'color': kGray,    'legend': 'DY #rightarrow other'},
 "dy_tautau":   {'color': kGray+2,  'legend': 'DY #rightarrow #tau#tau'},
 "wjets":       {'color': kCyan+2,  'legend': 'W+jets#rightarrow l'},
+"wjets_other": {'color': kCyan+2,  'legend': 'W+jets#rightarrow l'},
 "wjets_tauh":  {'color': kCyan+3,  'legend': 'W+jets#rightarrow #tau_{h}'},
 "wjets_taul":  {'color': kCyan+4,  'legend': 'W+jets#rightarrow #tau_{l}'},
+
 "dibosons":    {'color': kCyan,    'legend': 'dibosons'},
 "singletop":   {'color': kAzure,   'legend': 'singletop'},
 "s_top_eltau": {'color': kAzure,   'legend': 's.top#rightarrow e#tau'},
@@ -74,6 +76,7 @@ nick_order = {
 "tt_other": -11,
 
 "wjets": -20,
+"wjets_other": -20,
 "wjets_tauh": -21,
 "wjets_taul": -22,
 

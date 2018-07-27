@@ -25,6 +25,8 @@ parser.add_argument('--histo-range',  type=str, default=None, help='optionally s
 parser.add_argument('--custom-range', type=str, default=None, help='optionally set the custom range')
 #parser.add_argument('--histo-color', type=str, default=None, help='optional rgb color, like `255,255,255`')
 
+parser.add_argument('--out-dir',   type=str, default='./', help='directory name for output')
+
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 #parser.add_argument("--output", type=str, default="output.root", help="filename for output")
 
@@ -85,13 +87,16 @@ dtags = {
 'MC2016_Summer16_W4Jets_madgraph'  : genprocs_mutau_wjets,
 'MC2016_Summer16_WJets_madgraph'   : genprocs_mutau_wjets,
 'MC2016_Summer16_WJets_amcatnlo'   : genprocs_mutau_wjets,
+
+'SingleMuon'     : ('data', []),
+'SingleElectron' : ('data', []),
 }
 
 
 if args.custom_range:
-    command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out """ + "--custom-range {}".format(args.custom_range) + """ --cond-com "{selection}" --output test1_lep_pt_{dtag}_{proc}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight --per-weight {dtag_file}"""
+    command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out """ + "--custom-range {}".format(args.custom_range) + """ --cond-com "{selection}" --output {outdir}/test1_lep_pt_{dtag}_{proc}_{sys}_{distr}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight {options} {dtag_file}"""
 else:
-    command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out """ + "--histo-range {}".format(args.histo_range) + """ --cond-com "{selection}" --output test1_lep_pt_{dtag}_{proc}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight --per-weight {dtag_file}"""
+    command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out """ + "--histo-range {}".format(args.histo_range) + """ --cond-com "{selection}" --output {outdir}/test1_lep_pt_{dtag}_{proc}_{sys}_{distr}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight {options} {dtag_file}"""
 
 for input_file in args.input_files:
     matching_dtags = [dtag for dtag in dtags.keys() if dtag in input_file]
@@ -103,6 +108,7 @@ for input_file in args.input_files:
     assert isfile(input_file) # checks if a file (not directory or anything else) with this name exists
 
     dtag = matching_dtags[0]
+    logging.debug(dtag)
 
     main_name, proc_defs = dtags[dtag]
     included_ids = []
@@ -113,7 +119,33 @@ for input_file in args.input_files:
         proc_defs.append(('other', []))
     # otherwise, like in case of qcd of dibosons, all events are treated as 1 process
 
+    else:
+        # just plot with the given condition
+        # in case of MC add weight if needed
+        full_selection = args.cond_com
+        isData = main_name == 'data'
+        if isData and args.weight:
+            full_selection = "%s * (%s)" % (args.weight, full_selection)
+
+        proc_command = command.format(draw_com = args.draw_com,
+                                      selection = full_selection,
+                                      dtag = dtag,
+                                      chan  = args.chan,
+                                      proc  = main_name,
+                                      sys   = args.sys,
+                                      distr = args.distr,
+                                      outdir = args.out_dir,
+                                      dtag_file = input_file,
+                                      options = '' if isData else '--per-weight')
+
+        logging.debug(proc_command)
+        os.system(proc_command)
+        continue
+
+    logging.debug(repr(proc_defs))
+
     for proc_name, proc_ids in proc_defs:
+        logging.debug(repr(proc_name))
         # check that new ids have not been already processed
         assert not any(new_id in included_ids for new_id in proc_ids)
         # now save the ids of this process in the included
@@ -138,7 +170,9 @@ for input_file in args.input_files:
                                       proc  = main_name + '_' + proc_name,
                                       sys   = args.sys,
                                       distr = args.distr,
-                                      dtag_file = input_file)
+                                      outdir = args.out_dir,
+                                      dtag_file = input_file,
+                                      options = '--per-weight')
 
         logging.debug(proc_command)
 

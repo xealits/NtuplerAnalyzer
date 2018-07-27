@@ -2845,22 +2845,22 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                   # multiply the b weights for all possible combinations
                   if jet_pt > JETS_PT_CUT:
                       proc_met -= p4 * (en_factor - 1.)
-                      weight_bSF *= jet_weight_bSF_nom
-                      weight_bSFUp *= jet_weight_bSFUp
+                      weight_bSF     *= jet_weight_bSF_nom
+                      weight_bSFUp   *= jet_weight_bSFUp
                       weight_bSFDown *= jet_weight_bSFDown
 
                   if jet_pt_JERUp > JETS_PT_CUT:
-                      proc_met_JERUp -= p4 * (jet_factor_JERUp - 1.)
+                      proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
                       weight_bSF_JERUp *= jet_weight_bSF_nom
                   if jet_pt_JERDown > JETS_PT_CUT:
-                      proc_met_JERDown -= p4 * (jet_factor_JERDown - 1.)
+                      proc_met_JERDown   -= p4 * (jet_factor_JERDown - 1.)
                       weight_bSF_JERDown *= jet_weight_bSF_nom
 
                   if jet_pt_JESUp > JETS_PT_CUT:
-                      proc_met_JESUp -= p4 * (jet_factor_JESUp - 1.)
+                      proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
                       weight_bSF_JESUp *= jet_weight_bSF_nom
                   if jet_pt_JESDown > JETS_PT_CUT:
-                      proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
+                      proc_met_JESDown   -= p4 * (jet_factor_JESDown - 1.)
                       weight_bSF_JESDown *= jet_weight_bSF_nom
 
                   # match tau
@@ -3351,7 +3351,6 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         # objects
         #selection_objects = leps, jets, taus.medium
-        selection_requires_b = True
         #for chan_i, (chan, apply_bSF, sel_leps, sel_jets, sel_taus) in enumerate((ch for ch in passed_channels if ch[0] in selected_channels)):
 
         '''
@@ -3559,12 +3558,13 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             elif matched_b:
                 gen_proc_id[0] = genproc_tt_ljb
 
-        weight_bSF = weight_bSF_to_apply = 1.
+        #weight_bSF = weight_bSF_to_apply = 1.
         # consider tau-matched jets too as in:
         #old_jet_sel = (len(jets.old.medium) + len(jets.old.taumatched[0])) > 0 and (len(jets.old.taumatched[0]) + len(jets.old.taumatched[1]) + len(jets.old.medium) + len(jets.old.loose) + len(jets.old.rest)) > 2
         # -- TODO: by the way this is a weird part for b-tagging -- are there studies of b-taging for true taus?
         #for _, _, jet_weight, _, _, _, _ in sel_jets.medium + sel_jets.loose + sel_jets.rest + sel_jets.taumatched[0] + sel_jets.taumatched[1]:
         #    weight_bSF *= jet_weight
+        selection_requires_b = True
         if selection_requires_b:
             weight_bSF_to_apply = weight_bSF
 
@@ -3588,7 +3588,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         event_weight_init[0]  = weight_init
         event_weight_PU[0]    = weight_pu
         event_weight_th[0]    = weight_th
-        event_weight_bSF[0]   = weight_bSF_to_apply
+        event_weight_bSF[0]     = weight_bSF
         event_weight_bSFUp[0]   = weight_bSFUp
         event_weight_bSFDown[0] = weight_bSFDown
         event_weight_bSF_JERUp[0]   = weight_bSF_JERUp

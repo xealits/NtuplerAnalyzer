@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser(
     )
 
 parser.add_argument('-f', '--files', type=str, default=None, help="list of filesnames to process, without .root separated by coma, if not given the default batch is used")
+parser.add_argument('--per-weight', action='store_true', help='normalize to event weight')
 
 args = parser.parse_args()
 
@@ -271,7 +272,11 @@ for fname in files:
     #f = TFile(fname + '.root')
     weight_counter = f.Get('weight_counter')
     #weight_counter->GetBinContent(2)
-    event_weight = weight_counter.GetBinContent(2)
+    if args.per_weight:
+        event_weight = weight_counter.GetBinContent(2)
+    else:
+        event_weight = 1.0
+
     # to include the "shapeness" of various th weight-base systematics
     # since v25 now event_weight = nominal_w * PU_rate * sys_rate
     # nominal_w is just amcatanlo
