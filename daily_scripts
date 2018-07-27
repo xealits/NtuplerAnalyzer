@@ -1,6 +1,48 @@
 
+# All sys for MC and data in script files
+
+time source all-distrs-from-stage2_data-nominals &
+time source all-distrs-from-stage2_w-common-weight-variations &
+time source all-distrs-from-stage2_w-common-weight-variations_tt-specific &
+time source all-distrs-from-stage2_w-object-variations &
 
 
+foreach d ( `cat all-dtags` )
+hadd distrs/$d.root distrs/Run1/*$d*root
+end
+
+foreach d ( `cat all-dtags` )
+hadd distrs/$d.root distrs/pStage2Test5/*$d*root
+end
+
+
+time make distrs_mc_common_weights &
+time make distrs_mc_objects        &
+time make distrs_mc_tt_weights     &
+
+time make distrs_mc_common_weights dtag=QCD  &
+time make distrs_mc_common_weights dtag=WZ   &
+time make distrs_mc_common_weights dtag=WW   &
+time make distrs_mc_common_weights dtag=ZZ   &
+
+time make distrs_mc_objects dtag=QCD  &
+time make distrs_mc_objects dtag=WZ   &
+time make distrs_mc_objects dtag=WW   &
+time make distrs_mc_objects dtag=ZZ   &
+
+
+compare Old1 to v25 pOld1
+pStage2Test5
+
+time make distrs_data_nominal      p=pStage2Test5 &
+time make distrs_mc_common_weights p=pStage2Test5 &
+time make distrs_mc_objects        p=pStage2Test5 &
+time make distrs_mc_tt_weights     p=pStage2Test5 &
+
+time make distrs_data_nominal      p=pStage2Test5 bins="--histo-range 20,0,250" &
+time make distrs_mc_common_weights p=pStage2Test5 bins="--histo-range 20,0,250" &
+time make distrs_mc_objects        p=pStage2Test5 bins="--histo-range 20,0,250" &
+time make distrs_mc_tt_weights     p=pStage2Test5 bins="--histo-range 20,0,250" &
 
 
 
@@ -56,8 +98,38 @@ source remaining_jobs_al &
 source remaining_jobs_am &
 
 
+# runs for tt systematics
+
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 --sys TOPPTDown merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 --sys TOPPTUp   --weight event_weight_toppt merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 --sys LEPUp --weight event_weight_LEPUp merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 --sys LEPDown --weight event_weight_LEPDown merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 --sys PUUp --weight event_weight_PUUp merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 --sys PUDown --weight event_weight_PUDown merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
 
 
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 --sys FragUp --weight event_weight_FragUp merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 --sys FragDown --weight event_weight_FragDown merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 --sys SemilepBRUp --weight event_weight_SemilepBRUp merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 --sys SemilepBRDown --weight event_weight_SemilepBRDown merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 --sys PetersonUp --weight event_weight_PetersonUp merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+python selections.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --custom-range 1,20,40,60,80,100,130,160,200,250 --sys PetersonDown merge-sets/v25/pStage2Run1/MC2016_Summer16_TTJets_powheg.root
+
+-- in separate file, timed full run 19m14s, ok for now
 
 
 
