@@ -24,6 +24,7 @@ parser.add_argument('--chan',   type=str, default="ctr_old_mu_sel", help='the na
 parser.add_argument('--histo-range',  type=str, default=None, help='optionally set the range')
 parser.add_argument('--custom-range', type=str, default=None, help='optionally set the custom range')
 #parser.add_argument('--histo-color', type=str, default=None, help='optional rgb color, like `255,255,255`')
+parser.add_argument("--cut-w0jets",  action='store_true', help="remove NJets from inclusive WJets with NUP cut")
 
 parser.add_argument('--out-dir',   type=str, default='./', help='directory name for output')
 
@@ -110,6 +111,8 @@ for input_file in args.input_files:
     dtag = matching_dtags[0]
     logging.debug(dtag)
 
+    isWJetsInclusive = dtag == "MC2016_Summer16_WJets_madgraph"
+
     main_name, proc_defs = dtags[dtag]
     included_ids = []
 
@@ -160,6 +163,8 @@ for input_file in args.input_files:
             proc_selection = '!(%s)' % (" || ".join('gen_proc_id == %d' % an_id for an_id in included_ids))
 
         full_selection = args.cond_com + ' && ' + proc_selection
+        if args.cut_w0jets and isWJetsInclusive:
+            full_selection += ' && nup < 6'
         if args.weight:
             full_selection = "%s * (%s)" % (args.weight, full_selection)
 
