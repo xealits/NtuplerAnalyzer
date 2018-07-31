@@ -183,6 +183,9 @@ for filename in input_files:
             histo = ttree.GetHistogram()
             histo.SetDirectory(0)
 
+        # handle errors
+        histo.Sumw2()
+
         if args.per_weight or args.save_weight:
             wcounter = tfile.Get('ntupler/weight_counter')
             if not wcounter:
@@ -200,6 +203,7 @@ for filename in input_files:
             out_histo = histo.Clone()
             out_histo.SetName(histo_name)
             out_histo.SetDirectory(0)
+            out_histo.Sumw2()
         else:
             out_histo.Add(histo)
 

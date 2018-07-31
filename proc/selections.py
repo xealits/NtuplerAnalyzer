@@ -136,7 +136,7 @@ for input_file in args.input_files:
                                       distr = args.distr,
                                       outdir = args.out_dir,
                                       dtag_file = input_file,
-                                      options = '' if isData else '--per-weight')
+                                      options = '' if isData else "--per-weight")
 
         logging.debug(proc_command)
         os.system(proc_command)

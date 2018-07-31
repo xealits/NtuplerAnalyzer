@@ -402,7 +402,7 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
            histo.SetName(histo_name)
 
            #histo = histo_key.ReadObj()
-           logging.info("%s   %s   %x = %f %f" % (histo.GetName(), histo_name, histo_name == '_'.join([channel, nick, fixed_sys_name, distr_name]), histo.GetEntries(), histo.Integral()))
+           logging.info("%s   %s   %x = %f %f,  %f / %f" % (histo.GetName(), histo_name, histo_name == '_'.join([channel, nick, fixed_sys_name, distr_name]), histo.GetEntries(), histo.Integral(), histo.GetBinError(2), histo.GetBinContent(2)))
 
            # get overflows if requested
            if args.draw_overflows:
@@ -1002,6 +1002,8 @@ else:
         bn_to_drop = histos_data_sum.FindBin(args.drop_bin)
         histos_data_sum.SetBinContent (bn_to_drop, 0)
         histos_data_sum.SetBinError   (bn_to_drop, 0)
+
+    print "MC sum error", hs_sum1.GetBinError(2), hs_sum1.GetBinContent(2)
 
     # plotting
     if args.ratio:

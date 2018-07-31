@@ -2541,9 +2541,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         if len(ev.jet_b_discr) > 0:
             lead_jet_b_discr = ev.jet_b_discr[0]
 
-        b_tag_wp_loose  = 0.460 # 0.5426 # 
-        b_tag_wp_medium = 0.8   # 0.8484 # 
-        b_tag_wp_tight  = 0.935 # 0.9535 # 
+        b_tag_wp_loose  = 0.5426 # 0.460 # 
+        b_tag_wp_medium = 0.8484 # 0.8   # 
+        b_tag_wp_tight  = 0.9535 # 0.935 # 
         b_tag_wp = b_tag_wp_medium
 
         tau_dR_jet_min = 0.4 # ak4 jets
