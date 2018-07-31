@@ -44,11 +44,11 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     # Tight  0.9535
     el_kino_cuts_pt  = cms.double( 27.),
     el_kino_cuts_eta = cms.double( 2.5),
-    el_veto_kino_cuts_pt  = cms.double( 10.),
+    el_veto_kino_cuts_pt  = cms.double( 15.),
     el_veto_kino_cuts_eta = cms.double( 2.5),
     mu_kino_cuts_pt  = cms.double( 24.),
     mu_kino_cuts_eta = cms.double( 2.5),
-    mu_veto_kino_cuts_pt  = cms.double( 15.),
+    mu_veto_kino_cuts_pt  = cms.double( 10.),
     mu_veto_kino_cuts_eta = cms.double( 2.5),
 
     jet_kino_cuts_pt  = cms.double( 20.),

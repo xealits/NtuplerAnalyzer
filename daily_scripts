@@ -11,10 +11,6 @@ foreach d ( `cat all-dtags` )
 hadd distrs/$d.root distrs/Run1/*$d*root
 end
 
-foreach d ( `cat all-dtags` )
-hadd distrs/$d.root distrs/pStage2Test5/*$d*root
-end
-
 
 time make distrs_mc_common_weights &
 time make distrs_mc_objects        &
@@ -43,6 +39,106 @@ time make distrs_data_nominal      p=pStage2Test5 bins="--histo-range 20,0,250" 
 time make distrs_mc_common_weights p=pStage2Test5 bins="--histo-range 20,0,250" &
 time make distrs_mc_objects        p=pStage2Test5 bins="--histo-range 20,0,250" &
 time make distrs_mc_tt_weights     p=pStage2Test5 bins="--histo-range 20,0,250" &
+
+foreach d ( `cat all-dtags` )
+hadd distrs/$d.root distrs/pStage2Test5/*$d*root &
+end
+
+python stack_plot.py distrs_v25pStage2Test5_2.root ../distrs/pStage2Test5/test1_lep_pt_SingleMuon_data_NOMINAL_Mt_lep_met_f.root -p -r --lumi 35800 --wjet 0.8 -c mu_sel -d Mt_lep_met_f
+
+VS
+
+python stack_plot.py mc_v25pOld1.root ../merge-sets/v25/pOld1/SingleMuon.root --lumi 35800 -c ctr_old_mu_sel --wjet 0.8 -s NOMINAL --title "" -p -r --title-y "events/GeV" --title-x "M_{T}(#mu, MET)" -d Mt_lep_met_f --legend-shift "0.02"
+
+the stage2test5-2 files contain the same amount of events as Old1
+but there are less after distrs
+test nominal tt distrs
+
+python selections.py --out-dir distrs/ "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --distr Mt_lep_met_f --chan mu_sel --histo-range 20,0,250             --weight event_weight      merge-sets/v25/pStage2Test5/MC2016_Summer16_TTJets_powheg.root
+
+python sumup_ttree_distrs.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --histo-range 20,0,250 --cond-com "event_weight * (selection_stage == 5 && (gen_proc_id == 31 || gen_proc_id == 32))" --output distrs//test1_lep_pt_MC2016_Summer16_TTJets_powheg_tt_mutau_NOMINAL_Mt_lep_met_f.root  --histo-name mu_sel/tt_mutau/NOMINAL/mu_sel_tt_mutau_NOMINAL_Mt_lep_met_f  --save-weight --per-weight merge-sets/v25/pStage2Test5/MC2016_Summer16_TTJets_powheg.root
+
+
+
+
+
+
+
+SS selection
+
+time make distrs_data_nominal      p=pStage2Test5 bins="--histo-range 20,0,250" cond="selection_stage==4" chan="mu_sel_ss" &
+time make distrs_mc_common_weights p=pStage2Test5 bins="--histo-range 20,0,250" cond="selection_stage==4" chan="mu_sel_ss" &
+time make distrs_mc_objects        p=pStage2Test5 bins="--histo-range 20,0,250" cond="selection_stage==4" chan="mu_sel_ss" &
+time make distrs_mc_tt_weights     p=pStage2Test5 bins="--histo-range 20,0,250" cond="selection_stage==4" chan="mu_sel_ss" &
+
+
+
+
+
+
+
+issue with large error in dibosons
+
+python selections.py --debug --out-dir distrs/ "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage == 5" --distr Mt_lep_met_f --chan mu_sel --histo-range 20,0,250             --weight event_weight      merge-sets/v25/pStage2Test5/MC2016_Summer16_WWTo2L2Nu_powheg.root
+
+-- fine
+time make distrs_mc_common_weights p=pStage2Test5 bins="--histo-range 20,0,250" dtag="*WWTo2L2Nu*" &
+time make distrs_mc_objects        p=pStage2Test5 bins="--histo-range 20,0,250" dtag="*WWTo2L2Nu*" &
+
+time make distrs_mc_objects p=pStage2Test5 bins="--histo-range 20,0,250" dtag="*WWTo2L2Nu*" &
+
+and hadd are fine
+
+time make distrs_mc_common_weights p=pStage2Test5 bins="--histo-range 20,0,250" dtag="*WW*" &
+time make distrs_mc_objects        p=pStage2Test5 bins="--histo-range 20,0,250" dtag="*WW*" &
+time make distrs_mc_common_weights p=pStage2Test5 bins="--histo-range 20,0,250" dtag="*WZ*" &
+time make distrs_mc_objects        p=pStage2Test5 bins="--histo-range 20,0,250" dtag="*WZ*" &
+time make distrs_mc_common_weights p=pStage2Test5 bins="--histo-range 20,0,250" dtag="*ZZ*" &
+time make distrs_mc_objects        p=pStage2Test5 bins="--histo-range 20,0,250" dtag="*ZZ*" &
+
+
+foreach d ( `cat all-dtags_dibosons` )
+hadd distrs/$d.root distrs/pStage2Test5/*$d*root &
+end
+
+
+TH1D* h = (TH1D*) mu_sel->Get("dibosons/NOMINAL/mu_sel_dibosons_NOMINAL_Mt_lep_met_f")
+h->GetBinError(2)
+h->GetBinContent(2)
+
+root -l distrs/pStage2Test5/test1_lep_pt_MC2016_Summer16_WWToLNuQQ_powheg_dibosons_NOMINAL_Mt_lep_met_f.root 
+
+-- ok
+
+root -l distrs/pStage2Test5_2_linear-bins/MC2016_Summer16_WWTo2L2Nu_powheg.root
+root -l distrs/pStage2Test5_2_linear-bins/MC2016_Summer16_WWToLNuQQ_powheg.root
+
+-- not ok
+
+hadd dibosons1.root pStage2Test5/test1_lep_pt_MC2016_Summer16_WWTo2L2Nu_powheg_dibosons_[TJ]E[RS]* pStage2Test5/test1_lep_pt_MC2016_Summer16_WWTo2L2Nu_powheg_dibosons_LEP* pStage2Test5/test1_lep_pt_MC2016_Summer16_WWTo2L2Nu_powheg_dibosons_bSF* pStage2Test5/test1_lep_pt_MC2016_Summer16_WWTo2L2Nu_powheg_dibosons_PU*
+
+-- no NOMINAL here
+
+TH1D* h = (TH1D*) mu_sel->Get("dibosons/PUUp/mu_sel_dibosons_PUUp_Mt_lep_met_f")
+h->GetBinError(2)
+h->GetBinContent(2)
+
+-- ok
+
+hadd dibosons1.root pStage2Test5/test1_lep_pt_MC2016_Summer16_WWTo2L2Nu_powheg_dibosons_[TJ]E[RS]* pStage2Test5/test1_lep_pt_MC2016_Summer16_WWTo2L2Nu_powheg_dibosons_LEP* pStage2Test5/test1_lep_pt_MC2016_Summer16_WWTo2L2Nu_powheg_dibosons_bSF* pStage2Test5/test1_lep_pt_MC2016_Summer16_WWTo2L2Nu_powheg_dibosons_PU* pStage2Test5/test1_lep_pt_MC2016_Summer16_WWTo2L2Nu_powheg_dibosons_NOMINAL_Mt_lep_met_f.root
+
+-- ok
+
+
+-- there were MC*[WW|WZ|ZZ] in the pStage5 dir
+
+
+
+
+
+
+
+
 
 
 
