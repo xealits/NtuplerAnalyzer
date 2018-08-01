@@ -1354,10 +1354,6 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     #selected_channels = channels_full_sys_electron_selections
     selected_channels = selection_definitions[channels_to_select]
 
-    with_JER   = isMC and True
-    with_JES   = isMC and True
-    with_TauES = isMC and True
-
     # find all requested systematics
     requested_systematics  = set()
     requested_objects      = set()
@@ -1367,10 +1363,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         if systematic_name in all_systematic_objects:
             requested_objects.add(systematic_name)
 
-    with_bSF_sys = with_bSF and ('bSFUp' in requested_systematics or 'bSFDown' in requested_systematics)
-    with_JER_sys = with_JER and ('JERUp' in requested_systematics or 'JERDown' in requested_systematics)
-    with_JES_sys = with_JES and ('JESUp' in requested_systematics or 'JESDown' in requested_systematics)
-    with_TauES_sys = with_TauES and ('TauESUp' in requested_systematics or 'TauESDown' in requested_systematics)
+    with_JER_sys   = with_JER   = isMC and True
+    with_JES_sys   = with_JES   = isMC and True
+    with_TauES_sys = with_TauES = isMC and True
+
+    with_bSF_sys = with_bSF # and ('bSFUp' in requested_systematics or 'bSFDown' in requested_systematics)
 
     with_AlphaS_sys  = True and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
     with_Frag_sys    = True # and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
@@ -3580,9 +3577,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         #record_weight = sys_weight if chan not in ('sel_mu_min', 'sel_mu_min_ss', 'sel_mu_min_medtau') else sys_weight_min
 
         # nominal systematics
-        weight_init, weight_top_pt, weight_th = syst_weights_nominal
-        nom_sys_weight            = weight_init * weight_th * weight_pu * weight_top_pt
-        nom_sys_weight_without_PU = weight_init * weight_th * weight_top_pt # for PU tests
+        weight_init, weight_top_pt_NOM, weight_th = syst_weights_nominal
+        nom_sys_weight            = weight_init * weight_th * weight_pu * weight_top_pt_NOM
+        nom_sys_weight_without_PU = weight_init * weight_th * weight_top_pt_NOM # for PU tests
 
         event_weight[0] = nom_sys_weight * weight_bSF_to_apply
         event_weight_init[0]  = weight_init
@@ -3598,7 +3595,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         # systematic variation of the event weight
         if isMC:
-            event_weight_toppt[0] = weight_top_pt if isTT else 1.
+            event_weight_toppt[0]   = weight_top_pt if isTT else 1.
             event_weight_LEPUp[0]   = (weight_lep_Up   / weight_lep) if weight_lep > 0. else 0.
             event_weight_LEPDown[0] = (weight_lep_Down / weight_lep) if weight_lep > 0. else 0.
             event_weight_PUUp[0]    = weight_pu_up
