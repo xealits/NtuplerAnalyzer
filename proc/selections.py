@@ -25,6 +25,7 @@ parser.add_argument('--histo-range',  type=str, default=None, help='optionally s
 parser.add_argument('--custom-range', type=str, default=None, help='optionally set the custom range')
 #parser.add_argument('--histo-color', type=str, default=None, help='optional rgb color, like `255,255,255`')
 parser.add_argument("--cut-w0jets",  action='store_true', help="remove NJets from inclusive WJets with NUP cut")
+parser.add_argument("--el-procs",    action='store_true', help="agrgate events by electron-tau processes instead of muon-tau")
 
 parser.add_argument('--out-dir',   type=str, default='./', help='directory name for output')
 
@@ -56,6 +57,12 @@ genprocs_mutau_tt    = ('tt',    [('mutau', [genproc_tt_mutau, genproc_tt_mutau3
                                   ('taulj', [genproc_tt_taulj])])
 genprocs_mutau_wjets  = ('wjets', [('taul', [genproc_wjets_taul]), ('tauh', [genproc_wjets_tauh])])
 genprocs_mutau_dibosons = ('dibosons', [])
+
+genprocs_eltau_s_top = ('s_top', [('eltau', [genproc_stop_el]),  ('lj', [genproc_stop_lj])])
+genprocs_eltau_tt    = ('tt',    [('eltau', [genproc_tt_eltau, genproc_tt_eltau3ch]),
+                                  ('lj', [genproc_tt_lj, genproc_tt_ljb, genproc_tt_ljw, genproc_tt_ljo]),
+                                  ('taultauh', [genproc_tt_taultauh]),
+                                  ('taulj', [genproc_tt_taulj])])
 
 dtags = {
 'MC2016_Summer16_DYJetsToLL_10to50_amcatnlo'   : genprocs_mutau_dy,
@@ -93,11 +100,19 @@ dtags = {
 'SingleElectron' : ('data', []),
 }
 
+if args.el_procs:
+    dtags['MC2016_Summer16_TTJets_powheg'] = genprocs_eltau_tt
+    dtags['MC2016_Summer16_SingleT_tW_5FS_powheg'] = genprocs_eltau_s_top
+    dtags['MC2016_Summer16_SingleTbar_tW_5FS_powheg'] = genprocs_eltau_s_top
+    dtags['MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo'] = genprocs_eltau_s_top
+    dtags['MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg'] = genprocs_eltau_s_top
+    dtags['MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg'] = genprocs_eltau_s_top
+
 
 if args.custom_range:
-    command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out """ + "--custom-range {}".format(args.custom_range) + """ --cond-com "{selection}" --output {outdir}/test1_lep_pt_{dtag}_{proc}_{sys}_{distr}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight {options} {dtag_file}"""
+    command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out """ + "--custom-range {}".format(args.custom_range) + """ --cond-com "{selection}" --output {outdir}/test1_lep_pt_{dtag}_{chan}_{proc}_{sys}_{distr}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight {options} {dtag_file}"""
 else:
-    command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out """ + "--histo-range {}".format(args.histo_range) + """ --cond-com "{selection}" --output {outdir}/test1_lep_pt_{dtag}_{proc}_{sys}_{distr}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight {options} {dtag_file}"""
+    command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out """ + "--histo-range {}".format(args.histo_range) + """ --cond-com "{selection}" --output {outdir}/test1_lep_pt_{dtag}_{chan}_{proc}_{sys}_{distr}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight {options} {dtag_file}"""
 
 for input_file in args.input_files:
     matching_dtags = [dtag for dtag in dtags.keys() if dtag in input_file]
