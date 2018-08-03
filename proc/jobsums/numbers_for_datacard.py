@@ -12,7 +12,7 @@ all_known_sorted_processes = [
     's_top_elmu',
     's_top_eltau',  's_top_mutau',   's_top_other', 's_top_lj',
     'dy_tautau', 'dy_other',
-    'wjets', 'wjets_taul', 'wjets_tauh',
+    'wjets_other', 'wjets_taul', 'wjets_tauh',
     'dibosons',
     'qcd']
 
@@ -20,16 +20,16 @@ all_known_sorted_processes = [
 # wjets_taul
 # wjets_tauh
 
-processes_mu = ['dy_tautau', 'dy_other',  'wjets', 'wjets_taul', 'wjets_tauh',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'tt_taulj', 'qcd']
-#processes_mu = set(['dy_tautau', 'dy_other',  'wjets',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau'])
-processes_mu_id = {'qcd': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets': 11,  'wjets_taul': 10,  'wjets_tauh': 9,     's_top_mutau': 8,   's_top_other': 7, 's_top_lj': 6,    'dibosons': 5,     'tt_other': 4, 'tt_taultauh': 3, 'tt_taulj': 2,  'tt_lj': 1,  'tt_mutau':0}
+processes_mu = ['dy_tautau', 'dy_other',  'wjets_other', 'wjets_taul', 'wjets_tauh',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'tt_taulj', 'qcd']
+#processes_mu = set(['dy_tautau', 'dy_other',  'wjets_other',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau'])
+processes_mu_id = {'qcd': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets_other': 11,  'wjets_taul': 10,  'wjets_tauh': 9,     's_top_mutau': 8,   's_top_other': 7, 's_top_lj': 6,    'dibosons': 5,     'tt_other': 4, 'tt_taultauh': 3, 'tt_taulj': 2,  'tt_lj': 1,  'tt_mutau':0}
 
-processes_el = ['dy_tautau', 'dy_other',  'wjets', 'wjets_taul', 'wjets_tauh',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau', 'tt_taulj', 'qcd']
-#processes_el = set(['dy_tautau', 'dy_other',  'wjets',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau'])
-processes_el_id = {'qcd': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets': 11,  'wjets_taul': 10,  'wjets_tauh': 9,     's_top_eltau': 8,   's_top_other': 7, 's_top_lj': 6,    'dibosons': 5,     'tt_other': 4, 'tt_taultauh': 3, 'tt_taulj': 2,  'tt_lj': 1,  'tt_eltau':0}
+processes_el = ['dy_tautau', 'dy_other',  'wjets_other', 'wjets_taul', 'wjets_tauh',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau', 'tt_taulj', 'qcd']
+#processes_el = set(['dy_tautau', 'dy_other',  'wjets_other',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau'])
+processes_el_id = {'qcd': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets_other': 11,  'wjets_taul': 10,  'wjets_tauh': 9,     's_top_eltau': 8,   's_top_other': 7, 's_top_lj': 6,    'dibosons': 5,     'tt_other': 4, 'tt_taultauh': 3, 'tt_taulj': 2,  'tt_lj': 1,  'tt_eltau':0}
 
 processes_id = {'qcd': 18, 'dy_tautau': 17, 'dy_other': 16,
-   'wjets': 15,  'wjets_taul': 14,  'wjets_tauh': 13,
+   'wjets_other': 15,  'wjets_taul': 14,  'wjets_tauh': 13,
    's_top_eltau': 12, 's_top_mutau': 11, 's_top_elmu': 10,
    's_top_other': 9, 's_top_lj': 8,
    'dibosons': 7,
@@ -55,7 +55,7 @@ t\bar{t}\rightarrow{\mu\tau}
 
 process_latex_strings = {'dy_tautau': '\\text{dy}\\rightarrow{\\tau_{l}\\tau_{h}}',
     'dy_other':                       '\\text{dy}\\rightarrow{other}',
-    'wjets':                          '\\text{wjets} \\rightarrow\\ell',
+    'wjets_other':                    '\\text{wjets} \\rightarrow\\ell',
     'wjets_taul':                     '\\text{wjets} \\rightarrow\\tau_{l}',
     'wjets_tauh':                     '\\text{wjets} \\rightarrow\\tau_{h}',
     's_top_eltau':                    '\\text{single top}\\rightarrow{e   \\tau}',
@@ -266,6 +266,7 @@ for channel in channels:
     data_yields[channel] = range_integral(data_histo)
 
     if not args.event_yields:
+        processes.sort(key=lambda k: processes_id[k])
         print 'bin           ' + ''.join('%-25s' % channel for _ in processes)
         print 'process       ' + ''.join('%-25s' % proc for proc in processes)
         print 'process       ' + ''.join('%-25d' % processes_id[proc] for proc in processes)

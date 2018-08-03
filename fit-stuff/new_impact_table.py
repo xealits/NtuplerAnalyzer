@@ -15,6 +15,7 @@ parser = argparse.ArgumentParser(
     )
 
 parser.add_argument("--merge-pdfs", action='store_true', help="add PDFs in quadrature")
+parser.add_argument("--precision",  type=int, default=1, help="number of digits after coma in output")
 parser.add_argument("impacts_file", nargs='+', help="json file with impacts")
 
 args = parser.parse_args()
@@ -104,7 +105,7 @@ if 'Frag' in impacts_th and 'Peterson' in impacts_th:
 #table_row_format = "\\lstinline!%25s!  & %s \\\\"
 table_row_format = "%25s  & %s \\\\"
 
-imp_form = '%4.1f'
+imp_form = '%4.{}f'.format(args.precision)
 
 #print impacts_th
 #print impacts_exp
