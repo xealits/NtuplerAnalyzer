@@ -21,7 +21,7 @@ TAUS_PT_CUT = 30.
 TAUS_ID_CUT = 2
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el):
-    return pass_mu or pass_el
+    return pass_mu or pass_el or pass_elmu
 
 def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     channel_stage = 0
@@ -82,6 +82,25 @@ def passes_dy_tautau_selection_stages(passed_triggers, leps, N_jets, taus, proc_
 
     return channel_stage
 
+# N_jets 
+def passes_elmu_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
+    channel_stage = 0
+    pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el = passed_triggers
+
+    pass_elmu_leps = pass_elmu and len(leps[4]) > 1 and leps[4][0] * leps[4][1] == -11*13
+    pass_elmu_leps_jets = pass_elmu_leps and N_jets[1] > 1
+    pass_elmu_leps_jets_bjet = pass_elmu_leps_jets and N_jets[0] > 0
+
+    if pass_elmu_leps_jets_bjet:
+        channel_stage = 205
+    elif pass_elmu_leps_jets:
+        channel_stage = 204
+    elif pass_elmu_leps:
+        channel_stage = 203
+    elif pass_elmu:
+        channel_stage = 202
+
+    return channel_stage
 
 logging = Logging.getLogger("common")
 
@@ -1442,6 +1461,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
     selection_stage_dy = array( 'i', [ 0 ] )
     ttree_out.Branch( 'selection_stage_dy', selection_stage_dy, 'selection_stage_dy/I' )
+
+    selection_stage_em = array( 'i', [ 0 ] )
+    ttree_out.Branch( 'selection_stage_em', selection_stage_em, 'selection_stage_em/I' )
 
     nup = array( 'i', [ 0 ] )
     ttree_out.Branch( 'nup', nup, 'nup/I' )
@@ -3240,6 +3262,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         # only nominal DY
         dy_channel_sel_stage = passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
+        # elmu dilepton selection
+        em_channel_sel_stage = passes_elmu_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+
         if tt_channel_sel_stage > 0:
             tt_channel_stage = 2 + tt_channel_sel_stage
         else:
@@ -3261,8 +3286,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             tt_channel_sel_stage_JERDown += 2
 
         #passes = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and dy_channel_sel_stage < 1
-        passes = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1
-        if passes:
+        notpasses = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and em_channel_sel_stage < 1
+        if notpasses:
             continue
 
 
@@ -3278,6 +3303,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         selection_stage_JERDown[0] = tt_channel_sel_stage_JERDown
 
         selection_stage_dy[0] = dy_channel_sel_stage
+        selection_stage_em[0] = em_channel_sel_stage
 
         runNumber[0]   = ev.runNumber
         indexevents[0] = ev.indexevents
