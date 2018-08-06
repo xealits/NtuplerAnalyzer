@@ -3693,6 +3693,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			auto ref_vertex = *((*track_cands)[track_index].vertexRef());
 			auto closest_point = (*track_cands)[track_index].vertex();
+			int  track_pdgId = (*track_cands)[track_index].pdgId();
 			auto distance = closest_point - ref_vertex.position();
 			// distance is of class ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
 			//impact.SetXYZ(distance.x(), distance.y(), distance.z());
@@ -3700,6 +3701,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_tau_SV_fit_track_OS_matched_track_vtxkey.push_back(key);
 			NT_tau_SV_fit_track_OS_matched_track_vtxQ.push_back(quality);
 			NT_tau_SV_fit_track_OS_matched_track_b.push_back(distance);
+			NT_tau_SV_fit_track_OS_matched_track_pdgId.push_back(track_pdgId);
 
 			// SS1
 			track_index = matched_track_SS1;
@@ -3712,10 +3714,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			distance = closest_point - ref_vertex.position();
 			// distance is of class ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
 			//impact.SetXYZ(distance.x(), distance.y(), distance.z());
+			track_pdgId = (*track_cands)[track_index].pdgId();
 
 			NT_tau_SV_fit_track_SS1_matched_track_vtxkey.push_back(key);
 			NT_tau_SV_fit_track_SS1_matched_track_vtxQ.push_back(quality);
 			NT_tau_SV_fit_track_SS1_matched_track_b.push_back(distance);
+			NT_tau_SV_fit_track_SS1_matched_track_pdgId.push_back(track_pdgId);
 
 			// SS2
 			track_index = matched_track_SS2;
@@ -3728,10 +3732,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			distance = closest_point - ref_vertex.position();
 			// distance is of class ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
 			//impact.SetXYZ(distance.x(), distance.y(), distance.z());
+			track_pdgId = (*track_cands)[track_index].pdgId();
 
 			NT_tau_SV_fit_track_SS2_matched_track_vtxkey.push_back(key);
 			NT_tau_SV_fit_track_SS2_matched_track_vtxQ.push_back(quality);
 			NT_tau_SV_fit_track_SS2_matched_track_b.push_back(distance);
+			NT_tau_SV_fit_track_SS2_matched_track_pdgId.push_back(track_pdgId);
 
 			//TVector3 tr_ss2;
 			//TVector3 tr_os ;

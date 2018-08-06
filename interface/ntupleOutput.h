@@ -544,6 +544,11 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_track_vtx
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_OS_matched_track_vtxQ)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS1_matched_track_vtxQ)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_track_vtxQ)
+
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_OS_matched_track_pdgId)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS1_matched_track_pdgId)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_track_pdgId)
+
 // the impact parameter is ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
 // I'd like to save TVector3.. TVector3 is not writable to TTree branches without magic
 //VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_OS_matched_track_b)
