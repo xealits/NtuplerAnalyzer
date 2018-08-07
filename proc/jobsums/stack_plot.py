@@ -343,11 +343,11 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
 
                pu_factor = 1.
                if 'PUUp' in fixed_sys_name:
-                   pu_factor = 1. / (1.01995 if '_el_' in channel else 0.9979) # 0.97 # 1./ 0.9979
+                   pu_factor = 1. / (1.01995 if '_el_' in channel or 'el_sel' in channel else 0.9979) # 0.97 # 1./ 0.9979
                elif 'PUDown' in fixed_sys_name:
-                   pu_factor = 1. / (1.07766 if '_el_' in channel else 1.0485) # 1.17 # 1./ 1.485
+                   pu_factor = 1. / (1.07766 if '_el_' in channel or 'el_sel' in channel else 1.0485) # 1.17 # 1./ 1.485
                else:
-                   pu_factor = 1. / (1.04678 if '_el_' in channel else 1.022)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
+                   pu_factor = 1. / (1.04678 if '_el_' in channel or 'el_sel' in channel else 1.022)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
                    #pu_factor = 1. / (1.04678 if '_el_' in channel else 1.014)
 
                th_factor = 1.

@@ -73,4 +73,6 @@ python channel_distrs_full_loop.py --do-W-stitching  -l logss temp/ channels_nom
 
 time python channel_distrs_full_loop.py --do-W-stitching  -l logss temp/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v25/SingleMuon/Ntupler_v25_Data13TeV_SingleMuon2016G_03Feb2017_v1/180409_020601/0000/Data13TeV_SingleMuon2016G_03Feb2017_v1_61.root
 
+time python channel_distrs_full_loop.py --do-W-stitching  -l logss temp/ channels_nom_sys_muon_sel -i gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/180416_131355/0000/MC2016_Summer16_TTJets_powheg_74.root
+
 

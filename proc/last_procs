@@ -1,6 +1,14 @@
+# v27 alliso and dileptons
 # run with elmu selection to check the b SF factor
-python genjobs.py v25 pStage2Run2ElMu --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc --scheme 4,0,0,12,12
-make sub_proc nt=v25 proc=pStage2Run2ElMu node=1
+python genjobs.py v27 pStage2Run2ElMu --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc --scheme 5,0,0,13,13
+make sub_proc nt=v27 proc=pStage2Run2ElMu node=1
+
+# retest with corrections for tau-matching in alliso
+python genjobs.py v27 pStage2Run2ElMu2 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc --scheme 5,0,0,13,13
+make sub_proc nt=v27 proc=pStage2Run2ElMu2 node=1
+
+
+
 
 # ok for now with bSF fixed
 # the events with 0 weight are droped, looking at shape it does not affect things very much
@@ -11,6 +19,11 @@ make sub_proc nt=v25 proc=pStage2Run2 node=1
 python genjobs.py v25 pStage2Run2 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc --scheme 4,0,0,12,12
 make sub_proc nt=v25 proc=pStage2Run2 node=1
 
+# rerun with jer propagation to met from all jets including lep-matched 
+# no tes propagation
+# and vLoose tau CUT -- 1 tau candidate for ID taus (main) and also 1 candidate for alliso selection
+python genjobs.py v25 pStage2Run3 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc,data_mu,data_el --scheme 0,0,0,13,13
+make sub_proc nt=v25 proc=pStage2Run3 node=1
 
 
 # final test, comparison to old framework results with old b WP
