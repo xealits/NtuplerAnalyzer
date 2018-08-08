@@ -1,3 +1,93 @@
+# baseline check
+
+warning: tau sorting is broken!
+
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.small nt=v25 proc=pStage2Run3
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_aa nt=v25 proc=pStage2Run3
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_ab nt=v25 proc=pStage2Run3
+
+hadd merge-sets/v25/pStage2Run3/MC2016_Summer16_TTJets_powheg.root lstore_outdirs/v25/pStage2Run3/MC2016_Summer16_TTJets_powheg/*root
+
+
+
+
+
+
+
+# check if there are enough events in alliso QCD
+
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4." nt=v27 p=pStage2Run2ElMu  cond="selection_stage_tt_alliso==503" chan="alliso_mu_sel" dtag="QCD" &
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5" nt=v27 p=pStage2Run2ElMu  cond="selection_stage_tt_alliso==513" chan="alliso_el_sel" dtag="QCD" &
+
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4."   nt=v27 p=pStage2Run2ElMu  cond="selection_stage_tt_alliso==502" chan="alliso_mu_sel_ss" dtag="QCD" &
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5" nt=v27 p=pStage2Run2ElMu  cond="selection_stage_tt_alliso==512" chan="alliso_el_sel_ss" dtag="QCD" &
+
+
+foreach d ( `cat all-dtags` )
+hadd distrs/$d.root distrs/v27pStage2Run2ElMu/*$d*root &
+end
+
+
+and the fixed version 2:
+
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4." nt=v27 p=pStage2Run2ElMu2  cond="selection_stage_tt_alliso==503" chan="alliso_mu_sel" dtag="QCD" &
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5" nt=v27 p=pStage2Run2ElMu2  cond="selection_stage_tt_alliso==513" chan="alliso_el_sel" dtag="QCD" &
+
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4."   nt=v27 p=pStage2Run2ElMu2  cond="selection_stage_tt_alliso==502" chan="alliso_mu_sel_ss" dtag="QCD" &
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5" nt=v27 p=pStage2Run2ElMu2  cond="selection_stage_tt_alliso==512" chan="alliso_el_sel_ss" dtag="QCD" &
+
+foreach d ( `cat all-dtags` )
+hadd distrs/$d.root distrs/v27pStage2Run2ElMu2/*$d*root &
+end
+
+
+
+
+
+TH1D* h_mu    = (TH1D*) alliso_mu_sel   ->Get("qcd/NOMINAL/alliso_mu_sel_qcd_NOMINAL_relIso")
+TH1D* h_mu_ss = (TH1D*) alliso_mu_sel_ss->Get("qcd/NOMINAL/alliso_mu_sel_ss_qcd_NOMINAL_relIso")
+
+TH1D* h_el    = (TH1D*) alliso_el_sel   ->Get("qcd/NOMINAL/alliso_el_sel_qcd_NOMINAL_relIso")
+TH1D* h_el_ss = (TH1D*) alliso_el_sel_ss->Get("qcd/NOMINAL/alliso_el_sel_ss_qcd_NOMINAL_relIso")
+
+h_mu->Divide(h_mu_ss)
+h_el->Divide(h_el_ss)
+
+h_mu->Draw()
+h_el->Draw()
+
+
+
+
+
+and with no b-tau matching:
+
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4." nt=v27 p=pStage2Run2ElMu5  cond="selection_stage_tt_alliso==503" chan="alliso_mu_sel"    dtag="QCD" &
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4." nt=v27 p=pStage2Run2ElMu5  cond="selection_stage_tt_alliso==502" chan="alliso_mu_sel_ss" dtag="QCD" &
+
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5" nt=v27 p=pStage2Run2ElMu5  cond="selection_stage_tt_alliso==513" chan="alliso_el_sel"    dtag="QCD" &
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5" nt=v27 p=pStage2Run2ElMu5  cond="selection_stage_tt_alliso==512" chan="alliso_el_sel_ss" dtag="QCD" &
+
+foreach d ( `cat all-dtags` )
+hadd distrs/$d.root distrs/v27pStage2Run2ElMu5/*$d*root &
+end
+
+
+
+
+
+# pOld1 VS p2 comparison
+
+git diff v20v21p2..HEAD -M -- support_channel_distrs.py proc/full_selection.py
+
+seems like the only difference is counting b-taged jets without tau-matched jets
+the result is ok in el-tau -- in pOld1 both data and MC have less events (weighted)
+but in mu-tau pOld1 MC has _more_ events than p2 -- not clear how and in old framework cannot go through them one by one
+
+
+
+
+
 # Run2 with WP and lj categories
 
 time make distrs_data_nominal      p=pStage2Run2  cond="selection_stage==5 && event_jets_lj_var > 60." chan="mu_sel_ljout" &
@@ -144,8 +234,8 @@ what's the reason problem? new b WP, custom bins, this smal divergence with Old1
 
 and muons:
 
-python stack_plot.py mc_v25pOld1.root ../merge-sets/v25/pOld1/SingleMuon.root --lumi 35800 -c ctr_old_mu_sel_lj    --wjet 0.8 -s NOMINAL --title "" -p -r --title-y "events/GeV" --title-x "M_{T}(#mu, MET)" -d Mt_lep_met_f --legend-shift "0.02"
-python stack_plot.py mc_v25pOld1.root ../merge-sets/v25/pOld1/SingleMuon.root --lumi 35800 -c ctr_old_mu_sel_ljout --wjet 0.8 -s NOMINAL --title "" -p -r --title-y "events/GeV" --title-x "M_{T}(#mu, MET)" -d Mt_lep_met_f --legend-shift "0.02"
+python stack_plot.py mc_v25pOld1.root ../merge-sets/v25/pOld1/SingleMuon.root --lumi 35800 -c ctr_old_mu_sel_lj    --wjet 0.8 -s NOMINAL --title "" -p -r --title-y "events/GeV" --title-x "M_{T}(#mu, MET)" -d Mt_lep_met_f --legend-shift "0.02" --qcd 1.05
+python stack_plot.py mc_v25pOld1.root ../merge-sets/v25/pOld1/SingleMuon.root --lumi 35800 -c ctr_old_mu_sel_ljout --wjet 0.8 -s NOMINAL --title "" -p -r --title-y "events/GeV" --title-x "M_{T}(#mu, MET)" -d Mt_lep_met_f --legend-shift "0.02" --qcd 1.05
 
 
 
