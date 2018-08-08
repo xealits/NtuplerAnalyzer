@@ -31,7 +31,7 @@ def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
 
     #old_jet_sel = len(jets.medium) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 2
     # N b-tagged, N all jets
-    old_jet_sel = N_jets[0] > 0 and N_jets[1] > 2 and len(leps) == 1
+    old_jet_sel = N_jets[0] > 0 and N_jets[1] > 2 and len(leps[0]) == 1
     #pass_old_presel    = old_jet_sel and len(taus_candidates) > 0
     #pass_old_presel_os = pass_old_presel and leps[4][0] * taus_candidates[0][2] < 0
     #taus_main.append((p4, (TES_factor, TES_factor_up, TES_factor_dn), tau_pdgID, i, tau_ID, jetmatched))
@@ -122,8 +122,8 @@ def passes_dy_tautau_selection_stages(passed_triggers, leps, N_jets, taus, proc_
     pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
 
     # muon and OS tau and no b
-    pass_dy_objects_mu = pass_mu and len(leps) == 1 and len(taus) > 0 and leps[4][0] * taus[0][2] < 0 and N_jets[0] == 0
-    pass_dy_objects_el = pass_el and len(leps) == 1 and len(taus) > 0 and leps[4][0] * taus[0][2] < 0 and N_jets[0] == 0
+    pass_dy_objects_mu = pass_mu and len(leps[0]) == 1 and len(taus) > 0 and leps[4][0] * taus[0][2] < 0 and N_jets[0] == 0
+    pass_dy_objects_el = pass_el and len(leps[0]) == 1 and len(taus) > 0 and leps[4][0] * taus[0][2] < 0 and N_jets[0] == 0
     pass_dy_mass = False
     if pass_dy_objects_mu or pass_dy_objects_el:
         nom_tau = taus[0][0]*taus[0][1][0]
@@ -1652,6 +1652,22 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     event_leptons_alliso_reliso = ROOT.DoubleVector()
     ttree_out.Branch("event_leptons_alliso_reliso", event_leptons_alliso_reliso)
     all_vector_branches.append(event_leptons_alliso_reliso)
+    event_leptons_alliso_p4 = ROOT.LorentzVectorS()
+    ttree_out.Branch("event_leptons_alliso_p4", event_leptons_alliso_p4)
+    all_vector_branches.append(event_leptons_alliso_p4)
+    event_leptons_alliso_pdgId = ROOT.IntVector()
+    ttree_out.Branch("event_leptons_alliso_pdgId", event_leptons_alliso_pdgId)
+    all_vector_branches.append(event_leptons_alliso_pdgId)
+
+    event_taus_alliso_p4 = ROOT.LorentzVectorS()
+    ttree_out.Branch("event_taus_alliso_p4", event_taus_alliso_p4)
+    all_vector_branches.append(event_taus_alliso_p4)
+    event_taus_alliso_pdgId = ROOT.IntVector()
+    ttree_out.Branch("event_taus_alliso_pdgId", event_taus_alliso_pdgId)
+    all_vector_branches.append(event_taus_alliso_pdgId)
+    event_taus_alliso_IDlev = ROOT.IntVector()
+    ttree_out.Branch("event_taus_alliso_IDlev", event_taus_alliso_IDlev)
+    all_vector_branches.append(event_taus_alliso_IDlev)
 
     event_candidate_taus = ROOT.LorentzVectorS()
     ttree_out.Branch("event_candidate_taus", event_candidate_taus)
@@ -2590,9 +2606,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             #    proc_met_TESDown -=  p4 * (TES_factor_dn - 1.)
 
         # sort by IDlev and pt
-        taus_candidates_alliso.sort(key=lambda it: (ev.tau_IDlev[it[3]], it[1]   *it[0].pt()))
-        taus_candidates       .sort(key=lambda it: (ev.tau_IDlev[it[3]], it[1]   *it[0].pt()))
-        taus_main             .sort(key=lambda it: (ev.tau_IDlev[it[3]], it[1][0]*it[0].pt()))
+        taus_candidates_alliso.sort(key=lambda it: (it[4], it[1]   *it[0].pt()), reverse=True)
+        taus_candidates       .sort(key=lambda it: (it[4], it[1]   *it[0].pt()), reverse=True)
+        taus_main             .sort(key=lambda it: (it[4], it[1][0]*it[0].pt()), reverse=True)
 
 
         # ---------- JETS
@@ -2993,7 +3009,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                     # only presel is relevant, therefore don't count tau dR
                     if jet_pt > JETS_PT_CUT:
                         N_jets_nom_all_alliso += 1
-                        if b_tagged_medium and not jet_tau_match_alliso:
+                        #if b_tagged_medium and not jet_tau_match_alliso:
+                        # emulate preselection, don't count the tau candidate
+                        if b_tagged_medium:
                             N_jets_nom_med_alliso += 1
 
                 # correct the met from all jets including the lep-matched jet
@@ -3538,7 +3556,15 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         #lep_alliso_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = leps_all
         #leps_all = (ev.lep_alliso_p4, ev.lep_alliso_relIso, ev.lep_alliso_matching_gen, ev.lep_alliso_matching_gen_dR, ev.lep_alliso_id)
         for i, relIso in enumerate(ev.lep_alliso_relIso):
-            event_leptons_alliso_reliso    .push_back(relIso)
+            event_leptons_alliso_reliso .push_back(relIso)
+            event_leptons_alliso_p4     .push_back(ev.lep_alliso_p4[i])
+            event_leptons_alliso_pdgId  .push_back(ev.lep_alliso_id[i])
+
+        for i, tau_cand in enumerate(taus_candidates_alliso):
+            #taus_candidates_alliso.append((p4, TES_factor, tau_pdgID, i, tau_ID, jetmatched))
+            event_taus_alliso_p4    .push_back(tau_cand[0]*tau_cand[1])
+            event_taus_alliso_pdgId .push_back(tau_cand[2])
+            event_taus_alliso_IDlev .push_back(tau_cand[4])
 
         # if sel_jets.medium:
         #     bMjet0_pt = sel_jets.medium[0][0].pt() * sel_jets.medium[0][1]

@@ -1,2 +1,2 @@
-python -W ignore normalize.py --per-weight -f MC2016_Summer16_TTJets_powheg    &
+python -W ignore normalize.py -f MC2016_Summer16_TTJets_powheg    &
 
