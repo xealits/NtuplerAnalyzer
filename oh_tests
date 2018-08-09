@@ -1,0 +1,17 @@
+foreach d ( `cat all-dtags` )
+hadd distrs/$d.root distrs/v25pStage2Run3/*$d*root &
+end
+
+
+time make distrs_mc_nominal p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var > 60."  chan="mu_sel_ljout"  dtag=TT  &
+
+time make distrs_mc_nominal p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var > 60."  chan="mu_sel_ljout"    &
+time make distrs_mc_nominal p=pStage2Run3  cond="selection_stage==104 && event_jets_lj_var > 60."  chan="mu_sel_ljout_ss" &
+time make distrs_mc_nominal p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var <= 60." chan="mu_sel_lj"       &
+time make distrs_mc_nominal p=pStage2Run3  cond="selection_stage==104 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss"    &
+
+time make distrs_mc_nominal p=pStage2Run3 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var > 60."  chan="el_sel_ljout"    &
+time make distrs_mc_nominal p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var > 60."  chan="el_sel_ljout_ss" &
+time make distrs_mc_nominal p=pStage2Run3 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var <= 60." chan="el_sel_lj"       &
+time make distrs_mc_nominal p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var <= 60." chan="el_sel_lj_ss"    &
+
