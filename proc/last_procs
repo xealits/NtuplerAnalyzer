@@ -19,6 +19,10 @@ make sub_proc nt=v27 proc=pStage2Run2ElMu4 node=4
 python genjobs.py v27 pStage2Run2ElMu5 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_qcd --scheme 5,0,0,10,0
 make sub_proc nt=v27 proc=pStage2Run2ElMu5 node=4
 
+# simulating presel better: no b-tau match, only lepton and jets
+python genjobs.py v35 pStage2Run3 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_qcd,qcd_ext --scheme 5,0,0,10,0
+make sub_proc nt=v35 proc=pStage2Run3 node=4
+
 
 
 # ok for now with bSF fixed

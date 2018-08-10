@@ -96,7 +96,7 @@ parser.add_argument("--no-sums",   action = "store_false", default=True, help="d
 parser.add_argument("-y", "--event-yields", action='store_true', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-r", "--ratios",       action='store_true', help="output ratios to data")
 
-parser.add_argument("--skip-procs",    type=str, help="skip these processes")
+parser.add_argument("--skip-procs",    type=str, default='', help="skip these processes")
 
 parser.add_argument("--wjets",    type=float, help="factor of wjets")
 
