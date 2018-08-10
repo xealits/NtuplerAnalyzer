@@ -9,6 +9,66 @@ make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_ab nt=v25 proc=pStage2Run
 hadd merge-sets/v25/pStage2Run3/MC2016_Summer16_TTJets_powheg.root lstore_outdirs/v25/pStage2Run3/MC2016_Summer16_TTJets_powheg/*root
 
 
+time make distrs_data_nominal      p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var > 60." chan="mu_sel_ljout" &
+time make distrs_mc_nominal        p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var > 60." chan="mu_sel_ljout" &
+time make distrs_data_nominal      p=pStage2Run3  cond="selection_stage==104 && event_jets_lj_var > 60." chan="mu_sel_ljout_ss" &
+time make distrs_mc_nominal        p=pStage2Run3  cond="selection_stage==104 && event_jets_lj_var > 60." chan="mu_sel_ljout_ss" &
+time make distrs_data_nominal      p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var <= 60." chan="mu_sel_lj" &
+time make distrs_mc_nominal        p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var <= 60." chan="mu_sel_lj" &
+time make distrs_data_nominal      p=pStage2Run3  cond="selection_stage==104 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss" &
+time make distrs_mc_nominal        p=pStage2Run3  cond="selection_stage==104 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss" &
+
+
+time make distrs_data_nominal      p=pStage2Run3 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var > 60." chan="el_sel_ljout" dtag=SingleEle &
+time make distrs_mc_nominal        p=pStage2Run3 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var > 60." chan="el_sel_ljout" &
+time make distrs_data_nominal      p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var > 60." chan="el_sel_ljout_ss" dtag=SingleEle &
+time make distrs_mc_nominal        p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var > 60." chan="el_sel_ljout_ss" &
+time make distrs_data_nominal      p=pStage2Run3 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var <= 60." chan="el_sel_lj" dtag=SingleEle &
+time make distrs_mc_nominal        p=pStage2Run3 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_data_nominal      p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" dtag=SingleEle &
+time make distrs_mc_nominal        p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+
+
+
+
+time make distrs_mc_common_weights p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var > 60." chan="mu_sel_ljout" &
+time make distrs_mc_objects        p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var > 60." chan="mu_sel_ljout" &
+time make distrs_mc_tt_weights     p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var > 60." chan="mu_sel_ljout" &
+
+time make distrs_mc_common_weights p=pStage2Run3  cond="selection_stage==104 && event_jets_lj_var > 60." chan="mu_sel_ljout_ss" &
+time make distrs_mc_objects        p=pStage2Run3  cond="selection_stage==104 && event_jets_lj_var > 60." chan="mu_sel_ljout_ss" &
+time make distrs_mc_tt_weights     p=pStage2Run3  cond="selection_stage==104 && event_jets_lj_var > 60." chan="mu_sel_ljout_ss" &
+
+time make distrs_mc_common_weights p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var <= 60." chan="mu_sel_lj" &
+time make distrs_mc_objects        p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var <= 60." chan="mu_sel_lj" &
+time make distrs_mc_tt_weights     p=pStage2Run3  cond="selection_stage==105 && event_jets_lj_var <= 60." chan="mu_sel_lj" &
+
+time make distrs_mc_common_weights p=pStage2Run3  cond="selection_stage==104 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss" &
+time make distrs_mc_objects        p=pStage2Run3  cond="selection_stage==104 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss" &
+time make distrs_mc_tt_weights     p=pStage2Run3  cond="selection_stage==104 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss" &
+
+
+
+time make distrs_mc_common_weights p=pStage2Run3 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var > 60." chan="el_sel_ljout" &
+time make distrs_mc_objects        p=pStage2Run3 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var > 60." chan="el_sel_ljout" &
+time make distrs_mc_tt_weights     p=pStage2Run3 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var > 60." chan="el_sel_ljout" &
+
+time make distrs_mc_common_weights p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var > 60." chan="el_sel_ljout_ss" &
+time make distrs_mc_objects        p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var > 60." chan="el_sel_ljout_ss" &
+time make distrs_mc_tt_weights     p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var > 60." chan="el_sel_ljout_ss" &
+
+time make distrs_mc_common_weights p=pStage2Run3 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_objects        p=pStage2Run3 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_tt_weights     p=pStage2Run3 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+
+time make distrs_mc_common_weights p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_objects        p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_tt_weights     p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+
+
+
+
+
 
 
 
