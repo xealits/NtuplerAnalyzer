@@ -154,6 +154,15 @@ hadd MC2016_Summer16_W3Jets_madgraph.root ../MC2016_Summer16_W3Jets_madgraph*roo
 hadd MC2016_Summer16_W4Jets_madgraph.root ../MC2016_Summer16_W4Jets_madgraph*root &
 
 
+hadd MC2016_Summer16_QCD_HT-1000-1500.root init/MC2016_Summer16_QCD_HT-1000-1500*.root  &
+hadd MC2016_Summer16_QCD_HT-1500-2000.root init/MC2016_Summer16_QCD_HT-1500-2000*.root  &
+hadd MC2016_Summer16_QCD_HT-200-300.root   init/MC2016_Summer16_QCD_HT-200-300*.root    &
+hadd MC2016_Summer16_QCD_HT-2000-Inf.root  init/MC2016_Summer16_QCD_HT-2000-Inf*.root   &
+hadd MC2016_Summer16_QCD_HT-300-500.root   init/MC2016_Summer16_QCD_HT-300-500*.root    &
+hadd MC2016_Summer16_QCD_HT-500-700.root   init/MC2016_Summer16_QCD_HT-500-700*.root    &
+hadd MC2016_Summer16_QCD_HT-700-1000.root  init/MC2016_Summer16_QCD_HT-700-1000*.root   &
+
+
 
 hadd MC2016_Summer16_TTJets_powheg_CUETP8M2T4down.root init/MC2016_Summer16_TTJets_powheg_CUETP8M2T4down*.root  &
 hadd MC2016_Summer16_TTJets_powheg_CUETP8M2T4up.root   init/MC2016_Summer16_TTJets_powheg_CUETP8M2T4up*.root    &

@@ -66,11 +66,112 @@ time make distrs_mc_objects        p=pStage2Run3 options="--el-procs" cond="sele
 time make distrs_mc_tt_weights     p=pStage2Run3 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
 
 
+VLoose shapes:
+
+time make distrs_data_nominal      p=pStage2Run3  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var > 60."  chan="mu_selVloose_ljout"    &
+time make distrs_data_nominal      p=pStage2Run3  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var > 60."  chan="mu_selVloose_ljout_ss" &
+time make distrs_data_nominal      p=pStage2Run3  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var <= 60." chan="mu_selVloose_lj"       &
+time make distrs_data_nominal      p=pStage2Run3  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss"    &
+
+time make distrs_mc_nominal        p=pStage2Run3  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var > 60."  chan="mu_selVloose_ljout"    &
+time make distrs_mc_nominal        p=pStage2Run3  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var > 60."  chan="mu_selVloose_ljout_ss" &
+time make distrs_mc_nominal        p=pStage2Run3  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var <= 60." chan="mu_selVloose_lj"       &
+time make distrs_mc_nominal        p=pStage2Run3  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss"    &
+
+time make distrs_data_nominal      p=pStage2Run3 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var > 60."  chan="el_selVloose_ljout" dtag=SingleEle &
+time make distrs_data_nominal      p=pStage2Run3 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var > 60."  chan="el_selVloose_ljout_ss" dtag=SingleEle &
+time make distrs_data_nominal      p=pStage2Run3 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var <= 60." chan="el_selVloose_lj" dtag=SingleEle &
+time make distrs_data_nominal      p=pStage2Run3 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" dtag=SingleEle &
+
+time make distrs_mc_nominal        p=pStage2Run3 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var > 60."  chan="el_selVloose_ljout" &
+time make distrs_mc_nominal        p=pStage2Run3 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var > 60."  chan="el_selVloose_ljout_ss" &
+time make distrs_mc_nominal        p=pStage2Run3 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_nominal        p=pStage2Run3 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+
+
+time make distrs_mc_common_weights p=pStage2Run3  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var > 60." chan="mu_selVloose_ljout" &
+time make distrs_mc_objects        p=pStage2Run3  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var > 60." chan="mu_selVloose_ljout" &
+time make distrs_mc_tt_weights     p=pStage2Run3  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var > 60." chan="mu_selVloose_ljout" &
+
+time make distrs_mc_common_weights p=pStage2Run3  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var > 60." chan="mu_selVloose_ljout_ss" &
+time make distrs_mc_objects        p=pStage2Run3  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var > 60." chan="mu_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights     p=pStage2Run3  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var > 60." chan="mu_selVloose_ljout_ss" &
+
+time make distrs_mc_common_weights p=pStage2Run3  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var <= 60." chan="mu_selVloose_lj" &
+time make distrs_mc_objects        p=pStage2Run3  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var <= 60." chan="mu_selVloose_lj" &
+time make distrs_mc_tt_weights     p=pStage2Run3  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var <= 60." chan="mu_selVloose_lj" &
+
+time make distrs_mc_common_weights p=pStage2Run3  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss" &
+time make distrs_mc_objects        p=pStage2Run3  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss" &
+time make distrs_mc_tt_weights     p=pStage2Run3  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss" &
+
+
+
+time make distrs_mc_common_weights p=pStage2Run3 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var > 60." chan="el_selVloose_ljout" &
+time make distrs_mc_objects        p=pStage2Run3 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var > 60." chan="el_selVloose_ljout" &
+time make distrs_mc_tt_weights     p=pStage2Run3 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var > 60." chan="el_selVloose_ljout" &
+
+time make distrs_mc_common_weights p=pStage2Run3 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var > 60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_objects        p=pStage2Run3 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var > 60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights     p=pStage2Run3 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var > 60." chan="el_selVloose_ljout_ss" &
+
+time make distrs_mc_common_weights p=pStage2Run3 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_objects        p=pStage2Run3 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_tt_weights     p=pStage2Run3 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+
+time make distrs_mc_common_weights p=pStage2Run3 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_objects        p=pStage2Run3 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_tt_weights     p=pStage2Run3 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+
+
+
+remake LEP systematics under different names
+
+time make distrs_mc_lep_weights p=pStage2Run3  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var > 60."  chan="mu_selVloose_ljout"    sysname=LEPmu  &
+time make distrs_mc_lep_weights p=pStage2Run3  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var > 60."  chan="mu_selVloose_ljout_ss" sysname=LEPmu  &
+time make distrs_mc_lep_weights p=pStage2Run3  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var <= 60." chan="mu_selVloose_lj"       sysname=LEPmu  &
+time make distrs_mc_lep_weights p=pStage2Run3  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss"    sysname=LEPmu  &
+
+
+time make distrs_mc_lep_weights p=pStage2Run3 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var > 60."  chan="el_selVloose_ljout"   sysname=LEPel  &
+time make distrs_mc_lep_weights p=pStage2Run3 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var > 60."  chan="el_selVloose_ljout_ss"sysname=LEPel  &
+time make distrs_mc_lep_weights p=pStage2Run3 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var <= 60." chan="el_selVloose_lj"      sysname=LEPel  &
+time make distrs_mc_lep_weights p=pStage2Run3 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss"   sysname=LEPel  &
+
+
+time make distrs_mc_lep_weights p=pStage2Run3  cond="selection_stage == 105 && event_jets_lj_var > 60."  chan="mu_sel_ljout"    sysname=LEPmu  &
+time make distrs_mc_lep_weights p=pStage2Run3  cond="selection_stage == 104 && event_jets_lj_var > 60."  chan="mu_sel_ljout_ss" sysname=LEPmu  &
+time make distrs_mc_lep_weights p=pStage2Run3  cond="selection_stage == 105 && event_jets_lj_var <= 60." chan="mu_sel_lj"       sysname=LEPmu  &
+time make distrs_mc_lep_weights p=pStage2Run3  cond="selection_stage == 104 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss"    sysname=LEPmu  &
+
+
+time make distrs_mc_lep_weights p=pStage2Run3 options="--el-procs" cond="selection_stage == 115 && event_jets_lj_var > 60."  chan="el_sel_ljout"   sysname=LEPel  &
+time make distrs_mc_lep_weights p=pStage2Run3 options="--el-procs" cond="selection_stage == 114 && event_jets_lj_var > 60."  chan="el_sel_ljout_ss"sysname=LEPel  &
+time make distrs_mc_lep_weights p=pStage2Run3 options="--el-procs" cond="selection_stage == 115 && event_jets_lj_var <= 60." chan="el_sel_lj"      sysname=LEPel  &
+time make distrs_mc_lep_weights p=pStage2Run3 options="--el-procs" cond="selection_stage == 114 && event_jets_lj_var <= 60." chan="el_sel_lj_ss"   sysname=LEPel  &
+
+
+
+
 
 foreach d ( `cat all-dtags` )
 hadd distrs/$d.root distrs/v25pStage2Run3/*$d*root &
 end
 
+python stack_plot.py distrs_v25pStage2Run3.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root -o plots/ -p -r --lumi 35800 -d Mt_lep_met_f -c mu_sel_lj --qcd 1.05
+
+python stack_plot.py distrs_v25pStage2Run3_2.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root -o plots/ -p -r --lumi 35800 -d Mt_lep_met_f -c mu_sel_lj --qcd 1.05 -x mu_selVloose_lj
+
+
+source histosel_stage2_run3_VlooseShapes_el_sel_ljs &
+source histosel_stage2_run3_VlooseShapes_mu_sel_ljs &
+
+
+hadd histosel-roots/HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs.root histosel-roots/v25pStage2Run3_el_ljs/distr*root histosel-roots/v25pStage2Run3_mu_ljs/distr*root
+
+
+python numbers_for_datacard.py histosel-roots/HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs.root -d Mt_lep_met_f -c mu_sel_lj,mu_sel_ljout --skip-procs wjets_tauh
+python numbers_for_datacard.py histosel-roots/HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs.root -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout --skip-procs wjets_tauh
 
 
 
@@ -127,14 +228,14 @@ h_el->Draw()
 
 and with no b-tau matching:
 
-time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4." nt=v27 p=pStage2Run2ElMu5  cond="selection_stage_tt_alliso==503" chan="alliso_mu_sel"    dtag="QCD" &
-time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4." nt=v27 p=pStage2Run2ElMu5  cond="selection_stage_tt_alliso==502" chan="alliso_mu_sel_ss" dtag="QCD" &
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4." nt=v35 p=pStage2Run3   cond="selection_stage_tt_alliso==503" chan="alliso_mu_sel"    dtag="QCD" &
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4." nt=v35 p=pStage2Run3   cond="selection_stage_tt_alliso==502" chan="alliso_mu_sel_ss" dtag="QCD" &
 
-time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5" nt=v27 p=pStage2Run2ElMu5  cond="selection_stage_tt_alliso==513" chan="alliso_el_sel"    dtag="QCD" &
-time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5" nt=v27 p=pStage2Run2ElMu5  cond="selection_stage_tt_alliso==512" chan="alliso_el_sel_ss" dtag="QCD" &
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5" nt=v35 p=pStage2Run3  cond="selection_stage_tt_alliso==513" chan="alliso_el_sel"    dtag="QCD" &
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5" nt=v35 p=pStage2Run3  cond="selection_stage_tt_alliso==512" chan="alliso_el_sel_ss" dtag="QCD" &
 
 foreach d ( `cat all-dtags` )
-hadd distrs/$d.root distrs/v27pStage2Run2ElMu5/*$d*root &
+hadd distrs/$d.root distrs/v35pStage2Run3/*$d*root &
 end
 
 

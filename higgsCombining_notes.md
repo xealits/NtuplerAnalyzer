@@ -105,8 +105,9 @@ Fit MC to Data with all nuisances, storing NLL of each variation:
 
 frozen lumi and .root:
 
-    combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.root --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name MuShapes --freezeParameters lumi_13TeV
-    combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_el.root --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name ElShapes --freezeParameters lumi_13TeV
+    combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.root   --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name MuShapes --freezeParameters lumi_13TeV
+    combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_el.root   --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name ElShapes --freezeParameters lumi_13TeV
+    combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_both.root --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name BothShapes --freezeParameters lumi_13TeV
 
 also in ratio now:
 
@@ -1240,6 +1241,15 @@ frozen lumi, no theoretical impacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts.json            --name ElImpacts
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o postfit_el_impacts
 
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 -o latest_both_impacts.json          --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o postfit_both_impacts
+
+
+python impact_table.py --merge-pdf latest_el_impacts.json
+python impact_table.py --merge-pdf latest_mu_impacts.json
+python impact_table.py --merge-pdf latest_both_impacts.json
 
 
 
