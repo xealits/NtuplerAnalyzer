@@ -32,6 +32,9 @@ def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     #old_jet_sel = len(jets.medium) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 2
     # N b-tagged, N all jets
     old_jet_sel = N_jets[0] > 0 and N_jets[1] > 2 and len(leps[0]) == 1
+    old_jet_sel_tau_cand    = old_jet_sel and len(taus) > 0
+    old_jet_sel_tau_cand_os = old_jet_sel_tau_cand and leps[4][0] * taus[0][2] < 0
+
     #pass_old_presel    = old_jet_sel and len(taus_candidates) > 0
     #pass_old_presel_os = pass_old_presel and leps[4][0] * taus_candidates[0][2] < 0
     #taus_main.append((p4, (TES_factor, TES_factor_up, TES_factor_dn), tau_pdgID, i, tau_ID, jetmatched))
@@ -47,12 +50,16 @@ def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     # taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
     if   pass_mu and pass_old_sel_os:
-        channel_stage = 5
+        channel_stage = 7
     elif pass_mu and pass_old_sel:
-        channel_stage = 4
+        channel_stage = 6
     elif pass_mu and pass_old_selVLoose_os:
-        channel_stage = 3
+        channel_stage = 5
     elif pass_mu and pass_old_selVLoose:
+        channel_stage = 4
+    elif pass_mu and old_jet_sel_tau_cand_os:
+        channel_stage = 3
+    elif pass_mu and old_jet_sel_tau_cand:
         channel_stage = 2
     #elif pass_mu and pass_old_presel_os:
     #    channel_stage = 3
@@ -60,12 +67,16 @@ def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     #    channel_stage = 2
 
     elif pass_el and pass_old_sel_os:
-        channel_stage = 15
+        channel_stage = 17
     elif pass_el and pass_old_sel:
-        channel_stage = 14
+        channel_stage = 16
     elif pass_el and pass_old_selVLoose_os:
-        channel_stage = 13
+        channel_stage = 15
     elif pass_el and pass_old_selVLoose:
+        channel_stage = 14
+    elif pass_el and old_jet_sel_tau_cand_os:
+        channel_stage = 13
+    elif pass_el and old_jet_sel_tau_cand:
         channel_stage = 12
     #elif pass_el and pass_old_presel_os:
     #    channel_stage = 13
