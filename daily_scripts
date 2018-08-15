@@ -116,25 +116,64 @@ mc stats jumps much higher than before! 5% el 3% mu and 2.5% both!
 
 and the renorm-refact and pdf weights:
 
-time make distrs_mc_updowns p=r4 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 116) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
-time make distrs_mc_updowns p=r4 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 117) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
-time make distrs_mc_updowns p=r4 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 116) && event_jets_lj_var > 60." chan="el_selVloose_ljout_ss" &
-time make distrs_mc_updowns p=r4 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 117) && event_jets_lj_var > 60." chan="el_selVloose_ljout" &
-time make distrs_mc_updowns p=r4 cond="(selection_stage == 104 || selection_stage == 106) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss" &
-time make distrs_mc_updowns p=r4 cond="(selection_stage == 105 || selection_stage == 107) && event_jets_lj_var <= 60." chan="mu_selVloose_lj" &
-time make distrs_mc_updowns p=r4 cond="(selection_stage == 104 || selection_stage == 106) && event_jets_lj_var > 60." chan="mu_selVloose_ljout_ss" &
-time make distrs_mc_updowns p=r4 cond="(selection_stage == 105 || selection_stage == 107) && event_jets_lj_var > 60." chan="mu_selVloose_ljout" &
+time make distrs_mc_tt_weights     p=pStage2Run3  cond="selection_stage==107 && event_jets_lj_var > 60." chan="mu_sel_ljout" &
 
-time make distrs_mc_updowns p=r4 options="--el-procs" cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
-time make distrs_mc_updowns p=r4 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
-time make distrs_mc_updowns p=r4 options="--el-procs" cond="selection_stage==116 && event_jets_lj_var > 60." chan="el_sel_ljout_ss" &
-time make distrs_mc_updowns p=r4 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var > 60." chan="el_sel_ljout" &
-time make distrs_mc_updowns p=r4 cond="selection_stage==106 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss" &
-time make distrs_mc_updowns p=r4 cond="selection_stage==107 && event_jets_lj_var <= 60." chan="mu_sel_lj" &
-time make distrs_mc_updowns p=r4 cond="selection_stage==106 && event_jets_lj_var > 60." chan="mu_sel_ljout_ss" &
-time make distrs_mc_updowns p=r4 cond="selection_stage==107 && event_jets_lj_var > 60." chan="mu_sel_ljout" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 116) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 117) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 116) && event_jets_lj_var > 60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 117) && event_jets_lj_var > 60." chan="el_selVloose_ljout" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 cond="(selection_stage == 104 || selection_stage == 106) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 cond="(selection_stage == 105 || selection_stage == 107) && event_jets_lj_var <= 60." chan="mu_selVloose_lj" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 cond="(selection_stage == 104 || selection_stage == 106) && event_jets_lj_var > 60." chan="mu_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 cond="(selection_stage == 105 || selection_stage == 107) && event_jets_lj_var > 60." chan="mu_selVloose_ljout" &
+
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 options="--el-procs" cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 options="--el-procs" cond="selection_stage==116 && event_jets_lj_var > 60." chan="el_sel_ljout_ss" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var > 60." chan="el_sel_ljout" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 cond="selection_stage==106 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 cond="selection_stage==107 && event_jets_lj_var <= 60." chan="mu_sel_lj" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 cond="selection_stage==106 && event_jets_lj_var > 60." chan="mu_sel_ljout_ss" &
+time make distrs_mc_tt_weights_scale nt=v26 p=r4 cond="selection_stage==107 && event_jets_lj_var > 60." chan="mu_sel_ljout" &
 
 
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 116) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 117) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 116) && event_jets_lj_var > 60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 117) && event_jets_lj_var > 60." chan="el_selVloose_ljout" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 cond="(selection_stage == 104 || selection_stage == 106) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 cond="(selection_stage == 105 || selection_stage == 107) && event_jets_lj_var <= 60." chan="mu_selVloose_lj" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 cond="(selection_stage == 104 || selection_stage == 106) && event_jets_lj_var > 60." chan="mu_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 cond="(selection_stage == 105 || selection_stage == 107) && event_jets_lj_var > 60." chan="mu_selVloose_ljout" &
+
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 options="--el-procs" cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 options="--el-procs" cond="selection_stage==116 && event_jets_lj_var > 60." chan="el_sel_ljout_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var > 60." chan="el_sel_ljout" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 cond="selection_stage==106 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 cond="selection_stage==107 && event_jets_lj_var <= 60." chan="mu_sel_lj" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 cond="selection_stage==106 && event_jets_lj_var > 60." chan="mu_sel_ljout_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=r4 cond="selection_stage==107 && event_jets_lj_var > 60." chan="mu_sel_ljout" &
+
+
+
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 116) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 117) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 116) && event_jets_lj_var > 60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 117) && event_jets_lj_var > 60." chan="el_selVloose_ljout" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 cond="(selection_stage == 104 || selection_stage == 106) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 cond="(selection_stage == 105 || selection_stage == 107) && event_jets_lj_var <= 60." chan="mu_selVloose_lj" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 cond="(selection_stage == 104 || selection_stage == 106) && event_jets_lj_var > 60." chan="mu_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 cond="(selection_stage == 105 || selection_stage == 107) && event_jets_lj_var > 60." chan="mu_selVloose_ljout" &
+
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 options="--el-procs" cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 options="--el-procs" cond="selection_stage==116 && event_jets_lj_var > 60." chan="el_sel_ljout_ss" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var > 60." chan="el_sel_ljout" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 cond="selection_stage==106 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 cond="selection_stage==107 && event_jets_lj_var <= 60." chan="mu_sel_lj" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 cond="selection_stage==106 && event_jets_lj_var > 60." chan="mu_sel_ljout_ss" &
+time make distrs_mc_tt_weights_pdf nt=v26 p=r4 cond="selection_stage==107 && event_jets_lj_var > 60." chan="mu_sel_ljout" &
 
 
 
