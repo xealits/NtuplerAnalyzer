@@ -144,12 +144,6 @@ distrs_mc_tt_weights:
 	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys PetersonDown  --weight "event_weight"                           merge-sets/${nt}/${p}/MC2016_Summer16_TTJets_powheg.root
 
 
-            event_weight_me_f_rUp[0] = weights_gen_weight_f_rUp #= ev.gen_weights_renorm_fact[MUf_nom_MUr_up]
-            event_weight_me_f_rDn[0] = weights_gen_weight_f_rDn #= ev.gen_weights_renorm_fact[MUf_nom_MUr_down]
-            event_weight_me_fUp_r[0] = weights_gen_weight_fUp_r #= ev.gen_weights_renorm_fact[MUf_up_MUr_nom]
-            event_weight_me_fDn_r[0] = weights_gen_weight_fDn_r #= ev.gen_weights_renorm_fact[MUf_down_MUr_nom]
-            event_weight_me_frUp [0] = weights_gen_weight_frUp  #= ev.gen_weights_renorm_fact[MUf_up_MUr_up]
-            event_weight_me_frDn [0] = weights_gen_weight_frDn  #= ev.gen_weights_renorm_fact[MUf_down_MUr_down]
 
 distrs_mc_tt_weights_scale: p=pStage2Run1
 distrs_mc_tt_weights_scale: nt=v25
@@ -173,8 +167,8 @@ distrs_mc_tt_weights_alphas: cond=selection_stage == 107
 distrs_mc_tt_weights_alphas: chan=mu_sel
 distrs_mc_tt_weights_alphas: options=
 distrs_mc_tt_weights_alphas:
-	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys MrUp     --weight "event_weight*event_weight_AlphaS_up"              merge-sets/${nt}/${p}/MC2016_Summer16_TTJets_powheg.root
-	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys MrDown   --weight "event_weight*event_weight_AlphaS_dn"              merge-sets/${nt}/${p}/MC2016_Summer16_TTJets_powheg.root
+	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys AlphaSUp     --weight "event_weight*event_weight_AlphaS_up"              merge-sets/${nt}/${p}/MC2016_Summer16_TTJets_powheg.root
+	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys AlphaSDown   --weight "event_weight*event_weight_AlphaS_dn"              merge-sets/${nt}/${p}/MC2016_Summer16_TTJets_powheg.root
 
 
 # pdfs only up -- nominal for down
