@@ -59,7 +59,7 @@ input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_165F54A0-A3BE-E611-B3F7
 if any('2015' in infile for infile in input_files) or '2015' in dtag:
     HLT_source = 'HLT2'
 
-record_scheme = 'tauID' # 'signal' # 'tauCands' #  Dilep MonitorHLT tauIDantiIso jets'
+record_scheme = 'signal_recordAll' # 'signal' # 'tauID' # 'tauCands' #  Dilep MonitorHLT tauIDantiIso jets'
 
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/26ABF488-A0BE-E611-BEEB-0CC47A4D7640.root'
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root'
@@ -215,6 +215,7 @@ if record_scheme:
     process.ntupler.record_Dilep         = cms.bool('Dilep'         in record_scheme)
     process.ntupler.record_jets          = cms.bool('jets'          in record_scheme)
     process.ntupler.record_signal        = cms.bool('signal'        in record_scheme)
+    process.ntupler.record_all           = cms.bool('recordAll'     in record_scheme)
 
 #process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.Tracer = cms.Service("Tracer")

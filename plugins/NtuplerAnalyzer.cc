@@ -875,7 +875,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//RecoilCorrector* recoilPFMetCorrector;
 	//TH2D* zPtMass_histo;
 
-	bool record_ElTau, record_MuTau, record_tauCands, record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets, record_signal;
+	bool record_ElTau, record_MuTau, record_tauCands, record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets, record_signal, record_all;
 
 	TString dtag;
 	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop, is2017rereco;
@@ -955,6 +955,7 @@ record_ElMu          (iConfig.getParameter<bool>("record_ElMu"))          ,
 record_Dilep         (iConfig.getParameter<bool>("record_Dilep"))         ,
 record_jets          (iConfig.getParameter<bool>("record_jets"))          ,
 record_signal        (iConfig.getParameter<bool>("record_signal"))        ,
+record_all           (iConfig.getParameter<bool>("record_all"))        ,
 dtag       (iConfig.getParameter<std::string>("dtag")),
 isMC       (iConfig.getParameter<bool>("isMC")),
 is2017rereco       (iConfig.getParameter<bool>("is2017rereco")),
@@ -2128,6 +2129,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				// lepton+tauh decay
 				isTTSignal |= (abs(NT_gen_t_w_decay_id) == 11 || abs(NT_gen_t_w_decay_id) == 13)   && (abs(NT_gen_tb_w_decay_id) > 15*15);
 				isTTSignal |= (abs(NT_gen_tb_w_decay_id) == 11 || abs(NT_gen_tb_w_decay_id) == 13) && (abs(NT_gen_t_w_decay_id) > 15*15);
+				isTTSignal |= record_all;
 				}
 			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id << " is Sig " << isTTSignal;
 			}

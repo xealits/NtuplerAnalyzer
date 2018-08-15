@@ -16,6 +16,7 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     record_Dilep         = cms.bool(False) ,
     record_jets          = cms.bool(False) ,
     record_signal        = cms.bool(False) ,
+    record_all           = cms.bool(False) ,
 
     isMC = cms.bool(False),
     is2017rereco = cms.bool(False),
