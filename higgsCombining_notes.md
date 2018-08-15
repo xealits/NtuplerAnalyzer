@@ -1229,6 +1229,14 @@ combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.
 
 
 
+
+
+
+
+
+
+
+
 frozen lumi, no theoretical impacts
 
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpacts
@@ -1250,6 +1258,30 @@ frozen lumi, no theoretical impacts
 python impact_table.py --merge-pdf latest_el_impacts.json
 python impact_table.py --merge-pdf latest_mu_impacts.json
 python impact_table.py --merge-pdf latest_both_impacts.json
+
+
+
+
+
+
+experiments without parameters:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,HDAMP,TuneCUETP8M2T4,FSR,ISR  -m 125 --robustFit 1 --doInitialFit         --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,HDAMP,TuneCUETP8M2T4,FSR,ISR  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,HDAMP,TuneCUETP8M2T4,FSR,ISR  -m 125 -o latest_mu_impacts_noUpDowns.json  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_noUpDowns.json -o postfit_mu_impacts_noUpDowns
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV,HDAMP,TuneCUETP8M2T4,FSR,ISR  -m 125 --robustFit 1 --doInitialFit         --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV,HDAMP,TuneCUETP8M2T4,FSR,ISR  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV,HDAMP,TuneCUETP8M2T4,FSR,ISR  -m 125 -o latest_el_impacts_noUpDowns.json  --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_noUpDowns.json -o postfit_el_impacts_noUpDowns
+
+
+
+
+
+
 
 
 

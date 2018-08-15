@@ -59,6 +59,7 @@ signal acceptance normalization:
 3. run test with normalization to signal
 
 
+
 test normalization:
 
 python stack_plot.py distrs_v25pStage2Run3_2_updowns.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root -o plots/ -p -r --lumi 35800 -d Mt_lep_met_f -c mu_sel_ljout --qcd 1.05 -x mu_selVloose_ljout
@@ -82,6 +83,32 @@ INFO:root:mc sum = 15132.745839 15132.745839
 
 qcd is taken from nominal ss:
 DEBUG:root:data qcd for (Mt_lep_met_f, mu_sel_ljout_ss) Integral = 214.365973
+
+
+acceptances per channel found in 1 file of nominal and 1 fsrdown:
+
+cut_ev_elj->Divide( all_ev_elj )
+cut_ev_taumuj->Divide( all_ev_taumuj )
+cut_ev_eltau->Divide( all_ev_eltau )
+cut_ev_tauelj->Divide( all_ev_tauelj )
+cut_ev_mutau->Divide( all_ev_mutau )
+cut_ev_taumutauh->Divide( all_ev_taumutauh )
+cut_ev_other->Divide( all_ev_other )
+cut_ev_taueltauh->Divide( all_ev_taueltauh )
+cut_ev_muj->Divide( all_ev_muj )
+
+
+cut_ev_eltau->GetBinContent(1)
+cut_ev_elj->GetBinContent(1)
+cut_ev_taueltauh->GetBinContent(1)
+cut_ev_tauelj->GetBinContent(1)
+
+cut_ev_mutau->GetBinContent(1)
+cut_ev_muj->GetBinContent(1)
+cut_ev_taumutauh->GetBinContent(1)
+cut_ev_taumuj->GetBinContent(1)
+
+cut_ev_other->GetBinContent(1)
 
 
 source histosel_stage2_run3_VlooseShapes_el_sel_ljs_updowns2 &
@@ -110,6 +137,151 @@ python new_impact_table.py --merge-pdfs latest_both_impacts.json
 
 mc stats jumps much higher than before! 5% el 3% mu and 2.5% both!
 
+
+test hdamp:
+
+fit without hdamp
+
+el   r :    +1.037   -0.103/+0.110 (68%)
+
+mu   r :    +1.020   -0.095/+0.089 (68%)
+
+python new_impact_table.py --merge-pdfs latest_el_impacts_noHDAMP.json 
+python new_impact_table.py --merge-pdfs latest_mu_impacts_noHDAMP.json 
+
+MC stat el 3.1% mu 4% ???
+
+[olek@fermi01 CombinedLimit]$ python new_impact_table.py --merge-pdfs latest_el_impacts_noHDAMP.json                                                                                                                                                            
+        Tau ID efficiency  &  5.3 \\
+         Jet Energy Scale  &  4.4 \\
+        top quark $p_{T}$  &  4.2 \\
+        QCD normalization  &  2.9 \\
+      Pile-Up uncertainty  &  2.7 \\
+     b-tagging efficiency  &  2.0 \\
+    Jet Energy Resolution  &  1.7 \\
+   Tau mis-ID probability  &  0.8 \\
+ Single Top normalization  &  0.4 \\
+         DY normalization  &  0.3 \\
+   Dibosons normalization  &  0.0 \\
+         Tau Energy Scale  &  0.0 \\
+               Luminosity  &  0.0 \\
+     W+jets normalization  &  0.0 \\
+                    LEPel  &  4.7 \\
+          b fragmentation  &  3.3 \\
+Underlying event (Pythia tune)  &  1.1 \\
+  Initial State Radiation  &  0.9 \\
+b decay tables, Semileptonic BR  &  0.7 \\
+    Final State Radiation  &  0.4 \\
+   ME-PS matching (hdamp)  &  0.0 \\
+                      PDF  &  0.0 \\
+            MC statistics  &  3.1 \\
+[olek@fermi01 CombinedLimit]$ python new_impact_table.py --merge-pdfs latest_mu_impacts_noHDAMP.json
+        Tau ID efficiency  &  5.4 \\
+     b-tagging efficiency  &  4.5 \\
+         Jet Energy Scale  &  4.3 \\
+        top quark $p_{T}$  &  3.3 \\
+      Pile-Up uncertainty  &  2.3 \\
+   Tau mis-ID probability  &  2.1 \\
+    Jet Energy Resolution  &  0.9 \\
+ Single Top normalization  &  0.8 \\
+     W+jets normalization  &  0.6 \\
+         DY normalization  &  0.0 \\
+   Dibosons normalization  &  0.0 \\
+        QCD normalization  &  0.0 \\
+               Luminosity  &  0.0 \\
+         Tau Energy Scale  &  0.0 \\
+          b fragmentation  &  2.2 \\
+    Final State Radiation  &  1.6 \\
+  Initial State Radiation  &  1.5 \\
+                    LEPmu  &  0.5 \\
+b decay tables, Semileptonic BR  &  0.5 \\
+Underlying event (Pythia tune)  &  0.4 \\
+   ME-PS matching (hdamp)  &  0.0 \\
+                      PDF  &  0.0 \\
+            MC statistics  &  4.0 \\
+
+
+
+freeze all updowns
+
+el    r :    +1.022   -0.123/+0.107 (68%)
+mu    r :    +1.016   -0.086/+0.087 (68%)
+
+python new_impact_table.py --merge-pdfs latest_el_impacts_noUpDowns.json 
+python new_impact_table.py --merge-pdfs latest_mu_impacts_noUpDowns.json 
+
+[olek@fermi01 CombinedLimit]$ python new_impact_table.py --merge-pdfs latest_el_impacts_noUpDowns.json                                                                                                                                                                                                
+        Tau ID efficiency  &  5.2 \\
+         Jet Energy Scale  &  4.3 \\
+      Pile-Up uncertainty  &  3.3 \\
+        top quark $p_{T}$  &  3.3 \\
+     b-tagging efficiency  &  2.3 \\
+    Jet Energy Resolution  &  2.1 \\
+   Tau mis-ID probability  &  2.0 \\
+        QCD normalization  &  1.6 \\
+ Single Top normalization  &  0.6 \\
+         DY normalization  &  0.2 \\
+     W+jets normalization  &  0.1 \\
+   Dibosons normalization  &  0.0 \\
+               Luminosity  &  0.0 \\
+         Tau Energy Scale  &  0.0 \\
+                    LEPel  &  5.1 \\
+          b fragmentation  &  2.8 \\
+b decay tables, Semileptonic BR  &  0.7 \\
+  Initial State Radiation  &  0.0 \\
+    Final State Radiation  &  0.0 \\
+   ME-PS matching (hdamp)  &  0.0 \\
+Underlying event (Pythia tune)  &  0.0 \\
+                      PDF  &  0.0 \\
+            MC statistics  &  3.7 \\
+[olek@fermi01 CombinedLimit]$ python new_impact_table.py --merge-pdfs latest_mu_impacts_noUpDowns.json
+        Tau ID efficiency  &  5.8 \\
+        top quark $p_{T}$  &  3.4 \\
+     b-tagging efficiency  &  3.3 \\
+   Tau mis-ID probability  &  3.2 \\
+         Jet Energy Scale  &  2.6 \\
+      Pile-Up uncertainty  &  2.2 \\
+    Jet Energy Resolution  &  1.0 \\
+ Single Top normalization  &  0.9 \\
+     W+jets normalization  &  0.7 \\
+         DY normalization  &  0.2 \\
+   Dibosons normalization  &  0.0 \\
+        QCD normalization  &  0.0 \\
+               Luminosity  &  0.0 \\
+         Tau Energy Scale  &  0.0 \\
+          b fragmentation  &  2.1 \\
+                    LEPmu  &  0.7 \\
+b decay tables, Semileptonic BR  &  0.2 \\
+  Initial State Radiation  &  0.0 \\
+   ME-PS matching (hdamp)  &  0.0 \\
+Underlying event (Pythia tune)  &  0.0 \\
+    Final State Radiation  &  0.0 \\
+                      PDF  &  0.0 \\
+            MC statistics  &  3.0 \\
+
+-- also JES  too large?
+
+
+
+
+and distrs:
+
+python stack_plot.py distrs_v25pStage2Run3_2_updowns.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -o plots/ -p -r --lumi 35800 -d Mt_lep_met_f -c mu_sel_ljout --qcd 1.05 -x mu_selVloose_ljout -s HDAMPUp
+python stack_plot.py distrs_v25pStage2Run3_2_updowns.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -o plots/ -p -r --lumi 35800 -d Mt_lep_met_f -c mu_sel_ljout --qcd 1.05 -x mu_selVloose_ljout -s HDAMPDown
+
+python stack_plot.py distrs_v25pStage2Run3_2_updowns.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -o plots/ -p -r --lumi 35800 -d Mt_lep_met_f -c mu_sel_lj    --qcd 1.05 -x mu_selVloose_lj
+python stack_plot.py distrs_v25pStage2Run3_2_updowns.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -o plots/ -p -r --lumi 35800 -d Mt_lep_met_f -c mu_sel_lj    --qcd 1.05 -x mu_selVloose_lj    -s HDAMPUp
+python stack_plot.py distrs_v25pStage2Run3_2_updowns.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -o plots/ -p -r --lumi 35800 -d Mt_lep_met_f -c mu_sel_lj    --qcd 1.05 -x mu_selVloose_lj    -s HDAMPDown
+
+python stack_plot.py distrs_v25pStage2Run3_2_updowns.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root -o plots/ -p -r --lumi 31300 -d Mt_lep_met_f -c el_sel_ljout --qcd 1.05 -x el_selVloose_ljout
+python stack_plot.py distrs_v25pStage2Run3_2_updowns.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root -o plots/ -p -r --lumi 31300 -d Mt_lep_met_f -c el_sel_ljout --qcd 1.05 -x el_selVloose_ljout -s HDAMPUp
+python stack_plot.py distrs_v25pStage2Run3_2_updowns.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root -o plots/ -p -r --lumi 31300 -d Mt_lep_met_f -c el_sel_ljout --qcd 1.05 -x el_selVloose_ljout -s HDAMPDown
+
+python stack_plot.py distrs_v25pStage2Run3_2_updowns.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root -o plots/ -p -r --lumi 31300 -d Mt_lep_met_f -c el_sel_lj    --qcd 1.05 -x el_selVloose_lj   
+python stack_plot.py distrs_v25pStage2Run3_2_updowns.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root -o plots/ -p -r --lumi 31300 -d Mt_lep_met_f -c el_sel_lj    --qcd 1.05 -x el_selVloose_lj    -s HDAMPUp
+python stack_plot.py distrs_v25pStage2Run3_2_updowns.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root -o plots/ -p -r --lumi 31300 -d Mt_lep_met_f -c el_sel_lj    --qcd 1.05 -x el_selVloose_lj    -s HDAMPDown
+
+ -- as usual nothing is clear from the distrs
 
 
 
