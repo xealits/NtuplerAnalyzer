@@ -75,4 +75,6 @@ time python channel_distrs_full_loop.py --do-W-stitching  -l logss temp/ channel
 
 time python channel_distrs_full_loop.py --do-W-stitching  -l logss temp/ channels_nom_sys_muon_sel -i gstore_outdirs/v27/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v27_MC2016_Summer16_TTJets_powheg/180416_131355/0000/MC2016_Summer16_TTJets_powheg_74.root
 
+time python channel_distrs_full_loop.py  -l logss temp/ channels_nom_sys_both_sel_main -i /gstore/t3cms/store/user/otoldaie//v25/TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8/Ntupler_v25_MC2016_Summer16_TTJets_powheg_CUETP8M2T4down_ext1/180423_114000/0000/MC2016_Summer16_TTJets_powheg_CUETP8M2T4down_ext1_12.root   
+
 

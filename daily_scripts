@@ -153,6 +153,30 @@ time make distrs_mc_lep_weights p=pStage2Run3 options="--el-procs" cond="selecti
 
 
 
+the updowns:
+
+time make distrs_mc_updowns p=r4  cond="selection_stage==105 && event_jets_lj_var > 60."  chan="mu_sel_ljout"    &
+time make distrs_mc_updowns p=r4  cond="selection_stage==104 && event_jets_lj_var > 60."  chan="mu_sel_ljout_ss" &
+time make distrs_mc_updowns p=r4  cond="selection_stage==105 && event_jets_lj_var <= 60." chan="mu_sel_lj"       &
+time make distrs_mc_updowns p=r4  cond="selection_stage==104 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss"    &
+
+time make distrs_mc_updowns p=r4 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var > 60."  chan="el_sel_ljout" &
+time make distrs_mc_updowns p=r4 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var > 60."  chan="el_sel_ljout_ss" &
+time make distrs_mc_updowns p=r4 options="--el-procs" cond="selection_stage==115 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_updowns p=r4 options="--el-procs" cond="selection_stage==114 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+
+time make distrs_mc_updowns p=r4  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var > 60."  chan="mu_selVloose_ljout"    &
+time make distrs_mc_updowns p=r4  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var > 60."  chan="mu_selVloose_ljout_ss" &
+time make distrs_mc_updowns p=r4  cond="(selection_stage == 105 || selection_stage == 103) && event_jets_lj_var <= 60." chan="mu_selVloose_lj"       &
+time make distrs_mc_updowns p=r4  cond="(selection_stage == 104 || selection_stage == 102) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss"    &
+
+time make distrs_mc_updowns p=r4 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var > 60."  chan="el_selVloose_ljout" &
+time make distrs_mc_updowns p=r4 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var > 60."  chan="el_selVloose_ljout_ss" &
+time make distrs_mc_updowns p=r4 options="--el-procs" cond="(selection_stage == 115 || selection_stage == 113) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_updowns p=r4 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 112) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+
+
+
 
 foreach d ( `cat all-dtags` )
 hadd distrs/$d.root distrs/v25pStage2Run3/*$d*root &

@@ -1442,16 +1442,16 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     #channels, with_bSF = channels_mutau_optimization_scan, False
     #selected_channels = channels_optimized_old_full_sys
     #selected_channels = channels_full_sys_electron_selections
-    selected_channels = selection_definitions[channels_to_select]
+    #selected_channels = selection_definitions[channels_to_select]
 
     # find all requested systematics
-    requested_systematics  = set()
-    requested_objects      = set()
-    for k, (ch_name, systematic_names) in selected_channels.items():
-      for systematic_name in systematic_names:
-        requested_systematics.add(systematic_name)
-        if systematic_name in all_systematic_objects:
-            requested_objects.add(systematic_name)
+    #requested_systematics  = set()
+    #requested_objects      = set()
+    #for k, (ch_name, systematic_names) in selected_channels.items():
+    #  for systematic_name in systematic_names:
+    #    requested_systematics.add(systematic_name)
+    #    if systematic_name in all_systematic_objects:
+    #        requested_objects.add(systematic_name)
 
     with_JER_sys   = with_JER   = isMC and True
     with_JES_sys   = with_JES   = isMC and True
@@ -1459,10 +1459,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
     with_bSF_sys = with_bSF # and ('bSFUp' in requested_systematics or 'bSFDown' in requested_systematics)
 
-    with_AlphaS_sys  = True and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
-    with_Frag_sys    = True # and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
-    with_MEscale_sys = True and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
-    with_PDF_sys     = True and ('PDF_TRIGGER'      in requested_systematics)
+    with_AlphaS_sys  = True and isTT and not isTT_systematic # and ('AlphaSUp' in requested_systematics or 'AlphaSDown' in requested_systematics)
+    with_Frag_sys    = True and isTT and not isTT_systematic # and ('FragUp'   in requested_systematics or 'FragDown'   in requested_systematics)
+    with_MEscale_sys = True and isTT and not isTT_systematic # and ('MfUp'     in requested_systematics or 'MfDown'   in requested_systematics)
+    with_PDF_sys     = True and isTT and not isTT_systematic # and ('PDF_TRIGGER'      in requested_systematics)
 
     #SystematicJets = namedtuple('Jets', 'nom sys_JERUp sys_JERDown sys_JESUp sys_JESDown sys_bUp sys_bDown')
     # all requested jet cuts
@@ -1494,6 +1494,15 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
 
     # >>>>>>>>>>>>>> make output tree of the stage2 selection
+
+    # lor vector for selected objects (particles and met)
+    LorentzVector_Class = LorentzVector('ROOT::Math::PxPyPzE4D<double>')
+    # vector of these for particles
+    ROOT.gROOT.ProcessLine("typedef std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >> LorentzVectorS;")
+    ROOT.gROOT.ProcessLine("typedef std::vector<int> IntVector;")
+    ROOT.gROOT.ProcessLine("typedef std::vector<double> DoubleVector;")
+
+    all_vector_branches = [] # for resetting them on each event
 
     #ttree_out = TTree( 'ttree_out', 'tree with stage2 selection' ) # INPUT NOW
     indexevents  = array( 'L', [ 0 ] )
@@ -1615,15 +1624,35 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     ttree_out.Branch( 'event_weight_SemilepBRDown', event_weight_SemilepBRDown, 'event_weight_SemilepBRDown/f' )
 
 
+    event_weight_me_f_rUp = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_me_f_rUp', event_weight_me_f_rUp, 'event_weight_me_f_rUp/f' )
+    event_weight_me_f_rDn = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_me_f_rDn', event_weight_me_f_rDn, 'event_weight_me_f_rDn/f' )
+
+    event_weight_me_fUp_r = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_me_fUp_r', event_weight_me_fUp_r, 'event_weight_me_fUp_r/f' )
+    event_weight_me_fDn_r = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_me_fDn_r', event_weight_me_fDn_r, 'event_weight_me_fDn_r/f' )
+
+    event_weight_me_frUp = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_me_frUp', event_weight_me_frUp, 'event_weight_me_frUp/f' )
+    event_weight_me_frDn = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_me_frDn', event_weight_me_frDn, 'event_weight_me_frDn/f' )
+
+
+    event_weight_AlphaS_up = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_AlphaS_up', event_weight_AlphaS_up, 'event_weight_AlphaS_up/f' )
+    event_weight_AlphaS_dn = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_AlphaS_dn', event_weight_AlphaS_dn, 'event_weight_AlphaS_dn/f' )
+
+
+    event_weight_pdf = ROOT.DoubleVector()
+    ttree_out.Branch("event_weight_pdf", event_weight_pdf)
+    all_vector_branches.append(event_weight_pdf)
+
+
     amcatnlo_w = array( 'f', [ 0 ] )
     ttree_out.Branch( 'amcatnlo_w', amcatnlo_w, 'amcatnlo_w/f' )
-
-    # lor vector for selected objects (particles and met)
-    LorentzVector_Class = LorentzVector('ROOT::Math::PxPyPzE4D<double>')
-    # vector of these for particles
-    ROOT.gROOT.ProcessLine("typedef std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >> LorentzVectorS;")
-    ROOT.gROOT.ProcessLine("typedef std::vector<int> IntVector;")
-    ROOT.gROOT.ProcessLine("typedef std::vector<double> DoubleVector;")
 
     # met lorentzvector
     event_met = LorentzVector_Class(0., 0., 0., 0.)
@@ -1640,8 +1669,6 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     ttree_out.Branch("event_met_TESUp", event_met_TESUp)
     event_met_TESDown = LorentzVector_Class(0., 0., 0., 0.)
     ttree_out.Branch("event_met_TESDown", event_met_TESDown)
-
-    all_vector_branches = [] # for resetting them on each event
 
     event_leptons = ROOT.LorentzVectorS()
     ttree_out.Branch("event_leptons", event_leptons)
@@ -2217,7 +2244,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             # https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting
             if isTT:
                 # th weights if needed
-                if with_AlphaS_sys:
+                #if with_AlphaS_sys:
+                if with_PDF_sys:
                     #weights_gen_weight_norm = ev.gen_weight_norm
                     # weight_norm = 1 always
                     weights_gen_weight_alphas = (ev.gen_weight_alphas_1, ev.gen_weight_alphas_2)
@@ -2611,10 +2639,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             #    proc_met_JESUp   -= p4 * (TES_factor - 1.)
             #    proc_met_JESDown -= p4 * (TES_factor - 1.)
 
-            #if tau_pt_up > TAUS_PT_CUT:
-            #    proc_met_TESUp   -=  p4 * (TES_factor_up - 1.)
-            #if tau_pt_down > TAUS_PT_CUT:
-            #    proc_met_TESDown -=  p4 * (TES_factor_dn - 1.)
+            if tau_pt_up > TAUS_PT_CUT:
+                proc_met_TESUp   -=  p4 * (TES_factor_up - 1.)
+            if tau_pt_down > TAUS_PT_CUT:
+                proc_met_TESDown -=  p4 * (TES_factor_dn - 1.)
 
         # sort by IDlev and pt
         taus_candidates_alliso.sort(key=lambda it: (it[4], it[1]   *it[0].pt()), reverse=True)
@@ -3396,27 +3424,27 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         sel_leps, sel_jets = leps, jets_nom
 
         # final CHANNEL SELECTION decision
-        tt_channel_presel_stage = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), taus_candidates, proc_met)
+        tt_channel_presel_stage = 0 # passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), taus_candidates, proc_met)
 
         # nominal
         tt_channel_sel_stage    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_TESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_TESDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][2]).pt() > TAUS_PT_CUT], proc_met)
 
-        tt_channel_sel_stage_JERUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERUp_med,   N_jets_JERUp_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_JERDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERDown_med, N_jets_JERDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_JESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESUp_med,   N_jets_JESUp_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_JESDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESDown_med, N_jets_JESDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_TESUp    = 0 #passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_TESDown  = 0 #passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][2]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JERUp    = 0 #passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERUp_med,   N_jets_JERUp_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JERDown  = 0 #passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERDown_med, N_jets_JERDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JESUp    = 0 #passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESUp_med,   N_jets_JESUp_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JESDown  = 0 #passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESDown_med, N_jets_JESDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
         # alliso tt, the presel is most important here
         #tt_channel_presel_stage = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), taus_candidates, proc_met)
-        tt_channel_stage_alliso = passes_tt_selection_stages_alliso(passed_triggers, leps_all, (N_jets_nom_med_alliso, N_jets_nom_all_alliso), taus_candidates_alliso, proc_met)
+        tt_channel_stage_alliso = 0 #passes_tt_selection_stages_alliso(passed_triggers, leps_all, (N_jets_nom_med_alliso, N_jets_nom_all_alliso), taus_candidates_alliso, proc_met)
 
         # only nominal DY
-        dy_channel_sel_stage = passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        dy_channel_sel_stage = 0 #passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
         # elmu dilepton selection
-        em_channel_sel_stage = passes_elmu_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        em_channel_sel_stage = 0 #passes_elmu_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
         if tt_channel_sel_stage > 0:
             tt_channel_stage = 100 + tt_channel_sel_stage
@@ -3815,6 +3843,37 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             event_weight_FragDown[0]      = 1.0
             event_weight_SemilepBRUp  [0] = 1.0
             event_weight_SemilepBRDown[0] = 1.0
+
+        if with_MEscale_sys and isTT:
+            #event_weight_me_f_ = weights_gen_weight_nom   #= ev.gen_weights_renorm_fact[MUf_nom_MUr_nom] if ev.gen_weights_renorm_fact[MUf_nom_MUr_nom] > 0. else 0.00001
+            event_weight_me_f_rUp[0] = weights_gen_weight_f_rUp #= ev.gen_weights_renorm_fact[MUf_nom_MUr_up]
+            event_weight_me_f_rDn[0] = weights_gen_weight_f_rDn #= ev.gen_weights_renorm_fact[MUf_nom_MUr_down]
+            event_weight_me_fUp_r[0] = weights_gen_weight_fUp_r #= ev.gen_weights_renorm_fact[MUf_up_MUr_nom]
+            event_weight_me_fDn_r[0] = weights_gen_weight_fDn_r #= ev.gen_weights_renorm_fact[MUf_down_MUr_nom]
+            event_weight_me_frUp [0] = weights_gen_weight_frUp  #= ev.gen_weights_renorm_fact[MUf_up_MUr_up]
+            event_weight_me_frDn [0] = weights_gen_weight_frDn  #= ev.gen_weights_renorm_fact[MUf_down_MUr_down]
+
+        if with_PDF_sys and isTT:
+            for i in range(1,57):
+                pdf_w = ev.gen_weights_pdf_hessians[i] / weights_gen_weight_norm
+                # 1 event in muon selection has a number of PDF sets far above nominal value, weighted at 18 and more
+                # row 92098 in
+                # /gstore/t3cms/store/user/otoldaie/v23/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v23_MC2016_Summer16_TTJets_powheg/180317_001114/0000/MC2016_Summer16_TTJets_powheg_91.root
+                # for PDF n2 (one of the problematic ones) there are 2 more events with pdf weight more than 2
+                # the rest (far larger majority) are below
+                if pdf_w > 2.:
+                    pdf_w = 1.
+
+                event_weight_pdf.push_back(pdf_w)  #= ev.gen_weights_renorm_fact[MUf_down_MUr_down]
+
+                #pdf_sys_name = pdf_sys_name_up(i) #pdf_sys_names_Up[i-1]
+                #control_hs[pdf_sys_name].Fill(pdf_w)
+                #out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, record_weight * pdf_w)
+                #pdf_sys_name = pdf_sys_name_down(i) #pdf_sys_names_Down[i-1] # down is nominal
+                #out_hs[(chan, record_proc, pdf_sys_name)]['Mt_lep_met_f'] .Fill(Mt_lep_met, record_weight)
+
+            event_weight_AlphaS_up [0] = weights_gen_weight_alphas_up
+            event_weight_AlphaS_dn [0] = weights_gen_weight_alphas_dn
 
         # propagation of corrections to met
 

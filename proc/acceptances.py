@@ -63,6 +63,8 @@ histo_cut_ev_mutau = tfile.Get("cut_ev_mutau")
 histo_both_all = histo_all_ev_eltau + histo_all_ev_mutau
 histo_both_cut = histo_cut_ev_eltau + histo_cut_ev_mutau
 
+
+# the nominal acceptance and weight variations
 histo_both_cut.Divide(histo_both_all)
 histo_cut_ev_mutau.Divide(histo_all_ev_mutau)
 histo_cut_ev_eltau.Divide(histo_all_ev_eltau)
@@ -77,15 +79,20 @@ for var_index in range(2,100):
     acc_var_el, acc_var_mu, acc_var_both = histo_cut_ev_eltau.GetBinContent(var_index), histo_cut_ev_mutau.GetBinContent(var_index), histo_both_cut.GetBinContent(var_index)
     if acc_var_el < 0.01: break
 
-    variations[0] += (acc_var_el   - acc_nom_el)**2
-    variations[1] += (acc_var_mu   - acc_nom_mu)**2
-    variations[2] += (acc_var_both - acc_nom_both)**2
+    var_el   = (acc_var_el   - acc_nom_el)**2
+    var_mu   = (acc_var_mu   - acc_nom_mu)**2
+    var_both = (acc_var_both - acc_nom_both)**2
+
+    #print var_el, var_mu, var_both
+
+    variations[0] += var_el
+    variations[1] += var_mu
+    variations[2] += var_both
 
 tfile.Close()
 
 # dataset variations
 for sys_filename in sys_files:
-    logging.info(sys_filename)
     sys_file = TFile(sys_filename)
 
     histo_all_ev_eltau = sys_file.Get("all_ev_eltau")
@@ -102,9 +109,15 @@ for sys_filename in sys_files:
 
     acc_sys_el, acc_sys_mu, acc_sys_both = histo_cut_ev_eltau.GetBinContent(1), histo_cut_ev_mutau.GetBinContent(1), histo_both_cut.GetBinContent(1)
 
-    variations[0] += (acc_sys_el - acc_nom_el)**2
-    variations[1] += (acc_sys_mu - acc_nom_mu)**2
-    variations[2] += (acc_sys_both - acc_nom_both)**2
+    var_el   = (acc_sys_el   - acc_nom_el)**2
+    var_mu   = (acc_sys_mu   - acc_nom_mu)**2
+    var_both = (acc_sys_both - acc_nom_both)**2
+
+    variations[0] += var_el
+    variations[1] += var_mu
+    variations[2] += var_both
+
+    logging.info("%-80s %f %f %f" % (sys_filename, acc_sys_el, acc_sys_mu, acc_sys_both))
 
     sys_file.Close()
 

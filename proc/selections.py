@@ -81,6 +81,14 @@ dtags = {
 'MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg' : genprocs_mutau_s_top,
 'MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg'     : genprocs_mutau_s_top,
 'MC2016_Summer16_TTJets_powheg'  : genprocs_mutau_tt,
+#'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down' : genprocs_mutau_tt,
+#'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up'   : genprocs_mutau_tt,
+#'MC2016_Summer16_TTJets_powheg_fsrdown'        : genprocs_mutau_tt,
+#'MC2016_Summer16_TTJets_powheg_fsrup'          : genprocs_mutau_tt,
+#'MC2016_Summer16_TTJets_powheg_hdampDOWN'      : genprocs_mutau_tt,
+#'MC2016_Summer16_TTJets_powheg_hdampUP'        : genprocs_mutau_tt,
+#'MC2016_Summer16_TTJets_powheg_isrdown'        : genprocs_mutau_tt,
+#'MC2016_Summer16_TTJets_powheg_isrup'          : genprocs_mutau_tt,
 'MC2016_Summer16_WWTo2L2Nu_powheg'             : genprocs_mutau_dibosons,
 'MC2016_Summer16_WWToLNuQQ_powheg'             : genprocs_mutau_dibosons,
 'MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin' : genprocs_mutau_dibosons,
@@ -107,6 +115,15 @@ if args.el_procs:
     dtags['MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo'] = genprocs_eltau_s_top
     dtags['MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg'] = genprocs_eltau_s_top
     dtags['MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg'] = genprocs_eltau_s_top
+
+    #dtags['MC2016_Summer16_TTJets_powheg_CUETP8M2T4down'] =  genprocs_eltau_tt
+    #dtags['MC2016_Summer16_TTJets_powheg_CUETP8M2T4up'  ] =  genprocs_eltau_tt
+    #dtags['MC2016_Summer16_TTJets_powheg_fsrdown'       ] =  genprocs_eltau_tt
+    #dtags['MC2016_Summer16_TTJets_powheg_fsrup'         ] =  genprocs_eltau_tt
+    #dtags['MC2016_Summer16_TTJets_powheg_hdampDOWN'     ] =  genprocs_eltau_tt
+    #dtags['MC2016_Summer16_TTJets_powheg_hdampUP'       ] =  genprocs_eltau_tt
+    #dtags['MC2016_Summer16_TTJets_powheg_isrdown'       ] =  genprocs_eltau_tt
+    #dtags['MC2016_Summer16_TTJets_powheg_isrup'         ] =  genprocs_eltau_tt
 
 
 if args.custom_range:

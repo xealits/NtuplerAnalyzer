@@ -253,6 +253,50 @@ syst_factors = {
          "PDFCT14n9Up":             1.008439,
 }
 
+# the acceptance factors for updowns
+#INFO:root:merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg_CUETP8M2T4down.root              0.168221 0.175395 0.171805
+#INFO:root:merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg_CUETP8M2T4up.root                0.168400 0.175170 0.171786
+#INFO:root:merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg_fsrdown.root                     0.170905 0.177813 0.174358
+#INFO:root:merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg_fsrup.root                       0.164538 0.171178 0.167857
+#INFO:root:merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg_hdampDOWN.root                   0.166712 0.173022 0.169864
+#INFO:root:merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg_hdampUP.root                     0.168795 0.175712 0.172251
+#INFO:root:merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg_isrdown.root                     0.167539 0.175365 0.171449
+#INFO:root:merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg_isrup.root                       0.168896 0.176164 0.172531
+
+#[0.16871733092913158, 0.17559440519640376, 0.17215718299241814]
+acceptance_el = 0.168717
+acceptance_mu = 0.175594
+
+syst_factors_updowns_el = {
+   'TuneCUETP8M2T4Down': acceptance_el / 0.168221,
+   'TuneCUETP8M2T4Up':   acceptance_el / 0.168400,
+   'FSRDown':            acceptance_el / 0.170905,
+   'FSRUp':              acceptance_el / 0.164538,
+   'HDAMPDown':          acceptance_el / 0.166712,
+   'HDAMPUp':            acceptance_el / 0.168795,
+   'ISRDown':            acceptance_el / 0.167539,
+   'ISRUp':              acceptance_el / 0.168896,
+  }
+
+syst_factors_updowns_mu = {
+   'TuneCUETP8M2T4Down': acceptance_mu / 0.175395,
+   'TuneCUETP8M2T4Up':   acceptance_mu / 0.175170,
+   'FSRDown':            acceptance_mu / 0.177813,
+   'FSRUp':              acceptance_mu / 0.171178,
+   'HDAMPDown':          acceptance_mu / 0.173022,
+   'HDAMPUp':            acceptance_mu / 0.175712,
+   'ISRDown':            acceptance_mu / 0.175365,
+   'ISRUp':              acceptance_mu / 0.176164,
+  }
+
+syst_factors_updowns = {
+'tt_eltau':
+  syst_factors_updowns_el,
+'tt_mutau':
+  syst_factors_updowns_mu
+}
+
+
 def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=False):
     """get_histos(infile)
 
@@ -381,8 +425,16 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                ## TODO: remove this, just testing the bSF normalization from simle elmu to close elmu
                #th_factor *= 1. / 0.984960
 
+               # updowns factor:
+               if nick[:3] == 'tt_':
+                   #th_factor *= syst_factors_updowns.get('nick', {}).get(fixed_sys_name, 1.)
+                   if 'el_sel' in channel:
+                       th_factor *= syst_factors_updowns_el.get(fixed_sys_name, 1.)
+                   else:
+                       th_factor *= syst_factors_updowns_mu.get(fixed_sys_name, 1.)
+
                final_factor = args.lumi * tauIDSF_factor * pu_factor * th_factor
-               logging.info("final factor %20s %20f %5f %5f %5f  %20f" % (nick, args.lumi, tauIDSF_factor, pu_factor, th_factor, final_factor))
+               logging.info("final factor %20s %20f   %5f %5f %5f     %20f" % (nick, args.lumi, tauIDSF_factor, pu_factor, th_factor, final_factor))
                histo.Scale(final_factor)
 
            # wjets normalization
