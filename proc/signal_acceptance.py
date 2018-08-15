@@ -12,7 +12,9 @@ from sys import exit
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
     description = "signal acceptance study",
-    epilog = """Example:\npython signal_acceptance.py --output temp/ gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_90.root
+    epilog = """Example:
+python signal_acceptance.py temp/ gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_90.root
+python proc/signal_acceptance.py temp/ NtuplerAnalyzer_test_METfiltersOFF_TTJets2_signal_recordAll.root
 """
     )
 
@@ -134,13 +136,18 @@ and the separate datasets
 
 
 # for all systematic weights
-histo_all_ev_eltau = TH1D("all_ev_eltau", "", 201, 0, 200)
-histo_cut_ev_eltau = TH1D("cut_ev_eltau", "", 201, 0, 200)
-el_histos = (histo_all_ev_eltau, histo_cut_ev_eltau)
+histos = {'eltau': (TH1D("all_ev_eltau", "", 201, 0, 200), TH1D("cut_ev_eltau", "", 201, 0, 200)),
+'elj': (TH1D("all_ev_elj",   "", 201, 0, 200), TH1D("cut_ev_elj",   "", 201, 0, 200)),
+'tauelj': ( TH1D("all_ev_tauelj",   "", 201, 0, 200), TH1D("cut_ev_tauelj",   "", 201, 0, 200)),
+'taueltauh': (TH1D("all_ev_taueltauh",   "", 201, 0, 200), TH1D("cut_ev_taueltauh",   "", 201, 0, 200)),
+'mutau': (TH1D("all_ev_mutau", "", 201, 0, 200), TH1D("cut_ev_mutau", "", 201, 0, 200)),
+'muj': (TH1D("all_ev_muj",   "", 201, 0, 200), TH1D("cut_ev_muj",   "", 201, 0, 200)),
+'taumuj': (TH1D("all_ev_taumuj",   "", 201, 0, 200), TH1D("cut_ev_taumuj",   "", 201, 0, 200)),
+'taumutauh': (TH1D("all_ev_taumutauh",   "", 201, 0, 200), TH1D("cut_ev_taumutauh",   "", 201, 0, 200)),
+'other': (TH1D("all_ev_other",   "", 201, 0, 200), TH1D("cut_ev_other",   "", 201, 0, 200))}
 
-histo_all_ev_mutau = TH1D("all_ev_mutau", "", 201, 0, 200)
-histo_cut_ev_mutau = TH1D("cut_ev_mutau", "", 201, 0, 200)
-mu_histos = (histo_all_ev_mutau, histo_cut_ev_mutau)
+#el_histos = (histo_all_ev_eltau, histo_cut_ev_eltau)
+#mu_histos = (histo_all_ev_mutau, histo_cut_ev_mutau)
 
 def round_pdf_weight(pdf_w):
     if pdf_w > 2.:
@@ -158,8 +165,29 @@ tfile = TFile(input_filename)
 ttree = tfile.Get('ntupler/reduced_ttree')
 
 for iev, event in enumerate(ttree):
-    is_eltau = abs(event.gen_t_w_decay_id) == 11 or abs(event.gen_tb_w_decay_id) == 11
-    all_histo, cut_histo = el_histos if is_eltau else mu_histos
+    is_eltau = abs(event.gen_t_w_decay_id) == 11 or abs(event.gen_tb_w_decay_id) == 11 or abs(event.gen_t_w_decay_id) == 15*11 or abs(event.gen_tb_w_decay_id) == 15*11
+    if (abs(event.gen_t_w_decay_id) == 11 and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 11 and abs(event.gen_t_w_decay_id) > 15*15):
+        process = 'eltau'
+    elif (abs(event.gen_t_w_decay_id) == 11*15 and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 11*15 and abs(event.gen_t_w_decay_id) > 15*15):
+        process = 'taueltauh'
+    elif (abs(event.gen_t_w_decay_id) == 11 and abs(event.gen_tb_w_decay_id) == 1) or (abs(event.gen_tb_w_decay_id) == 11 and abs(event.gen_t_w_decay_id) == 1):
+        process = 'elj'
+    elif (abs(event.gen_t_w_decay_id) == 15*11 and abs(event.gen_tb_w_decay_id) == 1) or (abs(event.gen_tb_w_decay_id) == 15*11 and abs(event.gen_t_w_decay_id) == 1):
+        process = 'tauelj'
+
+    elif (abs(event.gen_t_w_decay_id) == 13 and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 13 and abs(event.gen_t_w_decay_id) > 15*15):
+        process = 'mutau'
+    elif (abs(event.gen_t_w_decay_id) == 13*15 and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 13*15 and abs(event.gen_t_w_decay_id) > 15*15):
+        process = 'taumutauh'
+    elif (abs(event.gen_t_w_decay_id) == 13 and abs(event.gen_tb_w_decay_id) == 1) or (abs(event.gen_tb_w_decay_id) == 13 and abs(event.gen_t_w_decay_id) == 1):
+        process = 'muj'
+    elif (abs(event.gen_t_w_decay_id) == 15*13 and abs(event.gen_tb_w_decay_id) == 1) or (abs(event.gen_tb_w_decay_id) == 15*13 and abs(event.gen_t_w_decay_id) == 1):
+        process = 'taumuj'
+
+    else:
+        process = 'other'
+
+    all_histo, cut_histo = histos[process]
 
     # the nominal event weight
     # consists of only PU (no amcatnlo, z or recoil for ttbar)
@@ -261,9 +289,11 @@ fout.Write()
 
 fout.cd()
 
-for out_histo in el_histos + mu_histos:
-    out_histo.SetDirectory(fout)
-    out_histo.Write()
+for out_histo1, out_histo2 in histos.values():
+    out_histo1.SetDirectory(fout)
+    out_histo1.Write()
+    out_histo2.SetDirectory(fout)
+    out_histo2.Write()
 
 fout.Write()
 fout.Close()
