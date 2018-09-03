@@ -20,6 +20,7 @@ python proc/signal_acceptance.py temp/ NtuplerAnalyzer_test_METfiltersOFF_TTJets
 
 parser.add_argument("output_dir",  type=str, default="temp/", help="the path of output directory")
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
+parser.add_argument("--no-tau-cut",  action='store_true', help="don't apply tau cut")
 
 parser.add_argument('input_file', help="""the job files to process: 
 /gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_0.root""")
@@ -241,14 +242,15 @@ for iev, event in enumerate(ttree):
         all_histo.Fill(sys_i, sys_w)
 
     # there is always 1 lepton and 1 tau in signal:
-    if not (len(event.gen2_leptons_p4) > 0 and len(event.gen_tt_tau_vis_p4) > 0): continue
+    if not len(event.gen2_leptons_p4) > 0: continue
+    if not args.no_tau_cut and len(event.gen_tt_tau_vis_p4) > 0: continue
 
     # lepton cuts
     if       is_eltau and not (event.gen2_leptons_p4[0].pt() > 30 and abs(event.gen2_leptons_p4[0].eta()) < 2.4): continue
     elif not is_eltau and not (event.gen2_leptons_p4[0].pt() > 26 and abs(event.gen2_leptons_p4[0].eta()) < 2.4 and (abs(event.gen2_leptons_p4[0].eta()) < 1.442 or abs(event.gen2_leptons_p4[0].eta()) > 1.566)): continue
 
     # tau cuts
-    if not (event.gen_tt_tau_vis_p4[0].pt() > 30 and abs(event.gen_tt_tau_vis_p4[0].eta()) < 2.4): continue
+    if not args.no_tau_cut and not (event.gen_tt_tau_vis_p4[0].pt() > 30 and abs(event.gen_tt_tau_vis_p4[0].eta()) < 2.4): continue
 
     # jet cuts
     n_jets_pass = 0
