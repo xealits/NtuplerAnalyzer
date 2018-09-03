@@ -1,3 +1,12 @@
+# download fsr up file
+
+/store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/A2858033-C4D6-E611-BB70-0CC47AA989C4.root
+
+xrdcp root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/A2858033-C4D6-E611-BB70-0CC47AA989C4.root  /eos/user/o/otoldaie/TT_FSRUp_50000_A2858033-C4D6-E611-BB70-0CC47AA989C4.root
+
+
+
+
 # adding the updowns normalized to acceptance
 
 time make distrs_mc_updowns p=r4 options="--el-procs" cond="(selection_stage == 114 || selection_stage == 116) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
@@ -109,6 +118,56 @@ cut_ev_taumutauh->GetBinContent(1)
 cut_ev_taumuj->GetBinContent(1)
 
 cut_ev_other->GetBinContent(1)
+
+nominal file (without tau requirement)
+
+root [10] cut_ev_eltau->GetBinContent(1)
+(Double_t) 0.315486
+root [11] cut_ev_elj->GetBinContent(1)
+(Double_t) 0.489868
+root [12] cut_ev_taueltauh->GetBinContent(1)
+(Double_t) 0.0902917
+root [13] cut_ev_tauelj->GetBinContent(1)
+(Double_t) 0.160139
+root [14] 
+root [14] cut_ev_mutau->GetBinContent(1)
+(Double_t) 0.329758
+root [15] cut_ev_muj->GetBinContent(1)
+(Double_t) 0.506262
+root [16] cut_ev_taumutauh->GetBinContent(1)
+(Double_t) 0.150445
+root [17] cut_ev_taumuj->GetBinContent(1)
+(Double_t) 0.190607
+root [18] 
+root [18] cut_ev_other->GetBinContent(1)
+(Double_t) 0.0273355
+
+fsr down:
+
+root [10] cut_ev_eltau->GetBinContent(1)
+(Double_t) 0.316088
+root [11] cut_ev_elj->GetBinContent(1)
+(Double_t) 0.494020
+root [12] cut_ev_taueltauh->GetBinContent(1)
+(Double_t) 0.121670
+root [13] cut_ev_tauelj->GetBinContent(1)
+(Double_t) 0.141373
+root [14] 
+root [14] cut_ev_mutau->GetBinContent(1)
+(Double_t) 0.337093
+root [15] cut_ev_muj->GetBinContent(1)
+(Double_t) 0.512832
+root [16] cut_ev_taumutauh->GetBinContent(1)
+(Double_t) 0.115956
+root [17] cut_ev_taumuj->GetBinContent(1)
+(Double_t) 0.195480
+root [18] 
+root [18] cut_ev_other->GetBinContent(1)
+(Double_t) 0.0304838
+
+tauel-tauh probably depend more on statistics
+
+no significant difference between processes here
 
 
 source histosel_stage2_run3_VlooseShapes_el_sel_ljs_updowns2 &
