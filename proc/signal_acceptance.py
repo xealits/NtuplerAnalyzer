@@ -258,14 +258,18 @@ for iev, event in enumerate(ttree):
 
     # jet cuts
     n_jets_pass = 0
+    n_jets_taucands_pass = 0
     n_b_jets_pass = 0
     for jet_p4, jet_pdgId in zip(event.gen2_jets_p4, event.gen2_jets_pdgId):
         if jet_p4.pt() > 30 and abs(jet_p4.eta()) < 2.5:
             n_jets_pass += 1
+            if abs(jet_p4.eta()) < 2.4:
+                n_jets_taucands_pass += 1
             if jet_pdgId == 5:
                 n_b_jets_pass += 1
 
     if not n_jets_pass > 2: continue
+    if not n_jets_taucands_pass > 0: continue
 
     # b-jet
     if not n_b_jets_pass > 0: continue
