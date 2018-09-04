@@ -137,15 +137,16 @@ and the separate datasets
 
 
 # for all systematic weights
-histos = {'eltau': (TH1D("all_ev_eltau", "", 201, 0, 200), TH1D("cut_ev_eltau", "", 201, 0, 200)),
-'elj': (TH1D("all_ev_elj",   "", 201, 0, 200), TH1D("cut_ev_elj",   "", 201, 0, 200)),
-'tauelj': ( TH1D("all_ev_tauelj",   "", 201, 0, 200), TH1D("cut_ev_tauelj",   "", 201, 0, 200)),
-'taueltauh': (TH1D("all_ev_taueltauh",   "", 201, 0, 200), TH1D("cut_ev_taueltauh",   "", 201, 0, 200)),
-'mutau': (TH1D("all_ev_mutau", "", 201, 0, 200), TH1D("cut_ev_mutau", "", 201, 0, 200)),
-'muj': (TH1D("all_ev_muj",   "", 201, 0, 200), TH1D("cut_ev_muj",   "", 201, 0, 200)),
-'taumuj': (TH1D("all_ev_taumuj",   "", 201, 0, 200), TH1D("cut_ev_taumuj",   "", 201, 0, 200)),
-'taumutauh': (TH1D("all_ev_taumutauh",   "", 201, 0, 200), TH1D("cut_ev_taumutauh",   "", 201, 0, 200)),
-'other': (TH1D("all_ev_other",   "", 201, 0, 200), TH1D("cut_ev_other",   "", 201, 0, 200))}
+histos = {
+'eltau':     (TH1D("gen_tbw_eltau",     "", 400, -200, 200), TH1D("gen_tw_eltau",     "", 400, -200, 200), TH1D("all_ev_eltau",     "", 200, 0, 200), TH1D("cut_ev_eltau",     "", 200, 0, 200)),
+'elj':       (TH1D("gen_tbw_elj",       "", 400, -200, 200), TH1D("gen_tw_elj",       "", 400, -200, 200), TH1D("all_ev_elj",       "", 200, 0, 200), TH1D("cut_ev_elj",       "", 200, 0, 200)),
+'tauelj':    (TH1D("gen_tbw_tauelj",    "", 400, -200, 200), TH1D("gen_tw_tauelj",    "", 400, -200, 200), TH1D("all_ev_tauelj",    "", 200, 0, 200), TH1D("cut_ev_tauelj",    "", 200, 0, 200)),
+'taueltauh': (TH1D("gen_tbw_taueltauh", "", 400, -200, 200), TH1D("gen_tw_taueltauh", "", 400, -200, 200), TH1D("all_ev_taueltauh", "", 200, 0, 200), TH1D("cut_ev_taueltauh", "", 200, 0, 200)),
+'mutau':     (TH1D("gen_tbw_mutau",     "", 400, -200, 200), TH1D("gen_tw_mutau",     "", 400, -200, 200), TH1D("all_ev_mutau",     "", 200, 0, 200), TH1D("cut_ev_mutau",     "", 200, 0, 200)),
+'muj':       (TH1D("gen_tbw_muj",       "", 400, -200, 200), TH1D("gen_tw_muj",       "", 400, -200, 200), TH1D("all_ev_muj",       "", 200, 0, 200), TH1D("cut_ev_muj",       "", 200, 0, 200)),
+'taumuj':    (TH1D("gen_tbw_taumuj",    "", 400, -200, 200), TH1D("gen_tw_taumuj",    "", 400, -200, 200), TH1D("all_ev_taumuj",    "", 200, 0, 200), TH1D("cut_ev_taumuj",    "", 200, 0, 200)),
+'taumutauh': (TH1D("gen_tbw_taumutauh", "", 400, -200, 200), TH1D("gen_tw_taumutauh", "", 400, -200, 200), TH1D("all_ev_taumutauh", "", 200, 0, 200), TH1D("cut_ev_taumutauh", "", 200, 0, 200)),
+'other':     (TH1D("gen_tbw_other",     "", 400, -200, 200), TH1D("gen_tw_other",     "", 400, -200, 200), TH1D("all_ev_other",     "", 200, 0, 200), TH1D("cut_ev_other",     "", 200, 0, 200))}
 
 #el_histos = (histo_all_ev_eltau, histo_cut_ev_eltau)
 #mu_histos = (histo_all_ev_mutau, histo_cut_ev_mutau)
@@ -167,28 +168,31 @@ ttree = tfile.Get('ntupler/reduced_ttree')
 
 for iev, event in enumerate(ttree):
     is_eltau = abs(event.gen_t_w_decay_id) == 11 or abs(event.gen_tb_w_decay_id) == 11 or abs(event.gen_t_w_decay_id) == 15*11 or abs(event.gen_tb_w_decay_id) == 15*11
-    if (abs(event.gen_t_w_decay_id) == 11 and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 11 and abs(event.gen_t_w_decay_id) > 15*15):
+    if   (abs(event.gen_t_w_decay_id) == 11    and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 11    and abs(event.gen_t_w_decay_id) > 15*15):
         process = 'eltau'
     elif (abs(event.gen_t_w_decay_id) == 11*15 and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 11*15 and abs(event.gen_t_w_decay_id) > 15*15):
         process = 'taueltauh'
-    elif (abs(event.gen_t_w_decay_id) == 11 and abs(event.gen_tb_w_decay_id) == 1) or (abs(event.gen_tb_w_decay_id) == 11 and abs(event.gen_t_w_decay_id) == 1):
+    elif (abs(event.gen_t_w_decay_id) == 11    and abs(event.gen_tb_w_decay_id) == 1)    or (abs(event.gen_tb_w_decay_id) == 11    and abs(event.gen_t_w_decay_id) == 1):
         process = 'elj'
-    elif (abs(event.gen_t_w_decay_id) == 15*11 and abs(event.gen_tb_w_decay_id) == 1) or (abs(event.gen_tb_w_decay_id) == 15*11 and abs(event.gen_t_w_decay_id) == 1):
+    elif (abs(event.gen_t_w_decay_id) == 15*11 and abs(event.gen_tb_w_decay_id) == 1)    or (abs(event.gen_tb_w_decay_id) == 15*11 and abs(event.gen_t_w_decay_id) == 1):
         process = 'tauelj'
 
-    elif (abs(event.gen_t_w_decay_id) == 13 and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 13 and abs(event.gen_t_w_decay_id) > 15*15):
+    elif (abs(event.gen_t_w_decay_id) == 13    and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 13    and abs(event.gen_t_w_decay_id) > 15*15):
         process = 'mutau'
     elif (abs(event.gen_t_w_decay_id) == 13*15 and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 13*15 and abs(event.gen_t_w_decay_id) > 15*15):
         process = 'taumutauh'
-    elif (abs(event.gen_t_w_decay_id) == 13 and abs(event.gen_tb_w_decay_id) == 1) or (abs(event.gen_tb_w_decay_id) == 13 and abs(event.gen_t_w_decay_id) == 1):
+    elif (abs(event.gen_t_w_decay_id) == 13    and abs(event.gen_tb_w_decay_id) == 1)    or (abs(event.gen_tb_w_decay_id) == 13    and abs(event.gen_t_w_decay_id) == 1):
         process = 'muj'
-    elif (abs(event.gen_t_w_decay_id) == 15*13 and abs(event.gen_tb_w_decay_id) == 1) or (abs(event.gen_tb_w_decay_id) == 15*13 and abs(event.gen_t_w_decay_id) == 1):
+    elif (abs(event.gen_t_w_decay_id) == 15*13 and abs(event.gen_tb_w_decay_id) == 1)    or (abs(event.gen_tb_w_decay_id) == 15*13 and abs(event.gen_t_w_decay_id) == 1):
         process = 'taumuj'
 
     else:
         process = 'other'
 
-    all_histo, cut_histo = histos[process]
+    count_gen_tw, count_gen_tbw, all_histo, cut_histo = histos[process]
+
+    count_gen_tw  .Fill(event.gen_t_w_decay_id)
+    count_gen_tbw .Fill(event.gen_tb_w_decay_id)
 
     # the nominal event weight
     # consists of only PU (no amcatnlo, z or recoil for ttbar)
@@ -291,7 +295,12 @@ fout.Write()
 
 fout.cd()
 
-for out_histo1, out_histo2 in histos.values():
+for count1, count2, out_histo1, out_histo2 in histos.values():
+    count1.SetDirectory(fout)
+    count1.Write()
+    count2.SetDirectory(fout)
+    count2.Write()
+
     out_histo1.SetDirectory(fout)
     out_histo1.Write()
     out_histo2.SetDirectory(fout)

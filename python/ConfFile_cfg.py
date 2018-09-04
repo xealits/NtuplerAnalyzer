@@ -52,9 +52,28 @@ input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/MC2016_Summer16_DY50_amcat
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/QCD2015_HT100to200_48346CCA-B351-E611-8851-C4346BC8D390.root',), True, "QCD2015-100-200"
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/QCD2016_HT100to200_E4183151-F8BD-E611-8228-002590207E3C.root',), True, "QCD2016-100-200"
 
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TTJets_TuneCUETP8M2T4_13TeV-amcatnloFXFX-pythia8_366459FB-DFC5-E611-BE5E-D8D385AF8AE2.root",), True, 'TTJets_amcatnlo'
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8_3071D964-03B7-E611-98C4-B083FED18596.root",), True, 'TTJets_fsrdown'
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8_BE2542A8-C2D6-E611-BCB2-0CC47A6C0682.root",),   True, 'TTJets_fsrup'
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8_244A6BD6-CFB5-E611-98C3-008CFA16615C.root",), True, 'TTJets_isrdown'
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8_14D0A1F0-A0BE-E611-BF78-FA163E795A09.root",),   True, 'TTJets_isrup'
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_GluonMoveCRTune_13TeV-powheg-pythia8_B6EEA189-C940-E711-B6FB-E0071B6CAD00.root",), True, 'TTJets_GluonMoveCRTune'
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_QCDbasedCRTune_erdON_13TeV-powheg-pythia8_BE256AF2-B926-E711-A36C-A0369FD20608.root",), True, 'TTJets_QCDbasedCRTune'
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8_B87402B7-52C0-E611-95D4-B8CA3A70A410.root",),   True, 'TTJets_Tunedown'
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8_BAD9F05B-C6B6-E611-9C69-0023AEEEB226.root",),     True, 'TTJets_Tuneup'
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_TuneEE5C_13TeV-powheg-herwigpp_6820BBE0-01B5-E611-85C8-002590E7E01A.root",), True, 'TTJets_herwigpp'
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8_F8364FC9-A5F2-E611-90F2-FA163E73666D.root",), True, 'TTJets_HDAMPDown'
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8_1EA7E8C9-C0F2-E611-85C3-FA163E65B77A.root",),   True, 'TTJets_HDAMPUp'
+
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_165F54A0-A3BE-E611-B3F7-0025905A606A.root',), True, 'TTJets2'
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8_9EAC0046-06B7-E611-AF76-141877411FED.root',), True, 'TTJets_fsrdown'
 
+from os import environ
+
+if 'INFILE' in environ:
+    input_files = ('file:%s' % environ['INFILE'],)
+    dtag = environ['DTAG']
+    isMC = True
 
 if any('2015' in infile for infile in input_files) or '2015' in dtag:
     HLT_source = 'HLT2'
@@ -82,11 +101,12 @@ ivars.inputFiles = input_files
 to_tag = True
 
 output_file = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_29/src/UserCode/NtuplerAnalyzer/NtuplerAnalyzer_test_METfilters%s_%s_%s.root' % ('OFF' if to_tag else 'ON', dtag, record_scheme)
-print output_file
 ivars.outputFile = output_file
 # get and parse the command line arguments
 ivars.parseArguments()
 
+print input_files
+print output_file
 
 process = cms.Process("Demo")
 
