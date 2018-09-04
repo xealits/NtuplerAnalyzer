@@ -1239,20 +1239,49 @@ combine -M MultiDimFit --algo grid -t -1 --expectSignal 1 --points 100 --rMin 0.
 
 frozen lumi, no theoretical impacts
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpacts
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpacts
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts.json            --name MuImpacts
-../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o postfit_mu_impacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit               --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_UpDownOrig.json  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_UpDownOrig.json -o postfit_mu_impacts_UpDownOrig
+
+
+
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR  -m 125 --robustFit 1 --doInitialFit               --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR  -m 125 --robustFit 1 --doFits --parallel 5        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR  -m 125 -o latest_mu_impacts_RatesUpDownOrig_noFSR.json  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_RatesUpDownOrig_noFSR.json -o postfit_mu_impacts_RatesUpDownOrig_noFSR
+
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR,ISR,HDAMP,TuneCUETP8M2T4  -m 125 --robustFit 1 --doInitialFit               --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR,ISR,HDAMP,TuneCUETP8M2T4  -m 125 --robustFit 1 --doFits --parallel 5        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR,ISR,HDAMP,TuneCUETP8M2T4  -m 125 -o latest_mu_impacts_RatesUpDownOrig_noUpDowns.json  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_RatesUpDownOrig_noUpDowns.json -o postfit_mu_impacts_RatesUpDownOrig_noUpDowns
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit               --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_RatesUpDownVlooseLJSigNorm.json  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_RatesUpDownVlooseLJSigNorm.json -o postfit_mu_impacts_RatesUpDownVlooseLJSigNorm
+
+
+
+
 
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts.json            --name ElImpacts
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o postfit_el_impacts
 
+
+
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name BothImpacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name BothImpacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 -o latest_both_impacts.json          --name BothImpacts
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o postfit_both_impacts
+
 
 
 python impact_table.py --merge-pdf latest_el_impacts.json

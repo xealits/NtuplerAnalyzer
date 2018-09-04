@@ -1,3 +1,536 @@
+# acceptances in all processes in all systematics
+
+for dset in `cat dsets_tt_systs`
+do
+das_client --limit=2 --query="file dataset=$dset"
+done | tee dsets_tt_systs_2file
+
+das_client --limit=2 --query="file dataset=/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM" >> dsets_tt_systs_2file
+
+
+export INFILE=/eos/user/o/otoldaie/TTJets_TuneCUETP8M2T4_13TeV-amcatnloFXFX-pythia8_366459FB-DFC5-E611-BE5E-D8D385AF8AE2.root
+export DTAG=TTJets_amcatnlo
+cmsRun python/ConfFile_cfg.py
+
+export INFILE=/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_GluonMoveCRTune_13TeV-powheg-pythia8_B6EEA189-C940-E711-B6FB-E0071B6CAD00.root
+export DTAG=TTJets_GluonMoveCRTune
+export INFILE=/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_QCDbasedCRTune_erdON_13TeV-powheg-pythia8_BE256AF2-B926-E711-A36C-A0369FD20608.root
+export DTAG=TTJets_QCDbasedCRTune
+
+export INFILE=/eos/user/o/otoldaie/TT_TuneEE5C_13TeV-powheg-herwigpp_6820BBE0-01B5-E611-85C8-002590E7E01A.root
+export DTAG=TTJets_herwigpp'
+
+
+
+export INFILE=/eos/user/o/otoldaie/TT_165F54A0-A3BE-E611-B3F7-0025905A606A.root
+export DTAG=TTJets_NOMINAL
+cmsRun python/ConfFile_cfg.py
+
+
+
+export INFILE=/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8_3071D964-03B7-E611-98C4-B083FED18596.root
+export DTAG=TTJets_FSRDown
+cmsRun python/ConfFile_cfg.py
+
+export INFILE=/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8_BE2542A8-C2D6-E611-BCB2-0CC47A6C0682.root
+export DTAG=TTJets_FSRUp
+cmsRun python/ConfFile_cfg.py
+
+export INFILE=/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8_244A6BD6-CFB5-E611-98C3-008CFA16615C.root
+export DTAG=TTJets_ISRDown
+cmsRun python/ConfFile_cfg.py
+export INFILE=/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8_14D0A1F0-A0BE-E611-BF78-FA163E795A09.root
+export DTAG=TTJets_ISRUp
+cmsRun python/ConfFile_cfg.py
+
+export INFILE=/eos/user/o/otoldaie/TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8_B87402B7-52C0-E611-95D4-B8CA3A70A410.root
+export DTAG=TTJets_TuneDown
+cmsRun python/ConfFile_cfg.py
+export INFILE=/eos/user/o/otoldaie/TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8_BAD9F05B-C6B6-E611-9C69-0023AEEEB226.root
+export DTAG=TTJets_TuneUp
+cmsRun python/ConfFile_cfg.py
+
+export INFILE=/eos/user/o/otoldaie/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8_F8364FC9-A5F2-E611-90F2-FA163E73666D.root
+export DTAG=TTJets_HDAMPDown
+cmsRun python/ConfFile_cfg.py
+export INFILE=/eos/user/o/otoldaie/TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8_1EA7E8C9-C0F2-E611-85C3-FA163E65B77A.root
+export DTAG=TTJets_HDAMPUp
+cmsRun python/ConfFile_cfg.py
+
+
+second batch
+
+export INFILE=root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/7C8A67E6-9ABE-E611-B3E7-0242AC130004.root
+export DTAG=TTJets_NOMINAL_1
+cmsRun python/ConfFile_cfg.py
+
+export INFILE=root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/9031330B-9ABE-E611-BAF9-0242AC130002.root
+export DTAG=TTJets_NOMINAL_2
+cmsRun python/ConfFile_cfg.py
+
+
+export INFILE=root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/9EAC0046-06B7-E611-AF76-141877411FED.root
+export DTAG=TTJets_FSRDown_2
+cmsRun python/ConfFile_cfg.py
+export INFILE=root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/A2858033-C4D6-E611-BB70-0CC47AA989C4.root
+export DTAG=TTJets_FSRUp_2
+cmsRun python/ConfFile_cfg.py
+
+export INFILE=root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/005CF57C-CAB5-E611-862F-141877642ECF.root
+export DTAG=TTJets_ISRDown_2
+cmsRun python/ConfFile_cfg.py
+export INFILE=root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/70000/E0D51A37-A1BE-E611-A84E-02163E012FCB.root
+export DTAG=TTJets_ISRUp_2
+cmsRun python/ConfFile_cfg.py
+
+export INFILE=root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/266CE88B-5FC0-E611-8C1C-0CC47A4C8EB6.root
+export DTAG=TTJets_TuneDown_2
+cmsRun python/ConfFile_cfg.py
+export INFILE=root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/70000/1604C4FE-C9B6-E611-B524-0023AEEEB226.root
+export DTAG=TTJets_TuneUp_2
+cmsRun python/ConfFile_cfg.py
+
+export INFILE=root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/4EBECEBC-AAF2-E611-8399-02163E013A79.root
+export DTAG=TTJets_2_HDAMPDown_2
+cmsRun python/ConfFile_cfg.py
+export INFILE=root://xrootd-cms.infn.it//store/mc/RunIISummer16MiniAODv2/TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/6CB65478-B7F2-E611-837A-FA163ED9F610.root
+export DTAG=TTJets_2_HDAMPUp_2
+cmsRun python/ConfFile_cfg.py
+
+
+
+
+
+
+for f in NtuplerAnalyzer_test_METfiltersOFF_TTJets_HDAMPUp_signal_recordAll.root    NtuplerAnalyzer_test_METfiltersOFF_TTJets_isrup_signal_recordAll.root    NtuplerAnalyzer_test_METfiltersOFF_TTJets2_signal_recordAll.root NtuplerAnalyzer_test_METfiltersOFF_TTJets_HDAMPDown_signal_recordAll.root  NtuplerAnalyzer_test_METfiltersOFF_TTJets_isrdown_signal_recordAll.root  NtuplerAnalyzer_test_METfiltersOFF_TTJets_TuneUp_signal_recordAll.root     NtuplerAnalyzer_test_METfiltersOFF_TTJets_fsrup_signal_recordAll.root    NtuplerAnalyzer_test_METfiltersOFF_TTJets_TuneDown_signal_recordAll.root   NtuplerAnalyzer_test_METfiltersOFF_TTJets_fsrdown_signal_recordAll.root
+do
+python proc/signal_acceptance.py temp/ $f --no-tau-cut
+done
+
+without repetition now:
+
+for f in NtuplerAnalyzer_test_METfiltersOFF_TTJets_HDAMPUp_signal_recordAll.root    NtuplerAnalyzer_test_METfiltersOFF_TTJets_isrup_signal_recordAll.root    NtuplerAnalyzer_test_METfiltersOFF_TTJets_HDAMPDown_signal_recordAll.root  NtuplerAnalyzer_test_METfiltersOFF_TTJets_isrdown_signal_recordAll.root  NtuplerAnalyzer_test_METfiltersOFF_TTJets_TuneUp_signal_recordAll.root     NtuplerAnalyzer_test_METfiltersOFF_TTJets_fsrup_signal_recordAll.root    NtuplerAnalyzer_test_METfiltersOFF_TTJets_TuneDown_signal_recordAll.root   NtuplerAnalyzer_test_METfiltersOFF_TTJets_fsrdown_signal_recordAll.root
+do
+python proc/signal_acceptance.py temp/ $f --no-tau-cut
+done
+
+
+all_ev_mutau->GetBinContent(1)
+all_ev_muj->GetBinContent(1)
+all_ev_taumutauh->GetBinContent(1)
+all_ev_taumuj->GetBinContent(1)
+
+all_ev_eltau->GetBinContent(1)
+all_ev_elj->GetBinContent(1)
+all_ev_taueltauh->GetBinContent(1)
+all_ev_tauelj->GetBinContent(1)
+
+all_ev_other->GetBinContent(1)
+
+
+
+
+python proc/print_acceptances.py temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets2_signal_recordAll.root temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_HDAMPDown_signal_recordAll.root  temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_HDAMPUp_signal_recordAll.root    temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_TuneDown_signal_recordAll.root   temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_TuneUp_signal_recordAll.root temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_fsrdown_signal_recordAll.root temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_fsrup_signal_recordAll.root temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_isrdown_signal_recordAll.root temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_isrup_signal_recordAll.root
+
+
+
+
+second batch of files
+
+
+for f in NtuplerAnalyzer_test_METfiltersOFF_TTJets_2_HDAMPDown_2_signal_recordAll.root NtuplerAnalyzer_test_METfiltersOFF_TTJets_2_HDAMPUp_2_signal_recordAll.root NtuplerAnalyzer_test_METfiltersOFF_TTJets_TuneUp_2_signal_recordAll.root NtuplerAnalyzer_test_METfiltersOFF_TTJets_TuneDown_2_signal_recordAll.root NtuplerAnalyzer_test_METfiltersOFF_TTJets_isrUp_2_signal_recordAll.root NtuplerAnalyzer_test_METfiltersOFF_TTJets_isrDown_2_signal_recordAll.root NtuplerAnalyzer_test_METfiltersOFF_TTJets_fsrUp_2_signal_recordAll.root NtuplerAnalyzer_test_METfiltersOFF_TTJets_fsrDown_2_signal_recordAll.root NtuplerAnalyzer_test_METfiltersOFF_TTJets_2_signal_recordAll.root NtuplerAnalyzer_test_METfiltersOFF_TTJets_1_signal_recordAll.root
+do
+python proc/signal_acceptance.py temp/ $f --no-tau-cut
+done
+
+python proc/print_acceptances.py  temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets2_signal_recordAll.root temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_1_signal_recordAll.root temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_2_signal_recordAll.root
+
+ temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_2_HDAMPDown_2_signal_recordAll.root
+ temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_2_HDAMPUp_2_signal_recordAll.root
+ temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_TuneUp_2_signal_recordAll.root
+ temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_TuneDown_2_signal_recordAll.root
+ temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_isrUp_2_signal_recordAll.root
+ temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_isrDown_2_signal_recordAll.root
+ temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_fsrUp_2_signal_recordAll.root
+ temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets_fsrDown_2_signal_recordAll.root
+
+hadd nominal.root  init/NtuplerAnalyzer_test_METfiltersOFF_TTJets2_signal_recordAll.root init/NtuplerAnalyzer_test_METfiltersOFF_TTJets_1_signal_recordAll.root init/NtuplerAnalyzer_test_METfiltersOFF_TTJets_2_signal_recordAll.root
+
+hadd HDAMPDown.root init/*HDAMPDown*.root 
+hadd HDAMPUp.root   init/*HDAMPUp*.root 
+
+hadd TuneDown.root  init/*TuneDown*.root 
+hadd TuneUp.root    init/*TuneUp*.root 
+
+hadd FSRDown.root  init/*FSRDown*.root 
+hadd FSRUp.root    init/*FSRUp*.root 
+
+hadd ISRDown.root  init/*ISRDown*.root 
+hadd ISRUp.root    init/*ISRUp*.root 
+
+
+python proc/print_acceptances.py  temp/nominal.root
+
+python proc/print_acceptances.py  temp/init/*FSR*.root
+
+
+
+
+python proc/print_acceptances.py temp/nominal.root temp/init/*FSRDown* temp/init/*FSRUp*
+INFO:root:import ROOT
+INFO:root:done
+               mutau            0.322      0.337      0.345      0.320      0.309
+               eltau            0.294      0.316      0.334      0.298      0.302
+                 muj            0.505      0.513      0.508      0.492      0.486
+                 elj            0.486      0.494      0.490      0.467      0.479
+           taumutauh            0.144      0.116      0.111      0.135      0.072
+           taueltauh            0.098      0.122      0.125      0.095      0.100
+              taumuj            0.191      0.195      0.205      0.192      0.181
+              tauelj            0.160      0.141      0.175      0.141      0.168
+               other            0.028      0.030      0.028      0.027      0.027
+
+
+python proc/print_acceptances.py temp/nominal.root temp/init/*ISRDown* temp/init/*ISRUp*
+INFO:root:import ROOT
+INFO:root:done
+               mutau            0.322      0.336      0.328      0.302      0.309
+               eltau            0.294      0.294      0.317      0.317      0.298
+                 muj            0.505      0.499      0.499      0.503      0.513
+                 elj            0.486      0.483      0.483      0.492      0.486
+           taumutauh            0.144      0.149      0.155      0.132      0.119
+           taueltauh            0.098      0.136      0.086      0.122      0.131
+              taumuj            0.191      0.189      0.192      0.199      0.193
+              tauelj            0.160      0.172      0.166      0.168      0.170
+               other            0.028      0.028      0.028      0.030      0.030
+
+
+
+python proc/print_acceptances.py temp/nominal.root temp/init/*HDAMPDown* temp/init/*HDAMPUp*
+INFO:root:import ROOT
+INFO:root:done
+               mutau            0.322      0.302      0.336      0.337      0.328
+               eltau            0.294      0.306      0.288      0.303      0.327
+                 muj            0.505      0.499      0.503      0.510      0.507
+                 elj            0.486      0.484      0.480      0.464      0.485
+           taumutauh            0.144      0.139      0.154      0.076      0.135
+           taueltauh            0.098      0.138      0.057      0.167      0.113
+              taumuj            0.191      0.188      0.194      0.194      0.186
+              tauelj            0.160      0.178      0.155      0.170      0.150
+               other            0.028      0.025      0.028      0.030      0.029
+
+
+python proc/print_acceptances.py temp/nominal.root temp/init/*TuneDown* temp/init/*TuneUp*
+INFO:root:import ROOT
+INFO:root:done
+               mutau            0.322      0.327      0.334      0.325      0.308
+               eltau            0.294      0.307      0.292      0.331      0.307
+                 muj            0.505      0.503      0.508      0.511      0.507
+                 elj            0.486      0.495      0.492      0.497      0.482
+           taumutauh            0.144      0.136      0.132      0.073      0.113
+           taueltauh            0.098      0.101      0.066      0.100      0.076
+              taumuj            0.191      0.183      0.191      0.191      0.183
+              tauelj            0.160      0.167      0.155      0.176      0.173
+               other            0.028      0.028      0.027      0.030      0.030
+
+
+
+
+python proc/print_acceptances.py --ratio temp/nominal.root temp/init/*FSRDown*
+python proc/print_acceptances.py --ratio temp/nominal.root temp/init/*FSRUp*
+python proc/print_acceptances.py --ratio temp/nominal.root temp/init/*ISRDown*
+python proc/print_acceptances.py --ratio temp/nominal.root temp/init/*ISRUp*
+python proc/print_acceptances.py --ratio temp/nominal.root temp/init/*HDAMPDown*
+python proc/print_acceptances.py --ratio temp/nominal.root temp/init/*HDAMPUp*
+python proc/print_acceptances.py --ratio temp/nominal.root temp/init/*TuneDown*
+python proc/print_acceptances.py --ratio temp/nominal.root temp/init/*TuneUp*
+
+
+FSR
+
+               mutau       0.942866204619
+               eltau       0.904832496014
+                 muj       0.989867024467
+                 elj       0.987626376095
+           taumutauh       1.26952197002
+           taueltauh       0.794519452559
+              taumuj       0.952545290094
+              tauelj       1.00932151419
+               other       0.960638501667
+
+               mutau       1.02270863374
+               eltau       0.978752305853
+                 muj       1.03305028026
+                 elj       1.02787517806
+           taumutauh       1.38979038245
+           taueltauh       1.00813529447
+              taumuj       1.021196958
+              tauelj       1.03511748878
+               other       1.03893634895
+
+ISR
+
+               mutau       0.969439993329
+               eltau       0.962816353014
+                 muj       1.01229346366
+                 elj       1.00589450516
+           taumutauh       0.946700623192
+           taueltauh       0.884687918797
+              taumuj       1.00079502107
+              tauelj       0.944689165509
+               other       1.00523958854
+
+               mutau       1.05268377883
+               eltau       0.954568837366
+                 muj       0.994078810793
+                 elj       0.994546897178
+           taumutauh       1.14766291565
+           taueltauh       0.773106238518
+              taumuj       0.973559233887
+              tauelj       0.944861104992
+               other       0.952229026172
+
+HDAMP
+
+               mutau       1.00982009639
+               eltau       0.98904717363
+                 muj       1.00806668435
+                 elj       1.00833128877
+           taumutauh       0.978722128787
+           taueltauh       1.00308679603
+              taumuj       0.998311551561
+              tauelj       0.96012282097
+               other       1.04554624589
+
+               mutau       0.967020783536
+               eltau       0.933196123653
+                 muj       0.993210779608
+                 elj       1.02368791373
+           taumutauh       1.36107953482
+           taueltauh       0.702955720014
+              taumuj       1.00474265151
+              tauelj       1.00115091086
+               other       0.9451016675
+
+Tune
+
+               mutau       0.973505498988
+               eltau       0.980069401228
+                 muj       0.998599918897
+                 elj       0.984769512079
+           taumutauh       1.07419894198
+           taueltauh       1.17868224054
+              taumuj       1.01979534213
+              tauelj       0.993191192981
+               other       1.02310781456
+
+               mutau       1.01624297655
+               eltau       0.92229220301
+                 muj       0.992133811288
+                 elj       0.993142123194
+           taumutauh       1.5402070425
+           taueltauh       1.11854729834
+              taumuj       1.021249466
+              tauelj       0.915446185028
+               other       0.944953839721
+
+
+
+
+
+
+
+
+
+trying to compare the acceptance variation to yield variation in the final selection
+
+python yield_variations.py histosel-roots/HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs_updowns.root -d Mt_lep_met_f -c mu_sel_lj,mu_sel_ljout -p tt_mutau,tt_lj,tt_taulj,tt_taultauh,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4
+
+                   mu_sel_lj     mu_sel_lj     mu_sel_lj     mu_sel_lj     mu_sel_lj                      mu_sel_ljout  mu_sel_ljout  mu_sel_ljout  mu_sel_ljout  mu_sel_ljout
+                    tt_mutau         tt_lj      tt_taulj   tt_taultauh      tt_other                          tt_mutau         tt_lj      tt_taulj   tt_taultauh      tt_other
+FSR              1.042/0.923   1.468/0.524   1.449/0.528   1.063/0.932   1.272/0.664  - - - - - - - - -    1.058/0.930   1.460/0.565   1.382/0.590   1.049/0.945   1.307/0.670
+ISR              1.001/0.986   1.000/0.946   1.008/0.963   1.002/1.028   0.935/1.029  - - - - - - - - -    1.017/0.976   1.025/0.970   0.980/0.862   1.006/0.979   1.009/1.024
+HDAMP            0.984/0.995   0.980/1.009   0.972/0.958   1.040/1.078   0.985/1.028  - - - - - - - - -    0.993/0.983   1.005/0.999   0.990/0.987   1.007/1.014   1.056/1.173
+TuneCUETP8M2T4   0.994/0.978   1.001/0.984   1.037/0.947   0.999/1.054   1.016/0.977  - - - - - - - - -    1.003/0.996   1.044/0.986   0.990/0.971   1.002/0.963   1.083/1.015
+
+FSR             lnN            1.042/0.923   1.468/0.524   1.449/0.528   1.063/0.932   1.272/0.664  - - - - - - - - -    1.058/0.930   1.460/0.565   1.382/0.590   1.049/0.945   1.307/0.670  - - - - - - - - -
+ISR             lnN            1.001/0.986   1.000/0.946   1.008/0.963   1.002/1.028   0.935/1.029  - - - - - - - - -    1.017/0.976   1.025/0.970   0.980/0.862   1.006/0.979   1.009/1.024  - - - - - - - - -
+HDAMP           lnN            0.984/0.995   0.980/1.009   0.972/0.958   1.040/1.078   0.985/1.028  - - - - - - - - -    0.993/0.983   1.005/0.999   0.990/0.987   1.007/1.014   1.056/1.173  - - - - - - - - -
+TuneCUETP8M2T4  lnN            0.994/0.978   1.001/0.984   1.037/0.947   0.999/1.054   1.016/0.977  - - - - - - - - -    1.003/0.996   1.044/0.986   0.990/0.971   1.002/0.963   1.083/1.015  - - - - - - - - -
+
+
+
+FSR             lnN   1.060/0.940  1.474/0.526  1.465/0.535  1.066/0.934  1.314/0.686  - - - - - - - - -   1.065/0.935 1.442/0.558 1.402/0.598 1.052/0.948 1.322/0.678   -
+ISR             lnN   1.007/0.993  1.028/0.972  1.023/0.977  0.987/1.013  0.952/1.048  - - - - - - - - -   1.021/0.979 1.028/0.972 1.064/0.936 1.013/0.987 0.993/1.007   -
+HDAMP           lnN   0.994/1.006  0.985/1.015  1.007/0.993  0.982/1.018  0.978/1.022  - - - - - - - - -   1.005/0.995 1.003/0.997 1.002/0.998 0.997/1.003 0.948/1.052   -
+TuneCUETP8M2T4  lnN   1.008/0.992  1.009/0.991  1.045/0.955  0.973/1.027  1.019/0.981  - - - - - - - - -   1.003/0.997 1.029/0.971 1.009/0.991 1.020/0.980 1.032/0.968   -  
+
+
+
+old selection IDs:
+
+time make distrs_mc_nominal dtag=TT p=pStage2Run3                      cond="selection_stage==105"  chan="mu_sel"    &
+time make distrs_mc_nominal dtag=TT p=pStage2Run3 options="--el-procs" cond="selection_stage==115"  chan="el_sel" &
+
+time make distrs_mc_updowns p=r4                      cond="selection_stage==105" chan="mu_sel" &
+time make distrs_mc_updowns p=r4 options="--el-procs" cond="selection_stage==115" chan="el_sel" &
+
+
+hadd distrs/MC2016_Summer16_TTJets_powheg.root                distrs/v25_pStage2Run3_r4_sel/*MC2016_Summer16_TTJets_powheg*NOMINAL*root             &
+hadd distrs/MC2016_Summer16_TTJets_powheg_isrup.root          distrs/v25_pStage2Run3_r4_sel/*MC2016_Summer16_TTJets_powheg*ISRUp*root               &
+hadd distrs/MC2016_Summer16_TTJets_powheg_isrdown.root        distrs/v25_pStage2Run3_r4_sel/*MC2016_Summer16_TTJets_powheg*ISRDown*root             &
+hadd distrs/MC2016_Summer16_TTJets_powheg_hdampUP.root        distrs/v25_pStage2Run3_r4_sel/*MC2016_Summer16_TTJets_powheg*HDAMPUp*root             &
+hadd distrs/MC2016_Summer16_TTJets_powheg_hdampDOWN.root      distrs/v25_pStage2Run3_r4_sel/*MC2016_Summer16_TTJets_powheg*HDAMPDown*root           &
+hadd distrs/MC2016_Summer16_TTJets_powheg_fsrup.root          distrs/v25_pStage2Run3_r4_sel/*MC2016_Summer16_TTJets_powheg*FSRUp*root               &
+hadd distrs/MC2016_Summer16_TTJets_powheg_fsrdown.root        distrs/v25_pStage2Run3_r4_sel/*MC2016_Summer16_TTJets_powheg*FSRDown*root             &
+hadd distrs/MC2016_Summer16_TTJets_powheg_CUETP8M2T4up.root   distrs/v25_pStage2Run3_r4_sel/*MC2016_Summer16_TTJets_powheg*TuneCUETP8M2T4Up*root    &
+hadd distrs/MC2016_Summer16_TTJets_powheg_CUETP8M2T4down.root distrs/v25_pStage2Run3_r4_sel/*MC2016_Summer16_TTJets_powheg*TuneCUETP8M2T4Down*root  &
+
+hadd distrs_v25_pStage2Run3_r4_sel.root v25_pStage2Run3_r4_sel/MC*
+
+python yield_variations.py mc_norm/distrs_v25_pStage2Run3_r4_sel.root -d Mt_lep_met_f -c mu_sel -p tt_mutau,tt_lj,tt_taultauh,tt_taulj,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4
+python yield_variations.py mc_norm/distrs_v25_pStage2Run3_r4_sel.root -d Mt_lep_met_f -c el_sel -p tt_eltau,tt_lj,tt_taultauh,tt_taulj,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4
+
+                                    mu_sel                mu_sel                mu_sel                mu_sel                mu_sel
+                                  tt_mutau                 tt_lj           tt_taultauh              tt_taulj              tt_other
+                 FSR           1.065/0.904           1.483/0.527           1.068/0.916           1.440/0.539           1.311/0.651
+                 ISR           1.009/0.983           1.009/0.958           1.003/1.002           0.996/0.926           0.980/1.029
+               HDAMP           0.975/0.988           0.976/1.006           1.005/1.039           0.965/0.971           1.015/1.121
+      TuneCUETP8M2T4           0.998/0.987           1.017/0.982           1.000/0.996           1.017/0.955           1.057/0.999
+
+                                    el_sel                el_sel                el_sel                el_sel                el_sel
+                                  tt_eltau                 tt_lj           tt_taultauh              tt_taulj              tt_other
+                 FSR           1.083/0.925           1.516/0.539           1.097/0.878           1.512/0.545           1.319/0.690
+                 ISR           1.018/0.997           1.022/0.976           0.994/0.977           1.022/0.979           1.024/1.017
+               HDAMP           1.003/1.021           1.008/1.013           0.992/1.025           1.012/1.059           0.970/1.065
+      TuneCUETP8M2T4           1.021/1.002           1.034/0.990           0.951/0.957           1.002/1.082           1.103/1.075
+
+
+
+
+more stats in Vloose:
+
+time make distrs_mc_nominal dtag=TT nt=v26 p=r4                      cond="(selection_stage==105 || selection_stage==107)"  chan="mu_selVloose"    &
+time make distrs_mc_nominal dtag=TT nt=v26 p=r4 options="--el-procs" cond="(selection_stage==115 || selection_stage==117)"  chan="el_selVloose" &
+
+time make distrs_mc_updowns nt=v25 p=r4                      cond="(selection_stage==105 || selection_stage==107)" chan="mu_selVloose" &
+time make distrs_mc_updowns nt=v25 p=r4 options="--el-procs" cond="(selection_stage==115 || selection_stage==117)" chan="el_selVloose" &
+
+python yield_variations.py mc_norm/distrs_v25_pStage2Run3_r4_sel.root -d Mt_lep_met_f -c mu_selVloose -p tt_mutau,tt_lj,tt_taultauh,tt_taulj,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4
+python yield_variations.py mc_norm/distrs_v25_pStage2Run3_r4_sel.root -d Mt_lep_met_f -c el_selVloose -p tt_eltau,tt_lj,tt_taultauh,tt_taulj,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4
+
+
+                              mu_selVloose          mu_selVloose          mu_selVloose          mu_selVloose          mu_selVloose
+                                  tt_mutau                 tt_lj           tt_taultauh              tt_taulj              tt_other
+                 FSR           1.051/0.914           1.421/0.564           1.058/0.923           1.416/0.562           1.292/0.650
+                 ISR           1.004/0.987           1.004/0.977           0.998/1.008           1.002/0.964           0.978/1.026
+               HDAMP           0.977/0.986           0.982/1.008           0.997/1.033           0.972/0.998           0.976/1.023
+      TuneCUETP8M2T4           0.996/0.989           1.012/0.991           1.007/0.985           1.008/0.954           0.968/0.980
+
+                              el_selVloose          el_selVloose          el_selVloose          el_selVloose          el_selVloose
+                                  tt_eltau                 tt_lj           tt_taultauh              tt_taulj              tt_other
+                 FSR           1.072/0.934           1.425/0.562           1.097/0.906           1.414/0.572           1.350/0.669
+                 ISR           1.015/1.001           1.007/0.975           1.004/0.985           1.006/0.984           0.989/1.022
+               HDAMP           1.002/1.020           0.988/0.998           0.980/1.032           0.979/1.008           0.977/1.021
+      TuneCUETP8M2T4           1.014/1.003           1.005/0.985           0.976/0.971           0.980/1.031           1.077/1.009
+
+
+python yield_variations.py mc_norm/distrs_v25_pStage2Run3_r4_sel.root -d Mt_lep_met_f -c mu_selVloose -p tt_mutau,tt_lj,tt_taultauh,tt_taulj,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4 --to-average
+python yield_variations.py mc_norm/distrs_v25_pStage2Run3_r4_sel.root -d Mt_lep_met_f -c el_selVloose -p tt_eltau,tt_lj,tt_taultauh,tt_taulj,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4 --to-average
+
+
+                              mu_selVloose          mu_selVloose          mu_selVloose          mu_selVloose          mu_selVloose
+                                  tt_mutau                 tt_lj           tt_taultauh              tt_taulj              tt_other
+                 FSR           1.070/0.930           1.432/0.568           1.068/0.932           1.431/0.569           1.331/0.669
+                 ISR           1.009/0.991           1.014/0.986           0.995/1.005           1.019/0.981           0.976/1.024
+               HDAMP           0.995/1.005           0.987/1.013           0.983/1.017           0.987/1.013           0.977/1.023
+      TuneCUETP8M2T4           1.004/0.996           1.011/0.989           1.011/0.989           1.028/0.972           0.994/1.006
+
+                              el_selVloose          el_selVloose          el_selVloose          el_selVloose          el_selVloose
+                                  tt_eltau                 tt_lj           tt_taultauh              tt_taulj              tt_other
+                 FSR           1.069/0.931           1.434/0.566           1.095/0.905           1.424/0.576           1.337/0.663
+                 ISR           1.007/0.993           1.016/0.984           1.010/0.990           1.011/0.989           0.983/1.017
+               HDAMP           0.991/1.009           0.995/1.005           0.975/1.025           0.986/1.014           0.978/1.022
+      TuneCUETP8M2T4           1.005/0.995           1.010/0.990           1.002/0.998           0.975/1.025           1.033/0.967
+
+
+
+lj out
+
+FSR             lnN   1.060/0.940  1.474/0.526  1.465/0.535  1.066/0.934  1.314/0.686  - - - - - - - - -   1.065/0.935 1.442/0.558 1.402/0.598 1.052/0.948 1.322/0.678   -
+ISR             lnN   1.007/0.993  1.028/0.972  1.023/0.977  0.987/1.013  0.952/1.048  - - - - - - - - -   1.021/0.979 1.028/0.972 1.064/0.936 1.013/0.987 0.993/1.007   -
+HDAMP           lnN   0.994/1.006  0.985/1.015  1.007/0.993  0.982/1.018  0.978/1.022  - - - - - - - - -   1.005/0.995 1.003/0.997 1.002/0.998 0.997/1.003 0.948/1.052   -
+TuneCUETP8M2T4  lnN   1.008/0.992  1.009/0.991  1.045/0.955  0.973/1.027  1.019/0.981  - - - - - - - - -   1.003/0.997 1.029/0.971 1.009/0.991 1.020/0.980 1.032/0.968   -  
+
+
+Vloose copy
+
+FSR             lnN   1.070/0.930  1.432/0.568  1.431/0.569  1.068/0.932  1.331/0.669  - - - - - - - - -     1.070/0.930  1.432/0.568  1.431/0.569  1.068/0.932  1.331/0.669 -        -     -     -        -     -        -     -        -
+ISR             lnN   1.009/0.991  1.014/0.986  1.019/0.981  0.995/1.005  0.976/1.024  - - - - - - - - -     1.009/0.991  1.014/0.986  1.019/0.981  0.995/1.005  0.976/1.024 -        -     -     -        -     -        -     -        -
+HDAMP           lnN   0.995/1.005  0.987/1.013  0.987/1.013  0.983/1.017  0.977/1.023  - - - - - - - - -     0.995/1.005  0.987/1.013  0.987/1.013  0.983/1.017  0.977/1.023 -        -     -     -        -     -        -     -        -
+TuneCUETP8M2T4  lnN   1.004/0.996  1.011/0.989  1.028/0.972  1.011/0.989  0.994/1.006  - - - - - - - - -     1.004/0.996  1.011/0.989  1.028/0.972  1.011/0.989  0.994/1.006 -        -     -     -        -     -        -     -        -
+
+
+
+
+Vloose lj out
+
+python yield_variations.py distrs_v25pStage2Run3_2_updowns.root -d Mt_lep_met_f -c mu_selVloose_lj -p tt_mutau,tt_lj,tt_taulj,tt_taultauh,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4
+python yield_variations.py distrs_v25pStage2Run3_2_updowns.root -d Mt_lep_met_f -c el_selVloose_lj -p tt_eltau,tt_lj,tt_taulj,tt_taultauh,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4
+
+
+
+
+python yield_variations.py --to-average distrs_v25pStage2Run3_2_updowns.root -d Mt_lep_met_f -c mu_selVloose_lj,mu_selVloose_ljout -p tt_mutau,tt_lj,tt_taulj,tt_taultauh,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4
+python yield_variations.py --to-average distrs_v25pStage2Run3_2_updowns.root -d Mt_lep_met_f -c el_selVloose_lj,el_selVloose_ljout -p tt_eltau,tt_lj,tt_taulj,tt_taultauh,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4
+
+                           mu_selVloose_lj       mu_selVloose_lj       mu_selVloose_lj       mu_selVloose_lj       mu_selVloose_lj    mu_selVloose_ljout    mu_selVloose_ljout    mu_selVloose_ljout    mu_selVloose_ljout    mu_selVloose_ljout
+                                  tt_mutau                 tt_lj              tt_taulj           tt_taultauh              tt_other              tt_mutau                 tt_lj              tt_taulj           tt_taultauh              tt_other
+                 FSR           1.067/0.933           1.442/0.558           1.452/0.548           1.068/0.932           1.323/0.677           1.071/0.929           1.418/0.582           1.402/0.598           1.069/0.931           1.335/0.665
+                 ISR           1.000/1.000           1.010/0.990           1.010/0.990           0.981/1.019           0.955/1.045           1.015/0.985           1.019/0.981           1.034/0.966           1.004/0.996           0.987/1.013
+               HDAMP           0.984/1.016           0.987/1.013           0.982/1.018           0.978/1.022           0.965/1.035           1.002/0.998           0.987/1.013           0.994/1.006           0.986/1.014           0.983/1.017
+      TuneCUETP8M2T4           1.004/0.996           1.006/0.994           1.043/0.957           0.984/1.016           0.994/1.006           1.004/0.996           1.017/0.983           1.005/0.995           1.029/0.971           0.994/1.006
+
+
+[olek@fermi05 jobsums]$ python yield_variations.py --to-average distrs_v25pStage2Run3_2_updowns.root -d Mt_lep_met_f -c mu_sel_lj,mu_sel_ljout -p tt_mutau,tt_lj,tt_taulj,tt_taultauh,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4
+
+                                 mu_sel_lj             mu_sel_lj             mu_sel_lj             mu_sel_lj             mu_sel_lj          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout
+                                  tt_mutau                 tt_lj              tt_taulj           tt_taultauh              tt_other              tt_mutau                 tt_lj              tt_taulj           tt_taultauh              tt_other
+                 FSR           1.079/0.921           1.489/0.511           1.480/0.520           1.085/0.915           1.331/0.669           1.084/0.916           1.457/0.543           1.417/0.583           1.071/0.929           1.339/0.661
+                 ISR           1.005/0.995           1.025/0.975           1.021/0.979           0.985/1.015           0.950/1.050           1.018/0.982           1.025/0.975           1.062/0.938           1.011/0.989           0.990/1.010
+               HDAMP           0.986/1.014           0.978/1.022           0.999/1.001           0.975/1.025           0.971/1.029           0.997/1.003           0.995/1.005           0.994/1.006           0.989/1.011           0.940/1.060
+      TuneCUETP8M2T4           1.009/0.991           1.010/0.990           1.046/0.954           0.974/1.026           1.020/0.980           1.004/0.996           1.029/0.971           1.010/0.990           1.021/0.979           1.033/0.967
+
+
+
+
+## test the old normalization
+
+python yield_variations.py --to-average distrs_v25pStage2Run3_2_updowns.root -d Mt_lep_met_f -c mu_sel_lj,mu_sel_ljout -p tt_mutau -s FSR
+python yield_variations.py --to-average histosel-roots/HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs_updowns.root -d Mt_lep_met_f -c mu_sel_lj,mu_sel_ljout -p tt_mutau -s FSR
+
+
+
+
+
+
+## full signal acecptances
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # download fsr up file
 
 /store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/A2858033-C4D6-E611-BB70-0CC47AA989C4.root
