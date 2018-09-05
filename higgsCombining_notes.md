@@ -1241,8 +1241,8 @@ frozen lumi, no theoretical impacts
 
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit               --name MuImpacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5        --name MuImpacts
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_UpDownLJNorm.json  --name MuImpacts
-../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_UpDownLJNorm.json -o postfit_mu_impacts_UpDownLJNorm
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_RatesUpDownFullVloose_HybridFSR_Tune.json  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_RatesUpDownFullVloose_HybridFSR_Tune.json -o postfit_mu_impacts_RatesUpDownFullVloose_HybridFSR_Tune
 
 
 
@@ -1250,8 +1250,8 @@ frozen lumi, no theoretical impacts
 
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR  -m 125 --robustFit 1 --doInitialFit               --name MuImpacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR  -m 125 --robustFit 1 --doFits --parallel 5        --name MuImpacts
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR  -m 125 -o latest_mu_impacts_RatesUpDownLJNorm_noFSR.json  --name MuImpacts
-../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_RatesUpDownLJNorm_noFSR.json -o postfit_mu_impacts_RatesUpDownLJNorm_noFSR
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR  -m 125 -o latest_mu_impacts_RatesUpDownFullVloose_noFSR.json  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_RatesUpDownFullVloose_noFSR.json -o postfit_mu_impacts_RatesUpDownFullVloose_noFSR
 
 
 
