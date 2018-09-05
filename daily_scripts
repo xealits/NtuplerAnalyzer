@@ -1,3 +1,39 @@
+# mu enriched qcd
+
+
+
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4."   nt=v35 p=pStage2MuEnriched  cond="selection_stage_tt_alliso==503" chan="alliso_mu_sel" dtag="QCD" &
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5"  nt=v35 p=pStage2MuEnriched  cond="selection_stage_tt_alliso==513" chan="alliso_el_sel" dtag="QCD" &
+
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4."   nt=v35 p=pStage2MuEnriched  cond="selection_stage_tt_alliso==502" chan="alliso_mu_sel_ss" dtag="QCD" &
+time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5"  nt=v35 p=pStage2MuEnriched  cond="selection_stage_tt_alliso==512" chan="alliso_el_sel_ss" dtag="QCD" &
+
+
+foreach d ( `cat merge-sets/jobs_hadd.dtags.qcd-mu-enriched` )
+hadd distrs/$d.root distrs/v35pStage2MuEnriched/*$d*root &
+end
+
+
+TH1D* h_mu    = (TH1D*) alliso_mu_sel   ->Get("qcd/NOMINAL/alliso_mu_sel_qcd_NOMINAL_relIso")
+TH1D* h_mu_ss = (TH1D*) alliso_mu_sel_ss->Get("qcd/NOMINAL/alliso_mu_sel_ss_qcd_NOMINAL_relIso")
+h_mu->Divide(h_mu_ss)
+h_mu->Draw()
+
+TH1D* h_el    = (TH1D*) alliso_el_sel   ->Get("qcd/NOMINAL/alliso_el_sel_qcd_NOMINAL_relIso")
+TH1D* h_el_ss = (TH1D*) alliso_el_sel_ss->Get("qcd/NOMINAL/alliso_el_sel_ss_qcd_NOMINAL_relIso")
+h_el->Divide(h_el_ss)
+h_el->Draw()
+
+
+
+
+
+
+
+
+
+
+
 # acceptances in all processes in all systematics
 
 for dset in `cat dsets_tt_systs`
