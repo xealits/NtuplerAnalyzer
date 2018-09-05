@@ -379,6 +379,49 @@ variation 3% FSR lj
 FSR             lnN   1.060/0.940  1.43/0.54  1.42/0.55  1.066/0.934  1.314/0.686  - - - - - - - - -   1.065/0.935 1.39/0.58 1.35/0.62 1.052/0.948 1.322/0.678   -
 
 
+
+
+same for electrons
+
+python yield_variations.py histosel-roots/HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs_updowns.root -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout -p tt_eltau,tt_lj,tt_taulj,tt_taultauh,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4
+
+                                 el_sel_lj             el_sel_lj             el_sel_lj             el_sel_lj             el_sel_lj          el_sel_ljout          el_sel_ljout          el_sel_ljout          el_sel_ljout          el_sel_ljout
+                                  tt_eltau                 tt_lj              tt_taulj           tt_taultauh              tt_other              tt_eltau                 tt_lj              tt_taulj           tt_taultauh              tt_other
+FSR            lnN 1.050/0.954  1.491/0.540  1.487/0.566  1.060/0.962  1.184/0.684  - - - - - - - - -  1.082/0.945  1.506/0.573  1.501/0.548  1.097/0.862  1.374/0.721   - - - - - - - - -
+ISR            lnN 1.019/0.993  1.027/0.968  0.961/0.989  1.005/1.025  0.920/0.932  - - - - - - - - -  1.030/0.997  1.033/0.985  1.135/0.961  0.998/0.945  1.098/1.068   - - - - - - - - -
+HDAMP          lnN 1.017/1.018  1.013/0.998  1.014/0.981  0.947/1.063  0.775/0.975  - - - - - - - - -  1.014/1.023  1.030/1.035  1.039/1.178  1.038/1.001  1.106/1.119   - - - - - - - - -
+TuneCUETP8M2T4 lnN 1.034/1.005  1.041/0.978  1.022/1.129  0.947/0.970  0.900/0.906  - - - - - - - - -  1.017/1.004  1.030/1.013  0.977/1.014  0.957/0.952  1.231/1.180   - - - - - - - - -
+
+
+python yield_variations.py histosel-roots/HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs_updowns.root --to-average -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout -p tt_eltau,tt_lj,tt_taulj,tt_taultauh,tt_other -s FSR,ISR,HDAMP,TuneCUETP8M2T4
+
+                                 el_sel_lj             el_sel_lj             el_sel_lj             el_sel_lj             el_sel_lj          el_sel_ljout          el_sel_ljout          el_sel_ljout          el_sel_ljout          el_sel_ljout
+                                  tt_eltau                 tt_lj              tt_taulj           tt_taultauh              tt_other              tt_eltau                 tt_lj              tt_taulj           tt_taultauh              tt_other
+FSR            lnN 1.048/0.952 1.468/0.532 1.449/0.551 1.048/0.952 1.268/0.732  - - - - - - - - -           1.067/0.933 1.449/0.551 1.465/0.535 1.120/0.880 1.311/0.689  - - - - - - - - -
+ISR            lnN 1.013/0.987 1.029/0.971 0.986/1.014 0.990/1.010 0.994/1.006  - - - - - - - - -           1.016/0.984 1.024/0.976 1.083/0.917 1.027/0.973 1.014/0.986  - - - - - - - - -
+HDAMP          lnN 0.999/1.001 1.008/0.992 1.017/0.983 0.942/1.058 0.886/1.114  - - - - - - - - -           0.996/1.004 0.998/1.002 0.937/1.063 1.018/0.982 0.994/1.006  - - - - - - - - -
+TuneCUETP8M2T4 lnN 1.014/0.986 1.032/0.968 0.950/1.050 0.988/1.012 0.996/1.004  - - - - - - - - -           1.007/0.993 1.008/0.992 0.981/1.019 1.003/0.997 1.021/0.979  - - - - - - - - -
+
+the smaller FSR variation in signal, normalized by jet-based acceptance, not tau:
+
+FSR            lnN 1.024/0.976 1.42/0.58   1.35/0.75   1.028/0.972 1.268/0.732  - - - - - - - - -           1.033/0.967 1.35/0.75   1.42/0.58   1.06/0.94   1.311/0.689  - - - - - - - - -
+
+-- very reasonable looking (with LEPel reduced to 0.8)
+
+the compromise:
+
+FSR            lnN 1.03/0.97   1.42/0.58   1.35/0.75   1.02/0.98   1.268/0.732  - - - - - - - - -           1.04/0.96   1.35/0.75   1.42/0.58   1.07/0.93   1.311/0.689  - - - - - - - - -
+
+
+-- effect of fsr+fakes a vit higher
+
+mc stat 3.3%
+
+
+
+
+
+
 old selection IDs:
 
 time make distrs_mc_nominal dtag=TT p=pStage2Run3                      cond="selection_stage==105"  chan="mu_sel"    &
