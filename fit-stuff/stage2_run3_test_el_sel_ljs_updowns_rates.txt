@@ -1,0 +1,54 @@
+Combination of htt_tt_0_8TeV=htt_tt_0_8TeV.txt  htt_tt_1_8TeV=htt_tt_1_8TeV.txt  htt_tt_2_8TeV=htt_tt_2_8TeV.txt
+imax 2 number of bins
+jmax 13 number of processes minus 1
+kmax 22 number of nuisance parameters
+
+----------------------------------------------------------------------------------------------------------------------------------
+shapes *         el_sel_lj     HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs_updowns.root    el_sel_lj/$PROCESS/NOMINAL/el_sel_lj_$PROCESS_NOMINAL_Mt_lep_met_f          el_sel_lj/$PROCESS/$SYSTEMATIC/el_sel_lj_$PROCESS_$SYSTEMATIC_Mt_lep_met_f
+shapes data_obs  el_sel_lj     HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs_updowns.root    el_sel_lj/data/NOMINAL/el_sel_lj_data_NOMINAL_Mt_lep_met_f                  el_sel_lj/data/$SYSTEMATIC/el_sel_lj_data_$SYSTEMATIC_Mt_lep_met_f
+shapes *         el_sel_ljout  HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs_updowns.root    el_sel_ljout/$PROCESS/NOMINAL/el_sel_ljout_$PROCESS_NOMINAL_Mt_lep_met_f    el_sel_ljout/$PROCESS/$SYSTEMATIC/el_sel_ljout_$PROCESS_$SYSTEMATIC_Mt_lep_met_f
+shapes data_obs  el_sel_ljout  HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs_updowns.root    el_sel_ljout/data/NOMINAL/el_sel_ljout_data_NOMINAL_Mt_lep_met_f            el_sel_ljout/data/$SYSTEMATIC/el_sel_ljout_data_$SYSTEMATIC_Mt_lep_met_f
+----------------------------------------------------------------------------------------------------------------------------------
+bin          el_sel_lj         el_sel_ljout
+observation  6200.000000       7896.000000
+
+----------------------------------------------------------------------------------------------------------------------------------
+bin           el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                       el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons                 s_top_lj                 s_top_other              s_top_eltau              wjets_taul               wjets_other              dy_other                 dy_tautau                qcd                             tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons                 s_top_lj                 s_top_other              s_top_eltau              wjets_taul               wjets_other              dy_other                 dy_tautau                qcd                      
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       14                       15                       16                       17                       18                              0                        3                        4                        5                        6                        7                        8                        9                        12                       14                       15                       16                       17                       18                       
+rate          2959.177                 2183.731                 116.206                  167.559                  59.263                   22.685                   148.332                  20.339                   149.663                  6.845                    125.271                  20.051                   99.978                   164.801                         4616.054                 1433.050                 74.809                   275.607                  97.842                   45.333                   166.255                  30.585                   269.968                  7.223                    207.459                  58.990                   188.864                  398.257                  
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+lumi_13TeV              lnN    1.025  1.025 1.025 1.025 1.025      1.025    1.025 1.025 1.025    1.025 1.025    1.025 1.025    1.025              1.025  1.025 1.025 1.025 1.025      1.025    1.025 1.025 1.025    1.025 1.025    1.025 1.025    1.025
+tauID_eff               lnN    1.05   -     -     1.05  -          -        -     1.05  1.05     -     -        -     1.05     -                  1.05   -     -     1.05  -          -        -     1.05  1.05     -     -        -     1.05     -    
+tau_fakes               lnU    -      1.5   1.5   -     1.5        1.5      1.5   -     -        -     -        -     -        -                  -      1.5   1.5   -     1.5        1.5      1.5   -     -        -     -        -     -        -    
+dy_norm                 lnN    -      -     -     -     -          -        -     -     -        -     -        1.05  1.05     -                  -      -     -     -     -          -        -     -     -        -     -        1.05  1.05     -    
+wjets_norm              lnU    -      -     -     -     -          -        -     -     -        1.5   1.5      -     -        -                  -      -     -     -     -          -        -     -     -        1.5   1.5      -     -        -    
+qcd_norm                lnU    -      -     -     -     -          -        -     -     -        -     -        -     -        1.5                -      -     -     -     -          -        -     -     -        -     -        -     -        1.5  
+stop_norm               lnN    -      -     -     -     -          -        1.1   1.1   1.1      -     -        -     -        -                  -      -     -     -     -          -        1.1   1.1   1.1      -     -        -     -        -    
+dibos_norm              lnN    -      -     -     -     -          1.1      -     -     -        -     -        -     -        -                  -      -     -     -     -          1.1      -     -     -        -     -        -     -        -    
+bSF             shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -    
+LEPel           shape          0.8    0.8   0.8   0.8   0.8        0.8      0.8   0.8   0.8      0.8   0.8      0.8   0.8      -                  0.8    0.8   0.8   0.8   0.8        0.8      0.8   0.8   0.8      0.8   0.8      0.8   0.8      -    
+JES             shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -    
+JER             shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -    
+TauES           shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -    
+PU              shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -    
+TOPPT           shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -    
+Frag            shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -    
+SemilepBR       shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -    
+Peterson        shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -    
+FSR            lnN 1.03/0.97   1.42/0.58   1.35/0.75   1.02/0.98   1.268/0.732  - - - - - - - - -           1.04/0.96   1.35/0.75   1.42/0.58   1.07/0.93   1.311/0.689  - - - - - - - - -
+ISR            lnN 1.013/0.987 1.029/0.971 0.986/1.014 0.990/1.010 0.994/1.006  - - - - - - - - -           1.016/0.984 1.024/0.976 1.083/0.917 1.027/0.973 1.014/0.986  - - - - - - - - -
+HDAMP          lnN 0.999/1.001 1.008/0.992 1.017/0.983 0.942/1.058 0.886/1.114  - - - - - - - - -           0.996/1.004 0.998/1.002 0.937/1.063 1.018/0.982 0.994/1.006  - - - - - - - - -
+TuneCUETP8M2T4 lnN 1.014/0.986 1.032/0.968 0.950/1.050 0.988/1.012 0.996/1.004  - - - - - - - - -           1.007/0.993 1.008/0.992 0.981/1.019 1.003/0.997 1.021/0.979  - - - - - - - - -
+
+
+
+exp group = tauID_eff tau_fakes dy_norm wjets_norm qcd_norm JES JER TauES bSF PU TOPPT
+tt_th_frag  group = Frag SemilepBR Peterson
+
+tau group = tauID_eff tau_fakes
+
+
+* autoMCStats 0
+
