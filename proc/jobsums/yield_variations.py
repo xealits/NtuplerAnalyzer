@@ -51,7 +51,11 @@ for sys in args.sys.split(','):
     sys_variations = []
     for channel in args.channels.split(','):
         for process in args.processes.split(','):
-            systematic_up   = fdata.Get("{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=channel, proc=process, sys=sys+'Up',   distr=args.distr))
+            #print process
+
+            sysname_up = "{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=channel, proc=process, sys=sys+'Up',   distr=args.distr)
+            #print sysname_up
+            systematic_up   = fdata.Get(sysname_up)
             systematic_down = fdata.Get("{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=channel, proc=process, sys=sys+'Down', distr=args.distr))
             if not systematic_up:
                 print "no " + sys + 'Up'
