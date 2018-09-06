@@ -1,3 +1,31 @@
+# error while hadding a lot of files with all the weight systematics
+
+hadd MC2016_Summer16_TTJets_powheg_Alpha_all.root v26r4/te*Alpha*
+
+hadd MC2016_Summer16_TTJets_powheg_Mr_all.root v26r4/te*Mr*
+hadd MC2016_Summer16_TTJets_powheg_Mf_all.root v26r4/te*Mf*
+
+hadd MC2016_Summer16_TTJets_powheg_PDF_1.root v26r4/te*PDFCT14n1*
+hadd MC2016_Summer16_TTJets_powheg_PDF_2.root v26r4/te*PDFCT14n2*
+hadd MC2016_Summer16_TTJets_powheg_PDF_3.root v26r4/te*PDFCT14n3*
+hadd MC2016_Summer16_TTJets_powheg_PDF_4.root v26r4/te*PDFCT14n4*
+hadd MC2016_Summer16_TTJets_powheg_PDF_5.root v26r4/te*PDFCT14n5*
+hadd MC2016_Summer16_TTJets_powheg_PDF_6.root v26r4/te*PDFCT14n[6789]*
+
+hadd MC2016_Summer16_TTJets_powheg.root MC2016_Summer16_TTJets_powheg_Alpha_all.root MC2016_Summer16_TTJets_powheg_Mf_all.root MC2016_Summer16_TTJets_powheg_Mr_all.root MC2016_Summer16_TTJets_powheg_PDF_[123456].root
+
+
+event_weight_me_f_rUp
+event_weight_me_fUp_r
+event_weight_me_frUp
+event_weight_pdf
+
+
+
+
+
+
+
 # mu enriched qcd
 
 
