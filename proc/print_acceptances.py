@@ -60,7 +60,7 @@ else:
     ("mutau"    , []),
     ("eltau"    , [])]
 
-range_length = 50 if args.sys_weights else 2
+range_length = 75 if args.sys_weights else 2
 
 for file_i, input_filename in enumerate(args.input_files):
     if not isfile(input_filename):
