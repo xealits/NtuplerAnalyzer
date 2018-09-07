@@ -21,6 +21,7 @@ python print_acceptances.py temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets2_sign
 parser.add_argument("--sys-weights", action='store_true', help="print weight-based systematics too")
 parser.add_argument("--yields",      action='store_true', help="print number of events processed")
 parser.add_argument("--ratio",       action='store_true', help="calculate ratio to the first value")
+parser.add_argument("--all-procs",   action='store_true', help="print for all processes")
 parser.add_argument("--debug",       action='store_true', help="DEBUG level of logging")
 
 parser.add_argument('input_files', nargs="+", help="""files with acceptances""")
@@ -43,16 +44,21 @@ from ROOT import TLegend
 
 logging.info("done")
 
-results = [
-("mutau"    , []),
-("eltau"    , []),
-("muj"      , []),
-("elj"      , []),
-("taumutauh", []),
-("taueltauh", []),
-("taumuj"   , []),
-("tauelj"   , []),
-("other"    , [])]
+if args.all_procs:
+    results = [
+    ("mutau"    , []),
+    ("eltau"    , []),
+    ("muj"      , []),
+    ("elj"      , []),
+    ("taumutauh", []),
+    ("taueltauh", []),
+    ("taumuj"   , []),
+    ("tauelj"   , []),
+    ("other"    , [])]
+else:
+    results = [
+    ("mutau"    , []),
+    ("eltau"    , [])]
 
 range_length = 50 if args.sys_weights else 2
 
