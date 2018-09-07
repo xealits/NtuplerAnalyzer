@@ -109,6 +109,10 @@ frozen lumi and .root:
     combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_el.root   --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name ElShapes --freezeParameters lumi_13TeV
     combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_both.root --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name BothShapes --freezeParameters lumi_13TeV
 
+    combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.root   --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name MuShapes2 --freezeParameters lumi_13TeV
+    combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_el.root   --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name ElShapes2 --freezeParameters lumi_13TeV
+    combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_both.root --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name BothShapes2 --freezeParameters lumi_13TeV
+
 also in ratio now:
 
     combine -M MultiDimFit ttxsec/fit-stuff/ratio_v31v27pFullElMu_v25v26pR5_mu.txt   --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name RatioMuShapes
@@ -1274,8 +1278,8 @@ frozen lumi, no theoretical impacts
 
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit          --name ElImpacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5   --name ElImpacts
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts_RateUpDowns.json --name ElImpacts
-../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_RateUpDowns.json -o postfit_el_impacts_RateUpDowns
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts_RateUpDowns_Weights.json --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_RateUpDowns_Weights.json -o postfit_el_impacts_RateUpDowns_Weights
 
 
 

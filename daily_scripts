@@ -1,4 +1,6 @@
-# error while hadding a lot of files with all the weight systematics
+# weight syst normalized to acceptance
+
+## error while hadding a lot of files with all the weight systematics
 
 hadd MC2016_Summer16_TTJets_powheg_Alpha_all.root v26r4/te*Alpha*
 
@@ -19,6 +21,148 @@ event_weight_me_f_rUp
 event_weight_me_fUp_r
 event_weight_me_frUp
 event_weight_pdf
+
+hadd distrs_v25pStage2Run3_2_updowns.root v25pStage2Run3/MC* v25r4/MC*
+
+hadd distrs_v25pStage2Run3_2_updowns_weights.root v25pStage2Run3/MC* v25r4/MC* v26r4/MC2016_Summer16_TTJets_powheg.root
+
+for sys_i, sys_w in enumerate([the_mc_weight] + w_scale + w_alphas + w_pdf):
+[weights_gen_weight_f_rUp, weights_gen_weight_f_rDn, weights_gen_weight_fUp_r, weights_gen_weight_fDn_r, weights_gen_weight_frUp, weights_gen_weight_frDn]
+[weights_gen_weight_alphas_up, weights_gen_weight_alphas_dn]
+[round_pdf_weight(event.gen_weights_pdf_hessians[i] / weights_gen_weight_norm) for i in range(1,57)]
+
+6
+2
+56
+
+
+
+
+## acceptance norm
+
+per-process aceptance changes in 2nd digit only by 1
+in all channels but the signal, where the change is larger
+
+python proc/print_acceptances.py temp/nominal.root --sys-weights
+INFO:root:import ROOT
+INFO:root:done
+               mutau            0.322      0.323      0.324      0.323      0.323      0.322      0.325      0.323      0.323      0.323      0.323      0.322      0.323      0.324      0.323      0.323      0.323      0.322      0.324      0.323      0.323      0.322      0.324      0.323      0.323      0.323      0.323      0.324      0.322      0.323      0.323      0.323      0.324      0.324      0.323      0.323      0.323      0.323      0.323      0.323      0.323      0.323      0.324      0.323      0.323      0.324      0.322      0.324      0.323      0.323      0.324      0.323      0.324      0.323      0.323      0.323      0.322      0.322      0.323      0.323      0.323      0.323      0.323      0.323      0.323      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000
+               eltau            0.294      0.297      0.301      0.300      0.300      0.297      0.302      0.300      0.300      0.300      0.300      0.299      0.299      0.300      0.299      0.300      0.300      0.299      0.301      0.300      0.300      0.299      0.301      0.300      0.300      0.300      0.300      0.301      0.299      0.300      0.299      0.299      0.300      0.300      0.299      0.300      0.300      0.300      0.300      0.300      0.300      0.300      0.300      0.300      0.300      0.300      0.299      0.300      0.299      0.299      0.301      0.299      0.301      0.300      0.300      0.300      0.299      0.299      0.299      0.300      0.300      0.300      0.300      0.300      0.300      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000
+
+all procs:
+
+$ python proc/print_acceptances.py temp/nominal.root --sys-weights --all-procs                                           
+INFO:root:import ROOT
+INFO:root:done
+               mutau            0.322      0.323      0.324      0.323      0.323      0.322      0.325      0.323      0.323      0.323      0.323      0.322      0.323      0.324      0.323      0.323      0.323      0.322      0.324      0.323      0.323      0.322      0.324      0.323      0.323      0.323      0.323      0.324      0.322      0.323      0.323      0.323      0.324      0.324      0.323      0.323      0.323      0.323      0.323      0.323      0.323      0.323      0.324      0.323      0.323      0.324      0.322      0.324      0.323      0.323      0.324      0.323      0.324      0.323      0.323      0.323      0.322      0.322      0.323      0.323      0.323      0.323      0.323      0.323      0.323      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000
+               eltau            0.294      0.297      0.301      0.300      0.300      0.297      0.302      0.300      0.300      0.300      0.300      0.299      0.299      0.300      0.299      0.300      0.300      0.299      0.301      0.300      0.300      0.299      0.301      0.300      0.300      0.300      0.300      0.301      0.299      0.300      0.299      0.299      0.300      0.300      0.299      0.300      0.300      0.300      0.300      0.300      0.300      0.300      0.300      0.300      0.300      0.300      0.299      0.300      0.299      0.299      0.301      0.299      0.301      0.300      0.300      0.300      0.299      0.299      0.299      0.300      0.300      0.300      0.300      0.300      0.300      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000
+                 muj            0.505      0.506      0.505      0.505      0.506      0.506      0.505      0.506      0.505      0.505      0.506      0.505      0.504      0.506      0.505      0.506      0.505      0.503      0.507      0.506      0.505      0.502      0.507      0.505      0.506      0.505      0.506      0.507      0.503      0.506      0.504      0.504      0.506      0.506      0.505      0.505      0.506      0.505      0.506      0.506      0.505      0.505      0.507      0.506      0.505      0.506      0.504      0.506      0.505      0.505      0.506      0.504      0.507      0.505      0.505      0.505      0.504      0.504      0.503      0.505      0.505      0.506      0.506      0.505      0.505      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000
+                 elj            0.486      0.486      0.487      0.486      0.486      0.486      0.486      0.486      0.486      0.486      0.486      0.485      0.485      0.487      0.485      0.486      0.485      0.484      0.488      0.487      0.486      0.483      0.488      0.486      0.486      0.486      0.486      0.488      0.484      0.486      0.485      0.485      0.487      0.487      0.485      0.486      0.486      0.486      0.486      0.486      0.486      0.486      0.487      0.486      0.486      0.487      0.485      0.486      0.486      0.485      0.487      0.485      0.487      0.486      0.486      0.485      0.485      0.485      0.484      0.486      0.486      0.487      0.486      0.486      0.486      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000
+           taumutauh            0.144      0.143      0.148      0.145      0.145      0.143      0.148      0.145      0.145      0.145      0.145      0.144      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.144      0.146      0.145      0.145      0.145      0.144      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.145      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000
+           taueltauh            0.098      0.097      0.098      0.096      0.098      0.096      0.099      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.098      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.098      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.098      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.097      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000
+              taumuj            0.191      0.192      0.190      0.192      0.191      0.193      0.189      0.192      0.191      0.191      0.192      0.191      0.191      0.192      0.191      0.191      0.191      0.191      0.192      0.192      0.191      0.191      0.192      0.191      0.191      0.191      0.191      0.192      0.191      0.192      0.191      0.191      0.192      0.192      0.191      0.191      0.192      0.191      0.191      0.192      0.191      0.191      0.192      0.191      0.191      0.192      0.191      0.192      0.191      0.191      0.192      0.191      0.192      0.191      0.191      0.191      0.191      0.191      0.191      0.191      0.191      0.192      0.192      0.191      0.192      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000
+              tauelj            0.160      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.162      0.164      0.163      0.163      0.163      0.162      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.163      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000
+               other            0.028      0.028      0.029      0.028      0.029      0.028      0.029      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.028      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000
+
+-- maybe some error in the signal?
+
+
+
+
+
+
+check old full-signal study:
+
+[olek@fermi05 proc]$ grep accept last_procs
+# run for inlcuding updowns and scales in the fit, normalized to the acceptance
+# first acceptance run
+python genjobs.py v34 t1 --acceptance-study channels_nom_sys_both_sel_main --dtags MC2016_Summer16_TTJets_powheg,updowns,updowns_extra --scheme 5,5,2,12,12
+
+
+python proc/print_acceptances.py --sys-weights merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg.root
+
+python print_acceptances.py --sys-weights merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg.root
+INFO:root:import ROOT
+INFO:root:done
+               mutau            0.176      0.176      0.176      0.175      0.176      0.176      0.176      0.176      0.176      0.176      0.176      0.175      0.175      0.176      0.176      0.176      0.175      0.175      0.176      0.176      0.176      0.175      0.176      0.176      0.176      0.176      0.176      0.176      0.175      0.176      0.175      0.175      0.176      0.176      0.175      0.176      0.176      0.176      0.176      0.176      0.176      0.176      0.176      0.176      0.176      0.176      0.175      0.176      0.176
+               eltau            0.169      0.169      0.169      0.168      0.169      0.169      0.169      0.169      0.169      0.169      0.169      0.168      0.168      0.169      0.169      0.169      0.169      0.168      0.169      0.169      0.169      0.168      0.169      0.169      0.169      0.169      0.169      0.169      0.168      0.169      0.168      0.168      0.169      0.169      0.168      0.169      0.169      0.169      0.169      0.169      0.169      0.169      0.169      0.169      0.169      0.169      0.168      0.169      0.169
+
+
+-- very similar to all-proc result
+
+
+
+
+
+
+## histosels
+
+histosel_stage2_run3_VlooseShapes_el_sel_ljs_updowns2
+histosel_stage2_run3_VlooseShapes_mu_sel_ljs_updowns2
+
+vim syst-test.syst-list.3
+vim syst-test.syst-list.pdfs
+
+histosel-roots/v25pStage2Run3_el_ljs_updowns_weights/
+histosel-roots/v25pStage2Run3_mu_ljs_updowns_weights/
+
+source histosel_stage2_run3_VlooseShapes_el_sel_ljs_updowns2_weights_1 &
+source histosel_stage2_run3_VlooseShapes_el_sel_ljs_updowns2_weights_2 &
+source histosel_stage2_run3_VlooseShapes_mu_sel_ljs_updowns2_weights_1 &
+source histosel_stage2_run3_VlooseShapes_mu_sel_ljs_updowns2_weights_2 &
+
+hadd histosel-roots/HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs_updowns.root histosel-roots/v25pStage2Run3_el_ljs/distr*root histosel-roots/v25pStage2Run3_mu_ljs/distr*root histosel-roots/v25pStage2Run3_el_ljs_updowns/distr*root histosel-roots/v25pStage2Run3_mu_ljs_updowns/distr*root
+
+hadd histosel-roots/HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs_updowns_weights.root histosel-roots/HISTOSEL_v25pStage2Run3_Vloose_shape_el_mu_ljs_updowns.root histosel-roots/v25pStage2Run3_el_ljs_updowns_weights/distr*root histosel-roots/v25pStage2Run3_mu_ljs_updowns_weights/distr*root
+
+
+el alphas error
+
+foreach sys (AlphaSUp AlphaSDown)
+python stack_plot.py distrs_v25pStage2Run3_2_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root  -o histosel-roots/v25pStage2Run3_el_ljs_updowns_weights/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8    -s $sys || true
+end
+
+foreach sys (AlphaSUp AlphaSDown)
+python stack_plot.py distrs_v25pStage2Run3_2_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root  -o histosel-roots/v25pStage2Run3_el_ljs_updowns_weights/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8    -s $sys || true
+end
+
+-- there was data-qcd and mc
+
+
+
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.root   --algo grid --points 60 --rMin 0.6 --rMax 1.4 --name MuShapes --freezeParameters lumi_13TeV
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_el.root   --algo grid --points 32 --rMin 0.6 --rMax 1.4 --name ElShapes --freezeParameters lumi_13TeV
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_both.root --algo grid --points 60 --rMin 0.6 --rMax 1.4 --name BothShapes --freezeParameters lumi_13TeV
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit               --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts.json                  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o postfit_mu_impacts
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit          --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5   --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts.json             --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o postfit_el_impacts
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 -o latest_both_impacts.json          --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o postfit_both_impacts
+
+
+python impact_table.py --merge-pdf latest_el_impacts.json
+python impact_table.py --merge-pdf latest_mu_impacts.json
+python impact_table.py --merge-pdf latest_both_impacts.json
+
+
+
+
+
+
+
 
 
 
