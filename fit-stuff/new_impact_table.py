@@ -33,6 +33,8 @@ impact_name_exp = {
 "qcd_norm"    : "QCD normalization",
 "bSF"         : "b-tagging efficiency",
 "LEP"         : "lepton ID efficiency",
+"LEPel"       : "electron ID efficiency",
+"LEPmu"       : "muon ID efficiency",
 "JES"         : "Jet Energy Scale",
 "JER"         : "Jet Energy Resolution",
 "TauES"       : "Tau Energy Scale",
