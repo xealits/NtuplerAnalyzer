@@ -71,9 +71,23 @@ for file_i, input_filename in enumerate(args.input_files):
 
     tfile = TFile(input_filename)
 
+    all_histos = [tfile.Get("all_ev_" + name) for name, numbers in results]
+    cut_histos = [tfile.Get("cut_ev_" + name) for name, numbers in results]
+
+    sum_all_histos = all_histos[0].Clone()
+    sum_cut_histos = cut_histos[0].Clone()
+
+    sum_all_histos.SetName("sum_all_histos")
+    sum_cut_histos.SetName("sum_cut_histos")
+
+    for histo_cut, histo_all in zip(cut_histos[1:], all_histos[1:]):
+        sum_all_histos += histo_all
+        sum_cut_histos += histo_cut
+
+
     for name, numbers in results:
-        histo_all     = tfile.Get("all_ev_" + name)
-        histo_cut     = tfile.Get("cut_ev_" + name)
+        histo_all = tfile.Get("all_ev_" + name)
+        histo_cut = tfile.Get("cut_ev_" + name)
         histo_cut.Divide(histo_all)
 
         if args.yields:
@@ -85,7 +99,18 @@ for file_i, input_filename in enumerate(args.input_files):
 
 for name, numbers in results:
     #
-    print "%20s " % name + ' '*5, ' '.join("%10.3f" % numbers[i] for i in range(len(numbers)))
+    print "%20s " % name + ' '*5, ' '.join("%10.4f" % numbers[i] for i in range(len(numbers)))
+
+sum_cut_histos.Divide(sum_all_histos)
+
+sum_num = []
+if args.yields:
+    sum_num.append(sum_all_histos.GetBinContent(1))
+
+for i in range(1,range_length):
+    sum_num.append(sum_cut_histos.GetBinContent(i))
+
+print "%20s " % "sum" + ' '*5, ' '.join("%10.4f" % sum_num[i] for i in range(len(sum_num)))
 
 if args.ratio:
     for name, numbers in results:

@@ -12,7 +12,7 @@ all_known_sorted_processes = [
     's_top_elmu',
     's_top_eltau',  's_top_mutau',   's_top_other', 's_top_lj',
     'dy_tautau', 'dy_other',
-    'wjets_other', 'wjets_taul', 'wjets_tauh',
+    'wjets_other', 'wjets_taul', # 'wjets_tauh',
     'dibosons',
     'qcd']
 
@@ -53,25 +53,56 @@ t\bar{t}\rightarrow{\mu\tau}
 \text{data}
 """
 
-process_latex_strings = {'dy_tautau': '\\text{dy}\\rightarrow{\\tau_{l}\\tau_{h}}',
-    'dy_other':                       '\\text{dy}\\rightarrow{other}',
-    'wjets_other':                    '\\text{wjets} \\rightarrow\\ell',
-    'wjets_taul':                     '\\text{wjets} \\rightarrow\\tau_{l}',
-    'wjets_tauh':                     '\\text{wjets} \\rightarrow\\tau_{h}',
-    's_top_eltau':                    '\\text{single top}\\rightarrow{e   \\tau}',
-    's_top_mutau':                    '\\text{single top}\\rightarrow{\\mu\\tau}',
-    's_top_other':                    '\\text{single top}\\rightarrow{other}',
-    's_top_lj':                       '\\text{single top}\\rightarrow{\\ell j}',
-    'dibosons':                       '\\text{dibosons}',
-    'tt_taultauh':                    't\\bar{t}\\rightarrow{\\tau_{l}\\tau_{h}}',
-    'tt_taulj':                       't\\bar{t}\\rightarrow{\\tau_{l} j}',
-    'tt_lj':                          't\\bar{t}\\rightarrow{\\ell j}',
-    'tt_other':                       't\\bar{t}\\rightarrow{other}',
-    'tt_mutau':                       't\\bar{t}\\rightarrow{\\mu\\tau}',
-    'tt_eltau':                       't\\bar{t}\\rightarrow{e\\tau}',
-    'qcd':                            '\\text{qcd}'
+process_latex_strings = {
+'dy_tautau' : "$\\text{DY}\\rightarrow{\\tau_{\\ell}\\tau_{h}}+ {\\rm jets}$" ,
+'dy_other'  : "$\\text{DY}\\rightarrow{\\rm other}$"                       ,
+
+    'wjets_other':     "$\\text{W+jets} \\rightarrow\\ell\\nu+ {\\rm jets}$"         ,
+    'wjets_taul':      "$\\text{W+jets} \\rightarrow\\tau_{\\ell}\\nu + {\\rm jets}$" ,
+    'wjets_tauh':      "$\\text{W+jets} \\rightarrow\\tau_{h}\\nu + {\\rm jets}$"    ,
+
+    's_top_eltau':   "$\\text{single top}\\rightarrow{{\\rm \\ell} \\tau}+X$" ,
+    's_top_mutau':   "$\\text{single top}\\rightarrow{{\\rm \\ell} \\tau}+X$" ,
+    's_top_other':   "$\\text{single top}\\rightarrow{\\rm other}$"         ,
+    's_top_lj':      "$\\text{single top}\\rightarrow{\\ell j}+X$"          ,
+
+    'tt_taultauh':  "$\\ttbar\\rightarrow{\\tau_{\\ell}\\tau_{h} \\nu\\nu b\\bar{b} }$",
+    'tt_taulj':     "$\\ttbar\\rightarrow{\\tau_{\\ell}\\nu jj b\\bar{b}}$",
+    'tt_lj':     "$\\ttbar\\rightarrow{\\ell\\nu jj b\\bar{b}}$",
+    'tt_other':  "$\\ttbar\\rightarrow{\\rm other}$",
+    'tt_mutau':  "$\\ttbar\\rightarrow{\\ell\\tau}\\nu\\nu b\\bar{b}$ ($\\ell=e,\\mu$)",
+    'tt_eltau':  "$\\ttbar\\rightarrow{\\ell\\tau}\\nu\\nu b\\bar{b}$ ($\\ell=e,\\mu$)",
+
+    'dibosons':                       '$\\text{dibosons}$',
+    'qcd':                            '$\\text{QCD}$'
 }
 
+
+
+"""
+'dy_tautau' : "$\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$" ,
+'dy_other'  : "$\text{DY}\rightarrow{\rm other}$"                       ,
+
+    'wjets_other':     "$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$"         ,
+    'wjets_taul':      "$\text{W+jets} \rightarrow\tau_{\ell}\nu + {\rm jets}$" ,
+    'wjets_tauh':      "$\text{W+jets} \rightarrow\tau_{h}\nu + {\rm jets}$"    ,
+
+    's_top_eltau':   "$\text{single top}\rightarrow{{\rm \ell} \tau}+X$" ,
+    's_top_mutau':   "$\text{single top}\rightarrow{{\rm \ell} \tau}+X$" ,
+    's_top_other':   "$\text{single top}\rightarrow{\rm other}$"         ,
+    's_top_lj':      "$\text{single top}\rightarrow{\ell j}+X$"          ,
+
+    'tt_taultauh':  "$\ttbar\rightarrow{\tau_{\ell}\tau_{h} \nu\nu b\bar{b} }$",
+    'tt_taulj':     "$\ttbar\rightarrow{\tau_{\ell}\nu jj b\bar{b}}$",
+    'tt_lj':     "$\ttbar\rightarrow{\ell\nu jj b\bar{b}}$",
+    'tt_other':  "$\ttbar\rightarrow{\rm other}$",
+    'tt_mutau':  "$\ttbar\rightarrow{\ell\tau}\nu\nu b\bar{b}$ ($\ell=e,\mu$)",
+    'tt_eltau':  "$\ttbar\rightarrow{\ell\tau}\nu\nu b\bar{b}$ ($\ell=e,\mu$)",
+
+    'dibosons':                       '$\\text{dibosons}$',
+    'qcd':                            '$\\text{QCD}$'
+}
+"""
 
 
 import argparse
@@ -289,7 +320,7 @@ def string_yield(integral):
         if args.ratios:
             return (item_s + '.3f') % integral
         else:
-            return (item_s + '.1f') % integral
+            return (item_s + '.0f') % integral
 
 separator = ' & ' if args.latex else ''
 line_end = ' \\\\' if args.latex else ''
@@ -308,6 +339,7 @@ if args.event_yields:
             # channel = column
             for channel in channels:
                 #
+                if not channel in chan_d: continue
                 integral  , uncertainty      = chan_d.get(channel)
                 data_yield, uncertainty_data = data_yields[channel]
                 if integral and args.ratios:
@@ -328,9 +360,9 @@ if args.event_yields:
             print proc_s % 'mc_sum_ratio' + separator + separator.join([(item_s + '.3f') % (mc_sums[channel][0]/data_yields[channel][0]) for channel in channels]) + line_end
         else:
             #print proc_s % 'mc_sum' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % tuple(mc_sums[channel]) for channel in channels]) + line_end
-            print proc_s % 'mc_sum' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % tuple(mc_sums_sumhisto[channel]) for channel in channels]) + line_end
+            print proc_s % 'mc_sum' + separator + separator.join([('$' + item_s + '.0f' + ' \\pm ' + item_s + '.0f $') % tuple(mc_sums_sumhisto[channel]) for channel in channels]) + line_end
 
-    print proc_s % 'data' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % data_yields[channel] for channel in channels]) + line_end
+    print proc_s % 'data' + separator + separator.join([('$' + item_s + '.0f' + ' \\pm ' + item_s + '.0f $') % data_yields[channel] for channel in channels]) + line_end
 
 
 

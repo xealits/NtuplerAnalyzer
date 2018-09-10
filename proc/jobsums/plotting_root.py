@@ -108,9 +108,9 @@ def stack_n_legend(used_histos, shift=0., exp_legend=False, sort_dy=False):
     hs = THStack("mc_stack", "mc_stack")
     #leg = TLegend(0.7 - (0.15 if not homogeneous_channels else 0.), 0.4, 0.89, 0.89)
     if exp_legend:
-        leg = TLegend(0.8 - shift, 0.4, 1. - shift, 0.89)
+        leg = TLegend(0.8 - shift, 0.45, 1. - shift, 0.9)
     else:
-        leg = TLegend(0.7 - shift, 0.4, 0.89 - shift, 0.89)
+        leg = TLegend(0.7 - shift, 0.45, 0.89 - shift, 0.9)
 
     process_counter = {} # for distinguishing processes in different channels
 

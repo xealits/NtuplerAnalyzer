@@ -33,16 +33,27 @@ TGraph *g2 = new TGraph(430, ttree_full->GetV2(), ttree_full->GetV1())
 '''
 
 
+#the_files = {
+#'el': ["higgsCombineElFullUncertainty.MultiDimFit.mH120.root", "higgsCombineElNoTau.MultiDimFit.mH120.root", "higgsCombineElNoSys.MultiDimFit.mH120.root"],
+#'mu': ["higgsCombineMuFullUncertainty.MultiDimFit.mH120.root", "higgsCombineMuNoTau.MultiDimFit.mH120.root", "higgsCombineMuNoSys.MultiDimFit.mH120.root"],
+#'both': ["higgsCombineBothFullUncertainty.MultiDimFit.mH120.root", "higgsCombineBothNoTau.MultiDimFit.mH120.root", "higgsCombineBothNoSys.MultiDimFit.mH120.root"],
+#}
+#the_files_expected = {
+#'el': ["higgsCombineExpectedElFullUncertainty.MultiDimFit.mH120.root", "higgsCombineExpectedElNoTau.MultiDimFit.mH120.root", "higgsCombineExpectedElNoSys.MultiDimFit.mH120.root"],
+#'mu': ["higgsCombineExpectedMuFullUncertainty.MultiDimFit.mH120.root", "higgsCombineExpectedMuNoTau.MultiDimFit.mH120.root", "higgsCombineExpectedMuNoSys.MultiDimFit.mH120.root"],
+#'both': ["higgsCombineExpectedBothFullUncertainty.MultiDimFit.mH120.root", "higgsCombineExpectedBothNoTau.MultiDimFit.mH120.root", "higgsCombineExpectedBothNoSys.MultiDimFit.mH120.root"],
+#}
+
 the_files = {
-'el': ["higgsCombineElFullUncertainty.MultiDimFit.mH120.root", "higgsCombineElNoTau.MultiDimFit.mH120.root", "higgsCombineElNoSys.MultiDimFit.mH120.root"],
-'mu': ["higgsCombineMuFullUncertainty.MultiDimFit.mH120.root", "higgsCombineMuNoTau.MultiDimFit.mH120.root", "higgsCombineMuNoSys.MultiDimFit.mH120.root"],
-'both': ["higgsCombineBothFullUncertainty.MultiDimFit.mH120.root", "higgsCombineBothNoTau.MultiDimFit.mH120.root", "higgsCombineBothNoSys.MultiDimFit.mH120.root"],
+'el':   [  "higgsCombineElFullUncertaintyNoLumi.MultiDimFit.mH120.root",   "higgsCombineElNoTau.MultiDimFit.mH120.root",   "higgsCombineElNoSysWLumi.MultiDimFit.mH120.root"],
+'mu':   [  "higgsCombineMuFullUncertaintyNoLumi.MultiDimFit.mH120.root",   "higgsCombineMuNoTau.MultiDimFit.mH120.root",   "higgsCombineMuNoSysWLumi.MultiDimFit.mH120.root"],
+'both': ["higgsCombineBothFullUncertaintyNoLumi.MultiDimFit.mH120.root", "higgsCombineBothNoTau.MultiDimFit.mH120.root", "higgsCombineBothNoSysWLumi.MultiDimFit.mH120.root"],
 }
 
 the_files_expected = {
-'el': ["higgsCombineExpectedElFullUncertainty.MultiDimFit.mH120.root", "higgsCombineExpectedElNoTau.MultiDimFit.mH120.root", "higgsCombineExpectedElNoSys.MultiDimFit.mH120.root"],
-'mu': ["higgsCombineExpectedMuFullUncertainty.MultiDimFit.mH120.root", "higgsCombineExpectedMuNoTau.MultiDimFit.mH120.root", "higgsCombineExpectedMuNoSys.MultiDimFit.mH120.root"],
-'both': ["higgsCombineExpectedBothFullUncertainty.MultiDimFit.mH120.root", "higgsCombineExpectedBothNoTau.MultiDimFit.mH120.root", "higgsCombineExpectedBothNoSys.MultiDimFit.mH120.root"],
+'el':   [  "higgsCombineExpectedElFullUncertaintyNoLumi.MultiDimFit.mH120.root",   "higgsCombineExpectedElNoTau.MultiDimFit.mH120.root",   "higgsCombineExpectedElNoSysWLumi.MultiDimFit.mH120.root"],
+'mu':   [  "higgsCombineExpectedMuFullUncertaintyNoLumi.MultiDimFit.mH120.root",   "higgsCombineExpectedMuNoTau.MultiDimFit.mH120.root",   "higgsCombineExpectedMuNoSysWLumi.MultiDimFit.mH120.root"],
+'both': ["higgsCombineExpectedBothFullUncertaintyNoLumi.MultiDimFit.mH120.root", "higgsCombineExpectedBothNoTau.MultiDimFit.mH120.root", "higgsCombineExpectedBothNoSysWLumi.MultiDimFit.mH120.root"],
 }
 
 
