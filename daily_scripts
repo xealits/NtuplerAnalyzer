@@ -153,9 +153,9 @@ combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_both.root --algo grid --
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o postfit_both_impacts
 
 
-python impact_table.py --merge-pdf latest_el_impacts.json
-python impact_table.py --merge-pdf latest_mu_impacts.json
-python impact_table.py --merge-pdf latest_both_impacts.json
+python new_impact_table.py --merge-pdf latest_el_impacts.json
+python new_impact_table.py --merge-pdf latest_mu_impacts.json
+python new_impact_table.py --merge-pdf latest_both_impacts.json
 
 
 
