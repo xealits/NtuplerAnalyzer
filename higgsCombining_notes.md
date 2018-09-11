@@ -713,9 +713,10 @@ No need now with --noMCbonly -- no, it seems to not work.
     combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_both.txt --name BothShape  --noMCbonly 0 --freezeParameters AlphaS &
     combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_el.txt --name ElShape  --noMCbonly 0  &
 
-combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.txt   --name MuShape    --noMCbonly 0 --freezeParameters lumi_13TeV
-combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_el.txt   --name ElShape    --noMCbonly 0 --freezeParameters lumi_13TeV
-combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_both.txt --name BothShape  --noMCbonly 0 --freezeParameters lumi_13TeV
+
+combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.root   --name MuShape    --noMCbonly 0 --freezeParameters lumi_13TeV
+combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_el.root   --name ElShape    --noMCbonly 0 --freezeParameters lumi_13TeV
+combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_both.root --name BothShape  --noMCbonly 0 --freezeParameters lumi_13TeV
 
 
 Produce nuisances with custom script which skips background-only step:
@@ -1355,23 +1356,23 @@ both
 
 mu toys
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters AlphaS,lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_th_match -m 125 --robustFit 1 --doInitialFit         --name MuImpactsToys
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters AlphaS,lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_th_match -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpactsToys
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters AlphaS,lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_th_match -m 125 -o latest_mu_impacts_toys.json            --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_toys.json            --name MuImpactsToys
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_toys.json -o prefit_mu_impacts_toys
 
 el toys
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters AlphaS,lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_th_match -m 125 --robustFit 1 --doInitialFit         --name ElImpactsToys
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters AlphaS,lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_th_match -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpactsToys
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters AlphaS,lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_th_match -m 125 -o latest_el_impacts_toys.json            --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts_toys.json            --name ElImpactsToys
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_toys.json -o prefit_el_impacts_toys
 
 both
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters AlphaS,lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_th_match -m 125 --robustFit 1 --doInitialFit         --name ElImpactsToys
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters AlphaS,lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_th_match -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpactsToys
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters AlphaS,lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_th_match -m 125 -o latest_both_impacts_toys.json            --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 -o latest_both_impacts_toys.json            --name ElImpactsToys
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts_toys.json -o prefit_both_impacts_toys
 
 
