@@ -155,6 +155,28 @@ dtags_mc_qcd_mu_enriched = [
 "MC2016_Summer16_QCD_MuEnriched_Pt5_80to120",
 ]
 
+dtags_mc_qcd_em_enriched = [
+"MC2016_Summer16_QCD_EMEnriched_Pt-20to30",
+"MC2016_Summer16_QCD_EMEnriched_Pt-30to50",
+"MC2016_Summer16_QCD_EMEnriched_Pt-50to80",
+"MC2016_Summer16_QCD_EMEnriched_Pt-80to120",
+"MC2016_Summer16_QCD_EMEnriched_Pt-120to170",
+"MC2016_Summer16_QCD_EMEnriched_Pt-170to300",
+"MC2016_Summer16_QCD_EMEnriched_Pt-300toInf",
+"MC2016_Summer16_QCD_EMEnriched_Pt-30toInf",
+"MC2016_Summer16_QCD_EMEnriched_Pt-30to40",
+"MC2016_Summer16_QCD_EMEnriched_Pt-40toInf",
+]
+
+dtags_mc_qcd_em_enriched_ext = [
+"MC2016_Summer16_QCD_EMEnriched_Pt-30to50_ext1",
+"MC2016_Summer16_QCD_EMEnriched_Pt-50to80_ext1",
+"MC2016_Summer16_QCD_EMEnriched_Pt-80to120_ext1",
+"MC2016_Summer16_QCD_EMEnriched_Pt-120to170_ext1",
+]
+
+
+
 
 dtags_std_mc_min_no_wjets = dtags_std_mc_min_no_wjets_noqcd + dtags_std_mc_qcd
 
@@ -307,6 +329,8 @@ dtag_groups = {'std': dtags_std, 'std_amcatnlo': dtags_std_amcatnlo,
     'std_qcd': dtags_std_mc_qcd,
     'qcd_ext': dtags_mc_qcd_ext,
     'qcd_muenriched': dtags_mc_qcd_mu_enriched,
+    'qcd_emenriched': dtags_mc_qcd_em_enriched,
+    'qcd_emenriched_ext': dtags_mc_qcd_em_enriched_ext,
     'updowns': dtags_updowns, 'updowns_extra': dtags_updowns_extra,
     'updowns_allfsr': dtags_updowns_all_fsr,
     'singletop': dtags_singletop_mc,

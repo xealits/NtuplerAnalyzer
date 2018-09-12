@@ -1,3 +1,13 @@
+
+# alliso in mu enriched qcd
+python genjobs.py v35 pStage2MuEnriched --do-W-stitching channels_nom_sys_muon_sel_main --dtags qcd_muenriched --scheme 4,4,2,10,10
+make sub_proc nt=v35 proc=pStage2MuEnriched node=4
+
+# em enriched for electrons
+python genjobs.py v35 pStage2EMEnriched --do-W-stitching channels_nom_sys_muon_sel_main --dtags qcd_emenriched,qcd_emenriched_ext --scheme 0,0,2,10,10
+make sub_proc nt=v35 proc=pStage2EMEnriched node=4
+
+
 # v27 alliso and dileptons
 # run with elmu selection to check the b SF factor
 python genjobs.py v27 pStage2Run2ElMu --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc --scheme 5,0,0,13,13
@@ -22,10 +32,6 @@ make sub_proc nt=v27 proc=pStage2Run2ElMu5 node=4
 # simulating presel better: no b-tau match, only lepton and jets
 python genjobs.py v35 pStage2Run3 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_qcd,qcd_ext --scheme 5,0,0,10,0
 make sub_proc nt=v35 proc=pStage2Run3 node=4
-
-# alliso in mu enriched qcd
-python genjobs.py v35 pStage2MuEnriched --do-W-stitching channels_nom_sys_muon_sel_main --dtags qcd_muenriched --scheme 4,4,2,10,10
-make sub_proc nt=v35 proc=pStage2MuEnriched node=4
 
 
 

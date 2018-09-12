@@ -37,12 +37,32 @@ TDirectoryFile*		ctr_old_mu_sel_lj	ctr_old_mu_sel_lj
  KEY: TH1F	total_background;1	Total background in ctr_old_mu_sel_lj
  KEY: TH2F	total_covar;1	Covariance signal+background
 
+ KEY: TH1F	qcd;1	qcd in mu_sel_lj
+ KEY: TH1F	dibosons;1	dibosons in mu_sel_lj
+ KEY: TH1F	dy_other;1	dy_other in mu_sel_lj
+ KEY: TH1F	dy_tautau;1	dy_tautau in mu_sel_lj
+ KEY: TH1F	s_top_lj;1	s_top_lj in mu_sel_lj
+ KEY: TH1F	s_top_mutau;1	s_top_mutau in mu_sel_lj
+ KEY: TH1F	s_top_other;1	s_top_other in mu_sel_lj
+ KEY: TH1F	tt_lj;1	tt_lj in mu_sel_lj
+ KEY: TH1F	tt_mutau;1	tt_mutau in mu_sel_lj
+ KEY: TH1F	tt_other;1	tt_other in mu_sel_lj
+ KEY: TH1F	tt_taulj;1	tt_taulj in mu_sel_lj
+ KEY: TH1F	tt_taultauh;1	tt_taultauh in mu_sel_lj
+ KEY: TH1F	wjets_other;1	wjets_other in mu_sel_lj
+ KEY: TH1F	wjets_taul;1	wjets_taul in mu_sel_lj
+ KEY: TH1F	total;1	Total signal+background in mu_sel_lj
+ KEY: TH1F	total_signal;1	Total signal in mu_sel_lj
+ KEY: TH1F	total_background;1	Total background in mu_sel_lj
+ KEY: TH2F	total_covar;1	Covariance signal+background
+
 '''
 
 import argparse
 import logging
 from os.path import isfile
 from sys import exit
+import ctypes
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -63,8 +83,8 @@ parser.add_argument("--y-max",       type=float,              help="set the maxi
 
 parser.add_argument("--lumi",  type=float, default=35.8, help="lumi reported")
 parser.add_argument("--title", type=str,   default='',   help="optional title")
-parser.add_argument("--title-y", type=str,   default='Evts.',   help="optional title")
-parser.add_argument("--title-x", type=str,   default='M_{T}',   help="optional title")
+parser.add_argument("--title-y", type=str,   default='Evts./1GeV',   help="optional title")
+parser.add_argument("--title-x", type=str,   default='M_{T} [GeV]',   help="optional title")
 
 parser.add_argument("--mu", action='store_true', help="aim mu processes")
 
@@ -75,6 +95,7 @@ parser.add_argument("--prefit-process",  type=str,   help="take the prefit distr
 
 parser.add_argument("--no-data", action='store_true', help="don't plot data")
 
+parser.add_argument("--custom-bins", action='store_true', help="the bins adjusted to statistics")
 parser.add_argument("--coarse-bins", action='store_true', help="the 10 bins from 0 to 200 for Mt")
 
 
@@ -115,7 +136,7 @@ mc_processes_mu = [
       "tt_other",
       "tt_taulj",
       "tt_taultauh",
-      "wjets",
+      "wjets_other",
       "wjets_taul",
 ]
 
@@ -149,7 +170,7 @@ mc_processes_el = [
       "tt_other",
       "tt_taulj",
       "tt_taultauh",
-      "wjets",
+      "wjets_other",
       "wjets_taul",
 ]
 
@@ -166,7 +187,19 @@ mc_sum_higComb = chan_dir.Get("total")
 # -- does not work simply, need something more
 
 def th_postfit(name):
-    if args.coarse_bins:
+    if args.custom_bins:
+        bin_edges = [0,20,40,60,80,100,130,160,200,250]
+        #bin_edges = [float(b) for b in args.custom_range.split(',')]
+        n_bin_edges = len(bin_edges)
+        n_bins = n_bin_edges - 1
+        #logging.debug("making %d bins from %s" % (n_bins, bin_edges))
+
+        # first method
+        root_bin_edges = (ctypes.c_double * n_bin_edges)(*bin_edges)
+        #temp_output_histo = TH1D("histotemp", "", n_bins, root_bin_edges) # root commands can access it by the name
+
+        return TH1D(name, '', n_bins, root_bin_edges)
+    elif args.coarse_bins:
         return TH1D(name, '', 10, 0, 200)
     else:
         return TH1D(name, '', 20, 0, 250)
@@ -204,8 +237,19 @@ for nick in mc_processes:
 
     histo = th_postfit(histo_higComb.GetName() +'_u')
     for bini in range(histo_higComb.GetSize()+1):
-        histo.SetBinContent (bini, histo_higComb.GetBinContent(bini))
-        histo.SetBinError   (bini, histo_higComb.GetBinError(bini))
+        #histo.SetBinContent (bini, histo_higComb.GetBinContent(bini))
+        #histo.SetBinError   (bini, histo_higComb.GetBinError(bini))
+
+        content = histo_higComb.GetBinContent(bini)
+        error   = histo_higComb.GetBinError(bini)
+        width   = histo_higComb.GetXaxis().GetBinUpEdge(bini) - histo_higComb.GetXaxis().GetBinLowEdge(bini)
+        histo.SetBinContent(bini, content/width)
+        histo.SetBinError(bini, error/width)
+
+    histo.GetYaxis().SetRange(0, 100)
+    histo.GetYaxis().SetRangeUser(0, 100.) #hist.GetMaximum())
+
+    # normalize to bin width
 
     histo.SetFillColor( col );
     #histo.SetLineColor( col ); # it's needed for shapes
@@ -318,14 +362,30 @@ if not args.no_data:
 
 leg.Draw("same")
 
-left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
-left_title.AddText("CMS preliminary at 13 TeV")
-left_title.SetTextFont(1)
+#left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
+#left_title.AddText("CMS preliminary at 13 TeV")
+#left_title.SetTextFont(1)
 
-right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
-right_title.AddText("L = %s fb^{-1}" % args.lumi)
+left_title = TPaveText(0.15, 0.82, 0.25, 0.88, "brNDC")
+left_title.AddText("CMS")
+left_title.SetTextFont(1)
+left_title.SetFillColor(0)
+#left_title.Draw("same")
+
+#right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
+#right_title.AddText("L = %s fb^{-1}" % args.lumi)
+#right_title.SetTextFont(132)
+#right_title.SetFillColor(0)
+
+right_title = TPaveText(0.75, 0.9, 0.9, 0.95, "brNDC")
+#if report_lumi:
+#    right_title.AddText("%s fb^{-1} (13 TeV)" % (31.3 if chan == 'el' else 35.8))
+#else:
+#    right_title.AddText("(13 TeV)")
+right_title.AddText("%s fb^{-1} (13 TeV)" % args.lumi)
 right_title.SetTextFont(132)
 right_title.SetFillColor(0)
+#right_title.Draw("same")
 
 left_title .Draw("same")
 right_title.Draw("same")

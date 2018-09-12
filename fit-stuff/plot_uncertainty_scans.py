@@ -130,14 +130,9 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            exp_g_stat = TGraph(n, exp_ttree_stat.GetV2(), exp_ttree_stat.GetV1())
 
            exp_g_full.SetLineWidth(3)
-           exp_g_full.SetLineStyle(7)
            exp_g_notau.SetLineWidth(2)
            exp_g_stat.SetLineWidth(2)
            exp_g_stat.SetLineStyle(7)
-
-           #exp_g_full .SetLineColor(43)
-           exp_g_notau.SetLineColor(43)
-           exp_g_stat .SetLineColor(43)
 
            # removing the title
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
@@ -164,6 +159,8 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
 
    if plot_expected and plot_data:
       print "plotting both"
+      exp_g_full.SetLineStyle(7)
+
       exp_g_full .Draw("ap") # this cast makes the following work
       exp_g_full .Draw("L")
       #exp_g_notau.Draw("L same")
@@ -192,6 +189,11 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
 
    elif plot_expected:
       print "plotting expected"
+
+      exp_g_full .SetLineColor(43)
+      exp_g_notau.SetLineColor(43)
+      exp_g_stat .SetLineColor(43)
+
       exp_g_full .Draw("ap")
       exp_g_full .Draw("L")
       exp_g_notau.Draw("L same")
