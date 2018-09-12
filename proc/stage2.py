@@ -3060,10 +3060,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                     proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
                 if jet_pt_JERDown > JETS_PT_CUT:
                     proc_met_JERDown   -= p4 * (jet_factor_JERDown - 1.)
+
                 if jet_pt_JESUp > JETS_PT_CUT:
                     proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
                 if jet_pt_JESDown > JETS_PT_CUT:
-                    proc_met_JESDown   -= p4 * (jet_factor_JESDown - 1.)
+                    proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
 
                 # match lep
                 if not match_lep:

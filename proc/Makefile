@@ -110,6 +110,22 @@ distrs_mc_lep_weights:
 	python selections.py ${options} --out-dir distrs/ "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys ${sysname}Down --distr Mt_lep_met_f --chan ${chan} --weight "event_weight*event_weight_LEPDown"     merge-sets/${nt}/${p}/*${dtag}*.root
 
 
+
+
+distrs_mc_objects_mt: p=pStage2Run1
+distrs_mc_objects_mt: nt=v25
+distrs_mc_objects_mt: dtag=MC
+distrs_mc_objects_mt: bins=--custom-range 0,20,40,60,80,100,130,160,200,250
+distrs_mc_objects_mt: cond=selection_stage == 107
+distrs_mc_objects_mt: chan=mu_sel
+distrs_mc_objects_mt: options=
+distrs_mc_objects_mt: met=event_met
+distrs_mc_objects_mt: sys_name=NOMINAL
+distrs_mc_objects_mt: weight=event_weight
+distrs_mc_objects_mt: distr_name=Mt_lep_met_f
+distrs_mc_objects_mt:
+	python selections.py ${options} --out-dir distrs/ --distr ${distr_name} --chan ${chan} "sqrt(2*(sqrt((${met}.Px()*${met}.Px() + ${met}.Py()*${met}.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (${met}.Px()*event_leptons[0].Px() + ${met}.Py()*event_leptons[0].Py())))"    --cond-com "${cond}" ${bins} --sys ${sys_name}   --weight ${weight}  merge-sets/${nt}/${p}/*${dtag}*.root
+
 distrs_mc_objects: p=pStage2Run1
 distrs_mc_objects: nt=v25
 distrs_mc_objects: dtag=MC
@@ -118,12 +134,12 @@ distrs_mc_objects: cond=selection_stage == 107
 distrs_mc_objects: chan=mu_sel
 distrs_mc_objects: options=
 distrs_mc_objects:
-	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met_JERDown.Px()*event_met_JERDown.Px() + event_met_JERDown.Py()*event_met_JERDown.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met_JERDown.Px()*event_leptons[0].Px() + event_met_JERDown.Py()*event_leptons[0].Py())))"    --cond-com "${cond}" ${bins} --sys JERDown   --weight event_weight  merge-sets/${nt}/${p}/*${dtag}*.root
-	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met_JERUp.Px()*event_met_JERUp.Px() + event_met_JERUp.Py()*event_met_JERUp.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met_JERUp.Px()*event_leptons[0].Px() + event_met_JERUp.Py()*event_leptons[0].Py())))"                --cond-com "${cond}" ${bins}             --sys JERUp     --weight event_weight  merge-sets/${nt}/${p}/*${dtag}*.root
-	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met_JESDown.Px()*event_met_JESDown.Px() + event_met_JESDown.Py()*event_met_JESDown.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met_JESDown.Px()*event_leptons[0].Px() + event_met_JESDown.Py()*event_leptons[0].Py())))"    --cond-com "${cond}" ${bins} --sys JESDown   --weight event_weight  merge-sets/${nt}/${p}/*${dtag}*.root
-	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met_JESUp.Px()*event_met_JESUp.Px() + event_met_JESUp.Py()*event_met_JESUp.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met_JESUp.Px()*event_leptons[0].Px() + event_met_JESUp.Py()*event_leptons[0].Py())))"                --cond-com "${cond}" ${bins}             --sys JESUp     --weight event_weight  merge-sets/${nt}/${p}/*${dtag}*.root
-	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met_TESDown.Px()*event_met_TESDown.Px() + event_met_TESDown.Py()*event_met_TESDown.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met_TESDown.Px()*event_leptons[0].Px() + event_met_TESDown.Py()*event_leptons[0].Py())))"    --cond-com "${cond}" ${bins} --sys TESDown   --weight event_weight  merge-sets/${nt}/${p}/*${dtag}*.root
-	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met_TESUp.Px()*event_met_TESUp.Px() + event_met_TESUp.Py()*event_met_TESUp.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met_TESUp.Px()*event_leptons[0].Px() + event_met_TESUp.Py()*event_leptons[0].Py())))"                --cond-com "${cond}" ${bins}             --sys TESUp     --weight event_weight  merge-sets/${nt}/${p}/*${dtag}*.root
+	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met_JERDown.Px()*event_met_JERDown.Px() + event_met_JERDown.Py()*event_met_JERDown.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met_JERDown.Px()*event_leptons[0].Px() + event_met_JERDown.Py()*event_leptons[0].Py())))"    --cond-com "selection_stage_JERDown ${cond}" ${bins} --sys JERDown   --weight event_weight  merge-sets/${nt}/${p}/*${dtag}*.root
+	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met_JERUp.Px()*event_met_JERUp.Px() + event_met_JERUp.Py()*event_met_JERUp.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met_JERUp.Px()*event_leptons[0].Px() + event_met_JERUp.Py()*event_leptons[0].Py())))"                --cond-com "selection_stage_JERUp   ${cond}" ${bins}             --sys JERUp     --weight event_weight  merge-sets/${nt}/${p}/*${dtag}*.root
+	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met_JESDown.Px()*event_met_JESDown.Px() + event_met_JESDown.Py()*event_met_JESDown.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met_JESDown.Px()*event_leptons[0].Px() + event_met_JESDown.Py()*event_leptons[0].Py())))"    --cond-com "selection_stage_JESDown ${cond}" ${bins} --sys JESDown   --weight event_weight  merge-sets/${nt}/${p}/*${dtag}*.root
+	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met_JESUp.Px()*event_met_JESUp.Px() + event_met_JESUp.Py()*event_met_JESUp.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met_JESUp.Px()*event_leptons[0].Px() + event_met_JESUp.Py()*event_leptons[0].Py())))"                --cond-com "selection_stage_JESUp   ${cond}" ${bins}             --sys JESUp     --weight event_weight  merge-sets/${nt}/${p}/*${dtag}*.root
+	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met_TESDown.Px()*event_met_TESDown.Px() + event_met_TESDown.Py()*event_met_TESDown.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met_TESDown.Px()*event_leptons[0].Px() + event_met_TESDown.Py()*event_leptons[0].Py())))"    --cond-com "selection_stage_TESDown ${cond}" ${bins} --sys TESDown   --weight event_weight  merge-sets/${nt}/${p}/*${dtag}*.root
+	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met_TESUp.Px()*event_met_TESUp.Px() + event_met_TESUp.Py()*event_met_TESUp.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met_TESUp.Px()*event_leptons[0].Px() + event_met_TESUp.Py()*event_leptons[0].Py())))"                --cond-com "selection_stage_TESUp   ${cond}" ${bins}             --sys TESUp     --weight event_weight  merge-sets/${nt}/${p}/*${dtag}*.root
 
 
 
