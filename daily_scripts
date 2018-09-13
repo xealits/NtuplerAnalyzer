@@ -67,6 +67,79 @@ jerdown ->Print()
 
 
 
+## fitting info after correction
+
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.root   --algo grid -t -1 --expectSignal 1.0 --points 80 --rMin 0.6 --rMax 1.4 --name MuShapes3 --freezeParameters lumi_13TeV  --saveSpecifiedNuis JES,JER
+
+root -l higgsCombineMuShapes3.MultiDimFit.mH120.root
+
+limit->Draw("2*deltaNLL:r", "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+limit->Draw("deltaNLL:JES", "", "L")
+
+
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.root   --algo grid -t -1 --expectSignal 1.0 --points 80 --rMin 0.6 --rMax 1.4 --freezeNuisanceGroup exp,tau,tt_th_frag,tt_th_pdf --name MuShapes3 --freezeParameters lumi_13TeV  --saveSpecifiedNuis JES,JER
+
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.root   --algo grid -t -1 --expectSignal 1.0 --points 80 --rMin 0.6 --rMax 1.4 --freezeNuisanceGroup exp,tau,tt_th_frag,tt_th_pdf --name MuShapes3 --freezeParameters lumi_13TeV,JER  --saveSpecifiedNuis JES
+
+
+
+
+plot of syst variations of JES
+
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_lj    -c mu_sel_lj -d Mt_lep_met_f -s JESUp,JESDown 
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_mutau -c mu_sel_lj -d Mt_lep_met_f -s JESUp,JESDown 
+
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_lj    -c mu_sel_ljout -d Mt_lep_met_f -s JESUp,JESDown 
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_mutau -c mu_sel_ljout -d Mt_lep_met_f -s JESUp,JESDown 
+
+
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_mutau -c mu_sel_lj    -d Mt_lep_met_f -s JESUp 
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_mutau -c mu_sel_ljout -d Mt_lep_met_f -s JESUp 
+
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_lj    -c mu_sel_lj    -d Mt_lep_met_f -s JESUp 
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_lj    -c mu_sel_ljout -d Mt_lep_met_f -s JESUp 
+
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_lj    -c mu_sel_lj    -d Mt_lep_met_f -s JESDown
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_lj    -c mu_sel_ljout -d Mt_lep_met_f -s JESDown
+
+JES             shape          0.2    0.2   0.2   0.2   0.2        0.2      0.2   0.2   0.2      0.2   0.2      0.2   0.2      -                  0.2    0.2   0.2   0.2   0.2        0.
+
+JES             shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -        
+
+JES             shape          1.0    1.0   -     -     -          -        -     -     -        -     -        -     -        -                  1.0    1.0   -     -     -          -        -     -     -        -     -        -     -        -        
+
+JES             shape          1.0    -     -     -     -          -        -     -     -        -     -        -     -        -                  1.0    -     -     -     -          -        -     -     -        -     -        -     -        -
+
+
+JES             shape          -      1.0   -     -     -          -        -     -     -        -     -        -     -        -                  -      1.0   -     -     -          -        -     -     -        -     -        -     -        -
+
+-- sharp step here
+
+
+JES             shape          -      -     -     -     -          -        -     -     -        -     -        -     -        -                  -      1.0   -     -     -          -        -     -     -        -     -        -     -        -
+
+JES             shape          -      1.0   -     -     -          -        -     -     -        -     -        -     -        -                  -      -     -     -     -          -        -     -     -        -     -        -     -        -
+
+
+JES             shape          1.0    -     1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    -     1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  
+
+
+
+rate 
+
+python yield_variations.py histosel-roots/HISTOSEL_v25pStage2Run3_3_Vloose_shape_el_mu_ljs_updowns_weights.root -d Mt_lep_met_f -c mu_sel_lj,mu_sel_ljout -p tt_mutau,tt_lj,tt_taulj,tt_taultauh,tt_other -s JES
+
+python yield_variations.py histosel-roots/HISTOSEL_v25pStage2Run3_3_Vloose_shape_el_mu_ljs_updowns_weights.root -d Mt_lep_met_f -c mu_sel_lj,mu_sel_ljout -p tt_mutau,tt_lj,tt_taulj,tt_taultauh,tt_other,dibosons,s_top_lj,s_top_other,s_top_mutau,wjets_taul,wjets_other,dy_other,dy_tautau -s JES
+
+
+
+JES             lnN          1.0    -     -     -     -          1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    -     -     -     -          1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -
+
+
+
+
+
 
 
 
