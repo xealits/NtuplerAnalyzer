@@ -1563,6 +1563,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     ttree_out.Branch( 'event_jets_n_jets', event_jets_n_jets, 'event_jets_n_jets/I' )
     event_jets_n_bjets = array( 'i', [ 0 ] )
     ttree_out.Branch( 'event_jets_n_bjets', event_jets_n_bjets, 'event_jets_n_bjets/I' )
+    event_jets_n_jets_lepmatched = array( 'i', [ 0 ] )
+    ttree_out.Branch( 'event_jets_n_jets_lepmatched', event_jets_n_jets_lepmatched, 'event_jets_n_jets_lepmatched/I' )
+    #jets_nom.lepmatched.append((p4, en_factors, bSF_weights, jet_b_discr, HF, PF, jet_index))
 
     event_jets_alliso_n_jets = array( 'i', [ 0 ] )
     ttree_out.Branch( 'event_jets_alliso_n_jets', event_jets_alliso_n_jets, 'event_jets_alliso_n_jets/I' )
@@ -2632,12 +2635,12 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 taus_main.append((p4, (TES_factor, TES_factor_up, TES_factor_dn), tau_pdgID, i, tau_ID, jetmatched))
 
             # all taus to met?
-            #if tau_pt > TAUS_PT_CUT:
-            #    proc_met         -= p4 * (TES_factor - 1.)
-            #    proc_met_JERUp   -= p4 * (TES_factor - 1.)
-            #    proc_met_JERDown -= p4 * (TES_factor - 1.)
-            #    proc_met_JESUp   -= p4 * (TES_factor - 1.)
-            #    proc_met_JESDown -= p4 * (TES_factor - 1.)
+            if tau_pt > TAUS_PT_CUT:
+                proc_met         -= p4 * (TES_factor - 1.)
+                proc_met_JERUp   -= p4 * (TES_factor - 1.)
+                proc_met_JERDown -= p4 * (TES_factor - 1.)
+                proc_met_JESUp   -= p4 * (TES_factor - 1.)
+                proc_met_JESDown -= p4 * (TES_factor - 1.)
 
             if tau_pt_up > TAUS_PT_CUT:
                 proc_met_TESUp   -=  p4 * (TES_factor_up - 1.)
@@ -3053,21 +3056,21 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                         if b_tagged_medium:
                             N_jets_nom_med_alliso += 1
 
-                # correct the met from all jets including the lep-matched jet
-                if jet_pt > JETS_PT_CUT:
-                    proc_met -= p4 * (en_factor - 1.)
-                if jet_pt_JERUp > JETS_PT_CUT:
-                    proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
-                if jet_pt_JERDown > JETS_PT_CUT:
-                    proc_met_JERDown   -= p4 * (jet_factor_JERDown - 1.)
-
-                if jet_pt_JESUp > JETS_PT_CUT:
-                    proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
-                if jet_pt_JESDown > JETS_PT_CUT:
-                    proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
-
                 # match lep
                 if not match_lep:
+
+                    # correct the met from all jets including the lep-matched jet
+                    if jet_pt > JETS_PT_CUT:
+                        proc_met -= p4 * (en_factor - 1.)
+                    if jet_pt_JERUp > JETS_PT_CUT:
+                        proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
+                    if jet_pt_JERDown > JETS_PT_CUT:
+                        proc_met_JERDown -= p4 * (jet_factor_JERDown - 1.)
+
+                    if jet_pt_JESUp > JETS_PT_CUT:
+                        proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
+                    if jet_pt_JESDown > JETS_PT_CUT:
+                        proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
 
                   # multiply the b weights for all possible combinations
                   # and correct the met with all except lep-jet
@@ -3430,12 +3433,12 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         # nominal
         tt_channel_sel_stage    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
-        tt_channel_sel_stage_TESUp    = 0 #passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_TESDown  = 0 #passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][2]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_JERUp    = 0 #passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERUp_med,   N_jets_JERUp_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_JERDown  = 0 #passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERDown_med, N_jets_JERDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_JESUp    = 0 #passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESUp_med,   N_jets_JESUp_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_JESDown  = 0 #passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESDown_med, N_jets_JESDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_TESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_TESDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][2]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JERUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERUp_med,   N_jets_JERUp_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JERDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERDown_med, N_jets_JERDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESUp_med,   N_jets_JESUp_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JESDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESDown_med, N_jets_JESDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
         # alliso tt, the presel is most important here
         #tt_channel_presel_stage = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), taus_candidates, proc_met)
@@ -3453,19 +3456,19 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             tt_channel_stage = tt_channel_presel_stage
 
         if tt_channel_sel_stage_TESUp > 0:
-            tt_channel_sel_stage_TESUp += 2
+            tt_channel_sel_stage_TESUp += 100
         if tt_channel_sel_stage_TESDown > 0:
-            tt_channel_sel_stage_TESDown += 2
+            tt_channel_sel_stage_TESDown += 100
 
         if tt_channel_sel_stage_JESUp > 0:
-            tt_channel_sel_stage_JESUp += 2
+            tt_channel_sel_stage_JESUp += 100
         if tt_channel_sel_stage_JESDown > 0:
-            tt_channel_sel_stage_JESDown += 2
+            tt_channel_sel_stage_JESDown += 100
 
         if tt_channel_sel_stage_JERUp > 0:
-            tt_channel_sel_stage_JERUp += 2
+            tt_channel_sel_stage_JERUp += 100
         if tt_channel_sel_stage_JERDown > 0:
-            tt_channel_sel_stage_JERDown += 2
+            tt_channel_sel_stage_JERDown += 100
 
         #passes = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and dy_channel_sel_stage < 1
         notpasses = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and em_channel_sel_stage < 1 and tt_channel_stage_alliso < 1
@@ -3557,6 +3560,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         event_jets_n_jets[0]  = N_jets_nom_all
         event_jets_n_bjets[0] = N_jets_nom_med
+        event_jets_n_jets_lepmatched[0] = len(jets_nom.lepmatched)
 
         event_jets_alliso_n_jets[0]  = N_jets_nom_med_alliso
         event_jets_alliso_n_bjets[0] = N_jets_nom_all_alliso
