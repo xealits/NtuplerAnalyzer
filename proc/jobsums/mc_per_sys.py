@@ -167,5 +167,5 @@ if args.ratio:
         data_rel.Divide(nom_MC)
         data_rel.Draw("same")
 
-cst.SaveAs(args.output_directory + '/MC-systs_%s_%s_%s_%s.png' % (args.data_file, args.channel, args.distr, args.systematic))
+cst.SaveAs(args.output_directory + '/MC-systs_%s_%s_%s_%s_%s.png' % (args.data_file, args.channel, args.process, args.distr, args.systematic))
 
