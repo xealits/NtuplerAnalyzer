@@ -3059,18 +3059,18 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 # match lep
                 if not match_lep:
 
-                    # correct the met from all jets including the lep-matched jet
-                    if jet_pt > JETS_PT_CUT:
-                        proc_met -= p4 * (en_factor - 1.)
-                    if jet_pt_JERUp > JETS_PT_CUT:
-                        proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
-                    if jet_pt_JERDown > JETS_PT_CUT:
-                        proc_met_JERDown -= p4 * (jet_factor_JERDown - 1.)
+                  # correct the met from all jets including the lep-matched jet
+                  if jet_pt > JETS_PT_CUT:
+                      proc_met -= p4 * (en_factor - 1.)
+                  if jet_pt_JERUp > JETS_PT_CUT:
+                      proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
+                  if jet_pt_JERDown > JETS_PT_CUT:
+                      proc_met_JERDown -= p4 * (jet_factor_JERDown - 1.)
 
-                    if jet_pt_JESUp > JETS_PT_CUT:
-                        proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
-                    if jet_pt_JESDown > JETS_PT_CUT:
-                        proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
+                  if jet_pt_JESUp > JETS_PT_CUT:
+                      proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
+                  if jet_pt_JESDown > JETS_PT_CUT:
+                      proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
 
                   # multiply the b weights for all possible combinations
                   # and correct the met with all except lep-jet
