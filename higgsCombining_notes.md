@@ -834,6 +834,10 @@ Overall:
     combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.txt --plots --saveShapes --saveWithUncertainties --name MuShapes
 
 
+eog covariance_fit_s.png
+
+
+
 
 
 

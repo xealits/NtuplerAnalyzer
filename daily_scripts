@@ -70,6 +70,14 @@ JER +7 +5  * 10^-3
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
 
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+
+
+
 again all three asymmetric
 
 JER       :   -0.000  -0.699/+0.673  +0.016/+0.016
@@ -81,6 +89,385 @@ why??????
 
 
 try leaving them in TT only, no old MCs
+
+
+
+
+
+
+## JES JER TES only in TT
+
+full:
+
+JES             shape       1.0 1.0 1.0 1.0 1.0        1.0      1.0 1.0 1.0      1.0 1.0      1.0 1.0      -               1.0 1.0 1.0 1.0 1.0        1.0      1.0 1.0 1.0      1.0 1.0      1.0 1.0      -
+JER             shape       1.0 1.0 1.0 1.0 1.0        1.0      1.0 1.0 1.0      1.0 1.0      1.0 1.0      -               1.0 1.0 1.0 1.0 1.0        1.0      1.0 1.0 1.0      1.0 1.0      1.0 1.0      -
+TES             shape       1.0 1.0 1.0 1.0 1.0        1.0      1.0 1.0 1.0      1.0 1.0      1.0 1.0      -               1.0 1.0 1.0 1.0 1.0        1.0      1.0 1.0 1.0      1.0 1.0      1.0 1.0      -
+
+
+only TT:
+
+JES             shape       1.0 1.0 1.0 1.0 1.0        -        -   -   -        -   -        -   -        -               1.0 1.0 1.0 1.0 1.0        -        -   -   -        -   -        -   -        -
+JER             shape       1.0 1.0 1.0 1.0 1.0        -        -   -   -        -   -        -   -        -               1.0 1.0 1.0 1.0 1.0        -        -   -   -        -   -        -   -        -
+TES             shape       1.0 1.0 1.0 1.0 1.0        -        -   -   -        -   -        -   -        -               1.0 1.0 1.0 1.0 1.0        -        -   -   -        -   -        -   -        -
+
+
+still:
+
+  JER       :   +0.000  -0.751/+0.836  +0.009/+0.006
+  JES       :   +0.000  -0.773/+0.830  +0.010/+0.001
+  TES       :   -0.000  -0.810/+0.793  +0.014/-0.001
+
+
+## impacts with only objects
+
+testing correlation with all systematics one by one
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  TES       :   +0.000  -0.626/+0.565  +0.015/-0.012
+  JER       :   +0.000  -0.665/+0.774  +0.000/+0.001
+  JES       :   +0.000  -0.623/+0.686  +0.009/-0.008
+
+
+
+tau on
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  TES       :   +0.000  -0.626/+0.565  +0.015/-0.012
+  JER       :   +0.000  -0.665/+0.774  +0.000/+0.001
+  JES       :   +0.000  -0.623/+0.686  +0.009/-0.008
+
+
+
+exp on
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JER       :   +0.000  -0.707/+0.803  +0.008/+0.007
+  TES       :   +0.000  -0.772/+0.750  +0.016/-0.003
+  JES       :   +0.000  -0.729/+0.789  +0.011/-0.000
+
+
+-- one of exp!
+
+only exp on
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.721/+0.784  +0.015/-0.001
+  JER       :   +0.000  -0.706/+0.802  +0.009/+0.007
+  TES       :   +0.000  -0.741/+0.704  +0.021/+0.002
+
+exps:
+exp group = tauID_eff tau_fakes dy_norm wjets_norm qcd_norm bSF PU TOPPT
+
+norms:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JER       :   +0.000  -0.665/+0.775  +0.002/+0.002
+  JES       :   +0.000  -0.645/+0.729  +0.003/+0.003
+  TES       :   +0.000  -0.691/+0.649  +0.014/+0.004
+
+the others:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   -0.000  -0.699/+0.780  +0.011/-0.002
+  JER       :   +0.000  -0.695/+0.798  +0.006/+0.005
+  TES       :   +0.000  -0.686/+0.682  +0.011/-0.002
+
+
+--- ??? so which
+
+again:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.623/+0.686  +0.009/-0.008
+  JER       :   +0.000  -0.665/+0.774  +0.000/+0.001
+  TES       :   +0.000  -0.626/+0.565  +0.015/-0.012
+
+
+-- maybe there are several affecting params?
+
+tau fakes:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.623/+0.686  +0.009/-0.008
+  JER       :   +0.000  -0.665/+0.774  +0.000/+0.001
+  TES       :   +0.000  -0.626/+0.565  +0.015/-0.012
+
+
+tau ID:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.623/+0.686  +0.009/-0.008
+  JER       :   +0.000  -0.665/+0.774  +0.000/+0.001
+  TES       :   +0.000  -0.626/+0.565  +0.015/-0.012
+
+
+
+PU:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  TES       :   +0.000  -0.653/+0.646  +0.009/+0.006
+  JER       :   +0.000  -0.665/+0.775  +0.000/+0.002
+  JES       :   +0.000  -0.640/+0.726  +0.003/+0.003
+
+--- PU !!!!!!!!!!
+
+all PU:
+
+PU              shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -
+
+only-TT PU:
+
+PU              shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -
+
+-- run
+
+  JER       :   +0.000  -0.666/+0.775  +0.002/+0.003
+  JES       :   +0.000  -0.634/+0.716  +0.005/+0.002
+  TES       :   +0.000  -0.646/+0.644  +0.010/+0.005
+
+--- same stuff...
+
+NLL scan with these parameters
+
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.root   --algo grid -t -1 --expectSignal 1.0 --points 80 --rMin 0.6 --rMax 1.4 --name MuShapes3 --freezeParameters  lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau  --saveSpecifiedNuis JES,JER,TES,PU
+
+--freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau
+--freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau
+
+no JER:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JER --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JER --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm,JER --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JER       :   +0.000  +0.000/+0.000  +0.000/+0.000
+  JES       :   +0.000  -0.599/+0.674  +0.008/-0.005
+  TES       :   +0.000  -0.607/+0.565  +0.013/-0.004
+
+-- ha
+
+
+
+TOPPT:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  TES       :   +0.000  -0.672/+0.573  +0.021/-0.013
+  JER       :   +0.000  -0.665/+0.774  +0.000/+0.000
+  JES       :   +0.000  -0.627/+0.689  +0.011/-0.009
+
+
+
+bSF:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.623/+0.686  +0.009/-0.008
+  JER       :   +0.000  -0.665/+0.774  +0.000/+0.001
+  TES       :   +0.000  -0.626/+0.565  +0.015/-0.012
+
+
+the rest of norms: dy wjets qcd
+
+dy
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.628/+0.686  +0.009/-0.008
+  JER       :   +0.000  -0.666/+0.775  +0.000/+0.000
+  TES       :   +0.000  -0.628/+0.565  +0.015/-0.012
+
+
+wjets
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,dy_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,dy_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,dy_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.623/+0.767  +0.009/-0.001
+  JER       :   +0.000  -0.682/+0.787  +0.004/+0.004
+  TES       :   +0.000  -0.651/+0.675  +0.009/-0.003
+
+-- WJETS to some extend!!!!!!!!!!!!!!!!!!!!
+
+
+qcd
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  TES       :   -0.000  -0.686/+0.620  +0.011/-0.008
+  JER       :   +0.000  -0.665/+0.774  +0.000/+0.001
+  JES       :   +0.000  -0.673/+0.747  +0.006/-0.006
+
+again all norms:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,PU,TOPPT --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   -0.000  -0.699/+0.780  +0.011/-0.002
+  JER       :   +0.000  -0.695/+0.798  +0.006/+0.005
+  TES       :   +0.000  -0.686/+0.682  +0.011/-0.002
+
+
+--- this is it!
+
+PU & WJETS
+
+
+
+
+
+
+
+
+
+
+
+
+
+without MC stats:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.623/+0.686  +0.009/-0.008
+  JER       :   +0.000  -0.665/+0.774  +0.000/+0.001
+  TES       :   +0.000  -0.626/+0.565  +0.015/-0.012
+
+
+with MC stats:
+
+  JES       :   -0.000  -0.666/+0.723  +0.010/-0.009
+  JER       :   +0.000  -0.706/+0.808  +0.000/+0.000
+  TES       :   -0.000  -0.664/+0.605  +0.016/-0.013
+
+
+
+
+
+
+
+
+
+## effect of JER
+
+in stack plot JER  up and down shapes deviate from nominal in the same way
+
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_lj    -c mu_sel_ljout -d Mt_lep_met_f -s JERUp,JERDown 
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_mutau -c mu_sel_ljout -d Mt_lep_met_f -s JERUp,JERDown 
+
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_lj    -c mu_sel_lj    -d Mt_lep_met_f -s JERUp,JERDown 
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_mutau -c mu_sel_lj    -d Mt_lep_met_f -s JERUp,JERDown 
+
+
+redo JER?
+
+
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_lj    -c mu_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown 
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_mutau -c mu_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown 
+
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_lj    -c mu_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown 
+python mc_per_sys.py --no-data histosel-roots/HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root -p tt_mutau -c mu_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown 
+
+
+
+
+
+
+
+
+
+
+## distributions
+
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm 
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s JESUp
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s JESDown
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s JERUp
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s JERDown
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s TESUp
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s TESDown
+
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm 
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s JESUp
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s JESDown
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s JERUp
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s JERDown
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s TESUp
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root     -p -r -o plots/run4/test2/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s TESDown
+
+
+## correlations
+
+combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.root                          --plots --saveShapes --saveWithUncertainties --name MuShapes3
+
+combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.root -t -1 --expectSignal 1.0 --plots --saveShapes --saveWithUncertainties --name MuShapes3
+
+
+combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.root -t -1 --expectSignal 1.0 --plots --saveShapes --saveWithUncertainties --name MuShapes3 --freezeNuisanceGroup tt_th_pdf
+
+eog covariance_fit_s.png
+
+
+* autoMCStats 0
 
 
 
