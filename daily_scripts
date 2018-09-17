@@ -6,6 +6,90 @@
 
 
 
+# full redo tt with nominal tes
+
+all rest MC without tt
+updowns
+and tt v26 with weights
+
+hadd distrs_v25pStage2Run3_3_Run4_updowns_weights.root v25pStage2Run3/MC* v25r4/MC* v26r4/MC2016_Summer16_TTJets_powheg.root
+
+now:
+
+hadd distrs_v25pStage2Run3_3_Run4_updowns_weights_2.root v25pStage2Run3/MC* v25r4/MC* v26pStage2Run4/2/MC2016_Summer16_TTJets_powheg.root
+
+
+
+
+ls v26pStage2Run4 > group-hadds
+split -l 500 group-hadds group-hadds_
+
+cd v26pStage2Run4
+
+foreach group ( `ls ../group-hadds_*` )
+hadd $group.MC2016_Summer16_TTJets_powheg.root `cat $group` &
+end
+
+hadd v26pStage2Run4_hadds2/MC2016_Summer16_TTJets_powheg.root group-hadds_??.MC2016_Summer16_TTJets_powheg.root
+
+hadd distrs_v25pStage2Run3_3_Run4_updowns_weights_2.root v25pStage2Run3/MC* v25r4/MC* v26pStage2Run4/2/MC2016_Summer16_TTJets_powheg.root
+
+cp distrs_v25pStage2Run3_3_Run4_updowns_weights_2.root ../distrs_v25pStage2Run3_3_Run4_updowns_weights.root
+
+rm histosel-roots/v25pStage2Run3_3_Run4_mu_ljs/*
+rm histosel-roots/v25pStage2Run3_3_Run4_el_ljs/*
+
+source histosel_stage2_run3_3_Run4_VlooseShapes_el_sel_ljs &
+source histosel_stage2_run3_3_Run4_VlooseShapes_mu_sel_ljs &
+
+source histosel_stage2_run3_3_Run4_VlooseShapes_el_sel_ljs_rest &
+source histosel_stage2_run3_3_Run4_VlooseShapes_mu_sel_ljs_rest &
+
+source histosel_stage2_run3_3_Run4_VlooseShapes_el_sel_ljs_pdfs &
+source histosel_stage2_run3_3_Run4_VlooseShapes_mu_sel_ljs_pdfs &
+
+
+hadd HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root v25pStage2Run3_3_Run4_mu_ljs/*root v25pStage2Run3_3_Run4_el_ljs/*root
+
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit               --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_Run4Test2.json  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_Run4Test2.json -o postfit_mu_impacts_Run4Test2
+
+
+-- JES and JER are assymetric again, in the same way as usual
+JES +9 -1  * 10^-3
+JER +7 +5  * 10^-3
+-- but they are smaller then in the first test
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+again all three asymmetric
+
+JER       :   -0.000  -0.699/+0.673  +0.016/+0.016
+JES       :   +0.000  -0.696/+0.678  +0.018/+0.008
+TES       :   -0.000  -0.665/+0.655  +0.023/+0.011
+
+dmn
+why??????
+
+
+try leaving them in TT only, no old MCs
+
+
+
+
+
+
+
+
+
+
 
 # one sided expectations of JES and JER
 
