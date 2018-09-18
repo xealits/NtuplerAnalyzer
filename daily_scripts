@@ -7,13 +7,249 @@
 
 
 
+# blown up electron systematics
+
+many systematics (PDF, PU)
+have both variations much larger than nominal: about x2 of nominal
+
+time make distrs_mc_common_weights  p=pStage2Run4 nt=v26 option="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_nominal         p=pStage2Run4 nt=v26 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+
+
+
+
+
+
+
+# rest of MC with new nominal TES etc
+
+hopefully it will correct the issue with PU and wjets
+
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25                      cond="selection_stage==107 && event_jets_lj_var > 60."  chan="mu_sel_ljout" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25                      cond="selection_stage==106 && event_jets_lj_var > 60."  chan="mu_sel_ljout_ss" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25                      cond="selection_stage==107 && event_jets_lj_var <= 60." chan="mu_sel_lj" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25                      cond="selection_stage==106 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss" &
+
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var > 60."  chan="el_sel_ljout" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25 options="--el-procs" cond="selection_stage==116 && event_jets_lj_var > 60."  chan="el_sel_ljout_ss" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25 options="--el-procs" cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+
+
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25                      cond="(selection_stage==107 || selection_stage==105) && event_jets_lj_var > 60."  chan="mu_selVloose_ljout" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25                      cond="(selection_stage==106 || selection_stage==104) && event_jets_lj_var > 60."  chan="mu_selVloose_ljout_ss" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25                      cond="(selection_stage==107 || selection_stage==105) && event_jets_lj_var <= 60." chan="mu_selVloose_lj" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25                      cond="(selection_stage==106 || selection_stage==104) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss" &
+
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25 options="--el-procs" cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var > 60."  chan="el_selVloose_ljout" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25 options="--el-procs" cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var > 60."  chan="el_selVloose_ljout_ss" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25 options="--el-procs" cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25 options="--el-procs" cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+
+
+
+
+
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25                      cond="selection_stage==107 && event_jets_lj_var >  60." chan="mu_sel_ljout" &
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25                      cond="selection_stage==107 && event_jets_lj_var <= 60." chan="mu_sel_lj" &
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25                      cond="selection_stage==106 && event_jets_lj_var >  60." chan="mu_sel_ljout_ss" &
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25                      cond="selection_stage==106 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss" &
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+
+
+
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25                      cond="(selection_stage==107 || selection_stage==105) && event_jets_lj_var >  60." chan="mu_selVloose_ljout" &
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25                      cond="(selection_stage==107 || selection_stage==105) && event_jets_lj_var <= 60." chan="mu_selVloose_lj" &
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25                      cond="(selection_stage==106 || selection_stage==104) && event_jets_lj_var >  60." chan="mu_selVloose_ljout_ss" &
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25                      cond="(selection_stage==106 || selection_stage==104) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss" &
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_common_weights    p=pStage2Run4Rest nt=v25 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+
+
+
+
+and tt for electron channels
+
+
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
+
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+
+
+
+
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
+
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+
+
+
+
+
+
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
+
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+
+
+
+
+
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
+
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+
+
+
+
+
+
+
+
+foreach d ( `cat all-dtags` )
+hadd distrs/v25pStage2Run4Rest_nominal_hadds/$d.root distrs/v25pStage2Run4Rest_nominal/*$d*root &
+end
+
+foreach d ( `cat all-dtags` )
+hadd distrs/v25pStage2Run4Rest_sys_hadds/$d.root distrs/v25pStage2Run4Rest_sys/*$d*root &
+end
+
+
+foreach d ( `cat all-dtags` )
+hadd distrs/v25pStage2Run4Rest_hadds/$d.root distrs/v25pStage2Run4Rest_sys_hadds/*$d*root distrs/v25pStage2Run4Rest_nominal_hadds/*$d*root &
+end
+
+
+hadd all
+
+all mc
+core wjets
+updowns
+tt
+
+hadd distrs_v25pStage2Run3_3_Run4_updowns_weights_3.root v25pStage2Run4Rest/MC* v25pStage2Run4Rest/wjets/MC* v25r4/MC* v26pStage2Run4/2/MC2016_Summer16_TTJets_powheg.root
+
+cp  distrs_v25pStage2Run3_3_Run4_updowns_weights_3.root  ../distrs_v25pStage2Run3_3_Run4_updowns_weights.root
+
+hadd HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root v25pStage2Run3_3_Run4_mu_ljs/*root v25pStage2Run3_3_Run4_el_ljs/*root
+
+cp HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root ../../../fit-stuff
+
+
+
+-- apparently no change in the MC yields
+
+use W0Jets?
+
+
+checking for now:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  TES       :   +0.000  -0.607/+0.565  +0.013/-0.004
+  JER       :   +0.000  -0.992/+0.990  +0.000/-0.000
+  JES       :   +0.000  -0.599/+0.674  +0.008/-0.005
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,wjets_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,wjets_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,wjets_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.656/+0.739  +0.008/-0.005
+  JER       :   +0.000  -0.992/+0.992  +0.000/-0.000
+  TES       :   +0.000  -0.713/+0.618  +0.019/-0.007
+
+with wjets:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.703/+0.779  +0.018/-0.002
+  JER       :   +0.000  -0.993/+0.992  +0.001/-0.001
+  TES       :   +0.000  -0.731/+0.690  +0.025/-0.004
+
+kind of ok
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV -o latest_mu_toys_asimov_impacts_full_Run4Test3.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test3.json -o latest_mu_toys_asimov_impacts_full_Run4Test3
+
+  JES       :   +0.000  -0.723/+0.799  +0.009/+0.001
+  JER       :   +0.000  -0.993/+0.993  +0.000/-0.001
+  TES       :   +0.000  -0.776/+0.758  +0.016/-0.002
+
+
+
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV -o latest_mu_toys_asimov_impacts_full_Run4Test3.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test3.json -o latest_mu_toys_asimov_impacts_full_Run4Test3
+
+
+
+
+
+
+
+
+
+
+
 # full redo tt with nominal tes
 
 all rest MC without tt
 updowns
 and tt v26 with weights
 
-hadd distrs_v25pStage2Run3_3_Run4_updowns_weights.root v25pStage2Run3/MC* v25r4/MC* v26r4/MC2016_Summer16_TTJets_powheg.root
+hadd distrs_v25pStage2Run3_3_Run4_updowns_weights.root   v25pStage2Run3/MC* v25r4/MC* v26r4/MC2016_Summer16_TTJets_powheg.root
 
 now:
 
@@ -118,9 +354,163 @@ still:
   TES       :   -0.000  -0.810/+0.793  +0.014/-0.001
 
 
+
+
+
+
+## rate based JER
+
+JER             shape       1.0 1.0 1.0 1.0 1.0        1.0      1.0 1.0 1.0      1.0 1.0      1.0 1.0      -               1.0 1.0 1.0 1.0 1.0        1.0      1.0 1.0 1.0      1.0 1.0      1.0 1.0      -
+
+JER             shape       1.0 1.0 1.0 1.0 1.0        -        -   -   -        -   -        -   -        -               1.0 1.0 1.0 1.0 1.0        -        -   -   -        -   -        -   -        -
+
+
+python yield_variations.py histosel-roots/HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root -d Mt_lep_met_f -c mu_sel_lj,mu_sel_ljout -p tt_mutau,tt_lj,tt_taulj,tt_taultauh,tt_other,dibosons,s_top_lj,s_top_other,s_top_mutau,wjets_taul,wjets_other,dy_other,dy_tautau -s JER
+
+                                 mu_sel_lj             mu_sel_lj             mu_sel_lj             mu_sel_lj             mu_sel_lj             mu_sel_lj             mu_sel_lj             mu_sel_lj             mu_sel_lj             mu_sel_lj             mu_sel_lj             mu_sel_lj             mu_sel_lj    mu_sel_lj      mu_sel_ljout          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout          mu_sel_ljout    mu_sel_ljout
+                                  tt_mutau                 tt_lj              tt_taulj           tt_taultauh              tt_other              dibosons              s_top_lj           s_top_other           s_top_mutau            wjets_taul           wjets_other              dy_other             dy_tautau          qcd          tt_mutau                 tt_lj              tt_taulj           tt_taultauh              tt_other              dibosons              s_top_lj           s_top_other           s_top_mutau            wjets_taul           wjets_other              dy_other             dy_tautau             qcd
+                 JER           0.999/1.001           1.001/1.001           1.003/1.008           1.002/1.000           0.996/1.000           0.970/0.983           1.004/1.001           1.005/0.991           0.995/1.002           1.000/1.000           0.993/0.999           0.819/0.976           0.979/0.988            -       0.999/1.000           0.999/0.999           0.998/1.000           0.999/0.998           0.987/0.991           1.003/1.006           1.001/1.000           1.003/0.997           0.998/1.005           1.080/1.107           1.021/1.031           1.014/1.071           0.998/1.009               -
+
+
+
+toy fit with PU on only
+
+  TES       :   +0.000  -0.607/+0.566  +0.013/-0.004
+  JER       :   +0.000  -0.992/+0.991  +0.000/-0.000
+  JES       :   +0.000  -0.599/+0.674  +0.008/-0.005
+
+-- kind of ok
+
+full toy fit
+
+  TES       :   +0.000  -0.778/+0.754  +0.017/-0.000
+  JER       :   +0.000  -0.992/+0.993  +0.000/-0.001
+  JES       :   +0.000  -0.730/+0.798  +0.011/+0.002
+
+freeze JER
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,JER --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,JER --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,JER -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,JER,PU --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,JER,PU --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,JER,PU -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+
+the usual check:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+-- works!
+
+with groups:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,wjets_norm,qcd_norm -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  TES       :   +0.000  -0.736/+0.702  +0.008/-0.004
+  JER       :   +0.000  -0.992/+0.991  +0.000/-0.000
+  JES       :   +0.000  -0.639/+0.745  +0.006/-0.004
+
+-- fine!
+
+-- suddenly FSR is constrained a lot! -- it's not balanced out by fakes!
+
+only without tau:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,tauID_eff,tau_fakes --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,tauID_eff,tau_fakes --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,tauID_eff,tau_fakes -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  TES       :   +0.000  -0.777/+0.754  +0.019/+0.002
+  JER       :   +0.000  -0.993/+0.993  +0.000/-0.001
+  JES       :   +0.000  -0.727/+0.791  +0.014/+0.001
+
+-- ha!
+
+only added wjets:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,qcd_norm --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,qcd_norm --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,bSF,TOPPT,tauID_eff,tau_fakes,dy_norm,qcd_norm -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.663/+0.781  +0.008/-0.001
+  JER       :   +0.000  -0.994/+0.992  +0.000/-0.000
+  TES       :   +0.000  -0.740/+0.746  +0.010/-0.001
+
+full fit without wjets:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,wjets_norm --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,wjets_norm --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,wjets_norm -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.692/+0.763  +0.001/-0.005
+  JER       :   +0.000  -0.993/+0.993  +0.000/-0.001
+  TES       :   +0.000  -0.761/+0.720  +0.010/-0.009
+
+hmmm
+
+no wjets and no PU too:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,wjets_norm,PU --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,wjets_norm,PU --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,wjets_norm,PU -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.692/+0.763  +0.001/-0.005
+  JER       :   +0.000  -0.993/+0.993  +0.000/-0.001
+  TES       :   +0.000  -0.761/+0.720  +0.010/-0.009
+
+on real data:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsTest2   --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,wjets_norm,PU --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsTest2   --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,wjets_norm,PU --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsTest2   --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,wjets_norm,PU -o latest_mu_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_Run4Test2.json -o latest_mu_Run4Test2
+
+
+  TES       :   -0.039  -0.434/+0.362  +0.003/-0.003
+  JER       :   -0.022  -1.042/+1.062  +0.000/-0.000
+  JES       :   -0.013  -0.322/+0.316  -0.001/-0.000
+
+real data full set:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsTest2   --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsTest2   --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsTest2   --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV -o latest_mu_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_Run4Test2.json -o latest_mu_Run4Test2
+
+
+
+
+
+
+
 ## impacts with only objects
 
 testing correlation with all systematics one by one
+
+standard fit with all systematics:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+
+no theory:
 
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp,tau --robustFit 1 --doInitialFit
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp,tau --robustFit 1 --doFits --parallel 5
@@ -560,17 +950,17 @@ time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4  cond="selection_stag
 time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4  cond="selection_stage==107 && event_jets_lj_var <= 60." chan="mu_sel_lj" &
 
 
-time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 option="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
-time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 option="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
-time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 option="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
-time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 option="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
-time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 option="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
 
-time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 option="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
-time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 option="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
-time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 option="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
-time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 option="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
-time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 option="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj" &
 
 
 
@@ -587,17 +977,17 @@ time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4  cond="selection_stag
 time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4  cond="selection_stage==106 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss" &
 
 
-time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 option="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
-time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 option="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
-time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 option="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
-time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 option="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
-time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 option="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
 
-time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 option="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
-time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 option="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
-time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 option="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
-time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 option="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
-time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 option="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss" &
 
 
 
@@ -616,17 +1006,17 @@ time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4  cond="(selection_sta
 time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4  cond="(selection_stage==107 || selection_stage==105) && event_jets_lj_var <= 60." chan="mu_selVloose_lj" &
 
 
-time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 option="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
-time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 option="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
-time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 option="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
-time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 option="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
-time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 option="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
 
-time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 option="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
-time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 option="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
-time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 option="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
-time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 option="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
-time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 option="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj" &
 
 
 time make distrs_mc_common_weights    p=pStage2Run4 nt=v26  cond="(selection_stage==106 || selection_stage==104) && event_jets_lj_var >  60." chan="mu_selVloose_ljout_ss" &
@@ -642,17 +1032,17 @@ time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4  cond="(selection_sta
 time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4  cond="(selection_stage==106 || selection_stage==104) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss" &
 
 
-time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 option="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
-time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 option="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
-time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 option="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
-time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 option="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
-time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 option="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
 
-time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 option="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
-time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 option="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
-time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 option="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
-time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 option="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
-time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 option="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_common_weights    p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_tt_weights        p=pStage2Run4 nt=v26 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_tt_weights_scale  nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_tt_weights_alphas nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
+time make distrs_mc_tt_weights_pdf    nt=v26 p=pStage2Run4 options="--el-procs"  cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss" &
 
 
 

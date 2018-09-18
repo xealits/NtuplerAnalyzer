@@ -138,6 +138,10 @@ end
 
 rm MC2016_Summer16_DYJetsToLL_10to50_amcatnlo*.root MC2016_Summer16_DYJetsToLL_50toInf_madgraph*.root MC2016_Summer16_WJets_amcatnlo*.root MC2016_Summer16_WJets_madgraph*.root MC2016_Summer16_W[234]Jets_madgraph*.root
 
+
+mv MC2016_Summer16_DYJetsToLL_* MC2016_Summer16_W[234]Jets* MC2016_Summer16_WJets_madgraph* init/
+
+
 hadd MC2016_Summer16_DYJetsToLL_10to50_amcatnlo.root init/MC2016_Summer16_DYJetsToLL_10to50_amcatnlo*root &
 hadd MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root init/MC2016_Summer16_DYJetsToLL_50toInf_madgraph*root &
 hadd MC2016_Summer16_WJets_amcatnlo.root init/MC2016_Summer16_WJets_amcatnlo*root &
