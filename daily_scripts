@@ -19,6 +19,35 @@ time make distrs_mc_nominal         p=pStage2Run4 nt=v26 options="--el-procs" co
 
 
 
+re-hadd all
+
+ls v26pStage2Run4 > group-hadds
+split -l 500 group-hadds group-hadds_
+
+cd v26pStage2Run4
+
+foreach group ( `ls ../group-hadds_*` )
+hadd $group.MC2016_Summer16_TTJets_powheg.root `cat $group` &
+end
+
+hadd v26pStage2Run4_hadds2/MC2016_Summer16_TTJets_powheg.root group-hadds_??.MC2016_Summer16_TTJets_powheg.root
+
+
+
+hadd distrs_v25pStage2Run3_3_Run4_updowns_weights_4.root v25pStage2Run4Rest/MC* v25pStage2Run4Rest/wjets/MC* v25r4/MC* v26pStage2Run4/MC2016_Summer16_TTJets_powheg.root
+
+cp  distrs_v25pStage2Run3_3_Run4_updowns_weights_4.root  ../distrs_v25pStage2Run3_3_Run4_updowns_weights.root
+
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root -p -r -o plots/run4/test4/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root -p -r -o plots/run4/test4/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s PUUp
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root -p -r -o plots/run4/test4/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s PUDown
+
+
+
+
+
+
+
 
 
 # rest of MC with new nominal TES etc
@@ -157,6 +186,7 @@ end
 foreach d ( `cat all-dtags` )
 hadd distrs/v25pStage2Run4Rest_hadds/$d.root distrs/v25pStage2Run4Rest_sys_hadds/*$d*root distrs/v25pStage2Run4Rest_nominal_hadds/*$d*root &
 end
+
 
 
 hadd all
