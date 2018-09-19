@@ -1,0 +1,119 @@
+Combination of htt_tt_0_8TeV=htt_tt_0_8TeV.txt  htt_tt_1_8TeV=htt_tt_1_8TeV.txt  htt_tt_2_8TeV=htt_tt_2_8TeV.txt
+imax 2 number of bins
+jmax 13 number of processes minus 1
+kmax 77 number of nuisance parameters
+
+----------------------------------------------------------------------------------------------------------------------------------
+shapes *         mu_sel_lj     HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root    mu_sel_lj/$PROCESS/NOMINAL/mu_sel_lj_$PROCESS_NOMINAL_Mt_lep_met_f          mu_sel_lj/$PROCESS/$SYSTEMATIC/mu_sel_lj_$PROCESS_$SYSTEMATIC_Mt_lep_met_f
+shapes data_obs  mu_sel_lj     HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root    mu_sel_lj/data/NOMINAL/mu_sel_lj_data_NOMINAL_Mt_lep_met_f                  mu_sel_lj/data/$SYSTEMATIC/mu_sel_lj_data_$SYSTEMATIC_Mt_lep_met_f
+shapes *         mu_sel_ljout  HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root    mu_sel_ljout/$PROCESS/NOMINAL/mu_sel_ljout_$PROCESS_NOMINAL_Mt_lep_met_f    mu_sel_ljout/$PROCESS/$SYSTEMATIC/mu_sel_ljout_$PROCESS_$SYSTEMATIC_Mt_lep_met_f
+shapes data_obs  mu_sel_ljout  HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root    mu_sel_ljout/data/NOMINAL/mu_sel_ljout_data_NOMINAL_Mt_lep_met_f            mu_sel_ljout/data/$SYSTEMATIC/mu_sel_ljout_data_$SYSTEMATIC_Mt_lep_met_f
+----------------------------------------------------------------------------------------------------------------------------------
+bin          mu_sel_lj         mu_sel_ljout
+observation  10243.000000      13558.000000
+
+----------------------------------------------------------------------------------------------------------------------------------
+bin           mu_sel_lj mu_sel_lj mu_sel_lj mu_sel_lj   mu_sel_lj    mu_sel_lj    mu_sel_lj  mu_sel_lj    mu_sel_lj       mu_sel_lj   mu_sel_lj      mu_sel_lj  mu_sel_lj  mu_sel_lj                     mu_sel_ljout mu_sel_ljout mu_sel_ljout mu_sel_ljout mu_sel_ljout    mu_sel_ljout    mu_sel_ljout  mu_sel_ljout  mu_sel_ljout     mu_sel_ljout   mu_sel_ljout   mu_sel_ljout   mu_sel_ljout   mu_sel_ljout
+process       tt_mutau  tt_lj     tt_taulj  tt_taultauh tt_other     dibosons     s_top_lj   s_top_other  s_top_mutau     wjets_taul  wjets_other    dy_other   dy_tautau  qcd                           tt_mutau     tt_lj        tt_taulj     tt_taultauh  tt_other        dibosons        s_top_lj      s_top_other   s_top_mutau      wjets_taul     wjets_other    dy_other       dy_tautau      qcd         
+process       0         3         4         5           6            7            8          9            11              14          15             16         17         18                            0            3            4            5            6               7               8             9             11               14             15             16             17             18          
+rate          5085.814  3729.549  237.763   324.678     103.341      42.336       232.541    39.676       230.459         22.233      256.041        9.930      201.861    224.776                       7864.098     2508.655     160.179      513.490      178.431         84.439          294.233       60.719        444.356          15.523         397.272        33.303         417.518        314.473     
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+lumi_13TeV              lnN    1.025  1.025 1.025 1.025 1.025      1.025    1.025 1.025 1.025    1.025 1.025    1.025 1.025    1.025              1.025  1.025 1.025 1.025 1.025      1.025    1.025 1.025 1.025    1.025 1.025    1.025 1.025    1.025
+tauID_eff               lnN    1.05   -     -     1.05  -          -        -     1.05  1.05     -     -        -     1.05     -                  1.05   -     -     1.05  -          -        -     1.05  1.05     -     -        -     1.05     -    
+tau_fakes               lnU    -      1.4   1.4   -     1.4        1.4      1.4   -     -        -     -        -     -        -                  -      1.4   1.4   -     1.4        1.4      1.4   -     -        -     -        -     -        -    
+dy_norm                 lnN    -      -     -     -     -          -        -     -     -        -     -        1.05  1.05     -                  -      -     -     -     -          -        -     -     -        -     -        1.05  1.05     -    
+wjets_norm              lnU    -      -     -     -     -          -        -     -     -        1.4   1.4      -     -        -                  -      -     -     -     -          -        -     -     -        1.4   1.4      -     -        -    
+qcd_norm                lnU    -      -     -     -     -          -        -     -     -        -     -        -     -        1.4                -      -     -     -     -          -        -     -     -        -     -        -     -        1.4  
+stop_norm               lnN    -      -     -     -     -          -        1.1   1.1   1.1      -     -        -     -        -                  -      -     -     -     -          -        1.1   1.1   1.1      -     -        -     -        -    
+dibos_norm              lnN    -      -     -     -     -          1.1      -     -     -        -     -        -     -        -                  -      -     -     -     -          1.1      -     -     -        -     -        -     -        -    
+bSF             shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -    
+LEPmu           shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -    
+
+PU              shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -
+TOPPT           shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -    
+
+JES             shape       1.0 1.0 1.0 1.0 1.0        -        -   -   -        -   -        -   -        -               1.0 1.0 1.0 1.0 1.0        -        -   -   -        -   -        -   -        -
+JER             shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -    
+TES             shape       1.0 1.0 1.0 1.0 1.0        -        -   -   -        -   -        -   -        -               1.0 1.0 1.0 1.0 1.0        -        -   -   -        -   -        -   -        -
+
+Frag            shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -    
+SemilepBR       shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -    
+Peterson        shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -    
+
+FSR             lnN         1.03/0.97   1.47/0.53    1.449/0.528  1.063/0.932  1.272/0.664  - - - - - - - - -    1.032/0.968  1.4/0.6      1.382/0.590  1.049/0.945  1.307/0.670  - - - - - - - - -
+ISR             lnN         1.000/1.000 1.010/0.990  1.010/0.990  0.981/1.019  0.955/1.045  - - - - - - - - -    1.015/0.985  1.019/0.981  1.034/0.966  1.004/0.996  0.987/1.013  - - - - - - - - -
+HDAMP           lnN         0.984/1.016 0.987/1.013  0.982/1.018  0.978/1.022  0.965/1.035  - - - - - - - - -    1.002/0.998  0.987/1.013  0.994/1.006  0.986/1.014  0.983/1.017  - - - - - - - - -
+TuneCUETP8M2T4  lnN         1.004/0.996 1.006/0.994  1.043/0.957  0.984/1.016  0.994/1.006  - - - - - - - - -    1.004/0.996  1.017/0.983  1.005/0.995  1.029/0.971  0.994/1.006  - - - - - - - - -
+
+Mr              shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+Mf              shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+Mfr             shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+AlphaS          shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n1       shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n2       shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n3       shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n4       shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n5       shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n6       shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n7       shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n8       shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n9       shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n11      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n12      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n13      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n14      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n15      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n16      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n17      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n18      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n19      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n21      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n22      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n23      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n24      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n25      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n26      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n27      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n28      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n29      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n31      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n32      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n33      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n34      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n35      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n36      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n37      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n38      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n39      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n41      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n42      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n43      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n44      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n45      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n46      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n47      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n48      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n49      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n51      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n52      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n53      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n54      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n55      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+PDFCT14n56      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -        
+
+
+
+
+
+
+
+
+exp group = tauID_eff tau_fakes dy_norm wjets_norm qcd_norm stop_norm dibos_norm bSF PU TOPPT LEPmu
+syst_objects group = JES JER TES
+tt_updowns  group = FSR ISR HDAMP TuneCUETP8M2T4
+tt_th_frag  group = Frag SemilepBR Peterson
+tt_th_pdf   group = Mr Mf Mfr AlphaS PDFCT14n1 PDFCT14n2 PDFCT14n3 PDFCT14n4 PDFCT14n5 PDFCT14n6 PDFCT14n7 PDFCT14n8 PDFCT14n9 PDFCT14n11 PDFCT14n12 PDFCT14n13 PDFCT14n14 PDFCT14n15 PDFCT14n16 PDFCT14n17 PDFCT14n18 PDFCT14n19 PDFCT14n21 PDFCT14n22 PDFCT14n23 PDFCT14n24 PDFCT14n25 PDFCT14n26 PDFCT14n27 PDFCT14n28 PDFCT14n29 PDFCT14n31 PDFCT14n32 PDFCT14n33 PDFCT14n34 PDFCT14n35 PDFCT14n36 PDFCT14n37 PDFCT14n38 PDFCT14n39 PDFCT14n41 PDFCT14n42 PDFCT14n43 PDFCT14n44 PDFCT14n45 PDFCT14n46 PDFCT14n47 PDFCT14n48 PDFCT14n49 PDFCT14n51 PDFCT14n52 PDFCT14n53 PDFCT14n54 PDFCT14n55 PDFCT14n56 
+
+tau group = tauID_eff tau_fakes
+
