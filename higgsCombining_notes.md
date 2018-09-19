@@ -1379,6 +1379,7 @@ both
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 -o latest_both_impacts.json            --name MuImpacts
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o postfit_both_impacts
+python new_impact_table.py --merge-pdf 
 
 
 
@@ -1390,6 +1391,13 @@ mu toys
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpactsToys
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_toys_3.json            --name MuImpactsToys
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_toys_3.json -o prefit_mu_impacts_toys
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t 10 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t 10 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t 10 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_toys_10times.json            --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_toys_10times.json -o prefit_mu_impacts_toys_10times
+
 
 el toys
 

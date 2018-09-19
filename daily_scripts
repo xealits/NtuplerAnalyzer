@@ -6,6 +6,83 @@
 
 
 
+# problem with merging two datacards
+
+JER               lnN           0.999/1.001           1.001/1.001           1.003/1.008           1.002/1.000           0.996/1.000           0.970/0.983           1.004/1.001           1.005/0.991           0.995/1.002           1.000/1.000           0.993/0.999           0.819/0.976           0.979/0.988            -       0.999/1.000           0.999/0.999           0.998/1.000           0.999/0.998           0.987/0.991           1.003/1.006           1.001/1.000           1.003/0.997           0.998/1.005           1.080/1.107           1.021/1.031           1.014/1.071           0.998/1.009               -
+
+JER             shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -
+
+
+python new_impact_table.py --merge-pdf latest_el_impacts.json latest_mu_impacts.json latest_both_impacts.json
+
+
+
+
+
+
+
+
+# symmetric NLL asymmetric impacts
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1.0 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1.0 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1.0 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_toys_3.json            --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_toys_3.json -o prefit_mu_impacts_toys
+
+  JES       :   +0.000  -0.769/+0.831  +0.008/-0.000
+  JER       :   -0.000  -0.750/+0.840  +0.007/+0.005
+  TES       :   -0.000  -0.810/+0.796  +0.013/-0.003
+
+
+example:
+
+combine -M MultiDimFit ttxsec/fit-stuff/fresh_mu.txt --algo grid --points 2000 --rMax 2 --name MuShapes --forceRecreateNLL --saveSpecifiedNuis TOPPT,dy_norm --parameters TOPPT
+
+
+
+
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.root   --algo grid -t -1 --expectSignal 1.0 --points 100 --rMin 0.5 --rMax 1.5 --name MuShapesTest4 --freezeParameters lumi_13TeV         --saveSpecifiedNuis JES,JER,TES
+
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.root   --algo grid -t -1 --expectSignal 1.0 --points 100 --rMin 0.5 --rMax 1.5 --name MuShapesTest4 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau --saveSpecifiedNuis JES,JER,TES
+
+
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_mu.root   --algo grid -t -1 --expectSignal 1.0 --points 200 --rMin 0.8 --rMax 1.2 --name MuShapesTest4 --freezeParameters lumi_13TeV         --saveSpecifiedNuis JES,JER,TES
+
+limit->Draw("2*deltaNLL:r", "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("2*deltaNLL:r", "deltaNLL>0 && 2*deltaNLL<1", "L")
+limit->Draw("JES:r", "deltaNLL>0 && 2*deltaNLL<1", "L")
+limit->Draw("JER:r", "deltaNLL>0 && 2*deltaNLL<1", "L")
+limit->Draw("TES:r", "deltaNLL>0 && 2*deltaNLL<1", "L")
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1.0 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -m 125 --robustFit 1 --doInitialFit         --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1.0 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1.0 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,tau -m 125 -o latest_mu_impacts_toys_3.json            --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_toys_3.json -o prefit_mu_impacts_toys
+
+
+only JES impact
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,JER,TES,stop_norm,dibos_norm,LEPmu --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp,tau --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,JER,TES,stop_norm,dibos_norm,LEPmu --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp,tau --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --name MuImpactsToys  -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root -m 125 --freezeParameters lumi_13TeV,JER,TES,stop_norm,dibos_norm,LEPmu --freezeNuisanceGroup tt_th_pdf,tt_updowns,tt_th_frag,exp,tau -o latest_mu_toys_asimov_impacts_full_Run4Test2.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_toys_asimov_impacts_full_Run4Test2.json -o latest_mu_toys_asimov_impacts_full_Run4Test2
+
+  JES       :   +0.000  -0.648/+0.689  +0.013/-0.014
+
+without MC stats:
+
+  JES       :   +0.000  -0.604/+0.646  +0.013/-0.013
+
+
+
+
+
+
+
+
+
 
 # blown up electron systematics
 
@@ -41,6 +118,12 @@ cp  distrs_v25pStage2Run3_3_Run4_updowns_weights_4.root  ../distrs_v25pStage2Run
 python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root -p -r -o plots/run4/test4/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm
 python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root -p -r -o plots/run4/test4/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s PUUp
 python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root -p -r -o plots/run4/test4/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm -s PUDown
+
+hadd HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root v25pStage2Run3_3_Run4_mu_ljs/*root v25pStage2Run3_3_Run4_el_ljs/*root
+
+mv HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights_test4.root
+
+cp HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights_test4.root ../../../fit-stuff/HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights.root
 
 
 
