@@ -117,3 +117,6 @@ tt_th_pdf   group = Mr Mf Mfr AlphaS PDFCT14n1 PDFCT14n2 PDFCT14n3 PDFCT14n4 PDF
 
 tau group = tauID_eff tau_fakes
 
+
+* autoMCStats 0
+

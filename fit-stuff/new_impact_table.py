@@ -24,8 +24,8 @@ assert all(isfile(f) for f in args.impacts_file)
 
 impact_name_exp = {
 "lumi_13TeV"  : "Luminosity",
-"tauID_eff"   : "Tau ID efficiency",
-"tau_fakes"   : "Tau mis-ID probability",
+"tauID_eff"   : "$\\tauh$ jet identification",
+"tau_fakes"   : "$\\tauh$ misidentification background",
 "dy_norm"     : "DY normalization",
 "stop_norm"   : "Single Top normalization",
 "dibos_norm"  : "Dibosons normalization",
@@ -35,9 +35,9 @@ impact_name_exp = {
 "LEP"         : "lepton ID efficiency",
 "LEPel"       : "electron ID efficiency",
 "LEPmu"       : "muon ID efficiency",
-"JES"         : "Jet Energy Scale",
-"JER"         : "Jet Energy Resolution",
-"TauES"       : "Tau Energy Scale",
+"JES"         : "jet energy scale",
+"JER"         : "jet energy resolution",
+"TauES"       : "$\\tauh$ Energy Scale",
 "PU"          : "Pile-Up uncertainty",
 "TOPPT"       : "top quark $p_{T}$",
 }

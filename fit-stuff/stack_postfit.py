@@ -79,7 +79,7 @@ parser.add_argument("channel",   help="channel name")
 parser.add_argument("-o", "--output-directory", type=str, default='./', help="optional output directory")
 parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
 parser.add_argument("-r", "--ratio", action='store_true', help="add ratio plot")
-parser.add_argument("--y-max",       type=float,              help="set the maximum on Y axis")
+parser.add_argument("--y-max",       type=float, default=2000, help="set the maximum on Y axis")
 
 parser.add_argument("--lumi",  type=float, default=35.8, help="lumi reported")
 parser.add_argument("--title", type=str,   default='',   help="optional title")
@@ -206,6 +206,9 @@ def th_postfit(name):
 
 data   = th_postfit(data_higComb.GetName() + '_u')
 mc_sum = th_postfit(mc_sum_higComb.GetName() + '_u')
+
+data   .GetYaxis().SetRangeUser(0, args.y_max)
+mc_sum .GetYaxis().SetRangeUser(0, args.y_max)
 
 shift = 0.
 leg = TLegend(0.7 - shift, 0.4, 0.89 - shift, 0.89)
