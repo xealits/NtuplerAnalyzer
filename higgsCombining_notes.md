@@ -781,11 +781,12 @@ Examples:
     combine -M FitDiagnostics ttxsec/fit-stuff/tt_mu_2_spec.txt --saveShapes --saveWithUncertainties --name Mu
     combine -M FitDiagnostics ttxsec/fit-stuff/fresh_mu.txt --saveShapes --saveWithUncertainties --name MuShapes
     combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.txt  --saveShapes --saveWithUncertainties --name MuShapes
-    combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.txt  --saveShapes --saveWithUncertainties --name MuShapes --freezeParameters lumi_13TeV
-    combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_el.txt  --saveShapes --saveWithUncertainties --name ElShapes --freezeParameters lumi_13TeV
     ls fitDiagnosticsMu.root
 
     combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.txt  --saveShapes --saveWithUncertainties --name MuShapes --freezeNuisanceGroup tt_updowns
+
+combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_mu.root  --saveShapes --saveWithUncertainties --name MuShapes --freezeParameters lumi_13TeV
+combine -M FitDiagnostics ttxsec/fit-stuff/latest_datacard_el.root  --saveShapes --saveWithUncertainties --name ElShapes --freezeParameters lumi_13TeV
 
 -- saves post-fit uncertainty, and then additional stack-plot should put the distr-s together
 
@@ -1379,7 +1380,11 @@ both
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 -o latest_both_impacts.json            --name MuImpacts
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o postfit_both_impacts
+
+
 python new_impact_table.py --merge-pdf 
+
+python new_impact_table.py --merge-pdf latest_el_impacts.json latest_mu_impacts.json latest_both_impacts.json
 
 
 
