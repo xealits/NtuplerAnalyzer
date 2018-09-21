@@ -1814,6 +1814,20 @@ mu_stat = 0.011
 bt_stat = 0.009
 
 
+el_sig  = 1.023
+el_sys  = 0.10
+el_stat = 0.016
+
+mu_sig  = 0.938
+mu_sys  = 0.066
+mu_stat = 0.011
+
+bt_sig  = 0.989
+bt_stat = 0.009
+bt_sys  = 0.07
+
+
+
 xsec_el_vis = [el_sig el_stat el_sys 0.025 ]
 xsec_mu_vis = [mu_sig mu_stat mu_sys 0.025 ]
 xsec_bt_vis = [bt_sig bt_stat bt_sys 0.025 ]
