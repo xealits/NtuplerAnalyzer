@@ -5,6 +5,72 @@
 
 
 
+# NOMINAL Mt for paper
+
+mc rest:
+
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25                      cond="selection_stage==107"  chan="mu_sel" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25                      cond="selection_stage==106"  chan="mu_sel_ss" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25 options="--el-procs" cond="selection_stage==117"  chan="el_sel" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25 options="--el-procs" cond="selection_stage==116"  chan="el_sel_ss" &
+
+
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25                      cond="(selection_stage==107 || selection_stage==105)"  chan="mu_selVloose" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25                      cond="(selection_stage==106 || selection_stage==104)"  chan="mu_selVloose_ss" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25 options="--el-procs" cond="(selection_stage==117 || selection_stage==115)"  chan="el_selVloose" &
+time make distrs_mc_nominal     p=pStage2Run4Rest nt=v25 options="--el-procs" cond="(selection_stage==116 || selection_stage==114)"  chan="el_selVloose_ss" &
+
+
+
+mc tt:
+
+time make distrs_mc_nominal     p=pStage2Run4 nt=v26                      cond="selection_stage==107"  chan="mu_sel" &
+time make distrs_mc_nominal     p=pStage2Run4 nt=v26                      cond="selection_stage==106"  chan="mu_sel_ss" &
+time make distrs_mc_nominal     p=pStage2Run4 nt=v26 options="--el-procs" cond="selection_stage==117"  chan="el_sel" &
+time make distrs_mc_nominal     p=pStage2Run4 nt=v26 options="--el-procs" cond="selection_stage==116"  chan="el_sel_ss" &
+
+
+time make distrs_mc_nominal     p=pStage2Run4 nt=v26                      cond="(selection_stage==107 || selection_stage==105)"  chan="mu_selVloose" &
+time make distrs_mc_nominal     p=pStage2Run4 nt=v26                      cond="(selection_stage==106 || selection_stage==104)"  chan="mu_selVloose_ss" &
+time make distrs_mc_nominal     p=pStage2Run4 nt=v26 options="--el-procs" cond="(selection_stage==117 || selection_stage==115)"  chan="el_selVloose" &
+time make distrs_mc_nominal     p=pStage2Run4 nt=v26 options="--el-procs" cond="(selection_stage==116 || selection_stage==114)"  chan="el_selVloose_ss" &
+
+
+data (old selection stages):
+
+time make distrs_data_nominal      p=pStage2Run3  cond="selection_stage==105"  chan="mu_sel"    &
+time make distrs_data_nominal      p=pStage2Run3  cond="selection_stage==104"  chan="mu_sel_ss" &
+time make distrs_data_nominal      p=pStage2Run3  cond="(selection_stage==105 || selection_stage==103)"  chan="mu_selVloose"    &
+time make distrs_data_nominal      p=pStage2Run3  cond="(selection_stage==104 || selection_stage==102)"  chan="mu_selVloose_ss" &
+
+time make distrs_data_nominal      p=pStage2Run3 options="--el-procs" cond="selection_stage==115"  chan="el_sel"    dtag=SingleEle &
+time make distrs_data_nominal      p=pStage2Run3 options="--el-procs" cond="selection_stage==114"  chan="el_sel_ss" dtag=SingleEle &
+time make distrs_data_nominal      p=pStage2Run3 options="--el-procs" cond="(selection_stage==115 || selection_stage==113)"  chan="el_selVloose"    dtag=SingleEle &
+time make distrs_data_nominal      p=pStage2Run3 options="--el-procs" cond="(selection_stage==114 || selection_stage==112)"  chan="el_selVloose_ss" dtag=SingleEle &
+
+
+foreach d ( `cat all-dtags` )
+hadd distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/$d.root distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj/*$d*root &
+end
+
+
+hadd v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleMuon.root     v25v26_pStage2Run3_Run4_Run4Rest_nolj/*SingleMuon* &
+hadd v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleElectron.root v25v26_pStage2Run3_Run4_Run4Rest_nolj/*SingleElectron* &
+
+
+python stack_plot.py v25v26_pStage2Run3_Run4_Run4Rest_nolj.root ../distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleElectron.root -p -r -o plots/run4/nolj/ --lumi 31300 -c el_sel -x el_selVloose -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm
+
+python stack_plot.py v25v26_pStage2Run3_Run4_Run4Rest_nolj.root ../distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleMuon.root     -p -r -o plots/run4/nolj/ --lumi 35800 -c mu_sel -x mu_selVloose -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm
+
+
+python stack_plot.py v25v26_pStage2Run3_Run4_Run4Rest_nolj.root ../distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleMuon.root     -p -r -o plots/run4/ --lumi 35800 -c mu_sel    -x mu_selVloose    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm --title "" --title-x "M_{T}(#mu, MET), GeV" --title-y "Events/1GeV" --draw-overflows 5 --legend-shift 0.02
+
+python stack_plot.py v25v26_pStage2Run3_Run4_Run4Rest_nolj.root ../distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleElectron.root -p -r -o plots/run4/ --lumi 31300 -c el_sel    -x el_selVloose    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8 --bin-norm --title "" --title-x "M_{T}(e, MET), GeV"   --title-y "Events/1GeV" --draw-overflows 5 --legend-shift 0.02
+
+
+
+
+
 
 
 
@@ -43,6 +109,28 @@ PDF                             &  1.9 &  1.6 &  1.5 \\
 MC statistics                   &  3.7 &  2.5 &  2.2 \\
 \hline
 \hline
+
+python numbers_for_datacard.py histosel-roots/HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights_test4.root -y -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --latex
+
+                                 process &  el_sel_lj & el_sel_ljout &  mu_sel_lj & mu_sel_ljout \\
+$\ttbar\rightarrow{\ell\tau}\nu\nu b\bar{b}$ ($\ell=e,\mu$) & $      5090 \pm        115 $ & $      7867 \pm        142 $ \\
+$\ttbar\rightarrow{\ell\tau}\nu\nu b\bar{b}$ ($\ell=e,\mu$) & $      2962 \pm         87 $ & $      4624 \pm        110 $ \\
+$\ttbar\rightarrow{\tau_{\ell}\tau_{h} \nu\nu b\bar{b} }$ & $       168 \pm         19 $ & $       276 \pm         25 $ & $       325 \pm         26 $ & $       514 \pm         34 $ \\
+$\ttbar\rightarrow{\ell\nu jj b\bar{b}}$ & $      2184 \pm         42 $ & $      1433 \pm         34 $ & $      3730 \pm         56 $ & $      2509 \pm         45 $ \\
+$\ttbar\rightarrow{\tau_{\ell}\nu jj b\bar{b}}$ & $       116 \pm          8 $ & $        75 \pm          7 $ & $       238 \pm         12 $ & $       160 \pm         10 $ \\
+          $\ttbar\rightarrow{\rm other}$ & $        59 \pm          9 $ & $        98 \pm         11 $ & $       103 \pm         12 $ & $       179 \pm         15 $ \\
+$\text{single top}\rightarrow{{\rm \ell} \tau}+X$ & $       150 \pm         14 $ & $       270 \pm         19 $ \\
+$\text{single top}\rightarrow{{\rm \ell} \tau}+X$ & $       230 \pm         17 $ & $       446 \pm         25 $ \\
+$\text{single top}\rightarrow{\rm other}$ & $        20 \pm          3 $ & $        31 \pm          5 $ & $        40 \pm          5 $ & $        61 \pm          7 $ \\
+$\text{single top}\rightarrow{\ell j}+X$ & $       148 \pm          8 $ & $       166 \pm          8 $ & $       233 \pm         10 $ & $       294 \pm         11 $ \\
+$\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$ & $       100 \pm         27 $ & $       189 \pm         28 $ & $       202 \pm         32 $ & $       418 \pm         52 $ \\
+       $\text{DY}\rightarrow{\rm other}$ & $        20 \pm         10 $ & $        59 \pm         19 $ & $        10 \pm         10 $ & $        33 \pm         14 $ \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $       111 \pm         33 $ & $       180 \pm         37 $ & $       256 \pm         49 $ & $       398 \pm         68 $ \\
+$\text{W+jets} \rightarrow\tau_{\ell}\nu + {\rm jets}$ & $         7 \pm          3 $ & $         7 \pm          4 $ & $        22 \pm         14 $ & $        16 \pm          4 $ \\
+                       $\text{dibosons}$ & $        23 \pm          4 $ & $        45 \pm          6 $ & $        42 \pm          6 $ & $        84 \pm         10 $ \\
+                            $\text{QCD}$ & $       170 \pm         55 $ & $       411 \pm         74 $ & $       225 \pm         48 $ & $       314 \pm         59 $ \\
+                                  mc_sum & $      6238 \pm        129 $ & $      7866 \pm        158 $ & $     10746 \pm        164 $ & $     13293 \pm        199 $ \\
+                                    data & $      6200 \pm        236 $ & $      7896 \pm        273 $ & $     10243 \pm        298 $ & $     13558 \pm        352 $ \\
 
 
 
