@@ -3428,7 +3428,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         sel_leps, sel_jets = leps, jets_nom
 
         # final CHANNEL SELECTION decision
-        tt_channel_presel_stage = 0 # passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), taus_candidates, proc_met)
+        tt_channel_presel_stage = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), taus_candidates, proc_met)
 
         # nominal
         tt_channel_sel_stage    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
