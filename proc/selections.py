@@ -88,6 +88,18 @@ dtags = {
 'MC2016_Summer16_QCD_MuEnriched_Pt5_600to800'  : genprocs_mutau_qcd,
 'MC2016_Summer16_QCD_MuEnriched_Pt5_800to1000' : genprocs_mutau_qcd,
 'MC2016_Summer16_QCD_MuEnriched_Pt5_80to120'   : genprocs_mutau_qcd,
+
+'MC2016_Summer16_QCD_EMEnriched_Pt-120to170.root' : genprocs_mutau_qcd,
+'MC2016_Summer16_QCD_EMEnriched_Pt-170to300.root' : genprocs_mutau_qcd,
+'MC2016_Summer16_QCD_EMEnriched_Pt-20to30.root'   : genprocs_mutau_qcd,
+'MC2016_Summer16_QCD_EMEnriched_Pt-300toInf.root' : genprocs_mutau_qcd,
+'MC2016_Summer16_QCD_EMEnriched_Pt-30to40.root'   : genprocs_mutau_qcd,
+'MC2016_Summer16_QCD_EMEnriched_Pt-30to50.root'   : genprocs_mutau_qcd,
+'MC2016_Summer16_QCD_EMEnriched_Pt-30toInf.root'  : genprocs_mutau_qcd,
+'MC2016_Summer16_QCD_EMEnriched_Pt-40toInf.root'  : genprocs_mutau_qcd,
+'MC2016_Summer16_QCD_EMEnriched_Pt-50to80.root'   : genprocs_mutau_qcd,
+'MC2016_Summer16_QCD_EMEnriched_Pt-80to120.root'  : genprocs_mutau_qcd,
+
 'MC2016_Summer16_SingleT_tW_5FS_powheg'                     : genprocs_mutau_s_top,
 'MC2016_Summer16_SingleTbar_tW_5FS_powheg'                  : genprocs_mutau_s_top,
 'MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo'      : genprocs_mutau_s_top,

@@ -142,6 +142,16 @@ rm MC2016_Summer16_DYJetsToLL_10to50_amcatnlo*.root MC2016_Summer16_DYJetsToLL_5
 mv MC2016_Summer16_DYJetsToLL_* MC2016_Summer16_W[234]Jets* MC2016_Summer16_WJets_madgraph* init/
 
 
+mv MC2016_Summer16_QCD_EMEnriched_Pt-120to170*.root MC2016_Summer16_QCD_EMEnriched_Pt-30to50*.root MC2016_Summer16_QCD_EMEnriched_Pt-50to80*.root MC2016_Summer16_QCD_EMEnriched_Pt-80to120*.root init/
+
+
+hadd MC2016_Summer16_QCD_EMEnriched_Pt-120to170.root init/MC2016_Summer16_QCD_EMEnriched_Pt-120to170*.root &
+hadd MC2016_Summer16_QCD_EMEnriched_Pt-30to50.root   init/MC2016_Summer16_QCD_EMEnriched_Pt-30to50*.root   &
+hadd MC2016_Summer16_QCD_EMEnriched_Pt-50to80.root   init/MC2016_Summer16_QCD_EMEnriched_Pt-50to80*.root   &
+hadd MC2016_Summer16_QCD_EMEnriched_Pt-80to120.root  init/MC2016_Summer16_QCD_EMEnriched_Pt-80to120*.root  &
+
+
+
 hadd MC2016_Summer16_DYJetsToLL_10to50_amcatnlo.root init/MC2016_Summer16_DYJetsToLL_10to50_amcatnlo*root &
 hadd MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root init/MC2016_Summer16_DYJetsToLL_50toInf_madgraph*root &
 hadd MC2016_Summer16_WJets_amcatnlo.root init/MC2016_Summer16_WJets_amcatnlo*root &
