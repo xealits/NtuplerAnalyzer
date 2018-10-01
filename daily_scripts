@@ -26,6 +26,10 @@ h_el->Divide(h_el_ss)
 h_el->Draw()
 
 
+
+
+
+
 ## EM Enriched QCD test
 
 time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.15,0.25,0.5,1.,2.,4."   nt=v35 p=pStage2EMEnriched  cond="selection_stage_tt_alliso==503" chan="alliso_mu_sel"    dtag="QCD" &
@@ -34,6 +38,53 @@ time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso b
 
 time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5"  nt=v35 p=pStage2EMEnriched  cond="selection_stage_tt_alliso==513" chan="alliso_el_sel"    dtag="QCD" &
 time make distrs_mc_nominal draw="event_leptons_alliso_reliso[0]" distr=relIso bins="--custom-range 0.,0.058,0.1,0.175,0.3,0.5"  nt=v35 p=pStage2EMEnriched  cond="selection_stage_tt_alliso==512" chan="alliso_el_sel_ss" dtag="QCD" &
+
+
+foreach d ( `cat merge-sets/jobs_hadd.dtags.qcd-em-enriched` )
+hadd distrs/$d.root distrs/v35pStage2EMEnriched/*$d*root &
+end
+
+
+TH1D* h_el    = (TH1D*) alliso_el_sel   ->Get("qcd/NOMINAL/alliso_el_sel_qcd_NOMINAL_relIso")
+TH1D* h_el_ss = (TH1D*) alliso_el_sel_ss->Get("qcd/NOMINAL/alliso_el_sel_ss_qcd_NOMINAL_relIso")
+h_el->Divide(h_el_ss)
+h_el->Draw()
+
+
+-- file by file is kind of flat indeed
+
+hadd antiiso_emenriched_v35pStage2EMEnriched.root v35pStage2EMEnriched/MC*
+hadd antiiso_emenriched_v35pStage2EMEnriched.root MC2016_Summer16_QCD_EMEnriched_Pt-20to30.root MC2016_Summer16_QCD_EMEnriched_Pt-30to50.root MC2016_Summer16_QCD_EMEnriched_Pt-50to80.root MC2016_Summer16_QCD_EMEnriched_Pt-80to120.root MC2016_Summer16_QCD_EMEnriched_Pt-120to170.root MC2016_Summer16_QCD_EMEnriched_Pt-170to300.root MC2016_Summer16_QCD_EMEnriched_Pt-300toInf.root
+
+hadd antiiso_double_emenriched_v35pStage2EMEnriched.root MC2016_Summer16_QCD_EMEnriched_Pt-30toInf.root MC2016_Summer16_QCD_EMEnriched_Pt-40toInf.root MC2016_Summer16_QCD_EMEnriched_Pt-30to40.root
+
+hadd antiiso_emenriched_v35pStage2EMEnriched.root MC2016_Summer16_QCD_EMEnriched_Pt-20to30.root MC2016_Summer16_QCD_EMEnriched_Pt-30to50.root MC2016_Summer16_QCD_EMEnriched_Pt-50to80.root MC2016_Summer16_QCD_EMEnriched_Pt-80to120.root MC2016_Summer16_QCD_EMEnriched_Pt-120to170.root MC2016_Summer16_QCD_EMEnriched_Pt-170to300.root MC2016_Summer16_QCD_EMEnriched_Pt-300toInf.root
+
+w.o. 80to120
+
+hadd antiiso_emenriched_v35pStage2EMEnriched.root MC2016_Summer16_QCD_EMEnriched_Pt-20to30.root MC2016_Summer16_QCD_EMEnriched_Pt-30to50.root MC2016_Summer16_QCD_EMEnriched_Pt-50to80.root  MC2016_Summer16_QCD_EMEnriched_Pt-120to170.root MC2016_Summer16_QCD_EMEnriched_Pt-170to300.root MC2016_Summer16_QCD_EMEnriched_Pt-300toInf.root
+
+hadd antiiso_emenriched_v35pStage2EMEnriched.root MC2016_Summer16_QCD_EMEnriched_Pt-120to170.root MC2016_Summer16_QCD_EMEnriched_Pt-170to300.root MC2016_Summer16_QCD_EMEnriched_Pt-300toInf.root
+hadd antiiso_emenriched_v35pStage2EMEnriched.root MC2016_Summer16_QCD_EMEnriched_Pt-120to170.root MC2016_Summer16_QCD_EMEnriched_Pt-170to300.root
+
+
+
+ xsec: 557600000, eff: 0.0096, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-20to30        
+ xsec: 136000000, eff: 0.073, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-30to50         
+ xsec: 136000000, eff: 0.073, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-30to50_ext1   
+ xsec: 19800000,  eff: 0.146, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-50to80        
+ xsec: 19800000,  eff: 0.146, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-50to80_ext1   
+ xsec: 2800000,   eff: 0.151, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-80to120        
+ xsec: 2800000,   eff: 0.151, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-80to120_ext1  
+ xsec: 477000,    eff: 0.162, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-120to170      
+ xsec: 477000,    eff: 0.162, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-120to170_ext1 
+ xsec: 114000,    eff: 0.165, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-170to300      
+ xsec: 9000,      eff: 0.15, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-300toInf      
+ xsec: 162060000, eff: 0.0016, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-30toInf       
+ xsec: 108000000, eff: 0.000225, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-30to40        
+ xsec: 54120000,  eff: 0.002, dtag: MC2016_Summer16_QCD_EMEnriched_Pt-40toInf       
+
+
 
 
 
