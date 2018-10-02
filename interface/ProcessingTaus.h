@@ -4,6 +4,7 @@
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "UserCode/NtuplerAnalyzer/interface/PatUtils.h"
 //#include "UserCode/NtuplerAnalyzer/interface/recordFuncs.h"
+#include "UserCode/NtuplerAnalyzer/interface/common_definitions.h"
 
 
 

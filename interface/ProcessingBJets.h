@@ -10,6 +10,7 @@
 #include "TH2F.h"
 
 //#include "UserCode/ttbar-leptons-80X/interface/SystematicShifts.h"
+#include "UserCode/NtuplerAnalyzer/interface/common_definitions.h"
 
 using namespace std;
 

@@ -1,5 +1,5 @@
 #include "UserCode/NtuplerAnalyzer/interface/ProcessingHLT.h"
-#include "UserCode/NtuplerAnalyzer/interface/recordFuncs.h"
+//#include "UserCode/NtuplerAnalyzer/interface/recordFuncs.h"
 //#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 
 //using namespace std;

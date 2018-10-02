@@ -1,5 +1,5 @@
 #include "UserCode/NtuplerAnalyzer/interface/ProcessingTaus.h"
-#include "UserCode/NtuplerAnalyzer/interface/recordFuncs.h"
+//#include "UserCode/NtuplerAnalyzer/interface/recordFuncs.h"
 
 
 
@@ -13,12 +13,6 @@ int processTaus_ID(pat::TauCollection& taus, double weight, // input
 for (unsigned int count_ided_taus = 0, n = 0; n < taus.size(); ++n)
 	{
 	pat::Tau& tau = taus[n];
-
-	if (record)
-		{
-		fill_2d(string("control_tau_slimmedtaus_pt_eta"), 250, 0., 500., 200, -4., 4., tau.pt(), tau.eta(), weight);
-		fill_1d(string("control_tau_slimmedtaus_phi"), 128, -3.2, 3.2, tau.phi(), weight);
-		}
 
 	// ---------- IDs
 			
@@ -57,12 +51,6 @@ for (unsigned int count_ided_taus = 0, n = 0; n < taus.size(); ++n)
 	// -- recommended for multi-object final states (ttH, H->tau-tau)
 	// -- not found in noHLT TTbar
 
-	if (record)
-		{
-		fill_2d(string("control_tau_idedtaus_pt_eta"), 250, 0., 500., 200, -4., 4., tau.pt(), tau.eta(), weight);
-		fill_1d(string("control_tau_idedtaus_phi"), 128, -3.2, 3.2, tau.phi(), weight);
-		}
-
 	// Pixel hits cut (will be available out of the box in new MINIAOD production)
 	//{
 	//int nChHadPixelHits = 0;
@@ -76,14 +64,6 @@ for (unsigned int count_ided_taus = 0, n = 0; n < taus.size(); ++n)
 	//if(nChHadPixelHits==0) continue;
 	//}
 
-	/*
-	fill_pt_e( string("all_taus_ided_pt"), tau.pt(), weight);
-	if (count_ided_taus<1)
-		{
-		fill_pt_e( string("top1pt_taus_ided_pt"), tau.pt(), weight);
-		count_ided_taus += 1;
-		}
-	*/
 	}
 
 std::sort (selTaus.begin(), selTaus.end(), utils::sort_CandidatesByPt);
@@ -100,12 +80,6 @@ int processTaus_ID_ISO(pat::TauCollection& taus, double weight, // input
 for (unsigned int count_ided_taus = 0, n = 0; n < taus.size(); ++n)
 	{
 	pat::Tau& tau = taus[n];
-
-	if (record)
-		{
-		fill_2d(string("control_tau_slimmedtaus_pt_eta"), 250, 0., 500., 200, -4., 4., tau.pt(), tau.eta(), weight);
-		fill_1d(string("control_tau_slimmedtaus_phi"), 128, -3.2, 3.2, tau.phi(), weight);
-		}
 
 	// ---------- IDs
 			
@@ -144,12 +118,6 @@ for (unsigned int count_ided_taus = 0, n = 0; n < taus.size(); ++n)
 	// -- recommended for multi-object final states (ttH, H->tau-tau)
 	// -- not found in noHLT TTbar
 
-	if (record)
-		{
-		fill_2d(string("control_tau_idedtaus_pt_eta"), 250, 0., 500., 200, -4., 4., tau.pt(), tau.eta(), weight);
-		fill_1d(string("control_tau_idedtaus_phi"), 128, -3.2, 3.2, tau.phi(), weight);
-		}
-
 	// Pixel hits cut (will be available out of the box in new MINIAOD production)
 	//{
 	//int nChHadPixelHits = 0;
@@ -163,14 +131,6 @@ for (unsigned int count_ided_taus = 0, n = 0; n < taus.size(); ++n)
 	//if(nChHadPixelHits==0) continue;
 	//}
 
-	/*
-	fill_pt_e( string("all_taus_ided_pt"), tau.pt(), weight);
-	if (count_ided_taus<1)
-		{
-		fill_pt_e( string("top1pt_taus_ided_pt"), tau.pt(), weight);
-		count_ided_taus += 1;
-		}
-	*/
 	}
 
 std::sort (selTaus.begin(), selTaus.end(), utils::sort_CandidatesByPt);
@@ -222,12 +182,7 @@ for (unsigned int count_ided_taus = 0, n = 0; n < taus.size(); ++n)
 	*/
 
 	selTaus.push_back(tau);
-	if (record)
-		{
-		fill_2d(string("control_tau_selTaus_pt_eta"), 250, 0., 500., 200, -4., 4., tau.pt(), tau.eta(), weight);
-		fill_1d(string("control_tau_selTaus_phi"), 128, -3.2, 3.2, tau.phi(), weight);
-		}
-
 	}
 return 0;
 }
+

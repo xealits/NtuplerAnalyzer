@@ -5,6 +5,7 @@
 #include "DataFormats/PatCandidates/interface/TriggerEvent.h"
 // compiled with this:
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
+#include "UserCode/NtuplerAnalyzer/interface/common_definitions.h"
 
 int Processing_selectHLTobjects(
 	std::vector<pat::TriggerObjectStandAlone>& trig_objs,                  // input:  trigger objects in the event

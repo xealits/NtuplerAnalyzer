@@ -1,5 +1,5 @@
 #include "UserCode/NtuplerAnalyzer/interface/ProcessingElectrons.h"
-#include "UserCode/NtuplerAnalyzer/interface/recordFuncs.h"
+//#include "UserCode/NtuplerAnalyzer/interface/recordFuncs.h"
 
 
 
@@ -17,13 +17,6 @@ int processElectrons_ID_ISO_Kinematics(pat::ElectronCollection& electrons, reco:
 for(unsigned int count_idiso_electrons = 0, n=0; n<electrons.size (); ++n)
 	{
 	pat::Electron& electron = electrons[n];
-
-	if (record)
-		{
-		fill_2d(string("control_el_slimmedelectrons_pt_eta"), 250, 0., 500., 200, -3., 3., electron.pt(), electron.eta(), weight);
-		fill_1d(string("control_el_slimmedelectrons_phi"), 128, -3.2, 3.2, electron.phi(), weight);
-		//fill_1d(string("control_tau_slimmedtaus_phi"), 128, -3.2, 3.2, tau.phi(), weight);
-		}
 
 	bool 
 		passKin(true),     passId(true),     passIso(true),
@@ -63,13 +56,6 @@ for(unsigned int count_idiso_electrons = 0, n=0; n<electrons.size (); ++n)
 		elDiff += electron.p4();
 		}
 	*/
-
-	// TODO: probably, should make separate collections for each step, for corrected particles, then -- passed ID etc
-	// fill_pt_e( string("all_electrons_corrected_pt"), electron.pt(), weight);
-	// if (n < 2)
-	// 	{
-	// 	fill_pt_e( string("top2pt_electrons_corrected_pt"), electron.pt(), weight);
-	// 	}
 
 	//no need for charge info any longer
 	//lid = abs(lid);
@@ -165,11 +151,6 @@ for(unsigned int count_idiso_electrons = 0, n=0; n<electrons.size (); ++n)
 		selElectrons_allIso.push_back(electron);
 		if (passIso)
 			selElectrons.push_back(electron);
-		if (record)
-			{
-			fill_2d(string("control_el_selElectrons_pt_eta"), 250, 0., 500., 200, -3., 3., electron.pt(), electron.eta(), weight);
-			fill_1d(string("control_el_selElectrons_phi"), 128, -3.2, 3.2, electron.phi(), weight);
-			}
 		}
 	else
 		{

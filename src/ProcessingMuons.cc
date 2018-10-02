@@ -1,5 +1,5 @@
 #include "UserCode/NtuplerAnalyzer/interface/ProcessingMuons.h"
-#include "UserCode/NtuplerAnalyzer/interface/recordFuncs.h"
+//#include "UserCode/NtuplerAnalyzer/interface/recordFuncs.h"
 
 
 
@@ -25,14 +25,6 @@ for(unsigned int count_idiso_muons = 0, n=0; n<muons.size (); ++n)
 	{
 	// patUtils::GenericLepton& lepton = leptons[n];
 	pat::Muon& muon = muons[n];
-
-	/*
-	if (record)
-		{
-		fill_2d(string("control_mu_slimmedmions_pt_eta"), 250, 0., 500., 200, -3., 3., muon.pt(), muon.eta(), weight);
-		fill_1d(string("control_mu_slimmedmions_phi"), 128, -3.2, 3.2, muon.phi(), weight);
-		}
-	*/
 
 	bool
 		passKin(true),     passId(true),     passIso(true),
@@ -79,18 +71,6 @@ for(unsigned int count_idiso_muons = 0, n=0; n<muons.size (); ++n)
 	passIso     = patUtils::passIso(muon, mu_ISO,      patUtils::CutVersion::Moriond17Cut);
 	passVetoIso = patUtils::passIso(muon, veto_mu_ISO, patUtils::CutVersion::Moriond17Cut);
 
-	/*
-	if (record && passId && passIso)
-		{
-		fill_2d(string("control_mu_idiso_pt_eta"), 250, 0., 500., 200, -3., 3., muon.pt(), muon.eta(), weight);
-		//fill_pt_e( string("all_muons_idiso_pt"), muon.pt(), weight);
-		if (count_idiso_muons < 2)
-			fill_2d(string("control_mu_idiso_top2pt_pt_eta"), 250, 0., 500., 200, -3., 3., muon.pt(), muon.eta(), weight);
-			//fill_pt_e( string("top2pt_muons_idiso_pt"), muon.pt(), weight);
-		count_idiso_muons += 1;
-		}
-	*/
-
 
 	// ---------------------------- Muon Kinematics
 	double leta( muon.eta());
@@ -113,13 +93,6 @@ for(unsigned int count_idiso_muons = 0, n=0; n<muons.size (); ++n)
 		selMuons_allIso.push_back(muon);
 		if (passIso)
 			selMuons.push_back(muon);
-		/*
-		if (record)
-			{
-			fill_2d(string("control_mu_selMuons_pt_eta"), 250, 0., 500., 200, -3., 3., muon.pt(), muon.eta(), weight);
-			fill_1d(string("control_mu_selMuons_phi"), 128, -3.2, 3.2, muon.phi(), weight);
-			}
-		*/
 		}
 	else
 		{
@@ -156,7 +129,7 @@ int processMuons_ID_ISO_Kinematics(
 
 {
 pat::MuonCollection selMuons_allIso;
-int processMuons_ID_ISO_Kinematics(
+return processMuons_ID_ISO_Kinematics(
 	muons, goodPV, weight, // input
 	mu_ID,  veto_mu_ID,                          // config/cuts
 	mu_ISO, veto_mu_ISO,

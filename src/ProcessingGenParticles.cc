@@ -42,8 +42,8 @@ const reco::Candidate* find_W_decay(const reco::Candidate * W) {
 			if (d0_id == 13 || d1_id == 13 ) return string("mu");
 			return string("q"); // FiXME: quite dangerous control-flow!
 			*/
-		default: // and this is just crazy
-			return NULL;
+		default: // probably, it can happen for hadronic W?
+			return W;
 		}
 	}
 }
@@ -231,6 +231,7 @@ if (!(pdgId == 12 || pdgId == 14 || pdgId == 16))
 // strictly sequencial algorithm
 }
 
+
 void save_final_cands(
 	const reco::Candidate * part,
 	vector<LorentzVector>& saved_particles)
@@ -261,6 +262,91 @@ if (!(pdgId == 12 || pdgId == 14 || pdgId == 16))
 			{
 			const reco::Candidate * daughter = part->daughter(d_i);
 			save_final_cands(daughter, saved_particles);
+			}
+		}
+	}
+// strictly sequencial algorithm
+}
+
+// sumup visible momenta of gen tau products
+void sum_final_cands(
+	const reco::Candidate * part,
+	vector<LorentzVector>& saved_particles,
+	LorentzVector& sum_vis)
+
+{
+unsigned int pdgId = abs(part->pdgId());
+if (!(pdgId == 12 || pdgId == 14 || pdgId == 16))
+	{
+	if (part->numberOfDaughters() == 0) // it's a final state
+		{
+		// check if it is not already saved
+		LorentzVector part_p4 = part->p4();
+		//if (std::find(saved_particles.begin(), saved_particles.end(), part) == saved_particles.end())
+		bool dR_match_to_saved = false;
+		for (int saved_p=0; saved_p<saved_particles.size(); saved_p++)
+			{
+			dR_match_to_saved = reco::deltaR(part_p4, saved_particles[saved_p]) < 0.0001;
+			if (dR_match_to_saved) break;
+			}
+		// then save it:
+		if (! dR_match_to_saved) sum_vis += part_p4;
+		}
+	else
+		{
+		// loop through daughters
+		for (int d_i=0; d_i < part->numberOfDaughters(); d_i++)
+			{
+			const reco::Candidate * daughter = part->daughter(d_i);
+			sum_final_cands(daughter, saved_particles, sum_vis);
+			}
+		}
+	}
+// strictly sequencial algorithm
+}
+
+
+/*
+ * save all visible no-daughters candidates (leaf candidates)
+ * (no gen neutrinos)
+ * with parallel ids
+ */
+void save_final_cands(
+	const reco::Candidate * part,
+	vector<LorentzVector>& saved_particles,
+	vector<int>& provenance_ids,
+	int provenance_id
+	)
+
+{
+unsigned int pdgId = abs(part->pdgId());
+if (!(pdgId == 12 || pdgId == 14 || pdgId == 16))
+	{
+	if (part->numberOfDaughters() == 0) // it's a final state
+		{
+		// check if it is not already saved
+		LorentzVector part_p4 = part->p4();
+		//if (std::find(saved_particles.begin(), saved_particles.end(), part) == saved_particles.end())
+		bool dR_match_to_saved = false;
+		for (int saved_p=0; saved_p<saved_particles.size(); saved_p++)
+			{
+			dR_match_to_saved = reco::deltaR(part_p4, saved_particles[saved_p]) < 0.0001;
+			if (dR_match_to_saved) break;
+			}
+		// then save it:
+		if (! dR_match_to_saved)
+			{
+			saved_particles.push_back(part_p4);
+			provenance_ids.push_back(provenance_id);
+			}
+		}
+	else
+		{
+		// loop through daughters
+		for (int d_i=0; d_i < part->numberOfDaughters(); d_i++)
+			{
+			const reco::Candidate * daughter = part->daughter(d_i);
+			save_final_cands(daughter, saved_particles, provenance_ids, provenance_id);
 			}
 		}
 	}

@@ -4,11 +4,16 @@
 #include <CondFormats/JetMETObjects/interface/JetResolutionObject.h>
 #include <JetMETCorrections/Modules/interface/JetResolution.h>
 
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
 #include "TRandom3.h"
 
+#include "UserCode/NtuplerAnalyzer/interface/common_definitions.h"
 #include "UserCode/NtuplerAnalyzer/interface/SystematicShifts.h"
+#include "UserCode/NtuplerAnalyzer/interface/MacroUtils.h"
 //#include "UserCode/NtuplerAnalyzer/interface/recordFuncs.h"
 
 /*

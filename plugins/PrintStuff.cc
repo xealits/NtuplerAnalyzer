@@ -53,6 +53,8 @@
 
 #include "TRandom3.h"
 
+#include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
+
 // MET recoil corrections for DY and WJets, from higgs->tautau group
 // usage: https://github.com/CMS-HTT/RecoilCorrections/blob/master/instructions.txt
 //#include "HTT-utilities/RecoilCorrections/interface/RecoilCorrector.h"

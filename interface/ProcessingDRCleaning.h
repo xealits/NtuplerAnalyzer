@@ -7,6 +7,7 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 
 #include "UserCode/NtuplerAnalyzer/interface/PatUtils.h"
+#include "UserCode/NtuplerAnalyzer/interface/common_definitions.h"
 
 //#include "UserCode/ttbar-leptons-80X/interface/recordFuncs.h"
 

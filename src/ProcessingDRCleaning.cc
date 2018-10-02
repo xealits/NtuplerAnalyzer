@@ -1,5 +1,5 @@
 #include "UserCode/NtuplerAnalyzer/interface/ProcessingDRCleaning.h"
-#include "UserCode/NtuplerAnalyzer/interface/recordFuncs.h"
+//#include "UserCode/NtuplerAnalyzer/interface/recordFuncs.h"
 
 
 /* clean taus of leptons
@@ -30,11 +30,6 @@ for (size_t itau = 0; itau < selTaus.size(); ++itau)
 
 	selTausNoLep.push_back(tau);
 	// so these are the final taus we use in the selection
-	if (record)
-		{
-		fill_2d(control_name + string("_pt_eta"), 250, 0., 500., 200, -4., 4., tau.pt(), tau.eta(), weight);
-		fill_1d(control_name + string("_phi"), 128, -3.2, 3.2, tau.phi(), weight);
-		}
 
 	// for the fake-rate counts (in MC)
 	// let's save how many taus we find:
@@ -72,11 +67,6 @@ for (size_t itau = 0; itau < selTaus.size(); ++itau)
 
 	selTausNoLep.push_back(tau);
 	// so these are the final taus we use in the selection
-	if (record)
-		{
-		fill_2d(control_name + string("_pt_eta"), 250, 0., 500., 200, -4., 4., tau.pt(), tau.eta(), weight);
-		fill_1d(control_name + string("_phi"), 128, -3.2, 3.2, tau.phi(), weight);
-		}
 
 	// for the fake-rate counts (in MC)
 	// let's save how many taus we find:
@@ -115,11 +105,6 @@ for (size_t itau = 0; itau < selTaus.size(); ++itau)
 
 	selTausNoLep.push_back(tau);
 	// so these are the final taus we use in the selection
-	if (record)
-		{
-		fill_2d(control_name + string("_pt_eta"), 250, 0., 500., 200, -4., 4., tau.pt(), tau.eta(), weight);
-		fill_1d(control_name + string("_phi"), 128, -3.2, 3.2, tau.phi(), weight);
-		}
 
 	// for the fake-rate counts (in MC)
 	// let's save how many taus we find:
@@ -155,12 +140,6 @@ for (size_t ijet = 0; ijet < selJets.size(); ++ijet)
 	if (minDRlj < min_dR) continue;
 
 	selJetsOut.push_back(jet);
-
-	if (record)
-		{
-		fill_2d(control_name + string("_pt_eta"), 250, 0., 500., 200, -4., 4., jet.pt(), jet.eta(), weight);
-		fill_1d(control_name + string("_phi"), 128, -3.2, 3.2, jet.phi(), weight);
-		}
 	}
 
 return 0;
@@ -189,12 +168,6 @@ for (size_t ijet = 0; ijet < selJets.size(); ++ijet)
 	if (minDRlj < min_dR) continue;
 
 	selJetsOut.push_back(jet);
-
-	if (record)
-		{
-		fill_2d(control_name + string("_pt_eta"), 250, 0., 500., 200, -4., 4., jet.pt(), jet.eta(), weight);
-		fill_1d(control_name + string("_phi"), 128, -3.2, 3.2, jet.phi(), weight);
-		}
 	}
 
 return 0;
@@ -228,12 +201,6 @@ for (size_t itau = 0; itau < selTaus.size(); ++itau)
 
 	// the taus, far from leptons and jets
 	selTausOut.push_back(tau);
-
-	if (record)
-		{
-		fill_2d(control_name + string("_pt_eta"), 250, 0., 500., 200, -4., 4., tau.pt(), tau.eta(), weight);
-		fill_1d(control_name + string("_phi"), 128, -3.2, 3.2, tau.phi(), weight);
-		}
 
 	// for the fake-rate counts (in MC)
 	// let's save how many taus we find:
