@@ -59,19 +59,19 @@
 // do correction off-line in processing
 
 // lepton ID/Iso prescriptions
-#include "UserCode/llvv_fwk/interface/PatUtils.h"
-#include "UserCode/llvv_fwk/interface/MacroUtils.h"
+#include "UserCode/NtuplerAnalyzer/interface/PatUtils.h"
+#include "UserCode/NtuplerAnalyzer/interface/MacroUtils.h"
 // lumiUtils
-#include "UserCode/llvv_fwk/interface/LumiUtils.h"
+#include "UserCode/NtuplerAnalyzer/interface/LumiUtils.h"
 // couple functions processing leptons
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingMuons.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingElectrons.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingTaus.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingJets.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingBJets.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingHLT.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingGenParticles.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingDRCleaning.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingMuons.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingElectrons.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingTaus.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingJets.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingBJets.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingHLT.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingGenParticles.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingDRCleaning.h"
 
 static double pu_vector_NOMINAL[] = {0, 0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
 0.884048630953726, 0.964813189764159, 1.07045369167689, 1.12497267309738, 1.17367530613108, 1.20239808206413, 1.20815108390021, 1.20049333094509, 1.18284686347315, 1.14408796655615,

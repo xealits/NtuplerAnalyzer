@@ -58,19 +58,19 @@
 // do correction off-line in processing
 
 // lepton ID/Iso prescriptions
-#include "UserCode/llvv_fwk/interface/PatUtils.h"
-#include "UserCode/llvv_fwk/interface/MacroUtils.h"
+#include "UserCode/NtuplerAnalyzer/interface/PatUtils.h"
+#include "UserCode/NtuplerAnalyzer/interface/MacroUtils.h"
 // lumiUtils
-#include "UserCode/llvv_fwk/interface/LumiUtils.h"
+#include "UserCode/NtuplerAnalyzer/interface/LumiUtils.h"
 // couple functions processing leptons
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingMuons.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingElectrons.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingTaus.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingJets.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingBJets.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingHLT.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingGenParticles.h"
-#include "UserCode/ttbar-leptons-80X/interface/ProcessingDRCleaning.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingMuons.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingElectrons.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingTaus.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingJets.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingBJets.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingHLT.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingGenParticles.h"
+#include "UserCode/NtuplerAnalyzer/interface/ProcessingDRCleaning.h"
 
 //#include "UserCode/NtuplerAnalyzer/interface/RoccoR.cc"
 //#include "UserCode/NtuplerAnalyzer/interface/RoccoR.h"
