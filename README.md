@@ -125,6 +125,16 @@ Ntupler reduces the MINIAOD events in both ways:
 1) it saves less events in the TTree according to some conditions like "is there only 1 good lepton in the event?" etc,
 2) it reduces the size of each stored event by saving only necessary parameters, these are simple types like int/double/LorentzVector or vectors of those (like a vector of LorentzVectors for momenta of all jets in the event etc), when in MINIAOD you have much richer PAT classes etc
 
-In principle, if 
+In principle, one can save all events with ntupler. Of course, it will require more space for output.
+But I saw that in data (SingleElectron and SingleMuon datasets) most of events pass the requirements anyway.
+It should be otherwise in TT MC dataset. But I did not check how large will be the increase in the output.
+
+
+
+
+Typical sizes and parameters of crab jobs
+-----------------------------------------
+
+TOMEASURE
 
 
