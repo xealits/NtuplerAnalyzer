@@ -1,0 +1,699 @@
+# v35 safe run for antiiso mc qcd
+for c in `cat dsets_all_usual_qcd_ext`
+do
+python make_crab_cfgs.py $c v35 tauIDantiIso
+done
+
+for c in `ls python/crab_cfgs/v35/*crab.py`
+do
+crab submit -c $c &
+done
+
+for js in `ls crab_projects/crab_Ntupler_v35* -d`
+do
+echo $js
+crab status -d $js
+done
+
+for js in `ls crab_projects/crab_Ntupler_v35* -d`
+do
+echo $js
+crab resubmit -d $js
+done
+
+
+# on muon enriched qcd
+for c in `cat dsets_qcd_enriched_muon`
+do
+python make_crab_cfgs.py $c v35 tauIDantiIso
+done | tee cur_jobs
+
+for c in `cat cur_jobs`
+do
+crab submit -c $c
+done
+
+# on em enriched
+for c in `cat dsets_qcd_enriched_emenriched`
+do
+python make_crab_cfgs.py $c v35 tauIDantiIso
+done | tee cur_jobs
+
+for c in `cat cur_jobs`
+do
+crab submit -c $c
+done
+
+
+
+
+
+# v34 gen info and signal record for acceptance
+
+for c in `cat dsets_tt_systs`
+do
+python make_crab_cfgs.py $c v34 signal
+done
+
+for c in /TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM
+do
+python make_crab_cfgs.py $c v34 signal
+done
+
+for c in `ls python/crab_cfgs/v34/*crab.py`
+do
+crab submit -c $c
+done
+
+for js in `ls crab_projects/crab_Ntupler_v34* -d`
+do
+echo $js
+crab status -d $js
+done
+
+for js in `ls crab_projects/crab_Ntupler_v34* -d`
+do
+echo $js
+crab resubmit -d $js
+done
+
+
+
+for c in `cat dsets_tt_systs_ext`
+do
+python make_crab_cfgs.py $c v34 signal
+done | tee cur_jobs
+
+
+for c in `cat cur_jobs`
+do
+crab submit -c $c
+done
+
+
+
+
+
+
+
+# v33tauCands
+for c in `cat dsets_2015_QCD_DY`
+do
+python make_crab_cfgs.py $c v33tauCands tauCands --without-HLT
+done
+
+for c in `cat dsets_2016_QCD_DY`
+do
+python make_crab_cfgs.py $c v33tauCands tauCands --without-HLT
+done
+
+for c in `ls python/crab_cfgs/v33tauCands/*crab.py`
+do
+crab submit -c $c
+done
+
+
+
+
+
+# jets is bad idea, tested the tau cands -- stores event if thereis at least 1 tau cand
+# v32jets run for 2015-2016 tau SV investigation in jets selection
+# 
+for c in `cat dsets_2015_QCD_DY`
+do
+python make_crab_cfgs.py $c v32jets jets_MonitorHLT --without-HLT
+done
+
+for c in `cat dsets_2016_QCD_DY`
+do
+python make_crab_cfgs.py $c v32jets jets_MonitorHLT --without-HLT
+done
+
+
+for c in `ls python/crab_cfgs/v32jets/*crab.py`
+do
+crab submit -c $c
+done
+
+for js in `ls crab_projects/crab_Ntupler_v32jets* -d`
+do
+echo $js
+crab status -d $js
+done
+
+
+
+
+# ok, let's try Aug rereco with badCh badPFMuon
+for c in `cat dsets_aug_rereco`
+do
+python make_crab_cfgs.py $c v32 Dilep_tauID
+done
+
+for c in `ls python/crab_cfgs/v32/*crab.py`
+do
+crab submit -c $c
+done
+
+for c in `ls -d crab_projects/crab_Ntupler_v32*`
+do
+crab status -d $c
+done
+
+for c in `ls -d crab_projects/crab_Ntupler_v32*`
+do
+crab resubmit -d $c
+done
+
+
+
+
+
+# v31v27 run with fixed muon trigger object matching
+# with dileptons and tau ID
+for c in `cat dsets_feb_rereco dsets_all_usual_mc`
+do
+python make_crab_cfgs.py $c v31v27 Dilep_tauID
+done
+
+for c in `ls python/crab_cfgs/v31v27/*crab.py`
+do
+crab submit -c $c
+done
+
+for c in `ls -d crab_projects/crab_Ntupler_v31v27*`
+do
+crab status -d $c
+done
+
+
+
+# v30v27 run wit elmu selection only
+# checking if jets HLT could somehow (somehow!) bias elmu selection
+# also no significant changes since v27
+for c in `cat dsets_feb_rereco dsets_all_usual_mc`
+do
+python make_crab_cfgs.py $c v30v27 ElMu
+done
+
+for c in `ls python/crab_cfgs/v30v27/*crab.py`
+do
+crab submit -c $c
+done
+
+# kill 
+
+for c in `ls crab_projects/crab_Ntupler_v30v27_*`
+do
+crab kill -c $c
+done
+
+
+# v30 same but with compilation actually fixed (after broken online Roccor)
+
+for c in `cat dsets_feb_rereco_mu /TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM`
+do
+python make_crab_cfgs.py $c v30 Dilep_tauID
+done
+
+python make_crab_cfgs.py /TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM v30 Dilep_tauID
+
+for c in `ls python/crab_cfgs/v30/*crab.py`
+do
+crab submit -c $c
+done
+
+for js in `ls crab_projects/crab_Ntupler_v30_Data13TeV_SingleMuon2016H_03Feb2017_ver2 -d`
+do
+echo $js
+crab report -d $js  
+done
+
+
+
+
+# v29 with N trackLayers for muon rochcors
+# could not manage to run it in ntupler -- will have to do it later, offline
+# 818de90bc6950ca3724b9f79df23e9fae2d1261e
+
+for c in `cat dsets_feb_rereco_mu /TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM`
+do
+python make_crab_cfgs.py $c v29 Dilep_tauID
+done
+
+python make_crab_cfgs.py /TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM v29 Dilep_tauID
+
+
+for c in `ls python/crab_cfgs/v29/*crab.py`
+do
+crab submit -c $c
+done
+
+
+# v28 with propagation of JES to met in data
+# 1a2fb698bf6257569811bf998f7bb43dd61dec41
+#for c in `cat dsets_feb_rereco dsets_all_usual_mc dsets_ext_wjets_dyjets dsets_tt_systs`
+
+for c in `cat dsets_feb_rereco`
+do
+python make_crab_cfgs.py $c v28 Dilep_tauID_tauIDantiIso_jets
+done
+
+for c in `ls python/crab_cfgs/v28/*crab.py`
+do
+crab submit -c $c
+done
+
+for c in `cat dsets_all_usual_mc dsets_ext_wjets_dyjets`
+do
+python make_crab_cfgs.py $c v28 Dilep_tauID_tauIDantiIso_jets
+done
+
+
+
+
+# v27 full run with antiiso and dileptons
+# for dilep controls and qcd, hence only the very standard sets
+#  dsets_ext_wjets_dyjets
+for c in `cat dsets_feb_rereco dsets_all_usual_mc`
+do
+python make_crab_cfgs.py $c v27 Dilep_tauID_tauIDantiIso_jets
+done
+
+for c in `ls python/crab_cfgs/v27/*crab.py`
+do
+crab submit -c $c
+done
+
+
+
+
+# add wjets amcatnlo extra
+# dsets_ext_wjets_dyjets
+for c in /WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext2-v2/MINIAODSIM
+do
+python make_crab_cfgs.py $c v27 Dilep_tauID_tauIDantiIso_jets
+done
+
+for c in python/crab_cfgs/v27/MC2016_Summer16_WJets_amcatnlo_ext2_v2_crab.py
+do
+crab submit -c $c
+done
+
+
+
+
+
+# v26
+# # fixed renorm refact systematics, only TT run, only for these systematics (and the corrected systematic normalization weights)
+
+for c in /TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM
+do
+echo $c
+python make_crab_cfgs.py $c v26 tauID
+done
+
+for c in `ls python/crab_cfgs/v26/*crab.py`
+do
+crab submit -c $c
+done
+
+for js in `ls crab_projects/crab_Ntupler_v26* -d`
+do
+echo $js
+crab resubmit -d $js
+done
+
+
+# v25
+# b fragmentation systematics derived only from b-jets
+# saving the event weights for alll systematics -- to make the shape normalization in all of them
+
+for c in `cat dsets_feb_rereco dsets_all_usual_mc dsets_ext_wjets_dyjets dsets_tt_systs`
+do
+python make_crab_cfgs.py $c v25 tauID
+done
+
+for c in `ls python/crab_cfgs/v25/*crab.py`
+do
+crab submit -c $c
+done
+
+for js in `ls crab_projects/crab_Ntupler_v25* -d`
+do
+echo $js
+crab resubmit -d $js
+done
+
+for c in `cat dsets_tt_systs_ext`
+do
+echo $c
+python make_crab_cfgs.py $c v25 tauID | tee -a v25.jobs.tt.syst.ext
+done
+
+for c in `cat v25.jobs.tt.syst.ext`
+do
+echo $c
+crab submit -c $c
+done
+
+for c in `cat missing.jobs`
+do
+echo $c
+crab submit -c $c
+done
+
+for c in crab_projects/crab_Ntupler_v25_MC2016_Summer16_TTJets_powheg_CUETP8M2T4down_ext1 crab_projects/crab_Ntupler_v25_MC2016_Summer16_TTJets_powheg_isrdown_ext2 crab_projects/crab_Ntupler_v25_MC2016_Summer16_TTJets_powheg_CUETP8M2T4up_ext1 crab_projects/crab_Ntupler_v25_MC2016_Summer16_TTJets_powheg_isrup_ext2 crab_projects/crab_Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrup_ext2
+do
+echo $c
+crab resubmit -d $c
+done
+
+for c in crab_projects/crab_Ntupler_v25_MC2016_Summer16_TTJets_powheg_CUETP8M2T4down_ext1 crab_projects/crab_Ntupler_v25_MC2016_Summer16_TTJets_powheg_isrdown_ext2 crab_projects/crab_Ntupler_v25_MC2016_Summer16_TTJets_powheg_CUETP8M2T4up_ext1 crab_projects/crab_Ntupler_v25_MC2016_Summer16_TTJets_powheg_isrup_ext2 crab_projects/crab_Ntupler_v25_MC2016_Summer16_TTJets_powheg_fsrup_ext2
+do
+echo $c
+crab status -d $c
+done
+
+
+
+# v24
+# b1dfa1f690356c39eaef94b2596032aaa740a8ad
+# run with ElTau only with Impact fix
+
+for c in `cat dsets_feb_rereco dsets_all_usual_mc dsets_ext_wjets_dyjets dsets_tt_systs`
+do
+python make_crab_cfgs.py $c v24 ElTau
+done
+
+for c in `ls python/crab_cfgs/v24/*crab.py`
+do
+crab submit -c $c
+done
+
+for c in `cat dsets_tt_systs_ext`
+do
+echo $c
+python make_crab_cfgs.py $c v24 ElTau | tee -a v24.jobs.tt.syst.ext
+done
+
+for c in `cat v24.jobs.tt.syst.ext`
+do
+echo $c
+crab submit -c $c
+done
+
+
+
+# v23
+# 1df5104d4b0997ca4443e0af3705c8df0325faf3
+# antiiso again, HLTs, and full genmatch
+
+for c in `cat dsets_feb_rereco dsets_all_usual_mc`
+do
+python make_crab_cfgs.py $c v23 Dilep_tauID_tauIDantiIso_jets
+done
+
+for c in `ls python/crab_cfgs/v23/*crab.py`
+do
+crab submit -c $c
+done
+
+for js in `ls crab_projects/crab_Ntupler_v23* -d`
+do
+echo $js
+crab status -d $js
+done
+
+# hard resub 2 dibosons
+python/crab_cfgs/v23/MC2016_Summer16_WWToLNuQQ_powheg_crab.py
+python/crab_cfgs/v23/MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin_crab.py
+
+# and normal the rest
+for js in `ls crab_projects/crab_Ntupler_v23* -d`
+do
+echo $js
+crab resubmit -d $js
+done
+
+# ext
+for c in `cat dsets_ext_wjets_dyjets`
+do
+python make_crab_cfgs.py $c v23 Dilep_tauID_tauIDantiIso_jets
+done
+
+for c in `cat jobs.ext`
+do
+echo $c
+crab submit -c $c
+done
+
+# TT systs with ext
+#
+for c in `cat dsets_tt_systs`
+do
+echo $c
+python make_crab_cfgs.py $c v23 Dilep_tauID_tauIDantiIso_jets
+done
+
+for c in `cat jobs.syst`
+do
+echo $c
+crab submit -c $c
+done
+
+# exts
+
+for c in `cat dsets_tt_systs_ext`
+do
+echo $c
+python make_crab_cfgs.py $c v23 Dilep_tauID_tauIDantiIso_jets | tee -a jobs.tt.syst.ext
+done
+
+for c in `cat jobs.tt.syst.ext`
+do
+echo $c
+crab submit -c $c
+done
+
+
+
+# v22 fixed antiIso leptons
+# checked gen tau match for non TT datasets
+# submit 2015 QCD and DY
+for c in `cat dsets_2015_QCD_DY`
+do
+python make_crab_cfgs.py $c v22 tauID_tauIDantiIso --without-HLT
+done
+
+for c in `ls python/crab_cfgs/v22/*crab.py`
+do
+crab submit -c $c
+done
+
+for c in `cat dsets_2016_QCD_DY`
+do
+python make_crab_cfgs.py $c v22 tauID_tauIDantiIso --without-HLT
+done
+
+for c in `ls python/crab_cfgs/v22/MC2016_Summer16*crab.py`
+do
+crab submit -c $c
+done
+
+for js in `ls crab_projects/crab_Ntupler_v22* -d`
+do
+echo $js
+crab status -d $js
+done
+
+
+
+
+
+
+# v21
+# found a weird bug in tau ID of t decay ID
+# it mixed up taus with leptons in one of the legs
+# -- have to rerun TT
+# 1a580ae19414e26db7cd73154b3e036d6d7fc0cc
+for c in "/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"
+do
+echo $c
+python make_crab_cfgs.py $c v21 Dilep_tauID_tauIDantiIso_jets
+done
+
+for c in `ls python/crab_cfgs/v21/*crab.py`
+do
+crab submit -c $c
+done
+
+
+# 
+for c in `cat dsets_tt_systs`
+do
+echo $c
+python make_crab_cfgs.py $c v21 Dilep_tauID_tauIDantiIso_jets
+done
+
+for c in `cat dsets_ext_wjets_dyjets`
+do
+python make_crab_cfgs.py $c v20 Dilep_tauID_tauIDantiIso_jets
+done
+
+# v20
+# fixed ntupler with genmatch (all MC except TT failed here):
+# b7ff88728b90a690bd1154be232dee211f41a030
+# 6074ea24e4e1b15a4303c6062b26324aaae1d97b -- fixed without HLT, resub 2015
+# also added support for HLT2 -- tested on 2015 DY file, it works
+# resub all just to be sure
+# compare with v19 TT later
+for c in `cat dsets_feb_rereco dsets_all_usual_mc`
+do
+python make_crab_cfgs.py $c v20 Dilep_tauID_tauIDantiIso_jets
+done
+
+# submit 2015 QCD and DY
+for c in `cat dsets_2015_QCD_DY`
+do
+python make_crab_cfgs.py $c v20 tauID_tauIDantiIso --without-HLT
+done
+
+for c in `ls python/crab_cfgs/v20/*crab.py`
+do
+crab submit -c $c
+done
+
+# resub std
+for js in `ls crab_projects/crab_Ntupler_v20_MC2016* -d`
+do
+echo $js
+crab resubmit -d $js
+done
+
+# clean crab cache
+for js in `ls crab_projects/crab_Ntupler_v19* crab_projects/crab_Ntupler_v20* -d`                                                                                                                             
+do
+echo $js
+crab purge --dir=$js  
+done
+
+# only 2015
+for c in `ls python/crab_cfgs/v20/MC2015_Spring16_*crab.py`
+do
+crab submit -c $c
+done
+
+
+
+
+# v19
+# fixed th weights for CT10 and fragmentation
+# added genmatch
+# fixed jet correction stuff
+# rearranged the leptons and their veto leptons to accomodate suggestions on impact and iso
+# rearranged matched gen jet info, for example explicitly storing its pt for pt gen/reco distr in FSR etc
+# 0a287c062bd543fad0e53a45efa8094c92c48426 ntupler
+# fd2642bd05539ceb0996e6d0c1110256da61df15 ttbar
+for c in `cat dsets_feb_rereco dsets_all_usual_mc`
+do
+python make_crab_cfgs.py $c v19 Dilep_tauID_tauIDantiIso_jets
+done
+
+for c in `ls python/crab_cfgs/v19/*crab.py`
+do
+crab submit -c $c &
+done
+
+for js in `ls crab_projects/crab_Ntupler_v19* -d`                                                                                                                             
+do
+echo $js                                                
+crab status -d $js  
+done
+
+for js in `ls crab_projects/crab_Ntupler_v19* -d`
+do
+echo $js
+crab resubmit -d $js
+done
+
+# -- all MC crashes, but TT did get to submit
+# tested TT online -- works,
+# submit tt
+crab submit -c python/crab_cfgs/v19/MC2016_Summer16_TTJets_powheg_crab.py
+
+# v18 changed PDF from NNPDF3 (broken hessians) to CT (ok hessians)
+# added the MET filters to MC, separately each filter
+
+for c in `cat dsets_feb_rereco dsets_all_usual_mc`
+do               
+python make_crab_cfgs.py $c v18 Dilep_tauID_tauIDantiIso_jets
+done
+
+# submit
+for c in `ls python/crab_cfgs/v18/*crab.py`
+do
+crab submit -c $c &
+done
+
+for c in `cat to_sub`
+do
+crab submit -c $c &
+done
+
+# status
+
+for js in `ls crab_projects/crab_Ntupler_v18* -d`                                                                                                                             
+do
+echo $js                                                
+crab status -d $js  
+done
+
+# v17
+# added the final systematic variations (weight-based ones):
+#   * renorm/refactorization scales
+#   * 60 pdf NNPDF3.0 hessians (will add others later) [will have to redo -- there is an error with these PDFs, notified by Till -- see presentation]
+#   * alpha strong variation
+#   * b->hadron fraction and the other one from the TOP PAG calculator
+# and the old jets region for tau fake rate estimation in gluon dominated jets
+#   -- the missing part for repeating the old analysis with the data-driven fakes
+# ad01716af052bc988988865300f1c274ffe1ead2
+
+# generating crab jobs
+#for c in `cat dsets_feb_rereco dsets_all_usual_mc dsets_ext_wjets_dyjets dsets_tt_systs`
+
+# usually need to run it on tt amcatnlo as well
+
+
+# TauMatch with tracks and all stuff
+# 1d93805886617ec08bbd0aadbfc5af0fbfcb31e8
+python job_submit.py -d ./dsets/ cmsRun jobing/default_configs.yaml python/LSF_template_TauMatch_cfg.py dtags/2016_MC-Summer16-TT.yaml outdir/tauMatch-2/
+
+# generating crab jobs
+for c in `cat dsets_feb_rereco`                                                                                                                                               
+do               
+python make_crab_cfgs.py $c v15 Dilep_tauID_tauIDantiIso
+done
+
+also
+dsets_all_usual_mc
+dsets_ext_wjets_dyjets
+dsets_tt_systs
+
+#resubmit
+
+for js in `ls crab_projects/crab_Ntupler_v15* -d`
+do
+echo $js
+crab resubmit -d $js
+done
+
+
+# crab report to get lumisections
+for js in `ls crab_projects/crab_Ntupler_v13-1_Data13TeV_Single*/ -d`                                                                                                         
+do
+echo $js
+crab report -d $js  
+done
+
+
