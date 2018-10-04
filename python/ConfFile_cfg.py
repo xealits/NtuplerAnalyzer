@@ -100,7 +100,7 @@ ivars.inputFiles = input_files
 
 to_tag = True
 
-output_file = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_29/src/UserCode/NtuplerAnalyzer/NtuplerAnalyzer_test_METfilters%s_%s_%s.root' % ('OFF' if to_tag else 'ON', dtag, record_scheme)
+output_file = './NtuplerAnalyzer_test_METfilters%s_%s_%s.root' % ('OFF' if to_tag else 'ON', dtag, record_scheme)
 ivars.outputFile = output_file
 # get and parse the command line arguments
 ivars.parseArguments()
