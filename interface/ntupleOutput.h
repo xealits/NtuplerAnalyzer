@@ -491,6 +491,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_decayMode)
 
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_dR)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_p4)
 
 // info on lep matching
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  tau_matching_lep)

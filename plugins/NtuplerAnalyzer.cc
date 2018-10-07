@@ -262,6 +262,7 @@ struct gen_matching {
 	//Int_t sum;
 	Int_t closest;
 	Float_t dR;
+	LorentzVector p4;
 };
 
 struct gen_matching match_to_gen(const LorentzVector& p4,
@@ -282,6 +283,8 @@ struct gen_matching match_to_gen(const LorentzVector& p4,
 Float_t min_dR = 9999.;
 Float_t dR_cut = 0.4;
 Int_t   min_id = 0;
+LorentzVector min_p4(0., 0., 0., 0.);
+
 edm::LogInfo ("Demo") << "act gen sizes " << gen_leps.size() << gen_taus.size() << gen_tau3ch.size() << gen_w_prods.size() << gen_b_prods.size();
 edm::LogInfo ("Demo") << "act obj p4    " << p4.pt() << p4.eta() << p4.phi();
 edm::LogInfo ("Demo") << "act gen pts  " << (gen_leps.size()>0 ? gen_leps[0].pt() : 0)
@@ -306,6 +309,7 @@ for (unsigned int i = 0; i<gen_leps.size(); i++)
 		min_dR = dR;
 		int id = gid_leps[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
+		min_p4 = gen_leps[i];
 		}
 	}
 
@@ -318,6 +322,7 @@ for (unsigned int i = 0; i<gen_taus.size(); i++)
 		min_dR = dR;
 		int id = gid_taus[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
+		min_p4 = gen_leps[i];
 		}
 	}
 
@@ -330,6 +335,7 @@ for (unsigned int i = 0; i<gen_tau3ch.size(); i++)
 		min_dR = dR;
 		int id = gid_tau3ch[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
+		min_p4 = gen_leps[i];
 		}
 	}
 
@@ -342,6 +348,7 @@ for (unsigned int i = 0; i<gen_taulep.size(); i++)
 		min_dR = dR;
 		int id = gid_taulep[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
+		min_p4 = gen_leps[i];
 		}
 	}
 
@@ -354,6 +361,7 @@ for (unsigned int i = 0; i<gen_w_prods.size(); i++)
 		min_dR = dR;
 		int id = gid_w_prods[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
+		min_p4 = gen_leps[i];
 		}
 	}
 
@@ -366,10 +374,11 @@ for (unsigned int i = 0; i<gen_b_prods.size(); i++)
 		min_dR = dR;
 		int id = gid_b_prods[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
+		min_p4 = gen_leps[i];
 		}
 	}
 
-struct gen_matching match = {.closest=min_id, .dR=min_dR};
+struct gen_matching match = {.closest=min_id, .dR=min_dR, .p4=min_p4};
 return match;
 }
 
@@ -3471,6 +3480,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			struct gen_matching match = match_to_gen(tau.p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods);
 			NT_tau_matching_gen   .push_back(match.closest);
 			NT_tau_matching_gen_dR.push_back(match.dR);
+			NT_tau_matching_gen_p4.push_back(match.p4);
 			}
 
 		if (tau.hasSecondaryVertex())
