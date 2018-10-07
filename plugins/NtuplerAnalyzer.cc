@@ -322,7 +322,7 @@ for (unsigned int i = 0; i<gen_taus.size(); i++)
 		min_dR = dR;
 		int id = gid_taus[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
-		min_p4 = gen_leps[i];
+		min_p4 = gen_taus[i];
 		}
 	}
 
@@ -335,7 +335,7 @@ for (unsigned int i = 0; i<gen_tau3ch.size(); i++)
 		min_dR = dR;
 		int id = gid_tau3ch[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
-		min_p4 = gen_leps[i];
+		min_p4 = gen_tau3ch[i];
 		}
 	}
 
@@ -348,7 +348,7 @@ for (unsigned int i = 0; i<gen_taulep.size(); i++)
 		min_dR = dR;
 		int id = gid_taulep[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
-		min_p4 = gen_leps[i];
+		min_p4 = gen_taulep[i];
 		}
 	}
 
@@ -361,7 +361,7 @@ for (unsigned int i = 0; i<gen_w_prods.size(); i++)
 		min_dR = dR;
 		int id = gid_w_prods[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
-		min_p4 = gen_leps[i];
+		min_p4 = gen_w_prods[i];
 		}
 	}
 
@@ -374,7 +374,7 @@ for (unsigned int i = 0; i<gen_b_prods.size(); i++)
 		min_dR = dR;
 		int id = gid_b_prods[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
-		min_p4 = gen_leps[i];
+		min_p4 = gen_b_prods[i];
 		}
 	}
 

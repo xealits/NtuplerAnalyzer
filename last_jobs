@@ -1,3 +1,8 @@
+# v40 run with new stand-alone ntupler
+# and tau-gen matched p4 for studies of tau p4
+# have to update more, addressing 3 elements: 1) original tau, 2) lepton from tau (tau-2 neutrino), 3) p4 of hadrons from tau decay
+
+
 # v35 safe run for antiiso mc qcd
 for c in `cat dsets_all_usual_qcd_ext`
 do
