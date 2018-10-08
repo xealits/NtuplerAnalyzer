@@ -262,7 +262,6 @@ struct gen_matching {
 	//Int_t sum;
 	Int_t closest;
 	Float_t dR;
-	LorentzVector p4;
 };
 
 struct gen_matching match_to_gen(const LorentzVector& p4,
@@ -283,7 +282,7 @@ struct gen_matching match_to_gen(const LorentzVector& p4,
 Float_t min_dR = 9999.;
 Float_t dR_cut = 0.4;
 Int_t   min_id = 0;
-LorentzVector min_p4(0., 0., 0., 0.);
+//LorentzVector min_p4(0., 0., 0., 0.);
 
 edm::LogInfo ("Demo") << "act gen sizes " << gen_leps.size() << gen_taus.size() << gen_tau3ch.size() << gen_w_prods.size() << gen_b_prods.size();
 edm::LogInfo ("Demo") << "act obj p4    " << p4.pt() << p4.eta() << p4.phi();
@@ -309,7 +308,7 @@ for (unsigned int i = 0; i<gen_leps.size(); i++)
 		min_dR = dR;
 		int id = gid_leps[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
-		min_p4 = gen_leps[i];
+		//min_p4 = gen_leps[i];
 		}
 	}
 
@@ -322,7 +321,7 @@ for (unsigned int i = 0; i<gen_taus.size(); i++)
 		min_dR = dR;
 		int id = gid_taus[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
-		min_p4 = gen_taus[i];
+		//min_p4 = gen_taus[i];
 		}
 	}
 
@@ -335,7 +334,7 @@ for (unsigned int i = 0; i<gen_tau3ch.size(); i++)
 		min_dR = dR;
 		int id = gid_tau3ch[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
-		min_p4 = gen_tau3ch[i];
+		//min_p4 = gen_tau3ch[i];
 		}
 	}
 
@@ -348,7 +347,7 @@ for (unsigned int i = 0; i<gen_taulep.size(); i++)
 		min_dR = dR;
 		int id = gid_taulep[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
-		min_p4 = gen_taulep[i];
+		//min_p4 = gen_taulep[i];
 		}
 	}
 
@@ -361,7 +360,7 @@ for (unsigned int i = 0; i<gen_w_prods.size(); i++)
 		min_dR = dR;
 		int id = gid_w_prods[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
-		min_p4 = gen_w_prods[i];
+		//min_p4 = gen_w_prods[i];
 		}
 	}
 
@@ -374,13 +373,51 @@ for (unsigned int i = 0; i<gen_b_prods.size(); i++)
 		min_dR = dR;
 		int id = gid_b_prods[i];
 		min_id = (id > 0 ? gen_id : -gen_id);
-		min_p4 = gen_b_prods[i];
+		//min_p4 = gen_b_prods[i];
 		}
 	}
 
-struct gen_matching match = {.closest=min_id, .dR=min_dR, .p4=min_p4};
+//struct gen_matching match = {.closest=min_id, .dR=min_dR, .p4=min_p4};
+struct gen_matching match = {.closest=min_id, .dR=min_dR};
 return match;
 }
+
+// genmatchig to flat gen collections
+struct gen_matching_collection {
+	//Int_t sum;
+	Int_t index;
+	Float_t dR;
+};
+
+struct gen_matching match_to_gen_collection(const LorentzVector& p4,
+	vector<LorentzVector>& gen_collection)
+
+{
+Float_t min_dR = 9999.;
+Float_t dR_cut = 0.4;
+Int_t   min_index = -99;
+
+// I need in-place quick loop with list of all inputs here, how to do it in C? -- do it later
+
+// so 0 is no match to anything
+// numbers for different kinds of particles
+// and the sign is for the pdgId sign of the provenance particle of these final states
+// i.e. the sign of W, b, tau or leptons
+int gen_id = 1;
+for (unsigned int i = 0; i<gen_collection.size(); i++)
+	{
+	Float_t dR = reco::deltaR(p4, gen_collection[i]);
+	if (dR < dR_cut && dR < min_dR)
+		{
+		min_dR = dR;
+		min_index = i;
+		}
+	}
+
+struct gen_matching_collection match = {.index=min_index, .dR=min_dR};
+return match;
+}
+
 
 enum nWeights {
 	NOM_EVENTS = 1,
@@ -1868,6 +1905,21 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							NT_gen_visPy += p.p4().Py();
 							}
 						}
+
+					if (isDY && a_id == 15)
+						{
+						// save the gen tau (final in the tau-tau modeling chain?)
+						NT_gen_tt_tau_orig_p4.push_back(p.p4());
+
+						// save the visible part of the tt tau (all gen taus grab not-tt stuff
+						LorentzVector gen_tt_tau_vis(0,0,0,0);
+						sum_final_cands(&p, gen_tt_tau_prods, gen_tt_tau_vis, true);
+						NT_gen_tt_tau_vis_p4.push_back(gen_tt_tau_vis);
+						// save invis part (might not be present)
+						LorentzVector gen_tt_tau_invis(0,0,0,0);
+						sum_final_cands(&p, gen_tt_tau_prods, gen_tt_tau_invis, false);
+						NT_gen_tt_tau_invis_p4.push_back(gen_tt_tau_invis);
+						}
 					}
 
 				if (abs(id) == 6 && n_daughters == 2)
@@ -1900,13 +1952,19 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							}
 						if (fabs(d_i_pdgId) == 15)
 							{
-							int tau_id = simple_tau_decay_id(W_final->daughter(d_i));
+							// save the gen tau (final in the tau-tau modeling chain?)
+							NT_gen_tt_tau_orig_p4.push_back(W_final->daughter(d_i)->p4());
 
 							// save the visible part of the tt tau (all gen taus grab not-tt stuff
 							LorentzVector gen_tt_tau_vis(0,0,0,0);
-							sum_final_cands(W_final->daughter(d_i), gen_tt_tau_prods, gen_tt_tau_vis);
+							sum_final_cands(W_final->daughter(d_i), gen_tt_tau_prods, gen_tt_tau_vis, true);
 							NT_gen_tt_tau_vis_p4.push_back(gen_tt_tau_vis);
+							// save invis part (might not be present)
+							LorentzVector gen_tt_tau_invis(0,0,0,0);
+							sum_final_cands(W_final->daughter(d_i), gen_tt_tau_prods, gen_tt_tau_invis, false);
+							NT_gen_tt_tau_invis_p4.push_back(gen_tt_tau_invis);
 
+							int tau_id = simple_tau_decay_id(W_final->daughter(d_i));
 							// = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
 							// 20 + 10
 							LogInfo ("Demo") << "tau decay w ID " << tau_id;
@@ -3480,7 +3538,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			struct gen_matching match = match_to_gen(tau.p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods);
 			NT_tau_matching_gen   .push_back(match.closest);
 			NT_tau_matching_gen_dR.push_back(match.dR);
-			NT_tau_matching_gen_p4.push_back(match.p4);
+
+			if (isDY || isTT)
+				{
+				struct gen_matching_collection match2 = match_to_gen_collection(tau.p4(), gen_tt_tau_vis);
+				NT_tau_matching_gen_collection   .push_back(match2.index);
+				NT_tau_matching_gen_collection_dR.push_back(match2.dR);
+				}
 			}
 
 		if (tau.hasSecondaryVertex())

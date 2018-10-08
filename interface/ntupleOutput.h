@@ -482,6 +482,8 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_partonFlavour)
 // GEN TAUS
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tau_p4)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tt_tau_vis_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tt_tau_invis_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tt_tau_orig_p4)
 
 // TAUS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_id)
@@ -491,7 +493,11 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_decayMode)
 
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_dR)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_matching_gen_p4)
+
+// tt tau gen
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen_collection)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_collection_dR)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_matching_gen_p4)
 
 // info on lep matching
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  tau_matching_lep)
