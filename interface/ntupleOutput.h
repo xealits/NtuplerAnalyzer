@@ -421,6 +421,10 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_matching_gen_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_N_trackerLayersWithMeasurement)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_correction)
 
+// tau gen matches for leptons from taus (in DY and TT)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_matching_gen_collection)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_matching_gen_collection_dR)
+
 // allIso LEPTONS
 Int_t_in_NTuple(OUTNTUPLE, leps_ID_allIso)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, lep_alliso_id)
@@ -481,9 +485,12 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_partonFlavour)
 
 // GEN TAUS
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tau_p4)
+
+// for tau momentum transitions study
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tt_tau_vis_p4)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tt_tau_invis_p4)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tt_tau_orig_p4)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_tt_tau_simpleID)
 
 // TAUS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_id)
@@ -494,7 +501,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_decayMode)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_dR)
 
-// tt tau gen
+// tau gen matches in DY and TT for studying the momentum transition at different stages
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen_collection)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_collection_dR)
 //VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_matching_gen_p4)

@@ -304,7 +304,7 @@ if (save_only_visible && !(pdgId == 12 || pdgId == 14 || pdgId == 16))
 		for (int d_i=0; d_i < part->numberOfDaughters(); d_i++)
 			{
 			const reco::Candidate * daughter = part->daughter(d_i);
-			sum_final_cands(daughter, saved_particles, sum_parts);
+			sum_final_cands(daughter, saved_particles, sum_parts, save_only_visible);
 			}
 		}
 	}

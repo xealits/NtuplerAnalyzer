@@ -36,7 +36,8 @@ void save_final_cands(const reco::Candidate * part,
 void sum_final_cands(
 	const reco::Candidate * part,
 	std::vector<LorentzVector>& saved_particles,
-	LorentzVector& sum_vis);
+	LorentzVector& sum_vis,
+	bool save_only_visible);
 
 
 #endif /* PROCESSINGGENPARTICLES_H */

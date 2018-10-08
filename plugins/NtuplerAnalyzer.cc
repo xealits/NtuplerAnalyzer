@@ -389,7 +389,7 @@ struct gen_matching_collection {
 	Float_t dR;
 };
 
-struct gen_matching match_to_gen_collection(const LorentzVector& p4,
+struct gen_matching_collection match_to_gen_collection(const LorentzVector& p4,
 	vector<LorentzVector>& gen_collection)
 
 {
@@ -1908,8 +1908,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 					if (isDY && a_id == 15)
 						{
+						int tau_id = simple_tau_decay_id(&p);
 						// save the gen tau (final in the tau-tau modeling chain?)
 						NT_gen_tt_tau_orig_p4.push_back(p.p4());
+						NT_gen_tt_tau_simpleID.push_back(tau_id);
 
 						// save the visible part of the tt tau (all gen taus grab not-tt stuff
 						LorentzVector gen_tt_tau_vis(0,0,0,0);
@@ -1952,8 +1954,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							}
 						if (fabs(d_i_pdgId) == 15)
 							{
+							int tau_id = simple_tau_decay_id(W_final->daughter(d_i));
 							// save the gen tau (final in the tau-tau modeling chain?)
 							NT_gen_tt_tau_orig_p4.push_back(W_final->daughter(d_i)->p4());
+							NT_gen_tt_tau_simpleID.push_back(tau_id);
 
 							// save the visible part of the tt tau (all gen taus grab not-tt stuff
 							LorentzVector gen_tt_tau_vis(0,0,0,0);
@@ -1964,7 +1968,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							sum_final_cands(W_final->daughter(d_i), gen_tt_tau_prods, gen_tt_tau_invis, false);
 							NT_gen_tt_tau_invis_p4.push_back(gen_tt_tau_invis);
 
-							int tau_id = simple_tau_decay_id(W_final->daughter(d_i));
 							// = 11, 13 for leptons and 20 + 5*(Nch-1) + Npi0 for hadrons
 							// 20 + 10
 							LogInfo ("Demo") << "tau decay w ID " << tau_id;
@@ -2856,6 +2859,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			struct gen_matching match = match_to_gen(selMuons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods);
 			NT_lep_matching_gen   .push_back(match.closest);
 			NT_lep_matching_gen_dR.push_back(match.dR);
+			if (isDY || isTT)
+				{
+				struct gen_matching_collection match2 = match_to_gen_collection(selMuons[l].p4(), NT_gen_tt_tau_vis_p4);
+				NT_lep_matching_gen_collection   .push_back(match2.index);
+				NT_lep_matching_gen_collection_dR.push_back(match2.dR);
+				}
 			}
 		//double dataSF = rc.kScaleDT(selMuons[l].charge(), selMuons[l].pt(), selMuons[l].eta(), selMuons[l].phi(), 0, 0);
 		//NT_lep_correction.push_back(dataSF);
@@ -2887,6 +2896,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			struct gen_matching match = match_to_gen(selElectrons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods);
 			NT_lep_matching_gen   .push_back(match.closest);
 			NT_lep_matching_gen_dR.push_back(match.dR);
+
+			if (isDY || isTT)
+				{
+				struct gen_matching_collection match2 = match_to_gen_collection(selElectrons[l].p4(), NT_gen_tt_tau_vis_p4);
+				NT_lep_matching_gen_collection   .push_back(match2.index);
+				NT_lep_matching_gen_collection_dR.push_back(match2.dR);
+				}
 			}
 		}
 
@@ -3541,7 +3557,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			if (isDY || isTT)
 				{
-				struct gen_matching_collection match2 = match_to_gen_collection(tau.p4(), gen_tt_tau_vis);
+				struct gen_matching_collection match2 = match_to_gen_collection(tau.p4(), NT_gen_tt_tau_vis_p4);
 				NT_tau_matching_gen_collection   .push_back(match2.index);
 				NT_tau_matching_gen_collection_dR.push_back(match2.dR);
 				}
