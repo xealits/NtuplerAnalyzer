@@ -1,3 +1,57 @@
+# testing the tau momenta in MC at gen level: orig -> vis + invis
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("(gen_tt_tau_vis_p4[lep_matching_gen_collection[0]] + gen_tt_tau_invis_p4[lep_matching_gen_collection[0]]).pt()", "lep_matching_gen_collection[0]>-1")
+
+-- the sum does not work in the root interpreter
+try separate components:
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("gen_tt_tau_orig_p4[lep_matching_gen_collection[0]].X() / (gen_tt_tau_vis_p4[lep_matching_gen_collection[0]].X() + gen_tt_tau_invis_p4[lep_matching_gen_collection[0]].X())", "lep_matching_gen_collection[0]>-1")
+
+= 1
+
+
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("gen_tt_tau_orig_p4[lep_matching_gen_collection[0]].Y() / (gen_tt_tau_vis_p4[lep_matching_gen_collection[0]].Y() + gen_tt_tau_invis_p4[lep_matching_gen_collection[0]].Y())", "lep_matching_gen_collection[0]>-1")
+
+= 1 mostly, three entries at 0.625, 0.96 and 0.99
+(neutrino-neutrino chains in gen level?)
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("gen_tt_tau_orig_p4[lep_matching_gen_collection[0]].Z() / (gen_tt_tau_vis_p4[lep_matching_gen_collection[0]].Z() + gen_tt_tau_invis_p4[lep_matching_gen_collection[0]].Z())", "lep_matching_gen_collection[0]>-1")
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("gen_tt_tau_orig_p4[lep_matching_gen_collection[0]].T() / (gen_tt_tau_vis_p4[lep_matching_gen_collection[0]].T() + gen_tt_tau_invis_p4[lep_matching_gen_collection[0]].T())", "lep_matching_gen_collection[0]>-1")
+
+
+hadronic taus:
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("gen_tt_tau_orig_p4[tau_matching_gen_collection[0]].X() / (gen_tt_tau_vis_p4[tau_matching_gen_collection[0]].X() + gen_tt_tau_invis_p4[tau_matching_gen_collection[0]].X())", "tau_matching_gen_collection[0]>-1")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("gen_tt_tau_orig_p4[tau_matching_gen_collection[0]].Y() / (gen_tt_tau_vis_p4[tau_matching_gen_collection[0]].Y() + gen_tt_tau_invis_p4[tau_matching_gen_collection[0]].Y())", "tau_matching_gen_collection[0]>-1")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("gen_tt_tau_orig_p4[tau_matching_gen_collection[0]].Z() / (gen_tt_tau_vis_p4[tau_matching_gen_collection[0]].Z() + gen_tt_tau_invis_p4[tau_matching_gen_collection[0]].Z())", "tau_matching_gen_collection[0]>-1")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("gen_tt_tau_orig_p4[tau_matching_gen_collection[0]].T() / (gen_tt_tau_vis_p4[tau_matching_gen_collection[0]].T() + gen_tt_tau_invis_p4[tau_matching_gen_collection[0]].T())", "tau_matching_gen_collection[0]>-1")
+
+= 1 +- 0.004
+
+
+ok, run on grid and check later
+
+
+
+
+submit on tt and dy:
+
+/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM
+/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM
+/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext2-v1/MINIAODSIM
+
+
+
+
+
+
+
+
+
+
+
 
 # enriched
 
