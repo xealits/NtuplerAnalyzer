@@ -31,9 +31,9 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v7"),
     lepMonitorHLT = cms.string("HLT_PFHT400_*"),
 
-    jecDir          = cms.string('${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/data/jec/25ns/'),
-    resolutionFile  = cms.string('${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/data/jec/25ns/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt'),
-    scaleFactorFile = cms.string('${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/data/jec/25ns/Spring16_25nsV10_MC_SF_AK4PFchs.txt'),
+    jecDir          = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/'),
+    resolutionFile  = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt'),
+    scaleFactorFile = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Spring16_25nsV10_MC_SF_AK4PFchs.txt'),
 
     #mc2hessianCSV = cms.FileInPath('PhysicsTools/HepMCCandAlgos/data/NNPDF30_lo_as_0130_hessian_60.csv'), #MC2Hessian transformation matrix
     mc2hessianCSV = cms.FileInPath('PhysicsTools/HepMCCandAlgos/data/NNPDF30_nlo_as_0118_hessian_60.csv'), #MC2Hessian transformation matrix

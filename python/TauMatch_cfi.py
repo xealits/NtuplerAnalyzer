@@ -21,9 +21,9 @@ tauMatch = cms.EDAnalyzer('TauMatch',
     elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v7"),
     lepMonitorHLT = cms.string("HLT_PFHT400_*"),
 
-    jecDir          = cms.string('${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/data/jec/25ns/'),
-    resolutionFile  = cms.string('${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/data/jec/25ns/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt'),
-    scaleFactorFile = cms.string('${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/data/jec/25ns/Spring16_25nsV10_MC_SF_AK4PFchs.txt'),
+    jecDir          = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/'),
+    resolutionFile  = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt'),
+    scaleFactorFile = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Spring16_25nsV10_MC_SF_AK4PFchs.txt'),
 
     btag_threshold = cms.double(0.5426),
     # X80 2016 ReReco, https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco
