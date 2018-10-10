@@ -1,6 +1,25 @@
 # v40 run with new stand-alone ntupler
 # and tau-gen matched p4 for studies of tau p4
-# have to update more, addressing 3 elements: 1) original tau, 2) lepton from tau (tau-2 neutrino), 3) p4 of hadrons from tau decay
+# updated more, addressing 3 elements: 1) original tau, 2) lepton from tau (tau-2 neutrino), 3) p4 of hadrons from tau decay
+
+for c in /TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM /DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/MINIAODSIM /DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext2-v1/MINIAODSIM
+do
+python make_crab_cfgs.py $c v40 Dilep_tauID
+done | tee cur_jobs
+
+for c in `cat cur_jobs`
+do
+crab submit -c $c
+done
+
+for js in `ls crab_projects/crab_Ntupler_v40* -d`
+do
+echo $js
+crab status -d $js
+done
+
+
+
 
 
 # v35 safe run for antiiso mc qcd
