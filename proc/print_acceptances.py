@@ -22,6 +22,7 @@ parser.add_argument("--sys-weights", action='store_true', help="print weight-bas
 parser.add_argument("--yields",      action='store_true', help="print number of events processed")
 parser.add_argument("--ratio",       action='store_true', help="calculate ratio to the first value")
 parser.add_argument("--all-procs",   action='store_true', help="print for all processes")
+parser.add_argument("--with-stat",   action='store_true', help="print stat error too")
 parser.add_argument("--debug",       action='store_true', help="DEBUG level of logging")
 
 parser.add_argument('input_files', nargs="+", help="""files with acceptances""")
@@ -91,15 +92,18 @@ for file_i, input_filename in enumerate(args.input_files):
         histo_cut.Divide(histo_all)
 
         if args.yields:
-            numbers.append(histo_all.GetBinContent(1))
+            numbers.append((histo_all.GetBinContent(1), histo_all.GetBinError(1)))
 
         for i in range(1,range_length):
-            numbers.append(histo_cut.GetBinContent(i))
+            numbers.append((histo_cut.GetBinContent(i), histo_cut.GetBinError(i)))
 
 
 for name, numbers in results:
     #
-    print "%20s " % name + ' '*5, ' '.join("%10.4f" % numbers[i] for i in range(len(numbers)))
+    if args.with_stat:
+        print "%20s " % name + ' '*5, ' '.join("%10.4f +- %6.4f" % (numbers[i][0], numbers[i][1]) for i in range(len(numbers)))
+    else:
+        print "%20s " % name + ' '*5, ' '.join("%10.4f" % numbers[i][0] for i in range(len(numbers)))
 
 sum_cut_histos.Divide(sum_all_histos)
 
@@ -114,6 +118,6 @@ print "%20s " % "sum" + ' '*5, ' '.join("%10.4f" % sum_num[i] for i in range(len
 
 if args.ratio:
     for name, numbers in results:
-        print "%20s " % name + ' '*5, numbers[0] / (sum(numbers[1:])/(len(numbers) - 1))
+        print "%20s " % name + ' '*5, numbers[0][0] / (sum(numbers[1:][0])/(len(numbers) - 1))
 
 
