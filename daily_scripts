@@ -112,6 +112,86 @@ python sumup_ttree_events.py --output foobar_test_SingleMuon.root gstore_outdirs
 python sumup_ttree_events.py --output foobar_test_MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
 
 
+-- in DY mostly all events have only 1 tau
+
+waiting SingleMuon
+
+
+what if nbjets == 0 is wrong? (the true tau matches to a bjet, in case of mumu it does not happen)
+
+python sumup_ttree_draw.py "tau_p4[0].pt()" --histo-range 20,0,100 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && \!tau_matching_lep[0] && nbjets < 2 && tau_id[0] * lep_id[0] < 0"              --save-weight --histo-name "mutau_sel/data/NOMINAL/mutau_sel_data_NOMINAL_tau_pt" --output SingleMuon_pt_lepmatch_os_nbjets1.root                                  gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+python sumup_ttree_draw.py "tau_p4[0].pt()" --histo-range 20,0,100 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && \!tau_matching_lep[0] && nbjets < 2 && tau_id[0] * lep_id[0] < 0" --per-weight --save-weight --histo-name "mutau_sel/dy/NOMINAL/mutau_sel_dy_NOMINAL_tau_pt"     --output MC2016_Summer16_DYJetsToLL_50toInf_madgraph_pt_lepmatch_os_nbjets1.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
+
+
+TH1.Print Name  = mutau_sel_dy_NOMINAL_tau_pt, Entries= 48841, Total sum= 0.000328438
+root [3] mutau_sel->Get("dy/NOMINAL/mutau_sel_dy_NOMINAL_tau_pt")->Integral()
+root [4]
+root [4] 0.000328438 * 5765.4 * 35800
+(double) 67790.0
+
+root [2] mutau_sel->Get("data/NOMINAL/mutau_sel_data_NOMINAL_tau_pt")->Print()
+TH1.Print Name  = mutau_sel_data_NOMINAL_tau_pt, Entries= 214744, Total sum= 210495
+
+
+
+ok, test of tau IDs
+
+python sumup_ttree_draw.py "tau_IDlev[0] + 10*tau_IDlev[1] + 100*tau_IDlev[2]" --histo-range 1000,0,1000 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && \!tau_matching_lep[0] && nbjets < 2 && tau_id[0] * lep_id[0] < 0"              --save-weight --histo-name "mutau_sel/data/NOMINAL/mutau_sel_data_NOMINAL_tau_IDlevs" --output foobars3_SingleMuon_tau_IDlevs.root                                  gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+python sumup_ttree_draw.py "tau_IDlev[0] + 10*tau_IDlev[1] + 100*tau_IDlev[2]" --histo-range 1000,0,1000 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && \!tau_matching_lep[0] && nbjets < 2 && tau_id[0] * lep_id[0] < 0" --per-weight --save-weight --histo-name "mutau_sel/dy/NOMINAL/mutau_sel_dy_NOMINAL_tau_IDlevs"     --output foobars3_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_tau_IDlevs.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
+
+
+
+another wain atempt with bjets == 0
+
+python sumup_ttree_draw.py "tau_p4[0].pt()" --histo-range 20,0,100 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && \!tau_matching_lep[0] && nbjets < 1 && tau_id[0] * lep_id[0] < 0"              --save-weight --histo-name "mutau_sel/data/NOMINAL/mutau_sel_b0_data_NOMINAL_tau_pt" --output SingleMuon_pt_lepmatch_os_nbjets0.root                                  gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+python sumup_ttree_draw.py "tau_p4[0].pt()" --histo-range 20,0,100 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && \!tau_matching_lep[0] && nbjets < 1 && tau_id[0] * lep_id[0] < 0" --per-weight --save-weight --histo-name "mutau_sel/dy/NOMINAL/mutau_sel_b0_dy_NOMINAL_tau_pt"     --output MC2016_Summer16_DYJetsToLL_50toInf_madgraph_pt_lepmatch_os_nbjets0.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
+
+-- about 1.4 less events than with nbjets < 2
+in both data and dy
+
+
+hadd foobar3_test.root   foobars3_*.root MC2016_Summer16_DYJetsToLL_50toInf_madgraph_pt_lepmatch_os_nbjets1.root SingleMuon_pt_lepmatch_os_nbjets1.root MC2016_Summer16_DYJetsToLL_50toInf_madgraph_pt_lepmatch_os_nbjets0.root SingleMuon_pt_lepmatch_os_nbjets0.root
+
+hadd foobar3_test.root SingleMuon_pt_lepmatch_os_nbjets0.root MC2016_Summer16_DYJetsToLL_50toInf_madgraph_pt_lepmatch_os_nbjets0.root SingleMuon_tau_IDlevs.root MC2016_Summer16_DYJetsToLL_50toInf_madgraph_tau_IDlevs.root SingleMuon_pt_lepmatch_os_nbjets1.root MC2016_Summer16_DYJetsToLL_50toInf_madgraph_pt_lepmatch_os_nbjets1.root
+
+
+dy = (TH1D*) mutau_sel->Get("dy/NOMINAL/mutau_sel_dy_NOMINAL_tau_IDlevs")
+data = (TH1D*) mutau_sel->Get("data/NOMINAL/mutau_sel_data_NOMINAL_tau_IDlevs")
+dy->Scale(5765.4 * 35800)
+dy->SetLineColor(kRed)
+data->Draw()
+dy->Draw("same")
+
+
+
+
+## even more properly done full event scan
+
+with corrected index into SV
+and b-jet dR matching
+
+python sumup_ttree_events.py --save-weight              --output foobar_test2_SingleMuon.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+python sumup_ttree_events.py --save-weight --per-weight --output foobar_test2_MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
+
+
+-- but could be even more precise!
+now all jets are matched to tau and skipped if they are dR < 0.4,
+in principle it's better to have only 1 the best matched to tau and skipped
+it's an edge case
+
+
+
+
+
+
+
+
+
+
+
 
 
 
