@@ -11,10 +11,105 @@ python sumup_ttree_distrs.py "sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_in
 
 
 
+and full runs with propper histo names:
+
+python sumup_ttree_distrs.py "tau_SV_geom_flightLenSign[0]" --histo-range 20,0,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0" --per-weight --save-weight --histo-name "mutau_sel/dy/NOMINAL/mutau_sel_dy_NOMINAL_geom_tau_sv_sign"     --output MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
+
+and data:
+
+python sumup_ttree_distrs.py "tau_SV_geom_flightLenSign[0]" --histo-range 20,0,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0"              --save-weight --histo-name "mutau_sel/data/NOMINAL/mutau_sel_data_NOMINAL_geom_tau_sv_sign" --output SingleMuon.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+
+dy = (TH1D*) mutau_sel->Get("dy/NOMINAL/mutau_sel_dy_NOMINAL_geom_tau_sv_sign")
+data = (TH1D*) mutau_sel->Get("data/NOMINAL/mutau_sel_data_NOMINAL_geom_tau_sv_sign")
+dy->Scale(5765.4 * 35800)
+dy->SetLineColor(kRed)
+data->Draw()
+dy->Draw("same")
 
 
 
 
+
+
+dimuon test of normalization:
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()" --histo-range 20,0,200 --cond-com "leps_ID == -13*13 && HLT_mu && (lep_matched_HLT[0] || lep_matched_HLT[1]) && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && nbjets == 0" --per-weight --save-weight --histo-name "mumu_sel/dy/NOMINAL/mumu_sel_dy_NOMINAL_geom_tau_sv_sign"     --output MC2016_Summer16_DYJetsToLL_50toInf_madgraph_mumu.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
+
+python sumup_ttree_distrs.py "lep_p4[0].pt()" --histo-range 20,0,200 --cond-com "leps_ID == -13*13 && HLT_mu && (lep_matched_HLT[0] || lep_matched_HLT[1]) && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && nbjets == 0"              --save-weight --histo-name "mumu_sel/data/NOMINAL/mumu_sel_data_NOMINAL_geom_tau_sv_sign" --output SingleMuon_mumu.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+mumu_dy = (TH1D*) mumu_sel->Get("dy/NOMINAL/mumu_sel_dy_NOMINAL_geom_tau_sv_sign")
+mumu_data = (TH1D*) mumu_sel->Get("data/NOMINAL/mumu_sel_data_NOMINAL_geom_tau_sv_sign")
+mumu_dy->Scale(5765.4 * 35800)
+mumu_dy->SetLineColor(kRed)
+mumu_data->Draw()
+mumu_dy->Draw("same")
+
+
+
+
+
+hadd test_foobar.root SingleMuon.root SingleMuon_mumu.root MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root MC2016_Summer16_DYJetsToLL_50toInf_madgraph_mumu.root SingleMuon_pt.root MC2016_Summer16_DYJetsToLL_50toInf_madgraph_pt.root
+
+
+
+mumu ok (MC has more events with smaller pt -- SFs)
+mutau -- difference data > MC by factor of 3 over all SV Sign range, why?
+
+
+
+
+
+
+python sumup_ttree_distrs.py "tau_p4[0].pt()" --histo-range 20,0,100 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0" --per-weight --save-weight --histo-name "mutau_sel/dy/NOMINAL/mutau_sel_dy_NOMINAL_tau_pt"     --output MC2016_Summer16_DYJetsToLL_50toInf_madgraph_pt.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
+
+python sumup_ttree_distrs.py "tau_p4[0].pt()" --histo-range 20,0,100 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0"              --save-weight --histo-name "mutau_sel/data/NOMINAL/mutau_sel_data_NOMINAL_tau_pt" --output SingleMuon_pt.root                                  gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+dy = (TH1D*) mutau_sel->Get("dy/NOMINAL/mutau_sel_dy_NOMINAL_tau_pt")
+data = (TH1D*) mutau_sel->Get("data/NOMINAL/mutau_sel_data_NOMINAL_tau_pt")
+dy->Scale(5765.4 * 35800)
+dy->SetLineColor(kRed)
+data->Draw()
+dy->Draw("same")
+
+
+-- same factor of 3
+
+
+
+
+
+
+
+
+
+## investigation of factor 3
+
+tau-lep dR match?
+
+python sumup_ttree_distrs.py "tau_p4[0].pt()" --histo-range 20,0,100 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && \!tau_matching_lep[0] && nbjets == 0"              --save-weight --histo-name "mutau_sel/data/NOMINAL/mutau_sel_data_NOMINAL_tau_pt" --output SingleMuon_pt_lepmatch.root                                  gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+from
+210961
+down to
+184479
+
+! renamed sumup_ttree_distrs to sumup_ttree_draw !
+
+OS tau?
+
+python sumup_ttree_draw.py "tau_p4[0].pt()" --histo-range 20,0,100 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && \!tau_matching_lep[0] && nbjets == 0 && tau_id[0] * lep_id[0] < 0"              --save-weight --histo-name "mutau_sel/data/NOMINAL/mutau_sel_data_NOMINAL_tau_pt" --output SingleMuon_pt_lepmatch_os.root                                  gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+-- down to
+146400
+
+still not 1 third
+
+
+not the 0 tau?
+
+python sumup_ttree_events.py --output foobar_test_SingleMuon.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+python sumup_ttree_events.py --output foobar_test_MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
 
 
 
