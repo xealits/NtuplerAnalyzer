@@ -32,6 +32,30 @@ dy->Draw("same")
 
 
 
+
+and without HLT requirement:
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 20,0,20 --cond-com "abs(leps_ID) == 13 && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0" --per-weight --save-weight --histo-name "mutau_sel/dy/NOMINAL/mutau_sel_dy_NOMINAL_geom_tau_sv_sign"     --output foobarNOHLT_MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 20,0,20 --cond-com "abs(leps_ID) == 13 && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0"              --save-weight --histo-name "mutau_sel/data/NOMINAL/mutau_sel_data_NOMINAL_geom_tau_sv_sign" --output foobarNOHLT_SingleMuon.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+-- same factor of 3 crap!
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 20,0,20 --cond-com "abs(leps_ID) == 11 && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0" --per-weight --save-weight --histo-name "eltau_sel/dy/NOMINAL/eltau_sel_dy_NOMINAL_geom_tau_sv_sign"     --output foobarNOHLT_el_MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 20,0,20 --cond-com "abs(leps_ID) == 11 && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0"              --save-weight --histo-name "eltau_sel/data/NOMINAL/eltau_sel_data_NOMINAL_geom_tau_sv_sign" --output foobarNOHLT_el_SingleElectron.root gstore_outdirs/v40/SingleElectron/*/*/0000/*root &
+
+
+
+
+
+
+
+
+
+
+
+
 dimuon test of normalization:
 
 python sumup_ttree_distrs.py "lep_p4[0].pt()" --histo-range 20,0,200 --cond-com "leps_ID == -13*13 && HLT_mu && (lep_matched_HLT[0] || lep_matched_HLT[1]) && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && lep_p4[1].pt() > 30 && abs(lep_p4[0].eta()) < 2.4 && nbjets == 0" --per-weight --save-weight --histo-name "mumu_sel/dy/NOMINAL/mumu_sel_dy_NOMINAL_geom_tau_sv_sign"     --output MC2016_Summer16_DYJetsToLL_50toInf_madgraph_mumu.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
@@ -182,12 +206,302 @@ now all jets are matched to tau and skipped if they are dR < 0.4,
 in principle it's better to have only 1 the best matched to tau and skipped
 it's an edge case
 
+by tau pt
+220659   data and
+ 72000.8 dy
+
+by sv sign
+73016   data
+18946.8 dy
+
+
+
+## All DY events
+
+all events are recorded
+the BR on gen level are ok
+
+no gen_N_zdecays > 0 events (?????)
+
+((TTree*) ntupler->Get("reduced_ttree"))->GetEntries()
+
+HLTs
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "abs(gen_pythia8_prompt_leptons_IDs[0]) == 13 && abs(gen_pythia8_prompt_leptons_IDs[1]) == 13")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "(abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[1]) >15*15) || (abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[0]) >15*15)")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "(abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*11) || (abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*11)")
+
+-- % passing HLT:
+
+1.87% in mumu
+0.1 % in taumu+tauh
+0.05% in taumu+tauel
+
+HLT el
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_el", "abs(gen_pythia8_prompt_leptons_IDs[0]) == 11 && abs(gen_pythia8_prompt_leptons_IDs[1]) == 11")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_el", "(abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*11 && abs(gen_pythia8_prompt_leptons_IDs[1]) >15*15) || (abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*11 && abs(gen_pythia8_prompt_leptons_IDs[0]) >15*15)")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_el", "(abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*11) || (abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*11)")
+
+h = (TH1D*) (((TTree*) ntupler->Get("reduced_ttree"))->GetHistogram())
+
+h->GetBinContent(1)
+h->GetBinContent(2)
+
+0.9%  elel eff
+0.04% in tauel+tauh
+0.05% in taumu+tauel (differen events trigger el and mu trig)
+
+
+
+events with some reco taus:
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "((abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[1]) >15*15) || (abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[0]) >15*15)) && tau_IDlev[0] > 1")
+
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("tau_IDlev[0]:tau_IDlev[1]:tau_IDlev[2]:tau_IDlev[3]", "tau_IDlev[0] > 2 && tau_p4[0].pt() > 30. && abs(tau_p4[0].eta()) < 2.4 && !tau_matching_lep[0] && abs(leps_ID) == 13")
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("tau_p4[0].pt():tau_p4[0].eta():tau_IDlev[0]:tau_IDlev[1]:tau_IDlev[2]:tau_IDlev[3]:gen_pythia8_prompt_leptons_IDs[0]:gen_pythia8_prompt_leptons_IDs[1]", "((abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[1]) >15*15) || (abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[0]) >15*15)) && tau_IDlev[0] > 0")
+
+
+how many gen tauh get ID?
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "((abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[1]) >15*15) || (abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[0]) >15*15))")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "((abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[1]) >15*15) || (abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[0]) >15*15)) && tau_IDlev[0] > 0")
+
+from
+7563
+id at 0
+61
+
+0.00806558
+
+among mumu?
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "abs(gen_pythia8_prompt_leptons_IDs[0]) == 13 && abs(gen_pythia8_prompt_leptons_IDs[1]) == 13")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "abs(gen_pythia8_prompt_leptons_IDs[0]) == 13 && abs(gen_pythia8_prompt_leptons_IDs[1]) == 13 && tau_IDlev[0] > 0")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "abs(gen_pythia8_prompt_leptons_IDs[0]) == 13 && abs(gen_pythia8_prompt_leptons_IDs[1]) == 13 && tau_IDlev[0] > 0 && !tau_matching_lep[0]")
+
+from
+34428
+id
+124
+and
+124
+
+0.00360172
+
+incredible numbers
+fake rate in DY is 0.5 of true taus
+
+
+too few tau ID in true taus
+scan tau IDs
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("tau_IDlev[0]:tau_IDlev[1]:tau_IDlev[2]", "((abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[1]) >15*15) || (abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[0]) >15*15))")
+
+-- no "high tau ID on last indices"
+mostly empty, and
+*    53120 *         1 *           *           *
+sometimes
+*    53586 *         3 *         1 *         0 *
+*    55726 *         4 *           *           *
+*    55754 *           *           *           *
+*    55760 *         0 *           *           *
+
+*    58588 *         5 *           *           *
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("tau_IDlev[0]:tau_IDlev[1]:tau_IDlev[2]", "((abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[1]) >15*15) || (abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[0]) >15*15)) && tau_p4[0].pt() > 25")
+
+mostly ID = 0
 
 
 
 
+### issue with merged genparticle producer?
+
+%MSG
+%MSG-w MergedGenParticleProducer:  MergedGenParticleProducer:mergedGenParticles  12-Oct-2018 12:33:54 CEST Run: 1 Event: 4251447
+Found multiple packed matches for: 13	22	4.97106e-09	-2.89792
+
+-- check on first 1000 events: are all 1000 events recorded? does it cause some missing events?
+
+-- tested on 10k events, all 10k are recorded
+(empty ones? will see in full file record)
 
 
+
+
+### OldDMs?
+
+recompile ntupler with OldDMs for tau decay mode finding
+
+and scan this:
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("tau_IDlev[0]:tau_IDlev[1]:tau_IDlev[2]", "((abs(gen_pythia8_prompt_leptons_IDs[0]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[1]) >15*15) || (abs(gen_pythia8_prompt_leptons_IDs[1]) == 15*13 && abs(gen_pythia8_prompt_leptons_IDs[0]) >15*15))")
+
+pat::Tau: the ID decayModeFindingOldDMs can't be found in this pat::Tau.
+The available IDs are:
+'againstElectronLooseMVA6'
+'againstElectronMVA6Raw'
+'againstElectronMVA6category'
+'againstElectronMediumMVA6'
+'againstElectronTightMVA6'
+'againstElectronVLooseMVA6'
+'againstElectronVTightMVA6'
+'againstMuonLoose3'
+'againstMuonTight3'
+'byCombinedIsolationDeltaBetaCorrRaw3Hits'
+'byIsolationMVArun2v1DBdR03oldDMwLTraw'
+'byIsolationMVArun2v1DBnewDMwLTraw'
+'byIsolationMVArun2v1DBoldDMwLTraw'
+'byIsolationMVArun2v1PWdR03oldDMwLTraw'
+'byIsolationMVArun2v1PWnewDMwLTraw'
+'byIsolationMVArun2v1PWoldDMwLTraw'
+'byLooseCombinedIsolationDeltaBetaCorr3Hits'
+'byLooseIsolationMVArun2v1DBdR03oldDMwLT'
+'byLooseIsolationMVArun2v1DBnewDMwLT'
+'byLooseIsolationMVArun2v1DBoldDMwLT'
+'byLooseIsolationMVArun2v1PWdR03oldDMwLT'
+'byLooseIsolationMVArun2v1PWnewDMwLT'
+'byLooseIsolationMVArun2v1PWoldDMwLT'
+'byMediumCombinedIsolationDeltaBetaCorr3Hits'
+'byMediumIsolationMVArun2v1DBdR03oldDMwLT'
+'byMediumIsolationMVArun2v1DBnewDMwLT'
+'byMediumIsolationMVArun2v1DBoldDMwLT'
+'byMediumIsolationMVArun2v1PWdR03oldDMwLT'
+'byMediumIsolationMVArun2v1PWnewDMwLT'
+'byMediumIsolationMVArun2v1PWoldDMwLT'
+'byPhotonPtSumOutsideSignalCone'
+'byTightCombinedIsolationDeltaBetaCorr3Hits'
+'byTightIsolationMVArun2v1DBdR03oldDMwLT'
+'byTightIsolationMVArun2v1DBnewDMwLT'
+'byTightIsolationMVArun2v1DBoldDMwLT'
+'byTightIsolationMVArun2v1PWdR03oldDMwLT'
+'byTightIsolationMVArun2v1PWnewDMwLT'
+'byTightIsolationMVArun2v1PWoldDMwLT'
+'byVLooseIsolationMVArun2v1DBdR03oldDMwLT'
+'byVLooseIsolationMVArun2v1DBnewDMwLT'
+'byVLooseIsolationMVArun2v1DBoldDMwLT'
+'byVLooseIsolationMVArun2v1PWdR03oldDMwLT'
+'byVLooseIsolationMVArun2v1PWnewDMwLT'
+'byVLooseIsolationMVArun2v1PWoldDMwLT'
+'byVTightIsolationMVArun2v1DBdR03oldDMwLT'
+'byVTightIsolationMVArun2v1DBnewDMwLT'
+'byVTightIsolationMVArun2v1DBoldDMwLT'
+'byVTightIsolationMVArun2v1PWdR03oldDMwLT'
+'byVTightIsolationMVArun2v1PWnewDMwLT'
+'byVTightIsolationMVArun2v1PWoldDMwLT'
+'byVVTightIsolationMVArun2v1DBdR03oldDMwLT'
+'byVVTightIsolationMVArun2v1DBnewDMwLT'
+'byVVTightIsolationMVArun2v1DBoldDMwLT'
+'byVVTightIsolationMVArun2v1PWdR03oldDMwLT'
+'byVVTightIsolationMVArun2v1PWnewDMwLT'
+'byVVTightIsolationMVArun2v1PWoldDMwLT'
+'chargedIsoPtSum'
+'chargedIsoPtSumdR03'
+'decayModeFinding'
+'decayModeFindingNewDMs'
+'footprintCorrection'
+'footprintCorrectiondR03'
+'neutralIsoPtSum'
+'neutralIsoPtSumWeight'
+'neutralIsoPtSumWeightdR03'
+'neutralIsoPtSumdR03'
+'photonPtSumOutsideSignalCone'
+'photonPtSumOutsideSignalConedR03'
+'puCorrPtSum'
+
+
+### full new file
+
+((TTree*) ntupler->Get("reduced_ttree"))->GetEntries()
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "gen_N_zdecays > 0")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "gen_N_zdecays == 0")
+
+125498
+7991
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "abs(gen_zdecays_IDs[0]) == 13 && abs(gen_zdecays_IDs[1]) == 13 && gen_N_zdecays > 0")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "abs(gen_zdecays_IDs[0]) == 11 && abs(gen_zdecays_IDs[1]) == 11 && gen_N_zdecays > 0")
+
+41760
+41810
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "abs(gen_zdecays_IDs[0]) > 15 && abs(gen_zdecays_IDs[1]) > 15 && gen_N_zdecays > 0")
+
+41928
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0")
+
+(Long64_t) 9337
+root [12] 9337. / 41928
+(double) 0.222691
+
+h = (TH1D*) (((TTree*) ntupler->Get("reduced_ttree"))->GetHistogram())
+
+h->GetBinContent(1)
+h->GetBinContent(2)
+
+mumu
+15814.0
+25946.0
+
+taumu tauh
+
+8526.00
+ 811.000
+
+
+electron
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_el", "abs(gen_zdecays_IDs[0]) == 11 && abs(gen_zdecays_IDs[1]) == 11 && gen_N_zdecays > 0")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_el", "((abs(gen_zdecays_IDs[0]) == 15*11 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*11 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0")
+
+
+muon HLT efficiency
+mumu       0.62
+taumu tauh 0.086 -> 1 - (1-0.086)^2 = 0.166
+
+electron HLT
+elel       0.47
+tauel tauh 0.044 -> 1 - (1-0.044)^2 = 0.086
+
+
+-- the efficiency equations don't hold!
+the taumu kinematics is different from just mu but not this much!
+
+
+
+### trigger efficiencies in TT
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_el", "abs(gen_t_w_decay_id) == 11 && abs(gen_tb_w_decay_id) == 13")
+
+983
+
+root [5] h->GetBinContent(1)
+(Double_t) 512.000
+root [6] h->GetBinContent(2)
+(Double_t) 471.000
+
+root [11] 471.000 / 983
+(double) 0.479145
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_el", "abs(gen_t_w_decay_id) == 11 && abs(gen_tb_w_decay_id) == 11")
+
+1008
+
+root [9] h->GetBinContent(1)
+(Double_t) 297.000
+root [10] h->GetBinContent(2)
+(Double_t) 711.000
+
+root [12] 711.000 / 1008
+(double) 0.705357
+
+root [13] 1 - (1 - 0.479145)*(1 - 0.479145)
+(double) 0.728710
 
 
 
