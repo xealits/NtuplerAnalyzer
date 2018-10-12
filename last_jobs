@@ -18,6 +18,33 @@ echo $js
 crab status -d $js
 done
 
+# run on data
+for c in `cat dsets_feb_rereco`
+do
+python make_crab_cfgs.py $c v40 Dilep_tauID
+done | tee cur_jobs
+
+for c in `cat cur_jobs`
+do
+crab submit -c $c
+done
+
+# resub
+
+for js in `ls crab_projects/crab_Ntupler_v40* -d`
+do
+echo $js
+crab resubmit -d $js
+done
+
+# rest of mc
+for c in `cat cur_dsets_rest_mc_aa`
+do
+python make_crab_cfgs.py $c v40 Dilep_tauID
+done | tee cur_jobs
+
+
+
 
 
 

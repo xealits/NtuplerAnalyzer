@@ -2630,7 +2630,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	event_checkpoint++;
 
-	if (!record_signal && !(eTrigger || muTrigger || lepMonitorTrigger || jetsHLT)) return; // orthogonalization is done afterwards
+	if (!record_all && !record_signal && !(eTrigger || muTrigger || lepMonitorTrigger || jetsHLT)) return; // orthogonalization is done afterwards
 	event_counter ->Fill(event_checkpoint++);
 	weight_counter->Fill(event_checkpoint, weight);
 
@@ -2769,6 +2769,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	string tau_Tight_ID  ("byTightIsolationMVArun2v1DBoldDMwLT");
 	string tau_VTight_ID ("byVTightIsolationMVArun2v1DBoldDMwLT");
 	string tau_decayMode       ("decayModeFinding");
+	//string tau_decayMode       ("decayModeFindingOldDMs");
 	string tau_againstMuon     ("againstMuonTight3");
 	string tau_againstElectron ("againstElectronTightMVA6");
 
@@ -2791,8 +2792,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//bool clean_lep_conditions = nVetoE_all==0 && nVetoMu_all==0 && nGoodPV != 0; // veto on all iso veto leptons
 	bool clean_lep_conditions = nGoodPV != 0; // just good PV, the loosest req,save bit if no veto leps
 	//if (!(clean_lep_conditions && ((selLeptons.size() > 0 && selLeptons.size() < 3 && nVetoE_Iso == 0 && nVetoMu_Iso == 0) || (selLeptons_allIso.size() == 1 && nVetoE_all == 0 && nVetoMu_all == 0)) )) return;
-	if (!record_signal && !clean_lep_conditions) return;
-	if (!record_signal && !((selLeptons.size() > 0 && selLeptons.size() < 3) || selLeptons_allIso.size() == 1 || selTaus.size() > 0)) return;
+	if (!record_all && !record_signal && !clean_lep_conditions) return;
+	if (!record_all && !record_signal && !((selLeptons.size() > 0 && selLeptons.size() < 3) || selLeptons_allIso.size() == 1 || selTaus.size() > 0)) return;
 	// exit now to reduce computation -- all record schemes have this requirement
 
 	event_counter ->Fill(event_checkpoint++);
@@ -3994,6 +3995,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	if (record_signal && isTTSignal)
 		{
 		record_ntuple = true; // all events of signal
+		}
+	if (record_all)
+		{
+		record_ntuple = true; // all events
 		}
 
 	if (record_ntuple)
