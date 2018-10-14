@@ -673,6 +673,40 @@ others have only 1 as should be
 
 ?????????????????????????????????????????????????
 
+gen_final_p4 gen_final_pdgId gen_final_chainId gen_final_ndaughters
+
+gen_final_pdgId[0]:gen_final_pdgId[1]:gen_final_pdgId[2]:gen_final_pdgId[3]:gen_final_pdgId[4]
+gen_final_chainId[0]:gen_final_chainId[1]:gen_final_chainId[2]:gen_final_chainId[3]:gen_final_chainId[4]
+gen_final_ndaughters[0]:gen_final_ndaughters[1]:gen_final_ndaughters[2]:gen_final_ndaughters[3]:gen_final_ndaughters[4]
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_ndaughters[0]:gen_final_ndaughters[1]:gen_final_ndaughters[2]:gen_final_ndaughters[3]:gen_final_ndaughters[4]", "abs(gen_zdecays_IDs[0]) == 13 && abs(gen_zdecays_IDs[1]) == 13 && gen_N_zdecays > 0")
+
+-- all 0 daughters, muons and photos are from chainID 23 (Z), pdgID = muons, photons and protons
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_ndaughters[0]:gen_final_ndaughters[1]:gen_final_ndaughters[2]:gen_final_ndaughters[3]:gen_final_ndaughters[4]", "((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0")
+
+-- all 0
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[0]:gen_final_pdgId[1]:gen_final_pdgId[2]:gen_final_pdgId[3]:gen_final_pdgId[4]:gen_final_pdgId[5]:gen_final_pdgId[6]:gen_final_pdgId[7]:gen_final_pdgId[8]", "((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0")
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_chainId[0]:gen_final_chainId[1]:gen_final_chainId[2]:gen_final_chainId[3]:gen_final_chainId[4]:gen_final_chainId[5]:gen_final_chainId[6]:gen_final_chainId[7]:gen_final_chainId[8]", "((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0")
+
+-- protons and tau products in final state, tau products are from 23 (Z)
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_p4[0].pt():gen_final_p4[1].pt():gen_final_p4[2].pt():gen_final_p4[3].pt():gen_final_p4[4].pt():gen_final_p4[5].pt():gen_final_p4[6].pt():gen_final_p4[7].pt():gen_final_p4[8].pt()", "((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0")
+
+-- out of first 11 tau-muons only 2 pass 22GeV cut and only 1 passes 24 GeV (one is barely above 22, another one is 25)
+
+in mumu
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_p4[0].pt():gen_final_p4[1].pt():gen_final_p4[2].pt():gen_final_p4[3].pt():gen_final_p4[4].pt():gen_final_p4[5].pt():gen_final_p4[6].pt():gen_final_p4[7].pt():gen_final_p4[8].pt()", "abs(gen_zdecays_IDs[0]) == 13 && abs(gen_zdecays_IDs[1]) == 13 && gen_N_zdecays > 0")
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen_final_pdgId[0]:gen_final_pdgId[1]:gen_final_pdgId[2]:gen_final_pdgId[3]:gen_final_pdgId[4]:gen_final_pdgId[5]:gen_final_pdgId[6]:gen_final_pdgId[7]:gen_final_pdgId[8]", "abs(gen_zdecays_IDs[0]) == 13 && abs(gen_zdecays_IDs[1]) == 13 && gen_N_zdecays > 0")
+
+-- easily above 30GeV
+
+
+
+
+
 
 
 
