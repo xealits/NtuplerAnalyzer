@@ -413,7 +413,18 @@ The available IDs are:
 'puCorrPtSum'
 
 
+
+
+
+
+
+
+
+
+
 ### full new file
+
+trigger efficiencies
 
 ((TTree*) ntupler->Get("reduced_ttree"))->GetEntries()
 
@@ -505,6 +516,162 @@ root [13] 1 - (1 - 0.479145)*(1 - 0.479145)
 
 
 
+### reco efficiencies and kinematics of the lepton
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "abs(gen_zdecays_IDs[0]) == 11 && abs(gen_zdecays_IDs[1]) == 11 && gen_N_zdecays > 0")
+
+in mumu:
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].pt()", "abs(gen_zdecays_IDs[0]) == 13 && abs(gen_zdecays_IDs[1]) == 13 && gen_N_zdecays > 0")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("abs(leps_ID)", "abs(gen_zdecays_IDs[0]) == 13 && abs(gen_zdecays_IDs[1]) == 13 && gen_N_zdecays > 0")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "abs(gen_zdecays_IDs[0]) == 13 && abs(gen_zdecays_IDs[1]) == 13 && gen_N_zdecays > 0 && abs(leps_ID) == 13")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("HLT_mu", "abs(gen_zdecays_IDs[0]) == 13 && abs(gen_zdecays_IDs[1]) == 13 && gen_N_zdecays > 0 && leps_ID == -13*13")
+
+-- compare lep pt
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].pt()", "abs(gen_zdecays_IDs[0]) == 13 && abs(gen_zdecays_IDs[1]) == 13 && gen_N_zdecays > 0 && abs(leps_ID) == 13")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].pt()", "abs(gen_zdecays_IDs[0]) == 13 && abs(gen_zdecays_IDs[1]) == 13 && gen_N_zdecays > 0 && leps_ID == -13*13")
+
+h = (TH1D *) (((TTree*) ntupler->Get("reduced_ttree"))->GetHistogram())
+
+
+
+lep IDs in tautau:
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("abs(leps_ID)",   "((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("abs(leps_ID)",   "((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0 && abs(leps_ID) == 1")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("abs(leps_ID)",   "((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0 && abs(leps_ID) == 13")
+
+
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].pt()>>h(20,0,200)", "((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0 && abs(leps_ID) == 13")
+
+h_tautau_pt = (TH1D *) (((TTree*) ntupler->Get("reduced_ttree"))->GetHistogram())
+
+etas:
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].eta()>>h(20,-2.5,2.5)", "((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0 && abs(leps_ID) == 13")
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].eta()>>h(50,-2.5,2.5)", "abs(gen_zdecays_IDs[0]) == 13 && abs(gen_zdecays_IDs[1]) == 13 && gen_N_zdecays > 0 && abs(leps_ID) == 13")
+
+
+
+
+
+### test with Mt < 40.
+
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 20,0,20 --cond-com "abs(leps_ID) == 13 && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40."              --save-weight --histo-name "mutau_sel_MT40/data/NOMINAL/mutau_sel_MT40_data_NOMINAL_geom_tau_sv_sign" --output foobarNOHLT_Mt40_SingleMuon.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+mutau_sel_MT40->Get("data/NOMINAL/mutau_sel_MT40_data_NOMINAL_geom_tau_sv_sign")->Print()
+15.2k now
+
+w.o. MT40:
+mutau_sel->Get("data/NOMINAL/mutau_sel_data_NOMINAL_geom_tau_sv_sign")->Print()
+44.2k
+
+examples:
+
+data = (TH1D*) mutau_sel_MT40->Get("data/NOMINAL/mutau_sel_MT40_data_NOMINAL_geom_tau_sv_sign")
+
+dy = (TH1D*) mutau_sel->Get("dy/NOMINAL/mutau_sel_dy_NOMINAL_geom_tau_sv_sign")
+dy->Scale(5765.4 * 35800)
+dy->SetLineColor(kRed)
+data->Draw()
+dy->Draw("same")
+
+
+test on DY:
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 20,0,20 --cond-com "abs(leps_ID) == 13 && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40." --per-weight --save-weight --histo-name "mutau_sel_MT40/dy/NOMINAL/mutau_sel_MT40_dy_NOMINAL_geom_tau_sv_sign"     --output foobarNOHLT_Mt40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root
+
+mutau_sel_MT40->Get("dy/NOMINAL/mutau_sel_MT40_dy_NOMINAL_geom_tau_sv_sign")->Print()
+Entries= 5338, Total sum= 2.66933e-05
+
+mutau_sel->Get("dy/NOMINAL/mutau_sel_dy_NOMINAL_geom_tau_sv_sign")->Print()
+TH1.Print Name  = mutau_sel_dy_NOMINAL_geom_tau_sv_sign, Entries= 8621, Total sum= 4.23872e-05
+
+dy = (TH1D*) mutau_sel_MT40->Get("dy/NOMINAL/mutau_sel_MT40_dy_NOMINAL_geom_tau_sv_sign")
+dy->Scale(5765.4 * 35800)
+dy->Print()
+TH1.Print Name  = mutau_sel_MT40_dy_NOMINAL_geom_tau_sv_sign, Entries= 5338, Total sum= 5509.52
+
+-- again 1/3 of 14k of data
+
+hadd foobarNOHLT_Mt40.root foobarNOHLT_Mt40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root foobarNOHLT_Mt40_SingleMuon.root
+
+data = (TH1D*) mutau_sel_MT40->Get("data/NOMINAL/mutau_sel_MT40_data_NOMINAL_geom_tau_sv_sign")
+dy = (TH1D*) mutau_sel_MT40->Get("dy/NOMINAL/mutau_sel_MT40_dy_NOMINAL_geom_tau_sv_sign")
+dy->Scale(5765.4 * 35800)
+dy->Print()
+dy->SetLineColor(kRed)
+data->Draw()
+dy->Draw("same")
+
+-- maybe closer in tail
+much less events than in Strasbourg result:
+1) there 1k events was at 3-4sigma
+2) here 1k is at 1sigma, 3-4 have 100 events -- in both data and DY
+
+
+
+
+include OS
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40. && lep_id[0]*tau_id[0] < 0"              --save-weight --histo-name "mutau_sel_MT40OS/data/NOMINAL/mutau_sel_MT40OS_data_NOMINAL_geom_tau_sv_sign" --output foobarNOHLT_Mt40OS_SingleMuon.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40. && lep_id[0]*tau_id[0] < 0" --per-weight --save-weight --histo-name "mutau_sel_MT40OS/dy/NOMINAL/mutau_sel_MT40OS_dy_NOMINAL_geom_tau_sv_sign"     --output foobarNOHLT_Mt40OS_MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
+
+
+include OS and HLT
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40. && lep_id[0]*tau_id[0] < 0 && HLT_mu && lep_matched_HLT[0]"              --save-weight --histo-name "mutau_sel_MT40OSHLT/data/NOMINAL/mutau_sel_MT40OSHLT_data_NOMINAL_geom_tau_sv_sign" --output foobarNOHLT_Mt40OSHLT_SingleMuon.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40. && lep_id[0]*tau_id[0] < 0 && HLT_mu && lep_matched_HLT[0]" --per-weight --save-weight --histo-name "mutau_sel_MT40OSHLT/dy/NOMINAL/mutau_sel_MT40OSHLT_dy_NOMINAL_geom_tau_sv_sign"     --output foobarNOHLT_Mt40OSHLT_MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root gstore_outdirs/v40/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*/*/0000/*root &
+
+hadd foobarNOHLT_Mt40_OS_HLT.root foobarNOHLT_Mt40OS_MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root foobarNOHLT_Mt40OS_SingleMuon.root foobarNOHLT_Mt40OSHLT_MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root foobarNOHLT_Mt40OSHLT_SingleMuon.root
+
+data_os = (TH1D*) mutau_sel_MT40OS->Get("data/NOMINAL/mutau_sel_MT40OS_data_NOMINAL_geom_tau_sv_sign")
+dy_os   = (TH1D*) mutau_sel_MT40OS->Get("dy/NOMINAL/mutau_sel_MT40OS_dy_NOMINAL_geom_tau_sv_sign")
+dy_os->Scale(5765.4 * 35800)
+dy_os->Print()
+data_os->Print()
+dy_os->SetLineColor(kRed)
+data_os->Draw()
+dy_os->Draw("same")
+
+TH1.Print Name  = mutau_sel_MT40OS_dy_NOMINAL_geom_tau_sv_sign, Entries= 4817, Total sum= 6664.21
+TH1.Print Name  = mutau_sel_MT40OS_data_NOMINAL_geom_tau_sv_sign, Entries= 16560, Total sum= 16440
+
+data_os_hlt = (TH1D*) mutau_sel_MT40OSHLT->Get("data/NOMINAL/mutau_sel_MT40OSHLT_data_NOMINAL_geom_tau_sv_sign")
+dy_os_hlt   = (TH1D*) mutau_sel_MT40OSHLT->Get("dy/NOMINAL/mutau_sel_MT40OSHLT_dy_NOMINAL_geom_tau_sv_sign")
+dy_os_hlt->Scale(5765.4 * 35800)
+dy_os_hlt->Print()
+data_os_hlt->Print()
+dy_os_hlt->SetLineColor(kRed)
+data_os_hlt->Draw()
+dy_os_hlt->Draw("same")
+
+TH1.Print Name  = mutau_sel_MT40OSHLT_dy_NOMINAL_geom_tau_sv_sign, Entries= 4806, Total sum= 6648.85
+TH1.Print Name  = mutau_sel_MT40OSHLT_data_NOMINAL_geom_tau_sv_sign, Entries= 16546, Total sum= 16426
+
+
+
+
+### checking gen lepton pt
+
+with gen2_leptons_p4
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen2_leptons_p4[0].pt():gen2_leptons_p4[1].pt():gen2_leptons_p4[2].pt()", "((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0")
+
+-- most of events don't have the lepton
+others have only 1 as should be
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("gen2_leptons_p4[0].pt():gen2_leptons_p4[1].pt():gen2_leptons_p4[2].pt()", "abs(gen_zdecays_IDs[0]) == 13 && abs(gen_zdecays_IDs[1]) == 13 && gen_N_zdecays > 0")
+
+-- mostly 2 or 1 lepton, sometimes none
+
+?????????????????????????????????????????????????
 
 
 
