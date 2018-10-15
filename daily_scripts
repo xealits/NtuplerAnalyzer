@@ -16,13 +16,289 @@ foreach dtag (`cat merge-sets/jobs_hadd.dtags.small`)
 python selections.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0" --chan dy_mutau_sel --sys NOMINAL --distr geom_tau_sv_sign --out-dir quick-test/v40/ gstore_outdirs/v40/*/Ntupler_v40_$dtag*/*/*/*root &
 end
 
-foreach dtag (`cat merge-sets/jobs_hadd.dtags.large_aa`)
-python selections.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0" --chan dy_mutau_sel --sys NOMINAL --distr geom_tau_sv_sign --out-dir quick-test/v40/ gstore_outdirs/v40/*/Ntupler_v40_$dtag*/*/*/*root &
+-- troubles
+
+
+quick script:
+python per_dtag_script.py
+
+dy_mutau_sel->Get("dy/NOMINAL/dy_mutau_sel_dy_NOMINAL_geom_tau_sv_sign")->Print()
+
+dy = (TH1D*) dy_mutau_sel->Get("dy/NOMINAL/dy_mutau_sel_dy_NOMINAL_geom_tau_sv_sign")
+dy->Scale(5765.4 * 35800)
+dy->Print()
+
+TH1.Print Name  = dy_mutau_sel_dy_NOMINAL_geom_tau_sv_sign, Entries= 14927, Total sum= 20195.1
+
+-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+
+data = (TH1D*) mutau_sel->Get("data/NOMINAL/mutau_sel_data_NOMINAL_geom_tau_sv_sign")
+dy->SetLineColor(kRed)
+data->Draw()
+dy->Draw("same")
+
+dy->Scale(5765.4)
+
+full run:
+
+foreach dtag ( MC2016_Summer16_WWTo2L2Nu_powheg MC2016_Summer16_WWToLNuQQ_powheg MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin MC2016_Summer16_WZTo1L3Nu_amcatnlo_madspin MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin MC2016_Summer16_WZTo3LNu_powheg MC2016_Summer16_ZZTo2L2Nu_powheg MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg MC2016_Summer16_DYJetsToLL_10to50_amcatnlo MC2016_Summer16_DYJetsToLL_50toInf_madgraph MC2016_Summer16_SingleT_tW_5FS_powheg MC2016_Summer16_SingleTbar_tW_5FS_powheg MC2016_Summer16_W1Jets_madgraph MC2016_Summer16_W2Jets_madgraph MC2016_Summer16_W3Jets_madgraph MC2016_Summer16_W4Jets_madgraph MC2016_Summer16_WJets_amcatnlo MC2016_Summer16_WJets_madgraph MC2016_Summer16_TTJets_powheg )
+python per_dtag_script.py $dtag &
 end
 
-foreach dtag (`cat merge-sets/jobs_hadd.dtags.large_ab`)
-python selections.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0" --chan dy_mutau_sel --sys NOMINAL --distr geom_tau_sv_sign --out-dir quick-test/v40/ gstore_outdirs/v40/*/Ntupler_v40_$dtag*/*/*/*root &
+only wjets:
+
+foreach dtag (  MC2016_Summer16_W1Jets_madgraph MC2016_Summer16_W2Jets_madgraph MC2016_Summer16_W3Jets_madgraph MC2016_Summer16_W4Jets_madgraph MC2016_Summer16_WJets_amcatnlo MC2016_Summer16_WJets_madgraph )
+python per_dtag_script.py $dtag &
 end
+
+only TTbar:
+
+foreach dtag ( MC2016_Summer16_TTJets_powheg )
+python per_dtag_script.py $dtag &
+end
+
+
+
+run on data:
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0"             --save-weight --histo-name "dy_mutau_sel/data/NOMINAL/dy_mutau_sel_data_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/SingleMuon.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root
+
+hadd foobar.root v40/*.root
+
+dy         = (TH1D*) dy_mutau_sel->Get("dy/NOMINAL/dy_mutau_sel_dy_NOMINAL_geom_tau_sv_sign")
+single_top = (TH1D*) dy_mutau_sel->Get("single_top/NOMINAL/dy_mutau_sel_single_top_NOMINAL_geom_tau_sv_sign")
+wjets      = (TH1D*) dy_mutau_sel->Get("wjets/NOMINAL/dy_mutau_sel_wjets_NOMINAL_geom_tau_sv_sign")
+dibosons   = (TH1D*) dy_mutau_sel->Get("dibosons/NOMINAL/dy_mutau_sel_dibosons_NOMINAL_geom_tau_sv_sign")
+ttbar      = (TH1D*) dy_mutau_sel->Get("ttbar/NOMINAL/dy_mutau_sel_ttbar_NOMINAL_geom_tau_sv_sign")
+
+dy         ->Scale(35800)
+single_top ->Scale(35800)
+wjets      ->Scale(35800)
+dibosons   ->Scale(35800)
+ttbar      ->Scale(35800)
+
+dy         ->Print()
+single_top ->Print()
+wjets      ->Print()
+dibosons   ->Print()
+ttbar      ->Print()
+
+TH1.Print Name  = dy_mutau_sel_dy_NOMINAL_geom_tau_sv_sign, Entries= 14988, Total sum= 22045.3
+root [11] single_top ->Print()
+TH1.Print Name  = dy_mutau_sel_single_top_NOMINAL_geom_tau_sv_sign, Entries= 9154, Total sum= 1210.31
+root [12] wjets      ->Print()
+TH1.Print Name  = dy_mutau_sel_wjets_NOMINAL_geom_tau_sv_sign, Entries= 9136, Total sum= 114618
+root [13] dibosons   ->Print()
+TH1.Print Name  = dy_mutau_sel_dibosons_NOMINAL_geom_tau_sv_sign, Entries= 27178, Total sum= 1756.32
+root [3] ttbar      ->Print()
+TH1.Print Name  = dy_mutau_sel_ttbar_NOMINAL_geom_tau_sv_sign, Entries= 15578, Total sum= 5786.75
+
+
+data = (TH1D*) dy_mutau_sel->Get("data/NOMINAL/dy_mutau_sel_data_NOMINAL_geom_tau_sv_sign")
+data->Print()
+
+TH1.Print Name  = dy_mutau_sel_data_NOMINAL_geom_tau_sv_sign, Entries= 80894, Total sum= 79490
+
+-- delirious results
+amcatnlo wjets need aMCatNLO weight!
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "(aMCatNLO_weight>0.) * (abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0)"    --per-weight   --scale 61526.7         --save-weight --histo-name "dy_mutau_sel/wjets/NOMINAL/dy_mutau_sel_wjets_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_WJets_amcatnlo.root gstore_outdirs/v40/*/*MC2016_Summer16_WJets_amcatnlo*/*/0000/*root
+
+TH1.Print Name  = dy_mutau_sel_wjets_NOMINAL_geom_tau_sv_sign, Entries= 6503, Total sum= 81559.5
+
+still too many events, but closer to data
+
+dibosons seem too big
+
+
+
+
+
+# test refit index
+
+python selections.py "tau_refited_index[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0" --chan dy_mutau_sel --sys NOMINAL --distr geom_tau_sv_sign --out-dir quick-test/test/ gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/*/*root
+
+python sumup_ttree_draw.py "tau_refited_index[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0"             --save-weight --histo-name "dy_mutau_sel/data/NOMINAL/dy_mutau_sel_data_NOMINAL_tau_refited_index" --output quick-test/test/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root
+
+
+python sumup_ttree_draw.py "tau_refited_index[0]" --histo-range 100,-5,5 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0"             --save-weight --histo-name "dy_mutau_sel/data/NOMINAL/dy_mutau_sel_data_NOMINAL_tau_refited_index" --output quick-test/test/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_2.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root
+
+= -1 and 0 indexes only
+
+
+
+
+
+
+# yield with lower cuts
+
+python sumup_ttree_draw.py "tau_refited_index[0]" --histo-range 20,-10,10 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0"             --save-weight --histo-name "dy_mutau_sel/dy/NOMINAL/dy_mutau_sel_dy_NOMINAL_tau_refited_index" --output quick-test/test/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_lowcuts.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root
+
+149047 events (37136.0 refit index = 0, others = -1) VS 49273
+
+
+
+## geom SV sign distrs in DY and data
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0"   --per-weight   --save-weight --histo-name "dy_mutau_sel/dy/NOMINAL/dy_mutau_sel_dy_NOMINAL_geom_tau_sv_sign" --output quick-test/test/lowcuts_Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_geom_svsign.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root &
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0"                  --save-weight --histo-name "dy_mutau_sel/data/NOMINAL/dy_mutau_sel_data_NOMINAL_geom_tau_sv_sign" --output quick-test/test/lowcuts_SingleMuon_geom_svsign.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0"                  --save-weight --histo-name "dy_mutau_sel/data/NOMINAL/dy_mutau_sel_data_NOMINAL_geom_tau_sv_sign" --output quick-test/test/lowcuts_SingleMuon_geom_svsign.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+hadd h_lowcuts.root lowcuts*root
+
+dy   = (TH1D*) dy_mutau_sel->Get("dy/NOMINAL/dy_mutau_sel_dy_NOMINAL_geom_tau_sv_sign")
+data = (TH1D*) dy_mutau_sel->Get("data/NOMINAL/dy_mutau_sel_data_NOMINAL_geom_tau_sv_sign")
+dy->SetLineColor(kRed)
+dy->Scale(5765.4 * 35800)
+data->Print()
+dy->Print()
+
+-- dy lowcuts have 1k at 3-4-5 signmas
+
+
+
+## try Mt < 40 and full run on MC
+
+foreach dtag ( MC2016_Summer16_WWTo2L2Nu_powheg MC2016_Summer16_WWToLNuQQ_powheg MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin MC2016_Summer16_WZTo1L3Nu_amcatnlo_madspin MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin MC2016_Summer16_WZTo3LNu_powheg MC2016_Summer16_ZZTo2L2Nu_powheg MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg MC2016_Summer16_DYJetsToLL_10to50_amcatnlo MC2016_Summer16_DYJetsToLL_50toInf_madgraph MC2016_Summer16_SingleT_tW_5FS_powheg MC2016_Summer16_SingleTbar_tW_5FS_powheg MC2016_Summer16_WJets_madgraph MC2016_Summer16_TTJets_powheg )
+python per_dtag_script.py $dtag &
+end
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0"             --save-weight --histo-name "dy_mutau_sel/data/NOMINAL/dy_mutau_sel_data_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/SingleMuon.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root
+
+hadd foobar.root v40/MC*root v40/SingleMuon.root
+
+
+dy         = (TH1D*) dy_mutau_sel->Get("dy/NOMINAL/dy_mutau_sel_dy_NOMINAL_geom_tau_sv_sign")
+single_top = (TH1D*) dy_mutau_sel->Get("single_top/NOMINAL/dy_mutau_sel_single_top_NOMINAL_geom_tau_sv_sign")
+wjets      = (TH1D*) dy_mutau_sel->Get("wjets/NOMINAL/dy_mutau_sel_wjets_NOMINAL_geom_tau_sv_sign")
+dibosons   = (TH1D*) dy_mutau_sel->Get("dibosons/NOMINAL/dy_mutau_sel_dibosons_NOMINAL_geom_tau_sv_sign")
+ttbar      = (TH1D*) dy_mutau_sel->Get("ttbar/NOMINAL/dy_mutau_sel_ttbar_NOMINAL_geom_tau_sv_sign")
+
+dy         ->Scale(35800)
+single_top ->Scale(35800)
+wjets      ->Scale(35800)
+dibosons   ->Scale(35800)
+ttbar      ->Scale(35800)
+
+dy         ->Print()
+single_top ->Print()
+wjets      ->Print()
+dibosons   ->Print()
+ttbar      ->Print()
+
+data = (TH1D*) dy_mutau_sel->Get("data/NOMINAL/dy_mutau_sel_data_NOMINAL_geom_tau_sv_sign")
+data->Print()
+
+root [11] dy         ->Print()
+TH1.Print Name  = dy_mutau_sel_dy_NOMINAL_geom_tau_sv_sign, Entries= 37306, Total sum= 55273.7
+root [12] single_top ->Print()
+TH1.Print Name  = dy_mutau_sel_single_top_NOMINAL_geom_tau_sv_sign, Entries= 12396, Total sum= 1443.25
+root [13] wjets      ->Print()
+TH1.Print Name  = dy_mutau_sel_wjets_NOMINAL_geom_tau_sv_sign, Entries= 4482, Total sum= 93913.1
+root [14] dibosons   ->Print()
+TH1.Print Name  = dy_mutau_sel_dibosons_NOMINAL_geom_tau_sv_sign, Entries= 34159, Total sum= 2489.03
+root [15] ttbar      ->Print()
+TH1.Print Name  = dy_mutau_sel_ttbar_NOMINAL_geom_tau_sv_sign, Entries= 13295, Total sum= 4948.53
+
+root [18] data->Print()
+TH1.Print Name  = dy_mutau_sel_data_NOMINAL_geom_tau_sv_sign, Entries= 212683, Total sum= 209320
+
+
+
+and with Mt
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40."             --save-weight --histo-name "dy_mutau_sel/data/NOMINAL/dy_mutau_sel_data_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/SingleMuon.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+root [11] dy         ->Print()
+TH1.Print Name  = dy_mutau_sel_dy_NOMINAL_geom_tau_sv_sign, Entries= 25322, Total sum= 36829.1
+root [12] single_top ->Print()
+TH1.Print Name  = dy_mutau_sel_single_top_NOMINAL_geom_tau_sv_sign, Entries= 2519, Total sum= 288.954
+root [13] wjets      ->Print()
+TH1.Print Name  = dy_mutau_sel_wjets_NOMINAL_geom_tau_sv_sign, Entries= 811, Total sum= 17017.4
+root [14] dibosons   ->Print()
+TH1.Print Name  = dy_mutau_sel_dibosons_NOMINAL_geom_tau_sv_sign, Entries= 12990, Total sum= 565.068
+root [15] ttbar      ->Print()
+TH1.Print Name  = dy_mutau_sel_ttbar_NOMINAL_geom_tau_sv_sign, Entries= 2802, Total sum= 1036.63
+
+root [18] data->Print()
+TH1.Print Name  = dy_mutau_sel_data_NOMINAL_geom_tau_sv_sign, Entries= 77254, Total sum= 75717
+
+
+-- by dy-data distrs seems like this is it
+
+
+now:
+* to stack
+* splitting DY in tautau and other
+
+
+### split DY
+
+only with z_decays the second option does not count now
+and only in DY50
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40. && (((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0)"   --per-weight  --scale 5765.4  --save-weight --histo-name "dy_mutau_sel/dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_tautau.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root &
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40. && \!(((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0)"   --per-weight  --scale 5765.4  --save-weight --histo-name "dy_mutau_sel/dy_other/NOMINAL/dy_mutau_sel_dy_other_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_other.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root &
+
+dy         = (TH1D*) dy_mutau_sel->Get("dy/NOMINAL/dy_mutau_sel_dy_NOMINAL_geom_tau_sv_sign")
+dy_tautau  = (TH1D*) dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign")
+dy_other   = (TH1D*) dy_mutau_sel->Get("dy_other/NOMINAL/dy_mutau_sel_dy_other_NOMINAL_geom_tau_sv_sign")
+
+dy         ->Print()
+dy_tautau  ->Print()
+dy_other   ->Print()
+
+add up?
+
+root [5] dy         ->Print()
+TH1.Print Name  = dy_mutau_sel_dy_NOMINAL_geom_tau_sv_sign, Entries= 25322, Total sum= 1.02875
+root [6] dy_tautau  ->Print()
+TH1.Print Name  = dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign, Entries= 22476, Total sum= 0.000146657
+root [7] dy_other   ->Print()
+TH1.Print Name  = dy_mutau_sel_dy_other_NOMINAL_geom_tau_sv_sign, Entries= 1455, Total sum= 9.74784e-06
+
+22476 + 1455
+23931
+
+-- undefined N_zdecays?
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40."   --per-weight --scale 5765.4   --save-weight --histo-name "dy_mutau_sel/dy_all/NOMINAL/dy_mutau_sel_dy_all_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_all.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root &
+
+dy_all    = (TH1D*) dy_mutau_sel->Get("dy_all/NOMINAL/dy_mutau_sel_dy_all_NOMINAL_geom_tau_sv_sign")
+
+
+
+### stack them
+
+python stack_quick.py quick-test/foobar.root --chan dy_mutau_sel --sys NOMINAL --distr geom_tau_sv_sign --stack ttbar,wjets,dibosons,single_top,dy --also data test_f.root --scale-stack 35800
+
+python stack_quick.py quick-test/foobar.root --chan dy_mutau_sel --sys NOMINAL --distr geom_tau_sv_sign --stack ttbar,wjets,dibosons,single_top,dy_tautau,dy_other --debug --also data test_f.root --scale-stack 35800
+
+
+
+
+
+
+
+
+
+
+
+# check the yield in SS DY
+
+python sumup_ttree_draw.py "tau_refited_index[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] > 0"             --save-weight --histo-name "dy_mutau_sel/dy/NOMINAL/dy_mutau_sel_dy_NOMINAL_tau_refited_index" --output quick-test/test/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_SS.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root
+
+5461 events VS 49273 in OS
+
+
+
+
+
+
+
 
 
 
