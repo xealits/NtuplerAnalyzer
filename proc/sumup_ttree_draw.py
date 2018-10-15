@@ -26,6 +26,7 @@ parser.add_argument("--output", type=str, default="output.root", help="filename 
 
 parser.add_argument("--save-weight", action='store_true', help="save the weight counters in the output file")
 parser.add_argument("--per-weight",  action='store_true', help="normalize by event weight of datasets")
+parser.add_argument("--scale", type=float, help="the value to scale histo")
 parser.add_argument("--scan",        action='store_true', help="also scan events ant print out")
 parser.add_argument("--get-maximum", action='store_true', help="just find maxima on the draw_com")
 
@@ -221,6 +222,9 @@ for filename in input_files:
 if args.per_weight:
     #weight_counter = tfile.Get('ntupler/weight_counter')
     out_histo.Scale(1./weight_counter.GetBinContent(2))
+
+if args.scale:
+    out_histo.Scale(args.scale)
 
 if args.histo_color:
     out_histo.SetLineColor(rgb(*(int(i) for i in args.histo_color.split(','))))

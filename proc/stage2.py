@@ -4233,6 +4233,7 @@ def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19252
     control_counters.Write()
 
     fout.Write()
+    fout.Close()
 
     logger.write("time elapsed %s\n" % str(datetime.now() - start_time))
 

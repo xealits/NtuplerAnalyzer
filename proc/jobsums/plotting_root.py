@@ -23,6 +23,7 @@ nick_info = {
 
 "dibosons":    {'color': kCyan,    'legend': 'dibosons'},
 "singletop":   {'color': kAzure,   'legend': 'singletop'},
+"single_top":  {'color': kAzure,   'legend': 'singletop'},
 "s_top_eltau": {'color': kAzure,   'legend': 's.top#rightarrow e#tau'},
 "s_top_mutau": {'color': kAzure,   'legend': 's.top#rightarrow #mu#tau'},
 "s_top_elmu":  {'color': kAzure+1, 'legend': 's.top#rightarrow e#mu'},
@@ -35,6 +36,7 @@ nick_info = {
 "tt_ee":         {'color': kAzure-9,  'legend': 'tt_ee'},
 "tt_mm":         {'color': kGreen-9,  'legend': 'tt_mm'},
 "tt_{l\\tau-l}": {'color': kOrange+3, 'legend': 'tt_{l\\tau-l}'},
+"ttbar":         {'color': kOrange+3, 'legend': 'tt_{all}'},
 
 "tt_mutau3ch":   {'color': rgb(255, 255, 178), 'legend': 't#bar{t}#rightarrow #mu#tau_{3h}'},
 "tt_eltau3ch":   {'color': rgb(254,204,92),    'legend': 't#bar{t}#rightarrow e#tau_{3h}'},

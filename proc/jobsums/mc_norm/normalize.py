@@ -223,12 +223,12 @@ xsecs = {
 ## TODO: need to replay this study..
 ## o.65 factor
 #"MC2016_Summer16_WJets_madgraph":  61526.7 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
-"MC2016_Summer16_WJets_madgraph":  50690 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
-"MC2016_Summer16_W0Jets_madgraph":  50690, # with the NUP
-"MC2016_Summer16_W1Jets_madgraph":  9493,
-"MC2016_Summer16_W2Jets_madgraph":  3120,
-"MC2016_Summer16_W3Jets_madgraph":   942.3,
-"MC2016_Summer16_W4Jets_madgraph":   524.2,
+"MC2016_Summer16_WJets_madgraph":   50690 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
+"MC2016_Summer16_W0Jets_madgraph":  50690  , # with the NUP
+"MC2016_Summer16_W1Jets_madgraph":  9493   ,
+"MC2016_Summer16_W2Jets_madgraph":  3120   ,
+"MC2016_Summer16_W3Jets_madgraph":   942.3 ,
+"MC2016_Summer16_W4Jets_madgraph":   524.2 ,
 
 # with the MiT factors
 # https://github.com/MiT-HEP/ChargedHiggs/blob/8927a1101b87bd0e4bb8059a0cdd4e957eef08e7/aux/DYNjets.txt
@@ -244,13 +244,14 @@ xsecs = {
 #"MC2016_Summer16_W3Jets_madgraph":  1821.47,
 #"MC2016_Summer16_W4Jets_madgraph":   939.685,
 
- "MC2016_Summer16_WWTo2L2Nu_powheg"               :  12.178  ,
- "MC2016_Summer16_WWToLNuQQ_powheg"               :  49.997  ,
+ "MC2016_Summer16_ZZTo2L2Nu_powheg"               : 0.564  ,
+
+ "MC2016_Summer16_WWTo2L2Nu_powheg"               : 12.178  ,
+ "MC2016_Summer16_WWToLNuQQ_powheg"               : 49.997  ,
  "MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin"   : 10.71  ,
  "MC2016_Summer16_WZTo1L3Nu_amcatnlo_madspin"     : 3.033  ,
  "MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin"      : 5.595  ,
  "MC2016_Summer16_WZTo3LNu_powheg"                : 4.42965  ,
- "MC2016_Summer16_ZZTo2L2Nu_powheg"               : 0.564  ,
  "MC2016_Summer16_ZZTo2L2Nu_powheg"               : 1.256  ,
  "MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin"      : 3.22   ,
 "MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo_": 10.11, #3.36},
