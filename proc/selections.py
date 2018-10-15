@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
     description = "plot selections for all known MC dtags: channel/proc/systematic",
     epilog = """Example:\npython selections.py "met_init.pt()" --histo-range 200,0,200 --histo-name data_met_init --output data_met_init.root gstore_outdirs/v28/SingleMuon/Ntupler_v28_Data13TeV_SingleMuon2016*/1*/*/*root
-python sumup_ttree_distrs.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "selection_stage == 5" --histo-range 50,0,200 --output test1_lep_pt.root --histo-name foo/bar/test1_lep_pt --save-weight MC2016_Summer16_TTJets_powheg_test1.root """
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "selection_stage == 5" --histo-range 50,0,200 --output test1_lep_pt.root --histo-name foo/bar/test1_lep_pt --save-weight MC2016_Summer16_TTJets_powheg_test1.root """
     )
 
 parser.add_argument('draw_com', type=str, help='Draw("??") definition of the distribution')
@@ -152,9 +152,9 @@ if args.el_procs:
 
 
 if args.custom_range:
-    command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out """ + "--custom-range {}".format(args.custom_range) + """ --cond-com "{selection}" --output {outdir}/test1_lep_pt_{dtag}_{chan}_{proc}_{sys}_{distr}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight {options} {dtag_file}"""
+    command = """python sumup_ttree_draw.py "{draw_com}" --ttree ttree_out """ + "--custom-range {}".format(args.custom_range) + """ --cond-com "{selection}" --output {outdir}/test1_lep_pt_{dtag}_{chan}_{proc}_{sys}_{distr}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight {options} {dtag_file}"""
 else:
-    command = """python sumup_ttree_distrs.py "{draw_com}" --ttree ttree_out """ + "--histo-range {}".format(args.histo_range) + """ --cond-com "{selection}" --output {outdir}/test1_lep_pt_{dtag}_{chan}_{proc}_{sys}_{distr}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight {options} {dtag_file}"""
+    command = """python sumup_ttree_draw.py "{draw_com}" --ttree ttree_out """ + "--histo-range {}".format(args.histo_range) + """ --cond-com "{selection}" --output {outdir}/test1_lep_pt_{dtag}_{chan}_{proc}_{sys}_{distr}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight {options} {dtag_file}"""
 
 for input_file in args.input_files:
     matching_dtags = [dtag for dtag in dtags.keys() if dtag in input_file]

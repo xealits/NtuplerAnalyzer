@@ -1,3 +1,34 @@
+# quick test over full MC
+
+example with Mt and OS:
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets == 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40. && lep_id[0]*tau_id[0] < 0"              --save-weight --histo-name "mutau_sel_MT40OS/data/NOMINAL/mutau_sel_MT40OS_data_NOMINAL_geom_tau_sv_sign" --output foobarNOHLT_Mt40OS_SingleMuon.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+with HLT, OS id, without Mt 40
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0"              --save-weight --histo-name "mutau_sel/data/NOMINAL/mutau_sel_data_NOMINAL_geom_tau_sv_sign" --output foobarNOHLT_Mt40OS_SingleMuon.root gstore_outdirs/v40/SingleMuon/*/*/0000/*root &
+
+
+python selections.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0" --chan dy_mutau_sel --sys NOMINAL --distr geom_tau_sv_sign --out-dir quick-test/test/ gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/*/*root
+
+
+foreach dtag (`cat merge-sets/jobs_hadd.dtags.small`)
+python selections.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0" --chan dy_mutau_sel --sys NOMINAL --distr geom_tau_sv_sign --out-dir quick-test/v40/ gstore_outdirs/v40/*/Ntupler_v40_$dtag*/*/*/*root &
+end
+
+foreach dtag (`cat merge-sets/jobs_hadd.dtags.large_aa`)
+python selections.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0" --chan dy_mutau_sel --sys NOMINAL --distr geom_tau_sv_sign --out-dir quick-test/v40/ gstore_outdirs/v40/*/Ntupler_v40_$dtag*/*/*/*root &
+end
+
+foreach dtag (`cat merge-sets/jobs_hadd.dtags.large_ab`)
+python selections.py "tau_SV_geom_flightLenSign[0]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 30. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 30 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0" --chan dy_mutau_sel --sys NOMINAL --distr geom_tau_sv_sign --out-dir quick-test/v40/ gstore_outdirs/v40/*/Ntupler_v40_$dtag*/*/*/*root &
+end
+
+
+
+
+
+
 # testing DY MC in tau-tau
 
 in the summer project it had very small number of events
