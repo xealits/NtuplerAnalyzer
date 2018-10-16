@@ -25,7 +25,7 @@ logging.info("leptonic SFs")
 # -- therefore there is no shape?
 #    what are the uncertainties in these histograms?
 
-muon_effs_dirname = "${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/analysis/muon-effs/"
+muon_effs_dirname = "${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/analysis/muon-effs/"
 gSystem.ExpandPathName(muon_effs_dirname    )
 #TString muon_effs_dirname = "analysis/muon-effs/";
 logging.info("muon SFs from " + muon_effs_dirname)
@@ -297,7 +297,7 @@ def lepton_muon_trigger_SF(abs_eta, pt): #, double SingleMuon_data_bcdef_fractio
 '''
 logging.info("unpacking electron eff SFs")
 
-electron_effs_dirname = "${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/analysis/electron-effs"
+electron_effs_dirname = "${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/analysis/electron-effs"
 gSystem.ExpandPathName(electron_effs_dirname)
 
 electron_effs_tracking_all_file  = TFile(electron_effs_dirname + "/2016_Sept23_ElectronReconstructionSF_egammaEffi.txt_EGM2D.root")

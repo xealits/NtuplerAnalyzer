@@ -62,7 +62,7 @@ logging.info("loading b-tagging SF stuff")
 
 logging.info("loading b-tagging SF callibration")
 #bCalib_filename = "${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/data/weights/CSVv2_Moriond17_B_H.csv"
-bCalib_filename = environ['CMSSW_BASE'] + '/src/UserCode/ttbar-leptons-80X/data/weights/CSVv2_Moriond17_B_H.csv'
+bCalib_filename = environ['CMSSW_BASE'] + '/src/UserCode/NtuplerAnalyzer/data/weights/CSVv2_Moriond17_B_H.csv'
 #gSystem.ExpandPathName(bCalib_filename)
 
 logging.info("btag SFs from " + bCalib_filename)
@@ -97,7 +97,7 @@ logging.info("loaded b-tagging callibration")
 
 logging.info("loading b-tagging efficiencies")
 #bTaggingEfficiencies_filename = std::string(std::getenv("CMSSW_BASE")) + "/src/UserCode/ttbar-leptons-80X/jobing/configs/b-tagging-efficiencies.root";
-bTaggingEfficiencies_filename = '${CMSSW_BASE}/src/UserCode/ttbar-leptons-80X/analysis/b-tagging/v9.38-for-b-effs/beff_histos.root'
+bTaggingEfficiencies_filename = '${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/analysis/b-tagging/v9.38-for-b-effs/beff_histos.root'
 gSystem.ExpandPathName(bTaggingEfficiencies_filename)
 bTaggingEfficiencies_file = TFile(bTaggingEfficiencies_filename)
 

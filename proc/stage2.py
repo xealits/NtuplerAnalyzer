@@ -17,10 +17,12 @@ with_bSF = True
 
 ISO_LEPS    = True
 JETS_PT_CUT = 30.
-TAUS_PT_CUT = 30.
+TAUS_PT_CUT = 21. # 20GeV for DY->tautau selection
 TAUS_ID_CUT_Medium = 2
 TAUS_ID_CUT_VLoose = 0
 TAUS_ID_CUT = TAUS_ID_CUT_VLoose
+ONLY_3PI_TAUS = True
+SV_SIGN_CUT = 2.5
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all):
     return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all
@@ -153,6 +155,31 @@ def passes_dy_tautau_selection_stages(passed_triggers, leps, N_jets, taus, proc_
 
     return channel_stage
 
+def passes_dy_mumu_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
+    channel_stage = 0
+    pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
+
+    # muon and OS tau and no b
+    pass_dy_objects_mu = pass_mumu and len(leps[0]) == 2 and leps[4][0] * leps[4][0] < 0 and N_jets[0] == 0
+    pass_dy_objects_el = pass_elel and len(leps[0]) == 2 and leps[4][0] * leps[4][0] < 0 and N_jets[0] == 0
+    pass_dy_mass = False
+    if pass_dy_objects_mu or pass_dy_objects_el:
+        pair    = leps[0][0] + leps[0][1]
+        pair_mass = pair.mass()
+        pass_dy_mass = 75. < pair_mass < 105.
+
+    if   pass_dy_objects_mu and pass_dy_mass:
+        channel_stage = 103
+    elif pass_dy_objects_mu:
+        channel_stage = 102
+    elif pass_dy_objects_el and pass_dy_mass:
+        channel_stage = 113
+    elif pass_dy_objects_el:
+        channel_stage = 112
+
+    return channel_stage
+
+
 # N_jets 
 def passes_elmu_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     channel_stage = 0
@@ -201,7 +228,7 @@ ROOT.gROOT.Reset()
 
 # the lib is needed for BTagCalibrator and Recoil corrections
 # TODO: somehow these 2 CMSSW classes should be acceptable from pyROOT on its' own without the whole lib
-ROOT.gSystem.Load("libUserCodettbar-leptons-80X.so")
+#ROOT.gSystem.Load("libUserCodettbar-leptons-80X.so")
 
 print '''loaded all libraries'''
 
@@ -1542,11 +1569,50 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     selection_stage_tt_alliso = array( 'i', [ 0 ])
     ttree_out.Branch('selection_stage_tt_alliso', selection_stage_tt_alliso, 'selection_stage_tt_alliso/I')
 
-    selection_stage_dy = array( 'i', [ 0 ] )
-    ttree_out.Branch( 'selection_stage_dy', selection_stage_dy, 'selection_stage_dy/I' )
+    selection_stage_dy         = array('i', [0])
+    selection_stage_dy_TESUp   = array('i', [0])
+    selection_stage_dy_TESDown = array('i', [0])
+    selection_stage_dy_JERUp   = array('i', [0])
+    selection_stage_dy_JERDown = array('i', [0])
+    selection_stage_dy_JESUp   = array('i', [0])
+    selection_stage_dy_JESDown = array('i', [0])
+    ttree_out.Branch('selection_stage_dy',         selection_stage_dy,         'selection_stage_dy/I' )
+    ttree_out.Branch('selection_stage_dy_TESUp',   selection_stage_dy_TESUp  , 'selection_stage_dy_TESUp/I' )
+    ttree_out.Branch('selection_stage_dy_TESDown', selection_stage_dy_TESDown, 'selection_stage_dy_TESDown/I' )
+    ttree_out.Branch('selection_stage_dy_JERUp',   selection_stage_dy_JERUp  , 'selection_stage_dy_JERUp/I' )
+    ttree_out.Branch('selection_stage_dy_JERDown', selection_stage_dy_JERDown, 'selection_stage_dy_JERDown/I' )
+    ttree_out.Branch('selection_stage_dy_JESUp',   selection_stage_dy_JESUp  , 'selection_stage_dy_JESUp/I' )
+    ttree_out.Branch('selection_stage_dy_JESDown', selection_stage_dy_JESDown, 'selection_stage_dy_JESDown/I' )
 
-    selection_stage_em = array( 'i', [ 0 ] )
-    ttree_out.Branch( 'selection_stage_em', selection_stage_em, 'selection_stage_em/I' )
+    selection_stage_dy_mumu         = array('i', [0])
+    selection_stage_dy_mumu_TESUp   = array('i', [0])
+    selection_stage_dy_mumu_TESDown = array('i', [0])
+    selection_stage_dy_mumu_JERUp   = array('i', [0])
+    selection_stage_dy_mumu_JERDown = array('i', [0])
+    selection_stage_dy_mumu_JESUp   = array('i', [0])
+    selection_stage_dy_mumu_JESDown = array('i', [0])
+    ttree_out.Branch('selection_stage_dy_mumu',         selection_stage_dy_mumu,         'selection_stage_dy_mumu/I' )
+    ttree_out.Branch('selection_stage_dy_mumu_TESUp',   selection_stage_dy_mumu_TESUp  , 'selection_stage_dy_mumu_TESUp/I' )
+    ttree_out.Branch('selection_stage_dy_mumu_TESDown', selection_stage_dy_mumu_TESDown, 'selection_stage_dy_mumu_TESDown/I' )
+    ttree_out.Branch('selection_stage_dy_mumu_JERUp',   selection_stage_dy_mumu_JERUp  , 'selection_stage_dy_mumu_JERUp/I' )
+    ttree_out.Branch('selection_stage_dy_mumu_JERDown', selection_stage_dy_mumu_JERDown, 'selection_stage_dy_mumu_JERDown/I' )
+    ttree_out.Branch('selection_stage_dy_mumu_JESUp',   selection_stage_dy_mumu_JESUp  , 'selection_stage_dy_mumu_JESUp/I' )
+    ttree_out.Branch('selection_stage_dy_mumu_JESDown', selection_stage_dy_mumu_JESDown, 'selection_stage_dy_mumu_JESDown/I' )
+
+    selection_stage_em         = array('i', [0])
+    selection_stage_em_TESUp   = array('i', [0])
+    selection_stage_em_TESDown = array('i', [0])
+    selection_stage_em_JERUp   = array('i', [0])
+    selection_stage_em_JERDown = array('i', [0])
+    selection_stage_em_JESUp   = array('i', [0])
+    selection_stage_em_JESDown = array('i', [0])
+    ttree_out.Branch( 'selection_stage_em',         selection_stage_em,         'selection_stage_em/I' )
+    ttree_out.Branch( 'selection_stage_em_TESUp',   selection_stage_em_TESUp  , 'selection_stage_em_TESUp/I' )
+    ttree_out.Branch( 'selection_stage_em_TESDown', selection_stage_em_TESDown, 'selection_stage_em_TESDown/I' )
+    ttree_out.Branch( 'selection_stage_em_JERUp',   selection_stage_em_JERUp  , 'selection_stage_em_JERUp/I' )
+    ttree_out.Branch( 'selection_stage_em_JERDown', selection_stage_em_JERDown, 'selection_stage_em_JERDown/I' )
+    ttree_out.Branch( 'selection_stage_em_JESUp',   selection_stage_em_JESUp  , 'selection_stage_em_JESUp/I' )
+    ttree_out.Branch( 'selection_stage_em_JESDown', selection_stage_em_JESDown, 'selection_stage_em_JESDown/I' )
 
     nup = array( 'i', [ 0 ] )
     ttree_out.Branch( 'nup', nup, 'nup/I' )
@@ -2597,6 +2663,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             match_lep        = ev.tau_matching_lep[i]
             match_lep_alliso = ev.tau_matching_allIso_lep[i]
 
+            # option of passing only 3PI taus with high significance
+            if ONLY_3PI_TAUS:
+                # (unnecessary if, but readable)
+                if not (ev.tau_hasSecondaryVertex[i] and ev.tau_refited_index[i] > -1 and ev.tau_SV_geom_flightLenSign[ev.tau_refited_index[i]] > SV_SIGN_CUT): continue
+
             pass_pt = False
             # MC corrections
             if isMC: # and with_TauES_sys:
@@ -3433,22 +3504,43 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         # nominal
         tt_channel_sel_stage    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
-        tt_channel_sel_stage_TESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_TESDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][2]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_JERUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERUp_med,   N_jets_JERUp_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_TESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med,     N_jets_nom_all),     [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_TESDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med,     N_jets_nom_all),     [tau for tau in sel_taus if (tau[0]*tau[1][2]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JERUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERUp_med,   N_jets_JERUp_all),   [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
         tt_channel_sel_stage_JERDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERDown_med, N_jets_JERDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
-        tt_channel_sel_stage_JESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESUp_med,   N_jets_JESUp_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESUp_med,   N_jets_JESUp_all),   [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
         tt_channel_sel_stage_JESDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESDown_med, N_jets_JESDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
         # alliso tt, the presel is most important here
         #tt_channel_presel_stage = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), taus_candidates, proc_met)
         tt_channel_stage_alliso = passes_tt_selection_stages_alliso(passed_triggers, leps_all, (N_jets_nom_med_alliso, N_jets_nom_all_alliso), taus_candidates_alliso, proc_met)
 
-        # only nominal DY
-        dy_channel_sel_stage = 0 #passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        # full syst for DY
+        dy_channel_sel_stage         = passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        dy_channel_sel_stage_TESUp   = passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
+        dy_channel_sel_stage_TESDown = passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][2]).pt() > TAUS_PT_CUT], proc_met)
+        dy_channel_sel_stage_JERUp   = passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_JERUp_med,   N_jets_JERUp_all),   [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        dy_channel_sel_stage_JERDown = passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_JERDown_med, N_jets_JERDown_med), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        dy_channel_sel_stage_JESUp   = passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_JESUp_med,   N_jets_JESUp_all),   [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        dy_channel_sel_stage_JESDown = passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_JESDown_med, N_jets_JESDown_med), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+
+        # and DY mumu
+        dy_mumu_channel_sel_stage         = passes_dy_mumu_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        dy_mumu_channel_sel_stage_TESUp   = passes_dy_mumu_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
+        dy_mumu_channel_sel_stage_TESDown = passes_dy_mumu_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][2]).pt() > TAUS_PT_CUT], proc_met)
+        dy_mumu_channel_sel_stage_JERUp   = passes_dy_mumu_selection_stages(passed_triggers, leps, (N_jets_JERUp_med,   N_jets_JERUp_all),   [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        dy_mumu_channel_sel_stage_JERDown = passes_dy_mumu_selection_stages(passed_triggers, leps, (N_jets_JERDown_med, N_jets_JERDown_med), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        dy_mumu_channel_sel_stage_JESUp   = passes_dy_mumu_selection_stages(passed_triggers, leps, (N_jets_JESUp_med,   N_jets_JESUp_all),   [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        dy_mumu_channel_sel_stage_JESDown = passes_dy_mumu_selection_stages(passed_triggers, leps, (N_jets_JESDown_med, N_jets_JESDown_med), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
         # elmu dilepton selection
-        em_channel_sel_stage = 0 #passes_elmu_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        em_channel_sel_stage = passes_elmu_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        em_channel_sel_stage_TESUp   = passes_elmu_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
+        em_channel_sel_stage_TESDown = passes_elmu_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][2]).pt() > TAUS_PT_CUT], proc_met)
+        em_channel_sel_stage_JERUp   = passes_elmu_selection_stages(passed_triggers, leps, (N_jets_JERUp_med,   N_jets_JERUp_all),   [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        em_channel_sel_stage_JERDown = passes_elmu_selection_stages(passed_triggers, leps, (N_jets_JERDown_med, N_jets_JERDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        em_channel_sel_stage_JESUp   = passes_elmu_selection_stages(passed_triggers, leps, (N_jets_JESUp_med,   N_jets_JESUp_all),   [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        em_channel_sel_stage_JESDown = passes_elmu_selection_stages(passed_triggers, leps, (N_jets_JESDown_med, N_jets_JESDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
         if tt_channel_sel_stage > 0:
             tt_channel_stage = 100 + tt_channel_sel_stage
@@ -3472,9 +3564,14 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         #passes = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and dy_channel_sel_stage < 1
         notpasses = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and em_channel_sel_stage < 1 and tt_channel_stage_alliso < 1
-        if notpasses:
-            continue
 
+        notpasses_dy_tautau = dy_channel_sel_stage < 1 and dy_channel_sel_stage_TESUp < 1 and dy_channel_sel_stage_TESDown < 1 and dy_channel_sel_stage_JESUp < 1 and dy_channel_sel_stage_JESDown < 1 and dy_channel_sel_stage_JERUp < 1 and dy_channel_sel_stage_JERDown < 1
+        notpasses_dy_mumu   = dy_mumu_channel_sel_stage < 1 and dy_mumu_channel_sel_stage_TESUp < 1 and dy_mumu_channel_sel_stage_TESDown < 1 and dy_mumu_channel_sel_stage_JESUp < 1 and dy_mumu_channel_sel_stage_JESDown < 1 and dy_mumu_channel_sel_stage_JERUp < 1 and dy_mumu_channel_sel_stage_JERDown < 1
+
+        notpasses_em = em_channel_sel_stage < 1 and em_channel_sel_stage_TESUp   < 1 and em_channel_sel_stage_TESDown < 1 and em_channel_sel_stage_JERUp   < 1 and em_channel_sel_stage_JERDown < 1 and em_channel_sel_stage_JESUp   < 1 and em_channel_sel_stage_JESDown < 1
+
+        if notpasses and notpasses_dy_tautau and notpasses_dy_mumu and notpasses_em:
+            continue
 
         # SAVE SELECTION, objects and weights
 
@@ -3488,8 +3585,30 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         selection_stage_JERDown[0] = tt_channel_sel_stage_JERDown
 
         selection_stage_tt_alliso[0] = tt_channel_stage_alliso
+
         selection_stage_dy[0] = dy_channel_sel_stage
+        selection_stage_dy_TESUp  [0] = dy_channel_sel_stage_TESUp   
+        selection_stage_dy_TESDown[0] = dy_channel_sel_stage_TESDown 
+        selection_stage_dy_JERUp  [0] = dy_channel_sel_stage_JERUp   
+        selection_stage_dy_JERDown[0] = dy_channel_sel_stage_JERDown 
+        selection_stage_dy_JESUp  [0] = dy_channel_sel_stage_JESUp   
+        selection_stage_dy_JESDown[0] = dy_channel_sel_stage_JESDown 
+
+        selection_stage_dy_mumu[0]         = dy_mumu_channel_sel_stage
+        selection_stage_dy_mumu_TESUp  [0] = dy_mumu_channel_sel_stage_TESUp   
+        selection_stage_dy_mumu_TESDown[0] = dy_mumu_channel_sel_stage_TESDown 
+        selection_stage_dy_mumu_JERUp  [0] = dy_mumu_channel_sel_stage_JERUp   
+        selection_stage_dy_mumu_JERDown[0] = dy_mumu_channel_sel_stage_JERDown 
+        selection_stage_dy_mumu_JESUp  [0] = dy_mumu_channel_sel_stage_JESUp   
+        selection_stage_dy_mumu_JESDown[0] = dy_mumu_channel_sel_stage_JESDown 
+
         selection_stage_em[0] = em_channel_sel_stage
+        selection_stage_em_TESUp  [0] = em_channel_sel_stage_TESUp  
+        selection_stage_em_TESDown[0] = em_channel_sel_stage_TESDown
+        selection_stage_em_JERUp  [0] = em_channel_sel_stage_JERUp  
+        selection_stage_em_JERDown[0] = em_channel_sel_stage_JERDown
+        selection_stage_em_JESUp  [0] = em_channel_sel_stage_JESUp  
+        selection_stage_em_JESDown[0] = em_channel_sel_stage_JESDown
 
         runNumber[0]   = ev.runNumber
         indexevents[0] = ev.indexevents
