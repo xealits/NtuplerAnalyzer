@@ -38,6 +38,7 @@ impact_name_exp = {
 "JES"         : "jet energy scale",
 "JER"         : "jet energy resolution",
 "TauES"       : "$\\tauh$ Energy Scale",
+"TES"         : "$\\tauh$ Energy Scale",
 "PU"          : "Pile-Up uncertainty",
 "TOPPT"       : "top quark $p_{T}$",
 }

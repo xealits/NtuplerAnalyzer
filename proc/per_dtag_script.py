@@ -129,10 +129,13 @@ chan = 'dy_mutau_sel'
 sys = 'NOMINAL'
 distr = 'geom_tau_sv_sign'
 
-com = """python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0"     {options}        --save-weight --histo-name "{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}" --output {outfile} gstore_outdirs/v40/*/Ntupler_v40_{dtag}*/*/0000/*root """
+muon_chan = False
+channel, pt_cut = ('abs(leps_ID) == 13 && HLT_mu', 26) if muon_chan else ('abs(leps_ID) == 13 && HLT_mu', 29)
+
+com = """python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "%s && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > %d && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0"     {options}        --save-weight --histo-name "{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}" --output {outfile} gstore_outdirs/v40/*/Ntupler_v40_{dtag}*/*/0000/*root """ % (channel, pt_cut)
 
 # with Mt < 40
-com = """python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40."     {options}        --save-weight --histo-name "{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}" --output {outfile} gstore_outdirs/v40/*/Ntupler_v40_{dtag}*/*/0000/*root """
+com = """python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "%s && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > %d && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40."     {options}        --save-weight --histo-name "{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}" --output {outfile} gstore_outdirs/v40/*/Ntupler_v40_{dtag}*/*/0000/*root """ % (channel, pt_cut)
 
 #for dtag in std_dtags:
 for dtag in args.input_dtags:
