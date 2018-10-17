@@ -27,7 +27,7 @@ SV_SIGN_CUT = 2.5
 
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all):
-    return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all
+    return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all or pass_mumu
 
 def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     channel_stage = 0
@@ -162,8 +162,8 @@ def passes_dy_mumu_selection_stages(passed_triggers, leps, N_jets, taus, proc_me
     pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
 
     # muon and OS tau and no b
-    pass_dy_objects_mu = pass_mumu and len(leps[0]) == 2 and leps[4][0] * leps[4][0] < 0 and N_jets[0] == 0
-    pass_dy_objects_el = pass_elel and len(leps[0]) == 2 and leps[4][0] * leps[4][0] < 0 and N_jets[0] == 0
+    pass_dy_objects_mu = pass_mumu and len(leps[0]) == 2 and N_jets[0] == 0
+    pass_dy_objects_el = pass_elel and len(leps[0]) == 2 and N_jets[0] == 0
     pass_dy_mass = False
     if pass_dy_objects_mu or pass_dy_objects_el:
         pair    = leps[0][0] + leps[0][1]
@@ -1939,7 +1939,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 record distr-s for each
         '''
 
-        #if iev > 10000: break
+        if iev > 10000: break
         control_counters.Fill(0)
 
         for vector_branch in all_vector_branches:
@@ -2095,15 +2095,15 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
 
-        pass_mumu = ev.leps_ID == -13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
+        pass_mumu = ev.leps_ID == -13*13 and ev.HLT_mu and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
 
-        pass_elel = ev.leps_ID == -11*11 and (ev.HLT_el) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
+        pass_elel = ev.leps_ID == -11*11 and ev.HLT_el and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
 
-        pass_mumu_ss = ev.leps_ID == 13*13 and (ev.HLT_mu) and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
+        pass_mumu_ss = ev.leps_ID == 13*13 and ev.HLT_mu and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
 
