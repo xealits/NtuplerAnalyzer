@@ -1,3 +1,22 @@
+# DY -> taue-tauh
+
+compare number of events to mu-tau
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 11 && HLT_el && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 29. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40. && (((abs(gen_zdecays_IDs[0]) == 15*11 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*11 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0)"   --per-weight  --scale 5765.4  --save-weight --histo-name "dy_mutau_sel/dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_tautau.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root &
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 11 && HLT_el && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 29. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40. && \!(((abs(gen_zdecays_IDs[0]) == 15*11 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*11 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0)"   --per-weight  --scale 5765.4  --save-weight --histo-name "dy_mutau_sel/dy_other/NOMINAL/dy_mutau_sel_dy_other_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_other.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root &
+
+-- very few events, to confirm check the dy->taumu-tauh with el cut
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 29. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40. && (((abs(gen_zdecays_IDs[0]) == 15*13 && abs(gen_zdecays_IDs[1]) > 15*15) || (abs(gen_zdecays_IDs[1]) == 15*13 && abs(gen_zdecays_IDs[0]) > 15*15)) && gen_N_zdecays > 0)"   --per-weight  --scale 5765.4  --save-weight --histo-name "dy_mutau_sel/dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_tautau_mutau-w-el-cut.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root
+
+
+
+
+
+
+
+
 # quick test over full MC
 
 example with Mt and OS:
