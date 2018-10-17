@@ -3,6 +3,12 @@
 python genjobs.py v40 u1 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc,data_mu,data_el --scheme 0,0,2,12,12
 make sub_proc nt=v40 proc=u1 node=1
 
+# redo DY
+python genjobs.py v40 u1 --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_DYJetsToLL_10to50_amcatnlo,MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1 --scheme 0,0,2,12,12
+make sub_proc nt=v40 proc=u1 node=1
+
+
+
 
 
 # run with presel for AN yields table

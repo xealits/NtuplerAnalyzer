@@ -14,6 +14,7 @@ OLD_MINIAOD_JETS = False
 DO_W_STITCHING = False
 ALL_JETS = False
 with_bSF = True
+WITH_RECOIL_CORRECTIONS = False
 
 ISO_LEPS    = True
 JETS_PT_CUT = 30.
@@ -23,6 +24,7 @@ TAUS_ID_CUT_VLoose = 0
 TAUS_ID_CUT = TAUS_ID_CUT_VLoose
 ONLY_3PI_TAUS = True
 SV_SIGN_CUT = 2.5
+
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all):
     return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all
@@ -621,7 +623,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     ROOT.gROOT.ProcessLine(".L /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/root_funcs.C+") # TODO: change absolute path to relative
 
     # Recoil corrections
-    doRecoilCorrections = isWJets or isDY # TODO: check if it is needed for DY
+    doRecoilCorrections = WITH_RECOIL_CORRECTIONS and (isWJets or isDY) # TODO: check if it is needed for DY
     if doRecoilCorrections:
         logging.info("will use Recoil Corrections")
         ROOT.gROOT.ProcessLine(".L /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/recoil_corrections.C+") # TODO: change absolute path to relative
