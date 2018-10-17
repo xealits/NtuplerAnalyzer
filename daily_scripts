@@ -1,3 +1,17 @@
+# issue with recoil corrections
+
+how did I get them to link in last time?
+
+
+
+
+
+
+
+
+
+
+
 # NOMINAL distrs for TT/DY double ratio
 
 make merge_proc dtags=merge-sets/jobs_hadd.dtags.small    nt=v40 proc=u1
@@ -27,6 +41,71 @@ time make distrs_mc_nominal p=u1 nt=v40                      cond="selection_sta
 dy mumu (mu hlt, no mass requirement)
 time make distrs_mc_nominal p=u1 nt=v40                      cond="selection_stage_dy_mumu==102"  chan="dy_mumu_sel" &
 
+
+
+tests:
+
+python selections.py  --out-dir distrs/  "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "selection_stage_dy==102" --distr Mt_lep_met_f --chan dy_tautau_sel --custom-range 0,20,40,60,80,100,130,160,200,250 --weight event_weight merge-sets/v40/u1/*MC*.root
+
+python sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "event_weight * (selection_stage_dy==102 && !(gen_proc_id == 1))" --output distrs//test1_lep_pt_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_dy_tautau_sel_dy_other_NOMINAL_Mt_lep_met_f.root  --histo-name dy_tautau_sel/dy_other/NOMINAL/dy_tautau_sel_dy_other_NOMINAL_Mt_lep_met_f  --save-weight --per-weight merge-sets/v40/u1/MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root
+
+
+-- turned off the recoils
+
+
+foreach d ( `cat all-dtags` )
+hadd distrs/v40u1_hadd/$d.root distrs/v40u1/*$d*root &
+end
+
+test TT and DY yields in channels, relative to each other
+
+mu_sel->Get("tt_mutau/NOMINAL/mu_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+elmu_sel->Get("tt_mutau/NOMINAL/elmu_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+dy_mumu_sel->Get("tt_mutau/NOMINAL/dy_mumu_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+dy_tautau_sel->Get("tt_mutau/NOMINAL/dy_tautau_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+
+root [4] mu_sel->Get("tt_mutau/NOMINAL/mu_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = mu_sel_tt_mutau_NOMINAL_Mt_lep_met_f, Entries= 5929, Total sum= 7.05533e-05
+root [5] elmu_sel->Get("tt_mutau/NOMINAL/elmu_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = elmu_sel_tt_mutau_NOMINAL_Mt_lep_met_f, Entries= 61, Total sum= 5.98596e-07
+root [6] dy_mumu_sel->Get("tt_mutau/NOMINAL/dy_mumu_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_mumu_sel_tt_mutau_NOMINAL_Mt_lep_met_f, Entries= 0, Total sum= 0
+root [7] dy_tautau_sel->Get("tt_mutau/NOMINAL/dy_tautau_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_tautau_sel_tt_mutau_NOMINAL_Mt_lep_met_f, Entries= 2934, Total sum= 3.73507e-05
+
+-- wrong processes in elmu and mumu
+
+mu_sel->Get("dy_other/NOMINAL/mu_sel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+elmu_sel->Get("dy_other/NOMINAL/elmu_sel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+dy_mumu_sel->Get("dy_other/NOMINAL/dy_mumu_sel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+dy_tautau_sel->Get("dy_other/NOMINAL/dy_tautau_sel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+
+root [2] mu_sel->Get("dy_other/NOMINAL/mu_sel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = mu_sel_dy_other_NOMINAL_Mt_lep_met_f, Entries= 1, Total sum= 6.70175e-09
+root [3] elmu_sel->Get("dy_other/NOMINAL/elmu_sel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = elmu_sel_dy_other_NOMINAL_Mt_lep_met_f, Entries= 1, Total sum= 7.12112e-09
+root [4] dy_mumu_sel->Get("dy_other/NOMINAL/dy_mumu_sel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_mumu_sel_dy_other_NOMINAL_Mt_lep_met_f, Entries= 0, Total sum= 0
+root [5] dy_tautau_sel->Get("dy_other/NOMINAL/dy_tautau_sel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_tautau_sel_dy_other_NOMINAL_Mt_lep_met_f, Entries= 428, Total sum= 2.78714e-06
+
+
+mu_sel->Get("dy_tautau/NOMINAL/mu_sel_dy_tautau_NOMINAL_Mt_lep_met_f")->Print()
+elmu_sel->Get("dy_tautau/NOMINAL/elmu_sel_dy_tautau_NOMINAL_Mt_lep_met_f")->Print()
+dy_mumu_sel->Get("dy_tautau/NOMINAL/dy_mumu_sel_dy_tautau_NOMINAL_Mt_lep_met_f")->Print()
+dy_tautau_sel->Get("dy_tautau/NOMINAL/dy_tautau_sel_dy_tautau_NOMINAL_Mt_lep_met_f")->Print()
+
+root [6] mu_sel->Get("dy_tautau/NOMINAL/mu_sel_dy_tautau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = mu_sel_dy_tautau_NOMINAL_Mt_lep_met_f, Entries= 64, Total sum= 4.35527e-07
+root [7] elmu_sel->Get("dy_tautau/NOMINAL/elmu_sel_dy_tautau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = elmu_sel_dy_tautau_NOMINAL_Mt_lep_met_f, Entries= 23, Total sum= 1.56526e-07
+root [8] dy_mumu_sel->Get("dy_tautau/NOMINAL/dy_mumu_sel_dy_tautau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_mumu_sel_dy_tautau_NOMINAL_Mt_lep_met_f, Entries= 0, Total sum= 0
+root [9] dy_tautau_sel->Get("dy_tautau/NOMINAL/dy_tautau_sel_dy_tautau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_tautau_sel_dy_tautau_NOMINAL_Mt_lep_met_f, Entries= 10374, Total sum= 6.87678e-05
+
+-- all 0 in dy_mumu
+all 0 in ttree_out
 
 
 
