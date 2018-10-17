@@ -1,3 +1,42 @@
+# More info plots for AN
+
+Mt shape of signal and background
+Same Sign selection
+
+file with nominal sel for paper Mt:
+jobsums/mc_norm/v25v26_pStage2Run3_Run4_Run4Rest_nolj_1.root
+
+python jobsums/get_shapes.py --formula "tt_mujets : tt_mutau " -c mu_selVloose -d Mt_lep_met_f -p tt_lj tt_mutau:jobsums/mc_norm/v25v26_pStage2Run3_Run4_Run4Rest_nolj_1.root:mu_selVloose,tt_mutau,NOMINAL tt_mujets:jobsums/mc_norm/v25v26_pStage2Run3_Run4_Run4Rest_nolj_1.root:mu_selVloose,tt_lj,NOMINAL
+
+python jobsums/get_shapes.py --x-title "M_{T} [GeV]" --norm-binwidth --formula "tt_mujets : tt_mutau " -c mu_selVloose -d Mt_lep_met_f -p tt_lj tt_mutau:jobsums/mc_norm/v25v26_pStage2Run3_Run4_Run4Rest_nolj_1.root:mu_selVloose,tt_mutau,NOMINAL tt_mujets:jobsums/mc_norm/v25v26_pStage2Run3_Run4_Run4Rest_nolj_1.root:mu_selVloose,tt_lj,NOMINAL
+
+python jobsums/get_shapes.py --x-title "M_{T} [GeV]" --norm-binwidth --formula "tt_mujets : tt_mutau " -c mu_sel -d Mt_lep_met_f -p tt_lj tt_mutau:jobsums/mc_norm/v25v26_pStage2Run3_Run4_Run4Rest_nolj_1.root:mu_sel,tt_mutau,NOMINAL tt_mujets:jobsums/mc_norm/v25v26_pStage2Run3_Run4_Run4Rest_nolj_1.root:mu_sel,tt_lj,NOMINAL
+
+python jobsums/get_shapes.py --x-title "M_{T} [GeV]" --norm-binwidth --formula "tt_eljets : tt_eltau " -c el_sel -d Mt_lep_met_f -p tt_lj tt_eltau:jobsums/mc_norm/v25v26_pStage2Run3_Run4_Run4Rest_nolj_1.root:el_sel,tt_eltau,NOMINAL tt_eljets:jobsums/mc_norm/v25v26_pStage2Run3_Run4_Run4Rest_nolj_1.root:el_sel,tt_lj,NOMINAL
+
+python jobsums/get_shapes.py --x-title "M_{T} [GeV]" --norm-binwidth --formula "tt_eljets : tt_eltau " -c el_selVloose -d Mt_lep_met_f -p tt_lj tt_eltau:jobsums/mc_norm/v25v26_pStage2Run3_Run4_Run4Rest_nolj_1.root:el_selVloose,tt_eltau,NOMINAL tt_eljets:jobsums/mc_norm/v25v26_pStage2Run3_Run4_Run4Rest_nolj_1.root:el_selVloose,tt_lj,NOMINAL
+
+
+
+file from last histosel
+distrs_v25pStage2Run3_3_Run4_updowns_weights.root
+
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root  --bin-norm  -p -r -o plots/v25pStage2Run3_3_Run4/ --lumi 31300 -c el_sel_ljout_ss -x el_selVloose_ljout_ss -d Mt_lep_met_f --skip-QCD --wjet 0.8 --title-x "M_{T} [GeV]" --title-y "events/1GeV" --title ""
+
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleElectron.root  --bin-norm  -p -r -o plots/v25pStage2Run3_3_Run4/ --lumi 31300 -c el_sel_lj_ss    -x el_selVloose_lj_ss    -d Mt_lep_met_f --skip-QCD --wjet 0.8 --title-x "M_{T} [GeV]" --title-y "events/1GeV" --title ""
+
+
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root      --bin-norm  -p -r -o plots/v25pStage2Run3_3_Run4/ --lumi 35800 -c mu_sel_ljout_ss -x mu_selVloose_ljout_ss -d Mt_lep_met_f --skip-QCD --wjet 0.8 --title-x "M_{T} [GeV]" --title-y "events/1GeV" --title ""
+
+python stack_plot.py distrs_v25pStage2Run3_3_Run4_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root      --bin-norm  -p -r -o plots/v25pStage2Run3_3_Run4/ --lumi 35800 -c mu_sel_lj_ss    -x mu_selVloose_lj_ss    -d Mt_lep_met_f --skip-QCD --wjet 0.8 --title-x "M_{T} [GeV]" --title-y "events/1GeV" --title ""
+
+
+
+
+
+
+
+
 # DY -> taue-tauh
 
 compare number of events to mu-tau
