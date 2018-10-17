@@ -18,6 +18,7 @@ parser.add_argument('-s', '--systematic',  type=str, default='NOMINAL', help="sy
 parser.add_argument('-d', '--distr',  type=str, default='Mt_lep_met_f', help="distr")
 parser.add_argument('--logy',     action='store_true', help="log Y")
 parser.add_argument('--no-norm',  action='store_true', help="don't normalize each histo to 1")
+parser.add_argument('--norm-binwidth',  action='store_true', help="normalize each bin to width")
 parser.add_argument('--norm-formulas',     action='store_true', help="normalize the formulas of histos to 1")
 parser.add_argument("--y-range",     type=str,      help="set Y range as `ymin,ymax`")
 parser.add_argument("--x-title",     type=str,      help="title of X axis")
@@ -181,6 +182,19 @@ else:
 
     # and draw
     for histo in form_histos:
+        # normalize bin width if needed
+        if args.norm_binwidth:
+            #
+            for bini in range(histo.GetSize()):
+                content = histo.GetBinContent(bini)
+                error   = histo.GetBinError(bini)
+                width   = histo.GetXaxis().GetBinUpEdge(bini) - histo.GetXaxis().GetBinLowEdge(bini)
+                histo.SetBinContent(bini, content/width)
+                histo.SetBinError(bini, error/width)
+
+            # rescale to 1 just in case
+            histo.Scale(1./histo.Integral())
+
         if drawn:
             if y_max is not None and y_min is not None:
                 logging.debug("setting min-max")
