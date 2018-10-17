@@ -1,3 +1,40 @@
+# NOMINAL distrs for TT/DY double ratio
+
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.small    nt=v40 proc=u1
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_aa nt=v40 proc=u1
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_ab nt=v40 proc=u1
+
+tt lep-tau (with VLoose too)
+
+time make distrs_mc_nominal p=u1 nt=v40                      cond="selection_stage==107"  chan="mu_sel" &
+time make distrs_mc_nominal p=u1 nt=v40                      cond="selection_stage==106"  chan="mu_sel_ss" &
+time make distrs_mc_nominal p=u1 nt=v40 options="--el-procs" cond="selection_stage==117"  chan="el_sel" &
+time make distrs_mc_nominal p=u1 nt=v40 options="--el-procs" cond="selection_stage==116"  chan="el_sel_ss" &
+
+
+time make distrs_mc_nominal p=u1 nt=v40                      cond="(selection_stage==107 || selection_stage==105)"  chan="mu_selVloose" &
+time make distrs_mc_nominal p=u1 nt=v40                      cond="(selection_stage==106 || selection_stage==104)"  chan="mu_selVloose_ss" &
+time make distrs_mc_nominal p=u1 nt=v40 options="--el-procs" cond="(selection_stage==117 || selection_stage==115)"  chan="el_selVloose" &
+time make distrs_mc_nominal p=u1 nt=v40 options="--el-procs" cond="(selection_stage==116 || selection_stage==114)"  chan="el_selVloose_ss" &
+
+
+tt elmu
+time make distrs_mc_nominal p=u1 nt=v40                      cond="selection_stage_em==205"  chan="elmu_sel" &
+
+dy tautau
+time make distrs_mc_nominal p=u1 nt=v40                      cond="selection_stage_dy==102"  chan="dy_tautau_sel" &
+
+dy mumu (mu hlt, no mass requirement)
+time make distrs_mc_nominal p=u1 nt=v40                      cond="selection_stage_dy_mumu==102"  chan="dy_mumu_sel" &
+
+
+
+
+
+
+
+
+
 # More info plots for AN
 
 Mt shape of signal and background
