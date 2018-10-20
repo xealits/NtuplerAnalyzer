@@ -1,9 +1,82 @@
-# issue with recoil corrections
+# NOMINAL distrs for double ratio test 2
 
-how did I get them to link in last time?
+hadd lstore_outdirs/merge-sets/v40/u2/MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root lstore_outdirs/v40/u2/*/*root
+
+root [2] ttree_out->Draw("event_taus_sv_sign[0]>>h(21,-1,20)", "selection_stage_dy>100")
+(Long64_t) 15737
+
+hadd lstore_outdirs/merge-sets/v40/u2/MC2016_Summer16_TTJets_powheg.root lstore_outdirs/v40/u2/MC2016_Summer16_TTJets_powheg/*root
+
+
+ttree_out->Draw("selection_stage_dy", "selection_stage_dy>100")
+ttree_out->Draw("event_taus_sv_sign[0]>>h(21,-1,20)", "selection_stage_dy>100")
+
+ttree_out->Draw("selection_stage",    "selection_stage==107")
+ttree_out->Draw("selection_stage_em", "selection_stage_em==205")
+ttree_out->Draw("selection_stage_dy", "selection_stage_dy==102 || selection_stage_dy==103")
+ttree_out->Draw("selection_stage_dy_mumu", "selection_stage_dy_mumu==102 || selection_stage_dy_mumu==103")
+
+dy
+root [1] ttree_out->Draw("selection_stage",    "selection_stage==107")
+Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+(Long64_t) 67
+root [2] ttree_out->Draw("selection_stage_em", "selection_stage_em==205")
+(Long64_t) 26
+root [3] ttree_out->Draw("selection_stage_dy", "selection_stage_dy==102 || selection_stage_dy==103")
+(Long64_t) 13417
+root [4] ttree_out->Draw("selection_stage_dy_mumu", "selection_stage_dy_mumu==102 || selection_stage_dy_mumu==103")
+(Long64_t) 12138782
+
+
+ttbar
+root [3] ttree_out->Draw("selection_stage",    "selection_stage==107")
+Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+(Long64_t) 9244
+root [4] ttree_out->Draw("selection_stage_em", "selection_stage_em==205")
+(Long64_t) 86794
+root [5] ttree_out->Draw("selection_stage_dy", "selection_stage_dy==102 || selection_stage_dy==103")
+(Long64_t) 12610
+root [6] ttree_out->Draw("selection_stage_dy_mumu", "selection_stage_dy_mumu==102 || selection_stage_dy_mumu==103")
+(Long64_t) 87954
+
+-- weird (maybe just the 2.5 SV Sign taus)
+
+also forgot Mt < 40 !!!!!!!!!!!!!!!!!!!
+-- will see if backgrounds are dead in SV Sign
 
 
 
+
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="selection_stage==107"  chan="mu_sel" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="selection_stage==106"  chan="mu_sel_ss" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40 options="--el-procs" cond="selection_stage==117"  chan="el_sel" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40 options="--el-procs" cond="selection_stage==116"  chan="el_sel_ss" &
+
+
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="(selection_stage==107 || selection_stage==105)"  chan="mu_selVloose" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="(selection_stage==106 || selection_stage==104)"  chan="mu_selVloose_ss" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40 options="--el-procs" cond="(selection_stage==117 || selection_stage==115)"  chan="el_selVloose" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40 options="--el-procs" cond="(selection_stage==116 || selection_stage==114)"  chan="el_selVloose_ss" &
+
+
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="selection_stage_em==205"  chan="elmu_sel" &
+
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="selection_stage_dy==102 || selection_stage_dy==103"  chan="dy_tautau_sel" &
+
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="selection_stage_dy_mumu==102 || selection_stage_dy_mumu==103"  chan="dy_mumu_sel" &
+
+
+foreach d ( `cat all-dtags` )
+hadd distrs/v40u2_hadds/$d.root distrs/v40u2/*$d*root &
+end
+
+
+
+python stack_plot.py mc_norm/distrs_v40u2_mc_1.root ../distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleMuon.root -p -r -o plots/v40u2/ --lumi 35800 -c mu_sel -d Mt_lep_met_f --skip-QCD --no-data --wjet 0.8 --title-x "M_{T} [GeV]" --title-y "events/1GeV" --title ""
+
+-- 50-70-90(max) events in bins, 478 events in MC overall
+   too few events per bin???
+   also: same ratio with fakes, a bin with WJets
 
 
 
@@ -36,10 +109,10 @@ tt elmu
 time make distrs_mc_nominal p=u1 nt=v40                      cond="selection_stage_em==205"  chan="elmu_sel" &
 
 dy tautau
-time make distrs_mc_nominal p=u1 nt=v40                      cond="selection_stage_dy==102"  chan="dy_tautau_sel" &
+time make distrs_mc_nominal p=u1 nt=v40                      cond="selection_stage_dy==102 || selection_stage_dy==103"  chan="dy_tautau_sel" &
 
 dy mumu (mu hlt, no mass requirement)
-time make distrs_mc_nominal p=u1 nt=v40                      cond="selection_stage_dy_mumu==102"  chan="dy_mumu_sel" &
+time make distrs_mc_nominal p=u1 nt=v40                      cond="selection_stage_dy_mumu==102 || selection_stage_dy_mumu==103"  chan="dy_mumu_sel" &
 
 
 
@@ -106,6 +179,136 @@ TH1.Print Name  = dy_tautau_sel_dy_tautau_NOMINAL_Mt_lep_met_f, Entries= 10374, 
 
 -- all 0 in dy_mumu
 all 0 in ttree_out
+
+
+
+
+-- fixed mumu and redone
+
+root [1] mu_sel->Get("dy_other/NOMINAL/mu_sel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = mu_sel_dy_other_NOMINAL_Mt_lep_met_f, Entries= 0, Total sum= 0
+root [2] elmu_sel->Get("dy_other/NOMINAL/elmu_sel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = elmu_sel_dy_other_NOMINAL_Mt_lep_met_f, Entries= 0, Total sum= 0
+root [3] dy_mumu_sel->Get("dy_other/NOMINAL/dy_mumu_sel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_mumu_sel_dy_other_NOMINAL_Mt_lep_met_f, Entries= 43170, Total sum= 0.000278779
+root [4] dy_tautau_sel->Get("dy_other/NOMINAL/dy_tautau_sel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_tautau_sel_dy_other_NOMINAL_Mt_lep_met_f, Entries= 34, Total sum= 2.22026e-07
+
+root [5] mu_sel->Get("dy_tautau/NOMINAL/mu_sel_dy_tautau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = mu_sel_dy_tautau_NOMINAL_Mt_lep_met_f, Entries= 4, Total sum= 2.90441e-08
+root [6] elmu_sel->Get("dy_tautau/NOMINAL/elmu_sel_dy_tautau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = elmu_sel_dy_tautau_NOMINAL_Mt_lep_met_f, Entries= 2, Total sum= 1.64038e-08
+root [7] dy_mumu_sel->Get("dy_tautau/NOMINAL/dy_mumu_sel_dy_tautau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_mumu_sel_dy_tautau_NOMINAL_Mt_lep_met_f, Entries= 337, Total sum= 2.21724e-06
+root [8] dy_tautau_sel->Get("dy_tautau/NOMINAL/dy_tautau_sel_dy_tautau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_tautau_sel_dy_tautau_NOMINAL_Mt_lep_met_f, Entries= 751, Total sum= 5.00932e-06
+
+
+root [1] mu_sel->Get("tt_mutau/NOMINAL/mu_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = mu_sel_tt_mutau_NOMINAL_Mt_lep_met_f, Entries= 793, Total sum= 9.5598e-06
+root [2] elmu_sel->Get("tt_mutau/NOMINAL/elmu_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = elmu_sel_tt_mutau_NOMINAL_Mt_lep_met_f, Entries= 8, Total sum= 7.71649e-08
+root [3] dy_mumu_sel->Get("tt_mutau/NOMINAL/dy_mumu_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_mumu_sel_tt_mutau_NOMINAL_Mt_lep_met_f, Entries= 15, Total sum= 1.70171e-07
+root [4] dy_tautau_sel->Get("tt_mutau/NOMINAL/dy_tautau_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_tautau_sel_tt_mutau_NOMINAL_Mt_lep_met_f, Entries= 372, Total sum= 4.63528e-06
+
+
+-- 700 TT in tt mutau
+   700 DY in dy taumutau
+
+too few events?
+in DY from the test it was 1k per bin in 3-5sigma bins
+in TT it was 100 events per bin
+
+
+comparing DY to quick tests
+
+root -l quick-test/foobar.root
+dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign")->Print()
+TH1.Print Name  = dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign, Entries= 22476, Total sum= 0.845538
+
+((TH1D*) dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign"))->Scale(22476./0.845538)
+
+root [10] ((TH1D*) dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign"))->GetBinContent(1)
+(Double_t) 2531.66
+root [11] ((TH1D*) dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign"))->GetBinContent(2)
+(Double_t) 9040.16
+root [12] ((TH1D*) dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign"))->GetBinContent(3)
+(Double_t) 3314.38
+root [13] ((TH1D*) dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign"))->GetBinContent(4)
+(Double_t) 2015.38
+root [14] ((TH1D*) dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign"))->GetBinContent(5)
+(Double_t) 1317.67
+root [15] ((TH1D*) dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign"))->GetBinContent(6)
+(Double_t) 913.347
+root [16] ((TH1D*) dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign"))->GetBinContent(7)
+(Double_t) 695.636
+root [17] ((TH1D*) dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign"))->GetBinContent(0)
+(Double_t) 20.7343
+root [18] 
+root [18] ((TH1D*) dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign"))->GetBinContent(8)
+(Double_t) 493.477
+root [19] ((TH1D*) dy_mutau_sel->Get("dy_tautau/NOMINAL/dy_mutau_sel_dy_tautau_NOMINAL_geom_tau_sv_sign"))->GetBinContent(9)
+(Double_t) 375.291
+
+-- more than 700
+
+
+
+root [3] ttree_out->Draw("selection_stage_dy", "selection_stage_dy>100")
+(Long64_t) 1167
+root [1] ttree_out->Draw("selection_stage_dy", "selection_stage_dy>100")
+(Long64_t) 15737
+
+and it was 10k in first run!?
+did it have tau SV cut? NO and SV sign distr is like TT, 100 events per bin in 3-4-5sigma
+
+quick test selection?
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40."   --per-weight --scale 5765.4   --save-weight --histo-name "dy_mutau_sel/dy_all/NOMINAL/dy_mutau_sel_dy_all_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_all.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root &
+
+-- forgot Mt
+also pass_mu has no_iso_veto_leps and lep_relIso[0] < 0.15
+dy_tautau definition = any tau + any tau
+
+and n bjets < 2? -- not tau bjets?
+
+ttree_out->Draw("selection_stage_dy", "selection_stage_dy>100")
+ttree_out->Draw("event_taus_sv_sign[0]>>h(21,-1,20)", "selection_stage_dy>100")
+
+retest the SV Sign
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40."   --per-weight --scale 5765.4   --save-weight --histo-name "dy_mutau_sel/dy_all/NOMINAL/dy_mutau_sel_dy_all_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_all_retest.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root &
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 21 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40."   --per-weight --scale 5765.4   --save-weight --histo-name "dy_mutau_sel/dy_all/NOMINAL/dy_mutau_sel_dy_all_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_all_retest_tau21pt.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root &
+
+
+dy_mutau_sel->Get("dy_all/NOMINAL/dy_mutau_sel_dy_all_NOMINAL_geom_tau_sv_sign")->Print()
+retest
+TH1.Print Name  = dy_mutau_sel_dy_all_NOMINAL_geom_tau_sv_sign, Entries= 25229, Total sum= 0.950801
+
+retest_tau21pt
+TH1.Print Name  = dy_mutau_sel_dy_all_NOMINAL_geom_tau_sv_sign, Entries= 24364, Total sum= 0.917807
+
+-- forgot 10k limit!!!!!!
+
+
+
+
+
+
+
+
+
+
+# issue with recoil corrections
+
+how did I get them to link in last time?
+
+
+
+
 
 
 
