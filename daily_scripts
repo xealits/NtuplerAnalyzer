@@ -47,23 +47,23 @@ also forgot Mt < 40 !!!!!!!!!!!!!!!!!!!
 
 
 
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="selection_stage==107"  chan="mu_sel" &
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="selection_stage==106"  chan="mu_sel_ss" &
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40 options="--el-procs" cond="selection_stage==117"  chan="el_sel" &
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40 options="--el-procs" cond="selection_stage==116"  chan="el_sel_ss" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage==107"  chan="mu_sel" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage==106"  chan="mu_sel_ss" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40 options="--el-procs" cond="selection_stage==117"  chan="el_sel" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40 options="--el-procs" cond="selection_stage==116"  chan="el_sel_ss" &
 
 
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="(selection_stage==107 || selection_stage==105)"  chan="mu_selVloose" &
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="(selection_stage==106 || selection_stage==104)"  chan="mu_selVloose_ss" &
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40 options="--el-procs" cond="(selection_stage==117 || selection_stage==115)"  chan="el_selVloose" &
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40 options="--el-procs" cond="(selection_stage==116 || selection_stage==114)"  chan="el_selVloose_ss" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="(selection_stage==107 || selection_stage==105)"  chan="mu_selVloose" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="(selection_stage==106 || selection_stage==104)"  chan="mu_selVloose_ss" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40 options="--el-procs" cond="(selection_stage==117 || selection_stage==115)"  chan="el_selVloose" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40 options="--el-procs" cond="(selection_stage==116 || selection_stage==114)"  chan="el_selVloose_ss" &
 
 
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="selection_stage_em==205"  chan="elmu_sel" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage_em==205"  chan="elmu_sel" &
 
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="selection_stage_dy==102 || selection_stage_dy==103"  chan="dy_tautau_sel" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage_dy==102 || selection_stage_dy==103"  chan="dy_tautau_sel" &
 
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u1 nt=v40                      cond="selection_stage_dy_mumu==102 || selection_stage_dy_mumu==103"  chan="dy_mumu_sel" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage_dy_mumu==102 || selection_stage_dy_mumu==103"  chan="dy_mumu_sel" &
 
 
 foreach d ( `cat all-dtags` )
@@ -78,6 +78,72 @@ python stack_plot.py mc_norm/distrs_v40u2_mc_1.root ../distrs/v25v26_pStage2Run3
    too few events per bin???
    also: same ratio with fakes, a bin with WJets
 
+
+python stack_plot.py mc_norm/distrs_v40u2_mc_1.root ../distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleMuon.root -p -r -o plots/v40u2/ --lumi 35800 -c dy_tautau_sel -d Mt_lep_met_f --skip-QCD --no-data --wjet 0.8 --title-x "M_{T} [GeV]" --title-y "events/1GeV" --title ""
+python stack_plot.py mc_norm/distrs_v40u2_mc_1.root ../distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleMuon.root -p -r -o plots/v40u2/ --lumi 35800 -c dy_mumu_sel   -d Mt_lep_met_f --skip-QCD --no-data --wjet 0.8 --title-x "M_{T} [GeV]" --title-y "events/1GeV" --title ""
+
+
+
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage==107"  chan="mu_sel" dtag=TTJet &
+
+hadd foobar1.root v40u1/1/*TT*heg_mu_sel_tt* &
+hadd foobar2.root v40u2/1/*TT*heg_mu_sel_tt* &
+
+
+---- typo with u1 instead of u2!!!
+
+
+
+
+## old results
+
+bin 2-3 -- 350-380 events
+    3-4 -- 250
+    4-5 -- 150-180
+
+
+
+
+## quick test
+
+dy:
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40."   --per-weight --scale 5765.4   --save-weight --histo-name "dy_mutau_sel/dy_all/NOMINAL/dy_mutau_sel_dy_all_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_all.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root &
+
+tt:
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets > 0 && lep_id[0]*tau_id[0] < 0"   --per-weight --scale 831.4   --save-weight --histo-name "mu_sel/tt/NOMINAL/mu_sel_tt_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_TTJets_powheg.root gstore_outdirs/v40/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v40_MC2016_Summer16_TTJets_powheg/181009_141741/0000/*root &
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets > 1 && lep_id[0]*tau_id[0] < 0"   --per-weight --scale 831.4   --save-weight --histo-name "mu_sel_2b/tt/NOMINAL/mu_sel_2b_tt_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_TTJets_powheg_nbjets2.root gstore_outdirs/v40/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v40_MC2016_Summer16_TTJets_powheg/181009_141741/0000/*root &
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && tau_SV_geom_flightLenSign[tau_refited_index[0]] > 2.5 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets > 0 && lep_id[0]*tau_id[0] < 0"   --per-weight --scale 831.4   --save-weight --histo-name "mu_sel_2sv5/tt/NOMINAL/mu_sel_2sv5_tt_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_TTJets_powheg_2sv5.root gstore_outdirs/v40/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v40_MC2016_Summer16_TTJets_powheg/181009_141741/0000/*root &
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && tau_SV_geom_flightLenSign[tau_refited_index[0]] > 2.5 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets > 1 && lep_id[0]*tau_id[0] < 0"   --per-weight --scale 831.4   --save-weight --histo-name "mu_sel_2sv5_2b/tt/NOMINAL/mu_sel_2sv5_2b_tt_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_TTJets_powheg_2sv5_2b.root gstore_outdirs/v40/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v40_MC2016_Summer16_TTJets_powheg/181009_141741/0000/*root &
+
+
+h = (TH1D*) mu_sel->Get("tt/NOMINAL/mu_sel_tt_NOMINAL_geom_tau_sv_sign")
+h->Scale(35800)
+h->Print()
+TH1.Print Name  = mu_sel_tt_NOMINAL_geom_tau_sv_sign, Entries= 44147, Total sum= 16165
+
+
+h = (TH1D*) mu_sel_2b->Get("tt/NOMINAL/mu_sel_2b_tt_NOMINAL_geom_tau_sv_sign")
+TH1.Print Name  = mu_sel_2b_tt_NOMINAL_geom_tau_sv_sign, Entries= 32778, Total sum= 11945.7
+
+h = (TH1D*) mu_sel_2sv5->Get("tt/NOMINAL/mu_sel_2sv5_tt_NOMINAL_geom_tau_sv_sign")
+TH1.Print Name  = mu_sel_2sv5_tt_NOMINAL_geom_tau_sv_sign, Entries= 13670, Total sum= 4582.09
+
+h = (TH1D*) mu_sel_2sv5_2b->Get("tt/NOMINAL/mu_sel_2sv5_2b_tt_NOMINAL_geom_tau_sv_sign")
+TH1.Print Name  = mu_sel_2sv5_2b_tt_NOMINAL_geom_tau_sv_sign, Entries= 11366, Total sum= 3808.2
+
+
+
+quick test on taus without 3pi
+
+python sumup_ttree_draw.py "tau_p4[0].pt()" --histo-range 21,0,200 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets > 0 && lep_id[0]*tau_id[0] < 0"   --per-weight --scale 831.4   --save-weight --histo-name "mu_sel/tt/NOMINAL/mu_sel_tt_NOMINAL_tau_pt" --output quick-test/v40/MC2016_Summer16_TTJets_powheg_tau_pt.root gstore_outdirs/v40/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v40_MC2016_Summer16_TTJets_powheg/181009_141741/0000/*root &
+
+
+time python channel_distrs_full_loop.py --do-W-stitching -l logss temp/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v40/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v40_MC2016_Summer16_TTJets_powheg/181009_141741/0000/MC2016_Summer16_TTJets_powheg_33.root
 
 
 
