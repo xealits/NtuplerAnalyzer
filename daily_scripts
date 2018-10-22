@@ -1,3 +1,159 @@
+# NOMINAL dy tautau, selection problem and adding data and systematics
+
+in distrs:
+root [3] dy_tautau_sel->Get("tt_mutau/NOMINAL/dy_tautau_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_tautau_sel_tt_mutau_NOMINAL_Mt_lep_met_f, Entries= 9818, Total sum= 0.102819
+root [6] dy_tautau_sel->Get("tt_lj/NOMINAL/dy_tautau_sel_tt_lj_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_tautau_sel_tt_lj_NOMINAL_Mt_lep_met_f, Entries= 10977, Total sum= 0.114189
+
+in merge:
+root [3] ttree_out->Draw("event_leptons[0].pt()", "selection_stage_dy==102 || selection_stage_dy==103")
+Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1
+(Long64_t) 12610
+
+-- and good distribution of gen_proc_id
+
+
+--- forgot parenths in distr selection?
+--> after the fix everything is better, but still too much WJets and also tt
+
+--- I reran the selection without 3pi & SV Sign cut?
+    check in ttrees the geom SV
+
+ttree_out->Draw("event_taus_sv_sign[0]>>h(42, -1, 20)", "selection_stage_dy==102 || selection_stage_dy==103")
+
+-- clear cut at 2.5
+
+ttree_out->Draw("event_taus_sv_sign[0]>>h(40,-20,20)", "selection_stage_dy==102 || selection_stage_dy==103")
+-- some taus at -11, i.e. don't have the SV refitted
+   it was a run without .hasSecondaryVertex() ? and it somehow interfered
+
+try quick test
+
+-- made sumup_ttree_draw per-xsec-capable and nickname-capable
+
+python sumup_ttree_draw.py "event_taus_sv_sign[0]" --ttree ttree_out --histo-range 42,-1,20 --cond-com "(selection_stage_dy==102 || selection_stage_dy==103)"   --per-weight --try-xsec --std-histo-name geom_tau_sv_sign  --save-weight --histo-name "dy_tautau_sel/dy_all/NOMINAL/dy_tautau_sel_dy_all_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/u2/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_all.root lstore_outdirs/merge-sets/v40/u2/MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root
+
+
+
+with only madgraph wjets
+
+foreach dtag ( MC2016_Summer16_WWTo2L2Nu_powheg MC2016_Summer16_WWToLNuQQ_powheg MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin MC2016_Summer16_WZTo1L3Nu_amcatnlo_madspin MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin MC2016_Summer16_WZTo3LNu_powheg MC2016_Summer16_ZZTo2L2Nu_powheg MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg MC2016_Summer16_DYJetsToLL_10to50_amcatnlo MC2016_Summer16_DYJetsToLL_50toInf_madgraph MC2016_Summer16_SingleT_tW_5FS_powheg MC2016_Summer16_SingleTbar_tW_5FS_powheg MC2016_Summer16_WJets_madgraph MC2016_Summer16_TTJets_powheg )
+python sumup_ttree_draw.py "event_taus_sv_sign[0]" --ttree ttree_out --histo-range 42,-1,20 --cond-com "(selection_stage_dy==102 || selection_stage_dy==103)"   --per-weight --try-xsec --std-histo-name geom_tau_sv_sign  --save-weight --histo-name "dy_tautau_sel/dy_all/NOMINAL/dy_tautau_sel_dy_all_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/u2/$dtag.root lstore_outdirs/merge-sets/v40/u2/$dtag.root
+end
+
+hadd quick-test/foobar_v40u2.root quick-test/v40/u2/MC*root
+
+python stack_quick.py quick-test/foobar_v40u2.root --chan dy_tautau_sel --sys NOMINAL --distr geom_tau_sv_sign --stack ttbar,wjets,dibosons,single_top,dy --debug test_f.root --scale-stack 35800
+
+-- wjets have significant tail.............................................................
+
+
+
+## quick test on inputs
+
+old quick test:
+
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 21,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 20 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40."   --per-weight --scale 5765.4   --save-weight --histo-name "dy_mutau_sel/dy_all/NOMINAL/dy_mutau_sel_dy_all_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_all.root gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/0000/*root &
+
+foreach dtag ( MC2016_Summer16_WWTo2L2Nu_powheg MC2016_Summer16_WWToLNuQQ_powheg MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin MC2016_Summer16_WZTo1L3Nu_amcatnlo_madspin MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin MC2016_Summer16_WZTo3LNu_powheg MC2016_Summer16_ZZTo2L2Nu_powheg MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg MC2016_Summer16_DYJetsToLL_10to50_amcatnlo MC2016_Summer16_DYJetsToLL_50toInf_madgraph MC2016_Summer16_SingleT_tW_5FS_powheg MC2016_Summer16_SingleTbar_tW_5FS_powheg MC2016_Summer16_WJets_madgraph MC2016_Summer16_TTJets_powheg )
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 42,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 21 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0"   --per-weight --try-xsec --std-histo-name geom_tau_sv_sign  --save-weight --histo-name "dy_tautau_sel/dy_all/NOMINAL/dy_tautau_sel_dy_all_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/u2_inputs/$dtag.root gstore_outdirs/v40/*/Ntupler_v40_$dtag/*/*/MC*root
+end
+
+hadd quick-test/foobar_v40u2_inputs.root quick-test/v40/u2_inputs/MC*root
+
+python stack_quick.py quick-test/foobar_v40u2_inputs.root --chan dy_tautau_sel --sys NOMINAL --distr geom_tau_sv_sign --stack ttbar,wjets,dibosons,single_top,dy --debug test_f_inputs.root --scale-stack 35800
+
+INFO:root:import ROOT
+DEBUG:root:dy_tautau_sel/ttbar/NOMINAL/dy_tautau_sel_ttbar_NOMINAL_geom_tau_sv_sign
+DEBUG:root:ttbar 4801.91458273
+DEBUG:root:dy_tautau_sel/wjets/NOMINAL/dy_tautau_sel_wjets_NOMINAL_geom_tau_sv_sign
+DEBUG:root:wjets 79165.7116547
+DEBUG:root:dy_tautau_sel/dibosons/NOMINAL/dy_tautau_sel_dibosons_NOMINAL_geom_tau_sv_sign
+DEBUG:root:dibosons 2399.22657406
+DEBUG:root:dy_tautau_sel/single_top/NOMINAL/dy_tautau_sel_single_top_NOMINAL_geom_tau_sv_sign
+DEBUG:root:single_top 1381.56985289
+DEBUG:root:dy_tautau_sel/dy/NOMINAL/dy_tautau_sel_dy_NOMINAL_geom_tau_sv_sign
+DEBUG:root:dy 52192.7615089
+
+-- noticeable tail in wjets
+-- is it the same as in v40u2 stage2 output?
+
+try with Mt40
+
+foreach dtag ( MC2016_Summer16_WWTo2L2Nu_powheg MC2016_Summer16_WWToLNuQQ_powheg MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin MC2016_Summer16_WZTo1L3Nu_amcatnlo_madspin MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin MC2016_Summer16_WZTo3LNu_powheg MC2016_Summer16_ZZTo2L2Nu_powheg MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg MC2016_Summer16_DYJetsToLL_10to50_amcatnlo MC2016_Summer16_DYJetsToLL_50toInf_madgraph MC2016_Summer16_SingleT_tW_5FS_powheg MC2016_Summer16_SingleTbar_tW_5FS_powheg MC2016_Summer16_WJets_madgraph MC2016_Summer16_TTJets_powheg )
+python sumup_ttree_draw.py "tau_SV_geom_flightLenSign[tau_refited_index[0]]" --histo-range 42,-1,20 --cond-com "abs(leps_ID) == 13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0] > 2 && tau_refited_index[0] > -1 && lep_p4[0].pt() > 26. && abs(lep_p4[0].eta()) < 2.4 && tau_p4[0].pt() > 21 && abs(tau_p4[0].eta()) < 2.4 && nbjets < 2 && lep_id[0]*tau_id[0] < 0 && sqrt(2*(sqrt((met_init.Px()*met_init.Px() + met_init.Py()*met_init.Py())*(lep_p4[0].Px()*lep_p4[0].Px() + lep_p4[0].Py()*lep_p4[0].Py())) - (met_init.Px()*lep_p4[0].Px() + met_init.Py()*lep_p4[0].Py()))) < 40."   --per-weight --try-xsec --std-histo-name geom_tau_sv_sign  --save-weight --histo-name "dy_tautau_sel/dy_all/NOMINAL/dy_tautau_sel_dy_all_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/u2_inputs_Mt40/$dtag.root gstore_outdirs/v40/*/Ntupler_v40_$dtag/*/*/MC*root &
+end
+
+hadd quick-test/foobar_v40u2_inputs_Mt40.root quick-test/v40/u2_inputs_Mt40/MC*root
+
+python stack_quick.py quick-test/foobar_v40u2_inputs_Mt40.root --chan dy_tautau_sel --sys NOMINAL --distr geom_tau_sv_sign --stack ttbar,wjets,dibosons,single_top,dy --debug test_f_inputs_Mt40.root --scale-stack 35800
+
+DEBUG:root:dy_tautau_sel/ttbar/NOMINAL/dy_tautau_sel_ttbar_NOMINAL_geom_tau_sv_sign
+DEBUG:root:ttbar 1007.68226349
+DEBUG:root:dy_tautau_sel/wjets/NOMINAL/dy_tautau_sel_wjets_NOMINAL_geom_tau_sv_sign
+DEBUG:root:wjets 15209.1757812
+DEBUG:root:dy_tautau_sel/dibosons/NOMINAL/dy_tautau_sel_dibosons_NOMINAL_geom_tau_sv_sign
+DEBUG:root:dibosons 547.442466587
+DEBUG:root:dy_tautau_sel/single_top/NOMINAL/dy_tautau_sel_single_top_NOMINAL_geom_tau_sv_sign
+DEBUG:root:single_top 277.260660708
+DEBUG:root:dy_tautau_sel/dy/NOMINAL/dy_tautau_sel_dy_NOMINAL_geom_tau_sv_sign
+DEBUG:root:dy 34797.0296421
+
+-- negligible after 2.5-3 SV Sign
+
+comparing to stage2 output they look completely different: the tail in the stage2 is unreasonable
+(a kind of problem which could propagate unnoticed to tt too)
+
+are yields similar?
+
+root [6] dy_tautau_sel->Get("dy/NOMINAL/dy_tautau_sel_dy_NOMINAL_geom_tau_sv_sign")->Print()
+TH1.Print Name  = dy_tautau_sel_dy_NOMINAL_geom_tau_sv_sign, Entries= 8197, Total sum= 0.971984
+root [7] dy_tautau_sel->Get("ttbar/NOMINAL/dy_tautau_sel_ttbar_NOMINAL_geom_tau_sv_sign")->Print()
+TH1.Print Name  = dy_tautau_sel_ttbar_NOMINAL_geom_tau_sv_sign, Entries= 2724, Total sum= 0.0281475
+root [8] dy_tautau_sel->Get("wjets/NOMINAL/dy_tautau_sel_wjets_NOMINAL_geom_tau_sv_sign")->Print()
+TH1.Print Name  = dy_tautau_sel_wjets_NOMINAL_geom_tau_sv_sign, Entries= 237, Total sum= 0.424837
+
+in stage2 processing:
+
+root [4] dy_tautau_sel->Get("dy/NOMINAL/dy_tautau_sel_dy_NOMINAL_geom_tau_sv_sign")->Print()
+TH1.Print Name  = dy_tautau_sel_dy_NOMINAL_geom_tau_sv_sign, Entries= 22311, Total sum= 0.487645
+root [5] dy_tautau_sel->Get("ttbar/NOMINAL/dy_tautau_sel_ttbar_NOMINAL_geom_tau_sv_sign")->Print()
+TH1.Print Name  = dy_tautau_sel_ttbar_NOMINAL_geom_tau_sv_sign, Entries= 12610, Total sum= 0.115728
+root [3] dy_tautau_sel->Get("wjets/NOMINAL/dy_tautau_sel_wjets_NOMINAL_geom_tau_sv_sign")->Print()
+TH1.Print Name  = dy_tautau_sel_wjets_NOMINAL_geom_tau_sv_sign, Entries= 1017, Total sum= 0.529739
+
+-- what's with total sums?
+
+tau ID cut was vloose
+
+
+
+
+## repeate quick test in dy only
+
+(then in tt)
+
+without Mt cut now
+
+don't cut on SV Sign, but save it in ttree
+
+info on differences with quick test:
+
+* 0 bjets, not matched to tau
+* stage2 checks dR match quality of tau SV refit
+* correct (geom) SV Sign is saved
+* tau pt cut 21GeV
+
+quick test was done on all DY, including ext
+ls gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/*/MC*root
+
+
+
+
+
+
+
 # NOMINAL distrs for double ratio test 2
 
 hadd lstore_outdirs/merge-sets/v40/u2/MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root lstore_outdirs/v40/u2/*/*root
@@ -61,9 +217,9 @@ time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40 opt
 
 time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage_em==205"  chan="elmu_sel" &
 
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage_dy==102 || selection_stage_dy==103"  chan="dy_tautau_sel" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="(selection_stage_dy==102 || selection_stage_dy==103)"  chan="dy_tautau_sel" &
 
-time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage_dy_mumu==102 || selection_stage_dy_mumu==103"  chan="dy_mumu_sel" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="(selection_stage_dy_mumu==102 || selection_stage_dy_mumu==103)"  chan="dy_mumu_sel" &
 
 
 foreach d ( `cat all-dtags` )
@@ -91,6 +247,74 @@ hadd foobar2.root v40u2/1/*TT*heg_mu_sel_tt* &
 
 
 ---- typo with u1 instead of u2!!!
+
+missing W1Jets
+hadd lstore_outdirs/merge-sets//v40/u2/MC2016_Summer16_W1Jets_madgraph.root lstore_outdirs/v40/u2/MC2016_Summer16_W1Jets_madgraph/*root
+
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage==107"  chan="mu_sel"    dtag=W1Jet &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage==106"  chan="mu_sel_ss" dtag=W1Jet &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40 options="--el-procs" cond="selection_stage==117"  chan="el_sel"    dtag=W1Jet &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40 options="--el-procs" cond="selection_stage==116"  chan="el_sel_ss" dtag=W1Jet &
+
+
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="(selection_stage==107 || selection_stage==105)"  chan="mu_selVloose"    dtag=W1Jet &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="(selection_stage==106 || selection_stage==104)"  chan="mu_selVloose_ss" dtag=W1Jet &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40 options="--el-procs" cond="(selection_stage==117 || selection_stage==115)"  chan="el_selVloose"    dtag=W1Jet &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40 options="--el-procs" cond="(selection_stage==116 || selection_stage==114)"  chan="el_selVloose_ss" dtag=W1Jet &
+
+
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage_em==205"  chan="elmu_sel"  dtag=W1Jet &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage_dy==102 || selection_stage_dy==103"  chan="dy_tautau_sel" dtag=W1Jet &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=u2 nt=v40                      cond="selection_stage_dy_mumu==102 || selection_stage_dy_mumu==103"  chan="dy_mumu_sel" dtag=W1Jet &
+
+
+python stack_plot.py mc_norm/distrs_v40u2_mc_2.root ../distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleMuon.root -p -r -o plots/v40u2/2/ --lumi 35800 -c mu_sel -d Mt_lep_met_f --skip-QCD --no-data --wjet 0.8 --title-x "M_{T} [GeV]" --title-y "events" --title ""
+
+3300 events overall
+
+python stack_plot.py mc_norm/distrs_v40u2_mc_2.root ../distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleMuon.root -p -r -o plots/v40u2/2/ --lumi 35800 -c mu_sel_ss     -d Mt_lep_met_f --skip-QCD --no-data --wjet 0.8 --title-x "M_{T} [GeV]" --title-y "events" --title ""
+
+788.719281
+practically pure tt and st, some wjets
+need data to check for qcd
+
+
+python stack_plot.py mc_norm/distrs_v40u2_mc_2.root ../distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleMuon.root -p -r -o plots/v40u2/2/ --lumi 35800 -c elmu_sel      -d Mt_lep_met_f --skip-QCD --no-data --wjet 0.8 --title-x "M_{T} [GeV]" --title-y "events" --title ""
+
+30711.964286
+pure tt->other and s-top->other
+
+python stack_plot.py mc_norm/distrs_v40u2_mc_2.root ../distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleMuon.root -p -r -o plots/v40u2/2/ --lumi 35800 -c dy_mumu_sel   -d Mt_lep_met_f --skip-QCD --no-data --wjet 0.8 --title-x "M_{T} [GeV]" --title-y "events" --title ""
+
+16358095.808810
+pure DY,
+tautau is probably mumu
+--> after DY fix:
+15497337.752776
+and pure DY->mumu
+
+python stack_plot.py mc_norm/distrs_v40u2_mc_2.root ../distrs/v25v26_pStage2Run3_Run4_Run4Rest_nolj_hadds/SingleMuon.root -p -r -o plots/v40u2/2/ --lumi 35800 -c dy_tautau_sel -d Mt_lep_met_f --skip-QCD --no-data --wjet 0.8 --title-x "M_{T} [GeV]" --title-y "events" --title ""
+
+116706.923147
+-- PROBLEM, it's a rainbow with WJets, tt and DY->other
+--> after DY fix:
+51568.708471
+negligible DY->mumu, but noticeable tt and wjets (with correct contributions from different processes)
+including below Mt<40 about third of events is wjets -- where it's not expected, another PROBLEM
+
+
+
+1. why DY->other?
+2. why wjets? just need Mt<40? how much does it cut?
+   --- it won't cut all wjets, like a third of all events will be wjets,
+       which is not expected from SV Sign 2.5
+3. why each tt process contributes the same amount? and they have the same Mt shape??
+   --- checked for mutau and lj, indeed the same shape
+       and yields 9800 mutau, 11000 lj
+
+useful distrs:
+tau pt
+SV Sign
 
 
 
