@@ -18,7 +18,7 @@ WITH_RECOIL_CORRECTIONS = False
 
 ISO_LEPS    = True
 JETS_PT_CUT = 21. # 30.
-TAUS_PT_CUT = 21. # 20GeV for DY->tautau selection
+TAUS_PT_CUT = 21. # 30. # 20GeV for DY->tautau selection
 TAUS_ID_CUT_Medium = 2
 TAUS_ID_CUT_VLoose = 0
 TAUS_ID_CUT = TAUS_ID_CUT_Medium # TAUS_ID_CUT_VLoose
@@ -28,6 +28,31 @@ SV_SIGN_CUT = 2.5
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all):
     return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all or pass_mumu
+
+
+def passes_wjets_control_selection(passed_triggers, leps, N_jets, taus, proc_met):
+    channel_stage = 0
+    pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
+
+    #old_jet_sel = len(jets.medium) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 2
+    # N b-tagged, N all jets
+    old_jet_sel = N_jets[0] == 0 and len(leps[0]) == 1 and (pass_mu or pass_el)
+    old_jet_sel_tau_cand    = old_jet_sel and len(taus) > 0
+    old_jet_sel_tau_cand_os = old_jet_sel_tau_cand and leps[4][0] * taus[0][2] < 0
+
+    if   pass_mu and old_jet_sel_tau_cand_os:
+        channel_stage = 7
+    elif pass_mu and old_jet_sel_tau_cand:
+        channel_stage = 6
+
+    elif pass_el and old_jet_sel_tau_cand_os:
+        channel_stage = 17
+    elif pass_el and old_jet_sel_tau_cand:
+        channel_stage = 16
+
+    return channel_stage
+
+
 
 def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     channel_stage = 0
@@ -1570,6 +1595,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
     selection_stage_tt_alliso = array( 'i', [ 0 ])
     ttree_out.Branch('selection_stage_tt_alliso', selection_stage_tt_alliso, 'selection_stage_tt_alliso/I')
+
+    selection_stage_wjets = array( 'i', [ 0 ])
+    ttree_out.Branch('selection_stage_wjets', selection_stage_wjets, 'selection_stage_wjets/I')
 
     selection_stage_dy         = array('i', [0])
     selection_stage_dy_TESUp   = array('i', [0])
@@ -3533,6 +3561,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         #tt_channel_presel_stage = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), taus_candidates, proc_met)
         tt_channel_stage_alliso = passes_tt_selection_stages_alliso(passed_triggers, leps_all, (N_jets_nom_med_alliso, N_jets_nom_all_alliso), taus_candidates_alliso, proc_met)
 
+        # WJets control selection
+        selection_wjets_control = passes_wjets_control_selection(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), taus_candidates, proc_met)
+
         # full syst for DY
         dy_channel_sel_stage         = passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
         dy_channel_sel_stage_TESUp   = passes_dy_tautau_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
@@ -3603,6 +3634,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         selection_stage_JERDown[0] = tt_channel_sel_stage_JERDown
 
         selection_stage_tt_alliso[0] = tt_channel_stage_alliso
+
+        selection_stage_wjets[0] = selection_wjets_control
 
         selection_stage_dy[0] = dy_channel_sel_stage
         selection_stage_dy_TESUp  [0] = dy_channel_sel_stage_TESUp   

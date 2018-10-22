@@ -1,3 +1,10 @@
+# cross check of QCD shape in OS and SS selections
+# in presel and wjets control selection
+# HT and Enriched QCDs
+python genjobs.py v35 pQCDtest channels_nom_sys_muon_sel_main --dtags std_qcd,qcd_ext,qcd_muenriched,qcd_emenriched,qcd_emenriched_ext --scheme 0,0,2,12,12
+make sub_proc nt=v35 proc=pQCDtest node=4
+
+
 # v40 u1
 # test run for double ratio with DY
 python genjobs.py v40 u1 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc,data_mu,data_el --scheme 0,0,2,12,12
