@@ -33,5 +33,5 @@ config.Data.outLFNDirBase = '/store/user/%s/%s/' % (getUsernameFromSiteDB(), ver
 config.Data.publication = False
 config.Data.outputDatasetTag = request_tag
 
-config.Site.storageSite = 'T2_PT_NCG_Lisbon'
+config.Site.storageSite = '{output_site}'
 

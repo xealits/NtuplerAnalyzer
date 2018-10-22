@@ -284,15 +284,16 @@ VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::
  * should substitute all the above
  */
 
-/*
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_final_p4)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, gen_final_PromptFinal)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, gen_final_fromHardFinal)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, gen_final_PromptTauDecay)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,  gen_final_pdgId)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,  gen_final_status)
-//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,  gen_final_ndaughters)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,  gen_final_ndaughters)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,  gen_final_chainId)
+
+/*
 // custom ID: +-4 t,  +-3 b,  +- 2W,  +-1 tau
 // multiplied by power of 10 in order of the decay chain
 

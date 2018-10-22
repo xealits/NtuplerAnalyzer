@@ -29,6 +29,7 @@ if __name__ == "__main__":
     parser.add_argument("record_scheme", help="ntupler's parameter record_scheme, sets thresholds wich events to save")
     parser.add_argument("-s", "--suffix", type=str, default='', help="suffix for dataset, used for ext MC datasets")
     parser.add_argument("-d", "--dsets-info", type=str, default='dsets_info.yaml', help="file with info on datasets: xsec, dtag, isMC, possible LumiMask")
+    parser.add_argument("--output-site", type=str, default='T2_PT_NCG_Lisbon', help="grid output site")
     parser.add_argument("--without-HLT", action="store_true", default=False, help="turn off HLT in events (to support noHLT MC in 2015)")
     parser.add_argument("--debug", action="store_true", help="debug logging")
     #parser.add_argument("-o", "--output-dir", type=str, default='python/crab_cfgs/', help="directory where config files are created for this vertsion (in version/ subdir)")
@@ -65,7 +66,7 @@ if __name__ == "__main__":
     config_file = conf_dir + version + '/%s%s_cfg.py' % (dtag, suffix)
 
     template_crab = template_crab.format(LumiMask=LumiMask, dtag=dtag, suffix=suffix, version=version, dset=dset,
-        config_file=config_file)
+        config_file=config_file, output_site=args.output_site)
     template_cfg = template_cfg .format(isMC=isMC, dtag=dtag, record_scheme=record_scheme, withHLT=withHLT, is2017rereco=is2017rereco)
 
     if not os.path.exists(conf_dir + version):

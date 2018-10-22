@@ -417,3 +417,25 @@ double top_pT_SF(double x)
 	}
 
 
+int parse_chain_id(const reco::Candidate& part)
+{
+unsigned int pdgId = abs(part.pdgId());
+unsigned int n_mothers = part.numberOfMothers();
+edm::LogInfo ("Demo") << "parse_chain_id: " << pdgId << ' ' << n_mothers;
+
+// check pdgIDs of all mothers
+for (unsigned int m_i=0; m_i<n_mothers; m_i++)
+	{
+	unsigned int m_pdg = abs(part.mother(m_i)->pdgId());
+	edm::LogInfo ("Demo") << "has_mother: m " << m_pdg;
+	if      (m_pdg == 24) return m_pdg;
+	else if (m_pdg == 23) return m_pdg;
+	else if (m_pdg == 6)  return m_pdg;
+	}
+// if still no match -- follow the first mother
+if (n_mothers > 0)
+	return parse_chain_id(*(part.mother(0)));
+else
+	return 0;
+}
+

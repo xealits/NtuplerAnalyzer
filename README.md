@@ -104,7 +104,16 @@ For example:
     crab submit -c $c &
     done
 
---- the `make_crab_cfgs.py` script makes the jobs in `python/crab_cfgs/v35/` and then crab submits them. Here the for loop launches all submitions in parallel. It is not very safe: it might not pick up your grid credentials or may create too many processes etc.
+--- the `make_crab_cfgs.py` script makes the jobs in `python/crab_cfgs/v35/` and then crab submits them.
+Here the for loop launches all submitions in parallel.
+It is not very safe: it might not pick up your grid credentials or may create too many processes etc.
+
+*To generate jobs with custom output site use `--output-site <your site>`:*
+
+    for c in `cat dsets_all_usual_qcd_ext`
+    do
+    python make_crab_cfgs.py $c v35 tauIDantiIso --output-site T2_CH_CERN
+    done
 
 Don't forget to have your grid credentials before launching crab.
 Otherwise it will ask you to initialize.

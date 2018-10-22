@@ -1766,6 +1766,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				int n_daughters = p.numberOfDaughters();
 
 				/* these don't work well -- brute force all no-daughter genparts
+				*/
 				// new homogeneous gen final states
 				if (p.fromHardProcessFinalState() || p.isPromptFinalState() || p.isDirectHardProcessTauDecayProductFinalState())
 					{
@@ -1776,9 +1777,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					NT_gen_final_pdgId           .push_back(p.pdgId());
 					NT_gen_final_status          .push_back(p.status());
 					NT_gen_final_ndaughters      .push_back(p.numberOfDaughters());
-					NT_gen_final_chainId         .push_back(parse_chain_id(&p));
+					NT_gen_final_chainId         .push_back(parse_chain_id(p));
 					}
-				*/
 
 				// prompt decayed are b-mesons and w-jet hadrons and tau stuff
 				// save them separately
