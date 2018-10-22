@@ -27,7 +27,8 @@ SV_SIGN_CUT = 2.5
 
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all):
-    return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all or pass_mumu
+    #return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all or pass_mumu
+    return pass_mu or pass_el or pass_elmu or pass_mumu
 
 
 def passes_wjets_control_selection(passed_triggers, leps, N_jets, taus, proc_met):
@@ -3619,7 +3620,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         notpasses_em = em_channel_sel_stage < 1 and em_channel_sel_stage_TESUp   < 1 and em_channel_sel_stage_TESDown < 1 and em_channel_sel_stage_JERUp   < 1 and em_channel_sel_stage_JERDown < 1 and em_channel_sel_stage_JESUp   < 1 and em_channel_sel_stage_JESDown < 1
 
-        if notpasses and notpasses_dy_tautau and notpasses_dy_mumu and notpasses_em:
+        notpasses_wjets = selection_wjets_control < 1
+
+        if notpasses and notpasses_dy_tautau and notpasses_dy_mumu and notpasses_em and notpasses_wjets:
             continue
 
         # SAVE SELECTION, objects and weights
@@ -4216,13 +4219,13 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         event_met_TESDown.SetPx(proc_met_TESDown.Px())
         event_met_TESDown.SetPy(proc_met_TESDown.Py())
 
-        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met.Px(), proc_met.Py())
-        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JERUp.Px(),   proc_met_JERUp.Py())
-        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JERDown.Px(), proc_met_JERDown.Py())
-        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JESUp.Px(),   proc_met_JESUp.Py())
-        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JESDown.Px(), proc_met_JESDown.Py())
-        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_TESUp.Px(),   proc_met_TESUp.Py())
-        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_TESDown.Px(), proc_met_TESDown.Py())
+        event_met_lep_mt         [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met.Px(), proc_met.Py())
+        event_met_lep_mt_JERUp   [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JERUp.Px(),   proc_met_JERUp.Py())
+        event_met_lep_mt_JERDown [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JERDown.Px(), proc_met_JERDown.Py())
+        event_met_lep_mt_JESUp   [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JESUp.Px(),   proc_met_JESUp.Py())
+        event_met_lep_mt_JESDown [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JESDown.Px(), proc_met_JESDown.Py())
+        event_met_lep_mt_TESUp   [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_TESUp.Px(),   proc_met_TESUp.Py())
+        event_met_lep_mt_TESDown [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_TESDown.Px(), proc_met_TESDown.Py())
 
         ttree_out.Fill()
 

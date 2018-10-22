@@ -1,6 +1,8 @@
 # cross check of QCD shape in OS and SS selections
 # in presel and wjets control selection
 # HT and Enriched QCDs
+#  29MB?
+# 112M
 python genjobs.py v35 pQCDtest channels_nom_sys_muon_sel_main --dtags std_qcd,qcd_ext,qcd_muenriched,qcd_emenriched,qcd_emenriched_ext --scheme 0,0,2,12,12
 make sub_proc nt=v35 proc=pQCDtest node=4
 
@@ -29,7 +31,13 @@ python genjobs.py v40 u3test --do-W-stitching channels_nom_sys_muon_sel_main --d
 # jet pt cut = 21 = tau pt cut
 # plus implemented Mt for object systematics
 # -- easy access for the tests and distrs selection
+# 13350392	lstore_outdirs/v40/u4test
 python genjobs.py v40 u4test --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_WJets_madgraph,MC2016_Summer16_TTJets_powheg,MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1 --scheme 0,0,2,12,12
+
+2301356	lstore_outdirs/v40/u4test/MC2016_Summer16_DYJetsToLL_50toInf_madgraph
+4470408	lstore_outdirs/v40/u4test/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1
+6567216	lstore_outdirs/v40/u4test/MC2016_Summer16_TTJets_powheg
+11408	lstore_outdirs/v40/u4test/MC2016_Summer16_WJets_madgraph
 
 
 # run with presel for AN yields table

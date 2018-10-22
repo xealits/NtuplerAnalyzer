@@ -82,3 +82,11 @@ time python channel_distrs_full_loop.py --do-W-stitching  -l logss temp/ channel
 
 time python channel_distrs_full_loop.py  -l logss temp/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v35/QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v35_MC2016_Summer16_QCD_HT-2000-Inf/180809_092445/0000/MC2016_Summer16_QCD_HT-2000-Inf_1.root
 
+time python channel_distrs_full_loop.py  -l logss temp/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v35/QCD_Pt-80to120_EMEnriched_TuneCUETP8M1_13TeV_pythia8/Ntupler_v35_MC2016_Summer16_QCD_EMEnriched_Pt-80to120/180906_165212/0000/MC2016_Summer16_QCD_EMEnriched_Pt-80to120_38.root
+
+time python channel_distrs_full_loop.py --do-W-stitching  -l logss temp/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v40/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v40_MC2016_Summer16_TTJets_powheg/181009_141741/0000/MC2016_Summer16_TTJets_powheg_21.root
+
+time python channel_distrs_full_loop.py  -l logss temp/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v35/QCD_Pt-80to120_EMEnriched_TuneCUETP8M1_13TeV_pythia8/Ntupler_v35_MC2016_Summer16_QCD_EMEnriched_Pt-80to120/180906_165212/0000/MC2016_Summer16_QCD_EMEnriched_Pt-80to120_53.root
+
+time python channel_distrs_full_loop.py  -l logss temp/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v35/QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v35_MC2016_Summer16_QCD_HT-300-500/180808_234150/0000/MC2016_Summer16_QCD_HT-300-500_8.root
+
