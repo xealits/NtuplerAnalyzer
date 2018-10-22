@@ -17,12 +17,12 @@ with_bSF = True
 WITH_RECOIL_CORRECTIONS = False
 
 ISO_LEPS    = True
-JETS_PT_CUT = 30.
+JETS_PT_CUT = 21. # 30.
 TAUS_PT_CUT = 21. # 20GeV for DY->tautau selection
 TAUS_ID_CUT_Medium = 2
 TAUS_ID_CUT_VLoose = 0
-TAUS_ID_CUT = TAUS_ID_CUT_VLoose
-ONLY_3PI_TAUS = True
+TAUS_ID_CUT = TAUS_ID_CUT_Medium # TAUS_ID_CUT_VLoose
+ONLY_3PI_TAUS = False
 SV_SIGN_CUT = 2.5
 
 
@@ -1741,6 +1741,21 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     event_met_TESDown = LorentzVector_Class(0., 0., 0., 0.)
     ttree_out.Branch("event_met_TESDown", event_met_TESDown)
 
+    event_met_lep_mt = array('f', [0])
+    ttree_out.Branch('event_met_lep_mt', event_met_lep_mt, 'event_met_lep_mt/f')
+    event_met_lep_mt_JERUp   = array('f', [0])
+    ttree_out.Branch('event_met_lep_mt_JERUp',   event_met_lep_mt_JERUp,   'event_met_lep_mt_JERUp/f')
+    event_met_lep_mt_JERDown = array('f', [0])
+    ttree_out.Branch('event_met_lep_mt_JERDown', event_met_lep_mt_JERDown, 'event_met_lep_mt_JERDown/f')
+    event_met_lep_mt_JESUp   = array('f', [0])
+    ttree_out.Branch('event_met_lep_mt_JESUp',   event_met_lep_mt_JESUp,   'event_met_lep_mt_JESUp/f')
+    event_met_lep_mt_JESDown = array('f', [0])
+    ttree_out.Branch('event_met_lep_mt_JESDown', event_met_lep_mt_JESDown, 'event_met_lep_mt_JESDown/f')
+    event_met_lep_mt_TESUp   = array('f', [0])
+    ttree_out.Branch('event_met_lep_mt_TESUp',   event_met_lep_mt_TESUp,   'event_met_lep_mt_TESUp/f')
+    event_met_lep_mt_TESDown = array('f', [0])
+    ttree_out.Branch('event_met_lep_mt_TESDown', event_met_lep_mt_TESDown, 'event_met_lep_mt_TESDown/f')
+
     event_leptons = ROOT.LorentzVectorS()
     ttree_out.Branch("event_leptons", event_leptons)
     all_vector_branches.append(event_leptons)
@@ -1939,7 +1954,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 record distr-s for each
         '''
 
-        if iev > 10000: break
+        #if iev > 10000: break
         control_counters.Fill(0)
 
         for vector_branch in all_vector_branches:
@@ -2668,7 +2683,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             # option of passing only 3PI taus with high significance
             if ONLY_3PI_TAUS:
                 # (unnecessary if, but readable)
-                if not (ev.tau_hasSecondaryVertex[i] and ev.tau_refited_index[i] > -1 and ev.tau_SV_geom_flightLenSign[ev.tau_refited_index[i]] > SV_SIGN_CUT): continue
+                #if not (ev.tau_hasSecondaryVertex[i] and ev.tau_refited_index[i] > -1 and ev.tau_SV_geom_flightLenSign[ev.tau_refited_index[i]] > SV_SIGN_CUT): continue
+                if not (ev.tau_refited_index[i] > -1 and ev.tau_SV_geom_flightLenSign[ev.tau_refited_index[i]] > SV_SIGN_CUT): continue
 
             pass_pt = False
             # MC corrections
@@ -4167,10 +4183,15 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         event_met_TESDown.SetPx(proc_met_TESDown.Px())
         event_met_TESDown.SetPy(proc_met_TESDown.Py())
 
+        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met.Px(), proc_met.Py())
+        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JERUp.Px(),   proc_met_JERUp.Py())
+        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JERDown.Px(), proc_met_JERDown.Py())
+        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JESUp.Px(),   proc_met_JESUp.Py())
+        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JESDown.Px(), proc_met_JESDown.Py())
+        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_TESUp.Px(),   proc_met_TESUp.Py())
+        event_met_lep_mt = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_TESDown.Px(), proc_met_TESDown.Py())
+
         ttree_out.Fill()
-
-
-
 
 
         if save_weights:

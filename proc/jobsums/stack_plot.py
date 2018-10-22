@@ -142,7 +142,11 @@ fdata = TFile(args.data_file)
 #histos_data_distrs = [(distr_name, [(histo, 'data', channel)]]
 histos_data_distrs    = []
 histos_data_distrs_ss = []
-for distr_name in distr_names:
+histos_data_per_distr    = []
+histos_data_per_distr_ss = []
+
+if not args.no_data:
+  for distr_name in distr_names:
     data_distr_name = distr_name[:]
     if data_distr_name in ('Mt_lep_met_f_w_mu_trk_b', 'Mt_lep_met_f_w_mu_trk_h'):
         data_distr_name = 'Mt_lep_met_f'
@@ -160,16 +164,16 @@ for distr_name in distr_names:
         else:
             histos_data_distrs_ss.append((data_distr_name, [(fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
 
-if args.cumulative:
+  if args.cumulative:
     histos_data_per_distr    = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs]
     histos_data_per_distr_ss = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs_ss]
-else:
+  else:
     histos_data_per_distr    = histos_data_distrs
     histos_data_per_distr_ss = histos_data_distrs_ss
 
 
 # normalize data distrs to different bin width:
-if args.bin_norm:
+if not args.no_data and args.bin_norm:
   for _, distrs in histos_data_per_distr + histos_data_per_distr_ss:
       for histo, _, _ in distrs:
           for bini in range(histo.GetSize()):
@@ -668,7 +672,7 @@ for distr_name, histos_per_channel in histos_data_per_distr:
     for h, _, _ in histos_per_channel[1:]:
         histos_data_sum.Add(h)
     histos_data_sums_per_distr.append(histos_data_sum)
-histos_data_sum = histos_data_sums_per_distr[0]
+histos_data_sum = histos_data_sums_per_distr[:1]
 
 if args.normalize:
     ratio = histos_data_sum.Integral() / hs_sum2.Integral()
@@ -732,7 +736,7 @@ hs, leg =  hs_legs_per_distr[0][1]
 used_histos = used_histos_per_distr[0][1]
 #histos_data_per_distr[0][0][0].Print()
 
-logging.info("data   = %f" % histos_data_sum.Integral())
+logging.info("data   = %f"    % 0. if args.no_data else histos_data_sum.Integral())
 logging.info("mc sum = %f %f" % (hs_sum1.Integral(), hs_sum2.Integral()))
 
 # set data histo styles and
@@ -741,18 +745,19 @@ logging.info("mc sum = %f %f" % (hs_sum1.Integral(), hs_sum2.Integral()))
 #    histo_data.SetMarkerStyle(21)
 #    leg.AddEntry(histo_data, "data", "e1 p")
 # no, add just the data_sum entry
-histos_data_sum.SetMarkerStyle(21)
 if not args.no_data:
+    histos_data_sum.SetMarkerStyle(21)
     leg.AddEntry(histos_data_sum, "data", "e1 p")
 
 out_dir = args.output_directory + '/' if args.output_directory else './'
 
-histos_data = histos_data_per_distr[0][1]
+if not args.no_data:
+    histos_data = histos_data_per_distr[0][1]
 
-histos_data[0][0].GetXaxis().SetLabelFont(63)
-histos_data[0][0].GetXaxis().SetLabelSize(14) # labels will be 14 pixels
-histos_data[0][0].GetYaxis().SetLabelFont(63)
-histos_data[0][0].GetYaxis().SetLabelSize(14) # labels will be 14 pixels
+    histos_data[0][0].GetXaxis().SetLabelFont(63)
+    histos_data[0][0].GetXaxis().SetLabelSize(14) # labels will be 14 pixels
+    histos_data[0][0].GetYaxis().SetLabelFont(63)
+    histos_data[0][0].GetYaxis().SetLabelSize(14) # labels will be 14 pixels
 
 
 if not args.plot and not args.ratio:
@@ -871,10 +876,9 @@ elif args.form_shapes:
         min_y, max_y = [float(x) for x in args.y_range.split(',')]
         histos_data[0][0].SetMinimum(min_y)
 
-    histos_data[0][0].SetMaximum(max_y * 1.1)
-    histos_data[0][0].SetXTitle(distr_name)
-
     if not args.no_data:
+        histos_data[0][0].SetMaximum(max_y * 1.1)
+        histos_data[0][0].SetXTitle(distr_name)
         histos_data[0][0].Draw('e1 p')
 
     histos_loop = [h_record for h_record in histos_data[1:] + used_histos if h_record[1] in args.processes]
@@ -1061,13 +1065,28 @@ else:
     if args.ratio:
         pad2.cd()
 
+        ratio_max = 1. + args.ratio_range
+        ratio_min = 1. - args.ratio_range
         # calculate ratios
-        histo_data_relative = histos_data_sum.Clone()
-        hs_sum1_relative = hs_sum1.Clone()
-        histo_data_relative.SetName("rel_data")
-        hs_sum1_relative.SetName("rel_mc")
+        if not args.no_data:
+            histo_data_relative = histos_data_sum.Clone()
+            histo_data_relative.SetName("rel_data")
+            histo_data_relative.SetStats(False)
+            histo_data_relative.SetMaximum(ratio_max)
+            histo_data_relative.SetMinimum(ratio_min)
+            histo_data_relative.Divide(hs_sum1)
 
-        histo_data_relative.SetStats(False)
+            histo_data_relative.GetXaxis().SetLabelFont(63)
+            histo_data_relative.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
+            histo_data_relative.GetYaxis().SetLabelFont(63)
+            histo_data_relative.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
+            histo_data_relative.GetXaxis().SetTitleFont(63)
+            histo_data_relative.GetXaxis().SetTitleSize(20)
+            histo_data_relative.GetYaxis().SetTitleFont(63)
+            histo_data_relative.GetYaxis().SetTitleSize(20)
+
+        hs_sum1_relative = hs_sum1.Clone()
+        hs_sum1_relative.SetName("rel_mc")
         hs_sum1_relative.SetStats(False)
 
         #histo_data_relative.GetYaxis().SetRange(0.5, 1.5)
@@ -1075,22 +1094,12 @@ else:
         #hs_sum1_relative.GetYaxis().SetRange(0.5, 1.5)
         #hs_sum1_relative.GetYaxis().SetUserRange(0.5, 1.5)
 
-        ratio_max = 1. + args.ratio_range
-        ratio_min = 1. - args.ratio_range
-        histo_data_relative.SetMaximum(ratio_max)
-        histo_data_relative.SetMinimum(ratio_min)
         hs_sum1_relative.SetMaximum(ratio_max)
         hs_sum1_relative.SetMinimum(ratio_min)
 
-        histo_data_relative.Divide(hs_sum1)
         hs_sum1_relative.Divide(hs_sum1)
 
         #h2.GetYaxis()->SetLabelOffset(0.01)
-
-        histo_data_relative.GetXaxis().SetLabelFont(63)
-        histo_data_relative.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
-        histo_data_relative.GetYaxis().SetLabelFont(63)
-        histo_data_relative.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
 
         hs_sum1_relative.GetXaxis().SetLabelFont(63)
         hs_sum1_relative.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
@@ -1099,13 +1108,9 @@ else:
 
         hs_sum1_relative.GetXaxis().SetTitleFont(63)
         hs_sum1_relative.GetXaxis().SetTitleSize(20)
-        histo_data_relative.GetXaxis().SetTitleFont(63)
-        histo_data_relative.GetXaxis().SetTitleSize(20)
 
         hs_sum1_relative.GetYaxis().SetTitleFont(63)
         hs_sum1_relative.GetYaxis().SetTitleSize(20)
-        histo_data_relative.GetYaxis().SetTitleFont(63)
-        histo_data_relative.GetYaxis().SetTitleSize(20)
 
         # if there is stack plot
         # removing the margin space to stack plot
@@ -1114,71 +1119,79 @@ else:
             #hs_sum1_relative.GetYaxis().SetLabelOffset(0.01)
             #histo_data_relative.GetYaxis().SetLabelOffset(0.01)
             hs_sum1_relative   .SetXTitle(title_x)
-            histo_data_relative.SetXTitle(title_x)
             hs_sum1_relative   .GetXaxis().SetTitleOffset(4.) # place the title not overlapping with labels...
-            histo_data_relative.GetXaxis().SetTitleOffset(4.)
+            if not args.no_data:
+                histo_data_relative.SetXTitle(title_x)
+                histo_data_relative.GetXaxis().SetTitleOffset(4.)
 
         hs_sum1_relative   .GetYaxis().SetTitleOffset(1.4) # place the title not overlapping with labels...
-        histo_data_relative.GetYaxis().SetTitleOffset(1.4)
 
         hs_sum1_relative   .SetYTitle("Data/MC")
-        histo_data_relative.SetYTitle("Data/MC")
 
         hs_sum1_relative.Draw("e2")
         if not args.no_data:
+            histo_data_relative.SetYTitle("Data/MC")
+            histo_data_relative.GetYaxis().SetTitleOffset(1.4)
             histo_data_relative.Draw("e p same")
 
     if args.plot:
         pad1.cd()
 
-        max_y = max([h.GetMaximum() for h in (hs_sum1, histos_data_sum)])
+        max_y = hs_sum1.GetMaximum() if args.no_data else max([h.GetMaximum() for h in (hs_sum1, histos_data_sum)])
         if args.y_max:
             max_y = args.y_max
-        min_y = max([h.GetMinimum() for h in (hs_sum1, histos_data_sum)])
+        min_y = hs_sum1.GetMinimum() if args.no_data else max([h.GetMinimum() for h in (hs_sum1, histos_data_sum)])
 
         if args.y_range:
             min_y, max_y = [float(x) for x in args.y_range.split(',')]
-            histos_data_sum.SetMaximum(max_y)
             hs_sum1        .SetMaximum(max_y)
-            histos_data_sum.SetMinimum(min_y)
             hs_sum1        .SetMinimum(min_y)
             #hs_sum1.GetYaxis().SetRange(min_y, max_y)
             #hs_sum1.GetYaxis().SetRangeUser(min_y, max_y)
-            #histos_data_sum.GetYaxis().SetRange(min_y, max_y)
-            #histos_data_sum.GetYaxis().SetRangeUser(min_y, max_y)
             hs_sum1         .SetAxisRange(min_y, max_y, "Y")
-            histos_data_sum .SetAxisRange(min_y, max_y, "Y")
+            if not args.no_data:
+                #histos_data_sum.GetYaxis().SetRange(min_y, max_y)
+                #histos_data_sum.GetYaxis().SetRangeUser(min_y, max_y)
+                histos_data_sum.SetMaximum(max_y)
+                histos_data_sum.SetMinimum(min_y)
+                histos_data_sum .SetAxisRange(min_y, max_y, "Y")
 
         # remove the label on stack plot if ratio is there
         if args.ratio:
             hs_sum1.GetXaxis().SetLabelOffset(999)
             hs_sum1.GetXaxis().SetLabelSize(0)
-            histos_data_sum.GetXaxis().SetLabelOffset(999)
-            histos_data_sum.GetXaxis().SetLabelSize(0)
+            if not args.no_data:
+                histos_data_sum.GetXaxis().SetLabelOffset(999)
+                histos_data_sum.GetXaxis().SetLabelSize(0)
             #hs.GetXaxis().SetLabelOffset(999)
             #hs.GetXaxis().SetLabelSize(0)
         else:
-            histos_data_sum.SetXTitle(title_x)
+            if not args.no_data:
+                histos_data_sum.SetXTitle(title_x)
             #hs            .SetXTitle(title_x)
             hs_sum1        .SetXTitle(title_x)
 
-        histos_data_sum.SetMaximum(max_y * 1.1)
+        if not args.no_data:
+            histos_data_sum.SetMaximum(max_y * 1.1)
         if args.logy: # and args.fake_rate:
             logging.info("setting histos logy") # some bug 
-            histos_data_sum.SetMaximum(max_y * 10.)
             hs_sum1        .SetMaximum(max_y * 10.)
-            histos_data_sum.SetMinimum(min_y / 10.)
             hs_sum1        .SetMinimum(min_y / 10.)
+            if not args.no_data:
+                histos_data_sum.SetMaximum(max_y * 10.)
+                histos_data_sum.SetMinimum(min_y / 10.)
         else: # if not args.logy:
-            histos_data_sum.SetMinimum(0)
             hs_sum1   .SetMinimum(0)
+            if not args.no_data:
+                histos_data_sum.SetMinimum(0)
 
         #hs.GetYaxis().SetTitleFont(63)
         #hs.GetYaxis().SetTitleSize(20)
         hs_sum1.GetYaxis().SetTitleFont(63)
         hs_sum1.GetYaxis().SetTitleSize(20)
-        histos_data_sum.GetYaxis().SetTitleFont(63)
-        histos_data_sum.GetYaxis().SetTitleSize(20)
+        if not args.no_data:
+            histos_data_sum.GetYaxis().SetTitleFont(63)
+            histos_data_sum.GetYaxis().SetTitleSize(20)
 
         #histos_data_sum.GetYaxis().SetLabelFont(63)
         #histos_data_sum.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
@@ -1193,27 +1206,31 @@ else:
         hs_sum1.GetXaxis().SetLabelFont(63)
         hs_sum1.GetYaxis().SetLabelSize(14)
         hs_sum1.GetXaxis().SetLabelSize(14)
-        histos_data_sum.GetYaxis().SetLabelFont(63)
-        histos_data_sum.GetXaxis().SetLabelFont(63)
-        histos_data_sum.GetYaxis().SetLabelSize(14)
-        histos_data_sum.GetXaxis().SetLabelSize(14)
+        if not args.no_data:
+            histos_data_sum.GetYaxis().SetLabelFont(63)
+            histos_data_sum.GetXaxis().SetLabelFont(63)
+            histos_data_sum.GetYaxis().SetLabelSize(14)
+            histos_data_sum.GetXaxis().SetLabelSize(14)
 
         #hs             .GetYaxis().SetTitleOffset(1.4)
         hs_sum1        .GetYaxis().SetTitleOffset(1.5) # place the title not overlapping with labels...
-        histos_data_sum.GetYaxis().SetTitleOffset(1.5)
 
         #hs             .SetYTitle(title_y)
         hs_sum1        .SetYTitle(title_y)
-        histos_data_sum.SetYTitle(title_y)
 
         #hs             .SetTitle(title_plot)
         hs_sum1        .SetTitle(title_plot)
-        histos_data_sum.SetTitle(title_plot)
+
+        if not args.no_data:
+            histos_data_sum.GetYaxis().SetTitleOffset(1.5)
+            histos_data_sum.SetYTitle(title_y)
+            histos_data_sum.SetTitle(title_plot)
 
         if args.y_range:
             min_y, max_y = [float(x) for x in args.y_range.split(',')]
             hs_sum1         .SetAxisRange(min_y, max_y, "Y")
-            histos_data_sum .SetAxisRange(min_y, max_y, "Y")
+            if not args.no_data:
+                histos_data_sum .SetAxisRange(min_y, max_y, "Y")
 
         # damn root's inability to adjust maxima and all these workarounds...
         if not args.no_data:

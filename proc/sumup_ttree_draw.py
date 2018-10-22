@@ -17,9 +17,11 @@ parser.add_argument('draw_com', type=str, help='Draw("??")')
 parser.add_argument('--cond-com', type=str, default="", help='Draw("", "??")')
 parser.add_argument('--ttree',    type=str, default="ntupler/reduced_ttree", help='path to the TTree in the file')
 parser.add_argument('--histo-name',  type=str, default="out_histo", help='the ROOTName for output')
+parser.add_argument('--std-histo-name',  type=str, default="distr", help='construct standard name for histogram: take "path" part from --histo-name and "distr" part from here, attach as chan_proc_sys_distr')
 parser.add_argument('--histo-color', type=str, default=None, help='optional rgb color, like `255,255,255`')
 parser.add_argument('--histo-range',  type=str, default=None, help='optionally set the range')
 parser.add_argument('--custom-range', type=str, default=None, help='optionally set the range in custom bins')
+parser.add_argument("--try-xsec",  action='store_true', help="try to normalize to cross-section, if the output filename contains dtag")
 
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 parser.add_argument("--output", type=str, default="output.root", help="filename for output")
@@ -112,6 +114,9 @@ root [11]
 root [11] 
 root [11] ttree_out->Draw("event_leptons[0].pt()>>hpts")
 '''
+
+if args.try_xsec:
+    from per_dtag_script import dtags
 
 # Draw command
 # 
@@ -223,6 +228,16 @@ if args.per_weight:
     #weight_counter = tfile.Get('ntupler/weight_counter')
     out_histo.Scale(1./weight_counter.GetBinContent(2))
 
+if args.try_xsec:
+    matched_dtag = None
+    for dtag in dtags:
+        if dtag in args.output:
+            matched_dtag = dtag
+            break
+
+    nickname, xsec = dtags.get(matched_dtag, 1.)
+    out_histo.Scale(xsec)
+
 if args.scale:
     out_histo.Scale(args.scale)
 
@@ -265,6 +280,17 @@ fout.cd()
 #    the rest is for convenience
 # in principle, root handles many same name histos in different directories, but can run into some weirdness on practice
 # that's why this protocol is still kept
+
+# if trying the xsec -- plug the nickname too and construct standard name if needed
+if args.try_xsec and len(histo_path) > 1:
+    histo_path[1] = nickname
+    logging.debug("new path: " + '/'.join(histo_path))
+    if args.std_histo_name:
+        #
+        distr = args.std_histo_name
+        histo_name = "{path_part}_{distr}".format(path_part='_'.join(histo_path), distr=distr)
+        logging.debug("new histo name: " + histo_name)
+        out_histo.SetName(histo_name)
 
 # check if this directory already exists in the file (a feature for future)
 out_dir_name = ''.join(part + '/' for part in histo_path)

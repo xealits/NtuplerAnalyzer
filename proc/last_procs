@@ -7,8 +7,22 @@ make sub_proc nt=v40 proc=u1 node=1
 python genjobs.py v40 u1 --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_DYJetsToLL_10to50_amcatnlo,MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1 --scheme 0,0,2,12,12
 make sub_proc nt=v40 proc=u1 node=1
 
+# run for DY tautau with nbjets < 2
+python genjobs.py v40 u2 --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1 --scheme 0,0,2,12,12
+make sub_proc nt=v40 proc=u2 node=1
 
+python genjobs.py v40 u2 --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_TTJets_powheg --scheme 0,0,2,12,12
 
+python genjobs.py v40 u2 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc --without-dtags MC2016_Summer16_TTJets_powheg,MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1 --scheme 0,0,2,12,12
+
+python genjobs.py v40 u3test --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_TTJets_powheg --scheme 0,0,2,12,12
+python genjobs.py v40 u3test --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1 --scheme 0,0,2,12,12
+python genjobs.py v40 u3test --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_WJets_madgraph --scheme 0,0,2,12,12
+
+# jet pt cut = 21 = tau pt cut
+# plus implemented Mt for object systematics
+# -- easy access for the tests and distrs selection
+python genjobs.py v40 u4test --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_WJets_madgraph,MC2016_Summer16_TTJets_powheg,MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1 --scheme 0,0,2,12,12
 
 
 # run with presel for AN yields table
