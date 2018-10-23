@@ -1,3 +1,21 @@
+# hadds per output dir
+
+foreach dtag (`ls lstore_outdirs/v40/u4test/`)
+hadd lstore_outdirs/merge-sets/v40/u4test/$dtag.root lstore_outdirs/v40/u4test/$dtag/*.root &
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 # NOMINAL dy tautau, selection problem and adding data and systematics
 
 in distrs:
@@ -128,6 +146,16 @@ TH1.Print Name  = dy_tautau_sel_wjets_NOMINAL_geom_tau_sv_sign, Entries= 1017, T
 tau ID cut was vloose
 
 
+statement of the problem:
+* test_f.root is made of stage2 output
+  and it has the problem
+* test_f_inputs.root and test_f_inputs_Mt40.root
+  is from inputs (gstore ntuples)
+  and it's fine
+
+
+
+
 
 
 ## repeate quick test in dy only
@@ -148,6 +176,50 @@ info on differences with quick test:
 quick test was done on all DY, including ext
 ls gstore_outdirs/v40/*/Ntupler_v40_MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*/*/MC*root
 
+
+
+
+## re-stage2 in v40 u4test, re-quick-test
+
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_aa nt=v40 proc=u4test merge_dir=lstore_outdirs/merge-sets/
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_ab nt=v40 proc=u4test merge_dir=lstore_outdirs/merge-sets/
+hadd lstore_outdirs/merge-sets/v40/u4test/MC2016_Summer16_TTJets_powheg.root lstore_outdirs/v40/u4test/MC2016_Summer16_TTJets_powheg/*.root
+hadd lstore_outdirs/merge-sets/v40/u4test/MC2016_Summer16_WJets_madgraph.root lstore_outdirs/v40/u4test/MC2016_Summer16_WJets_madgraph/*.root
+
+
+foreach dtag ( MC2016_Summer16_WWTo2L2Nu_powheg MC2016_Summer16_WWToLNuQQ_powheg MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin MC2016_Summer16_WZTo1L3Nu_amcatnlo_madspin MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin MC2016_Summer16_WZTo3LNu_powheg MC2016_Summer16_ZZTo2L2Nu_powheg MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg MC2016_Summer16_DYJetsToLL_10to50_amcatnlo MC2016_Summer16_DYJetsToLL_50toInf_madgraph MC2016_Summer16_SingleT_tW_5FS_powheg MC2016_Summer16_SingleTbar_tW_5FS_powheg MC2016_Summer16_WJets_madgraph MC2016_Summer16_TTJets_powheg )
+
+foreach dtag ( MC2016_Summer16_DYJetsToLL_50toInf_madgraph MC2016_Summer16_WJets_madgraph MC2016_Summer16_TTJets_powheg )
+python sumup_ttree_draw.py "event_taus_sv_sign[0]" --ttree ttree_out --histo-range 42,-1,20 --cond-com "(selection_stage_dy==102 || selection_stage_dy==103)"   --per-weight --try-xsec --std-histo-name geom_tau_sv_sign  --save-weight --histo-name "dy_tautau_sel/dy_all/NOMINAL/dy_tautau_sel_dy_all_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/u4test/$dtag.root lstore_outdirs/merge-sets/v40/u4test/$dtag.root
+end
+
+hadd quick-test/foobar_v40u4test.root quick-test/v40/u4test/MC*root
+
+python stack_quick.py quick-test/foobar_v40u4test.root --chan dy_tautau_sel --sys NOMINAL --distr geom_tau_sv_sign --stack ttbar,wjets,dibosons,single_top,dy --debug quick-test/test_f_v40u4test.root --scale-stack 35800
+
+kind of ok
+a little too much wjets in the tail
+very similar to the quick on all inputs (without Mt cut)
+
+
+foreach dtag ( MC2016_Summer16_DYJetsToLL_50toInf_madgraph MC2016_Summer16_WJets_madgraph MC2016_Summer16_TTJets_powheg )
+python sumup_ttree_draw.py "event_taus_sv_sign[0]" --ttree ttree_out --histo-range 42,-1,20 --cond-com "((selection_stage_dy==102 || selection_stage_dy==103) && event_met_lep_mt < 40.)"   --per-weight --try-xsec --std-histo-name geom_tau_sv_sign  --save-weight --histo-name "dy_tautau_sel/dy_all/NOMINAL/dy_tautau_sel_dy_all_NOMINAL_geom_tau_sv_sign" --output quick-test/v40/u4test_Mt40/$dtag.root lstore_outdirs/merge-sets/v40/u4test/$dtag.root
+end
+
+hadd quick-test/foobar_v40u4test_Mt40.root quick-test/v40/u4test_Mt40/MC*root
+
+python stack_quick.py quick-test/foobar_v40u4test_Mt40.root --chan dy_tautau_sel --sys NOMINAL --distr geom_tau_sv_sign --stack ttbar,wjets,dibosons,single_top,dy --debug quick-test/test_f_v40u4test_Mt40.root --scale-stack 35800
+
+kind of too much wjets?
+-- the same amount of wjets in the tail!
+   Mt did not work?
+
+in DY  Mt = 0 or rarely -87.
+WJets  Mt = 0
+TTJets Mt = 0
+
+
+--- after the mt fix it's perfect!
 
 
 
