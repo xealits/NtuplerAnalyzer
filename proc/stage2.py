@@ -17,8 +17,8 @@ with_bSF = True
 WITH_RECOIL_CORRECTIONS = False
 
 ISO_LEPS    = True
-JETS_PT_CUT = 21. # 30.
-TAUS_PT_CUT = 21. # 30. # 20GeV for DY->tautau selection
+JETS_PT_CUT = 30. #21. # 30.
+TAUS_PT_CUT = 30. #21. # 30. # 20GeV for DY->tautau selection
 TAUS_ID_CUT_Medium = 2
 TAUS_ID_CUT_VLoose = 0
 TAUS_ID_CUT = TAUS_ID_CUT_Medium # TAUS_ID_CUT_VLoose
@@ -452,6 +452,9 @@ def transverse_cos(v1, v2):
     t_cos = (v1.Px()*v2.Px() + v1.Py()*v2.Py()) / TMath.Sqrt((v1.Px()*v1.Px() + v1.Py()*v1.Py())* (v2.Px()*v2.Px() + v2.Py()*v2.Py()))
     return t_cos
 
+m_w_boson = 80.385
+m_t_quark = 172.5
+
 def calc_lj_var(ev, light_jets, b_jets, save_all_permutations=False, isMC=False):
     closest_pair_gens = (0, 0)
     closest_b_gen = 0
@@ -482,7 +485,7 @@ def calc_lj_var(ev, light_jets, b_jets, save_all_permutations=False, isMC=False)
         pair = ji * multi[0] + ju * multu[0]
         if save_all_permutations:
             light_jet_pairs.append(pair)
-        new_dist = abs(pair.mass() - 80)
+        new_dist = abs(pair.mass() - m_w_boson)
         if new_dist < dist_W:
             dist_W = new_dist
             closest_to_W = pair
@@ -498,7 +501,7 @@ def calc_lj_var(ev, light_jets, b_jets, save_all_permutations=False, isMC=False)
             for cand_W in light_jet_pairs:
                 cand_t = cand_W + b_jet
                 all_masses.append((cand_W.mass(), cand_t.mass()))
-        new_dist = abs(pair.mass() - 173)
+        new_dist = abs(pair.mass() - m_t_quark)
         if new_dist < dist_t:
             dist_t = new_dist
             closest_to_t = pair
