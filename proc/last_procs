@@ -39,6 +39,12 @@ python genjobs.py v40 u4test --do-W-stitching channels_nom_sys_muon_sel_main --d
 6567216	lstore_outdirs/v40/u4test/MC2016_Summer16_TTJets_powheg
 11408	lstore_outdirs/v40/u4test/MC2016_Summer16_WJets_madgraph
 
+# trying the batch
+python genjobs.py v40 u4test --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_WJets_madgraph,MC2016_Summer16_TTJets_powheg,MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1 --submit queue 
+
+
+
+
 
 # run with presel for AN yields table
 python genjobs.py v25 pStage2Run5 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc,data_mu,data_el --without-dtags MC2016_Summer16_TTJets_powheg --scheme 0,0,2,12,12

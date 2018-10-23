@@ -54,6 +54,9 @@ parser.add_argument("--without-dtags", type=str, default='',
 
 parser.add_argument("--scheme", type=str, help="the scheme of queue as 5,5,0,15,15 for 1,2,3,4,5 nodes")
 
+parser.add_argument("--submit", type=str, default='online', help="the type of the jobs (online by default, other option is 'queue')")
+parser.add_argument("--mem-size",  type=str, default='1G', help="make the queue jobs with given memory size (1G default)")
+
 parser.add_argument("--do-W-stitching", action='store_true', help="turn ON skipping NUP events of inclusive sample")
 parser.add_argument("--all-jets",       action='store_true', help="propagate corrections to met from all selected jets, including lep and tau matched")
 parser.add_argument("--without-bSF",    action='store_true', help="don't apply b tagging SF")
@@ -382,8 +385,13 @@ if args.acceptance_study:
     job_template = "python signal_acceptance.py " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ {job_file}   || true"
     # time python signal_acceptance.py out_signal_accept_v34.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_90.root
 
-else:
+elif args.submit == 'online':
     job_template = "python channel_distrs_full_loop.py " + add_options + " -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ {chans} -i {job_file}   || true"
+elif args.submit == 'queue':
+    job_template = "python channel_distrs_full_loop.py " + add_options + " -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ {chans} -i {job_file}"
+else:
+    raise ValueError('unknown type of jobs submition "%s"' % args.submit)
+
 
 # make just flat list of jobs commands
 job_commands = []
@@ -453,9 +461,11 @@ n_queues = sum(scheme.values())
 #>>> def chunkify(lst,n):
 #...     return [lst[i::n] for i in xrange(n)]
 
-queues = [job_commands[i::n_queues] for i in xrange(n_queues)]
+# just keep all jobs for queue submition
+# split into queues for online submition
+queues = [job_commands] if args.submit == 'queue' else [job_commands[i::n_queues] for i in xrange(n_queues)]
 
-logging.info("made %d queues" % n_queues)
+logging.info("made %d queues for %s jobs" % (n_queues, args.submit))
 
 
 # make the job directory of the processing and write the queues
@@ -463,7 +473,57 @@ proc_queues_dir = join(args.queue_dir, args.vNtupler, args.vProc)
 if not isdir(proc_queues_dir):
     makedirs(proc_queues_dir)
 
-com_file_template = """
+# if the jobs is queue make just 1 directory "queue" with all the jobs to submit
+if args.submit == 'queue':
+    # TODO append the shell template to the job
+    # operation: in `proc/` run `source queue_dir/v40/u4test/jobs_dir/job_1`
+    job_template = """#!/bin/sh
+pwd
+export X509_USER_PROXY={X509_USER_PROXY}
+export SCRAM_ARCH={SCRAM_ARCH}
+export BUILD_ARCH={SCRAM_ARCH}
+export VO_CMS_SW_DIR={VO_CMS_SW_DIR}
+source $VO_CMS_SW_DIR/cmsset_default.sh
+export CMS_PATH=$VO_CMS_SW_DIR
+cd {project_dir}
+cmsenv
+cd UserCode/NtuplerAnalyzer/proc/
+{{job}}
+"""
+    '''eval `scramv1 runtime -sh`
+    cd -
+    ulimit -c 0;'''
+
+    from os import environ
+
+    vars_for_the_job = dict(environ)
+    # after boot.tcsh everything is in the vars
+    project_dir = '/misc/exper-cms/cmssw/users/olek/CMSSW_8_0_26_patch1/src/'
+    ntupler_proc_dir = 'UserCode/NtuplerAnalyzer/proc/'
+    vars_for_the_job.update(project_dir=project_dir)
+    job_template = job_template.format(**vars_for_the_job)
+
+    # make the jobs dir
+    jobs_dir = join(project_dir, ntupler_proc_dir, proc_queues_dir, 'jobs_dir')
+    if not isdir(jobs_dir):
+        mkdir(jobs_dir)
+
+    # write all the job files
+    job_filenames = []
+    for i, a_job in enumerate(job_commands):
+        job_name = '/job_%d' % i
+        job_filename = jobs_dir + job_name
+        job_filenames.append(job_filename)
+        with open(job_filename, 'w') as f:
+            f.write(job_template.format(job=a_job))
+
+    #make the queue submition file
+    submition_file = jobs_dir + '/submit'
+    with open(submition_file, 'w') as f:
+        f.write('\n'.join("""qsub -l h_vmem={mem_size} '{jobsh}' """.format(mem_size=args.mem_size, jobsh=j_fname) for j_fname in job_filenames) + '\n')
+
+elif args.submit == 'online':
+    com_file_template = """
 cd
 source bootup.tcsh
 cmsenv
@@ -474,26 +534,29 @@ cd UserCode/NtuplerAnalyzer/proc
 bash
 """
 
-queue_command_template = "bash {queue_dir}/{queue_name}  &"
+    queue_command_template = "bash {queue_dir}/{queue_name}  &"
 
-# write the queue files for each node
-for nod, n_queues in scheme.items():
-    nod_queues_dir = join(proc_queues_dir, str(nod))
-    if not isdir(nod_queues_dir):
-        mkdir(nod_queues_dir)
-    nod_queues, queues = queues[:n_queues], queues[n_queues:]
+    # write the queue files for each node
+    for nod, n_queues in scheme.items():
+        nod_queues_dir = join(proc_queues_dir, str(nod))
+        if not isdir(nod_queues_dir):
+            mkdir(nod_queues_dir)
+        nod_queues, queues = queues[:n_queues], queues[n_queues:]
 
-    queue_commands = []
-    for i, nod_queue in enumerate(nod_queues):
-        queue_name = '/q%d' % i
-        queue_filename = nod_queues_dir + queue_name
-        queue_commands.append(queue_command_template.format(queue_dir=nod_queues_dir, queue_name=queue_name))
-        with open(queue_filename, 'w') as f:
-            f.write('\n'.join(nod_queue) + '\n')
+        queue_commands = []
+        for i, nod_queue in enumerate(nod_queues):
+            queue_name = '/q%d' % i
+            queue_filename = nod_queues_dir + queue_name
+            queue_commands.append(queue_command_template.format(queue_dir=nod_queues_dir, queue_name=queue_name))
+            with open(queue_filename, 'w') as f:
+                f.write('\n'.join(nod_queue) + '\n')
 
-    # write the command file for the node
-    with open(nod_queues_dir + '/com', 'w') as f:
-        f.write(com_file_template.format(queue_commands = '\n'.join(queue_commands)))
+        # write the command file for the node
+        with open(nod_queues_dir + '/com', 'w') as f:
+            f.write(com_file_template.format(queue_commands = '\n'.join(queue_commands)))
+
+else:
+    raise ValueError('unknown type of jobs submition "%s"' % args.submit)
 
 
 
