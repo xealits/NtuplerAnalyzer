@@ -90,6 +90,107 @@ make distrs_mc_lep_weights   sysname=LEPel p=p1 nt=v40 options="--el-procs" cond
 
 
 
+# test the free parameters in higgsCombine
+
+lrwxrwxrwx 1 olek t3cms 53 Sep 10 10:56 ttxsec/fit-stuff/latest_datacard_mu.txt -> stage2_run3_test_mu_sel_ljs_updowns_rates_weights.txt
+
+fit NLL and impacts
+
+old datacard:
+
+ POI: r= 0.942117 -> [0.5,1.5]
+
+
+rm latest_datacard_mu.txt
+ln -s stage2_run3_test_mu_sel_ljs_updowns_rates_weights_rateParam.txt latest_datacard_mu.txt
+
+
+new with rateparams
+ POI: r= 0.983215 -> [0.5,1.5]
+
+very similar toy impacts, overall uncertainty a bit large, FSR a bit less asymetric
+
+
+*fit to data shifted FSR to 2 sigmas up*......................!!!
+
+
+
+
+fit to data in electron-tau
+
+lrwxrwxrwx 1 olek t3cms 53 Sep 10 10:56 latest_datacard_el.txt -> stage2_run3_test_el_sel_ljs_updowns_rates_weights.txt
+
+ln -s stage2_run3_test_el_sel_ljs_updowns_rates_weights_rateParam.txt latest_datacard_el.txt
+
+
+ POI: r= 0.5048 -> [0.5,1.5]
+????
+
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_el.root --algo grid --points 50 --rMin 0.7 --rMax 1.3 --name ElShapes2 --freezeParameters lumi_13TeV
+
+ POI: r= 0.700004 -> [0.7,1.3]
+
+remove the rateParams
+
+tau_fakerate_tt rateParam el_sel_lj    tt_lj       1.0
+tau_fakerate_tt rateParam el_sel_lj    tt_taulj    1.0
+tau_fakerate_tt rateParam el_sel_lj    tt_other    1.0
+tau_fakerate_tt rateParam el_sel_lj    dibosons    1.0
+tau_fakerate_tt rateParam el_sel_lj    s_top_lj    1.0
+tau_fakerate_tt rateParam el_sel_lj    s_top_other 1.0
+tau_fakerate_tt rateParam el_sel_ljout tt_lj       1.0
+tau_fakerate_tt rateParam el_sel_ljout tt_taulj    1.0
+tau_fakerate_tt rateParam el_sel_ljout tt_other    1.0
+tau_fakerate_tt rateParam el_sel_ljout dibosons    1.0
+tau_fakerate_tt rateParam el_sel_ljout s_top_lj    1.0
+tau_fakerate_tt rateParam el_sel_ljout s_top_other 1.0
+
+tau_fakerate_wjets rateParam el_sel_lj    wjets_taul  1.0
+tau_fakerate_wjets rateParam el_sel_lj    wjets_other 1.0
+tau_fakerate_wjets rateParam el_sel_ljout wjets_taul  1.0
+tau_fakerate_wjets rateParam el_sel_ljout wjets_other 1.0
+
+tau_fakerate_qcd rateParam el_sel_lj    qcd  1.0
+tau_fakerate_qcd rateParam el_sel_ljout qcd  1.0
+
+tau group = tauID_eff tau_fakerate_tt tau_fakerate_wjets tau_fakerate_qcd
+
+ POI: r= 1.01968 -> [0.7,1.3]
+
+
+ok............. fakerates interfere with FSR?
+
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_el.root --algo grid --points 50 --rMin 0.7 --rMax 1.3 --name ElShapes2 --freezeParameters lumi_13TeV,FSR
+
+ POI: r= 0.7001 -> [0.7,1.3]
+
+then what???
+
+add range 0.5-1.5
+
+ POI: r= 1.01856 -> [0.7,1.3]
+
+-- ok, like removing the rates
+
+and with FSR:
+
+combine -M MultiDimFit ttxsec/fit-stuff/latest_datacard_el.root --algo grid --points 50 --rMin 0.7 --rMax 1.3 --name ElShapes2 --freezeParameters lumi_13TeV
+
+ POI: r= 1.01914 -> [0.7,1.3]
+
+toy impacts 1+-0.096
+
+
+to data:
+1.02 +- 0.102
+and FSR is ok
+
+
+
+mu fit with 0.5 range for free params (does it fix the FSR?)
+
+0.95 +- 0.0688
+and FSR is constrained and close to +1sigma
 
 
 
