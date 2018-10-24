@@ -1,3 +1,78 @@
+# final distrs run in v40
+
+put it in the Makefile!
+
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1  cond="selection_stage==105"  chan="mu_sel"    &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1  cond="selection_stage==104"  chan="mu_sel_ss" &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1  cond="(selection_stage==105 || selection_stage==103)"  chan="mu_selVloose"    &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1  cond="(selection_stage==104 || selection_stage==102)"  chan="mu_selVloose_ss" &
+
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1 options="--el-procs" cond="selection_stage==115"  chan="el_sel"    dtag=SingleEle &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1 options="--el-procs" cond="selection_stage==114"  chan="el_sel_ss" dtag=SingleEle &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1 options="--el-procs" cond="(selection_stage==115 || selection_stage==113)"  chan="el_selVloose"    dtag=SingleEle &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1 options="--el-procs" cond="(selection_stage==114 || selection_stage==112)"  chan="el_selVloose_ss" dtag=SingleEle &
+
+
+just in case just sel in nominal:
+
+make distrs_usual_data_sel
+make distrs_usual_nominal_sel
+
+
+and these are lj and ljout:
+
+make distrs_usual_data_sel    more=" && event_jets_lj_var >  60." suff="_ljout"
+make distrs_usual_nominal_sel more=" && event_jets_lj_var >  60." suff="_ljout"
+
+make distrs_usual_nominal_sel proc=distrs_mc_common_weights more=" && event_jets_lj_var >  60." suff="_ljout"
+make distrs_usual_nominal_sel proc=distrs_mc_objects        more=" && event_jets_lj_var >  60." suff="_ljout"
+make distrs_usual_nominal_sel proc=distrs_mc_tt_weights     more=" && event_jets_lj_var >  60." suff="_ljout"
+
+make distrs_usual_nominal_sel proc=distrs_mc_tt_weights_scale  more=" && event_jets_lj_var >  60." suff="_ljout"
+make distrs_usual_nominal_sel proc=distrs_mc_tt_weights_alphas more=" && event_jets_lj_var >  60." suff="_ljout"
+make distrs_usual_nominal_sel proc=distrs_mc_tt_weights_pdf    more=" && event_jets_lj_var >  60." suff="_ljout"
+
+
+make distrs_usual_data_sel    more=" && event_jets_lj_var >  60." suff="_lj"
+make distrs_usual_nominal_sel more=" && event_jets_lj_var >  60." suff="_lj"
+
+make distrs_usual_nominal_sel proc=distrs_mc_common_weights more=" && event_jets_lj_var >  60." suff="_lj"
+make distrs_usual_nominal_sel proc=distrs_mc_objects        more=" && event_jets_lj_var >  60." suff="_lj"
+make distrs_usual_nominal_sel proc=distrs_mc_tt_weights     more=" && event_jets_lj_var >  60." suff="_lj"
+
+make distrs_usual_nominal_sel proc=distrs_mc_tt_weights_scale  more=" && event_jets_lj_var >  60." suff="_lj"
+make distrs_usual_nominal_sel proc=distrs_mc_tt_weights_alphas more=" && event_jets_lj_var >  60." suff="_lj"
+make distrs_usual_nominal_sel proc=distrs_mc_tt_weights_pdf    more=" && event_jets_lj_var >  60." suff="_lj"
+
+
+
+leptons have this el/mu difference...
+
+make distrs_mc_lep_weights   sysname=LEPmu p=p1 nt=v40                      cond="selection_stage==107 && event_jets_lj_var >  60." chan="mu_sel_ljout" &
+make distrs_mc_lep_weights   sysname=LEPmu p=p1 nt=v40                      cond="selection_stage==107 && event_jets_lj_var <= 60." chan="mu_sel_lj"    &
+make distrs_mc_lep_weights   sysname=LEPel p=p1 nt=v40 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var >  60." chan="el_sel_ljout" &
+make distrs_mc_lep_weights   sysname=LEPel p=p1 nt=v40 options="--el-procs" cond="selection_stage==117 && event_jets_lj_var <= 60." chan="el_sel_lj"    &
+
+make distrs_mc_lep_weights   sysname=LEPmu p=p1 nt=v40                      cond="selection_stage==106 && event_jets_lj_var >  60." chan="mu_sel_ljout_ss" &
+make distrs_mc_lep_weights   sysname=LEPmu p=p1 nt=v40                      cond="selection_stage==106 && event_jets_lj_var <= 60." chan="mu_sel_lj_ss"    &
+make distrs_mc_lep_weights   sysname=LEPel p=p1 nt=v40 options="--el-procs" cond="selection_stage==116 && event_jets_lj_var >  60." chan="el_sel_ljout_ss" &
+make distrs_mc_lep_weights   sysname=LEPel p=p1 nt=v40 options="--el-procs" cond="selection_stage==116 && event_jets_lj_var <= 60." chan="el_sel_lj_ss"    &
+
+
+make distrs_mc_lep_weights   sysname=LEPmu p=p1 nt=v40                      cond="(selection_stage==107 || selection_stage==105) && event_jets_lj_var >  60." chan="mu_selVloose_ljout" &
+make distrs_mc_lep_weights   sysname=LEPmu p=p1 nt=v40                      cond="(selection_stage==107 || selection_stage==105) && event_jets_lj_var <= 60." chan="mu_selVloose_lj"    &
+make distrs_mc_lep_weights   sysname=LEPel p=p1 nt=v40 options="--el-procs" cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var >  60." chan="el_selVloose_ljout" &
+make distrs_mc_lep_weights   sysname=LEPel p=p1 nt=v40 options="--el-procs" cond="(selection_stage==117 || selection_stage==115) && event_jets_lj_var <= 60." chan="el_selVloose_lj"    &
+
+make distrs_mc_lep_weights   sysname=LEPmu p=p1 nt=v40                      cond="(selection_stage==106 || selection_stage==104) && event_jets_lj_var >  60." chan="mu_selVloose_ljout_ss" &
+make distrs_mc_lep_weights   sysname=LEPmu p=p1 nt=v40                      cond="(selection_stage==106 || selection_stage==104) && event_jets_lj_var <= 60." chan="mu_selVloose_lj_ss"    &
+make distrs_mc_lep_weights   sysname=LEPel p=p1 nt=v40 options="--el-procs" cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var >  60." chan="el_selVloose_ljout_ss" &
+make distrs_mc_lep_weights   sysname=LEPel p=p1 nt=v40 options="--el-procs" cond="(selection_stage==116 || selection_stage==114) && event_jets_lj_var <= 60." chan="el_selVloose_lj_ss"    &
+
+
+
+
+
 # hadds per output dir
 
 foreach dtag (`ls lstore_outdirs/v40/u4test/`)

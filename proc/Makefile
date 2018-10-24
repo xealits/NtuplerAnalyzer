@@ -112,10 +112,10 @@ distrs_mc_lep_weights: options=
 distrs_mc_lep_weights: sysname=LEP
 distrs_mc_lep_weights: merge_dir=merge-sets/
 distrs_mc_lep_weights:
-	python selections.py ${options} --out-dir distrs/ "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys ${sysname}Up --distr Mt_lep_met_f   --chan ${chan} --weight "event_weight*event_weight_LEPidUp"       ${merge_dir}/${nt}/${p}/*${dtag}*.root
-	python selections.py ${options} --out-dir distrs/ "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys ${sysname}Down --distr Mt_lep_met_f --chan ${chan} --weight "event_weight*event_weight_LEPidDown"     ${merge_dir}/${nt}/${p}/*${dtag}*.root
-	python selections.py ${options} --out-dir distrs/ "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys ${sysname}Up --distr Mt_lep_met_f   --chan ${chan} --weight "event_weight*event_weight_LEPtrgUp"      ${merge_dir}/${nt}/${p}/*${dtag}*.root
-	python selections.py ${options} --out-dir distrs/ "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys ${sysname}Down --distr Mt_lep_met_f --chan ${chan} --weight "event_weight*event_weight_LEPtrgDown"    ${merge_dir}/${nt}/${p}/*${dtag}*.root
+	python selections.py ${options} --out-dir distrs/ "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys ${sysname}IDUp    --distr Mt_lep_met_f --chan ${chan} --weight "event_weight*event_weight_LEPidUp"       ${merge_dir}/${nt}/${p}/*${dtag}*.root
+	python selections.py ${options} --out-dir distrs/ "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys ${sysname}IDDown  --distr Mt_lep_met_f --chan ${chan} --weight "event_weight*event_weight_LEPidDown"     ${merge_dir}/${nt}/${p}/*${dtag}*.root
+	python selections.py ${options} --out-dir distrs/ "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys ${sysname}TRGUp   --distr Mt_lep_met_f --chan ${chan} --weight "event_weight*event_weight_LEPtrgUp"      ${merge_dir}/${nt}/${p}/*${dtag}*.root
+	python selections.py ${options} --out-dir distrs/ "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys ${sysname}TRGDown --distr Mt_lep_met_f --chan ${chan} --weight "event_weight*event_weight_LEPtrgDown"    ${merge_dir}/${nt}/${p}/*${dtag}*.root
 
 
 
@@ -265,5 +265,43 @@ distrs_mc_tt_weights_pdf:
 	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys PDFCT14n54Up    --weight "event_weight*event_weight_pdf[53]"              ${merge_dir}/${nt}/${p}/MC2016_Summer16_TTJets_powheg.root
 	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys PDFCT14n55Up    --weight "event_weight*event_weight_pdf[54]"              ${merge_dir}/${nt}/${p}/MC2016_Summer16_TTJets_powheg.root
 	python selections.py ${options} --out-dir distrs/ --distr Mt_lep_met_f --chan ${chan} "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --cond-com "${cond}" ${bins} --sys PDFCT14n56Up    --weight "event_weight*event_weight_pdf[55]"              ${merge_dir}/${nt}/${p}/MC2016_Summer16_TTJets_powheg.root
+
+
+distrs_usual_data_sel: merge_dir=lstore_outdirs/merge-sets/
+distrs_usual_data_sel: nt=v40
+distrs_usual_data_sel: p=p1
+distrs_usual_data_sel: more=""
+distrs_usual_data_sel: suff=""
+distrs_usual_data_sel:
+	# data
+	make distrs_data_nominal merge_dir=${merge_dir} nt=${nt} p=${p} cond="selection_stage==107 ${more}"  chan="mu_sel${suff}"    &
+	make distrs_data_nominal merge_dir=${merge_dir} nt=${nt} p=${p} cond="selection_stage==106 ${more}"  chan="mu_sel${suff}_ss" &
+	make distrs_data_nominal merge_dir=${merge_dir} nt=${nt} p=${p} cond="(selection_stage==107 || selection_stage==105) ${more}"  chan="mu_selVloose${suff}"    &
+	make distrs_data_nominal merge_dir=${merge_dir} nt=${nt} p=${p} cond="(selection_stage==106 || selection_stage==104) ${more}"  chan="mu_selVloose${suff}_ss" &
+	#
+	make distrs_data_nominal merge_dir=${merge_dir} nt=${nt} p=${p} options="--el-procs" cond="selection_stage==117 ${more}"  chan="el_sel${suff}"    dtag=SingleEle &
+	make distrs_data_nominal merge_dir=${merge_dir} nt=${nt} p=${p} options="--el-procs" cond="selection_stage==116 ${more}"  chan="el_sel${suff}_ss" dtag=SingleEle &
+	make distrs_data_nominal merge_dir=${merge_dir} nt=${nt} p=${p} options="--el-procs" cond="(selection_stage==117 || selection_stage==115) ${more}"  chan="el_selVloose${suff}"    dtag=SingleEle &
+	make distrs_data_nominal merge_dir=${merge_dir} nt=${nt} p=${p} options="--el-procs" cond="(selection_stage==116 || selection_stage==114) ${more}"  chan="el_selVloose${suff}_ss" dtag=SingleEle &
+
+
+distrs_usual_nominal_sel: merge_dir=lstore_outdirs/merge-sets/
+distrs_usual_nominal_sel: nt=v40
+distrs_usual_nominal_sel: p=p1
+distrs_usual_nominal_sel: more=""
+distrs_usual_nominal_sel: suff=""
+distrs_usual_nominal_sel: proc=distrs_mc_nominal
+distrs_usual_nominal_sel:
+	# mc nominal
+	make ${proc} merge_dir=${merge_dir} nt=${nt} p=${p} cond="selection_stage==107 ${more}"  chan="mu_sel${suff}"    &
+	make ${proc} merge_dir=${merge_dir} nt=${nt} p=${p} cond="selection_stage==106 ${more}"  chan="mu_sel${suff}_ss" &
+	make ${proc} merge_dir=${merge_dir} nt=${nt} p=${p} cond="(selection_stage==107 || selection_stage==105) ${more}"  chan="mu_selVloose${suff}"    &
+	make ${proc} merge_dir=${merge_dir} nt=${nt} p=${p} cond="(selection_stage==106 || selection_stage==104) ${more}"  chan="mu_selVloose${suff}_ss" &
+	
+	make ${proc} merge_dir=${merge_dir} nt=${nt} p=${p} options="--el-procs" cond="selection_stage==117 ${more}"  chan="el_sel${suff}"    &
+	make ${proc} merge_dir=${merge_dir} nt=${nt} p=${p} options="--el-procs" cond="selection_stage==116 ${more}"  chan="el_sel${suff}_ss" &
+	make ${proc} merge_dir=${merge_dir} nt=${nt} p=${p} options="--el-procs" cond="(selection_stage==117 || selection_stage==115) ${more}"  chan="el_selVloose${suff}"    &
+	make ${proc} merge_dir=${merge_dir} nt=${nt} p=${p} options="--el-procs" cond="(selection_stage==116 || selection_stage==114) ${more}"  chan="el_selVloose${suff}_ss" &
+
 
 
