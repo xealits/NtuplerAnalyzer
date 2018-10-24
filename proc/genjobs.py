@@ -498,7 +498,7 @@ cd UserCode/NtuplerAnalyzer/proc/
 
     vars_for_the_job = dict(environ)
     # after boot.tcsh everything is in the vars
-    project_dir = '/misc/exper-cms/cmssw/users/olek/CMSSW_8_0_26_patch1/src/'
+    project_dir = '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/'
     ntupler_proc_dir = 'UserCode/NtuplerAnalyzer/proc/'
     vars_for_the_job.update(project_dir=project_dir)
     job_template = job_template.format(**vars_for_the_job)

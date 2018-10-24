@@ -1,3 +1,10 @@
+# v40 p1 run with fixed masses W boson and t quark
+#                 added systematic uncertainties in muon ID
+#                 and separated trigger uncertainty
+python genjobs.py v40 p1 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc,data_mu,data_el --submit queue 
+source queue_dir/v40/p1/jobs_dir/submit
+
+
 # cross check of QCD shape in OS and SS selections
 # in presel and wjets control selection
 # HT and Enriched QCDs

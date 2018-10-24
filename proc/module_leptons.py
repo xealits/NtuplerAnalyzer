@@ -1,5 +1,6 @@
 import argparse
 import logging # as Logging
+from math import sqrt
 
 #logging = Logging.getLogger("common")
 
@@ -24,6 +25,22 @@ logging.info("leptonic SFs")
 # > and 1% for PF Tight isolation
 # -- therefore there is no shape?
 #    what are the uncertainties in these histograms?
+
+# <--- this quote is invalid now, the twiki was updated and it is gone
+#      now the first link says absolutely nothing about systematic ID uncertainty for full 2016 result
+
+# it seems the old page was revision 29
+# https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults?rev=29#Results_on_the_full_2016_data
+
+# https://twiki.cern.ch/twiki/bin/view/CMS/MuonTagAndProbe
+# says recommended systematic uncertainties due to tag-n-probe method are
+# T&P Resonance          Id        Isolation  Single Mu trigger
+#             Z          0.5%      0.2%       0.2% 
+
+muon_unc_sys_id  = 0.005
+muon_unc_sys_iso = 0.002
+muon_unc_sys_trg = 0.002
+
 
 muon_effs_dirname = "${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/analysis/muon-effs/"
 gSystem.ExpandPathName(muon_effs_dirname    )
@@ -133,9 +150,12 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     #        gh_weight_trk, gh_weight_id, gh_weight_iso;
 
     # hopefully tracking won't overflow in eta range:
-    bcdef_weight_trk     = muon_effs_tracking_BCDEF_graph    .Eval(abs_eta)
+    bcdef_weight_trk     = muon_effs_tracking_BCDEF_graph.Eval(abs_eta)
     bcdef_weight_trk_vtx = muon_effs_tracking_BCDEF_graph_vtx.Eval(vtx)
     bcdef_weight_trk_vtx_gen = muon_effs_tracking_BCDEF_graph_vtx.Eval(vtx_gen)
+    # uncertainty (statistical from the SF study?)
+    trk_gen_unc_bcdef = 0. # muon_effs_tracking_BCDEF_graph.GetErrorY(abs_eta)
+    #trk_gen_unc_bcdef = sqrt(trk_gen_unc_bcdef**2 + muon_effs_tracking_BCDEF_graph_vtx.GetErrorY(vtx_gen)**2)
     #h_weight_mu_trk_bcdef_pt = TH1D("weight_mu_trk_bcdef_pt", "", 50, 0, 200),
     h_weight_mu_trk_bcdef_eta.Fill(abs_eta)
 
@@ -151,13 +171,14 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     id_bin = muon_effs_id_BCDEF_histo.FindBin(bin_x, bin_y)
     bcdef_weight_id     = muon_effs_id_BCDEF_histo.GetBinContent (id_bin)
     bcdef_weight_id_unc = muon_effs_id_BCDEF_histo.GetBinError   (id_bin)
+    # adding systematics
+    bcdef_weight_id_unc = sqrt(bcdef_weight_id_unc**2 + muon_unc_sys_id**2)
     # leftover from tests
     #h_weight_mu_idd_bcdef_pt .Fill(bin_x)
     #h_weight_mu_idd_bcdef_eta.Fill(bin_y)
 
     # and add vtx ID SF
     bcdef_weight_id     *= muon_effs_id_vtx_BCDEF_histo.GetBinContent (muon_effs_id_vtx_BCDEF_histo.FindBin(vtx))
-    #bcdef_weight_id_unc = muon_effs_id_vtx_BCDEF_histo.GetBinError   (id_bin) # TODO not adding the uncertainty yet
 
     # these too:
     if   pt < muon_effs_iso_BCDEF_histo_min_x:
@@ -171,6 +192,8 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     iso_bin = muon_effs_iso_BCDEF_histo.FindBin(bin_x, bin_y)
     bcdef_weight_iso     = muon_effs_iso_BCDEF_histo.GetBinContent (iso_bin)
     bcdef_weight_iso_unc = muon_effs_iso_BCDEF_histo.GetBinError   (iso_bin)
+    # adding systematic
+    bcdef_weight_iso_unc = sqrt(bcdef_weight_iso_unc**2 + muon_unc_sys_iso**2)
     # leftover from tests
     #h_weight_mu_iso_bcdef_pt .Fill(bin_x)
     #h_weight_mu_iso_bcdef_eta.Fill(bin_y)
@@ -190,6 +213,8 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     gh_weight_trk_vtx = muon_effs_tracking_GH_graph_vtx.Eval(vtx)
     gh_weight_trk_vtx_gen = muon_effs_tracking_GH_graph_vtx.Eval(vtx_gen)
     #h_weight_mu_trk_gh_eta.Fill(abs_eta)
+    trk_gen_unc_gh = 0. # muon_effs_tracking_GH_graph.GetErrorY(abs_eta)
+    #trk_gen_unc_gh = sqrt(trk_gen_unc_gh**2 + muon_effs_tracking_GH_graph_vtx.GetErrorY(vtx_gen)**2)
 
     # the id-s totally can overflow:
     if   pt < muon_effs_id_GH_histo_min_x:
@@ -203,6 +228,8 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     id_bin = muon_effs_id_GH_histo.FindBin(bin_x, bin_y)
     gh_weight_id     = muon_effs_id_GH_histo.GetBinContent (id_bin)
     gh_weight_id_unc = muon_effs_id_GH_histo.GetBinError   (id_bin)
+    # adding systematic
+    gh_weight_id_unc = sqrt(gh_weight_id_unc**2 + muon_unc_sys_id**2)
     #h_weight_mu_idd_gh_pt .Fill(bin_x)
     #h_weight_mu_idd_gh_eta.Fill(bin_y)
 
@@ -220,13 +247,16 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     iso_bin = muon_effs_iso_GH_histo.FindBin(bin_x, bin_y)
     gh_weight_iso     = muon_effs_iso_GH_histo.GetBinContent (iso_bin)
     gh_weight_iso_unc = muon_effs_iso_GH_histo.GetBinError   (iso_bin)
+    # adding systematic
+    gh_weight_iso_unc = sqrt(gh_weight_iso_unc**2 + muon_unc_sys_iso**2)
     #h_weight_mu_iso_gh_pt .Fill(bin_x)
     #h_weight_mu_iso_gh_eta.Fill(bin_y)
 
     gh_weight_iso     *= muon_effs_iso_vtx_GH_histo.GetBinContent (muon_effs_iso_vtx_GH_histo.FindBin(vtx))
 
-    return (bcdef_weight_trk, bcdef_weight_trk_vtx_gen, bcdef_weight_trk_vtx, (bcdef_weight_id, bcdef_weight_id_unc), (bcdef_weight_iso, bcdef_weight_iso_unc)), \
-           (gh_weight_trk,    gh_weight_trk_vtx_gen, gh_weight_trk_vtx, (gh_weight_id, gh_weight_id_unc), (gh_weight_iso, gh_weight_iso_unc))
+    # for tracking 0 and 1 are used now
+    return (bcdef_weight_trk * bcdef_weight_trk_vtx_gen, trk_gen_unc_bcdef, bcdef_weight_trk_vtx, (bcdef_weight_id, bcdef_weight_id_unc), (bcdef_weight_iso, bcdef_weight_iso_unc)), \
+           (gh_weight_trk    * gh_weight_trk_vtx_gen,    trk_gen_unc_gh,    gh_weight_trk_vtx,    (gh_weight_id, gh_weight_id_unc), (gh_weight_iso, gh_weight_iso_unc))
 
 
 muon_effs_trg_BCDEF_histo_max_x = muon_effs_trg_BCDEF_histo.GetXaxis().GetXmax()
@@ -269,7 +299,13 @@ def lepton_muon_trigger_SF(abs_eta, pt): #, double SingleMuon_data_bcdef_fractio
     #weight_muon_trig = 1 - no_mu_trig;
     trg_bin_b = muon_effs_trg_BCDEF_histo.FindBin(bin_x, bin_y)
     trg_bin_h = muon_effs_trg_GH_histo.FindBin(bin_x, bin_y)
-    return (muon_effs_trg_BCDEF_histo.GetBinContent(trg_bin_b), muon_effs_trg_BCDEF_histo.GetBinError(trg_bin_b)), (muon_effs_trg_GH_histo.GetBinContent(trg_bin_h), muon_effs_trg_GH_histo.GetBinError(trg_bin_h))
+
+    bcdef_trg_unc = muon_effs_trg_BCDEF_histo .GetBinError(trg_bin_b)
+    gh_trg_unc    = muon_effs_trg_GH_histo    .GetBinError(trg_bin_h)
+    # adding systematics
+    bcdef_trg_unc = sqrt( bcdef_trg_unc**2 + muon_unc_sys_trg**2)
+    gh_trg_unc    = sqrt(    gh_trg_unc**2 + muon_unc_sys_trg**2)
+    return (muon_effs_trg_BCDEF_histo.GetBinContent(trg_bin_b), bcdef_trg_unc), (muon_effs_trg_GH_histo.GetBinContent(trg_bin_h), gh_trg_unc)
 
 
 
