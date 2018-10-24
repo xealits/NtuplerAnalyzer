@@ -9,6 +9,26 @@ end
 
 
 
+# qcd shape cross check in MC
+
+hadd:
+
+foreach dtag (`ls lstore_outdirs/v35/pQCDtest/`)
+hadd lstore_outdirs/merge-sets/v35/pQCDtest/$dtag.root lstore_outdirs/v35/pQCDtest/$dtag/*.root
+end
+
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v35 p=pQCDtest                      cond="selection_stage_wjets==7"  chan="wjets_mu"    &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v35 p=pQCDtest                      cond="selection_stage_wjets==6"  chan="wjets_mu_ss" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v35 p=pQCDtest options="--el-procs" cond="selection_stage_wjets==17" chan="wjets_el"    &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v35 p=pQCDtest options="--el-procs" cond="selection_stage_wjets==16" chan="wjets_el_ss" &
+
+
+and presel (2-3 and 12-13 sel without 100):
+
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v35 p=pQCDtest                      cond="(selection_stage==3  || selection_stage==5  || selection_stage==7  || selection_stage==107 || selection_stage==105 || selection_stage==103)"  chan="mu_sel"    &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v35 p=pQCDtest                      cond="(selection_stage==2  || selection_stage==4  || selection_stage==6  || selection_stage==106 || selection_stage==104 || selection_stage==102)"  chan="mu_sel_ss" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v35 p=pQCDtest options="--el-procs" cond="(selection_stage==13 || selection_stage==15 || selection_stage==17 || selection_stage==117 || selection_stage==115 || selection_stage==113)"  chan="el_sel"    &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v35 p=pQCDtest options="--el-procs" cond="(selection_stage==12 || selection_stage==14 || selection_stage==16 || selection_stage==116 || selection_stage==114 || selection_stage==112)"  chan="el_sel_ss" &
 
 
 

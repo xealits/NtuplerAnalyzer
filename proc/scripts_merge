@@ -168,6 +168,8 @@ hadd MC2016_Summer16_W3Jets_madgraph.root ../MC2016_Summer16_W3Jets_madgraph*roo
 hadd MC2016_Summer16_W4Jets_madgraph.root ../MC2016_Summer16_W4Jets_madgraph*root &
 
 
+mv MC2016_Summer16_QCD_HT-1000-1500*.root MC2016_Summer16_QCD_HT-1500-2000*.root MC2016_Summer16_QCD_HT-200-300*.root   MC2016_Summer16_QCD_HT-2000-Inf*.root  MC2016_Summer16_QCD_HT-300-500*.root   MC2016_Summer16_QCD_HT-500-700*.root   MC2016_Summer16_QCD_HT-700-1000*.root  init/
+
 hadd MC2016_Summer16_QCD_HT-1000-1500.root init/MC2016_Summer16_QCD_HT-1000-1500*.root  &
 hadd MC2016_Summer16_QCD_HT-1500-2000.root init/MC2016_Summer16_QCD_HT-1500-2000*.root  &
 hadd MC2016_Summer16_QCD_HT-200-300.root   init/MC2016_Summer16_QCD_HT-200-300*.root    &
@@ -175,6 +177,14 @@ hadd MC2016_Summer16_QCD_HT-2000-Inf.root  init/MC2016_Summer16_QCD_HT-2000-Inf*
 hadd MC2016_Summer16_QCD_HT-300-500.root   init/MC2016_Summer16_QCD_HT-300-500*.root    &
 hadd MC2016_Summer16_QCD_HT-500-700.root   init/MC2016_Summer16_QCD_HT-500-700*.root    &
 hadd MC2016_Summer16_QCD_HT-700-1000.root  init/MC2016_Summer16_QCD_HT-700-1000*.root   &
+
+mv MC2016_Summer16_QCD_EMEnriched_Pt-120to170*.root MC2016_Summer16_QCD_EMEnriched_Pt-30to50*.root MC2016_Summer16_QCD_EMEnriched_Pt-50to80*.root MC2016_Summer16_QCD_EMEnriched_Pt-80to120*.root init/
+
+hadd MC2016_Summer16_QCD_EMEnriched_Pt-120to170.root init/MC2016_Summer16_QCD_EMEnriched_Pt-120to170*.root &
+hadd MC2016_Summer16_QCD_EMEnriched_Pt-30to50.root   init/MC2016_Summer16_QCD_EMEnriched_Pt-30to50*.root   &
+hadd MC2016_Summer16_QCD_EMEnriched_Pt-50to80.root   init/MC2016_Summer16_QCD_EMEnriched_Pt-50to80*.root   &
+hadd MC2016_Summer16_QCD_EMEnriched_Pt-80to120.root  init/MC2016_Summer16_QCD_EMEnriched_Pt-80to120*.root  &
+
 
 
 
