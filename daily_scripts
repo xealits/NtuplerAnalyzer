@@ -1,3 +1,17 @@
+# number of jobs for control
+
+[olek@fermi05 proc]$ ls gstore_outdirs/v40/SingleMuon/Ntupler_v40_Data13TeV_SingleMuon2016*/*/*/*root         | wc -l
+471
+[olek@fermi05 proc]$ ls gstore_outdirs/v40/SingleElectron/Ntupler_v40_Data13TeV_SingleElectron2016*/*/*/*root | wc -l
+430
+
+python genjobs.py v40 p1 --do-W-stitching channels_nom_sys_muon_sel_main --dtags data_mu,data_el,MC2016_Summer16_TTJets_powheg,MC2016_Summer16_WZTo3LNu_powheg --submit queue
+
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.small nt=v40 proc=p1 merge_dir=lstore_outdirs/merge-sets/
+
+
+
+
 # final distrs run in v40
 
 put it in the Makefile!
