@@ -16,15 +16,15 @@ make merge_proc dtags=merge-sets/jobs_hadd.dtags.small nt=v40 proc=p1 merge_dir=
 
 put it in the Makefile!
 
-make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1  cond="selection_stage==105"  chan="mu_sel"    &
-make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1  cond="selection_stage==104"  chan="mu_sel_ss" &
-make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1  cond="(selection_stage==105 || selection_stage==103)"  chan="mu_selVloose"    &
-make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1  cond="(selection_stage==104 || selection_stage==102)"  chan="mu_selVloose_ss" &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1  cond="selection_stage==107"  chan="mu_sel"    &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1  cond="selection_stage==106"  chan="mu_sel_ss" &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1  cond="(selection_stage==107 || selection_stage==105)"  chan="mu_selVloose"    &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1  cond="(selection_stage==106 || selection_stage==104)"  chan="mu_selVloose_ss" &
 
-make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1 options="--el-procs" cond="selection_stage==115"  chan="el_sel"    dtag=SingleEle &
-make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1 options="--el-procs" cond="selection_stage==114"  chan="el_sel_ss" dtag=SingleEle &
-make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1 options="--el-procs" cond="(selection_stage==115 || selection_stage==113)"  chan="el_selVloose"    dtag=SingleEle &
-make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1 options="--el-procs" cond="(selection_stage==114 || selection_stage==112)"  chan="el_selVloose_ss" dtag=SingleEle &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1 options="--el-procs" cond="selection_stage==117"  chan="el_sel"    dtag=SingleEle &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1 options="--el-procs" cond="selection_stage==116"  chan="el_sel_ss" dtag=SingleEle &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1 options="--el-procs" cond="(selection_stage==117 || selection_stage==115)"  chan="el_selVloose"    dtag=SingleEle &
+make distrs_data_nominal merge_dir=lstore_outdirs/merge-sets/ nt=v40 p=p1 options="--el-procs" cond="(selection_stage==116 || selection_stage==114)"  chan="el_selVloose_ss" dtag=SingleEle &
 
 
 just in case just sel in nominal:
