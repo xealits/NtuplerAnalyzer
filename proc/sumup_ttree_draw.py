@@ -476,6 +476,7 @@ if args.el_procs:
 
 
 
+dtag = None
 if args.std_histos:
     # unfold systematics and weights
     systs_in = systs.split(',')
@@ -493,7 +494,6 @@ if args.std_histos:
     # and processes
     if procs == 'std_procs':
         # find dtag and procs by the first input files
-        dtag = None
         for d in dtags_procs:
             if d in input_files[0]:
                 dtag = d
@@ -653,13 +653,7 @@ if args.per_weight:
 
 
 if args.try_xsec:
-    matched_dtag = None
-    for dtag in dtags:
-        if dtag in args.output:
-            matched_dtag = dtag
-            break
-
-    nickname, xsec = dtags.get(matched_dtag, 1.)
+    nickname, xsec = dtags.get(dtag, 1.)
     #out_histo.Scale(xsec)
     for histo in output_histos.values():
         histo.Scale(xsec)
@@ -710,15 +704,16 @@ fout.cd()
 # that's why this protocol is still kept
 
 # if trying the xsec -- plug the nickname too and construct standard name if needed
-if args.try_xsec and len(histo_path) > 1:
-    histo_path[1] = nickname
-    logging.debug("new path: " + '/'.join(histo_path))
-    if args.std_histo_name:
-        #
-        distr = args.std_histo_name
-        histo_name = "{path_part}_{distr}".format(path_part='_'.join(histo_path), distr=distr)
-        logging.debug("new histo name: " + histo_name)
-        out_histo.SetName(histo_name)
+# -- no, now the xsec is just a scale factor
+#if args.try_xsec and len(histo_path) > 1:
+#    histo_path[1] = nickname
+#    logging.debug("new path: " + '/'.join(histo_path))
+#    if args.std_histo_name:
+#        #
+#        distr = args.std_histo_name
+#        histo_name = "{path_part}_{distr}".format(path_part='_'.join(histo_path), distr=distr)
+#        logging.debug("new histo name: " + histo_name)
+#        out_histo.SetName(histo_name)
 
 for path_tuple, histo in output_histos.items():
     histo_path = '/'.join(path_tuple)
