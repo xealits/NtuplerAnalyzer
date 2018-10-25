@@ -1582,6 +1582,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     selection_stage = array( 'i', [ 0 ])
     ttree_out.Branch('selection_stage', selection_stage, 'selection_stage/I')
 
+    selection_stage_presel = array( 'i', [ 0 ])
+    ttree_out.Branch('selection_stage_presel', selection_stage_presel, 'selection_stage_presel/I')
+
     selection_stage_TESUp = array( 'i', [ 0 ])
     ttree_out.Branch('selection_stage_TESUp', selection_stage_TESUp, 'selection_stage_TESUp/I')
     selection_stage_TESDown = array( 'i', [ 0 ])
@@ -3614,6 +3617,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         em_channel_sel_stage_JESUp   = passes_elmu_selection_stages(passed_triggers, leps, (N_jets_JESUp_med,   N_jets_JESUp_all),   [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
         em_channel_sel_stage_JESDown = passes_elmu_selection_stages(passed_triggers, leps, (N_jets_JESDown_med, N_jets_JESDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
+        '''
         if tt_channel_sel_stage > 0:
             tt_channel_stage = 100 + tt_channel_sel_stage
         else:
@@ -3633,6 +3637,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             tt_channel_sel_stage_JERUp += 100
         if tt_channel_sel_stage_JERDown > 0:
             tt_channel_sel_stage_JERDown += 100
+        '''
 
         #passes = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and dy_channel_sel_stage < 1
         notpasses = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and em_channel_sel_stage < 1 and tt_channel_stage_alliso < 1
@@ -3648,6 +3653,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             continue
 
         # SAVE SELECTION, objects and weights
+
+        selection_stage_presel[0] = tt_channel_presel_stage
 
         selection_stage[0] = tt_channel_stage
         selection_stage_TESUp[0]   = tt_channel_sel_stage_TESUp

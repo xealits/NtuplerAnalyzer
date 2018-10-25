@@ -4,8 +4,56 @@ lstore_outdirs/merge-sets/v40/p1/MC2016_Summer16_TTJets_powheg.root
 
 python sumup_ttree_draw.py "{draw_com}" --ttree ttree_out """ + "--histo-range {}".format(args.histo_range) + """ --cond-com "{selection}" --output {outdir}/test1_lep_pt_{dtag}_{chan}_{proc}_{sys}_{distr}.root  --histo-name {chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}  --save-weight {options} {dtag_file}
 
-python sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/test1_lep_pt_super.root  --std-histos --histo-name mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight  lstore_outdirs/merge-sets/v40/p1/MC2016_Summer16_TTJets_powheg.root
+python sumup_ttree_draw.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/test1_lep_pt_super.root  --std-histos --histo-name mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight  lstore_outdirs/merge-sets/v40/p1/MC2016_Summer16_TTJets_powheg.root
 
+python sumup_ttree_draw.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/test1_lep_pt_super.root  --std-histos --histo-name mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight  lstore_outdirs/v40/p1/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_1.root
+
+
+
+python sumup_ttree_draw.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/test1_lep_pt_super.root  --std-histos --histo-name mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --per-weight --try-xsec --save-weight  lstore_outdirs/merge-sets/v40/p1/MC2016_Summer16_TTJets_powheg.root
+
+-- per weight and xsecs (only lumi is left)
+if do this then also THE TAU ID 0.95 and THE SYSTEMATIC NORM TO WEIGHT!
+
+
+
+systematics
+
+python sumup_ttree_draw.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/test1_lep_pt_super.root  --std-histos --histo-name mu_sel/std_procs/NOMINAL,obj,common/Mt_lep_met_f  --save-weight  lstore_outdirs/v40/p1/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_1.root
+
+
+
+multiple channels
+
+python sumup_ttree_draw.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/test1_lep_pt_super.root  --std-histos --histo-name mu_sel/std_procs/NOMINAL,obj,common/Mt_lep_met_f  --save-weight  lstore_outdirs/v40/p1/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_1.root
+
+
+python sumup_ttree_draw.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/test1_lep_pt_super.root  --std-histos --histo-name all_std/std_procs/NOMINAL,obj,common/Mt_lep_met_f  --save-weight  lstore_outdirs/v40/p1/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_1.root
+
+
+
+automatic el processes?
+
+python sumup_ttree_draw.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/test1_lep_pt_super.root  --std-histos --histo-name mu_sel,el_sel/std_procs/NOMINAL,obj,common/Mt_lep_met_f  --save-weight  lstore_outdirs/v40/p1/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_1.root
+
+-- ok
+but too few el events?
+
+
+
+test event yield in tt
+
+python sumup_ttree_draw.py --debug "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/test1_lep_pt_super.root  --std-histos --histo-name el_sel,mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --per-weight --try-xsec --save-weight  lstore_outdirs/merge-sets/v40/p1/MC2016_Summer16_TTJets_powheg.root
+
+-- in TT 64.7k mu sel (107)
+  and 14.1k of el sel (117)
+
+same difference in presel
+
+and no vloose?
+
+
+w0jets
 
 
 
@@ -24,6 +72,11 @@ ls gstore_outdirs/v40/SingleElectron/Ntupler_v40_Data13TeV_SingleElectron2016*/*
 python genjobs.py v40 p1 --do-W-stitching channels_nom_sys_muon_sel_main --dtags data_mu,data_el,MC2016_Summer16_TTJets_powheg,MC2016_Summer16_WZTo3LNu_powheg --submit queue
 
 make merge_proc dtags=merge-sets/jobs_hadd.dtags.small nt=v40 proc=p1 merge_dir=lstore_outdirs/merge-sets/
+
+
+
+
+
 
 
 
