@@ -54,6 +54,7 @@ histo_path = args.histo_name.split('/')[:-1]
 # skip empty parts in the path (sequences of ////)
 histo_path = [part for part in histo_path if part]
 
+distr_name = histo_name
 if args.std_histos:
     # 4 strings for names and they are not empty
     assert len(args.histo_name.split('/')) == 4 and all(args.histo_name.split('/'))

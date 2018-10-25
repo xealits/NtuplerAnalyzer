@@ -1994,7 +1994,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 record distr-s for each
         '''
 
-        #if iev > 10000: break
+        if iev > 10000: break
         control_counters.Fill(0)
 
         for vector_branch in all_vector_branches:
@@ -3640,7 +3640,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         '''
 
         #passes = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and dy_channel_sel_stage < 1
-        notpasses = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and em_channel_sel_stage < 1 and tt_channel_stage_alliso < 1
+        notpasses = tt_channel_sel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and em_channel_sel_stage < 1 and tt_channel_stage_alliso < 1
 
         notpasses_dy_tautau = dy_channel_sel_stage < 1 and dy_channel_sel_stage_TESUp < 1 and dy_channel_sel_stage_TESDown < 1 and dy_channel_sel_stage_JESUp < 1 and dy_channel_sel_stage_JESDown < 1 and dy_channel_sel_stage_JERUp < 1 and dy_channel_sel_stage_JERDown < 1
         notpasses_dy_mumu   = dy_mumu_channel_sel_stage < 1 and dy_mumu_channel_sel_stage_TESUp < 1 and dy_mumu_channel_sel_stage_TESDown < 1 and dy_mumu_channel_sel_stage_JESUp < 1 and dy_mumu_channel_sel_stage_JESDown < 1 and dy_mumu_channel_sel_stage_JERUp < 1 and dy_mumu_channel_sel_stage_JERDown < 1
@@ -3656,7 +3656,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         selection_stage_presel[0] = tt_channel_presel_stage
 
-        selection_stage[0] = tt_channel_stage
+        selection_stage[0] = tt_channel_sel_stage
         selection_stage_TESUp[0]   = tt_channel_sel_stage_TESUp
         selection_stage_TESDown[0] = tt_channel_sel_stage_TESDown
 
