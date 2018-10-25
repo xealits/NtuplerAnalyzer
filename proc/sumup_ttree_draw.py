@@ -514,6 +514,8 @@ if args.std_histos:
 
     #procs = dtags_procs[dtag]
 
+    isWJetsInclusive = dtag == "MC2016_Summer16_WJets_madgraph"
+
 if args.get_maximum:
    maximum = -1111111.
 
@@ -607,7 +609,7 @@ for filename in input_files:
                 condition_string = args.cond_com + ' && ' + proc_selection
             else:
                 condition_string = proc_selection
-            if args.cut_w0jets: # and isWJetsInclusive:
+            if args.cut_w0jets and isWJetsInclusive:
                 condition_string += ' && nup < 6'
             #if args.weight:
             #    condition_string = "%s * (%s)" % (args.weight, condition_string)
