@@ -364,8 +364,8 @@ named_systs_weights_all = {'nom': systs_weights_nominal,
 }
 
 systs_weights_all = {}
-for systs in named_systs_weights_all.values():
-    systs_weights_all.update(systs)
+for s_d in named_systs_weights_all.values():
+    systs_weights_all.update(s_d)
 
 
 # processes
@@ -495,10 +495,11 @@ if args.std_histos:
         # find dtag and procs by the first input files
         dtag = None
         for d in dtags_procs:
-            if dtags_procs in input_files[0]:
+            if d in input_files[0]:
                 dtag = d
+                break
         if not dtag:
-            raise ValueError("for std_procs could not find the dtag for %s" %s input_files[0])
+            raise ValueError("for std_procs could not find the dtag for %s" % input_files[0])
 
     main_name, proc_defs = dtags_procs[dtag]
     #procs = dtags_procs[dtag]
@@ -529,7 +530,7 @@ def draw_and_save(ttree, def_tuple, draw_command, condition_string):
     if def_tuple not in output_histos:
         out_histo = histo.Clone()
         #out_histo.SetName('_'.join(*def_tuple, distr_name))
-        out_histo.SetName('_'.join([str(i) for i in (*def_tuple, distr_name)]))
+        out_histo.SetName('_'.join([str(i) for i in def_tuple] + [str(distr_name)]))
 
         out_histo.SetDirectory(0)
         out_histo.Sumw2()
@@ -568,7 +569,7 @@ for filename in input_files:
         # the 'other' procs pick upp the not included ids
         included_ids = []
 
-        for chan in channels:
+        for chan in channels.split(','):
           # the channels defines the formula for the selection
           # which needs the object-based selection index
 
@@ -587,7 +588,10 @@ for filename in input_files:
             else:
                 proc_selection = '!(%s)' % (" || ".join('gen_proc_id == %d' % an_id for an_id in included_ids))
 
-            condition_string = args.cond_com + ' && ' + proc_selection
+            if args.cond_com:
+                condition_string = args.cond_com + ' && ' + proc_selection
+            else:
+                condition_string = proc_selection
             if args.cut_w0jets: # and isWJetsInclusive:
                 condition_string += ' && nup < 6'
             #if args.weight:
@@ -602,7 +606,7 @@ for filename in input_files:
                 selection_stage = systs_objects.get(sys_name, 'selection_stage')
 
                 if chan in all_std_channels:
-                    condition_string += ' && ' + all_std_channels[selection_stage]
+                    condition_string += ' && ' + all_std_channels[chan].format(selection_stage=selection_stage)
 
                 sys_weight = systs_weights_all.get(sys_name, systs_weights_nominal['NOMINAL'])
                 condition_string = '(%s) * %s' % (condition_string, sys_weight)
@@ -644,7 +648,7 @@ for filename in input_files:
 if args.per_weight:
     #weight_counter = tfile.Get('ntupler/weight_counter')
     #out_histo.Scale(1./weight_counter.GetBinContent(2))
-    for histo in out_histos.values():
+    for histo in output_histos.values():
         histo.Scale(1./weight_counter.GetBinContent(2))
 
 
@@ -657,15 +661,15 @@ if args.try_xsec:
 
     nickname, xsec = dtags.get(matched_dtag, 1.)
     #out_histo.Scale(xsec)
-    for histo in out_histos.values():
+    for histo in output_histos.values():
         histo.Scale(xsec)
 
 if args.scale:
-    for histo in out_histos.values():
+    for histo in output_histos.values():
         histo.Scale(args.scale)
 
 if args.histo_color:
-    for histo in out_histos.values():
+    for histo in output_histos.values():
         histo.SetLineColor(rgb(*(int(i) for i in args.histo_color.split(','))))
 
 
@@ -716,19 +720,21 @@ if args.try_xsec and len(histo_path) > 1:
         logging.debug("new histo name: " + histo_name)
         out_histo.SetName(histo_name)
 
-for path_tuple, histo in out_histos:
+for path_tuple, histo in output_histos.items():
     histo_path = '/'.join(path_tuple)
     # check if this directory already exists in the file (a feature for future)
-    out_dir_name = ''.join(part + '/' for part in histo_path)
-    if out_dir_name and fout.Get(out_dir_name):
-        logging.debug('found  ' + out_dir_name)
-        out_dir = fout.Get(out_dir_name)
+    #out_dir_name = ''.join(part + '/' for part in histo_path)
+
+    if histo_path and fout.Get(histo_path):
+        logging.debug('found  ' + histo_path)
+        out_dir = fout.Get(histo_path)
     else:
-        logging.debug('making ' + out_dir_name)
+        logging.debug('making ' + histo_path)
         # iteratively create each directory fout -> part0 -> part1 -> ...
         # somehow root did not work for creating them in 1 go
         out_dir = fout
-        for directory in histo_path:
+        for directory in histo_path.split('/'):
+            logging.debug('making ' + directory)
             nested_dir = out_dir.Get(directory) if out_dir.Get(directory) else out_dir.mkdir(directory)
             nested_dir.cd()
             out_dir = nested_dir
