@@ -57,7 +57,7 @@ histo_path = [part for part in histo_path if part]
 if args.std_histos:
     # 4 strings for names and they are not empty
     assert len(args.histo_name.split('/')) == 4 and all(args.histo_name.split('/'))
-    channels, procs, systs, histo_name = args.histo_name.split('/')
+    channels, procs, systs, distr_name = args.histo_name.split('/')
     #histo_path = [chan, proc, sys]
     # later proc and sys are expanded to standard definitions
     # if proc == 'std_procs': ...
@@ -528,7 +528,9 @@ def draw_and_save(ttree, def_tuple, draw_command, condition_string):
 
     if def_tuple not in output_histos:
         out_histo = histo.Clone()
-        out_histo.SetName(histo_name)
+        #out_histo.SetName('_'.join(*def_tuple, distr_name))
+        out_histo.SetName('_'.join([str(i) for i in (*def_tuple, distr_name)]))
+
         out_histo.SetDirectory(0)
         out_histo.Sumw2()
         output_histos[def_tuple] = out_histo
