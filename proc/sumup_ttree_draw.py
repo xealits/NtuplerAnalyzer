@@ -232,6 +232,16 @@ all_std_channels = {
 'el_selVloose_lj_ss': '({selection_stage}==116 || {selection_stage}==114) && event_jets_lj_var <= 60.',
 }
 
+if args.std_histos:
+    if   channels == 'all':
+         channels = ','.join(all_std_channels.keys())
+    elif channels == 'mu_std':
+         channels = 'mu_sel_ljout,mu_sel_ljout_ss,mu_selVloose_ljout,mu_selVloose_ljout_ss,mu_sel_lj,mu_sel_lj_ss,mu_selVloose_lj,mu_selVloose_lj_ss'
+    elif channels == 'el_std':
+         channels = 'el_sel_ljout,el_sel_ljout_ss,el_selVloose_ljout,el_selVloose_ljout_ss,el_sel_lj,el_sel_lj_ss,el_selVloose_lj,el_selVloose_lj_ss'
+    elif channels == 'all_std':
+         channels = 'mu_sel_ljout,mu_sel_ljout_ss,mu_selVloose_ljout,mu_selVloose_ljout_ss,mu_sel_lj,mu_sel_lj_ss,mu_selVloose_lj,mu_selVloose_lj_ss,el_sel_ljout,el_sel_ljout_ss,el_selVloose_ljout,el_selVloose_ljout_ss,el_sel_lj,el_sel_lj_ss,el_selVloose_lj,el_selVloose_lj_ss'
+
 # object systematics change the selection
 #"selection_stage_JERDown ${cond}" 'JERDown': event_weight  ${merge_dir}/${nt}/${p}/*${dtag}*.root
 #"selection_stage_JERUp   ${cond}" 'JERUp'  : event_weight  ${merge_dir}/${nt}/${p}/*${dtag}*.root
@@ -457,22 +467,22 @@ dtags_procs = {
 'SingleElectron' : ('data', []),
 }
 
-if args.el_procs:
-    dtags_procs['MC2016_Summer16_TTJets_powheg'] = genprocs_eltau_tt
-    dtags_procs['MC2016_Summer16_SingleT_tW_5FS_powheg'] = genprocs_eltau_s_top
-    dtags_procs['MC2016_Summer16_SingleTbar_tW_5FS_powheg'] = genprocs_eltau_s_top
-    dtags_procs['MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo'] = genprocs_eltau_s_top
-    dtags_procs['MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg'] = genprocs_eltau_s_top
-    dtags_procs['MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg'] = genprocs_eltau_s_top
-
-    #dtags_procs['MC2016_Summer16_TTJets_powheg_CUETP8M2T4down'] =  genprocs_eltau_tt
-    #dtags_procs['MC2016_Summer16_TTJets_powheg_CUETP8M2T4up'  ] =  genprocs_eltau_tt
-    #dtags_procs['MC2016_Summer16_TTJets_powheg_fsrdown'       ] =  genprocs_eltau_tt
-    #dtags_procs['MC2016_Summer16_TTJets_powheg_fsrup'         ] =  genprocs_eltau_tt
-    #dtags_procs['MC2016_Summer16_TTJets_powheg_hdampDOWN'     ] =  genprocs_eltau_tt
-    #dtags_procs['MC2016_Summer16_TTJets_powheg_hdampUP'       ] =  genprocs_eltau_tt
-    #dtags_procs['MC2016_Summer16_TTJets_powheg_isrdown'       ] =  genprocs_eltau_tt
-    #dtags_procs['MC2016_Summer16_TTJets_powheg_isrup'         ] =  genprocs_eltau_tt
+dtags_procs_el = {
+'MC2016_Summer16_TTJets_powheg'               : genprocs_eltau_tt,
+'MC2016_Summer16_SingleT_tW_5FS_powheg'       : genprocs_eltau_s_top,
+'MC2016_Summer16_SingleTbar_tW_5FS_powheg'    : genprocs_eltau_s_top,
+'MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo' : genprocs_eltau_s_top,
+'MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg' : genprocs_eltau_s_top,
+'MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg' : genprocs_eltau_s_top,
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down':  genprocs_eltau_tt,
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up'  :  genprocs_eltau_tt,
+'MC2016_Summer16_TTJets_powheg_fsrdown'       :  genprocs_eltau_tt,
+'MC2016_Summer16_TTJets_powheg_fsrup'         :  genprocs_eltau_tt,
+'MC2016_Summer16_TTJets_powheg_hdampDOWN'     :  genprocs_eltau_tt,
+'MC2016_Summer16_TTJets_powheg_hdampUP'       :  genprocs_eltau_tt,
+'MC2016_Summer16_TTJets_powheg_isrdown'       :  genprocs_eltau_tt,
+'MC2016_Summer16_TTJets_powheg_isrup'         :  genprocs_eltau_tt,
+}
 
 
 
@@ -501,7 +511,6 @@ if args.std_histos:
         if not dtag:
             raise ValueError("for std_procs could not find the dtag for %s" % input_files[0])
 
-    main_name, proc_defs = dtags_procs[dtag]
     #procs = dtags_procs[dtag]
 
 if args.get_maximum:
@@ -564,15 +573,20 @@ for filename in input_files:
         # TODO loop here
         #condition_strings = args.cond_com
 
-        if proc_defs:
-            proc_defs.append(('other', []))
-        # the 'other' procs pick upp the not included ids
-        included_ids = []
-
         for chan in channels.split(','):
           # the channels defines the formula for the selection
           # which needs the object-based selection index
 
+          if 'el_sel' in chan and dtag in dtags_procs_el:
+              main_name, proc_defs = dtags_procs_el[dtag]
+          else:
+              main_name, proc_defs = dtags_procs[dtag]
+
+          if proc_defs:
+              proc_defs.append(('other', []))
+          # the 'other' procs pick upp the not included ids
+
+          included_ids = []
           for proc_name, proc_ids in proc_defs:
             logging.debug(repr(proc_name))
             # check that new ids have not been already processed
@@ -605,13 +619,14 @@ for filename in input_files:
                 # = get the selection index name and the syst weight
                 selection_stage = systs_objects.get(sys_name, 'selection_stage')
 
+                final_cond = condition_string
                 if chan in all_std_channels:
-                    condition_string += ' && ' + all_std_channels[chan].format(selection_stage=selection_stage)
+                    final_cond += ' && ' + all_std_channels[chan].format(selection_stage=selection_stage)
 
                 sys_weight = systs_weights_all.get(sys_name, systs_weights_nominal['NOMINAL'])
-                condition_string = '(%s) * %s' % (condition_string, sys_weight)
+                final_cond = '(%s) * %s' % (final_cond, sys_weight)
 
-                draw_and_save(ttree, (chan, main_name + '_' + proc_name, sys_name), draw_command, condition_string)
+                draw_and_save(ttree, (chan, main_name + '_' + proc_name, sys_name), draw_command, final_cond)
 
     else:
         draw_and_save(ttree, tuple(histo_path), draw_command, args.cond_com)
