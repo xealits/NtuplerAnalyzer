@@ -1,3 +1,56 @@
+# skipping the merge step
+
+compate these:
+
+python -W ignore sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/redo-v25-v26/MC2016_Summer16_TTJets_powheg_sels.root    --std-histos --histo-name el_sel,mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight lstore_outdirs/merge-sets/v26/resub1/MC2016_Summer16_TTJets_powheg.root &
+
+python -W ignore sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/redo-v25-v26/SingleElectron_sels.root    --std-histos --histo-name el_sel,mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight lstore_outdirs/merge-sets/v25/resub1/SingleElectron.root &
+
+python -W ignore sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/redo-v25-v26/SingleMuon_sels.root    --std-histos --histo-name el_sel,mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight lstore_outdirs/merge-sets/v25/resub1/SingleMuon.root &
+
+to:
+
+python -W ignore sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/redo-v25-v26/MC2016_Summer16_TTJets_powheg_sels_files.root --std-histos --histo-name el_sel,mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight lstore_outdirs/v26/resub1/MC2016_Summer16_TTJets_powheg/*root &
+python -W ignore sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/redo-v25-v26/SingleElectron_sels_files.root                --std-histos --histo-name el_sel,mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight lstore_outdirs/v25/resub1/Data13TeV_SingleElectron2016*/*root &
+python -W ignore sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/redo-v25-v26/SingleMuon_sels_files.root                    --std-histos --histo-name el_sel,mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight lstore_outdirs/v25/resub1/Data13TeV_SingleMuon2016*/*root &
+
+OK  SingleMuon
+OK  SingleElectron (14383)
+OK  MC TT
+
+hadded file
+root [2] el_sel->Get("tt_eltau/NOMINAL/el_sel_tt_eltau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = el_sel_tt_eltau_NOMINAL_Mt_lep_met_f, Entries= 27022, Total sum= 25102.6
+root [3] mu_sel->Get("tt_mutau/NOMINAL/mu_sel_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = mu_sel_tt_mutau_NOMINAL_Mt_lep_met_f, Entries= 40821, Total sum= 36603.5
+
+separate files (takes much longer, 30 minutes)
+TH1.Print Name  = el_sel_tt_eltau_NOMINAL_Mt_lep_met_f, Entries= 27022, Total sum= 25102.6
+TH1.Print Name  = mu_sel_tt_mutau_NOMINAL_Mt_lep_met_f, Entries= 40821, Total sum= 36603.5
+
+Perfect
+
+
+
+debugging input with multiple files
+
+python -W ignore sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/redo-v25-v26/SingleMuon_sels_files.root    --std-histos --histo-name el_sel,mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight lstore_outdirs/v25/resub1/Data13TeV_SingleMuon2016B_03Feb2017_ver2/Data13TeV_SingleMuon2016B_03Feb2017_ver2_1.root lstore_outdirs/v25/resub1/Data13TeV_SingleMuon2016B_03Feb2017_ver2/Data13TeV_SingleMuon2016B_03Feb2017_ver2_10.root
+
+
+
+
+
+
+
+## time them too?
+
+
+
+
+
+
+
+
 # run selection on v25-v26
 
 first finish the full script on all dtags
@@ -146,6 +199,28 @@ make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_aa nt=v25 proc=resub1 mer
 make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_ab nt=v25 proc=resub1 merge_dir=lstore_outdirs/merge-sets/
 
 hadd lstore_outdirs/merge-sets/v26/resub1/MC2016_Summer16_TTJets_powheg.root lstore_outdirs/v26/resub1/MC2016_Summer16_TTJets_powheg/*root &
+
+
+
+
+test data and tt yields
+
+SingleMuon
+64252 ev
+24147 in OS mu_sel
+
+SingleElectron
+38121 ev
+14383 in OS el_sel
+
+TT
+249914 ev
+64461  OS mu
+42162  OS el
+
+OK
+
+
 
 TT and Data nominals:
 
