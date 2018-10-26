@@ -78,6 +78,9 @@ for(unsigned int count_idiso_electrons = 0, n=0; n<electrons.size (); ++n)
 	float eta = std::abs(electron.superCluster()->position().eta());
 	float sigmaIetaIeta = electron.full5x5_sigmaIetaIeta();
 
+ 	float dxy = std::abs(electron.gsfTrack()->dxy(goodPV.position()));
+ 	float dz  = std::abs(electron.gsfTrack()->dz(goodPV.position()));
+
 	// std impact parameter -- the one suggested here
 	// https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2
 	//    barrel    endcap
@@ -88,13 +91,15 @@ for(unsigned int count_idiso_electrons = 0, n=0; n<electrons.size (); ++n)
 		{
 		passSigma =     sigmaIetaIeta < 0.00998; // Tight WP
 		passSigmaVeto = sigmaIetaIeta < 0.0115;  // Veto WP
-		passStdImpactParameter = electron.gsfTrack()->dxy() < 0.05 && electron.gsfTrack()->dz() < 0.1;
+		//passStdImpactParameter = electron.gsfTrack()->dxy() < 0.05 && electron.gsfTrack()->dz() < 0.1;
+ 		passStdImpactParameter = dxy < 0.05 && dz < 0.1;
 		}
 	else if (eta > 1.479) // endcap
 		{
 		passSigma =     sigmaIetaIeta < 0.0292; // Tight WP
 		passSigmaVeto = sigmaIetaIeta < 0.037;  // Veto WP
-		passStdImpactParameter = electron.gsfTrack()->dxy() < 0.1 && electron.gsfTrack()->dz() < 0.2;
+		//passStdImpactParameter = electron.gsfTrack()->dxy() < 0.1 && electron.gsfTrack()->dz() < 0.2;
+ 		passStdImpactParameter = dxy < 0.1 && dz < 0.2;
 		}
 	// Ichecked this sigma cut with EGamma ID page
 	// link is in AN....
