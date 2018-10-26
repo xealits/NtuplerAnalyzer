@@ -1,3 +1,11 @@
+# v25-v26 rerun while the v40 is being processed
+python genjobs.py v25 resub1 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc,data_mu,data_el,updowns,updowns_extra --without-dtags MC2016_Summer16_TTJets_powheg --submit queue 
+source queue_dir/v25/resub1/jobs_dir/submit
+
+python genjobs.py v26 resub1 --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_TTJets_powheg --submit queue 
+source queue_dir/v26/resub1/jobs_dir/submit
+
+
 # v40 p1 run with fixed masses W boson and t quark
 #                 added systematic uncertainties in muon ID
 #                 and separated trigger uncertainty

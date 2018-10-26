@@ -378,6 +378,57 @@ systs_weights_all = {}
 for s_d in named_systs_weights_all.values():
     systs_weights_all.update(s_d)
 
+#systs = std_systematics_per_dtag[dtag]
+usual_mc_systs = 'nom,common,obj'
+std_systematics_per_dtag = {
+'MC2016_Summer16_QCD_HT-100-200'    : 'nom',
+'MC2016_Summer16_QCD_HT-1000-1500'  : 'nom',
+'MC2016_Summer16_QCD_HT-1500-2000'  : 'nom',
+'MC2016_Summer16_QCD_HT-200-300'    : 'nom',
+'MC2016_Summer16_QCD_HT-2000-Inf'   : 'nom',
+'MC2016_Summer16_QCD_HT-300-500'    : 'nom',
+'MC2016_Summer16_QCD_HT-500-700'    : 'nom',
+'MC2016_Summer16_QCD_HT-700-1000'   : 'nom',
+
+'MC2016_Summer16_SingleT_tW_5FS_powheg'                     : usual_mc_systs,
+'MC2016_Summer16_SingleTbar_tW_5FS_powheg'                  : usual_mc_systs,
+'MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo'      : usual_mc_systs,
+'MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg' : usual_mc_systs,
+'MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg'     : usual_mc_systs,
+
+'MC2016_Summer16_TTJets_powheg'  : 'nom,common,obj,tt_weights,tt_hard,tt_pdf',
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down' : 'NOMINAL',
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up'   : 'NOMINAL',
+'MC2016_Summer16_TTJets_powheg_fsrdown'        : 'NOMINAL',
+'MC2016_Summer16_TTJets_powheg_fsrup'          : 'NOMINAL',
+'MC2016_Summer16_TTJets_powheg_hdampDOWN'      : 'NOMINAL',
+'MC2016_Summer16_TTJets_powheg_hdampUP'        : 'NOMINAL',
+'MC2016_Summer16_TTJets_powheg_isrdown'        : 'NOMINAL',
+'MC2016_Summer16_TTJets_powheg_isrup'          : 'NOMINAL',
+
+'MC2016_Summer16_WWTo2L2Nu_powheg'             : usual_mc_systs,
+'MC2016_Summer16_WWToLNuQQ_powheg'             : usual_mc_systs,
+'MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin' : usual_mc_systs,
+'MC2016_Summer16_WZTo1L3Nu_amcatnlo_madspin'   : usual_mc_systs,
+'MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin'    : usual_mc_systs,
+'MC2016_Summer16_WZTo3LNu_powheg'              : usual_mc_systs,
+'MC2016_Summer16_ZZTo2L2Nu_powheg'             : usual_mc_systs,
+'MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin'    : usual_mc_systs,
+
+'MC2016_Summer16_W1Jets_madgraph'  : usual_mc_systs,
+'MC2016_Summer16_W2Jets_madgraph'  : usual_mc_systs,
+'MC2016_Summer16_W3Jets_madgraph'  : usual_mc_systs,
+'MC2016_Summer16_W4Jets_madgraph'  : usual_mc_systs,
+'MC2016_Summer16_WJets_madgraph'   : usual_mc_systs,
+'MC2016_Summer16_WJets_amcatnlo'   : usual_mc_systs,
+
+'MC2016_Summer16_DYJetsToLL_10to50_amcatnlo'   : usual_mc_systs,
+'MC2016_Summer16_DYJetsToLL_50toInf_madgraph'  : usual_mc_systs,
+
+'SingleMuon'     : 'NOMINAL',
+'SingleElectron' : 'NOMINAL',
+}
+
 
 # processes
 
@@ -410,6 +461,7 @@ dtags_procs = {
 'MC2016_Summer16_QCD_HT-300-500'    : genprocs_mutau_qcd,
 'MC2016_Summer16_QCD_HT-500-700'    : genprocs_mutau_qcd,
 'MC2016_Summer16_QCD_HT-700-1000'   : genprocs_mutau_qcd,
+
 'MC2016_Summer16_QCD_MuEnriched_Pt15_20toInf'  : genprocs_mutau_qcd,
 'MC2016_Summer16_QCD_MuEnriched_Pt5_1000toInf' : genprocs_mutau_qcd,
 'MC2016_Summer16_QCD_MuEnriched_Pt5_120to170'  : genprocs_mutau_qcd,
@@ -489,7 +541,30 @@ dtags_procs_el = {
 
 dtag = None
 if args.std_histos:
+    # set processes
+    if procs == 'std_procs':
+        # find dtag and procs by the first input files
+        for d in dtags_procs:
+            if d in input_files[0]:
+                dtag = d
+                break
+        if not dtag:
+            raise ValueError("for std_procs could not find the dtag for %s" % input_files[0])
+
+    logging.debug("dtag, %s" % dtag)
+    #procs = dtags_procs[dtag]
+
     # unfold systematics and weights
+    # used per_dtag for standard systematics
+    if systs == 'per_dtag':
+        for d in std_systematics_per_dtag:
+            if d in dtag:
+                systs = std_systematics_per_dtag[dtag]
+                break
+        # error if still per_dtag
+        if systs == 'per_dtag':
+            raise ValueError('per_dtag, not found dtag for %s' % dtag)
+
     systs_in = systs.split(',')
     systs = {}
     for sys in systs_in:
@@ -501,18 +576,6 @@ if args.std_histos:
             systs[sys] = systs_objects[sys]
         else:
             print "skipping %s" % sys
-
-    # and processes
-    if procs == 'std_procs':
-        # find dtag and procs by the first input files
-        for d in dtags_procs:
-            if d in input_files[0]:
-                dtag = d
-                break
-        if not dtag:
-            raise ValueError("for std_procs could not find the dtag for %s" % input_files[0])
-
-    #procs = dtags_procs[dtag]
 
     isWJetsInclusive = dtag == "MC2016_Summer16_WJets_madgraph"
 
@@ -587,7 +650,10 @@ for filename in input_files:
 
           if proc_defs:
               proc_defs.append(('other', []))
-          # the 'other' procs pick upp the not included ids
+              # the 'other' procs pick upp the not included ids
+          else:
+              # it's 1 inclusive process
+              proc_defs.append((None, []))
 
           included_ids = []
           for proc_name, proc_ids in proc_defs:
@@ -600,20 +666,25 @@ for filename in input_files:
 
             # join the ids of this process in 1 string selection command
             # example: (gen_proc_id == 11 || gen_proc_id == 12 || gen_proc_id == 21)
-            if not proc_name == 'other':
+            if proc_name is None:
+                proc_selection = None
+            elif not proc_name == 'other':
                 proc_selection =  '(%s)' % (" || ".join('gen_proc_id == %d' % an_id for an_id in proc_ids))
             else:
                 proc_selection = '!(%s)' % (" || ".join('gen_proc_id == %d' % an_id for an_id in included_ids))
 
-            if args.cond_com:
-                condition_string = args.cond_com + ' && ' + proc_selection
+            if proc_selection is None:
+                conditions = []
             else:
-                condition_string = proc_selection
+                conditions = [proc_selection]
+
+            if args.cond_com:
+                conditions.append(args.cond_com)
+
             if args.cut_w0jets and isWJetsInclusive:
-                condition_string += ' && nup < 6'
+                conditions.append('nup < 6')
             #if args.weight:
             #    condition_string = "%s * (%s)" % (args.weight, condition_string)
-
 
             #
             for sys_name in systs:
@@ -622,14 +693,14 @@ for filename in input_files:
                 # = get the selection index name and the syst weight
                 selection_stage = systs_objects.get(sys_name, 'selection_stage')
 
-                final_cond = condition_string
+                final_cond = conditions
                 if chan in all_std_channels:
-                    final_cond += ' && ' + all_std_channels[chan].format(selection_stage=selection_stage)
+                    final_cond.append(all_std_channels[chan].format(selection_stage=selection_stage))
 
                 sys_weight = systs_weights_all.get(sys_name, systs_weights_nominal['NOMINAL'])
-                final_cond = '(%s) * %s' % (final_cond, sys_weight)
+                final_cond = '(%s) * %s' % (' && '.join(final_cond), sys_weight)
 
-                draw_and_save(ttree, (chan, main_name + '_' + proc_name, sys_name), draw_command, final_cond)
+                draw_and_save(ttree, (chan, (main_name + '_' + proc_name) if proc_name else main_name, sys_name), draw_command, final_cond)
 
     else:
         draw_and_save(ttree, tuple(histo_path), draw_command, args.cond_com)
