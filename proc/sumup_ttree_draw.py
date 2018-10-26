@@ -679,15 +679,17 @@ for filename in input_files:
           else:
               main_name, proc_defs = dtags_procs[dtag]
 
+          logging.debug("channel procs, %s %s" % (main_name, repr(proc_defs)))
+
           if proc_defs:
               proc_defs.append(('other', []))
               # the 'other' procs pick upp the not included ids
-          else:
-              # it's 1 inclusive process
-              proc_defs.append((None, []))
+          #else:
+          #    # it's 1 inclusive process
+          #    proc_defs.append((None, []))
 
           included_ids = []
-          for proc_name, proc_ids in proc_defs:
+          for proc_name, proc_ids in (proc_defs if proc_defs else [(None, [])]):
             logging.debug(repr(proc_name))
             # check that new ids have not been already processed
             assert not any(new_id in included_ids for new_id in proc_ids)
