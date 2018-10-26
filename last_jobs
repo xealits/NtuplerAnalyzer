@@ -1,3 +1,13 @@
+# v41 fixed electron selection
+for c in `cat dsets_feb_rereco dsets_all_usual_mc`
+do
+python make_crab_cfgs.py $c v41 Dilep_tauID &
+done | tee cur_jobs
+
+for c in `cat dsets_feb_rereco`
+for c in `cat dsets_tt_systs dsets_tt_systs_ext dsets_all_usual_qcd_ext dsets_ext_wjets_dyjets`
+
+
 # v40 run with new stand-alone ntupler
 # and tau-gen matched p4 for studies of tau p4
 # updated more, addressing 3 elements: 1) original tau, 2) lepton from tau (tau-2 neutrino), 3) p4 of hadrons from tau decay
