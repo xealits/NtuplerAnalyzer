@@ -128,9 +128,32 @@ python -W ignore sumup_ttree_draw.py --debug "sqrt(2*(sqrt((event_met.Px()*event
 
 ## re-stage2 the old NTuples
 
-with separate presel and sel!
-and with Vloose cut at tau!
+with separate presel and sel!    -- CORRECT NUMBERS IN DRAW
+and with Vloose cut at tau!      -- CHECK? OK
 
+merge-sets/jobs_hadd.dtags.all-tt-systs
+
+merge-sets/jobs_hadd.dtags.small
+merge-sets/jobs_hadd.dtags.large_aa
+merge-sets/jobs_hadd.dtags.large_ab
+
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.all-tt-systs nt=v25 proc=resub1 merge_dir=lstore_outdirs/merge-sets/
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.single-muon      nt=v25 proc=resub1 merge_dir=lstore_outdirs/merge-sets/
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.single-electron  nt=v25 proc=resub1 merge_dir=lstore_outdirs/merge-sets/
+
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.small    nt=v25 proc=resub1 merge_dir=lstore_outdirs/merge-sets/
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_aa nt=v25 proc=resub1 merge_dir=lstore_outdirs/merge-sets/
+make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_ab nt=v25 proc=resub1 merge_dir=lstore_outdirs/merge-sets/
+
+hadd lstore_outdirs/merge-sets/v26/resub1/MC2016_Summer16_TTJets_powheg.root lstore_outdirs/v26/resub1/MC2016_Summer16_TTJets_powheg/*root &
+
+TT and Data nominals:
+
+python -W ignore sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/redo-v25-v26/MC2016_Summer16_TTJets_powheg_sels.root    --std-histos --histo-name el_sel,mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight lstore_outdirs/merge-sets/v26/resub1/MC2016_Summer16_TTJets_powheg.root &
+
+python -W ignore sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/redo-v25-v26/SingleElectron_sels.root    --std-histos --histo-name el_sel,mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight lstore_outdirs/merge-sets/v25/resub1/SingleElectron.root &
+
+python -W ignore sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/redo-v25-v26/SingleMuon_sels.root    --std-histos --histo-name el_sel,mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight lstore_outdirs/merge-sets/v25/resub1/SingleMuon.root &
 
 
 
