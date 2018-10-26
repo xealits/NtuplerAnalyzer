@@ -233,6 +233,37 @@ all_std_channels = {
 'el_selVloose_lj_ss': '({selection_stage}==116 || {selection_stage}==114) && event_jets_lj_var <= 60.',
 }
 
+# new selection stages
+all_std_channels = {
+'mu_sel':          '{selection_stage}==  7',
+'mu_sel_ss':       '{selection_stage}==  6',
+'el_sel':          '{selection_stage}== 17',
+'el_sel_ss':       '{selection_stage}== 16',
+'mu_selVloose':    '({selection_stage}==  7 || {selection_stage}==  5)',
+'mu_selVloose_ss': '({selection_stage}==  6 || {selection_stage}==  4)',
+'el_selVloose':    '({selection_stage}== 17 || {selection_stage}== 15)',
+'el_selVloose_ss': '({selection_stage}== 16 || {selection_stage}== 14)',
+
+'mu_sel_ljout':          '{selection_stage}==  7 && event_jets_lj_var >  60.',
+'mu_sel_ljout_ss':       '{selection_stage}==  6 && event_jets_lj_var >  60.',
+'el_sel_ljout':          '{selection_stage}== 17 && event_jets_lj_var >  60.',
+'el_sel_ljout_ss':       '{selection_stage}== 16 && event_jets_lj_var >  60.',
+'mu_selVloose_ljout':    '({selection_stage}==  7 || {selection_stage}==  5) && event_jets_lj_var >  60.',
+'mu_selVloose_ljout_ss': '({selection_stage}==  6 || {selection_stage}==  4) && event_jets_lj_var >  60.',
+'el_selVloose_ljout':    '({selection_stage}== 17 || {selection_stage}== 15) && event_jets_lj_var >  60.',
+'el_selVloose_ljout_ss': '({selection_stage}== 16 || {selection_stage}== 14) && event_jets_lj_var >  60.',
+
+'mu_sel_lj':          '{selection_stage}==  7 && event_jets_lj_var <= 60.',
+'mu_sel_lj_ss':       '{selection_stage}==  6 && event_jets_lj_var <= 60.',
+'el_sel_lj':          '{selection_stage}== 17 && event_jets_lj_var <= 60.',
+'el_sel_lj_ss':       '{selection_stage}== 16 && event_jets_lj_var <= 60.',
+'mu_selVloose_lj':    '({selection_stage}==  7 || {selection_stage}==  5) && event_jets_lj_var <= 60.',
+'mu_selVloose_lj_ss': '({selection_stage}==  6 || {selection_stage}==  4) && event_jets_lj_var <= 60.',
+'el_selVloose_lj':    '({selection_stage}== 17 || {selection_stage}== 15) && event_jets_lj_var <= 60.',
+'el_selVloose_lj_ss': '({selection_stage}== 16 || {selection_stage}== 14) && event_jets_lj_var <= 60.',
+}
+
+
 if args.std_histos:
     if   channels == 'all':
          channels = ','.join(all_std_channels.keys())
