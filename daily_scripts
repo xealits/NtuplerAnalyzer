@@ -36,10 +36,164 @@ mu el
 
 
 
+NTupler on 1 TT file 10k events
+
+tauID
+
+abs(leps_ID) == 11 or 13
+184
+681
+
+Dilepton
+
+11 or 13
+0
+0
+
+11*11, 11*13 or 13*13
+4
+21
+63
+
+-- hm?
+
+
+v33tauCands
+
+tauID
+
+11 13
+
+184
+681
+
+
+Dilepton
+
+11 11   11 13   13 13
+
+4
+21
+63
+
+
+v26
+
+tauID
+
+184
+681
+
+
+Dilepton
+
+4
+21
+63
+
+?
+
+
+
+------------------------ ok, ntupler outputs the same
+test whether the gstore files are the same?
 
 
 
 
+root -l gstore_outdirs/v26/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v26_MC2016_Summer16_TTJets_powheg/180412_180008/0000/MC2016_Summer16_TTJets_powheg_1.root
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("5", "abs(leps_ID)==11")
+39156
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("5", "abs(leps_ID)==13")
+55855
+
+-- but the ratio is totally not 184-681!!!!!!!!!!!!!!!!!!!!!!!1111
+
+root -l gstore_outdirs/v40/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v40_MC2016_Summer16_TTJets_powheg/*/0000/MC2016_Summer16_TTJets_powheg_1.root
+
+11
+13645
+13
+57593
+
+???
+
+
+
+------------------------ test ntupler on tauID_Dileptons together
+must be no interference -- dilep scheme did not contribute any events to leps_ID 11, 13
+
+v40
+
+11 13
+184
+681
+
+11*11 11*13 13*13
+
+4
+21
+63
+
+-- no interference!
+
+v26 (RECOMPILE!)
+
+518
+663
+
+29
+65
+63
+
+
+--- there +20 muons now? more precise barrel-endcap relIso?
+or just movement from el-mu to mu?
+
+
+fixed electrons
+507? (missing what?)
+663
+
+25
+63
+63
+
+
+some electrons are missing..
+
+dut to higher veto pt?
+-    el_veto_kino_cuts_pt  = cms.double( 10.),
++    el_veto_kino_cuts_pt  = cms.double( 15.),
+
+-- an old veto elecron is not considered at all
+
+and lower muon veto pt:
+-    mu_veto_kino_cuts_pt  = cms.double( 15.),
++    mu_veto_kino_cuts_pt  = cms.double( 10.),
+
+-- it scratches elmu probably
+
+test with old vetos
+
+507
+663
+
+25
+63
+63
+
+same????????
+
+
+filters_noBadMuons
+filters_duplicateMuons
+
+maybe the filters work? -- they actually must tag events and not skip them
+
+nothing works. hopefully it's ok, running as is
 
 
 
