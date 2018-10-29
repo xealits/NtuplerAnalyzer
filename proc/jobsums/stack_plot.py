@@ -672,7 +672,8 @@ for distr_name, histos_per_channel in histos_data_per_distr:
     for h, _, _ in histos_per_channel[1:]:
         histos_data_sum.Add(h)
     histos_data_sums_per_distr.append(histos_data_sum)
-histos_data_sum = histos_data_sums_per_distr[:1]
+
+histos_data_sum = histos_data_sums_per_distr[0] # [:1]
 
 if args.normalize:
     ratio = histos_data_sum.Integral() / hs_sum2.Integral()

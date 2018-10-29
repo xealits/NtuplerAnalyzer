@@ -303,7 +303,7 @@ systs_weights_nominal = {
 
 systs_weights_common = {
 'PUUp'   : "event_weight*event_weight_PUUp/event_weight_PU"    ,
-'PUDown' : "event_weight*event_weight_PUUp/event_weight_PU"    ,
+'PUDown' : "event_weight*event_weight_PUDown/event_weight_PU"    ,
 'bSFUp'  : "event_weight*event_weight_bSFUp/event_weight_bSF"  ,
 'bSFDown': "event_weight*event_weight_bSFDown/event_weight_bSF",
 
@@ -479,6 +479,28 @@ systs_weights_tt_alpha_pdf = {
 'PDFCT14n56Up'    : "event_weight*event_weight_pdf[55]",
 }
 
+systs_weights_tt_updowns = {
+'TuneCUETP8M2T4Down' : 'event_weight',
+'TuneCUETP8M2T4Up'   : 'event_weight',
+'FSRDown'            : 'event_weight',
+'FSRUp'              : 'event_weight',
+'HDAMPDown'          : 'event_weight',
+'HDAMPUp'            : 'event_weight',
+'ISRDown'            : 'event_weight',
+'ISRUp'              : 'event_weight',
+}
+
+updown_dtags_to_sys = {
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down' : 'TuneCUETP8M2T4Down',
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up'   : 'TuneCUETP8M2T4Up',
+'MC2016_Summer16_TTJets_powheg_fsrdown'        : 'FSRDown',
+'MC2016_Summer16_TTJets_powheg_fsrup'          : 'FSRUp',
+'MC2016_Summer16_TTJets_powheg_hdampDOWN'      : 'HDAMPDown',
+'MC2016_Summer16_TTJets_powheg_hdampUP'        : 'HDAMPUp',
+'MC2016_Summer16_TTJets_powheg_isrdown'        : 'ISRDown',
+'MC2016_Summer16_TTJets_powheg_isrup'          : 'ISRUp',
+}
+
 named_systs_weights_all = {'nom': systs_weights_nominal,
 'common': systs_weights_common,
 'tt_weights': systs_weights_tt,
@@ -498,6 +520,8 @@ named_systs_weights_all = {'nom': systs_weights_nominal,
 systs_weights_all = {}
 for s_d in named_systs_weights_all.values():
     systs_weights_all.update(s_d)
+
+systs_weights_all.update(systs_weights_tt_updowns)
 
 #systs = std_systematics_per_dtag[dtag]
 usual_mc_systs = 'nom,common,obj'
@@ -613,15 +637,17 @@ dtags_procs = {
 'MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo'      : genprocs_mutau_s_top,
 'MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg' : genprocs_mutau_s_top,
 'MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg'     : genprocs_mutau_s_top,
+
 'MC2016_Summer16_TTJets_powheg'  : genprocs_mutau_tt,
-#'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down' : genprocs_mutau_tt,
-#'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up'   : genprocs_mutau_tt,
-#'MC2016_Summer16_TTJets_powheg_fsrdown'        : genprocs_mutau_tt,
-#'MC2016_Summer16_TTJets_powheg_fsrup'          : genprocs_mutau_tt,
-#'MC2016_Summer16_TTJets_powheg_hdampDOWN'      : genprocs_mutau_tt,
-#'MC2016_Summer16_TTJets_powheg_hdampUP'        : genprocs_mutau_tt,
-#'MC2016_Summer16_TTJets_powheg_isrdown'        : genprocs_mutau_tt,
-#'MC2016_Summer16_TTJets_powheg_isrup'          : genprocs_mutau_tt,
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down' : genprocs_mutau_tt,
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up'   : genprocs_mutau_tt,
+'MC2016_Summer16_TTJets_powheg_fsrdown'        : genprocs_mutau_tt,
+'MC2016_Summer16_TTJets_powheg_fsrup'          : genprocs_mutau_tt,
+'MC2016_Summer16_TTJets_powheg_hdampDOWN'      : genprocs_mutau_tt,
+'MC2016_Summer16_TTJets_powheg_hdampUP'        : genprocs_mutau_tt,
+'MC2016_Summer16_TTJets_powheg_isrdown'        : genprocs_mutau_tt,
+'MC2016_Summer16_TTJets_powheg_isrup'          : genprocs_mutau_tt,
+
 'MC2016_Summer16_WWTo2L2Nu_powheg'             : genprocs_mutau_dibosons,
 'MC2016_Summer16_WWToLNuQQ_powheg'             : genprocs_mutau_dibosons,
 'MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin' : genprocs_mutau_dibosons,
@@ -665,10 +691,19 @@ if args.std_histos:
     # set processes
     if procs == 'std_procs':
         # find dtag and procs by the first input files
-        for d in dtags_procs:
+
+        # first check TT systematics
+        for d in updown_dtags_to_sys:
             if d in input_files[0]:
                 dtag = d
                 break
+
+        if not dtag:
+          for d in dtags_procs:
+            if d in input_files[0]:
+                dtag = d
+                break
+
         if not dtag:
             raise ValueError("for std_procs could not find the dtag for %s" % input_files[0])
 
@@ -687,6 +722,11 @@ if args.std_histos:
             raise ValueError('per_dtag, not found dtag for %s' % dtag)
 
     systs_in = systs.split(',')
+
+    # if it is TT systematic dataset -- substitute the syst correctly
+    if dtag in updown_dtags_to_sys:
+        systs_in = [updown_dtags_to_sys[dtag]]
+
     systs = {}
     for sys in systs_in:
         if sys in named_systs_weights_all:
@@ -878,7 +918,7 @@ if args.per_weight:
 
 
 if args.try_xsec:
-    nickname, xsec = dtags.get(dtag, 1.)
+    _, xsec = dtags.get(dtag, (None, 1.))
     #out_histo.Scale(xsec)
     for histo in output_histos.values():
         histo.Scale(xsec)
