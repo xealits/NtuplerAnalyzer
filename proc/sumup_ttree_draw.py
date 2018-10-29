@@ -337,6 +337,86 @@ systs_weights_tt_hard = {
 "MfrDown" : "event_weight*event_weight_me_frDn" ,
 }
 
+systs_weights_tt_alpha = {
+'AlphaSUp'  : "event_weight*event_weight_AlphaS_up",
+'AlphaSDown': "event_weight*event_weight_AlphaS_dn",
+}
+
+systs_weights_tt_pdf1 = {
+'PDFCT14n1Up'     : "event_weight*event_weight_pdf[0]" ,
+'PDFCT14n2Up'     : "event_weight*event_weight_pdf[1]" ,
+'PDFCT14n3Up'     : "event_weight*event_weight_pdf[2]" ,
+'PDFCT14n4Up'     : "event_weight*event_weight_pdf[3]" ,
+'PDFCT14n5Up'     : "event_weight*event_weight_pdf[4]" ,
+'PDFCT14n6Up'     : "event_weight*event_weight_pdf[5]" ,
+'PDFCT14n7Up'     : "event_weight*event_weight_pdf[6]" ,
+'PDFCT14n8Up'     : "event_weight*event_weight_pdf[7]" ,
+'PDFCT14n9Up'     : "event_weight*event_weight_pdf[8]" ,
+'PDFCT14n10Up'    : "event_weight*event_weight_pdf[9]" ,
+}
+
+systs_weights_tt_pdf10 = {
+'PDFCT14n11Up'    : "event_weight*event_weight_pdf[10]",
+'PDFCT14n12Up'    : "event_weight*event_weight_pdf[11]",
+'PDFCT14n13Up'    : "event_weight*event_weight_pdf[12]",
+'PDFCT14n14Up'    : "event_weight*event_weight_pdf[13]",
+'PDFCT14n15Up'    : "event_weight*event_weight_pdf[14]",
+'PDFCT14n16Up'    : "event_weight*event_weight_pdf[15]",
+'PDFCT14n17Up'    : "event_weight*event_weight_pdf[16]",
+'PDFCT14n18Up'    : "event_weight*event_weight_pdf[17]",
+'PDFCT14n19Up'    : "event_weight*event_weight_pdf[18]",
+'PDFCT14n20Up'    : "event_weight*event_weight_pdf[19]",
+}
+
+systs_weights_tt_pdf20 = {
+'PDFCT14n21Up'    : "event_weight*event_weight_pdf[20]",
+'PDFCT14n22Up'    : "event_weight*event_weight_pdf[21]",
+'PDFCT14n23Up'    : "event_weight*event_weight_pdf[22]",
+'PDFCT14n24Up'    : "event_weight*event_weight_pdf[23]",
+'PDFCT14n25Up'    : "event_weight*event_weight_pdf[24]",
+'PDFCT14n26Up'    : "event_weight*event_weight_pdf[25]",
+'PDFCT14n27Up'    : "event_weight*event_weight_pdf[26]",
+'PDFCT14n28Up'    : "event_weight*event_weight_pdf[27]",
+'PDFCT14n29Up'    : "event_weight*event_weight_pdf[28]",
+'PDFCT14n30Up'    : "event_weight*event_weight_pdf[29]",
+}
+
+systs_weights_tt_pdf30 = {
+'PDFCT14n31Up'    : "event_weight*event_weight_pdf[30]",
+'PDFCT14n32Up'    : "event_weight*event_weight_pdf[31]",
+'PDFCT14n33Up'    : "event_weight*event_weight_pdf[32]",
+'PDFCT14n34Up'    : "event_weight*event_weight_pdf[33]",
+'PDFCT14n35Up'    : "event_weight*event_weight_pdf[34]",
+'PDFCT14n36Up'    : "event_weight*event_weight_pdf[35]",
+'PDFCT14n37Up'    : "event_weight*event_weight_pdf[36]",
+'PDFCT14n38Up'    : "event_weight*event_weight_pdf[37]",
+'PDFCT14n39Up'    : "event_weight*event_weight_pdf[38]",
+'PDFCT14n40Up'    : "event_weight*event_weight_pdf[39]",
+}
+
+systs_weights_tt_pdf40 = {
+'PDFCT14n41Up'    : "event_weight*event_weight_pdf[40]",
+'PDFCT14n42Up'    : "event_weight*event_weight_pdf[41]",
+'PDFCT14n43Up'    : "event_weight*event_weight_pdf[42]",
+'PDFCT14n44Up'    : "event_weight*event_weight_pdf[43]",
+'PDFCT14n45Up'    : "event_weight*event_weight_pdf[44]",
+'PDFCT14n46Up'    : "event_weight*event_weight_pdf[45]",
+'PDFCT14n47Up'    : "event_weight*event_weight_pdf[46]",
+'PDFCT14n48Up'    : "event_weight*event_weight_pdf[47]",
+'PDFCT14n49Up'    : "event_weight*event_weight_pdf[48]",
+'PDFCT14n50Up'    : "event_weight*event_weight_pdf[49]",
+}
+
+systs_weights_tt_pdf50 = {
+'PDFCT14n51Up'    : "event_weight*event_weight_pdf[50]",
+'PDFCT14n52Up'    : "event_weight*event_weight_pdf[51]",
+'PDFCT14n53Up'    : "event_weight*event_weight_pdf[52]",
+'PDFCT14n54Up'    : "event_weight*event_weight_pdf[53]",
+'PDFCT14n55Up'    : "event_weight*event_weight_pdf[54]",
+'PDFCT14n56Up'    : "event_weight*event_weight_pdf[55]",
+}
+
+
 systs_weights_tt_alpha_pdf = {
 'AlphaSUp'  : "event_weight*event_weight_AlphaS_up",
 'AlphaSDown': "event_weight*event_weight_AlphaS_dn",
@@ -402,8 +482,15 @@ systs_weights_tt_alpha_pdf = {
 named_systs_weights_all = {'nom': systs_weights_nominal,
 'common': systs_weights_common,
 'tt_weights': systs_weights_tt,
-'tt_hard': systs_weights_tt_hard,
-'tt_pdf':  systs_weights_tt_alpha_pdf,
+'tt_hard':  systs_weights_tt_hard,
+'tt_pdf':   systs_weights_tt_alpha_pdf,
+'tt_alpha': systs_weights_tt_alpha,
+'tt_pdf1':  systs_weights_tt_pdf1,
+'tt_pdf10': systs_weights_tt_pdf10,
+'tt_pdf20': systs_weights_tt_pdf20,
+'tt_pdf30': systs_weights_tt_pdf30,
+'tt_pdf40': systs_weights_tt_pdf40,
+'tt_pdf50': systs_weights_tt_pdf50,
 }
 
 # 'obj'   : systs_objects,
