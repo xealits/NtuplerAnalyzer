@@ -2,6 +2,7 @@ import argparse
 import logging
 from os.path import isfile, basename
 import ctypes
+from sys import exit
 
 
 
@@ -28,6 +29,7 @@ parser.add_argument("--el-procs",   action='store_true', help="resolving the std
 parser.add_argument("--cut-w0jets",   action='store_true', help="resolving the std procs pick up the el-tau selection")
 
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
+parser.add_argument("--test",   action='store_true', help="test run, don't draw and don't write")
 parser.add_argument("--output", type=str, default="output.root", help="filename for output")
 
 parser.add_argument("--save-weight", action='store_true', help="save the weight counters in the output file")
@@ -399,11 +401,12 @@ systs_weights_tt_alpha_pdf = {
 
 named_systs_weights_all = {'nom': systs_weights_nominal,
 'common': systs_weights_common,
-'obj'   : systs_objects,
 'tt_weights': systs_weights_tt,
 'tt_hard': systs_weights_tt_hard,
 'tt_pdf':  systs_weights_tt_alpha_pdf,
 }
+
+# 'obj'   : systs_objects,
 
 systs_weights_all = {}
 for s_d in named_systs_weights_all.values():
@@ -616,9 +619,13 @@ if args.get_maximum:
 
 # draw and add to the output histos
 output_histos = {} # (chan, proc, sys): histo
-def draw_and_save(ttree, def_tuple, draw_command, condition_string):
+def draw_and_save(ttree, def_tuple, draw_command, condition_string, test):
     logging.debug(','.join(def_tuple))
     logging.debug('Draw(%s, %s)' % (draw_command, condition_string))
+
+    if test:
+        return None
+
     ttree.Draw(draw_command, condition_string)
 
     if temp_output_histo:
@@ -711,6 +718,8 @@ for filename in input_files:
             else:
                 conditions = [proc_selection]
 
+            logging.debug("conditions %s" % repr(conditions))
+
             if args.cond_com:
                 conditions.append(args.cond_com)
 
@@ -719,6 +728,7 @@ for filename in input_files:
             #if args.weight:
             #    condition_string = "%s * (%s)" % (args.weight, condition_string)
 
+            logging.debug("conditions %s" % repr(conditions))
             #
             for sys_name in systs:
                 # if it is object systematics -> change the selection and multiply nominal weight
@@ -726,17 +736,20 @@ for filename in input_files:
                 # = get the selection index name and the syst weight
                 selection_stage = systs_objects.get(sys_name, 'selection_stage')
 
-                final_cond = conditions
+                final_cond = conditions[:]
                 if chan in all_std_channels:
                     final_cond.append(all_std_channels[chan].format(selection_stage=selection_stage))
 
                 sys_weight = systs_weights_all.get(sys_name, systs_weights_nominal['NOMINAL'])
                 final_cond = '(%s) * %s' % (' && '.join(final_cond), sys_weight)
 
-                draw_and_save(ttree, (chan, (main_name + '_' + proc_name) if proc_name else main_name, sys_name), draw_command, final_cond)
+                draw_and_save(ttree, (chan, (main_name + '_' + proc_name) if proc_name else main_name, sys_name), draw_command, final_cond, args.test)
 
     else:
-        draw_and_save(ttree, tuple(histo_path), draw_command, args.cond_com)
+        draw_and_save(ttree, tuple(histo_path), draw_command, args.cond_com, args.test)
+
+    if args.test:
+        continue
 
     if args.get_maximum:
         m = ttree.GetMaximum(args.draw_com)
@@ -766,6 +779,9 @@ for filename in input_files:
         temp_output_histo.SetDirectory(0)
 
     tfile.Close()
+
+if args.test:
+    exit(0)
 
 if args.per_weight:
     #weight_counter = tfile.Get('ntupler/weight_counter')
@@ -811,7 +827,6 @@ leg2.AddEntry(tau_w      , "tt->lj, SS, w prod", 'L')
 leg2.AddEntry(tau_w_c    , "tt->lj, SS, w, C flav", 'L')
 leg2.AddEntry(tau_w_notc , "tt->lj, SS, w, not C", 'L')
 '''
-
 
 fout = TFile(args.output, "RECREATE")
 fout.Write()
