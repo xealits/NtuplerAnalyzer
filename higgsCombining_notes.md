@@ -91,6 +91,8 @@ general command is `combineCards.py Name1=card1.txt Name2=card2.txt .... > card.
 
     combineCards.py mu=ttxsec/fit-stuff/latest_datacard_mu.txt el=ttxsec/fit-stuff/latest_datacard_el.txt > ttxsec/fit-stuff/latest_datacard_both.txt
 
+    combineCards.py mu=ttxsec/latest_datacard_mu.txt el=ttxsec/latest_datacard_el.txt > ttxsec/latest_datacard_both.txt
+
     combineCards.py mu=ttxsec/fit-stuff/ratio_v31v27pFullElMu_v25v26pR5_mu.txt elmu=ttxsec/fit-stuff/ratio_v31v27pFullElMu_v25v26pR5_elmu.txt > ttxsec/fit-stuff/ratio_both.txt
 
 
@@ -118,6 +120,10 @@ also in ratio now:
     combine -M MultiDimFit ttxsec/fit-stuff/ratio_v31v27pFullElMu_v25v26pR5_mu.txt   --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name RatioMuShapes
     combine -M MultiDimFit ttxsec/fit-stuff/ratio_v31v27pFullElMu_v25v26pR5_elmu.txt --algo grid --points 100 --rMin 0.5 --rMax 1.5 --name RatioElMuShapes
 
+    combine -M MultiDimFit ttxsec/latest_datacard_el.root   --algo grid --points 60 --rMin 0.7 --rMax 1.3 --name ElShapes   --freezeParameters lumi_13TeV
+    combine -M MultiDimFit ttxsec/latest_datacard_mu.root   --algo grid --points 60 --rMin 0.7 --rMax 1.3 --name MuShapes   --freezeParameters lumi_13TeV
+    combine -M MultiDimFit ttxsec/latest_datacard_both.root --algo grid --points 60 --rMin 0.7 --rMax 1.3 --name BothShapes --freezeParameters lumi_13TeV
+
 and with ratio as signal
 
     combine -M MultiDimFit ttxsec/fit-stuff/ratio_both_1.txt --algo grid --points 100 --redefineSignalPOIs tau_ratio --freezeParameters tt_mutau,tt_elmu --rMin 0.5 --rMax 1.5 --name RatioElMuShapes
@@ -137,6 +143,8 @@ In cross-section measurement it is useless and usually the fit breaks somewhere.
 The command will output couple files, the main one has the `--name Name` in the filename:
 
     root -l higgsCombineBothShapes.MultiDimFit.mH120.root
+
+    root -l higgsCombineElShapes.MultiDimFit.mH120.root
 
     root -l higgsCombineMuShapes.MultiDimFit.mH120.root
     limit->Draw("2*deltaNLL:r", "deltaNLL>0 && 2*deltaNLL<10", "L")
@@ -1007,6 +1015,10 @@ First produce `.root` workspace file:
 ./scripts/text2workspace.py ttxsec/fit-stuff/latest_datacard_el.txt
 ./scripts/text2workspace.py ttxsec/fit-stuff/latest_datacard_both.txt
 
+./scripts/text2workspace.py ttxsec/latest_datacard_el.txt
+./scripts/text2workspace.py ttxsec/latest_datacard_mu.txt
+./scripts/text2workspace.py ttxsec/latest_datacard_both.txt
+
 electrons (I had some issues with these, but fixed them somehow):
 
     ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root -m 125 --robustFit 1 --doInitialFit
@@ -1273,18 +1285,18 @@ frozen lumi, no theoretical impacts
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_RatesUpDownOrig_noUpDowns.json -o postfit_mu_impacts_RatesUpDownOrig_noUpDowns
 
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit               --name MuImpacts
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5        --name MuImpacts
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_testnew.json  --name MuImpacts
-../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_testnew.json -o postfit_mu_impacts_testnew
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit               --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts.json  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o postfit_mu_impacts
 
 
 
 
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit          --name ElImpacts
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5   --name ElImpacts
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts.json --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit          --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5   --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts.json --name ElImpacts
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o postfit_el_impacts
 
 
@@ -1297,10 +1309,10 @@ frozen lumi, no theoretical impacts
 
 
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name BothImpacts
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name BothImpacts
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 -o latest_both_impacts_RateUpDowns.json          --name BothImpacts
-../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts_RateUpDowns.json -o postfit_both_impacts_RateUpDowns
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 -o latest_both_impacts.json          --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o postfit_both_impacts
 
 
 
@@ -1398,24 +1410,24 @@ mu toys
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_toys_testnew.json -o prefit_mu_impacts_toys_testnew
 
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t 10 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpactsToys
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t 10 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpactsToys
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t 10 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_toys_10times.json            --name MuImpactsToys
-../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_toys_10times.json -o prefit_mu_impacts_toys_10times
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec//latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec//latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec//latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_toys.json            --name MuImpactsToys
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_toys.json -o prefit_mu_impacts_toys
 
 
 el toys
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpactsToys
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpactsToys
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts_toys_3.json            --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec//latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec//latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec//latest_datacard_el.root --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts_toys_3.json            --name ElImpactsToys
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_toys_3.json -o prefit_el_impacts_toys
 
 both
 
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpactsToys
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpactsToys
-../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec/fit-stuff/latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 -o latest_both_impacts_toys.json            --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec//latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec//latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpactsToys
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -t -1 --expectSignal 1 -d ttxsec//latest_datacard_both.root --freezeParameters lumi_13TeV  -m 125 -o latest_both_impacts_toys.json            --name ElImpactsToys
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts_toys.json -o prefit_both_impacts_toys
 
 
