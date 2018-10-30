@@ -1,3 +1,121 @@
+# histosels
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o plots/redo-v25-v26_1/ -p -r --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o plots/redo-v25-v26_1/ -p -r --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o plots/redo-v25-v26_1/ -p -r --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o plots/redo-v25-v26_1/ -p -r --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8
+
+qcd
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o plots/redo-v25-v26_1/ -p -r --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o plots/redo-v25-v26_1/ -p -r --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o plots/redo-v25-v26_1/ -p -r --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o plots/redo-v25-v26_1/ -p -r --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+
+
+
+systematics with recalculated qcd
+
+foreach sys (`cat syst-test.syst-list.1`)
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+end
+
+and without (hard tt modeling)
+
+syst-test.syst-list.2_aa  syst-test.syst-list.2_ac  syst-test.syst-list.2_ae  syst-test.syst-list.2_ag
+syst-test.syst-list.2_ab  syst-test.syst-list.2_ad  syst-test.syst-list.2_af  syst-test.syst-list.2_ah
+
+foreach sys (`cat syst-test.syst-list.2_aa`)
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+end
+
+foreach sys (`cat syst-test.syst-list.2_ab`)
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+end
+
+foreach sys (`cat syst-test.syst-list.2_ac`)
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+end
+
+foreach sys (`cat syst-test.syst-list.2_ad`)
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+end
+
+foreach sys (`cat syst-test.syst-list.2_ae`)
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+end
+
+foreach sys (`cat syst-test.syst-list.2_af`)
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+end
+
+foreach sys (`cat syst-test.syst-list.2_ag`)
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+end
+
+foreach sys (`cat syst-test.syst-list.2_ah`)
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+  python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --sys $sys &
+end
+
+
+
+
+old example:
+
+foreach sys (`cat syst-test.syst-list.1`)
+python stack_plot.py distrs_v25pStage2Run3_3_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root  -o histosel-roots/v25pStage2Run3_3_mu_ljs/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8    -s $sys || true
+end
+
+python stack_plot.py distrs_v25pStage2Run3_3_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root  -o histosel-roots/v25pStage2Run3_3_mu_ljs/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --qcd 1.05 --wjet 0.8    -s NOMINAL || true
+
+
+foreach sys (`cat syst-test.syst-list.1`)
+python stack_plot.py distrs_v25pStage2Run3_3_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root  -o histosel-roots/v25pStage2Run3_3_mu_ljs/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --qcd 1.05 --wjet 0.8    -s $sys || true
+end
+
+python stack_plot.py distrs_v25pStage2Run3_3_updowns_weights.root ../distrs/v25pStage2Run3_hadds/SingleMuon.root  -o histosel-roots/v25pStage2Run3_3_mu_ljs/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --qcd 1.05 --wjet 0.8    -s NOMINAL || true
+
+
+now datacard with qcd systematics and free parameters
+and run NLL and impacts
+
+
+
+
+
+
+
+
+
 # run with systematics, tt in separate bunches
 
 let's hadd after all?
