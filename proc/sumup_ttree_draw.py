@@ -141,6 +141,8 @@ if args.try_xsec:
 # Draw command
 # 
 temp_output_histo = None # histo-template for custom bins
+
+draw_command = '{met_lep_mt_var}' if args.draw_com == 'std_mt_vars' else args.draw_com
 if args.custom_range:
     bin_edges = [float(b) for b in args.custom_range.split(',')]
     n_bin_edges = len(bin_edges)
@@ -151,12 +153,12 @@ if args.custom_range:
     root_bin_edges = (ctypes.c_double * n_bin_edges)(*bin_edges)
     temp_output_histo = TH1D("histotemp", "", n_bins, root_bin_edges) # root commands can access it by the name
 
-    draw_command = args.draw_com + '>>' + "histotemp"
+    draw_command = draw_command + '>>' + "histotemp"
 elif args.histo_range:
-    draw_command = args.draw_com + ">>h(%s)" % args.histo_range
+    draw_command = draw_command + ">>h(%s)" % args.histo_range
 else:
     # TOFIX: without explicit range the histos won't add up
-    draw_command = args.draw_com
+    draw_command = draw_command
 
 logging.debug("draw: " + draw_command)
 logging.debug("cond: " + args.cond_com)
@@ -291,6 +293,15 @@ systs_objects = {
 'JESUp'  :  'selection_stage_JESUp'  ,
 'TESDown':  'selection_stage_TESDown',
 'TESUp'  :  'selection_stage_TESUp'  ,
+}
+
+systs_objects_mt_variation = {
+'JERUp'    : 'event_met_lep_mt_JERUp',   
+'JERDown'  : 'event_met_lep_mt_JERDown', 
+'JESUp'    : 'event_met_lep_mt_JESUp',   
+'JESDown'  : 'event_met_lep_mt_JESDown', 
+'TESUp'    : 'event_met_lep_mt_TESUp',   
+'TESDown'  : 'event_met_lep_mt_TESDown', 
 }
 
 # check is a syst name is in objects
@@ -515,7 +526,6 @@ named_systs_weights_all = {'nom': systs_weights_nominal,
 'tt_pdf50': systs_weights_tt_pdf50,
 }
 
-# 'obj'   : systs_objects,
 
 systs_weights_all = {}
 for s_d in named_systs_weights_all.values():
@@ -731,6 +741,8 @@ if args.std_histos:
     for sys in systs_in:
         if sys in named_systs_weights_all:
             systs.update(named_systs_weights_all[sys])
+        elif sys == 'obj':
+            systs.update(systs_objects)
         elif sys in systs_weights_all:
             systs[sys] = systs_weights_all[sys]
         elif sys in systs_objects:
@@ -861,7 +873,17 @@ for filename in input_files:
                 # if it is object systematics -> change the selection and multiply nominal weight
                 # else don't change the selection
                 # = get the selection index name and the syst weight
-                selection_stage = systs_objects.get(sys_name, 'selection_stage')
+                if sys_name in systs_objects:
+                    # it is the object systematic -- the selection index changes and the met variation, which propagates to precomputed mt
+                    selection_stage = systs_objects[sys_name]
+                    if args.draw_com == 'std_mt_vars':
+                        draw_command_final = draw_command.format(met_lep_mt_var=systs_objects_mt_variation[sys_name])
+                        logging.debug('substituted draw command to %s at %s sys' % (draw_command_final, sys_name))
+                else:
+                    selection_stage = 'selection_stage'
+                    if args.draw_com == 'std_mt_vars':
+                        draw_command_final = draw_command.format(met_lep_mt_var='event_met_lep_mt')
+                        logging.debug('substituted draw command to default %s at %s sys' % (draw_command_final, sys_name))
 
                 final_cond = conditions[:]
                 if chan in all_std_channels:
@@ -870,7 +892,7 @@ for filename in input_files:
                 sys_weight = systs_weights_all.get(sys_name, systs_weights_nominal['NOMINAL'])
                 final_cond = '(%s) * %s' % (' && '.join(final_cond), sys_weight)
 
-                draw_and_save(ttree, (chan, (main_name + '_' + proc_name) if proc_name else main_name, sys_name), draw_command, final_cond, args.test)
+                draw_and_save(ttree, (chan, (main_name + '_' + proc_name) if proc_name else main_name, sys_name), draw_command_final, final_cond, args.test)
 
     else:
         draw_and_save(ttree, tuple(histo_path), draw_command, args.cond_com, args.test)
