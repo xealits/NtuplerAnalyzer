@@ -41,6 +41,20 @@ mu_sel->Get("tt_mutau/TESDown/mu_sel_tt_mutau_TESDown_Mt_lep_met_f")->Draw("same
 
 perfect
 
+hadd jobsums/distrs/distrs_redo_v25v26_mc_3w0jets.root quick-test/redo-v25-v26_cats_hadds/MC*
+
+rerun histosels and substitute HISTOSEL file for the fit
+
+foreach sys (JESDown JESUp)
+foreach sys (TESDown TESUp)
+foreach sys (JERDown JERUp)
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+end
+
+hadd histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_2.root histosels/redo-v25-v26_1/*root
 
 
 
