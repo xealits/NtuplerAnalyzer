@@ -1,3 +1,4 @@
+import logging
 from ROOT import THStack, TLegend, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, TColor
 
 def rgb(r, g, b):
@@ -128,6 +129,7 @@ def stack_n_legend(used_histos, shift=0., exp_legend=False, sort_dy=False, leg=N
 
     #for histo, nick, channel in sorted(used_histos, key=lambda h_n: nick_order.get(h_n[1], 1)):
     for histo, nick, channel in sorted(used_histos, key=lambda h_n: sort_w_dy_option(h_n[1])):
+        logging.debug("plotting stack_n_legend: %s %s" % (nick, channel))
         proc_ocurance = process_counter.setdefault(nick, 1)
         process_counter[nick] += 1
 

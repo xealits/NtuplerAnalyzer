@@ -1,6 +1,7 @@
 import argparse
 import logging
 from os.path import isfile
+from math import sqrt
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -22,6 +23,8 @@ parser.add_argument("-r", "--ratio", action='store_true', help="don't save the r
 parser.add_argument("-l", "--logy", action='store_true', help="set logarithmic scale for Y axis of stack plot")
 parser.add_argument("--normalize", action='store_true', help="normalize the integral to data")
 parser.add_argument("-o", "--output-directory", type=str, default='', help="optional output directory")
+
+parser.add_argument("--systematic-uncertainty",  type=str, help="add systematic variations to the hs sum uncertainty")
 
 parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
 
@@ -93,7 +96,6 @@ from draw_overflows import DrawOverflow
 #channel = "mu_lj_out"
 
 #sys_name = "NOMINAL"
-sys_name = args.systematic
 #distr_name = 'mu_presel_NOMINAL_wjets_Mt_lep_met'
 
 #distr_name = 'Mt_lep_met'
@@ -489,152 +491,184 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
 
 
 f = TFile(args.mc_file)
-used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_name, distr_name, skip_QCD = args.skip_QCD)) for distr_name in distr_names]
 
-# USING NOMINAL QCD:
-# ss MC for QCD is taken at NOMINAL, data is always nominal
-# then SS MC is scaled
-# and substituted in OS histos
+def get_histos_with_data_qcd(sys_name):
+    used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_name, distr_name, skip_QCD = args.skip_QCD)) for distr_name in distr_names]
 
-# for ss channels I need data - MC sum
-# and I substitute QCD with this difference everywhere
-hs_sums2_ss = [] # these will be sums of no-QCD MC in SS region
+    # USING NOMINAL QCD:
+    # ss MC for QCD is taken at NOMINAL, data is always nominal
+    # then SS MC is scaled
+    # and substituted in OS histos
 
-# sum all MC except qcd
-def datadriven_qcd(channel, distr, sys):
-    logging.warning("datadriven qcd")
-    # get SS data and MC
-    used_histos_per_distr_ss = get_histos(f, [channel + '_ss'], args.shape, sys, distr)
-    data_hist = fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', distr]))
+    # for ss channels I need data - MC sum
+    # and I substitute QCD with this difference everywhere
+    hs_sums2_ss = [] # these will be sums of no-QCD MC in SS region
 
-    if args.draw_overflows:
-        h_overflows = DrawOverflow(data_hist, args.draw_overflows)
-        data_hist = h_overflows
+    # sum all MC except qcd
+    def datadriven_qcd(channel, distr, sys):
+        logging.warning("datadriven qcd")
+        # get SS data and MC
+        used_histos_per_distr_ss = get_histos(f, [channel + '_ss'], args.shape, sys, distr)
+        data_hist = fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', distr]))
 
-    # find QCD shape in SS
-    mc_hist = used_histos_per_distr_ss[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
-    mc_hist.SetName('mc_sum2_ss')
-    for h, nick, channel in used_histos_per_distr_ss[1:]:
-        if nick == 'qcd': continue # don't include QCD MC -- its sum of no-QCD MC
-        mc_hist.Add(h)
+        if args.draw_overflows:
+            h_overflows = DrawOverflow(data_hist, args.draw_overflows)
+            data_hist = h_overflows
 
-    logging.warning("qcd hist  %d  %d" % (data_hist.GetEntries(), mc_hist.GetEntries()))
-    qcd_hist = data_hist - mc_hist
-    # scale by the given factor and return
-    qcd_hist.Scale(args.qcd)
+        # find QCD shape in SS
+        mc_hist = used_histos_per_distr_ss[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
+        mc_hist.SetName('mc_sum2_ss')
+        for h, nick, channel in used_histos_per_distr_ss[1:]:
+            if nick == 'qcd': continue # don't include QCD MC -- its sum of no-QCD MC
+            mc_hist.Add(h)
 
-    return qcd_hist
+        logging.warning("qcd hist  %d  %d" % (data_hist.GetEntries(), mc_hist.GetEntries()))
+        qcd_hist = data_hist - mc_hist
+        # scale by the given factor and return
+        qcd_hist.Scale(args.qcd)
+
+        return qcd_hist
 
 
-if args.qcd > 0. or args.osss or args.osss_mc:
-    # get all the same distributions for _ss channel
-    #used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, sys_name, distr_name)) for distr_name in distr_names]
-    used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, 'NOMINAL', distr_name)) for distr_name in distr_names]
+    if args.qcd > 0. or args.osss or args.osss_mc:
+        # get all the same distributions for _ss channel
+        #used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, sys_name, distr_name)) for distr_name in distr_names]
+        used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, 'NOMINAL', distr_name)) for distr_name in distr_names]
 
-    for distr, histos in used_histos_per_distr_ss:
+        for distr, histos in used_histos_per_distr_ss:
+            # loop through normal list
+            hs_sum2 = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
+            hs_sum2.SetName('mc_sum2_ss')
+
+            for h, nick, channel in histos[1:]: # I sum different channels?... the old hacked not fixed yet
+                if nick == 'qcd': continue # don't include QCD MC -- its sum of no-QCD MC
+                hs_sum2.Add(h)
+            channel = histos[0][2]
+            logging.debug("all channels are the same: %r" % all(ch == channel for _, _, ch in histos))
+
+            hs_sum2.SetFillStyle(3004);
+            hs_sum2.SetFillColor(1);
+            hs_sum2.SetMarkerStyle(1)
+            hs_sum2.SetMarkerColor(0)
+
+            # TODO: it turns messy, need to fix the channels
+            hs_sums2_ss.append((distr, [(hs_sum2, "mc_sum", channel)]))
+
+    # subtract Data - MC in SS, get the qcd distr
+    if args.qcd > 0.:
+        # find difference and substitute QCD
+        # histos_data_per_distr_ss = (distr, hists = [(histo, nick=data, channel)...])
+        # I need the same structure for the sums
+        qcd_hists = {} # distr, channel: qcd hist
+        for (distr, mc_sums), (_, datas) in zip(hs_sums2_ss, histos_data_per_distr_ss):
+            for (mc_hist, _, channel), (data_hist, _, _) in zip(mc_sums, datas):
+                logging.debug('calulating qcd  %d  %d' % (data_hist.GetSize(), mc_hist.GetSize()))
+
+                qcd_hist = data_hist - mc_hist
+                # negative qcd bins are equalized to zero:
+                '''
+                for (Int_t i=0; i<=histo->GetSize(); i++)
+                        {
+                        //yAxis->GetBinLowEdge(3)
+                        double content = histo->GetBinContent(i);
+                        double error   = histo->GetBinError(i);
+                        double width   = histo->GetXaxis()->GetBinUpEdge(i) - histo->GetXaxis()->GetBinLowEdge(i);
+                        histo->SetBinContent(i, content/width);
+                        histo->SetBinError(i, error/width);
+                        }
+                '''
+
+                # here I found nominal "yield" datadriven qcd
+                # in case a shape channel is given -- find the qcd there and normalize to this yield
+                if args.shape:
+                    shape_qcd = datadriven_qcd(args.shape, distr, 'NOMINAL') # nominal only for now
+                    shape_qcd.Scale(qcd_hist.Integral() / shape_qcd.Integral())
+                    qcd_hist = shape_qcd
+
+                logging.debug('data qcd got shape')
+
+                for bini in range(qcd_hist.GetSize()):
+                    if qcd_hist.GetBinContent(bini) < 0:
+                        qcd_hist.SetBinContent(bini, 0)
+
+                #datadriven_qcd_name = "qcd"
+                # optmu_tight_2L1M_wjets_NOMINAL_Mt_lep_met
+                # I remove _ss from channel name
+                datadriven_qcd_name = '%s_%s_%s_%s' % (channel[:-3], 'qcd', args.systematic, distr)
+                qcd_hist.SetName(datadriven_qcd_name)
+                qcd_hist.Scale(args.qcd)
+                qcd_hists[(distr, channel)] = qcd_hist
+                logging.debug('data qcd for (%s, %s) Integral = %f' % (distr, channel, qcd_hist.Integral()))
+
+
+
+    hs_sums2 = []
+
+    hs_sums_noqcd = []
+
+    # calculate MC sum and substitute data driven qcd
+    for distr, histos in used_histos_per_distr:
         # loop through normal list
         hs_sum2 = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
-        hs_sum2.SetName('mc_sum2_ss')
+        hs_sum2.SetName('mc_sum2')
+        hs_sum2.Reset()
 
-        for h, nick, channel in histos[1:]: # I sum different channels?... the old hacked not fixed yet
-            if nick == 'qcd': continue # don't include QCD MC -- its sum of no-QCD MC
+        hs_sum_noqcd = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
+        hs_sum_noqcd.SetName('mc_sum_noqcd')
+        hs_sum_noqcd.Reset()
+
+        # substitute QCD
+        for i, (h, nick, channel) in enumerate(histos[0:]):
+            if args.qcd > 0. and nick == 'qcd':
+                # then take the qcd from the differences in ss region
+                h = qcd_hists[(distr, channel + '_ss')]
+                # and substitute it in the list (if it won't brak everything)
+                histos[i] = (h, nick, channel) # h is new here!
             hs_sum2.Add(h)
-        channel = histos[0][2]
-        logging.debug("all channels are the same: %r" % all(ch == channel for _, _, ch in histos))
+            if nick != 'qcd':
+                hs_sum_noqcd.Add(h)
 
         hs_sum2.SetFillStyle(3004);
         hs_sum2.SetFillColor(1);
         hs_sum2.SetMarkerStyle(1)
         hs_sum2.SetMarkerColor(0)
 
-        # TODO: it turns messy, need to fix the channels
-        hs_sums2_ss.append((distr, [(hs_sum2, "mc_sum", channel)]))
+        hs_sums2.append(hs_sum2)
+        hs_sums_noqcd.append(hs_sum_noqcd)
 
-# subtract Data - MC in SS, get the qcd distr
-if args.qcd > 0.:
-    # find difference and substitute QCD
-    # histos_data_per_distr_ss = (distr, hists = [(histo, nick=data, channel)...])
-    # I need the same structure for the sums
-    qcd_hists = {} # distr, channel: qcd hist
-    for (distr, mc_sums), (_, datas) in zip(hs_sums2_ss, histos_data_per_distr_ss):
-        for (mc_hist, _, channel), (data_hist, _, _) in zip(mc_sums, datas):
-            logging.debug('calulating qcd  %d  %d' % (data_hist.GetSize(), mc_hist.GetSize()))
-
-            qcd_hist = data_hist - mc_hist
-            # negative qcd bins are equalized to zero:
-            '''
-            for (Int_t i=0; i<=histo->GetSize(); i++)
-                    {
-                    //yAxis->GetBinLowEdge(3)
-                    double content = histo->GetBinContent(i);
-                    double error   = histo->GetBinError(i);
-                    double width   = histo->GetXaxis()->GetBinUpEdge(i) - histo->GetXaxis()->GetBinLowEdge(i);
-                    histo->SetBinContent(i, content/width);
-                    histo->SetBinError(i, error/width);
-                    }
-            '''
-
-            # here I found nominal "yield" datadriven qcd
-            # in case a shape channel is given -- find the qcd there and normalize to this yield
-            if args.shape:
-                shape_qcd = datadriven_qcd(args.shape, distr, 'NOMINAL') # nominal only for now
-                shape_qcd.Scale(qcd_hist.Integral() / shape_qcd.Integral())
-                qcd_hist = shape_qcd
-
-            logging.debug('data qcd got shape')
-
-            for bini in range(qcd_hist.GetSize()):
-                if qcd_hist.GetBinContent(bini) < 0:
-                    qcd_hist.SetBinContent(bini, 0)
-
-            #datadriven_qcd_name = "qcd"
-            # optmu_tight_2L1M_wjets_NOMINAL_Mt_lep_met
-            # I remove _ss from channel name
-            datadriven_qcd_name = '%s_%s_%s_%s' % (channel[:-3], 'qcd', args.systematic, distr)
-            qcd_hist.SetName(datadriven_qcd_name)
-            qcd_hist.Scale(args.qcd)
-            qcd_hists[(distr, channel)] = qcd_hist
-            logging.debug('data qcd for (%s, %s) Integral = %f' % (distr, channel, qcd_hist.Integral()))
+    return used_histos_per_distr, hs_sums2, hs_sums_noqcd, hs_sums2_ss
 
 
-
-hs_sums2 = []
-
-hs_sums_noqcd = []
-
-# calculate MC sum and substitute data driven qcd
-for distr, histos in used_histos_per_distr:
-    # loop through normal list
-    hs_sum2 = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
-    hs_sum2.SetName('mc_sum2')
-    hs_sum2.Reset()
-
-    hs_sum_noqcd = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
-    hs_sum_noqcd.SetName('mc_sum_noqcd')
-    hs_sum_noqcd.Reset()
-
-    # substitute QCD
-    for i, (h, nick, channel) in enumerate(histos[0:]):
-        if args.qcd > 0. and nick == 'qcd':
-            # then take the qcd from the differences in ss region
-            h = qcd_hists[(distr, channel + '_ss')]
-            # and substitute it in the list (if it won't brak everything)
-            histos[i] = (h, nick, channel) # h is new here!
-        hs_sum2.Add(h)
-        if nick != 'qcd':
-            hs_sum_noqcd.Add(h)
-
-    hs_sum2.SetFillStyle(3004);
-    hs_sum2.SetFillColor(1);
-    hs_sum2.SetMarkerStyle(1)
-    hs_sum2.SetMarkerColor(0)
-
-    hs_sums2.append(hs_sum2)
-    hs_sums_noqcd.append(hs_sum_noqcd)
-
+sys_name = args.systematic
+used_histos_per_distr, hs_sums2, hs_sums_noqcd, hs_sums2_ss = get_histos_with_data_qcd(sys_name)
 
 # here all processes, including data-driven qcd, are finally calculated
-# merge some of them if asked
+
+# for systematic uncertainties the sums of MC are needed at different systematics, with qcd recalculated
+# I need to get MC sums and propagate the uncertainty to the one which goes into the plot
+# the sum on the plot is taken from hs_sum1.Draw("same e2") from hs_sum1 = hs_sums1[0]
+# which is summed from hs stacks
+# but it actually equals to hs_sum2 = hs_sums2[0]
+
+if args.systematic_uncertainty:
+    logging.debug("adding systematic uncertainties %s" % args.systematic_uncertainty)
+    nominal_sum = hs_sums2[0]
+    for sys_var in args.systematic_uncertainty.split(','):
+        _, hs_sums2_Up,   _, _ = get_histos_with_data_qcd(sys_var + 'Up')
+        _, hs_sums2_Down, _, _ = get_histos_with_data_qcd(sys_var + 'Down')
+        hs_sum2_Up   = hs_sums2_Up[0]
+        hs_sum2_Down = hs_sums2_Down[0]
+        # for each bin add in quadrature the deviation from nominal
+        for bini in range(nominal_sum.GetSize()):
+            err = nominal_sum.GetBinError(bini)
+            dev_up   = abs(nominal_sum.GetBinContent(bini) - hs_sum2_Up.GetBinContent(bini))
+            dev_down = abs(nominal_sum.GetBinContent(bini) - hs_sum2_Down.GetBinContent(bini))
+            #dev = 0.5 * (dev_up + dev_down)
+            dev = max(dev_up, dev_down)
+            nominal_sum.SetBinError(bini, sqrt(err**2 + dev**2))
+
+
+# merge some of the processes if asked
 #used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_name, distr_name, skip_QCD = args.skip_QCD)) for distr_name in distr_names]
 # [(distr_name, [(histo, nick, channel)])]
 if args.merge_procs:
@@ -788,8 +822,10 @@ hs, leg =  hs_legs_per_distr[0][1]
 used_histos = used_histos_per_distr[0][1]
 #histos_data_per_distr[0][0][0].Print()
 
-logging.info("data   = %f"    % 0. if args.no_data else histos_data_sum.Integral())
-logging.info("mc sum = %f %f" % (hs_sum1.Integral(), hs_sum2.Integral()))
+logging.info("data       = %15f"    % 0. if args.no_data else histos_data_sum.Integral())
+logging.info("mc sum     = %15f %15f" % (hs_sum1.Integral(), hs_sum2.Integral()))
+
+logging.info("mc sum unc = %15f %15f" % (sum(hs_sum1.GetBinError(bini) for bini in range(hs_sum1.GetSize())), sum(hs_sum2.GetBinError(bini) for bini in range(hs_sum2.GetSize()))))
 
 out_dir = args.output_directory + '/' if args.output_directory else './'
 
@@ -1088,12 +1124,12 @@ else:
     # if fake rate then the sums should be divided by second distr sum
     if args.fake_rate:
         histos_data_sum.Divide(histos_data_sum2)
-        hs_sum1.Divide(hs_sum1_2)
+        hs_sum2.Divide(hs_sum1_2)
 
     if args.x_range:
         x_min, x_max = (float(x) for x in args.x_range.split(','))
         histos_data_sum .SetAxisRange(x_min, x_max, "X")
-        hs_sum1         .SetAxisRange(x_min, x_max, "X")
+        hs_sum2         .SetAxisRange(x_min, x_max, "X")
 
     # drop bin
     if args.drop_bin:
@@ -1101,7 +1137,7 @@ else:
         histos_data_sum.SetBinContent (bn_to_drop, 0)
         histos_data_sum.SetBinError   (bn_to_drop, 0)
 
-    print "MC sum error", hs_sum1.GetBinError(2), hs_sum1.GetBinContent(2)
+    print "MC sum error", hs_sum2.GetBinError(2), hs_sum2.GetBinContent(2)
 
     # plotting
     if args.ratio:
@@ -1116,7 +1152,7 @@ else:
             histo_data_relative.SetStats(False)
             histo_data_relative.SetMaximum(ratio_max)
             histo_data_relative.SetMinimum(ratio_min)
-            histo_data_relative.Divide(hs_sum1)
+            histo_data_relative.Divide(hs_sum2)
 
             histo_data_relative.GetXaxis().SetLabelFont(63)
             histo_data_relative.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
@@ -1127,7 +1163,7 @@ else:
             histo_data_relative.GetYaxis().SetTitleFont(63)
             histo_data_relative.GetYaxis().SetTitleSize(20)
 
-        hs_sum1_relative = hs_sum1.Clone()
+        hs_sum1_relative = hs_sum2.Clone()
         hs_sum1_relative.SetName("rel_mc")
         hs_sum1_relative.SetStats(False)
 
@@ -1139,7 +1175,7 @@ else:
         hs_sum1_relative.SetMaximum(ratio_max)
         hs_sum1_relative.SetMinimum(ratio_min)
 
-        hs_sum1_relative.Divide(hs_sum1)
+        hs_sum1_relative.Divide(hs_sum2)
 
         #h2.GetYaxis()->SetLabelOffset(0.01)
 
@@ -1179,18 +1215,18 @@ else:
     if args.plot:
         pad1.cd()
 
-        max_y = hs_sum1.GetMaximum() if args.no_data else max([h.GetMaximum() for h in (hs_sum1, histos_data_sum)])
+        max_y = hs_sum2.GetMaximum() if args.no_data else max([h.GetMaximum() for h in (hs_sum2, histos_data_sum)])
         if args.y_max:
             max_y = args.y_max
-        min_y = hs_sum1.GetMinimum() if args.no_data else max([h.GetMinimum() for h in (hs_sum1, histos_data_sum)])
+        min_y = hs_sum2.GetMinimum() if args.no_data else max([h.GetMinimum() for h in (hs_sum2, histos_data_sum)])
 
         if args.y_range:
             min_y, max_y = [float(x) for x in args.y_range.split(',')]
-            hs_sum1        .SetMaximum(max_y)
-            hs_sum1        .SetMinimum(min_y)
-            #hs_sum1.GetYaxis().SetRange(min_y, max_y)
-            #hs_sum1.GetYaxis().SetRangeUser(min_y, max_y)
-            hs_sum1         .SetAxisRange(min_y, max_y, "Y")
+            hs_sum2        .SetMaximum(max_y)
+            hs_sum2        .SetMinimum(min_y)
+            #hs_sum2.GetYaxis().SetRange(min_y, max_y)
+            #hs_sum2.GetYaxis().SetRangeUser(min_y, max_y)
+            hs_sum2         .SetAxisRange(min_y, max_y, "Y")
             if not args.no_data:
                 #histos_data_sum.GetYaxis().SetRange(min_y, max_y)
                 #histos_data_sum.GetYaxis().SetRangeUser(min_y, max_y)
@@ -1200,8 +1236,8 @@ else:
 
         # remove the label on stack plot if ratio is there
         if args.ratio:
-            hs_sum1.GetXaxis().SetLabelOffset(999)
-            hs_sum1.GetXaxis().SetLabelSize(0)
+            hs_sum2.GetXaxis().SetLabelOffset(999)
+            hs_sum2.GetXaxis().SetLabelSize(0)
             if not args.no_data:
                 histos_data_sum.GetXaxis().SetLabelOffset(999)
                 histos_data_sum.GetXaxis().SetLabelSize(0)
@@ -1211,26 +1247,26 @@ else:
             if not args.no_data:
                 histos_data_sum.SetXTitle(title_x)
             #hs            .SetXTitle(title_x)
-            hs_sum1        .SetXTitle(title_x)
+            hs_sum2        .SetXTitle(title_x)
 
         if not args.no_data:
             histos_data_sum.SetMaximum(max_y * 1.1)
         if args.logy: # and args.fake_rate:
             logging.info("setting histos logy") # some bug 
-            hs_sum1        .SetMaximum(max_y * 10.)
-            hs_sum1        .SetMinimum(min_y / 10.)
+            hs_sum2        .SetMaximum(max_y * 10.)
+            hs_sum2        .SetMinimum(min_y / 10.)
             if not args.no_data:
                 histos_data_sum.SetMaximum(max_y * 10.)
                 histos_data_sum.SetMinimum(min_y / 10.)
         else: # if not args.logy:
-            hs_sum1   .SetMinimum(0)
+            hs_sum2   .SetMinimum(0)
             if not args.no_data:
                 histos_data_sum.SetMinimum(0)
 
         #hs.GetYaxis().SetTitleFont(63)
         #hs.GetYaxis().SetTitleSize(20)
-        hs_sum1.GetYaxis().SetTitleFont(63)
-        hs_sum1.GetYaxis().SetTitleSize(20)
+        hs_sum2.GetYaxis().SetTitleFont(63)
+        hs_sum2.GetYaxis().SetTitleSize(20)
         if not args.no_data:
             histos_data_sum.GetYaxis().SetTitleFont(63)
             histos_data_sum.GetYaxis().SetTitleSize(20)
@@ -1244,10 +1280,10 @@ else:
         #histos_data_sum.GetYaxis().SetLabelSize(0.02)
         #histos_data_sum.GetXaxis().SetLabelSize(0.02)
 
-        hs_sum1.GetYaxis().SetLabelFont(63)
-        hs_sum1.GetXaxis().SetLabelFont(63)
-        hs_sum1.GetYaxis().SetLabelSize(14)
-        hs_sum1.GetXaxis().SetLabelSize(14)
+        hs_sum2.GetYaxis().SetLabelFont(63)
+        hs_sum2.GetXaxis().SetLabelFont(63)
+        hs_sum2.GetYaxis().SetLabelSize(14)
+        hs_sum2.GetXaxis().SetLabelSize(14)
         if not args.no_data:
             histos_data_sum.GetYaxis().SetLabelFont(63)
             histos_data_sum.GetXaxis().SetLabelFont(63)
@@ -1255,13 +1291,13 @@ else:
             histos_data_sum.GetXaxis().SetLabelSize(14)
 
         #hs             .GetYaxis().SetTitleOffset(1.4)
-        hs_sum1        .GetYaxis().SetTitleOffset(1.5) # place the title not overlapping with labels...
+        hs_sum2        .GetYaxis().SetTitleOffset(1.5) # place the title not overlapping with labels...
 
         #hs             .SetYTitle(title_y)
-        hs_sum1        .SetYTitle(title_y)
+        hs_sum2        .SetYTitle(title_y)
 
         #hs             .SetTitle(title_plot)
-        hs_sum1        .SetTitle(title_plot)
+        hs_sum2        .SetTitle(title_plot)
 
         if not args.no_data:
             histos_data_sum.GetYaxis().SetTitleOffset(1.5)
@@ -1270,7 +1306,7 @@ else:
 
         if args.y_range:
             min_y, max_y = [float(x) for x in args.y_range.split(',')]
-            hs_sum1         .SetAxisRange(min_y, max_y, "Y")
+            hs_sum2         .SetAxisRange(min_y, max_y, "Y")
             if not args.no_data:
                 histos_data_sum .SetAxisRange(min_y, max_y, "Y")
 
@@ -1282,44 +1318,44 @@ else:
 
             # MC sum plot
             if args.fake_rate:
-                hs_sum1.SetFillStyle(3004);
-                hs_sum1.SetFillColor(1);
-                #hs_sum1.SetMarkerColorAlpha(0, 0.1);
-                hs_sum1.SetMarkerStyle(25);
-                hs_sum1.SetMarkerColor(kRed);
-                hs_sum1.SetLineColor(kRed);
-                #hs_sum1.Draw("same e2")
-                hs_sum1.Draw("same e")
+                hs_sum2.SetFillStyle(3004);
+                hs_sum2.SetFillColor(1);
+                #hs_sum2.SetMarkerColorAlpha(0, 0.1);
+                hs_sum2.SetMarkerStyle(25);
+                hs_sum2.SetMarkerColor(kRed);
+                hs_sum2.SetLineColor(kRed);
+                #hs_sum2.Draw("same e2")
+                hs_sum2.Draw("same e")
             else:
                 # only error band in usual case
-                hs_sum1.Draw("same e2")
+                hs_sum2.Draw("same e2")
 
             histos_data_sum.Draw("same e1p")
         else:
             # the histogramStack cannot have title in root... therefore it cannot be plotted first..
             # thus I have to plot sum of MC first to get the titles right..
             if args.fake_rate:
-                hs_sum1.Draw("e")
+                hs_sum2.Draw("e")
             else:
                 # only error band in usual case
-                hs_sum1.Draw("e2")
+                hs_sum2.Draw("e2")
 
             if not args.fake_rate:
                 hs.Draw("same")
 
             # MC sum plot
             if args.fake_rate:
-                hs_sum1.SetFillStyle(3004);
-                hs_sum1.SetFillColor(1);
-                #hs_sum1.SetMarkerColorAlpha(0, 0.1);
-                hs_sum1.SetMarkerStyle(25);
-                hs_sum1.SetMarkerColor(kRed);
-                hs_sum1.SetLineColor(kRed);
-                #hs_sum1.Draw("same e2")
-                hs_sum1.Draw("same e")
+                hs_sum2.SetFillStyle(3004);
+                hs_sum2.SetFillColor(1);
+                #hs_sum2.SetMarkerColorAlpha(0, 0.1);
+                hs_sum2.SetMarkerStyle(25);
+                hs_sum2.SetMarkerColor(kRed);
+                hs_sum2.SetLineColor(kRed);
+                #hs_sum2.Draw("same e2")
+                hs_sum2.Draw("same e")
             else:
                 # only error band in usual case
-                hs_sum1.Draw("same e2")
+                hs_sum2.Draw("same e2")
 
     '''
     cout << "setting title" << endl;
