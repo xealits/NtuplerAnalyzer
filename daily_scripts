@@ -1,3 +1,25 @@
+# correcting the plots
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root -p -r -o plots/ --lumi 35800 -c mu_sel_lj -x mu_selVloose_lj -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3
+
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root -p -r -o plots/ --lumi 35800 -c mu_sel_lj -x mu_selVloose_lj -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other.dy_other,dy_tautau
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root -p -r -o plots/ --lumi 35800 -c mu_sel_lj -x mu_selVloose_lj -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other
+
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root -p -r -o plots/ --lumi 35800 -c mu_sel_lj -x mu_selVloose_lj -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --systematic-uncertainty bSF,PU,LEPmuID,LEPmuTRG,TOPPT
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root -p -r -o plots/ --lumi 35800 -c mu_sel_lj -x mu_selVloose_lj -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --systematic-uncertainty bSF,PU,LEPmuID,LEPmuTRG,JES,JER,TES
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root -p -r -o plots/ --lumi 35800 -c mu_sel_lj -x mu_selVloose_lj -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --systematic-uncertainty bSF,PU,LEPmuID,LEPmuTRG,TOPPT,JES,JER,TES
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root -p -r -o plots/ --lumi 35800 -c mu_sel_lj -x mu_selVloose_lj -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --systematic-uncertainty bSF,PU,LEPmuID,LEPmuTRG,TOPPT,JES,JER,TES,Frag,SemilepBR,Peterson
+
+
+
+
+
 # compare precomputed mt-s to recomputed
 
 python -W ignore sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/redo-v25-v26_tests/MC2016_Summer16_TTJets_powheg_mu_sel_NOMINAL.root    --std-histos --histo-name mu_sel/std_procs/NOMINAL/Mt_lep_met_f  --save-weight lstore_outdirs/merge-sets/v26/resub1/MC2016_Summer16_TTJets_powheg.root &
