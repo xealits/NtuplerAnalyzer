@@ -1,3 +1,27 @@
+# fixing qcd recalculation for systematics
+
+it seems it is always done only for nominal
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root -o plots/ --lumi 35800 -c mu_sel_lj -x mu_selVloose_lj -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root -o plots/ --lumi 35800 -c mu_sel_lj -x mu_selVloose_lj -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 -s PUUp
+
+hadd plots/distrs/foobar.root plots//distrs/distrs_redo_v25v26_mc_HISTOSEL_Mt_lep_met_f_mu_sel_lj_*
+
+
+
+ls histosels/redo-v25-v26_1/distrs/*root | wc -l
+584
+ls histosels/redo-v25-v26_1/distrs/2/*root | wc -l
+620
+
+hadd histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix.root histosels/redo-v25-v26_1/distrs/*root
+
+
+
+
+
+
 # correcting the plots
 
 python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root -p -r -o plots/ --lumi 35800 -c mu_sel_lj -x mu_selVloose_lj -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3
@@ -65,6 +89,22 @@ perfect
 
 hadd jobsums/distrs/distrs_redo_v25v26_mc_3w0jets.root quick-test/redo-v25-v26_cats_hadds/MC*
 
+mu_sel_lj->Get("tt_mutau/NOMINAL/mu_sel_lj_tt_mutau_NOMINAL_Mt_lep_met_f")->Draw()
+mu_sel_lj->Get("tt_mutau/JESUp/mu_sel_lj_tt_mutau_JESUp_Mt_lep_met_f")->Draw("same")
+mu_sel_lj->Get("tt_mutau/JESDown/mu_sel_lj_tt_mutau_JESDown_Mt_lep_met_f")->Draw("same")
+mu_sel_lj->Get("tt_mutau/JERUp/mu_sel_lj_tt_mutau_JERUp_Mt_lep_met_f")->Draw("same")
+mu_sel_lj->Get("tt_mutau/JERDown/mu_sel_lj_tt_mutau_JERDown_Mt_lep_met_f")->Draw("same")
+mu_sel_lj->Get("tt_mutau/TESUp/mu_sel_lj_tt_mutau_TESUp_Mt_lep_met_f")->Draw("same")
+mu_sel_lj->Get("tt_mutau/TESDown/mu_sel_lj_tt_mutau_TESDown_Mt_lep_met_f")->Draw("same")
+
+mu_selVloose_lj->Get("tt_mutau/NOMINAL/mu_selVloose_lj_tt_mutau_NOMINAL_Mt_lep_met_f")->Draw()
+mu_selVloose_lj->Get("tt_mutau/TESUp/mu_selVloose_lj_tt_mutau_TESUp_Mt_lep_met_f")->Draw("same")
+mu_selVloose_lj->Get("tt_mutau/TESDown/mu_selVloose_lj_tt_mutau_TESDown_Mt_lep_met_f")->Draw("same")
+
+mu_sel_lj->Get("qcd/NOMINAL/mu_sel_lj_qcd_NOMINAL_Mt_lep_met_f")->Draw()
+mu_sel_lj->Get("qcd/TESUp/mu_sel_lj_qcd_TESUp_Mt_lep_met_f")->Draw("same")
+mu_sel_lj->Get("qcd/TESDown/mu_sel_lj_qcd_TESDown_Mt_lep_met_f")->Draw("same")
+
 rerun histosels and substitute HISTOSEL file for the fit
 
 foreach sys (JESDown JESUp)
@@ -128,10 +168,13 @@ python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v2
 systematics with recalculated qcd
 
 foreach sys (`cat syst-test.syst-list.1`)
-python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
-python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
-python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
-python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+foreach sys (`cat syst-test.syst-list.1_aa`)
+foreach sys (`cat syst-test.syst-list.1_ab`)
+foreach sys (`cat syst-test.syst-list.1_ac`)
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --systematic $sys &
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --systematic $sys &
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --systematic $sys &
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --systematic $sys &
 end
 
 and without (hard tt modeling)

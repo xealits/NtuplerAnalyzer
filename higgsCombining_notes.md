@@ -1284,6 +1284,12 @@ frozen lumi, no theoretical impacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR,ISR,HDAMP,TuneCUETP8M2T4  -m 125 -o latest_mu_impacts_RatesUpDownOrig_noUpDowns.json  --name MuImpacts
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_RatesUpDownOrig_noUpDowns.json -o postfit_mu_impacts_RatesUpDownOrig_noUpDowns
 
+FSR frozen to catch FSR - fake_rate correlation
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR  -m 125 --robustFit 1 --doInitialFit               --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR  -m 125 --robustFit 1 --doFits --parallel 5        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/fit-stuff/latest_datacard_mu.root --freezeParameters lumi_13TeV,FSR  -m 125 -o latest_mu_impacts_FSRfrozen.json  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_FSRfrozen.json -o postfit_mu_impacts_FSRfrozen
+
 
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit               --name MuImpacts
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5        --name MuImpacts
