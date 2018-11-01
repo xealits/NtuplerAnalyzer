@@ -532,8 +532,8 @@ def get_histos_with_data_qcd(sys_name):
 
     if args.qcd > 0. or args.osss or args.osss_mc:
         # get all the same distributions for _ss channel
-        #used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, sys_name, distr_name)) for distr_name in distr_names]
-        used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, 'NOMINAL', distr_name)) for distr_name in distr_names]
+        used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, sys_name, distr_name)) for distr_name in distr_names]
+        #used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, 'NOMINAL', distr_name)) for distr_name in distr_names]
 
         for distr, histos in used_histos_per_distr_ss:
             # loop through normal list
@@ -581,7 +581,8 @@ def get_histos_with_data_qcd(sys_name):
                 # here I found nominal "yield" datadriven qcd
                 # in case a shape channel is given -- find the qcd there and normalize to this yield
                 if args.shape:
-                    shape_qcd = datadriven_qcd(args.shape, distr, 'NOMINAL') # nominal only for now
+                    #shape_qcd = datadriven_qcd(args.shape, distr, 'NOMINAL') # nominal only for now
+                    shape_qcd = datadriven_qcd(args.shape, distr, sys_name)
                     shape_qcd.Scale(qcd_hist.Integral() / shape_qcd.Integral())
                     qcd_hist = shape_qcd
 
