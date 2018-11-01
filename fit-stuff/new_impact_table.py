@@ -35,6 +35,10 @@ impact_name_exp = {
 "LEP"         : "lepton ID efficiency",
 "LEPel"       : "electron ID efficiency",
 "LEPmu"       : "muon ID efficiency",
+"LEPelID"     : "electron ID efficiency",
+"LEPmuID"     : "muon ID efficiency",
+"LEPelTRG"    : "electron trigger efficiency",
+"LEPmuTRG"    : "muon trigger efficiency",
 "JES"         : "jet energy scale",
 "JER"         : "jet energy resolution",
 "TauES"       : "$\\tauh$ Energy Scale",
@@ -150,4 +154,5 @@ else:
     #print mcstat_quadrature_sum
     mcstat_impacts = [mcstat**0.5 for mcstat in impacts_mc_stat]
     print table_row_format % ('MC statistics', ' & '.join(imp_form % (imp*100) for imp in mcstat_impacts))
+
 

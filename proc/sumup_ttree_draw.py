@@ -1,6 +1,7 @@
 import argparse
 import logging
 from os.path import isfile, basename
+from sys import exit
 import ctypes
 from sys import exit
 
@@ -31,6 +32,7 @@ parser.add_argument("--cut-w0jets",   action='store_true', help="resolving the s
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 parser.add_argument("--test",   action='store_true', help="test run, don't draw and don't write")
 parser.add_argument("--output", type=str, default="output.root", help="filename for output")
+parser.add_argument("--force",  action='store_true', help="force rewriting the output file if it exists")
 
 parser.add_argument("--save-weight", action='store_true', help="save the weight counters in the output file")
 parser.add_argument("--per-weight",  action='store_true', help="normalize by event weight of datasets")
@@ -49,6 +51,10 @@ if args.debug:
     logging.basicConfig(level=logging.DEBUG)
 else:
     logging.basicConfig(level=logging.INFO)
+
+if isfile(args.output) and not args.force:
+    print "the file already exists: %s" % args.output
+    exit(1)
 
 # [/]histo_path/histo_name
 histo_name = args.histo_name.split('/')[-1]
@@ -873,6 +879,7 @@ for filename in input_files:
                 # if it is object systematics -> change the selection and multiply nominal weight
                 # else don't change the selection
                 # = get the selection index name and the syst weight
+                draw_command_final = draw_command
                 if sys_name in systs_objects:
                     # it is the object systematic -- the selection index changes and the met variation, which propagates to precomputed mt
                     selection_stage = systs_objects[sys_name]
@@ -889,8 +896,11 @@ for filename in input_files:
                 if chan in all_std_channels:
                     final_cond.append(all_std_channels[chan].format(selection_stage=selection_stage))
 
-                sys_weight = systs_weights_all.get(sys_name, systs_weights_nominal['NOMINAL'])
-                final_cond = '(%s) * %s' % (' && '.join(final_cond), sys_weight)
+                if dtag != 'data':
+                    sys_weight = systs_weights_all.get(sys_name, systs_weights_nominal['NOMINAL'])
+                    final_cond = '(%s) * %s' % (' && '.join(final_cond), sys_weight)
+                else:
+                    final_cond = '(%s)' % (' && '.join(final_cond))
 
                 draw_and_save(ttree, (chan, (main_name + '_' + proc_name) if proc_name else main_name, sys_name), draw_command_final, final_cond, args.test)
 
