@@ -13,10 +13,10 @@ def rgb(r, g, b):
 
 nick_info = {
 "data":        {'color': kWhite,   'legend': 'data'},
-"dy":          {'color': kGray,    'legend': 'DY'},
+"dy":          {'color': kGray+2,  'legend': 'DY+jets'},
 "dy_other":    {'color': kGray,    'legend': 'DY #rightarrow other'},
 "dy_tautau":   {'color': kGray+2,  'legend': 'DY #rightarrow #tau#tau'},
-"wjets":       {'color': kCyan+2,  'legend': 'W+jets#rightarrow l'},
+"wjets":       {'color': kCyan+2,  'legend': 'W+jets'},
 "wjets_other": {'color': kCyan+2,  'legend': 'W+jets#rightarrow l'},
 "wjets_tauh":  {'color': kCyan+3,  'legend': 'W+jets#rightarrow #tau_{h}'},
 "wjets_taul":  {'color': kCyan+4,  'legend': 'W+jets#rightarrow #tau_{l}'},
@@ -29,6 +29,7 @@ nick_info = {
 "s_top_elmu":  {'color': kAzure+1, 'legend': 's.top#rightarrow e#mu'},
 "s_top_lj":    {'color': kAzure+2, 'legend': 's.top#rightarrow lj'},
 "s_top_other": {'color': kAzure+3, 'legend': 's.top#rightarrow other'},
+"s_top":       {'color': kAzure,   'legend': 'single top'},
 
 "tt_jj":         {'color': kGreen+4,  'legend': 'tt_jj'},
 "tt_em":         {'color': kYellow-7, 'legend': 'tt_em'},
@@ -82,12 +83,14 @@ nick_order = {
 
 "dy_tautau": -25,
 "dy_other":  -26,
+"dy":        -26,
 
 "s_top_eltau": -30,
 "s_top_mutau": -31,
 "s_top_elmu":  -32,
 "s_top_lj":    -33,
 "s_top_other": -34,
+"s_top":       -34,
 
 "dibosons": -40,
 

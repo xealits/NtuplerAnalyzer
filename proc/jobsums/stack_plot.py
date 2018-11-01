@@ -29,10 +29,10 @@ parser.add_argument("--lumi", type=float, help="use to skip the final normalizin
 
 parser.add_argument("--y-max",   type=float, help="set the maximum on Y axis")
 parser.add_argument("--x-range", type=str,   help="set the range on X axis")
-parser.add_argument("--y-range",   type=str, help="set the range on Y axis `0,1.5`")
+parser.add_argument("--y-range", type=str,   help="set the range on Y axis `0,1.5`")
 
 #parser.add_argument("--Vloose-shapes",   action='store_true', help="get TT proc shapes from selVloose")
-
+parser.add_argument("--merge-procs", type=str,   help="merge some procs with the format <a_proc>,<another>,<add them to this one>.<and this proc goes into>,<another target> and rename target procs with <old_name:new_name>")
 
 parser.add_argument("--sort-dy",   action='store_true', help="sort DY up")
 
@@ -631,6 +631,39 @@ for distr, histos in used_histos_per_distr:
 
     hs_sums2.append(hs_sum2)
     hs_sums_noqcd.append(hs_sum_noqcd)
+
+
+# here all processes, including data-driven qcd, are finally calculated
+# merge some of them if asked
+#used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_name, distr_name, skip_QCD = args.skip_QCD)) for distr_name in distr_names]
+# [(distr_name, [(histo, nick, channel)])]
+if args.merge_procs:
+    procs_to_merge = {}
+    new_names = {}
+    for procs_bunch in [bunch.split(',') for bunch in args.merge_procs.split('.') if ',' in bunch]:
+        merged_procs, target_proc = procs_bunch[:-1], procs_bunch[-1]
+        if ':' in target_proc:
+            target_proc, new_name = target_proc.split(':')
+            new_names[target_proc] = new_name
+        logging.debug('merging %s to %s' % (repr(merged_procs), target_proc))
+        for proc in merged_procs:
+            procs_to_merge[proc] = target_proc
+
+    merged_histos = []
+    for distr, histos in used_histos_per_distr:
+        histos_per_nick = dict([(n,h) for h,n,_ in histos])
+        channel = histos[0][2]
+        # FIXME it will break if there are multiple channels
+        # add up the merged procs to the target
+        # and pop out the merged procs
+        for merged_proc, target in procs_to_merge.items():
+            histos_per_nick[target].Add(histos_per_nick[merged_proc])
+        for merged_proc in procs_to_merge.keys():
+            histos_per_nick.pop(merged_proc)
+
+        merged_histos.append((distr, [(h, new_names.get(n, n), channel) for n,h in histos_per_nick.items()]))
+
+    used_histos_per_distr = merged_histos
 
 hs_sum2 = hs_sums2[0]
 if args.qcd > 0. or args.osss or args.osss_mc:
