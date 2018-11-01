@@ -693,12 +693,30 @@ if args.form_shapes:
     used_histos = [i for i in used_histos if i[1] in shape_nicks]
 '''
 
+# set data histo styles and
+# add data to the legend
+#for histo_data in histos_data:
+#    histo_data.SetMarkerStyle(21)
+#    leg.AddEntry(histo_data, "data", "e1 p")
+# no, add just the data_sum entry
+if args.exp_legend:
+    shift = args.legend_shift if args.legend_shift else 0.
+    leg = TLegend(0.8 - shift, 0.45, 1. - shift, 0.9)
+else:
+    shift = args.legend_shift if args.legend_shift else 0.
+    leg = TLegend(0.7 - shift, 0.45, 0.89 - shift, 0.9)
+
+# data is first in the legend
+if not args.fake_rate and not args.skip_legend and not args.no_data:
+    histos_data_sum.SetMarkerStyle(21)
+    leg.AddEntry(histos_data_sum, "data", "e1 p")
+
 # get MC stack and legend for it
 #hs, leg = plotting_root.stack_n_legend(used_histos)
 if args.legend_shift:
-    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos, args.legend_shift, args.exp_legend, sort_dy=args.sort_dy)) for distr_name, histos in used_histos_per_distr]
+    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos, args.legend_shift, args.exp_legend, sort_dy=args.sort_dy, leg=leg)) for distr_name, histos in used_histos_per_distr]
 else:
-    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos, exp_legend=args.exp_legend, sort_dy=args.sort_dy)) for distr_name, histos in used_histos_per_distr]
+    hs_legs_per_distr = [(distr_name, plotting_root.stack_n_legend(histos, exp_legend=args.exp_legend, sort_dy=args.sort_dy, leg=leg)) for distr_name, histos in used_histos_per_distr]
 
 # sum of MC to get the sum of errors
 
@@ -739,16 +757,6 @@ used_histos = used_histos_per_distr[0][1]
 
 logging.info("data   = %f"    % 0. if args.no_data else histos_data_sum.Integral())
 logging.info("mc sum = %f %f" % (hs_sum1.Integral(), hs_sum2.Integral()))
-
-# set data histo styles and
-# add data to the legend
-#for histo_data in histos_data:
-#    histo_data.SetMarkerStyle(21)
-#    leg.AddEntry(histo_data, "data", "e1 p")
-# no, add just the data_sum entry
-if not args.no_data:
-    histos_data_sum.SetMarkerStyle(21)
-    leg.AddEntry(histos_data_sum, "data", "e1 p")
 
 out_dir = args.output_directory + '/' if args.output_directory else './'
 

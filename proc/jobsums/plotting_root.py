@@ -60,8 +60,6 @@ nick_info = {
 nick_colour = {nick: nick_info[nick]['color'] for nick in nick_info}
 
 nick_order = {
-"qcd": 0,
-
 "tt_mutau3ch":  -1,
 "tt_eltau3ch":  -1,
 "tt_mutau": -2,
@@ -92,9 +90,11 @@ nick_order = {
 "s_top_other": -34,
 
 "dibosons": -40,
+
+"qcd": -50,
 }
 
-def stack_n_legend(used_histos, shift=0., exp_legend=False, sort_dy=False):
+def stack_n_legend(used_histos, shift=0., exp_legend=False, sort_dy=False, leg=None):
     '''stack_n_legend(used_histos)
 
     used_histos = [(histo, nick of process, channel), ...]
@@ -109,9 +109,10 @@ def stack_n_legend(used_histos, shift=0., exp_legend=False, sort_dy=False):
     # build Stach and legend
     hs = THStack("mc_stack", "mc_stack")
     #leg = TLegend(0.7 - (0.15 if not homogeneous_channels else 0.), 0.4, 0.89, 0.89)
-    if exp_legend:
+    if not leg:
+      if exp_legend:
         leg = TLegend(0.8 - shift, 0.45, 1. - shift, 0.9)
-    else:
+      else:
         leg = TLegend(0.7 - shift, 0.45, 0.89 - shift, 0.9)
 
     process_counter = {} # for distinguishing processes in different channels
