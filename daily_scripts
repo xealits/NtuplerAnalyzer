@@ -1,3 +1,374 @@
+# again fakes correlate with fsr
+
+FSR            lnN 1.03/0.97   1.4/0.6     1.35/0.75   1.02/0.98   1.26/0.74    - - - - - - - - -           1.04/0.96   1.35/0.75   1.4/0.6     1.07/0.93   1.3/0.7      - - - - - - - - -
+ISR            lnN 1.013/0.987 1.029/0.971 0.986/1.014 0.990/1.010 0.994/1.006  - - - - - - - - -           1.016/0.984 1.024/0.976 1.083/0.917 1.027/0.973 1.014/0.986  - - - - - - - - -     
+HDAMP          lnN 0.999/1.001 1.008/0.992 1.017/0.983 0.942/1.058 0.886/1.114  - - - - - - - - -           0.996/1.004 0.998/1.002 0.937/1.063 1.018/0.982 0.994/1.006  - - - - - - - - -
+TuneCUETP8M2T4 lnN 1.014/0.986 1.032/0.968 0.950/1.050 0.988/1.012 0.996/1.004  - - - - - - - - -           1.007/0.993 1.008/0.992 0.981/1.019 1.003/0.997 1.021/0.979  - - - - - - - - -     
+
+FSR            lnN 1.03/0.97   1.4/0.6     1.35/0.75   1.02/0.98   1.26/0.74    - - - - - - - - -           1.04/0.96   1.35/0.75   1.4/0.6     1.07/0.93   1.3/0.7      - - - - - - - - -
+ISR            lnN 1.013/0.987 1.029/0.971 0.986/1.014 0.990/1.010 0.994/1.006  - - - - - - - - -           1.016/0.984 1.024/0.976 1.083/0.917 1.027/0.973 1.014/0.986  - - - - - - - - -
+HDAMP          lnN 0.999/1.001 1.008/0.992 1.017/0.983 0.942/1.058 0.886/1.114  - - - - - - - - -           0.996/1.004 0.998/1.002 0.937/1.063 1.018/0.982 0.994/1.006  - - - - - - - - -
+TuneCUETP8M2T4 lnN 1.014/0.986 1.032/0.968 0.950/1.050 0.988/1.012 0.996/1.004  - - - - - - - - -           1.007/0.993 1.008/0.992 0.981/1.019 1.003/0.997 1.021/0.979  - - - - - - - - -
+
+
+tau_fakes               lnN    -      1.2   1.2   -     1.2        1.2      1.2   -     -        -     -        -     -        -                  -      1.2   1.2   -     1.2        1.2      1.2   -     -        -     -        -     -
+
+
+
+weirdness now:
+
+el -> 0.9
+mu -> 1.03
+
+what? the plots of Mt are the same as usual, el must -> 1.03 and mu -> 0.93, what is this?
+delirious results
+
+combine -M MultiDimFit ttxsec/latest_datacard_el.root   --algo grid --points 10 --rMin 0.7 --rMax 1.3 --name ElShapes   --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_updowns
+combine -M MultiDimFit ttxsec/latest_datacard_mu.root   --algo grid --points 10 --rMin 0.7 --rMax 1.3 --name MuShapes   --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_updowns
+
+el 1.06897
+mu 1.02145
+
+???
+
+old rateParams and rate updowns
+
+1.0689
+1.02071
+
+combine -M MultiDimFit ttxsec/latest_datacard_el.root   --algo grid --points 10 --rMin 0.7 --rMax 1.3 --name ElShapes   --freezeParameters lumi_13TeV
+combine -M MultiDimFit ttxsec/latest_datacard_mu.root   --algo grid --points 10 --rMin 0.7 --rMax 1.3 --name MuShapes   --freezeParameters lumi_13TeV
+
+1.08401 -> [0.7,1.3]
+0.950753 -> [0.7,1.3]
+
+
+try rate updowns and lnN fakerates?
+
+save shape rows:
+
+FSR             shape          1.0    1.0   1.0   1.0   1.0  - - - - - - - - -         1.0 1.0 1.0 1.0 1.0  - - - - - - - - -
+ISR             shape          1.0    1.0   1.0   1.0   1.0  - - - - - - - - -         1.0 1.0 1.0 1.0 1.0  - - - - - - - - -
+HDAMP           shape          1.0    1.0   1.0   1.0   1.0  - - - - - - - - -         1.0 1.0 1.0 1.0 1.0  - - - - - - - - -
+TuneCUETP8M2T4  shape          1.0    1.0   1.0   1.0   1.0  - - - - - - - - -         1.0 1.0 1.0 1.0 1.0  - - - - - - - - -
+
+
+try rate updowns and lnU fakerates
+
+1.08098
+0.9525
+
+and el is too wide?
+
+combine -M MultiDimFit ttxsec/latest_datacard_el.root   --algo grid --points 60 --rMin 0.7 --rMax 1.3 --name ElShapes   --freezeParameters lumi_13TeV
+combine -M MultiDimFit ttxsec/latest_datacard_mu.root   --algo grid --points 60 --rMin 0.7 --rMax 1.3 --name MuShapes   --freezeParameters lumi_13TeV
+
+el
+
+  [WARNING] Found [wjets_norm] at boundary. 
+  [WARNING] Found [qcd_norm] at boundary. 
+
+mu
+
+  [WARNING] Found [tau_fakes] at boundary. 
+  [WARNING] Found [wjets_norm] at boundary. 
+  [WARNING] Found [qcd_norm] at boundary. 
+
+and mu has deviation in NLL
+
+impacts
+
+mu
+
+  FSR       :   +0.985  -0.377/+0.179  +0.012/+0.018
+  bSF       :   +0.640  -1.016/+0.962  +0.032/-0.021
+
+tau_fakes = 1. +0 -0.47
+
+
+try rate updowns and lnN fakerates
+
+1.05535
+0.95561
+
+crack in mu at 1.1
+complete nonesense in el
+
+freeze updowns -- still nonesense???
+
+no frag, semilep etc to qcd
+
+combine -M MultiDimFit ttxsec/latest_datacard_el.root   --algo grid --points 20 --rMin 0.7 --rMax 1.3 --name ElShapes   --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_updowns
+combine -M MultiDimFit ttxsec/latest_datacard_mu.root   --algo grid --points 20 --rMin 0.7 --rMax 1.3 --name MuShapes   --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_updowns
+
+1.03627  -- shape ok
+0.930665 -- shape ok
+
+combine -M MultiDimFit ttxsec/latest_datacard_el.root   --algo grid --points 20 --rMin 0.7 --rMax 1.3 --name ElShapes   --freezeParameters lumi_13TeV
+combine -M MultiDimFit ttxsec/latest_datacard_mu.root   --algo grid --points 20 --rMin 0.7 --rMax 1.3 --name MuShapes   --freezeParameters lumi_13TeV
+
+1.03863  -- shape ok
+0.958358 -- shape ok
+
+impacts:
+
+el fine
+mu ok, but fakes and FSR are up to 1sigma
+
+
+
+
+try lnU for fakes
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_lnU.json        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_lnU.json -o postfit_mu_impacts_lnU
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts_lnU.json        --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_lnU.json -o postfit_el_impacts_lnU
+
+
+lnU is weirder
+
+mu - wjets impact more than tau_fakes
+     tau_fakes are pulled to 1, same as FSR
+
+el - FSR is 2nd impact, tau_fakes are 0.06 +-0
+
+
+
+then return to lnN and try shape for updowns
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_lnN_shape_updowns.json        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_lnN_shape_updowns.json -o postfit_mu_impacts_lnN_shape_updowns
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts_lnN_shape_updowns.json        --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_lnN_shape_updowns.json -o postfit_el_impacts_lnN_shape_updowns
+
+el 0.918 +- 0.095
+   tau fakes and FSR are one-sided
+   otherwise all ok
+
+mu 0.94  +- 0.078
+   bunch of systematics are weirdly constrained
+   ISR, HDAMP, FSR but also TES
+   FSR and tau_fakes are overall ok
+
+
+NO modeling systematics to QCD!
+
+rateParams for tau fakes
+
+lnN for updowns
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_rateParam_lnN_updowns.json        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_rateParam_lnN_updowns.json -o postfit_mu_impacts_rateParam_lnN_updowns
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts_rateParam_lnN_updowns.json        --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_rateParam_lnN_updowns.json -o postfit_el_impacts_rateParam_lnN_updowns
+
+el 1.04 +- 0.102
+   FSR is second largest and it is one-sided (??)
+   couple MC bins are pulled by 1 sigma
+
+mu 0.95 +- 0.0758
+   FSR is down the list, pulled to 1 and constrained
+   ISR and HDAMP are not constrained
+
+
+shape updowns
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_rateParam_shape_updowns.json        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_rateParam_shape_updowns.json -o postfit_mu_impacts_rateParam_shape_updowns
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts_rateParam_shape_updowns.json        --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_rateParam_shape_updowns.json -o postfit_el_impacts_rateParam_shape_updowns
+
+el 0.902 +- 0.093
+   TOPPT second, Tune, FSR are pulled and constrained
+
+mu 0.96  +- 0.078
+   bSF pulled +1sigma
+   Tune, FSR, ISR, HDAMP are constrained
+
+
+
+the most reasonable is the very first one
+try it again
+
+lnN fakes and shape updowns
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_lnN_shape_updowns2.json        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_lnN_shape_updowns2.json -o postfit_mu_impacts_lnN_shape_updowns2
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts_lnN_shape_updowns2.json        --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_lnN_shape_updowns2.json -o postfit_el_impacts_lnN_shape_updowns2
+
+
+then lnN fakes and lnN updowns
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_mu.root   --freezeParameters lumi_13TeV  -m 125 -o latest_mu_impacts_lnN_lnN_updowns.json        --name MuImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_lnN_lnN_updowns.json -o postfit_mu_impacts_lnN_lnN_updowns
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit         --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5  --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_el.root   --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts_lnN_lnN_updowns.json        --name ElImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_lnN_lnN_updowns.json -o postfit_el_impacts_lnN_lnN_updowns
+
+-- and check the systematics table
+
+python ttxsec/fit-stuff/new_impact_table.py --merge-pdf latest_el_impacts_lnN_lnN_updowns.json latest_mu_impacts_lnN_lnN_updowns.json latest_both_impacts_lnN_lnN_updowns.json
+
+                   el &   mu
+MC statistics  &  2.5 &  1.7 \\
+
+but nonesense in both
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_both.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit                --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_both.root   --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5         --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_both.root   --freezeParameters lumi_13TeV  -m 125 -o latest_both_impacts_lnN_lnN_updowns.json --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts_lnN_lnN_updowns.json -o postfit_both_impacts_lnN_lnN_updowns
+
+in fit of both there are bunch of:
+
+ ---------------------------
+
+ WARNING: MultiDimFit failed
+
+ ---------------------------
+
+result is
+
+File higgsCombine_paramFit_BothImpacts_Mf.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_Mfr.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_PDFCT14n15.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_PDFCT14n22.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_PDFCT14n27.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_PDFCT14n4.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_prop_binmu_mu_sel_lj_bin1.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_prop_binmu_mu_sel_lj_bin4.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_prop_binmu_mu_sel_lj_bin6.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_prop_binmu_mu_sel_lj_bin7.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_prop_binmu_mu_sel_lj_bin8.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_prop_binmu_mu_sel_ljout_bin2.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_prop_binel_el_sel_lj_bin4.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_prop_binel_el_sel_lj_bin8.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_BothImpacts_prop_binel_el_sel_ljout_bin2.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+
+   r :    +0.990   -0.078/+0.079 (68%)
+
+impacts table:
+
+$\tauh$ misidentification background  &  2.0 &  1.4 &  8.1 \\
+$\tauh$ jet identification  &  5.2 &  4.9 &  4.3 \\
+...
+                      PDF  &  1.7 &  1.4 &  3.8 \\
+            MC statistics  &  2.5 &  1.7 &  5.5 \\
+
+how does this work then?
+some weird weirdness, tau_fakes is pulled to +1sigma
+but it is also very stretched over position 0
+and it is one-sided
+
+el tau_fakes is slightly shifted to 0.1-0.2
+mu tau_fakes are at 1sigma and constrained by about half
+
+both with FSR frozen:
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_both.root   --freezeParameters lumi_13TeV,FSR  -m 125 --robustFit 1 --doInitialFit                --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_both.root   --freezeParameters lumi_13TeV,FSR  -m 125 --robustFit 1 --doFits --parallel 5         --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_both.root   --freezeParameters lumi_13TeV,FSR  -m 125 -o latest_both_impacts_lnN_lnN_updowns_frozenFSR.json --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts_lnN_lnN_updowns_frozenFSR.json -o postfit_both_impacts_lnN_lnN_updowns_frozenFSR
+
+   r :    +0.986   -0.073/+0.258 (68%)
+
+  tauID_eff :        +0.255  -0.949/+0.946  +0.047/-0.045
+  TuneCUETP8M2T4 :   +1.232  -0.941/+0.935  -0.009/+0.009
+  bSF       :        +1.148  -1.053/+0.955  +0.026/-0.018
+
+no failed parameters
+
+result is weirdly 0.986 +- 0.166 !!!!!!!!!!!
+
+which 0.16? where is 0.07?
+
+tau fakes are 5th and strongly constrained
+qcd norm is third?
+
+python ttxsec/fit-stuff/new_impact_table.py --merge-pdf latest_el_impacts_lnN_lnN_updowns.json latest_mu_impacts_lnN_lnN_updowns.json latest_both_impacts_lnN_lnN_updowns_frozenFSR.json
+
+the table is more reasonable:
+
+$\tauh$ jet identification  &  5.2 &  4.9 &  4.7 \\
+      Pile-Up uncertainty  &  3.1 &  2.7 &  3.2 \\
+        top quark $p_{T}$  &  3.0 &  2.4 &  2.9 \\
+        QCD normalization  &  0.6 &  0.9 &  2.7 \\
+     b-tagging efficiency  &  1.9 &  2.0 &  2.6 \\
+$\tauh$ misidentification background  &  2.0 &  1.4 &  2.4 \\
+     W+jets normalization  &  0.4 &  1.2 &  1.9 \\
+     $\tauh$ Energy Scale  &  0.7 &  0.5 &  1.2 \\
+       muon ID efficiency  &  0.8 &  0.8 \\
+electron trigger efficiency  &  2.8 &  0.7 \\
+         DY normalization  &  0.4 &  0.4 &  0.6 \\
+ Single Top normalization  &  0.7 &  0.7 &  0.6 \\
+   electron ID efficiency  &  2.1 &  0.4 \\
+    jet energy resolution  &  0.3 &  0.0 &  0.4 \\
+         jet energy scale  &  0.3 &  0.0 &  0.3 \\
+  muon trigger efficiency  &  0.4 &  0.3 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  3.0 &  2.6 &  2.7 \\
+  Initial State Radiation  &  1.5 &  1.4 &  1.2 \\
+Underlying event (Pythia tune)  &  0.6 &  0.7 &  0.9 \\
+ ME Renormalization scale  &  0.8 &  1.2 &  0.9 \\
+ME combined scale variation  &  0.5 &  1.0 &  0.8 \\
+b decay tables, Semileptonic BR  &  0.6 &  0.4 &  0.4 \\
+   ME Factorization scale  &  0.3 &  0.3 &  0.2 \\
+   ME-PS matching (hdamp)  &  0.5 &  0.3 &  0.2 \\
+    Final State Radiation  &  1.6 &  0.4 &  0.0 \\
+                      PDF  &  1.7 &  1.4 &  1.7 \\
+            MC statistics  &  2.5 &  1.7 &  2.2 \\
+
+QCD and WJets norm is weird
+JER, JES are 0 in muon??
+TES is larger in both than in any of separate channels? and same for tau_fakes
+(FSR is frozen in both)
+
+
+let's freeze all updowns and go for dinner
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_both.root   --freezeParameters lumi_13TeV  --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doInitialFit                --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_both.root   --freezeParameters lumi_13TeV  --freezeNuisanceGroup tt_updowns -m 125 --robustFit 1 --doFits --parallel 5         --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/latest_datacard_both.root   --freezeParameters lumi_13TeV  --freezeNuisanceGroup tt_updowns -m 125 -o latest_both_impacts_lnN_lnN_updowns_frozenUpdowns.json --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts_lnN_lnN_updowns_frozenUpdowns.json -o postfit_both_impacts_lnN_lnN_updowns_frozenUpdowns
+
+
+
+
+
+
+
 # fixing qcd recalculation for systematics
 
 it seems it is always done only for nominal
