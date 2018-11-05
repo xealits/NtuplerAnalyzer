@@ -75,6 +75,8 @@ sys_color = {'TOPPTUp': kRed,
     'JERDown': kGreen + 1,
     'JESUp':   kGreen,
     'JESDown': kGreen + 1,
+    'TESUp':   kGreen,
+    'TESDown': kGreen + 1,
     'ISRUp'   : kOrange,
     'ISRDown' : kOrange + 1,
     'FSRUp'   : kOrange,
@@ -91,7 +93,12 @@ for sys in sys_names:
     else:
         sys_MC = fdata.Get(args.channel + '/sums_%s/mc_sum1_%s' % (sys, sys))
     sys_MC.Print()
-    sys_MC.SetLineColor(sys_color[sys])
+    if sys in sys_color:
+        sys_MC.SetLineColor(sys_color[sys])
+    elif 'Up' in sys:
+        sys_MC.SetLineColor(kRed)
+    elif 'Down' in sys:
+        sys_MC.SetLineColor(kRed+1)
     leg.AddEntry(sys_MC, "MC %s" % sys, "L")
     sys_MCs.append(sys_MC)
 

@@ -1,5 +1,6 @@
 from os.path import isfile
 import argparse
+import logging
 
 
 parser = argparse.ArgumentParser(
@@ -17,11 +18,10 @@ parser.add_argument("-s", "--sys",       type=str, default='FSR,ISR,HDAMP,TuneCU
 
 parser.add_argument("--debug",      action = "store_true", help="log debug output")
 parser.add_argument("--to-average", action = "store_true", help="ratio to average of systematics, instead of the nominal tt")
+parser.add_argument("--precision",  type=str, default='%.3f', help="systematics to consider")
 
 
 args = parser.parse_args()
-
-import logging
 
 if args.debug:
     logging.basicConfig(level=logging.DEBUG)
@@ -52,6 +52,7 @@ for sys in args.sys.split(','):
     for channel in args.channels.split(','):
         for process in args.processes.split(','):
             #print process
+            logging.debug("chan = {chan} proc = {proc} sys = {sys} distr = {distr}".format(chan=channel, proc=process, sys=sys+'Up',   distr=args.distr))
 
             sysname_up = "{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=channel, proc=process, sys=sys+'Up',   distr=args.distr)
             #print sysname_up
@@ -84,6 +85,7 @@ for sys in args.sys.split(','):
             var_down = sys_down_yield / reference
             sys_variations.append((var_up, var_down))
 
-    print ('%20s  ' % sys) + '  '.join(('%20s' % ('%.3f/%.3f' % (var_down, var_up)) for var_up, var_down in sys_variations))
+    variations_string = '{prec}/{prec}'.format(prec = args.precision)
+    print ('%20s  ' % sys) + '  '.join(('%20s' % (variations_string % (var_down, var_up)) for var_up, var_down in sys_variations))
 
 
