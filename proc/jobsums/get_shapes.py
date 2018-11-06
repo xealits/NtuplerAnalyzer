@@ -22,6 +22,7 @@ parser.add_argument('--norm-binwidth',  action='store_true', help="normalize eac
 parser.add_argument('--norm-formulas',     action='store_true', help="normalize the formulas of histos to 1")
 parser.add_argument("--y-range",     type=str,      help="set Y range as `ymin,ymax`")
 parser.add_argument("--x-title",     type=str,      help="title of X axis")
+parser.add_argument("--y-title",     type=str,      help="title of Y axis")
 
 parser.add_argument('--formula',  type=str, help="to plot h1 overlayed with 123*h2+982*h3: `h1 : 123 h2 , 982h3`")
 
@@ -43,17 +44,25 @@ import ROOT
 from ROOT import gStyle, gROOT, gPad, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TLine, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan
 gROOT.SetBatch()
 gStyle.SetOptStat(0)
+#gStyle.SetLineWidth(2)
 
 from plotting_root import rgb, nick_colour
 
-leg = TLegend(0.6,0.7, 0.9,0.9)
+leg = TLegend(0.6, 0.7, 0.9, 0.89)
+leg.SetBorderSize(0)
 
 histos = {}
+legend_names = {}
 
 for i, fileparameter in enumerate(args.input_files):
     pars = fileparameter.split(':')
-    assert len(pars) == 2 or len(pars) == 3
-    if len(pars) == 3:
+    assert len(pars) in (2, 3, 4)
+
+    if len(pars) == 4:
+        legend, nick, filename, opts = pars
+        logging.debug('legend name for  %s  is  %s' % (nick, legend))
+        legend_names[nick] = legend
+    elif len(pars) == 3:
         nick, filename, opts = pars
     else:
         nick, filename = pars
@@ -96,6 +105,11 @@ for i, fileparameter in enumerate(args.input_files):
     logging.debug("integral : %f" % histo.Integral())
     histo.SetDirectory(0)
     histo.SetLineColor(1 + i)
+    histo.SetLineWidth(3)
+
+    histo.SetMarkerStyle(19)
+    histo.SetMarkerColor(1 + i)
+
     if not args.no_norm:
         histo.Scale(1./histo.Integral())
     histo.SetName(nick)
@@ -116,6 +130,8 @@ if args.logy:
 
 pad1.cd()
 
+plots_to_legend = []
+
 if not args.formula:
     for i, (nick, h) in enumerate(histos.items()):
         if i == 0:
@@ -125,10 +141,13 @@ if not args.formula:
             if args.x_title:
                 #nom_MC.SetTitle(args.process)
                 h.SetXTitle(args.x_title)
+            if args.y_title:
+                h.SetYTitle(args.y_title)
             h.Draw()
         else:
             h.Draw("same")
-        leg.AddEntry(histo, nick, "l")
+        logging.debug('adding from legend %s nick %s' % (repr(legend_names), nick))
+        leg.AddEntry(histo, legend_names.get(nick, nick), "l")
 
 else:
     # parse the formula
@@ -178,7 +197,7 @@ else:
 
         form_histos.append(histo)
 
-        leg.AddEntry(histo, subform, "l")
+        plots_to_legend.append((histo, subform))
 
     # and draw
     for histo in form_histos:
@@ -200,11 +219,18 @@ else:
                 logging.debug("setting min-max")
                 histo.SetMaximum(y_max)
                 histo.SetMinimum(y_min)
-            histo.Draw("same")
+            #histo.Draw("hist e same")
+            histo.Draw("hist same")
         else:
             if args.x_title:
                 #nom_MC.SetTitle(args.process)
                 histo.SetXTitle(args.x_title)
+            if args.y_title:
+                histo.SetYTitle(args.y_title)
+            histo.GetYaxis().SetLabelFont(63)
+            histo.GetXaxis().SetLabelFont(63)
+            histo.GetYaxis().SetLabelSize(14)
+            histo.GetXaxis().SetLabelSize(14)
             if y_max is not None and y_min is not None:
                 logging.debug("setting min-max")
                 histo.SetMaximum(y_max)
@@ -212,8 +238,29 @@ else:
 
             # draw the first one with line
             histo.SetFillColor(0)
-            histo.Draw("hist e")
+            #histo.Draw("hist e")
+            histo.Draw("hist")
             drawn = True
+
+for histo, subform in reversed(plots_to_legend):
+    if subform.strip() in legend_names:
+        leg.AddEntry(histo, legend_names[subform.strip()]) #, "l")
+    else:
+        leg.AddEntry(histo, subform) #, "l")
+
+left_title = TPaveText(0.12, 0.8, 0.36, 0.88, "brNDC")
+left_title.AddText("CMS simulation")
+left_title.SetTextFont(1)
+left_title.SetFillColor(0)
+
+right_title = TPaveText(0.65, 0.9, 0.9, 0.95, "brNDC")
+right_title.AddText("(13 TeV)")
+right_title.SetTextFont(132)
+right_title.SetFillColor(0)
+
+left_title .Draw("same")
+right_title.Draw("same")
+
 
 leg.Draw("same")
 
