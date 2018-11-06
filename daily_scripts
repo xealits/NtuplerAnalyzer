@@ -1,3 +1,146 @@
+# fit plots for the paper, NLL etc
+
+inputs for sig-strength -> xsec
+
+signal strangth:
+
+el_sig  = 1.020
+el_sys  = 0.096
+el_stat = 0.015
+
+mu_sig  = 0.909
+mu_sys  = 0.077
+mu_stat = 0.011
+
+bt_sig  = 0.941
+bt_sys  = 0.075
+bt_stat = 0.009
+
+
+yields table
+
+old one:
+
+python numbers_for_datacard.py histosel-roots/HISTOSEL_v25pStage2Run3_3_Run4_Vloose_shape_el_mu_ljs_updowns_weights_test4.root -y -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --latex
+
+now:
+
+python numbers_for_datacard.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix.root -y -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --latex
+
+
+
+comparison of Mt shapes with different legends
+
+python jobsums/get_shapes.py --x-title "M_{T}(#mu, MET) [GeV]" --norm-binwidth --formula "tt_mujets : tt_mutau " -c mu_selVloose -d Mt_lep_met_f -p tt_lj tt_mutau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_mutau,NOMINAL tt_mujets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_lj,NOMINAL --y-range 0,0.3
+
+python jobsums/get_shapes.py --x-title "M_{T}(e, MET) [GeV]"   --norm-binwidth --formula "tt_eljets : tt_eltau " -c el_selVloose -d Mt_lep_met_f -p tt_lj tt_eltau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:el_selVloose,tt_eltau,NOMINAL tt_eljets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:el_selVloose,tt_lj,NOMINAL --y-range 0,0.3
+
+
+python jobsums/get_shapes.py --x-title "M_{T}(#mu, MET) [GeV]" --norm-binwidth --formula "tt_mujets : tt_mutau " -c mu_selVloose -d Mt_lep_met_f -p tt_lj "t#bar{t}#rightarrow #mu#tau_{h}":tt_mutau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_mutau,NOMINAL "t#bar{t}#rightarrow lj":tt_mujets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_lj,NOMINAL --y-range 0,0.3
+
+python jobsums/get_shapes.py --x-title "M_{T}(e, MET) [GeV]"   --norm-binwidth --formula "tt_eljets : tt_eltau " -c el_selVloose -d Mt_lep_met_f -p tt_lj "t#bar{t}#rightarrow e#tau_{h}":tt_eltau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:el_selVloose,tt_eltau,NOMINAL "t#bar{t}#rightarrow lj":tt_eljets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:el_selVloose,tt_lj,NOMINAL --y-range 0,0.3
+
+
+python jobsums/get_shapes.py --x-title "M_{T}(#mu, MET) [GeV]" --norm-binwidth --formula "tt_mujets : tt_mutau " -c mu_selVloose -d Mt_lep_met_f -p tt_lj "signal":tt_mutau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_mutau,NOMINAL "background":tt_mujets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_lj,NOMINAL --y-range 0,0.3
+
+python jobsums/get_shapes.py --x-title "M_{T}(e, MET) [GeV]"   --norm-binwidth --formula "tt_eljets : tt_eltau " -c el_selVloose -d Mt_lep_met_f -p tt_lj "signal":tt_eltau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:el_selVloose,tt_eltau,NOMINAL "background":tt_eljets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:el_selVloose,tt_lj,NOMINAL --y-range 0,0.3
+
+
+python jobsums/get_shapes.py --x-title "M_{T}(#mu, MET) [GeV]" --norm-binwidth --formula "tt_mujets : tt_mutau " -c mu_selVloose -d Mt_lep_met_f -p tt_lj "signal (t#bar{t}#rightarrow l#tau_{h}#nu#nu{}b#bar{b})":tt_mutau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_mutau,NOMINAL "background":tt_mujets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_lj,NOMINAL --y-range 0,0.3
+
+python jobsums/get_shapes.py --x-title "M_{T}(e, MET) [GeV]"   --norm-binwidth --formula "tt_eljets : tt_eltau " -c el_selVloose -d Mt_lep_met_f -p tt_lj "signal":tt_eltau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:el_selVloose,tt_eltau,NOMINAL "background":tt_eljets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:el_selVloose,tt_lj,NOMINAL --y-range 0,0.3
+
+
+
+
+
+
+python jobsums/get_shapes.py --x-title "M_{T}(l, MET) [GeV]" --y-title "arbitrary units" --norm-binwidth --formula "tt_mujets : tt_mutau" -c mu_selVloose -d Mt_lep_met_f -p tt_lj "signal":tt_mutau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_mutau,NOMINAL "background":tt_mujets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_lj,NOMINAL --y-range 0,0.3
+
+
+
+
+
+
+
+
+
+# sels with nominal systematic
+
+foreach chans (el_sel el_selVloose el_sel_ss el_selVloose_ss mu_sel mu_selVloose mu_sel_ss mu_selVloose_ss)
+  foreach systs (nom)
+  echo \#\!/bin/sh                                          > batch_jobs/tt_${chans}_${systs}
+  echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/tt_${chans}_${systs}
+  echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/tt_${chans}_${systs}
+  echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/tt_${chans}_${systs}
+  echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/tt_${chans}_${systs}
+  echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/tt_${chans}_${systs}
+  echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/tt_${chans}_${systs}
+  echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/tt_${chans}_${systs}
+  echo cmsenv                                              >> batch_jobs/tt_${chans}_${systs}
+  echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/tt_${chans}_${systs}
+
+  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"std_mt_vars"' --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com '""' --output quick-test/redo-v25-v26_cats/MC2016_Summer16_TTJets_powheg_${chans}_$systs.root    --std-histos --histo-name $chans/std_procs/$systs/Mt_lep_met_f  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v26/resub1/MC2016_Summer16_TTJets_powheg.root >> batch_jobs/tt_${chans}_${systs}
+  end
+end
+
+foreach chans (el_sel el_selVloose el_sel_ss el_selVloose_ss mu_sel mu_selVloose mu_sel_ss mu_selVloose_ss)
+  foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main  sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main sw-dir/merge-sets/jobs_hadd.dtags.small_main`)
+  echo \#\!/bin/sh                                          > batch_jobs/mc_${dtag}_${chans}
+  echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/mc_${dtag}_${chans}
+  echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/mc_${dtag}_${chans}
+  echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/mc_${dtag}_${chans}
+  echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/mc_${dtag}_${chans}
+  echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/mc_${dtag}_${chans}
+  echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/mc_${dtag}_${chans}
+  echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/mc_${dtag}_${chans}
+  echo cmsenv                                              >> batch_jobs/mc_${dtag}_${chans}
+  echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/mc_${dtag}_${chans}
+
+  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"std_mt_vars"' --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com '""' --output quick-test/redo-v25-v26_cats/${dtag}_$chans.root    --std-histos --histo-name $chans/std_procs/nom/Mt_lep_met_f  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25/resub1/$dtag*.root >> batch_jobs/mc_${dtag}_${chans}
+  end
+end
+
+foreach chans (el_sel el_selVloose el_sel_ss el_selVloose_ss mu_sel mu_selVloose mu_sel_ss mu_selVloose_ss)
+  foreach dtag (SingleMuon SingleElectron)
+  echo \#\!/bin/sh                                          > batch_jobs/data_${dtag}_${chans}
+  echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/data_${dtag}_${chans}
+  echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/data_${dtag}_${chans}
+  echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/data_${dtag}_${chans}
+  echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/data_${dtag}_${chans}
+  echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/data_${dtag}_${chans}
+  echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/data_${dtag}_${chans}
+  echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/data_${dtag}_${chans}
+  echo cmsenv                                              >> batch_jobs/data_${dtag}_${chans}
+  echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/data_${dtag}_${chans}
+
+  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"std_mt_vars"' --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com '""' --output quick-test/redo-v25-v26_cats/${dtag}_$chans.root    --std-histos --histo-name $chans/std_procs/nom/Mt_lep_met_f  --save-weight lstore_outdirs/merge-sets/v25/resub1/$dtag*.root >> batch_jobs/data_${dtag}_${chans}
+  end
+end
+
+
+
+hadd quick-test/distrs_redo_v25v26_mc_4.root quick-test/redo-v25-v26_cats_hadds/MC*
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel -x mu_selVloose -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/ --lumi 31300 -c el_sel -x el_selVloose -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# table of the fit results
 
 python ttxsec/fit-stuff/new_impact_table.py --merge-pdf latest_el_impacts_lnN_lnN_noQCDPUnTES_withPDF.json latest_mu_impacts_lnN_lnN_noQCDPUnTES_withPDF.json latest_both_impacts_lnN_lnN_noQCDPUnTES_withPDF.json
 
