@@ -23,6 +23,8 @@ ymax  = (ctypes.c_double * n)()
 ymin2 = (ctypes.c_double * n)()
 ymax2 = (ctypes.c_double * n)()
 
+# accept el, bu, both: 140.318  146.057  143.229
+draw_command = "2*deltaNLL:r*143.23" # visible cross section in both channels # full space "2*deltaNLL:r*831.76" # "2*deltaNLL:r"
 
 '''
 higgsCombineMuFullUncertainty.MultiDimFit.mH120.root higgsCombineMuNoTau.MultiDimFit.mH120.root higgsCombineMuNoSysButTOPPT.MultiDimFit.mH120.root
@@ -77,15 +79,15 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            file_stat  = TFile(fn_stat)
 
            ttree_full = file_full.Get("limit")
-           n = ttree_full.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+           n = ttree_full.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
            g_full = TGraph(n, ttree_full.GetV2(), ttree_full.GetV1())
 
            ttree_notau = file_notau.Get("limit")
-           n = ttree_notau.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+           n = ttree_notau.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
            g_notau = TGraph(n, ttree_notau.GetV2(), ttree_notau.GetV1())
 
            ttree_stat = file_stat.Get("limit")
-           n = ttree_stat.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+           n = ttree_stat.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
            g_stat = TGraph(n, ttree_stat.GetV2(), ttree_stat.GetV1())
 
            g_full.SetLineWidth(3)
@@ -96,7 +98,8 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            # removing the title
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
            #g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
-           g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
+           #g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
+           g_full .SetTitle(";\\text{visible cross section [pb]};-2\\Delta ln L")
            g_notau.SetTitle(";;")
            g_stat .SetTitle(";;")
 
@@ -117,16 +120,18 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            exp_file_notau = TFile(fn_notau)
            exp_file_stat  = TFile(fn_stat)
 
+           print fn_full, fn_notau, fn_stat
+
            exp_ttree_full = exp_file_full.Get("limit")
-           n = exp_ttree_full.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+           n = exp_ttree_full.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
            exp_g_full = TGraph(n, exp_ttree_full.GetV2(), exp_ttree_full.GetV1())
 
            exp_ttree_notau = exp_file_notau.Get("limit")
-           n = exp_ttree_notau.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+           n = exp_ttree_notau.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
            exp_g_notau = TGraph(n, exp_ttree_notau.GetV2(), exp_ttree_notau.GetV1())
 
            exp_ttree_stat = exp_file_stat.Get("limit")
-           n = exp_ttree_stat.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+           n = exp_ttree_stat.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
            exp_g_stat = TGraph(n, exp_ttree_stat.GetV2(), exp_ttree_stat.GetV1())
 
            exp_g_full.SetLineWidth(3)
@@ -137,7 +142,8 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            # removing the title
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
            #exp_g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
-           exp_g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
+           #exp_g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
+           exp_g_full .SetTitle(";\\text{visible cross section [pb]};-2\\Delta ln L")
            exp_g_notau.SetTitle(";;")
            exp_g_stat .SetTitle(";;")
 
@@ -166,14 +172,16 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
       #exp_g_notau.Draw("L same")
       #exp_g_stat .Draw("L same")
 
-      leg.AddEntry(exp_g_full, "exp. full unc.", "L")
+      leg.AddEntry(exp_g_full, "expected", "L")
+      #leg.AddEntry(exp_g_full, "exp. full unc.", "L")
       #leg.AddEntry(exp_g_stat, "exp. stat unc.", "L")
 
       g_full .Draw("L same")
       #g_notau.Draw("L same")
       #g_stat .Draw("L same")
 
-      leg.AddEntry(g_full, "fitted full unc.", "L")
+      leg.AddEntry(g_full, "observed", "L")
+      #leg.AddEntry(g_full, "fitted full unc.", "L")
       #leg.AddEntry(g_stat, "fitted stat unc.", "L")
 
    elif plot_data:
@@ -219,10 +227,14 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    #right_title.SetFillColor(0)
 
    right_title = TPaveText(0.5, 0.9, 0.9, 0.95, "brNDC")
+   both = True
    if report_lumi:
        right_title.AddText("%s fb^{-1} (13 TeV)" % (31.3 if chan == 'el' else 35.8))
+   elif both:
+       right_title.AddText("%s fb^{-1} (13 TeV)" % '35.8')
    else:
        right_title.AddText("(13 TeV)")
+
    right_title.SetTextFont(132)
    right_title.SetFillColor(0)
    right_title.Draw("same")
@@ -235,13 +247,13 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    c1.SaveAs("uncertainty_scans_%s%s.png" % (chan, plotted))
 
 plot('mu', True, True)
-plot('el', True, True)
-
 plot('mu', True, False)
+
+plot('el', True, True)
 plot('el', True, False)
 
-plot('mu', False, True)
-plot('el', False, True)
+#plot('mu', False, True)
+#plot('el', False, True)
 
 
 # 

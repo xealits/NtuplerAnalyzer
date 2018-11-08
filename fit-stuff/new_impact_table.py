@@ -43,21 +43,21 @@ impact_name_exp = {
 "JER"         : "jet energy resolution",
 "TauES"       : "$\\tauh$ Energy Scale",
 "TES"         : "$\\tauh$ Energy Scale",
-"PU"          : "Pile-Up uncertainty",
+"PU"          : "pileup uncertainty",
 "TOPPT"       : "top quark $p_{T}$",
 }
 
 impact_name_th = {
 "Frag"        : "b fragmentation",
 "Peterson"    : "b frag., Peterson variation",
-"SemilepBR"   : "b decay tables, Semileptonic BR",
+"SemilepBR"   : "semi-leptonic b-hadron BRs",
 "Mr"          : "ME Renormalization scale",
 "Mf"          : "ME Factorization scale",
 "Mfr"         : "ME combined scale variation",
-"FSR" : "Final State Radiation",
-"ISR" : "Initial State Radiation",
-"HDAMP" : "ME-PS matching (hdamp)",
-"TuneCUETP8M2T4" : "Underlying event (Pythia tune)",
+"FSR"         : "final   state radiation",
+"ISR"         : "initial state radiation",
+"HDAMP"       : "ME-PS matching (hdamp)",
+"TuneCUETP8M2T4" : "underlying event (Pythia tune)",
 }
 
 impact_name_dictionary = {}

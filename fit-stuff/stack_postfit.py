@@ -64,8 +64,6 @@ from os.path import isfile
 from sys import exit
 import ctypes
 
-logging.basicConfig(level=logging.DEBUG)
-
 
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
@@ -83,7 +81,7 @@ parser.add_argument("--y-max",       type=float, default=2000, help="set the max
 
 parser.add_argument("--lumi",  type=float, default=35.8, help="lumi reported")
 parser.add_argument("--title", type=str,   default='',   help="optional title")
-parser.add_argument("--title-y", type=str,   default='Evts./1GeV',   help="optional title")
+parser.add_argument("--title-y", type=str,   default='[Evts./GeV]',   help="optional title")
 parser.add_argument("--title-x", type=str,   default='M_{T} [GeV]',   help="optional title")
 
 parser.add_argument("--mu", action='store_true', help="aim mu processes")
@@ -98,9 +96,16 @@ parser.add_argument("--no-data", action='store_true', help="don't plot data")
 parser.add_argument("--custom-bins", action='store_true', help="the bins adjusted to statistics")
 parser.add_argument("--coarse-bins", action='store_true', help="the 10 bins from 0 to 200 for Mt")
 
+parser.add_argument("--debug", action='store_true', help="log at DEBUG level")
+
 
 
 args = parser.parse_args()
+
+if args.debug:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.INFO)
 
 assert isfile(args.data_file)
 
@@ -218,8 +223,10 @@ leg.AddEntry(data, nick_info['data']['legend'], "e2 L")
 for bini in range(data.GetSize()):
     tgraph_content = data_higComb.Eval(bini-0.5) # must fit the center of the bin in tgraph
     tgraph_error   = data_higComb.GetErrorY(bini) # just symmetrical error
-    data.SetBinContent (bini, tgraph_content)
-    data.SetBinError   (bini, tgraph_error)
+    width   = data.GetXaxis().GetBinUpEdge(bini) - data.GetXaxis().GetBinLowEdge(bini)
+    logging.debug("%2d: %10f %10f %10f" % (bini, tgraph_content, tgraph_error, width))
+    data.SetBinContent (bini, tgraph_content / width)
+    data.SetBinError   (bini, tgraph_error / width)
 
 #data.SetFillStyle(3004)
 #data.SetFillColor(1)
@@ -230,6 +237,7 @@ data.SetMarkerColor(0)
 hs = THStack("mc_stack", "mc_stack")
 
 mc_histos = []
+mc_nicks  = []
 for nick in mc_processes:
     col = nick_colour[nick]
 
@@ -245,7 +253,11 @@ for nick in mc_processes:
 
         content = histo_higComb.GetBinContent(bini)
         error   = histo_higComb.GetBinError(bini)
-        width   = histo_higComb.GetXaxis().GetBinUpEdge(bini) - histo_higComb.GetXaxis().GetBinLowEdge(bini)
+        #width   = histo_higComb.GetXaxis().GetBinUpEdge(bini) - histo_higComb.GetXaxis().GetBinLowEdge(bini)
+        width   = histo.GetXaxis().GetBinUpEdge(bini) - histo.GetXaxis().GetBinLowEdge(bini)
+
+        logging.debug("%2d: %10f %10f %10f" % (bini, content, error, width))
+
         histo.SetBinContent(bini, content/width)
         histo.SetBinError(bini, error/width)
 
@@ -262,17 +274,21 @@ for nick in mc_processes:
     #used_histos.append(histo) # hopefully root wont screw this up
     hs.Add(histo, "HIST")
     mc_histos.append(histo)
-
-    leg.AddEntry(histo, nick_info[nick]['legend'], "F")
+    mc_nicks.append(nick)
 
     if args.resum:
         mc_sum.Add(histo)
 
+for histo, nick in reversed(zip(mc_histos, mc_nicks)):
+    leg.AddEntry(histo, nick_info[nick]['legend'], "F")
+
 # set mc_sum histogram
 if not args.resum:
     for bini in range(mc_sum_higComb.GetSize()+1):
-        mc_sum.SetBinContent(bini,  mc_sum_higComb.GetBinContent(bini))
-        mc_sum.SetBinError  (bini,  mc_sum_higComb.GetBinError(bini))
+        width   = mc_sum.GetXaxis().GetBinUpEdge(bini) - mc_sum.GetXaxis().GetBinLowEdge(bini)
+        logging.debug("%2d: %10f" % (bini, width))
+        mc_sum.SetBinContent(bini,  mc_sum_higComb.GetBinContent(bini) / width)
+        mc_sum.SetBinError  (bini,  mc_sum_higComb.GetBinError(bini)   / width)
 
 mc_sum.SetFillStyle(3004)
 mc_sum.SetFillColor(1)
@@ -380,7 +396,7 @@ left_title.SetFillColor(0)
 #right_title.SetTextFont(132)
 #right_title.SetFillColor(0)
 
-right_title = TPaveText(0.75, 0.9, 0.9, 0.95, "brNDC")
+right_title = TPaveText(0.7, 0.9, 0.9, 0.98, "brNDC")
 #if report_lumi:
 #    right_title.AddText("%s fb^{-1} (13 TeV)" % (31.3 if chan == 'el' else 35.8))
 #else:

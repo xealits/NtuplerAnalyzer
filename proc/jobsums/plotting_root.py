@@ -94,7 +94,6 @@ nick_order = {
 "s_top":       -34,
 
 "dibosons": -40,
-
 "qcd": -50,
 }
 

@@ -109,12 +109,15 @@ sum_cut_histos.Divide(sum_all_histos)
 
 sum_num = []
 if args.yields:
-    sum_num.append(sum_all_histos.GetBinContent(1))
+    sum_num.append((sum_all_histos.GetBinContent(1), sum_all_histos.GetBinError(1)))
 
 for i in range(1,range_length):
-    sum_num.append(sum_cut_histos.GetBinContent(i))
+    sum_num.append((sum_cut_histos.GetBinContent(i), sum_cut_histos.GetBinError(i)))
 
-print "%20s " % "sum" + ' '*5, ' '.join("%10.4f" % sum_num[i] for i in range(len(sum_num)))
+if args.with_stat:
+    print "%20s " % "sum" + ' '*5, ' '.join("%10.4f +- %6.4f" % (sum_num[i][0], sum_num[i][1]) for i in range(len(sum_num)))
+else:
+    print "%20s " % "sum" + ' '*5, ' '.join("%10.4f" % sum_num[i][0] for i in range(len(sum_num)))
 
 if args.ratio:
     for name, numbers in results:
