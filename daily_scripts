@@ -1,4 +1,87 @@
+# more info for AN
+
+Mt shapes for each channel at Vloose and Medium tau ID
+
+python jobsums/get_shapes.py --x-title "M_{T}(#mu, MET) [GeV]" --y-title "arbitrary units" --norm-binwidth --formula "tt_mujets : tt_mutau" -c mu_selVloose -d Mt_lep_met_f -p tt_lj "signal":tt_mutau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_mutau,NOMINAL "background":tt_mujets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_lj,NOMINAL --y-range 0,0.3
+
+python jobsums/get_shapes.py --x-title "M_{T}(e, MET) [GeV]"   --y-title "arbitrary units" --norm-binwidth --formula "tt_eljets : tt_eltau" -c el_selVloose -d Mt_lep_met_f -p tt_lj "signal":tt_eltau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:el_selVloose,tt_eltau,NOMINAL "background":tt_eljets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:el_selVloose,tt_lj,NOMINAL --y-range 0,0.3
+
+python jobsums/get_shapes.py --x-title "M_{T}(#mu, MET) [GeV]" --y-title "arbitrary units" --norm-binwidth --formula "tt_mujets : tt_mutau" -c mu_sel -d Mt_lep_met_f -p tt_lj "signal":tt_mutau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_sel,tt_mutau,NOMINAL "background":tt_mujets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_sel,tt_lj,NOMINAL --y-range 0,0.3
+
+python jobsums/get_shapes.py --x-title "M_{T}(e, MET) [GeV]"   --y-title "arbitrary units" --norm-binwidth --formula "tt_eljets : tt_eltau" -c el_sel -d Mt_lep_met_f -p tt_lj "signal":tt_eltau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:el_sel,tt_eltau,NOMINAL "background":tt_eljets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:el_sel,tt_lj,NOMINAL --y-range 0,0.3
+
+
+Data-MC in Same Sign selection for control
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel_ss -x mu_selVloose_ss -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --y-max 250.
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/ --lumi 31300 -c el_sel_ss -x el_selVloose_ss -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --y-max 150.
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel -x mu_selVloose -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --y-max 250.
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/ --lumi 31300 -c el_sel -x el_selVloose -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --y-max 150.
+
+
+
+sel with experimental legend
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel -x mu_selVloose -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3  --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0. --exp-legend
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/ --lumi 31300 -c el_sel -x el_selVloose -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3  --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0. --exp-legend
+
+
+
+The new categorized plots
+with all processes explisit --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+
+
+
+
+
+for yield table with OS sel nominal data-driven QCD:
+
+foreach sys (NOMINAL)
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1/ --lumi 35800 -c mu_sel    -x mu_selVloose    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --systematic $sys &
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1/ --lumi 31300 -c el_sel    -x el_selVloose    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --systematic $sys &
+end
+
+hadd histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root histosels/redo-v25-v26_1/distrs/*root
+
+python numbers_for_datacard.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root -y -d Mt_lep_met_f -c el_sel,el_sel_lj,el_sel_ljout --latex
+python numbers_for_datacard.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root -y -d Mt_lep_met_f -c mu_sel,mu_sel_lj,mu_sel_ljout --latex
+
+
+
+
+signal acceptance with statistical uncertainty
+
+merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg.root
+
+python print_acceptances.py --sys-weights merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg.root --with-stat
+INFO:root:import ROOT
+INFO:root:done
+               mutau           0.1756 +- 0.0004     0.1759 +- 0.0004     0.1756 +- 0.0004     0.1754 +- 0.0004     0.1761 +- 0.0004     0.1756 +- 0.0004     0.1760 +- 0.0004     0.1758 +- 0.0004     0.1756 +- 0.0004     0.1757 +- 0.0004     0.1758 +- 0.0004     0.1753 +- 0.0004     0.1754 +- 0.0004     0.1760 +- 0.0004     0.1755 +- 0.0004     0.1757 +- 0.0004     0.1755 +- 0.0004     0.1752 +- 0.0004     0.1762 +- 0.0004     0.1759 +- 0.0004     0.1755 +- 0.0004     0.1749 +- 0.0004     0.1762 +- 0.0004     0.1757 +- 0.0004     0.1757 +- 0.0004     0.1756 +- 0.0004     0.1758 +- 0.0004     0.1763 +- 0.0004     0.1751 +- 0.0004     0.1759 +- 0.0004     0.1754 +- 0.0004     0.1754 +- 0.0004     0.1760 +- 0.0004     0.1761 +- 0.0004     0.1753 +- 0.0004     0.1756 +- 0.0004     0.1758 +- 0.0004     0.1756 +- 0.0004     0.1757 +- 0.0004     0.1758 +- 0.0004     0.1756 +- 0.0004     0.1755 +- 0.0004     0.1761 +- 0.0004     0.1756 +- 0.0004     0.1759 +- 0.0004     0.1760 +- 0.0004     0.1753 +- 0.0004     0.1759 +- 0.0004     0.1756 +- 0.0004     0.1754 +- 0.0004     0.1761 +- 0.0004     0.1752 +- 0.0004     0.1763 +- 0.0004     0.1757 +- 0.0004     0.1757 +- 0.0004     0.1755 +- 0.0004     0.1751 +- 0.0004     0.1752 +- 0.0004     0.1752 +- 0.0004     0.1757 +- 0.0004     0.1757 +- 0.0004     0.1760 +- 0.0004     0.1758 +- 0.0004     0.1757 +- 0.0004     0.1758 +- 0.0004     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000
+               eltau           0.1687 +- 0.0004     0.1689 +- 0.0004     0.1686 +- 0.0004     0.1684 +- 0.0004     0.1691 +- 0.0004     0.1685 +- 0.0004     0.1690 +- 0.0004     0.1688 +- 0.0004     0.1686 +- 0.0004     0.1687 +- 0.0004     0.1688 +- 0.0004     0.1683 +- 0.0004     0.1684 +- 0.0004     0.1690 +- 0.0004     0.1686 +- 0.0004     0.1686 +- 0.0004     0.1685 +- 0.0004     0.1683 +- 0.0004     0.1691 +- 0.0004     0.1689 +- 0.0004     0.1686 +- 0.0004     0.1681 +- 0.0004     0.1691 +- 0.0004     0.1687 +- 0.0004     0.1687 +- 0.0004     0.1686 +- 0.0004     0.1688 +- 0.0004     0.1692 +- 0.0004     0.1682 +- 0.0004     0.1688 +- 0.0004     0.1684 +- 0.0004     0.1684 +- 0.0004     0.1690 +- 0.0004     0.1691 +- 0.0004     0.1683 +- 0.0004     0.1687 +- 0.0004     0.1688 +- 0.0004     0.1687 +- 0.0004     0.1687 +- 0.0004     0.1688 +- 0.0004     0.1686 +- 0.0004     0.1685 +- 0.0004     0.1691 +- 0.0004     0.1686 +- 0.0004     0.1689 +- 0.0004     0.1689 +- 0.0004     0.1683 +- 0.0004     0.1689 +- 0.0004     0.1686 +- 0.0004     0.1684 +- 0.0004     0.1691 +- 0.0004     0.1682 +- 0.0004     0.1693 +- 0.0004     0.1688 +- 0.0004     0.1687 +- 0.0004     0.1686 +- 0.0004     0.1681 +- 0.0004     0.1682 +- 0.0004     0.1683 +- 0.0004     0.1688 +- 0.0004     0.1687 +- 0.0004     0.1689 +- 0.0004     0.1688 +- 0.0004     0.1687 +- 0.0004     0.1687 +- 0.0004     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000     0.0000 +- 0.0000
+                 sum           0.1722     0.1724     0.1721     0.1719     0.1726     0.1721     0.1725     0.1723     0.1721     0.1722     0.1723     0.1718     0.1719     0.1725     0.1721     0.1722     0.1720     0.1717     0.1727     0.1724     0.1721     0.1715     0.1726     0.1722     0.1722     0.1721     0.1723     0.1727     0.1717     0.1724     0.1719     0.1719     0.1725     0.1726     0.1718     0.1722     0.1723     0.1721     0.1722     0.1723     0.1721     0.1720     0.1726     0.1721     0.1724     0.1725     0.1718     0.1724     0.1721     0.1719     0.1726     0.1717     0.1728     0.1722     0.1722     0.1720     0.1716     0.1717     0.1717     0.1723     0.1722     0.1725     0.1723     0.1722     0.1722     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000
+
+
+
+
+
+
+
+
 # fit plots for the paper, NLL etc
+
+python fit-stuff/plot_uncertainty_scans.py
+
 
 inputs for sig-strength -> xsec
 
@@ -56,6 +139,7 @@ python jobsums/get_shapes.py --x-title "M_{T}(e, MET) [GeV]"   --norm-binwidth -
 
 
 python jobsums/get_shapes.py --x-title "M_{T}(l, MET) [GeV]" --y-title "arbitrary units" --norm-binwidth --formula "tt_mujets : tt_mutau" -c mu_selVloose -d Mt_lep_met_f -p tt_lj "signal":tt_mutau:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_mutau,NOMINAL "background":tt_mujets:jobsums/distrs/distrs_redo_v25v26_mc_4.root:mu_selVloose,tt_lj,NOMINAL --y-range 0,0.3
+
 
 
 
@@ -6534,6 +6618,24 @@ python numbers_for_datacard.py histosel-roots/HISTOSEL_v25pStage2Run3_3_Run4_Vlo
 
 
 xsec numbers with extrapolation
+
+the W BRs in ttbar powheg:
+
+t_w_el = 9261
+tb_w_el = 9368
+tb_w_mu = 9220
+tb_w_mu = 9306
+tb_w_tau = 9275
+t_w_tau = 9575
+
+(t_w_el  + tb_w_el) / 2N
+(t_w_mu  + tb_w_mu) / 2N
+(t_w_tau + tb_w_tau) / 2N
+
+0.10767212280945115
+0.10707680214546632
+0.10894946132149627
+
 
 acceptances -- the same
 
