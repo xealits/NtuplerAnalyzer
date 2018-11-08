@@ -360,7 +360,7 @@ if args.event_yields:
             print proc_s % 'mc_sum_ratio' + separator + separator.join([(item_s + '.3f') % (mc_sums[channel][0]/data_yields[channel][0]) for channel in channels]) + line_end
         else:
             #print proc_s % 'mc_sum' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % tuple(mc_sums[channel]) for channel in channels]) + line_end
-            print proc_s % 'mc_sum' + separator + separator.join([('$' + item_s + '.0f' + ' \\pm ' + item_s + '.0f $') % tuple(mc_sums_sumhisto[channel]) for channel in channels]) + line_end
+            print proc_s % 'total' + separator + separator.join([('$' + item_s + '.0f' + ' \\pm ' + item_s + '.0f $') % tuple(mc_sums_sumhisto[channel]) for channel in channels]) + line_end
 
     print proc_s % 'data' + separator + separator.join([('$' + item_s + '.0f' + ' \\pm ' + item_s + '.0f $') % data_yields[channel] for channel in channels]) + line_end
 

@@ -1370,7 +1370,8 @@ else:
     '''
 
     if args.exp_legend:
-        left_title = TPaveText(0.05, 0.9, 0.4, 0.94, "brNDC")
+        #left_title = TPaveText(0.05, 0.9, 0.4, 0.94, "brNDC")
+        left_title = TPaveText(0.12, 0.8, 0.2, 0.88, "brNDC")
     else:
         #left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
         left_title = TPaveText(0.12, 0.8, 0.2, 0.88, "brNDC")
@@ -1390,9 +1391,10 @@ else:
     '''
 
     if args.exp_legend:
-        right_title = TPaveText(0.85, 0.9, 1.0, 0.96, "brNDC")
+        #right_title = TPaveText(0.85, 0.9, 1.0, 0.96, "brNDC")
+        right_title = TPaveText(0.75, 0.9, 0.98, 0.98, "brNDC")
     else:
-        right_title = TPaveText(0.65, 0.9, 0.9, 0.95, "brNDC")
+        right_title = TPaveText(0.65, 0.9, 0.9,  0.95, "brNDC")
     right_title.AddText("%s fb^{-1} (13 TeV)" % (args.lumi / 1000. if args.lumi else args.lumi_label))
     right_title.SetTextFont(132)
     right_title.SetFillColor(0)
