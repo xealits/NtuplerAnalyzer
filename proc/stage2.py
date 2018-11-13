@@ -28,7 +28,7 @@ SV_SIGN_CUT = 2.5
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all):
     #return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all or pass_mumu
-    return pass_mu or pass_el or pass_elmu or pass_mumu
+    return pass_mu or pass_el or pass_elmu or pass_mumu or pass_elel
 
 
 def passes_wjets_control_selection(passed_triggers, leps, N_jets, taus, proc_met):
@@ -53,7 +53,25 @@ def passes_wjets_control_selection(passed_triggers, leps, N_jets, taus, proc_met
 
     return channel_stage
 
+# N_jets 
+def passes_elmu_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
+    channel_stage = 0
+    pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
 
+    pass_elmu_leps = pass_elmu and len(leps[4]) == 2 and leps[4][0] * leps[4][1] == -11*13
+    pass_elmu_leps_jets = pass_elmu_leps and N_jets[1] > 1
+    pass_elmu_leps_jets_bjet = pass_elmu_leps_jets and N_jets[0] > 0
+
+    if   pass_elmu_leps_jets_bjet:
+        channel_stage = 205
+    elif pass_elmu_leps_jets:
+        channel_stage = 204
+    elif pass_elmu_leps:
+        channel_stage = 203
+    elif pass_elmu:
+        channel_stage = 202
+
+    return channel_stage
 
 def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     channel_stage = 0
@@ -188,43 +206,27 @@ def passes_dy_mumu_selection_stages(passed_triggers, leps, N_jets, taus, proc_me
     pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
 
     # muon and OS tau and no b
-    pass_dy_objects_mu = pass_mumu and len(leps[0]) == 2 and N_jets[0] == 0
-    pass_dy_objects_el = pass_elel and len(leps[0]) == 2 and N_jets[0] == 0
+    pass_dy_objects_mu = pass_mumu and len(leps[0]) == 2
+    pass_dy_objects_el = pass_elel and len(leps[0]) == 2
+    no_b_jets = N_jets[0] == 0
     pass_dy_mass = False
     if pass_dy_objects_mu or pass_dy_objects_el:
         pair    = leps[0][0] + leps[0][1]
         pair_mass = pair.mass()
         pass_dy_mass = 75. < pair_mass < 105.
 
-    if   pass_dy_objects_mu and pass_dy_mass:
+    if   pass_dy_objects_mu and no_b_jets and pass_dy_mass:
+        channel_stage = 105
+    elif pass_dy_objects_mu and no_b_jets:
         channel_stage = 103
     elif pass_dy_objects_mu:
         channel_stage = 102
-    elif pass_dy_objects_el and pass_dy_mass:
+    elif pass_dy_objects_el and no_b_jets and pass_dy_mass:
+        channel_stage = 115
+    elif pass_dy_objects_el and no_b_jets:
         channel_stage = 113
     elif pass_dy_objects_el:
         channel_stage = 112
-
-    return channel_stage
-
-
-# N_jets 
-def passes_elmu_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
-    channel_stage = 0
-    pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
-
-    pass_elmu_leps = pass_elmu and len(leps[4]) == 2 and leps[4][0] * leps[4][1] == -11*13
-    pass_elmu_leps_jets = pass_elmu_leps and N_jets[1] > 1
-    pass_elmu_leps_jets_bjet = pass_elmu_leps_jets and N_jets[0] > 0
-
-    if pass_elmu_leps_jets_bjet:
-        channel_stage = 205
-    elif pass_elmu_leps_jets:
-        channel_stage = 204
-    elif pass_elmu_leps:
-        channel_stage = 203
-    elif pass_elmu:
-        channel_stage = 202
 
     return channel_stage
 
@@ -3640,16 +3642,19 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         '''
 
         #passes = tt_channel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and dy_channel_sel_stage < 1
-        notpasses = tt_channel_sel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1 and em_channel_sel_stage < 1 and tt_channel_stage_alliso < 1
+        notpasses_tt_leptau = tt_channel_sel_stage < 1 and tt_channel_sel_stage_TESUp < 1 and tt_channel_sel_stage_TESDown < 1 and tt_channel_sel_stage_JESUp < 1 and tt_channel_sel_stage_JESDown < 1 and tt_channel_sel_stage_JERUp < 1 and tt_channel_sel_stage_JERDown < 1
+        # and em_channel_sel_stage < 1 and tt_channel_stage_alliso < 1
+        #notpasses_tt_elmu   = em_channel_sel_stage < 1 and em_channel_sel_stage_TESUp < 1 and em_channel_sel_stage_TESDown < 1 and em_channel_sel_stage_JESUp < 1 and em_channel_sel_stage_JESDown < 1 and em_channel_sel_stage_JERUp < 1 and em_channel_sel_stage_JERDown < 1
+        notpasses_em        = em_channel_sel_stage < 1 and em_channel_sel_stage_TESUp < 1 and em_channel_sel_stage_TESDown < 1 and em_channel_sel_stage_JERUp < 1 and em_channel_sel_stage_JERDown < 1 and em_channel_sel_stage_JESUp < 1 and em_channel_sel_stage_JESDown < 1
+        notpasses_alliso = tt_channel_stage_alliso < 1
 
         notpasses_dy_tautau = dy_channel_sel_stage < 1 and dy_channel_sel_stage_TESUp < 1 and dy_channel_sel_stage_TESDown < 1 and dy_channel_sel_stage_JESUp < 1 and dy_channel_sel_stage_JESDown < 1 and dy_channel_sel_stage_JERUp < 1 and dy_channel_sel_stage_JERDown < 1
         notpasses_dy_mumu   = dy_mumu_channel_sel_stage < 1 and dy_mumu_channel_sel_stage_TESUp < 1 and dy_mumu_channel_sel_stage_TESDown < 1 and dy_mumu_channel_sel_stage_JESUp < 1 and dy_mumu_channel_sel_stage_JESDown < 1 and dy_mumu_channel_sel_stage_JERUp < 1 and dy_mumu_channel_sel_stage_JERDown < 1
 
-        notpasses_em = em_channel_sel_stage < 1 and em_channel_sel_stage_TESUp   < 1 and em_channel_sel_stage_TESDown < 1 and em_channel_sel_stage_JERUp   < 1 and em_channel_sel_stage_JERDown < 1 and em_channel_sel_stage_JESUp   < 1 and em_channel_sel_stage_JESDown < 1
 
         notpasses_wjets = selection_wjets_control < 1
 
-        if notpasses and notpasses_dy_tautau and notpasses_dy_mumu and notpasses_em and notpasses_wjets:
+        if notpasses_tt_leptau and notpasses_em and notpasses_dy_tautau and notpasses_dy_mumu and notpasses_wjets: # and notpasses_alliso
             continue
 
         # SAVE SELECTION, objects and weights
