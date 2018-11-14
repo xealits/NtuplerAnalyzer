@@ -1798,6 +1798,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     event_met_lep_mt_TESDown = array('f', [0])
     ttree_out.Branch('event_met_lep_mt_TESDown', event_met_lep_mt_TESDown, 'event_met_lep_mt_TESDown/f')
 
+    event_dilep_mass = array('f', [0])
+    ttree_out.Branch('event_dilep_mass', event_dilep_mass, 'event_dilep_mass/f')
+
     event_leptons = ROOT.LorentzVectorS()
     ttree_out.Branch("event_leptons", event_leptons)
     all_vector_branches.append(event_leptons)
@@ -3816,6 +3819,13 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             event_taus_alliso_p4    .push_back(tau_cand[0]*tau_cand[1])
             event_taus_alliso_pdgId .push_back(tau_cand[2])
             event_taus_alliso_IDlev .push_back(tau_cand[4])
+
+        # mass of the dilepton system, lep-tau or lep-lep
+        if len(lep_p4)>1:
+            event_dilep_mass[0] = (lep_p4[0] + lep_p4[1]).mass()
+        elif len(lep_p4)>0 and len(sel_taus)>0:
+            # nominal TES SF
+            event_dilep_mass[0] = (lep_p4[0] + sel_taus[0][0] * sel_taus[0][1][0]).mass()
 
         # if sel_jets.medium:
         #     bMjet0_pt = sel_jets.medium[0][0].pt() * sel_jets.medium[0][1]
