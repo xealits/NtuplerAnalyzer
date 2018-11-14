@@ -21,7 +21,7 @@ JETS_PT_CUT = 21. # 30.
 TAUS_PT_CUT = 21. # 30. # 20GeV for DY->tautau selection
 TAUS_ID_CUT_Medium = 2
 TAUS_ID_CUT_VLoose = 0
-TAUS_ID_CUT = TAUS_ID_CUT_VLoose # TAUS_ID_CUT_Medium # Vloose cut for the shape
+TAUS_ID_CUT = TAUS_ID_CUT_Medium # TAUS_ID_CUT_VLoose # Vloose cut for the shape
 ONLY_3PI_TAUS = False
 SV_SIGN_CUT = 2.5
 

@@ -54,7 +54,7 @@ else:
 
 if isfile(args.output) and not args.force:
     print "the file already exists: %s" % args.output
-    exit(1)
+    exit(0)
 
 # [/]histo_path/histo_name
 histo_name = args.histo_name.split('/')[-1]
@@ -245,32 +245,40 @@ all_std_channels = {
 
 # new selection stages
 all_std_channels = {
-'mu_sel':          '{selection_stage}==  7',
-'mu_sel_ss':       '{selection_stage}==  6',
-'el_sel':          '{selection_stage}== 17',
-'el_sel_ss':       '{selection_stage}== 16',
-'mu_selVloose':    '({selection_stage}==  7 || {selection_stage}==  5)',
-'mu_selVloose_ss': '({selection_stage}==  6 || {selection_stage}==  4)',
-'el_selVloose':    '({selection_stage}== 17 || {selection_stage}== 15)',
-'el_selVloose_ss': '({selection_stage}== 16 || {selection_stage}== 14)',
+'mu_sel':          ('{selection_stage}==  7', 'selection_stage'),
+'mu_sel_ss':       ('{selection_stage}==  6', 'selection_stage'),
+'el_sel':          ('{selection_stage}== 17', 'selection_stage'),
+'el_sel_ss':       ('{selection_stage}== 16', 'selection_stage'),
+'mu_selVloose':    ('({selection_stage}==  7 || {selection_stage}==  5)', 'selection_stage'),
+'mu_selVloose_ss': ('({selection_stage}==  6 || {selection_stage}==  4)', 'selection_stage'),
+'el_selVloose':    ('({selection_stage}== 17 || {selection_stage}== 15)', 'selection_stage'),
+'el_selVloose_ss': ('({selection_stage}== 16 || {selection_stage}== 14)', 'selection_stage'),
 
-'mu_sel_ljout':          '{selection_stage}==  7 && event_jets_lj_var >  60.',
-'mu_sel_ljout_ss':       '{selection_stage}==  6 && event_jets_lj_var >  60.',
-'el_sel_ljout':          '{selection_stage}== 17 && event_jets_lj_var >  60.',
-'el_sel_ljout_ss':       '{selection_stage}== 16 && event_jets_lj_var >  60.',
-'mu_selVloose_ljout':    '({selection_stage}==  7 || {selection_stage}==  5) && event_jets_lj_var >  60.',
-'mu_selVloose_ljout_ss': '({selection_stage}==  6 || {selection_stage}==  4) && event_jets_lj_var >  60.',
-'el_selVloose_ljout':    '({selection_stage}== 17 || {selection_stage}== 15) && event_jets_lj_var >  60.',
-'el_selVloose_ljout_ss': '({selection_stage}== 16 || {selection_stage}== 14) && event_jets_lj_var >  60.',
+'mu_sel_ljout':          ('{selection_stage}==  7 && event_jets_lj_var >  60.', 'selection_stage'),
+'mu_sel_ljout_ss':       ('{selection_stage}==  6 && event_jets_lj_var >  60.', 'selection_stage'),
+'el_sel_ljout':          ('{selection_stage}== 17 && event_jets_lj_var >  60.', 'selection_stage'),
+'el_sel_ljout_ss':       ('{selection_stage}== 16 && event_jets_lj_var >  60.', 'selection_stage'),
+'mu_selVloose_ljout':    ('({selection_stage}==  7 || {selection_stage}==  5) && event_jets_lj_var >  60.', 'selection_stage'),
+'mu_selVloose_ljout_ss': ('({selection_stage}==  6 || {selection_stage}==  4) && event_jets_lj_var >  60.', 'selection_stage'),
+'el_selVloose_ljout':    ('({selection_stage}== 17 || {selection_stage}== 15) && event_jets_lj_var >  60.', 'selection_stage'),
+'el_selVloose_ljout_ss': ('({selection_stage}== 16 || {selection_stage}== 14) && event_jets_lj_var >  60.', 'selection_stage'),
 
-'mu_sel_lj':          '{selection_stage}==  7 && event_jets_lj_var <= 60.',
-'mu_sel_lj_ss':       '{selection_stage}==  6 && event_jets_lj_var <= 60.',
-'el_sel_lj':          '{selection_stage}== 17 && event_jets_lj_var <= 60.',
-'el_sel_lj_ss':       '{selection_stage}== 16 && event_jets_lj_var <= 60.',
-'mu_selVloose_lj':    '({selection_stage}==  7 || {selection_stage}==  5) && event_jets_lj_var <= 60.',
-'mu_selVloose_lj_ss': '({selection_stage}==  6 || {selection_stage}==  4) && event_jets_lj_var <= 60.',
-'el_selVloose_lj':    '({selection_stage}== 17 || {selection_stage}== 15) && event_jets_lj_var <= 60.',
-'el_selVloose_lj_ss': '({selection_stage}== 16 || {selection_stage}== 14) && event_jets_lj_var <= 60.',
+'mu_sel_lj':          ('{selection_stage}==  7 && event_jets_lj_var <= 60.', 'selection_stage'),
+'mu_sel_lj_ss':       ('{selection_stage}==  6 && event_jets_lj_var <= 60.', 'selection_stage'),
+'el_sel_lj':          ('{selection_stage}== 17 && event_jets_lj_var <= 60.', 'selection_stage'),
+'el_sel_lj_ss':       ('{selection_stage}== 16 && event_jets_lj_var <= 60.', 'selection_stage'),
+'mu_selVloose_lj':    ('({selection_stage}==  7 || {selection_stage}==  5) && event_jets_lj_var <= 60.', 'selection_stage'),
+'mu_selVloose_lj_ss': ('({selection_stage}==  6 || {selection_stage}==  4) && event_jets_lj_var <= 60.', 'selection_stage'),
+'el_selVloose_lj':    ('({selection_stage}== 17 || {selection_stage}== 15) && event_jets_lj_var <= 60.', 'selection_stage'),
+'el_selVloose_lj_ss': ('({selection_stage}== 16 || {selection_stage}== 14) && event_jets_lj_var <= 60.', 'selection_stage'),
+
+# additional channels
+'dy_mutau': ('({selection_stage}== 102 || {selection_stage}== 103)', 'selection_stage_dy'),
+'dy_eltau': ('({selection_stage}== 112 || {selection_stage}== 113)', 'selection_stage_dy'),
+'dy_mumu':  ('({selection_stage}== 102 || {selection_stage}== 103 || {selection_stage}== 105)', 'selection_stage_dy_mumu'),
+'dy_elel':  ('({selection_stage}== 112 || {selection_stage}== 113 || {selection_stage}== 115)', 'selection_stage_dy_mumu'),
+
+'tt_elmu':  ('({selection_stage}== 205)', 'selection_stage_em'),
 }
 
 
@@ -758,6 +766,8 @@ if args.std_histos:
 
     isWJetsInclusive = dtag == "MC2016_Summer16_WJets_madgraph"
 
+logging.debug('dtag = %s' % dtag)
+
 if args.get_maximum:
    maximum = -1111111.
 
@@ -880,21 +890,25 @@ for filename in input_files:
                 # else don't change the selection
                 # = get the selection index name and the syst weight
                 draw_command_final = draw_command
-                if sys_name in systs_objects:
-                    # it is the object systematic -- the selection index changes and the met variation, which propagates to precomputed mt
-                    selection_stage = systs_objects[sys_name]
-                    if args.draw_com == 'std_mt_vars':
+                ## it is the object systematic -- the selection index changes and the met variation, which propagates to precomputed mt
+                ##selection_stage = systs_objects[sys_name]
+                ##selection_stage = 'selection_stage'
+                #if args.draw_com == 'std_mt_vars':
+                #    draw_command_final = draw_command.format(met_lep_mt_var='event_met_lep_mt')
+                #    logging.debug('substituted draw command to default %s at %s sys' % (draw_command_final, sys_name))
+
+                if args.draw_com == 'std_mt_vars':
+                    if sys_name in systs_objects:
                         draw_command_final = draw_command.format(met_lep_mt_var=systs_objects_mt_variation[sys_name])
                         logging.debug('substituted draw command to %s at %s sys' % (draw_command_final, sys_name))
-                else:
-                    selection_stage = 'selection_stage'
-                    if args.draw_com == 'std_mt_vars':
+                    else:
                         draw_command_final = draw_command.format(met_lep_mt_var='event_met_lep_mt')
                         logging.debug('substituted draw command to default %s at %s sys' % (draw_command_final, sys_name))
 
                 final_cond = conditions[:]
                 if chan in all_std_channels:
-                    final_cond.append(all_std_channels[chan].format(selection_stage=selection_stage))
+                    selection_stage = all_std_channels[chan][1]
+                    final_cond.append(all_std_channels[chan][0].format(selection_stage=(selection_stage + '_' + sys_name if sys_name in systs_objects else selection_stage)))
 
                 if dtag != 'data':
                     sys_weight = systs_weights_all.get(sys_name, systs_weights_nominal['NOMINAL'])
@@ -942,14 +956,16 @@ for filename in input_files:
 if args.test:
     exit(0)
 
-if args.per_weight:
+# scale MC
+if args.per_weight and dtag not in ('data', 'SingleMuon', 'SingleElectron'):
     #weight_counter = tfile.Get('ntupler/weight_counter')
     #out_histo.Scale(1./weight_counter.GetBinContent(2))
     for histo in output_histos.values():
         histo.Scale(1./weight_counter.GetBinContent(2))
 
 
-if args.try_xsec:
+# scale MC
+if args.try_xsec and dtag not in ('data', 'SingleMuon', 'SingleElectron'):
     _, xsec = dtags.get(dtag, (None, 1.))
     #out_histo.Scale(xsec)
     for histo in output_histos.values():
