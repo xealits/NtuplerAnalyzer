@@ -17,8 +17,8 @@ with_bSF = True
 WITH_RECOIL_CORRECTIONS = False
 
 ISO_LEPS    = True
-JETS_PT_CUT = 30. #21. # 30.
-TAUS_PT_CUT = 30. #21. # 30. # 20GeV for DY->tautau selection
+JETS_PT_CUT = 21. # 30. 
+TAUS_PT_CUT = 21. # 30. # 20GeV for DY->tautau selection
 TAUS_ID_CUT_Medium = 2
 TAUS_ID_CUT_VLoose = 0
 TAUS_ID_CUT = TAUS_ID_CUT_VLoose # TAUS_ID_CUT_Medium # Vloose cut for the shape
