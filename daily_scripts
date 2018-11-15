@@ -171,11 +171,32 @@ c1->SaveAs("studies/dy_mutau_tests/old_results_v14raw2_mc_wFSRISR_mu_ctr_mu_dy_t
 but less events overall -- around 3*10^3 of dy->tautau at 5sigma --- probably due to tighter cut on jet and tau pt
 
 
+
 Probably, the jets in W production do come from c quarks often enough, which is bad news.
 Bad at the same time now we have a large selection of true taus and W fakes to finish the study of dalitz parameters.
 
 
+## all the mutau plots now
 
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/3-half-fixed/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c dy_mutau               -d tau_sv_sign --wjet 0.8 --skip-QCD --ratio-range 0.5 --title "" --title-x "SV Sign" --title-y "[Events]" --draw-overflows 0.5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/3-half-fixed/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c dy_mutau               -d tau_sv_sign --wjet 0.8 --skip-QCD --ratio-range 0.5 --title "" --title-x "SV Sign" --title-y "[Events]" --draw-overflows 0.5 --legend-shift 0.02 --logy
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/3-half-fixed/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c dy_mutau               -d tau_sv_sign --wjet 0.8 --skip-QCD --ratio-range 0.5 --title "" --title-x "SV Sign" --title-y "[Events]" --draw-overflows 0.5 --legend-shift 0.02 --cumulative
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/3-half-fixed/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c dy_mutau               -d tau_sv_sign --wjet 0.8 --skip-QCD --ratio-range 0.5 --title "" --title-x "SV Sign" --title-y "[Events]" --draw-overflows 0.5 --legend-shift 0.02 --cumulative-fractions
+
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c dy_mutau               -d tau_pt --wjet 0.8 --skip-QCD --ratio-range 0.3 --bin-norm --title "" --title-x "p_{T} [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c dy_mutau               -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c dy_mutau               -d dilep_mass --wjet 0.8 --skip-QCD --ratio-range 0.3 --bin-norm --title "" --title-x "M(#mu, #tau) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/3-half-fixed/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel -x mu_selVloose -d tau_sv_sign --wjet 0.8 --skip-QCD --ratio-range 0.5 --title "" --title-x "SV Sign" --title-y "[Events]" --draw-overflows 0.5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/3-half-fixed/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel -x mu_selVloose -d tau_sv_sign --wjet 0.8 --skip-QCD --ratio-range 0.5 --title "" --title-x "SV Sign" --title-y "[Events]" --draw-overflows 0.5 --legend-shift 0.02 --logy
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/3-half-fixed/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel -x mu_selVloose -d tau_sv_sign --wjet 0.8 --skip-QCD --ratio-range 0.5 --title "" --title-x "SV Sign" --title-y "[Events]" --draw-overflows 0.5 --legend-shift 0.02 --cumulative-fractions
+
+-- something wrong here
+
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/3-half-fixed/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel -x mu_selVloose -d tau_sv_sign --wjet 0.8 --skip-QCD --ratio-range 0.5 --title "" --title-x "SV Sign" --title-y "[Events]" --draw-overflows 0.5 --legend-shift 0.02 --cumulative
+
+-- this does seem ok
 
 
 
@@ -209,21 +230,21 @@ I should automate this:
 
 foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main  sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main sw-dir/merge-sets/jobs_hadd.dtags.small_main_noqcd sw-dir/merge-sets/jobs_hadd.dtags.data-and-tt`)
   echo ${dtag}
-  foreach chans (dy_mutau dy_eltau)
+  foreach chans (el_sel el_selVloose el_sel_ss el_selVloose_ss mu_sel mu_selVloose mu_sel_ss mu_selVloose_ss tt_elmu)
 
-  echo \#\!/bin/sh                                          > batch_jobs/j_${dtag}_${chans}
-  echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/j_${dtag}_${chans}
-  echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/j_${dtag}_${chans}
-  echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/j_${dtag}_${chans}
-  echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/j_${dtag}_${chans}
-  echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/j_${dtag}_${chans}
-  echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/j_${dtag}_${chans}
-  echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/j_${dtag}_${chans}
-  echo cmsenv                                              >> batch_jobs/j_${dtag}_${chans}
-  echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/j_${dtag}_${chans}
+  echo \#\!/bin/sh                                          > batch_jobs/jN_${dtag}_${chans}
+  echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/jN_${dtag}_${chans}
+  echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/jN_${dtag}_${chans}
+  echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/jN_${dtag}_${chans}
+  echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/jN_${dtag}_${chans}
+  echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/jN_${dtag}_${chans}
+  echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/jN_${dtag}_${chans}
+  echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/jN_${dtag}_${chans}
+  echo cmsenv                                              >> batch_jobs/jN_${dtag}_${chans}
+  echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/jN_${dtag}_${chans}
 
-  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"std_mt_vars"' --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com '"event_met_lep_mt < 40."' --output quick-test/v27-dilep1/${dtag}_${chans}_mt_lep_met.root  --std-histos --histo-name $chans/std_procs/nom/Mt_lep_met_f --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}
-  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_dilep_mass"' --ttree ttree_out --histo-range 200,0,400                     --cond-com '"event_met_lep_mt < 40."' --output quick-test/v27-dilep1/${dtag}_${chans}_dilep_mass.root  --std-histos --histo-name $chans/std_procs/nom/dilep_mass   --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}
+  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"std_mt_vars"' --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250  --output quick-test/v27-dilep1/${dtag}_${chans}_mt_lep_met.root  --std-histos --histo-name $chans/std_procs/nom/Mt_lep_met_f --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/jN_${dtag}_${chans}
+  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_dilep_mass"' --ttree ttree_out --histo-range 200,0,400                      --output quick-test/v27-dilep1/${dtag}_${chans}_dilep_mass.root  --std-histos --histo-name $chans/std_procs/nom/dilep_mass   --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/jN_${dtag}_${chans}
   end
 end
 
@@ -232,25 +253,76 @@ for tau-channels
 
 foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main  sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main sw-dir/merge-sets/jobs_hadd.dtags.small_main_noqcd sw-dir/merge-sets/jobs_hadd.dtags.data-and-tt`)
   echo ${dtag}
-  foreach chans (dy_mutau dy_eltau)
+  foreach chans (el_sel el_selVloose el_sel_ss el_selVloose_ss mu_sel mu_selVloose mu_sel_ss mu_selVloose_ss)
 
-  echo \#\!/bin/sh                                          > batch_jobs/jt_${dtag}_${chans}
-  echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/jt_${dtag}_${chans}
-  echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/jt_${dtag}_${chans}
-  echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/jt_${dtag}_${chans}
-  echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/jt_${dtag}_${chans}
-  echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/jt_${dtag}_${chans}
-  echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/jt_${dtag}_${chans}
-  echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/jt_${dtag}_${chans}
-  echo cmsenv                                              >> batch_jobs/jt_${dtag}_${chans}
-  echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/jt_${dtag}_${chans}
+  echo \#\!/bin/sh                                          > batch_jobs/jNt_${dtag}_${chans}
+  echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/jNt_${dtag}_${chans}
+  echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/jNt_${dtag}_${chans}
+  echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/jNt_${dtag}_${chans}
+  echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/jNt_${dtag}_${chans}
+  echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/jNt_${dtag}_${chans}
+  echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/jNt_${dtag}_${chans}
+  echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/jNt_${dtag}_${chans}
+  echo cmsenv                                              >> batch_jobs/jNt_${dtag}_${chans}
+  echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/jNt_${dtag}_${chans}
 
-  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_taus[0].pt()"'    --ttree ttree_out --histo-range 100,0,150 --cond-com '"event_met_lep_mt < 40."' --output quick-test/v27-dilep1/${dtag}_${chans}_taupt.root   --std-histos --histo-name $chans/std_procs/nom/tau_pt      --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/jt_${dtag}_${chans}
-  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_taus_sv_sign[0]"' --ttree ttree_out --histo-range 66,-2,20  --cond-com '"event_met_lep_mt < 40."' --output quick-test/v27-dilep1/${dtag}_${chans}_tausign.root --std-histos --histo-name $chans/std_procs/nom/tau_sv_sign --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/jt_${dtag}_${chans}
+  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_taus[0].pt()"'    --ttree ttree_out --histo-range 50,0,100  --output quick-test/v27-dilep1/${dtag}_${chans}_taupt.root   --std-histos --histo-name $chans/std_procs/nom/tau_pt      --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/jNt_${dtag}_${chans}
+  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_taus_sv_sign[0]"' --ttree ttree_out --histo-range 66,-2,20  --output quick-test/v27-dilep1/${dtag}_${chans}_tausign.root --std-histos --histo-name $chans/std_procs/nom/tau_sv_sign --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/jNt_${dtag}_${chans}
   end
 end
 
+
+
+dy channels with Mt
+
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main  sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main sw-dir/merge-sets/jobs_hadd.dtags.small_main_noqcd sw-dir/merge-sets/jobs_hadd.dtags.data-and-tt`)
+  echo ${dtag}
+  foreach chans (dy_mutau dy_eltau dy_mumu dy_elel)
+
+  echo \#\!/bin/sh                                          > batch_jobs/jD_${dtag}_${chans}
+  echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/jD_${dtag}_${chans}
+  echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/jD_${dtag}_${chans}
+  echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/jD_${dtag}_${chans}
+  echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/jD_${dtag}_${chans}
+  echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/jD_${dtag}_${chans}
+  echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/jD_${dtag}_${chans}
+  echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/jD_${dtag}_${chans}
+  echo cmsenv                                              >> batch_jobs/jD_${dtag}_${chans}
+  echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/jD_${dtag}_${chans}
+
+  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"std_mt_vars"' --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com '"std_mt_vars < 40."' --output quick-test/v27-dilep1/${dtag}_${chans}_mt_lep_met.root  --std-histos --histo-name $chans/std_procs/nom/Mt_lep_met_f --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/jD_${dtag}_${chans}
+  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_dilep_mass"' --ttree ttree_out --histo-range 200,0,400                     --cond-com '"std_mt_vars < 40."' --output quick-test/v27-dilep1/${dtag}_${chans}_dilep_mass.root  --std-histos --histo-name $chans/std_procs/nom/dilep_mass   --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/jD_${dtag}_${chans}
+  end
+end
+
+
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main  sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main sw-dir/merge-sets/jobs_hadd.dtags.small_main_noqcd sw-dir/merge-sets/jobs_hadd.dtags.data-and-tt`)
+  echo ${dtag}
+  foreach chans (dy_mutau dy_eltau)
+
+  echo \#\!/bin/sh                                          > batch_jobs/jDt_${dtag}_${chans}
+  echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/jDt_${dtag}_${chans}
+  echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/jDt_${dtag}_${chans}
+  echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/jDt_${dtag}_${chans}
+  echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/jDt_${dtag}_${chans}
+  echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/jDt_${dtag}_${chans}
+  echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/jDt_${dtag}_${chans}
+  echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/jDt_${dtag}_${chans}
+  echo cmsenv                                              >> batch_jobs/jDt_${dtag}_${chans}
+  echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/jDt_${dtag}_${chans}
+
+  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_taus[0].pt()"'    --ttree ttree_out --histo-range 50,0,100 --cond-com '"std_mt_vars < 40."' --output quick-test/v27-dilep1/${dtag}_${chans}_taupt.root   --std-histos --histo-name $chans/std_procs/nom/tau_pt      --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/jDt_${dtag}_${chans}
+  echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_taus_sv_sign[0]"' --ttree ttree_out --histo-range 66,-2,20 --cond-com '"std_mt_vars < 40."' --output quick-test/v27-dilep1/${dtag}_${chans}_tausign.root --std-histos --histo-name $chans/std_procs/nom/tau_sv_sign --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/jDt_${dtag}_${chans}
+  end
+end
+
+
 ls batch_jobs/ > batch_jobs/submit
+
+wc -l batch_jobs/submit
+529 batch_jobs/submit
+wc -l batch_jobs/submit
+1058 batch_jobs/submit
 
 qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/e
 UserCodeh
@@ -290,8 +362,13 @@ python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dile
 python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c dy_mutau               -d dilep_mass --wjet 0.8 --skip-QCD --ratio-range 0.3 --bin-norm --title "" --title-x "M(#mu, #tau) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
 python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c dy_mumu                -d dilep_mass --wjet 0.8 --skip-QCD --ratio-range 0.3 --bin-norm --title "" --title-x "M(#mu, #mu) [GeV]"  --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
 
-python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel -x mu_selVloose -d tau_pt --wjet 0.8 --skip-QCD --ratio-range 0.3 --bin-norm --title "" --title-x "p_{T} [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
-python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c dy_mutau               -d tau_pt --wjet 0.8 --skip-QCD --ratio-range 0.3 --bin-norm --title "" --title-x "p_{T} [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel -x mu_selVloose -d tau_pt --wjet 0.8 --skip-QCD --ratio-range 0.5  --title "" --title-x "p_{T} [GeV]" --title-y "[Events]" --draw-overflows 5 --legend-shift 0.02 --y-range 0,35000
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c dy_mutau               -d tau_pt --wjet 0.8 --skip-QCD --ratio-range 0.5  --title "" --title-x "p_{T} [GeV]" --title-y "[Events]" --draw-overflows 5 --legend-shift 0.02 --y-range 0,35000
+
+ --y-range 0,20000
+ --y-range 0,20000
+
+
 
 python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel -x mu_selVloose -d tau_sv_sign --wjet 0.8 --skip-QCD --ratio-range 0.3 --bin-norm --title "" --title-x "SV Sign" --title-y "[Events]" --draw-overflows 0.5 --legend-shift 0.02
 python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c dy_mutau               -d tau_sv_sign --wjet 0.8 --skip-QCD --ratio-range 0.3 --bin-norm --title "" --title-x "SV Sign" --title-y "[Events]" --draw-overflows 0.5 --legend-shift 0.02
