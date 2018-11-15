@@ -166,7 +166,7 @@ if not args.no_data:
         else:
             histos_data_distrs_ss.append((data_distr_name, [(fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
 
-  if args.cumulative:
+  if args.cumulative or args.cumulative_fractions:
     histos_data_per_distr    = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs]
     histos_data_per_distr_ss = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs_ss]
   else:
@@ -482,7 +482,7 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                histo.SetBinContent (bn_to_drop, 0)
                histo.SetBinError   (bn_to_drop, 0)
 
-           if args.cumulative:
+           if args.cumulative or args.cumulative_fractions:
                used_histos.append((histo.GetCumulative(False), nick, channel)) # hopefully root wont screw this up
            else:
                used_histos.append((histo, nick, channel)) # hopefully root wont screw this up
@@ -1327,6 +1327,11 @@ else:
                 hs_sum2.SetLineColor(kRed);
                 #hs_sum2.Draw("same e2")
                 hs_sum2.Draw("same e")
+            elif args.cumulative_fractions:
+                #for bini in range(hs_sum2.GetSize()):
+                #    hs_sum2.SetBinError(bini, 0.)
+                #hs_sum2.Draw("same")
+                pass
             else:
                 # only error band in usual case
                 hs_sum2.Draw("same e2")
@@ -1337,6 +1342,8 @@ else:
             # thus I have to plot sum of MC first to get the titles right..
             if args.fake_rate:
                 hs_sum2.Draw("e")
+            elif args.cumulative_fractions:
+                hs_sum2.Draw()
             else:
                 # only error band in usual case
                 hs_sum2.Draw("e2")
@@ -1354,6 +1361,8 @@ else:
                 hs_sum2.SetLineColor(kRed);
                 #hs_sum2.Draw("same e2")
                 hs_sum2.Draw("same e")
+            elif args.cumulative_fractions:
+                hs_sum2.Draw("same")
             else:
                 # only error band in usual case
                 hs_sum2.Draw("same e2")
