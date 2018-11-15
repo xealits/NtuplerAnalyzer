@@ -910,15 +910,16 @@ for filename in input_files:
                     selection_stage = all_std_channels[chan][1]
                     final_cond.append(all_std_channels[chan][0].format(selection_stage=(selection_stage + '_' + sys_name if sys_name in systs_objects else selection_stage)))
 
-                if 'std_mt_vars' in final_cond:
-                    mt_sys = systs_objects_mt_variation.get(sys_name, 'event_met_lep_mt')
-                    final_cond.replace('std_mt_vars', mt_sys)
-
                 if dtag != 'data':
                     sys_weight = systs_weights_all.get(sys_name, systs_weights_nominal['NOMINAL'])
                     final_cond = '(%s) * %s' % (' && '.join(final_cond), sys_weight)
                 else:
                     final_cond = '(%s)' % (' && '.join(final_cond))
+
+                logging.debug(final_cond)
+                if 'std_mt_vars' in final_cond:
+                    mt_sys = systs_objects_mt_variation.get(sys_name, 'event_met_lep_mt')
+                    final_cond = final_cond.replace('std_mt_vars', mt_sys)
 
                 draw_and_save(ttree, (chan, (main_name + '_' + proc_name) if proc_name else main_name, sys_name), draw_command_final, final_cond, args.test)
 
