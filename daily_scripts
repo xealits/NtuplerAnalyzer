@@ -1,3 +1,242 @@
+# demonstration fit, all systematics and tau SV sign cut
+
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main  sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main sw-dir/merge-sets/jobs_hadd.dtags.small_main_noqcd sw-dir/merge-sets/jobs_hadd.dtags.data-and-tt"
+
+tt channels and with tau only
+setenv CHANS   "el_sel el_selVloose el_sel_ss el_selVloose_ss mu_sel mu_selVloose mu_sel_ss mu_selVloose_ss tt_elmu"
+setenv CHANS   "el_sel el_selVloose el_sel_ss el_selVloose_ss mu_sel mu_selVloose mu_sel_ss mu_selVloose_ss"
+dy channels and with tau only
+setenv CHANS   "dy_mutau dy_eltau dy_mumu dy_elel"
+setenv CHANS   "dy_mutau dy_eltau"
+
+setenv SYSTS   "nom"
+setenv SYSTS   "nom,common obj tt_weights tt_hard tt_pdf1 tt_pdf10 tt_pdf20 tt_pdf30 tt_pdf40 tt_pdf50,tt_alpha"
+
+-- updowns were processed separately?
+
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt()"
+setenv DISTRS  "event_taus[0].pt()"
+setenv DISTRS  "event_taus[0].pt() event_taus_sv_sign[0]"
+
+setenv CONDS   
+setenv CONDS   '--cond-com "event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."'
+setenv CONDS   '--cond-com "event_taus_sv_sign[0] > 2.5"'
+setenv CONDS   "--cond-com '"'"std_mt_vars < 40."'"'"
+
+
+
+
+important difference in dtags and systematics:
+data  is nominal only,
+ttbar is all
+other mc is standard weights
+
+also split them in channels (DY and tt, tau and dilep) with different conditions
+
+
+
+
+for data
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.data"
+setenv SYSTS   "nom"
+
+tt dilep channels
+setenv CHANS   "tt_elmu"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt()"
+setenv CONDS   
+
+dy dilep channels
+setenv CHANS   "dy_mumu dy_elel"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt()"
+setenv CONDS   "--cond-com '"'"std_mt_vars < 40."'"'"
+
+
+tt lep-tau channel
+setenv CHANS   "el_sel el_selVloose el_sel_ss el_selVloose_ss mu_sel mu_selVloose mu_sel_ss mu_selVloose_ss"
+setenv DISTRS  "event_taus[0].pt() event_taus_sv_sign[0]"
+setenv CONDS   '--cond-com "event_taus_sv_sign[0] > 2.5"'
+
+dy lep-tau channel
+setenv CHANS   "dy_mutau dy_eltau"
+setenv DISTRS  "event_taus[0].pt() event_taus_sv_sign[0]"
+setenv CONDS   '--cond-com "event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."'
+
+
+
+ ---------------- damn! had to use std systematics!
+
+
+
+
+data ttbar dileptons:
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.data"
+setenv SYSTS   "nom"
+setenv CHANS   "tt_elmu"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt()"
+setenv CONDS   
+
+     ttbar leptau:
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.data"
+setenv SYSTS   "nom"
+setenv CHANS   "el_sel el_selVloose el_sel_ss el_selVloose_ss mu_sel mu_selVloose mu_sel_ss mu_selVloose_ss"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt() event_taus[0].pt() event_taus_sv_sign[0]"
+setenv CONDS   '--cond-com "event_taus_sv_sign[0] > 2.5"'
+
+     dy dileptons:
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.data"
+setenv SYSTS   "nom"
+setenv CHANS   "dy_mumu dy_elel"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt()"
+setenv CONDS   "--cond-com '"'"std_mt_vars < 40."'"'"
+
+     dy leptau:
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.data"
+setenv SYSTS   "nom"
+setenv CHANS   "dy_mutau dy_eltau dy_mumu dy_elel"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt() event_taus[0].pt() event_taus_sv_sign[0]"
+setenv CONDS   '--cond-com "event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."'
+
+
+
+
+
+
+ttbar in ttbar dileptons:
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.tt"
+setenv CHANS   "tt_elmu"
+setenv SYSTS   "nom,common obj tt_weights tt_hard tt_pdf1 tt_pdf10 tt_pdf20 tt_pdf30 tt_pdf40 tt_pdf50,tt_alpha"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt()"
+setenv CONDS   
+
+      in ttbar leptau:
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.tt"
+setenv CHANS   "el_sel el_selVloose el_sel_ss el_selVloose_ss mu_sel mu_selVloose mu_sel_ss mu_selVloose_ss"
+setenv SYSTS   "nom,common obj tt_weights tt_hard tt_pdf1 tt_pdf10 tt_pdf20 tt_pdf30 tt_pdf40 tt_pdf50,tt_alpha"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt() event_taus[0].pt() event_taus_sv_sign[0]"
+setenv CONDS   '--cond-com "event_taus_sv_sign[0] > 2.5"'
+
+      in dy dileptons:
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.tt"
+setenv CHANS   "dy_mumu dy_elel"
+setenv SYSTS   "nom,common obj tt_weights tt_hard tt_pdf1 tt_pdf10 tt_pdf20 tt_pdf30 tt_pdf40 tt_pdf50,tt_alpha"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt()"
+setenv CONDS   "--cond-com '"'"std_mt_vars < 40."'"'"
+
+      in dy dileptons:
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.tt"
+setenv CHANS   "dy_mutau dy_eltau"
+setenv SYSTS   "nom,common obj tt_weights tt_hard tt_pdf1 tt_pdf10 tt_pdf20 tt_pdf30 tt_pdf40 tt_pdf50,tt_alpha"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt() event_taus[0].pt() event_taus_sv_sign[0]"
+setenv CONDS   '--cond-com "event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."'
+
+
+
+
+other MC in ttbar dileptons
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main  sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main sw-dir/merge-sets/jobs_hadd.dtags.small_main_noqcd"
+setenv CHANS   "tt_elmu"
+setenv SYSTS   "nom common obj"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt()"
+setenv CONDS   
+
+         in ttbar leptau:
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main  sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main sw-dir/merge-sets/jobs_hadd.dtags.small_main_noqcd"
+setenv CHANS   "el_sel el_selVloose el_sel_ss el_selVloose_ss mu_sel mu_selVloose mu_sel_ss mu_selVloose_ss"
+setenv SYSTS   "nom common obj"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt() event_taus[0].pt() event_taus_sv_sign[0]"
+setenv CONDS   '--cond-com "event_taus_sv_sign[0] > 2.5"'
+
+         in dy dileptons:
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main  sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main sw-dir/merge-sets/jobs_hadd.dtags.small_main_noqcd"
+setenv CHANS   "dy_mumu dy_elel"
+setenv SYSTS   "nom common obj"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt()"
+setenv CONDS   "--cond-com '"'"std_mt_vars < 40."'"'"
+
+         in dy leptau
+setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main  sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main sw-dir/merge-sets/jobs_hadd.dtags.small_main_noqcd"
+setenv CHANS   "dy_mutau dy_eltau"
+setenv SYSTS   "nom common obj"
+setenv DISTRS  "std_mt_vars event_dilep_mass event_leptons[0].pt() event_taus[0].pt() event_taus_sv_sign[0]"
+setenv CONDS   '--cond-com "event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."'
+
+
+
+ ------ done
+
+
+automation loops:
+
+foreach dtag (`cat $DTAGS`)
+  echo ${dtag}
+  foreach chans ($CHANS)
+    foreach systs ($SYSTS)
+
+    echo \#\!/bin/sh                                          > batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo cmsenv                                              >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/j_${dtag}_${chans}_${systs}
+
+    foreach distr (std_mt_vars event_dilep_mass 'event_leptons[0].pt()')
+      echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"'${distr}'"' --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_${distr}.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr $CONDS --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+      end
+    end
+  end
+end
+
+
+foreach dtag (`cat $DTAGS`)
+  echo ${dtag}
+  foreach chans ($CHANS)
+    foreach systs ($SYSTS)
+
+    echo \#\!/bin/sh                                          > batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo cmsenv                                              >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/j_${dtag}_${chans}_${systs}
+
+    foreach distr (std_mt_vars event_dilep_mass 'event_leptons[0].pt()' 'event_taus[0].pt()' 'event_taus_sv_sign[0]')
+      echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"'${distr}'"' --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_${distr}.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr $CONDS --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+      end
+    end
+  end
+end
+
+
+ls batch_jobs/ | wc -l
+936
+
+ls batch_jobs/ > batch_jobs/submit
+
+
+wc -l batch_jobs/submit
+529 batch_jobs/submit
+wc -l batch_jobs/submit
+1058 batch_jobs/submit
+
+% s,^,qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/,
+% s/$/'/
+
+
+
+
+
+
+
+
+
 # problem with tau SV again?
 
 1) the index of refit_tau? = 0 or no?     -- the refit index is correctly matched to the tau in stage2
