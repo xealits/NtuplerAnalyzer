@@ -148,6 +148,21 @@ if args.try_xsec:
 # 
 temp_output_histo = None # histo-template for custom bins
 
+if args.histo_range == 'std':
+   if args.draw_com == 'std_mt_vars':
+       args.custom_range = "0,20,40,60,80,100,130,160,200,250"
+   if args.draw_com == 'event_taus[0].pt()':
+       args.histo_range = '20,0,100'
+   if args.draw_com == 'event_leptons[0].pt()':
+       args.histo_range = '20,0,150'
+   if args.draw_com == 'event_taus_sv_sign[0]':
+       args.histo_range = '42,-1,20'
+   if args.draw_com == 'event_dilep_mass':
+       args.histo_range = '100,0,400'
+   # lep pt
+   # sv sign
+   # dilep mass
+
 draw_command = '{met_lep_mt_var}' if args.draw_com == 'std_mt_vars' else args.draw_com
 if args.custom_range:
     bin_edges = [float(b) for b in args.custom_range.split(',')]
