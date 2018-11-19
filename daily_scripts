@@ -164,6 +164,8 @@ setenv CONDS   '--cond-com "event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."'
 
  ------ done
 
+shell languages must burn in hell,
+i had to write it up in python and forget it
 
 automation loops:
 
@@ -183,12 +185,42 @@ foreach dtag (`cat $DTAGS`)
     echo cmsenv                                              >> batch_jobs/j_${dtag}_${chans}_${systs}
     echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/j_${dtag}_${chans}_${systs}
 
-    foreach distr (std_mt_vars event_dilep_mass 'event_leptons[0].pt()')
-      echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"'${distr}'"' --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_${distr}.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr $CONDS --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
-      end
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"std_mt_vars"'           --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_11.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_dilep_mass"'      --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_12.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_leptons[0].pt()"' --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_13.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
     end
   end
 end
+
+
+    foreach distr (std_mt_vars event_dilep_mass '"event_leptons[0].pt()"' '"event_taus[0].pt()"' '"event_taus_sv_sign[0]"')
+
+foreach dtag (`cat $DTAGS`)
+  echo ${dtag}
+  foreach chans ($CHANS)
+    foreach systs ($SYSTS)
+
+    echo \#\!/bin/sh                                          > batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo cmsenv                                              >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/j_${dtag}_${chans}_${systs}
+
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"std_mt_vars"'           --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_1.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"event_taus_sv_sign[0] > 2.5"' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_dilep_mass"'      --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_2.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"event_taus_sv_sign[0] > 2.5"' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_leptons[0].pt()"' --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_3.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"event_taus_sv_sign[0] > 2.5"' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_taus[0].pt()"'    --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_4.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"event_taus_sv_sign[0] > 2.5"' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_taus_sv_sign[0]"' --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_5.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"event_taus_sv_sign[0] > 2.5"' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    end
+  end
+end
+
+    foreach distr (std_mt_vars event_dilep_mass '"event_leptons[0].pt()"')
 
 
 foreach dtag (`cat $DTAGS`)
@@ -207,12 +239,40 @@ foreach dtag (`cat $DTAGS`)
     echo cmsenv                                              >> batch_jobs/j_${dtag}_${chans}_${systs}
     echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/j_${dtag}_${chans}_${systs}
 
-    foreach distr (std_mt_vars event_dilep_mass 'event_leptons[0].pt()' 'event_taus[0].pt()' 'event_taus_sv_sign[0]')
-      echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"'${distr}'"' --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_${distr}.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr $CONDS --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
-      end
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"std_mt_vars"'           --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_11.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"std_mt_vars < 40."' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_dilep_mass"'      --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_12.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"std_mt_vars < 40."' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_leptons[0].pt()"' --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_13.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"std_mt_vars < 40."' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
     end
   end
 end
+
+    foreach distr (std_mt_vars event_dilep_mass '"event_leptons[0].pt()"' '"event_taus[0].pt()"' '"event_taus_sv_sign[0]"')
+
+foreach dtag (`cat $DTAGS`)
+  echo ${dtag}
+  foreach chans ($CHANS)
+    foreach systs ($SYSTS)
+
+    echo \#\!/bin/sh                                          > batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export X509_USER_PROXY=/home/t3cms/olek/x509_proxy  >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export SCRAM_ARCH=slc6_amd64_gcc530                 >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export BUILD_ARCH=slc6_amd64_gcc530                 >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch             >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo source $VO_CMS_SW_DIR/cmsset_default.sh             >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo export CMS_PATH=$VO_CMS_SW_DIR                      >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo cd /lstore/cms/olek/CMSSW_8_0_26_patch1/src/        >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo cmsenv                                              >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo cd UserCode/NtuplerAnalyzer/proc/                   >> batch_jobs/j_${dtag}_${chans}_${systs}
+
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"std_mt_vars"'           --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_1.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_dilep_mass"'      --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_2.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_leptons[0].pt()"' --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_3.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_taus[0].pt()"'    --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_4.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    echo python -W ignore sumup_ttree_draw.py --cut-w0jets '"event_taus_sv_sign[0]"' --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/${dtag}_${chans}_${systs}_5.root  --std-histos --histo-name $chans/std_procs/${systs}/$distr --cond-com '"event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."' --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root >> batch_jobs/j_${dtag}_${chans}_${systs}
+    end
+  end
+end
+
 
 
 ls batch_jobs/ | wc -l
@@ -229,6 +289,15 @@ wc -l batch_jobs/submit
 % s,^,qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/,
 % s/$/'/
 
+quick-test/v27-dilep2/
+
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.all-tt-systs_main`)
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.small_main`)
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main`)
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main`)
+foreach dtag (SingleMuon SingleElectron)
+hadd quick-test/v27-dilep2_hadds/$dtag.root quick-test/v27-dilep2/$dtag*root &
+end
 
 
 
