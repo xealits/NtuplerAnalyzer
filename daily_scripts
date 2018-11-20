@@ -1,3 +1,36 @@
+# systematic weights in dilepton channels
+
+the statement of the problem:
+
+root -l jobsums/histosels/histosels_v27dilep2.root
+
+root [7] tt_elmu->Get("dy_other/NOMINAL/tt_elmu_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_dy_other_NOMINAL_Mt_lep_met_f, Entries= 2, Total sum= 8.32739
+root [8] tt_elmu->Get("dy_other/LEPmuIDUp/tt_elmu_dy_other_LEPmuIDUp_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_dy_other_LEPmuIDUp_Mt_lep_met_f, Entries= 2, Total sum= 8.24471
+root [9] tt_elmu->Get("dy_other/LEPmuIDDown/tt_elmu_dy_other_LEPmuIDDown_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_dy_other_LEPmuIDDown_Mt_lep_met_f, Entries= 2, Total sum= 7.82908
+
+root [10] tt_elmu->Get("tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_tt_other_NOMINAL_Mt_lep_met_f, Entries= 289232, Total sum= 100550
+root [11] tt_elmu->Get("tt_other/LEPmuIDUp/tt_elmu_tt_other_LEPmuIDUp_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_tt_other_LEPmuIDUp_Mt_lep_met_f, Entries= 289232, Total sum= 99932.1
+root [12] tt_elmu->Get("tt_other/LEPmuIDDown/tt_elmu_tt_other_LEPmuIDDown_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_tt_other_LEPmuIDDown_Mt_lep_met_f, Entries= 289232, Total sum= 94833.5
+
+-- issues in tt_elmu leps, at stage2 they are incorrectly calculated
+   fixed and switched to el-triggered elmu
+
+this:
+
+python -W ignore sumup_ttree_draw.py --cut-w0jets "std_mt_vars"           --ttree ttree_out --histo-range std  --output quick-test/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_dy_mumu_nom,leps_11.root  --std-histos --histo-name dy_mumu/std_procs/nom,LEPmuIDUp,LEPmuIDDown/Mt_lep_met_f --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*MC2016_Summer16_DYJetsToLL_50toInf_madgraph*.root
+
+is fine
+
+
+
+
+
 # demonstration fit, all systematics and tau SV sign cut
 
 setenv DTAGS   "sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main  sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main sw-dir/merge-sets/jobs_hadd.dtags.small_main_noqcd sw-dir/merge-sets/jobs_hadd.dtags.data-and-tt"
@@ -298,6 +331,396 @@ foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main`)
 foreach dtag (SingleMuon SingleElectron)
 hadd quick-test/v27-dilep2_hadds/$dtag.root quick-test/v27-dilep2/$dtag*root &
 end
+
+hadd quick-test/v27-dilep2_hadds/MC2016_Summer16_TTJets_powheg.root quick-test/v27-dilep2/MC2016_Summer16_TTJets_powheg*root
+
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -p -r -o plots/v27dilep2/ --lumi 35800 -c dy_mumu               -d lep_pt --wjet 0.8 --skip-QCD --ratio-range 0.5 --bin-norm --title "" --title-x "p_{T}(#mu) [GeV]"  --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -p -r -o plots/v27dilep2/ --lumi 35800 -c dy_mutau              -d lep_pt --wjet 0.8 --skip-QCD --ratio-range 0.5 --bin-norm --title "" --title-x "p_{T}(#mu) [GeV]"  --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -p -r -o plots/v27dilep2/ --lumi 35800 -c mu_sel               -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]"  --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -p -r -o plots/v27dilep2/ --lumi 35800 -c tt_elmu              -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]"  --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -p -r -o plots/v27dilep2/ --lumi 31300 -c el_sel -x el_selVloose              -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"    --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -p -r -o plots/v27dilep2/ --lumi 35800 -c mu_sel -x mu_selVloose              -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]"  --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+
+ok
+and strait to the fit, without histosels (ignoring qcd)
+
+hadd distrs/distrs_v27dilep2_mc_data.root distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root
+
+-- I won't use the data, so any channels in mc will work fine, no need to worry about singlemu singleel mixing
+
+
+python numbers_for_datacard.py distrs/distrs_v27dilep2_mc_data.root -d Mt_lep_met_f -c el_sel,tt_elmu   --no-sums
+python numbers_for_datacard.py distrs/distrs_v27dilep2_mc_data.root -d lep_pt       -c dy_mutau,dy_mumu --no-sums
+
+
+-- problems without histosel:
+   the histos are not scaled
+   PDF DOWN is not there
+
+
+ratio fit construction in
+
+ttxsec/fit-stuff/ratio_both_2.txt
+
+separate cards:
+
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_mu.txt
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_dy_mutau.txt
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_elmu.txt
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_dy_mumu.txt
+
+merge them
+
+combineCards.py el=ttxsec/v27dilep2_ratio_el.txt elmu=ttxsec/v27dilep2_ratio_elmu.txt dy_mumu=ttxsec/v27dilep2_ratio_dy_mumu.txt dy_mutau=ttxsec/v27dilep2_ratio_dy_mutau.txt > ttxsec/27dilep2_ratio_all.txt
+
+
+and add the ratio construction
+
+./scripts/text2workspace.py ttxsec/27dilep2_ratio_all.txt
+
+reformulate the POIs
+
+combine -M MultiDimFit ttxsec/27dilep2_ratio_all.root --algo grid -t -1 --points 100 --redefineSignalPOIs tau_ratio --freezeParameters r --expectSignal 1 --rMin 0.5 --rMax 1.5 --name RatioElMuDYShapes
+
+Warning: option --expectSignal only applies to models with the POI "r", use --setParameters to set the values of the POIs for toy generation in this model
+Computing results starting from expected outcome (a-priori)
+  [WARNING] Found [dilep_norm] at boundary. 
+
+
+
+combine -M MultiDimFit ttxsec/27dilep2_ratio_all.root --algo grid -t -1 --points 100 --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 --rMin 0.5 --rMax 1.5 --name RatioElMuDYShapes
+
+-- very shallow?
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 --robustFit 1 --doInitialFit                  -n RatioElMuDYShapesExpect5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 --robustFit 1 --doFits --parallel 5           -n RatioElMuDYShapesExpect5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 -o latest_ratio_toys_asimov_impacts.json      -n RatioElMuDYShapesExpect5
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratio_toys_asimov_impacts.json -o latest_ratio_toys_asimov_impacts
+
+-- with rateParam for lumi
+
+Error: closed range without finding crossing.
+Error: closed range without finding crossing.
+
+ --- MultiDimFit ---
+best fit parameter values and profile-likelihood uncertainties: 
+ Warning - No valid high-error found, will report difference to maximum of range for : tau_ratio
+ Warning - No valid low-error found, will report difference to minimum of range for : tau_ratio
+   tau_ratio :    +1.000   -0.100/+0.100 (68%)
+Done in 0.04 min (cpu), 0.04 min (real)
+
+-- same crap
+
+
+
+
+## searching for solution
+
+--expectSignal 1
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r -t -1  -d ttxsec/fit-stuff/ratio_both_0.root -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r -t -1  -d ttxsec/fit-stuff/ratio_both_0.root -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r -t -1  -d ttxsec/fit-stuff/ratio_both_0.root -m 125 -o latest_ratio_toys_asimov_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratio_toys_asimov_impacts.json -o latest_ratio_toys_asimov_impacts
+
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters tau_ratio=1.0,r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 --robustFit 1 --doInitialFit             -n RatioElMuDYShapesExpect
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters tau_ratio=1.0,r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 --robustFit 1 --doFits --parallel 5      -n RatioElMuDYShapesExpect
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters tau_ratio=1.0,r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 -o latest_ratioFull_toys_asimov_impacts.json -n RatioElMuDYShapesExpect
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratioFull_toys_asimov_impacts.json -o latest_ratioFull_toys_asimov_impacts
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters dilep_norm=1.0,r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 --robustFit 1 --doInitialFit                 -n RatioElMuDYShapesExpect2
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters dilep_norm=1.0,r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 --robustFit 1 --doFits --parallel 5          -n RatioElMuDYShapesExpect2
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters dilep_norm=1.0,r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 -o latest_ratioFull_toys_asimov_impacts2.json -n RatioElMuDYShapesExpect2
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratioFull_toys_asimov_impacts2.json -o latest_ratioFull_toys_asimov_impacts2
+
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 --robustFit 1 --doInitialFit                 -n RatioElMuDYShapesExpect2
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 --robustFit 1 --doInitialFit                 -n RatioElMuDYShapesExpect2
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 --robustFit 1 --doFits --parallel 5          -n RatioElMuDYShapesExpect2
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 -o latest_ratioFull_toys_asimov_impacts2.json -n RatioElMuDYShapesExpect2
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratioFull_toys_asimov_impacts2.json -o latest_ratioFull_toys_asimov_impacts2
+
+
+combine -M MultiDimFit ttxsec/27dilep2_ratio_all.root --algo grid -t -1 --points 100 --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters tau_ratio=1.0,r=1.0 --rMin 0.5 --rMax 1.5 --name RatioElMuDYShapes
+
+
+rerun old test:
+
+combine -M MultiDimFit ttxsec/fit-stuff/ratio_both_2.txt --algo grid -t -1 --points 100 --redefineSignalPOIs tau_ratio --freezeParameters r --rMin 0.5 --rMax 1.5 --name RatioElMuShapes
+
+./scripts/text2workspace.py ttxsec/fit-stuff/ratio_both_2.txt
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r  -t -1  -d ttxsec/fit-stuff/ratio_both_2.root -m 125 --robustFit 1 --doInitialFit                  -n RatioElMuShapesExpect
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r  -t -1  -d ttxsec/fit-stuff/ratio_both_2.root -m 125 --robustFit 1 --doFits --parallel 5           -n RatioElMuShapesExpect
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r  -t -1  -d ttxsec/fit-stuff/ratio_both_2.root -m 125 -o latest_ratio_toys_asimov_impacts2.json -n RatioElMuShapesExpect
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratio_toys_asimov_impacts2.json -o latest_ratio_toys_asimov_impacts2
+
+   tau_ratio :    +1.000   -0.058/+0.062 (68%)
+
+rerun with root wspace:
+
+   tau_ratio :    +1.100   -0.013/+0.000 (68%)
+Done in 0.13 min (cpu), 0.13 min (real)
+  [WARNING] Found [tau_fakes] at boundary. 
+  [WARNING] Found [dilep_norm] at boundary. 
+Error: closed range without finding crossing.
+
+combine -M MultiDimFit ttxsec/fit-stuff/ratio_both_2.root --algo grid -t -1 --points 100 --redefineSignalPOIs tau_ratio --freezeParameters r --rMin 0.5 --rMax 1.5 --name RatioElMuShapes
+
+combine -M MultiDimFit ttxsec/fit-stuff/ratio_both_2.root --algo grid -t -1 --points 100 --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 --rMin 0.5 --rMax 1.5 --name RatioElMuShapes
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/fit-stuff/ratio_both_2.root -m 125 --robustFit 1 --doInitialFit                  -n RatioElMuShapesExpect
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/fit-stuff/ratio_both_2.root -m 125 --robustFit 1 --doFits --parallel 5           -n RatioElMuShapesExpect
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/fit-stuff/ratio_both_2.root -m 125 -o latest_ratio_toys_asimov_impacts2.json -n RatioElMuShapesExpect
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratio_toys_asimov_impacts2.json -o latest_ratio_toys_asimov_impacts2
+
+again
+
+   tau_ratio :    +1.000   -0.058/+0.062 (68%)
+
+-- impacts ok
+
+
+
+wrong combination:
+
+dilep_norm              extArg                   1.         [0.8,1.2]
+dy_norm                 extArg                   1.         [0.8,1.2]
+tau_ratio               extArg                   1.         [0.9,1.1]
+rate_elmu               rateParam  elmu     tt_other  (@0)   dilep_norm
+rate_eltau              rateParam  el       tt_eltau (@0*@1) dilep_norm,tau_ratio
+rate_dy_mumu            rateParam  dy_mumu  dy_other  (@0)    dy_norm
+rate_dy_mutau           rateParam  dy_mutau dy_tautau (@0*@1) dy_norm,tau_ratio
+
+let's try simple
+
+dilep_norm              extArg                   1.         [0.8,1.2]
+tau_ratio               extArg                   1.         [0.9,1.1]
+rate_elmu               rateParam  elmu     tt_other  (@0)   dilep_norm
+rate_eltau              rateParam  el       tt_eltau (@0*@1) dilep_norm,tau_ratio
+
+-- and DY constrains ID nuis
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 --robustFit 1 --doInitialFit                  -n RatioElMuDYShapesExpect3
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 --robustFit 1 --doFits --parallel 5           -n RatioElMuDYShapesExpect3
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_all.root -m 125 -o latest_ratioFull_toys_asimov_impacts3.json -n RatioElMuDYShapesExpect3
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratioFull_toys_asimov_impacts3.json -o latest_ratioFull_toys_asimov_impacts3
+
+
+Set Default Value of Parameter r To : 1
+Computing results starting from expected outcome (a-priori)
+  [WARNING] Found [dilep_norm] at boundary. 
+Error: closed range without finding crossing.
+Error: closed range without finding crossing.
+
+ --- MultiDimFit ---
+best fit parameter values and profile-likelihood uncertainties: 
+ Warning - No valid high-error found, will report difference to maximum of range for : tau_ratio
+ Warning - No valid low-error found, will report difference to minimum of range for : tau_ratio
+   tau_ratio :    +1.000   -0.100/+0.100 (68%)
+
+...
+
+try elmu only?
+
+combineCards.py el=ttxsec/v27dilep2_ratio_el.txt elmu=ttxsec/v27dilep2_ratio_elmu.txt > ttxsec/27dilep2_ratio_elmu.txt
+
+./scripts/text2workspace.py ttxsec/27dilep2_ratio_elmu.txt
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_elmu.root -m 125 --robustFit 1 --doInitialFit                  -n RatioElMuShapesExpect3
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_elmu.root -m 125 --robustFit 1 --doFits --parallel 5           -n RatioElMuShapesExpect3
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1  -d ttxsec/27dilep2_ratio_elmu.root -m 125 -o latest_ratioElMu_toys_asimov_impacts3.json -n RatioElMuShapesExpect3
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratioElMu_toys_asimov_impacts3.json -o latest_ratioElMu_toys_asimov_impacts3
+
+  [WARNING] Found [dilep_norm] at boundary. 
+Error: closed range without finding crossing.
+Error: closed range without finding crossing.
+
+ --- MultiDimFit ---
+best fit parameter values and profile-likelihood uncertainties: 
+ Warning - No valid high-error found, will report difference to maximum of range for : tau_ratio
+ Warning - No valid low-error found, will report difference to minimum of range for : tau_ratio
+   tau_ratio :    +1.000   -0.100/+0.100 (68%)
+Done in 0.01 min (cpu), 0.01 min (real)
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r,dilep_norm,rate_elmu --setParameters r=1.0,dilep_norm=1.0 -t -1 -d ttxsec/27dilep2_ratio_elmu.root -m 125 --robustFit 1 --doInitialFit -n RatioElMuShapesExpect3
+
+tt_other is problem???
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0,rate_elmu=1.0 -t -1 -d ttxsec/27dilep2_ratio_elmu.root -m 125 --robustFit 1 --doInitialFit -n RatioElMuShapesExpect3
+
+
+
+combineCards.py tt=ttxsec/fit-stuff/ratio_both_2.txt dy_mumu=ttxsec/v27dilep2_ratio_dy_mumu.txt dy_mutau=ttxsec/v27dilep2_ratio_dy_mutau.txt > ttxsec/27dilep2_ratio_hybrid.txt
+
+combineCards.py el=ttxsec/v27dilep2_ratio_el.txt elmu=ttxsec/v27dilep2_ratio_elmu.txt > ttxsec/27dilep2_ratio_hybrid.txt
+
+combineCards.py tt=ttxsec/fit-stuff/ratio_both_2.txt dy_mumu=ttxsec/v27dilep2_ratio_dy_mumu.txt dy_mutau=ttxsec/v27dilep2_ratio_dy_mutau.txt > ttxsec/27dilep2_ratio_hybrid.txt
+
+./scripts/text2workspace.py ttxsec/27dilep2_ratio_hybrid.txt
+
+bSF                     lnN      1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           -              1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           -              1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.03           1.0
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/27dilep2_ratio_hybrid.root -m 125 --robustFit 1 --doInitialFit -n RatioElMuShapesExpect3
+
+maybe rates are too small without the scale?
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 --freezeNuisanceGroup tt_th_pdf -d ttxsec/27dilep2_ratio_hybrid.root -m 125 --robustFit 1 --doInitialFit                  -n RatioElMuShapesExpect3
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 --freezeNuisanceGroup tt_th_pdf -d ttxsec/27dilep2_ratio_hybrid.root -m 125 --robustFit 1 --doFits --parallel 5           -n RatioElMuShapesExpect3
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 --freezeNuisanceGroup tt_th_pdf -d ttxsec/27dilep2_ratio_hybrid.root -m 125 -o latest_ratioElMu_toys_asimov_impacts3.json -n RatioElMuShapesExpect3
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratioElMu_toys_asimov_impacts3.json -o latest_ratioElMu_toys_asimov_impacts3
+
+-- hybrid with lumi factor for DY channels works!
+
+why the factors don't work in the original datacard of all channels?
+
+
+
+
+
+
+## try histosels with the re-scale
+
+foreach sys (`cat syst-test.syst-list.1`)
+foreach sys (`cat syst-test.syst-list.1_aa`)
+foreach sys (`cat syst-test.syst-list.1_ab`)
+foreach sys (`cat syst-test.syst-list.1_ac`)
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -o histosels/v27dilep2/ --lumi 35800 -c mu_sel        -d Mt_lep_met_f --wjet 0.8 --skip-QCD --systematic $sys
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -o histosels/v27dilep2/ --lumi 31300 -c el_sel        -d Mt_lep_met_f --wjet 0.8 --skip-QCD --systematic $sys
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -o histosels/v27dilep2/ --lumi 35800 -c tt_elmu       -d Mt_lep_met_f --wjet 0.8 --skip-QCD --systematic $sys
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -o histosels/v27dilep2/ --lumi 35800 -c dy_mutau      -d lep_pt --wjet 0.8 --skip-QCD --systematic $sys
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -o histosels/v27dilep2/ --lumi 35800 -c dy_mumu       -d lep_pt --wjet 0.8 --skip-QCD --systematic $sys
+end
+
+
+hadd histosels/histosels_v27dilep2.root histosels/v27dilep2/distrs/*
+
+
+python numbers_for_datacard.py histosels/histosels_v27dilep2.root -d Mt_lep_met_f -c el_sel,tt_elmu   --no-sums
+python numbers_for_datacard.py histosels/histosels_v27dilep2.root -d lep_pt       -c dy_mutau,dy_mumu --no-sums
+
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_el.txt
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_elmu.txt
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_dy_mutau.txt
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_dy_mumu.txt
+
+combineCards.py el=ttxsec/v27dilep2_ratio_el.txt elmu=ttxsec/v27dilep2_ratio_elmu.txt > ttxsec/v27dilep2_ratio_el_elmu.txt
+combineCards.py el=ttxsec/v27dilep2_ratio_el.txt elmu=ttxsec/v27dilep2_ratio_elmu.txt dy_mumu=ttxsec/v27dilep2_ratio_dy_mumu.txt dy_mutau=ttxsec/v27dilep2_ratio_dy_mutau.txt > ttxsec/v27dilep2_ratio_all.txt
+
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_el_elmu.txt
+
+--saveSpecifiedNuis dilep_norm
+ --setParameters r=1.0 --expectSignal 1.0
+
+combine -M MultiDimFit ttxsec/fit-stuff/ratio_both_2.root  --algo grid -t -1 --points 100 --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0  --rMin 0.5 --rMax 1.5 --name RatioElMuShapesOLD1
+combine -M MultiDimFit ttxsec/v27dilep2_ratio_el_elmu.root --algo grid -t -1 --points 100 --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0  --rMin 0.5 --rMax 1.5 --name RatioElMuShapes
+
+root -l higgsCombineRatioElMuShapesOLD1.MultiDimFit.mH120.root higgsCombineRatioElMuShapes.MultiDimFit.mH120.root
+
+-- the new is like 10 times flatter
+   after no tau ID in elmu and it's 2 times flatter
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_el_elmu.root -m 125 --robustFit 1 --doInitialFit -n RatioElMuShapesExpect3
+
+-- after no tau ID in elmu
+   tau_ratio :    +1.000   -0.096/+0.096 (68%)
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_el_elmu.root -m 125 --robustFit 1 --doInitialFit                  -n RatioElMuShapesExpect3
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_el_elmu.root -m 125 --robustFit 1 --doFits --parallel 5           -n RatioElMuShapesExpect3
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_el_elmu.root -m 125 -o latest_ratioElMu_toys_asimov_impacts3.json -n RatioElMuShapesExpect3
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratioElMu_toys_asimov_impacts3.json -o latest_ratioElMu_toys_asimov_impacts3
+
+-- after no tau ID in elmu, the elID is too high and asymetric, why does'nt it cancel out?
+
+(added muon ID and TRG and separated from electron ID and TRG)
+
+-- after mu-el separation: larger uncertainty
+   tau_ratio :    +1.000   -0.112/+0.098 (68%)
+
+-- muon ID (asym) is 1 systematic, then tau ID, then el ID (asym), el TRG, mu TRG is very small
+
+root [7] tt_elmu->Get("tt_other/LEPelIDDown/tt_elmu_tt_other_LEPelIDDown_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_tt_other_LEPelIDDown_Mt_lep_met_f, Entries= 289232, Total sum= 94833.5
+root [8] tt_elmu->Get("tt_other/LEPelIDUp/tt_elmu_tt_other_LEPelIDUp_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_tt_other_LEPelIDUp_Mt_lep_met_f, Entries= 289232, Total sum= 99932.1
+root [9] 
+root [9] tt_elmu->Get("tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_tt_other_NOMINAL_Mt_lep_met_f, Entries= 289232, Total sum= 100550
+
+
+
+dilep_norm              extArg                   1.         [0.8,1.2]
+tau_ratio               extArg                   1.         [0.9,1.1]
+rate_elmu               rateParam  elmu     tt_other  (@0)   dilep_norm
+rate_eltau              rateParam  el       tt_eltau (@0*@1) dilep_norm,tau_ratio
+
+---------------
+  el           
+  tt_other     
+  0            
+  29.428       
+---------------
+  1.0          
+  1.0          
+  1.0          
+  1.0          
+  1.0          
+  1.0          
+  1.0          
+  1.0          
+  1.0          
+  1.0          
+  1.0          
+  1.0          
+  1.0          
+  1.0          
+  1.0          
+  -            
+  -            
+  1.025        
+  -            
+  -            
+  1.5          
+  -            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## and try with MC stats
+
+
+
+
+
+
+
+
+
 
 
 
