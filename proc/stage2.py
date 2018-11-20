@@ -28,7 +28,7 @@ SV_SIGN_CUT = 2.5
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all):
     #return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all or pass_mumu
-    return pass_mu or pass_el or pass_elmu or pass_mumu or pass_elel
+    return pass_mu or pass_el or pass_elmu_el or pass_mumu or pass_elel
 
 
 def passes_wjets_control_selection(passed_triggers, leps, N_jets, taus, proc_met):
@@ -58,7 +58,7 @@ def passes_elmu_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     channel_stage = 0
     pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
 
-    pass_elmu_leps = pass_elmu and len(leps[4]) == 2 and leps[4][0] * leps[4][1] == -11*13
+    pass_elmu_leps = pass_elmu_el and len(leps[4]) == 2 and leps[4][0] * leps[4][1] == -11*13
     pass_elmu_leps_jets = pass_elmu_leps and N_jets[1] > 1
     pass_elmu_leps_jets_bjet = pass_elmu_leps_jets and N_jets[0] > 0
 
@@ -68,7 +68,7 @@ def passes_elmu_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
         channel_stage = 204
     elif pass_elmu_leps:
         channel_stage = 203
-    elif pass_elmu:
+    elif pass_elmu_el:
         channel_stage = 202
 
     return channel_stage
@@ -1710,14 +1710,24 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     ttree_out.Branch( 'event_weight_LEPall', event_weight_LEPall, 'event_weight_LEPall/f' )
     event_weight_LEP = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_weight_LEP', event_weight_LEP, 'event_weight_LEP/f' )
-    event_weight_LEPidUp = array( 'f', [ 0 ] )
-    ttree_out.Branch( 'event_weight_LEPidUp', event_weight_LEPidUp, 'event_weight_LEPidUp/f' )
-    event_weight_LEPidDown = array( 'f', [ 0 ] )
-    ttree_out.Branch( 'event_weight_LEPidDown', event_weight_LEPidDown, 'event_weight_LEPidDown/f' )
-    event_weight_LEPtrgUp = array( 'f', [ 0 ] )
-    ttree_out.Branch( 'event_weight_LEPtrgUp', event_weight_LEPtrgUp, 'event_weight_LEPtrgUp/f' )
-    event_weight_LEPtrgDown = array( 'f', [ 0 ] )
-    ttree_out.Branch( 'event_weight_LEPtrgDown', event_weight_LEPtrgDown, 'event_weight_LEPtrgDown/f' )
+
+    event_weight_LEPmuIDUp = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_LEPmuIDUp', event_weight_LEPmuIDUp, 'event_weight_LEPmuIDUp/f' )
+    event_weight_LEPmuIDDown = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_LEPmuIDDown', event_weight_LEPmuIDDown, 'event_weight_LEPmuIDDown/f' )
+    event_weight_LEPmuTRGUp = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_LEPmuTRGUp', event_weight_LEPmuTRGUp, 'event_weight_LEPmuTRGUp/f' )
+    event_weight_LEPmuTRGDown = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_LEPmuTRGDown', event_weight_LEPmuTRGDown, 'event_weight_LEPmuTRGDown/f' )
+
+    event_weight_LEPelIDUp = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_LEPelIDUp', event_weight_LEPelIDUp, 'event_weight_LEPelIDUp/f' )
+    event_weight_LEPelIDDown = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_LEPelIDDown', event_weight_LEPelIDDown, 'event_weight_LEPelIDDown/f' )
+    event_weight_LEPelTRGUp = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_LEPelTRGUp', event_weight_LEPelTRGUp, 'event_weight_LEPelTRGUp/f' )
+    event_weight_LEPelTRGDown = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_LEPelTRGDown', event_weight_LEPelTRGDown, 'event_weight_LEPelTRGDown/f' )
 
     event_weight_PUUp = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_weight_PUUp', event_weight_PUUp, 'event_weight_PUUp/f' )
@@ -2137,7 +2147,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         # TODO: need to check the trigger SF-s then......
         # for now I'm just trying to get rid of el-mu mix in MC
         #pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el and ev.no_iso_veto_leps and \
-        pass_elmu_id = ev.leps_ID == -11*13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.no_iso_veto_leps and \
+        pass_elmu_id = ev.leps_ID == -11*13 and ev.HLT_mu and ev.no_iso_veto_leps and \
+            (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
 
@@ -2152,8 +2163,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         pass_elmu_el = ev.leps_ID == -11*13 and ev.HLT_el and ev.no_iso_veto_leps and \
             (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 11 else ev.lep_matched_HLT[1]) and \
-            (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
-            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
+            abs(ev.lep_p4[0].eta()) < 2.4 and abs(ev.lep_p4[1].eta()) < 2.4 and \
+            ((ev.lep_p4[0].pt() > 30 and ev.lep_p4[1].pt() > 26) if abs(ev.lep_id[0]) == 11 else (ev.lep_p4[1].pt() > 30 and ev.lep_p4[0].pt() > 26))
 
         pass_mumu = ev.leps_ID == -13*13 and ev.HLT_mu and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
@@ -2530,10 +2541,14 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
             # LEPTON SFs
             weight_lep    = 1.
-            weight_lep_id_Up    = 1.
-            weight_lep_id_Down  = 1.
-            weight_lep_trg_Up   = 1.
-            weight_lep_trg_Down = 1.
+            weight_lepEL_id_Up    = 1.
+            weight_lepEL_id_Down  = 1.
+            weight_lepEL_trg_Up   = 1.
+            weight_lepEL_trg_Down = 1.
+            weight_lepMU_id_Up    = 1.
+            weight_lepMU_id_Down  = 1.
+            weight_lepMU_trg_Up   = 1.
+            weight_lepMU_trg_Down = 1.
             weight_lepall = 1.
 
             if isMC and pass_mu_all:
@@ -2563,26 +2578,28 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 # with gen_nvtx for tracking eff
                 mu_b_trk, mu_b_trk_u = mu_sfs_b[0:2] # unc in mu_sfs_b[1]
                 mu_h_trk, mu_h_trk_u = mu_sfs_h[0:2] # unc in mu_sfs_h[1]
-                weight_lep_id_Up   = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
-                                         ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
-                weight_lep_id_Down = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
-                                         ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
-                weight_lep_trg_Up   = (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                                          ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0])
-                weight_lep_trg_Down = (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                                          ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0])
+                weight_lepMU_id_Up   = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
+                                           ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
+                weight_lepMU_id_Down = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
+                                           ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
+                weight_lepMU_trg_Up   = (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                                            ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0])
+                weight_lepMU_trg_Down = (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                                            ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0])
 
                 # test how much lepton SFs affect
                 weight_lep = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
                                 ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
-            if isMC and pass_elmu:
+            # for now let's just use 1 elmu and it is electron-triggered one
+            if False and isMC and pass_elmu:
                 # find which lepton is mu and which is el
                 mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
                 mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
                 (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt())
                 el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
                 #el_trg_sf              = lepton_electron_trigger_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
+
                 #weight_lep_Up   *= weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 #weight_lep_Down *= weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
                 #weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
@@ -2590,76 +2607,91 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 mu_b_trk, mu_b_trk_u = mu_sfs_b[0:2] # unc in mu_sfs_b[1]
                 mu_h_trk, mu_h_trk_u = mu_sfs_h[0:2] # unc in mu_sfs_h[1]
 
-                weight_lep_id_Up   = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
+                weight_lepMU_id_Up   = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
                                          ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
-                weight_lep_id_Down = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
+                weight_lepMU_id_Down = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
                                          ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
 
-                weight_lep_id_Up   *= (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
-                weight_lep_id_Down *= (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+                weight_lepMU_id_Up   *= (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
+                weight_lepMU_id_Down *= (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
 
-                weight_lep_trg_Up   = (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                weight_lepMU_trg_Up   = (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
                                           ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0])
-                weight_lep_trg_Down = (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                weight_lepMU_trg_Down = (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
                                           ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0])
 
                 weight_lep = el_sfs_reco[0] * el_sfs_id[0]
 
-                weight_lep = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                             ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                weight_lep *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                              ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
-            # FIXME: this thing might interfere with muonic elmu! run separately or fix
-            if False and isMC and pass_elmu_el:
+            if isMC and pass_elmu_el:
                 # find which lepton is mu and which is el
                 mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
                 mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
                 #(mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt())
                 el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
-                el_trg_sf              = lepton_electron_trigger_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
+                el_trg_sf, el_trg_unc  = lepton_electron_trigger_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
+
                 #weight_lep_Up   *= weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 #weight_lep_Down *= weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
                 #weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
-
-                # w.o. mu trig
+                # w.o. el trig
                 mu_b_trk, mu_b_trk_u = mu_sfs_b[0:2] # unc in mu_sfs_b[1]
                 mu_h_trk, mu_h_trk_u = mu_sfs_h[0:2] # unc in mu_sfs_h[1]
 
-                weight_lep_id_Up   = (ratio_bcdef * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
-                                         ratio_gh * (mu_h_trk + mu_h_trk_u) * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
-                weight_lep_id_Down = (ratio_bcdef * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
-                                         ratio_gh * (mu_h_trk - mu_h_trk_u) * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
+                weight_lep_el = el_sfs_reco[0] * el_sfs_id[0] * el_trg_sf
 
-                weight_lep_id_Up   *= (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
-                weight_lep_id_Down *= (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+                #weight_lep_mu = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                #                ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                weight_lep_mu = ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                                ratio_gh    * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
-                #weight *= el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+                weight_lep = weight_lep_el * weight_lep_mu
 
-                #weight *= ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                #          ratio_gh    * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                weight_lepMU_id_Up    = weight_lep_el * \
+                                         (ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
+                                             ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
+                weight_lepMU_id_Down  = weight_lep_el * \
+                                         (ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
+                                             ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
+
+                weight_lepMU_trg_Up   = weight_lep_el * \
+                                      (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                                          ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0])
+                weight_lepMU_trg_Down = weight_lep_el * \
+                                      (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                                          ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0])
+
+                weight_lepEL_id_Up    = weight_lep_mu * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1]) * el_trg_sf
+                weight_lepEL_id_Down  = weight_lep_mu * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1]) * el_trg_sf
+
+                weight_lepEL_trg_Up   = weight_lep_mu * el_sfs_reco[0] * el_sfs_id[0] * (el_trg_sf + el_trg_unc)
+                weight_lepEL_trg_Down = weight_lep_mu * el_sfs_reco[0] * el_sfs_id[0] * (el_trg_sf - el_trg_unc)
 
 
 
             if isMC and pass_el_all:
                 el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt())
-                el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt())
+                el_trg_sf, el_trg_unc = lepton_electron_trigger_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt())
                 # on 0 position is the value, on 1 is uncertainty
 
                 # test how much leptons SFs affect
-                weight_lepall = el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+                weight_lepall = el_trg_sf * el_sfs_reco[0] * el_sfs_id[0]
 
 
             if isMC and (pass_el or pass_elel):
                 el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
-                el_trg_sf = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
+                el_trg_sf, el_trg_unc = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
                 # on 0 position is the value, on 1 is uncertainty
-                weight_lep_id_Up   = el_trg_sf[0] * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
-                weight_lep_id_Down = el_trg_sf[0] * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+                weight_lepEL_id_Up   = el_trg_sf * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
+                weight_lepEL_id_Down = el_trg_sf * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
 
-                weight_lep_trg_Up   = (el_trg_sf[0] + el_trg_sf[1]) * el_sfs_reco[0] * el_sfs_id[0]
-                weight_lep_trg_Down = (el_trg_sf[0] - el_trg_sf[1]) * el_sfs_reco[0] * el_sfs_id[0]
+                weight_lepEL_trg_Up   = (el_trg_sf + el_trg_unc) * el_sfs_reco[0] * el_sfs_id[0]
+                weight_lepEL_trg_Down = (el_trg_sf - el_trg_unc) * el_sfs_reco[0] * el_sfs_id[0]
 
                 # test how much leptons SFs affect
-                weight_lep = el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0]
+                weight_lep = el_trg_sf * el_sfs_reco[0] * el_sfs_id[0]
 
             weight *= weight_lep
 
@@ -4048,10 +4080,14 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             event_weight_toppt[0]   = weight_top_pt if isTT else 1.
             event_weight_LEPall[0]  = weight_lepall
             event_weight_LEP[0]     = weight_lep
-            event_weight_LEPidUp[0]    = (weight_lep_id_Up   / weight_lep) if weight_lep > 0. else 0.
-            event_weight_LEPidDown[0]  = (weight_lep_id_Down / weight_lep) if weight_lep > 0. else 0.
-            event_weight_LEPtrgUp[0]   = (weight_lep_trg_Up   / weight_lep) if weight_lep > 0. else 0.
-            event_weight_LEPtrgDown[0] = (weight_lep_trg_Down / weight_lep) if weight_lep > 0. else 0.
+            event_weight_LEPmuIDUp[0]    = (weight_lepMU_id_Up    / weight_lep) if weight_lep > 0. else 0.
+            event_weight_LEPmuIDDown[0]  = (weight_lepMU_id_Down  / weight_lep) if weight_lep > 0. else 0.
+            event_weight_LEPmuTRGUp[0]   = (weight_lepMU_trg_Up   / weight_lep) if weight_lep > 0. else 0.
+            event_weight_LEPmuTRGDown[0] = (weight_lepMU_trg_Down / weight_lep) if weight_lep > 0. else 0.
+            event_weight_LEPelIDUp[0]    = (weight_lepEL_id_Up    / weight_lep) if weight_lep > 0. else 0.
+            event_weight_LEPelIDDown[0]  = (weight_lepEL_id_Down  / weight_lep) if weight_lep > 0. else 0.
+            event_weight_LEPelTRGUp[0]   = (weight_lepEL_trg_Up   / weight_lep) if weight_lep > 0. else 0.
+            event_weight_LEPelTRGDown[0] = (weight_lepEL_trg_Down / weight_lep) if weight_lep > 0. else 0.
             event_weight_PUUp[0]    = weight_pu_up
             event_weight_PUDown[0]  = weight_pu_dn
 
@@ -4316,8 +4352,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
             control_hs['weight_el_trk'].Fill(el_sfs_reco[0])
             control_hs['weight_el_idd'].Fill(el_sfs_id[0])
-            control_hs['weight_el_trg'].Fill(el_trg_sf[0])
-            control_hs['weight_el_all'].Fill(el_trg_sf[0] * el_sfs_reco[0] * el_sfs_id[0])
+            control_hs['weight_el_trg'].Fill(el_trg_sf)
+            control_hs['weight_el_all'].Fill(el_trg_sf * el_sfs_reco[0] * el_sfs_id[0])
 
             control_hs['weight_el_bSF']     .Fill(weight_bSF)
             #control_hs['weight_el_bSF_up']  .Fill(weight_bSF_up)

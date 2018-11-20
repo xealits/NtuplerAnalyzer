@@ -50,7 +50,7 @@ cd UserCode/NtuplerAnalyzer/proc/
 {draw_commands}
 """
 
-draw_command_template = """python -W ignore sumup_ttree_draw.py --cut-w0jets "{draw}"           --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/{dtag}_{chan}_{sys}_{distr_name}.root  --std-histos --histo-name {chan}/std_procs/{sys}/{distr_name} {cond} --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*${dtag}*.root"""
+draw_command_template = """python -W ignore sumup_ttree_draw.py --cut-w0jets "{draw}"           --ttree ttree_out --histo-range std  --output quick-test/v27-dilep2/{dtag}_{chan}_{sys}_{distr_name}.root  --std-histos --histo-name {chan}/std_procs/{sys}/{distr_name} {cond} --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*{dtag}*.root"""
 
 #batch_jobs/j_${dtag}_${chans}_${systs}
 

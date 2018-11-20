@@ -129,6 +129,7 @@ parser.add_argument("-r", "--ratios",       action='store_true', help="output ra
 
 parser.add_argument("--skip-procs",    type=str, default='', help="skip these processes")
 
+parser.add_argument("--scale",    type=float, help="factor of lumi for mc procs")
 parser.add_argument("--wjets",    type=float, help="factor of wjets")
 
 parser.add_argument("--range-min",    type=float, help="calculate from")
@@ -281,6 +282,9 @@ for channel in channels:
        logging.debug(histo.Integral())
        processes.append(process)
 
+       if process != 'data' and args.scale:
+           histo.Scale(args.scale)
+
        if 'wjet' in process and args.wjets:
            histo.Scale(args.wjets)
 
@@ -307,7 +311,8 @@ for channel in channels:
         #print 'obs %f' % data_histo.Integral()
         #print 'mc sum = %f' % sum(h.Integral() for h in histos)
         print 'obs %f'      % data_yields[channel][0]
-        print 'mc sum = %f' % sum(proc[channel][0] for proc in proc_yields.values())
+        if args.no_sums:
+            print 'mc sum = %f' % sum(proc[channel][0] for proc in proc_yields.values())
 
 
 proc_s = '%40s'
