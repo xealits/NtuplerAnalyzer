@@ -347,14 +347,14 @@ systs_weights_common = {
 'bSFUp'  : "event_weight*event_weight_bSFUp/event_weight_bSF"  ,
 'bSFDown': "event_weight*event_weight_bSFDown/event_weight_bSF",
 
-'LEPelIDUp'   : "event_weight*event_weight_LEPidUp"   ,
-'LEPelIDDown' : "event_weight*event_weight_LEPidDown" ,
-'LEPelTRGUp'  : "event_weight*event_weight_LEPtrgUp"  ,
-'LEPelTRGDown': "event_weight*event_weight_LEPtrgDown",
-'LEPmuIDUp'   : "event_weight*event_weight_LEPidUp"   ,
-'LEPmuIDDown' : "event_weight*event_weight_LEPidDown" ,
-'LEPmuTRGUp'  : "event_weight*event_weight_LEPtrgUp"  ,
-'LEPmuTRGDown': "event_weight*event_weight_LEPtrgDown",
+'LEPelIDUp'   : "event_weight*event_weight_LEPelIDUp"   ,
+'LEPelIDDown' : "event_weight*event_weight_LEPelIDDown" ,
+'LEPelTRGUp'  : "event_weight*event_weight_LEPelTRGUp"  ,
+'LEPelTRGDown': "event_weight*event_weight_LEPelTRGDown",
+'LEPmuIDUp'   : "event_weight*event_weight_LEPmuIDUp"   ,
+'LEPmuIDDown' : "event_weight*event_weight_LEPmuIDDown" ,
+'LEPmuTRGUp'  : "event_weight*event_weight_LEPmuTRGUp"  ,
+'LEPmuTRGDown': "event_weight*event_weight_LEPmuTRGDown",
 }
 
 systs_weights_tt = {
