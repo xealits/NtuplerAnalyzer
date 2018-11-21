@@ -4,18 +4,18 @@ the statement of the problem:
 
 root -l jobsums/histosels/histosels_v27dilep2.root
 
-root [7] tt_elmu->Get("dy_other/NOMINAL/tt_elmu_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+tt_elmu->Get("dy_other/NOMINAL/tt_elmu_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+tt_elmu->Get("dy_other/LEPmuIDUp/tt_elmu_dy_other_LEPmuIDUp_Mt_lep_met_f")->Print()
+tt_elmu->Get("dy_other/LEPmuIDDown/tt_elmu_dy_other_LEPmuIDDown_Mt_lep_met_f")->Print()
 TH1.Print Name  = tt_elmu_dy_other_NOMINAL_Mt_lep_met_f, Entries= 2, Total sum= 8.32739
-root [8] tt_elmu->Get("dy_other/LEPmuIDUp/tt_elmu_dy_other_LEPmuIDUp_Mt_lep_met_f")->Print()
 TH1.Print Name  = tt_elmu_dy_other_LEPmuIDUp_Mt_lep_met_f, Entries= 2, Total sum= 8.24471
-root [9] tt_elmu->Get("dy_other/LEPmuIDDown/tt_elmu_dy_other_LEPmuIDDown_Mt_lep_met_f")->Print()
 TH1.Print Name  = tt_elmu_dy_other_LEPmuIDDown_Mt_lep_met_f, Entries= 2, Total sum= 7.82908
 
-root [10] tt_elmu->Get("tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_Mt_lep_met_f")->Print()
+tt_elmu->Get("tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_Mt_lep_met_f")->Print()
+tt_elmu->Get("tt_other/LEPmuIDUp/tt_elmu_tt_other_LEPmuIDUp_Mt_lep_met_f")->Print()
+tt_elmu->Get("tt_other/LEPmuIDDown/tt_elmu_tt_other_LEPmuIDDown_Mt_lep_met_f")->Print()
 TH1.Print Name  = tt_elmu_tt_other_NOMINAL_Mt_lep_met_f, Entries= 289232, Total sum= 100550
-root [11] tt_elmu->Get("tt_other/LEPmuIDUp/tt_elmu_tt_other_LEPmuIDUp_Mt_lep_met_f")->Print()
 TH1.Print Name  = tt_elmu_tt_other_LEPmuIDUp_Mt_lep_met_f, Entries= 289232, Total sum= 99932.1
-root [12] tt_elmu->Get("tt_other/LEPmuIDDown/tt_elmu_tt_other_LEPmuIDDown_Mt_lep_met_f")->Print()
 TH1.Print Name  = tt_elmu_tt_other_LEPmuIDDown_Mt_lep_met_f, Entries= 289232, Total sum= 94833.5
 
 -- issues in tt_elmu leps, at stage2 they are incorrectly calculated
@@ -26,6 +26,56 @@ this:
 python -W ignore sumup_ttree_draw.py --cut-w0jets "std_mt_vars"           --ttree ttree_out --histo-range std  --output quick-test/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_dy_mumu_nom,leps_11.root  --std-histos --histo-name dy_mumu/std_procs/nom,LEPmuIDUp,LEPmuIDDown/Mt_lep_met_f --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v27/dilep1/*MC2016_Summer16_DYJetsToLL_50toInf_madgraph*.root
 
 is fine
+
+
+
+after fix
+
+tt_elmu->Get("dy_other/NOMINAL/tt_elmu_dy_other_NOMINAL_dilep_mass")->Print()
+tt_elmu->Get("dy_other/LEPmuIDUp/tt_elmu_dy_other_LEPmuIDUp_dilep_mass")->Print()
+tt_elmu->Get("dy_other/LEPmuIDDown/tt_elmu_dy_other_LEPmuIDDown_dilep_mass")->Print()
+TH1.Print Name  = tt_elmu_dy_other_NOMINAL_dilep_mass, Entries= 1, Total sum= 4.48389e-05
+TH1.Print Name  = tt_elmu_dy_other_LEPmuIDUp_dilep_mass, Entries= 1, Total sum= 4.51831e-05
+TH1.Print Name  = tt_elmu_dy_other_LEPmuIDDown_dilep_mass, Entries= 1, Total sum= 4.44536e-05
+
+tt_elmu->Get("tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_dilep_mass")->Print()
+tt_elmu->Get("tt_other/LEPmuIDUp/tt_elmu_tt_other_LEPmuIDUp_dilep_mass")->Print()
+tt_elmu->Get("tt_other/LEPmuIDDown/tt_elmu_tt_other_LEPmuIDDown_dilep_mass")->Print()
+TH1.Print Name  = tt_elmu_tt_other_NOMINAL_dilep_mass, Entries= 287401, Total sum= 2.90965
+TH1.Print Name  = tt_elmu_tt_other_LEPmuIDUp_dilep_mass, Entries= 287401, Total sum= 2.88584
+TH1.Print Name  = tt_elmu_tt_other_LEPmuIDDown_dilep_mass, Entries= 287401, Total sum= 2.8347
+
+same crap
+
+-- seen in the ttree
+
+muon ID variation included muon trig SF, the nominal has only el trg
+-- rerun is ok
+
+in elel:
+
+dy_elel->Get("dy_other/NOMINAL/dy_elel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+dy_elel->Get("dy_other/LEPmuIDUp/dy_elel_dy_other_LEPmuIDUp_Mt_lep_met_f")->Print()
+dy_elel->Get("dy_other/LEPmuIDDown/dy_elel_dy_other_LEPmuIDDown_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_elel_dy_other_NOMINAL_Mt_lep_met_f, Entries= 882400, Total sum= 103.491
+TH1.Print Name  = dy_elel_dy_other_LEPmuIDUp_Mt_lep_met_f, Entries= 882400, Total sum= 110.101
+TH1.Print Name  = dy_elel_dy_other_LEPmuIDDown_Mt_lep_met_f, Entries= 882400, Total sum= 110.101
+
+dy_elel->Get("dy_other/NOMINAL/dy_elel_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+dy_elel->Get("dy_other/LEPelIDUp/dy_elel_dy_other_LEPelIDUp_Mt_lep_met_f")->Print()
+dy_elel->Get("dy_other/LEPelIDDown/dy_elel_dy_other_LEPelIDDown_Mt_lep_met_f")->Print()
+dy_elel->Get("dy_other/LEPelTRGUp/dy_elel_dy_other_LEPelTRGUp_Mt_lep_met_f")->Print()
+dy_elel->Get("dy_other/LEPelTRGDown/dy_elel_dy_other_LEPelTRGDown_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_elel_dy_other_NOMINAL_Mt_lep_met_f, Entries= 882400, Total sum= 103.491
+TH1.Print Name  = dy_elel_dy_other_LEPelIDUp_Mt_lep_met_f, Entries= 882400, Total sum= 105.015
+TH1.Print Name  = dy_elel_dy_other_LEPelIDDown_Mt_lep_met_f, Entries= 882400, Total sum= 101.979
+TH1.Print Name  = dy_elel_dy_other_LEPelTRGUp_Mt_lep_met_f, Entries= 882400, Total sum= 105.966
+TH1.Print Name  = dy_elel_dy_other_LEPelTRGDown_Mt_lep_met_f, Entries= 882400, Total sum= 101.016
+
+-- the negative nominal lep weight?
+
+
+
 
 
 
@@ -952,6 +1002,9 @@ make merge_proc dtags=sw-dir/merge-sets/jobs_hadd.dtags.large_ab nt=v27 proc=dil
 make merge_proc dtags=sw-dir/merge-sets/jobs_hadd.dtags.small    nt=v27 proc=dilep1 merge_dir=lstore_outdirs/merge-sets/
 make merge_proc dtags=sw-dir/merge-sets/jobs_hadd.dtags.single-electron nt=v27 proc=dilep1 merge_dir=lstore_outdirs/merge-sets/
 make merge_proc dtags=sw-dir/merge-sets/jobs_hadd.dtags.single-muon     nt=v27 proc=dilep1 merge_dir=lstore_outdirs/merge-sets/
+
+hadd lstore_outdirs/merge-sets/v27/dilep1/MC2016_Summer16_TTJets_powheg.root lstore_outdirs/v27/dilep1/MC2016_Summer16_TTJets_powheg/*root &
+
 
 
 I should automate this:
