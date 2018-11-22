@@ -74,6 +74,75 @@ TH1.Print Name  = dy_elel_dy_other_LEPelTRGDown_Mt_lep_met_f, Entries= 882400, T
 
 -- the negative nominal lep weight?
 
+after the final fix
+
+hadd quick-test/distrs_v27dilep2_mc_5.root quick-test/v27-dilep2_hadds/MC*root
+cp quick-test/distrs_v27dilep2_mc_5.root jobsums/distrs/distrs_v27dilep2_mc.root
+
+dy_mumu->Get("dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_Mt_lep_met_f")->Print()
+dy_mumu->Get("dy_other/LEPmuIDUp/dy_mumu_dy_other_LEPmuIDUp_Mt_lep_met_f")->Print()
+dy_mumu->Get("dy_other/LEPmuIDDown/dy_mumu_dy_other_LEPmuIDDown_Mt_lep_met_f")->Print()
+TH1.Print Name  = dy_mumu_dy_other_NOMINAL_Mt_lep_met_f, Entries= 1806111, Total sum= 202.03
+TH1.Print Name  = dy_mumu_dy_other_LEPmuIDUp_Mt_lep_met_f, Entries= 1806111, Total sum= 203.617
+TH1.Print Name  = dy_mumu_dy_other_LEPmuIDDown_Mt_lep_met_f, Entries= 1806111, Total sum= 200.447
+
+TH1.Print Name  = tt_elmu_tt_other_NOMINAL_Mt_lep_met_f, Entries= 290424, Total sum= 2.90989
+TH1.Print Name  = tt_elmu_tt_other_LEPmuIDUp_Mt_lep_met_f, Entries= 290424, Total sum= 2.93594
+TH1.Print Name  = tt_elmu_tt_other_LEPmuIDDown_Mt_lep_met_f, Entries= 290424, Total sum= 2.88393
+
+hadd histosels/histosels_v27dilep2.root histosels/v27dilep2/distrs/*
+
+combineCards.py el=ttxsec/v27dilep2_ratio_el.txt elmu=ttxsec/v27dilep2_ratio_elmu.txt dy_mumu=ttxsec/v27dilep2_ratio_dy_mumu.txt dy_mutau=ttxsec/v27dilep2_ratio_dy_mutau.txt > ttxsec/v27dilep2_ratio_all.txt
+
+vim -p ttxsec/v27dilep2_ratio_all.txt ttxsec/v27dilep2_ratio_el_elmu.txt
+
+with simple ratio
+
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_all.txt
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_all.root -m 125 --robustFit 1 --doInitialFit                  -n RatioAllShapesExpect3
+
+best fit parameter values and profile-likelihood uncertainties: 
+   tau_ratio :    +1.000   -0.074/+0.075 (68%)
+Done in 0.04 min (cpu), 0.04 min (real)
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_all.root -m 125 --robustFit 1 --doFits --parallel 5           -n RatioAllShapesExpect3
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_all.root -m 125 -o latest_ratioAll_toys_asimov_impacts3.json -n RatioAllShapesExpect3
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratioAll_toys_asimov_impacts3.json -o latest_ratioAll_toys_asimov_impacts3
+
+-- no asymetry, but strange systematics:
+1. tau fakes (?),         constrained to 0.4sigma, impact 0.04
+2. LEP el TRG,        not constrained at all,             0.03 (did I add it in datacard? -- no!)
+3. wjets norm (???),      constrained to 0.2-0.3sigma,    0.03
+4. TES,        asymetric, constrained to 0.5sigma,        0.02 one-sided
+5. tau ID (finally),      constrained to 0.5-0.6sigma,    less then 0.02 (cool!)
+
+  Parameter :   Best-fit               tau_ratio
+  tauID_eff :   -0.000  -0.529/+0.589[WARNING] Minimisation finished with status 1 (covariance forced positive definite), this could indicate a problem with the minimim!
+[WARNING] Minimisation finished with status 1 (covariance forced positive definite), this could indicate a problem with the minimim!
+  +0.009/-0.016
+
+  Parameter  :   Best-fit               tau_ratio
+  wjets_norm :   +0.000  -0.288/+0.260[WARNING] Minimisation finished with status 1 (covariance forced positive definite), this could indicate a problem with the minimim!
+[WARNING] Minimisation finished with status 1 (covariance forced positive definite), this could indicate a problem with the minimim!
+  -0.029/+0.028
+
+with corrected el trigger:
+
+best fit parameter values and profile-likelihood uncertainties: 
+   tau_ratio :    +1.000   -0.070/+0.069 (68%)
+Done in 0.04 min (cpu), 0.04 min (real)
+
+-- el trg is far sub-percent
+
+1. fakes
+2. wjets
+3. TES
+4. tau ID
+
+with same impacts
+hmm... wat?
+
 
 
 
@@ -649,11 +718,13 @@ foreach sys (`cat syst-test.syst-list.1_ac`)
 foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
 python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -o histosels/v27dilep2/ --lumi 35800 -c mu_sel        -d Mt_lep_met_f --wjet 0.8 --skip-QCD --systematic $sys
 python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -o histosels/v27dilep2/ --lumi 31300 -c el_sel        -d Mt_lep_met_f --wjet 0.8 --skip-QCD --systematic $sys
-python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -o histosels/v27dilep2/ --lumi 35800 -c tt_elmu       -d Mt_lep_met_f --wjet 0.8 --skip-QCD --systematic $sys
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -o histosels/v27dilep2/ --lumi 31300 -c tt_elmu       -d Mt_lep_met_f --wjet 0.8 --skip-QCD --systematic $sys
 python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -o histosels/v27dilep2/ --lumi 35800 -c dy_mutau      -d lep_pt --wjet 0.8 --skip-QCD --systematic $sys
 python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -o histosels/v27dilep2/ --lumi 35800 -c dy_mumu       -d lep_pt --wjet 0.8 --skip-QCD --systematic $sys
 end
 
+out:
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -o histosels/v27dilep2/ --lumi 35800 -c tt_elmu       -d Mt_lep_met_f --wjet 0.8 --skip-QCD --systematic $sys
 
 hadd histosels/histosels_v27dilep2.root histosels/v27dilep2/distrs/*
 
