@@ -386,7 +386,7 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                #    tauIDSF_factor = 0.95
                #else:
                #    tauIDSF_factor = 1.
-               tau_selection = any(ch in channel for ch in ('mu_sel', 'el_sel', 'ctr_old_mu_sel', 'ctr_old_mu_sel', 'ctr_old_el_sel', 'optel_tight_2L1M', 'optmu_tight_2L1M'))
+               tau_selection = any(ch in channel for ch in ('mu_sel', 'el_sel', 'mu_sel_ss', 'el_sel_ss', 'mu_selSV', 'el_selSV', 'mu_selSV_ss', 'el_selSV_ss', 'dy_mutau', 'ctr_old_mu_sel', 'ctr_old_mu_sel', 'ctr_old_el_sel', 'optel_tight_2L1M', 'optmu_tight_2L1M'))
                tau_process   = nick in ('tt_mutau3ch', 'tt_eltau3ch', 'tt_mutau', 'tt_eltau', 'tt_taultauh', 'dy_tautau', 's_top_eltau', 's_top_mutau')
                if tau_selection and tau_process:
                    tauIDSF_factor = 0.95

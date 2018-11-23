@@ -148,20 +148,22 @@ if args.try_xsec:
 # 
 temp_output_histo = None # histo-template for custom bins
 
-if args.histo_range == 'std':
-   if args.draw_com == 'std_mt_vars':
-       args.custom_range = "0,20,40,60,80,100,130,160,200,250"
-   if args.draw_com == 'event_taus[0].pt()':
-       args.histo_range = '20,0,100'
-   if args.draw_com == 'event_leptons[0].pt()':
-       args.histo_range = '20,0,150'
-   if args.draw_com == 'event_taus_sv_sign[0]':
-       args.histo_range = '42,-1,20'
-   if args.draw_com == 'event_dilep_mass':
-       args.histo_range = '100,0,400'
-   # lep pt
-   # sv sign
-   # dilep mass
+#if args.histo_range == 'std':
+#   if args.draw_com == 'std_mt_vars':
+#       args.custom_range = "0,20,40,60,80,100,130,160,200,250"
+#   elif args.draw_com == 'std_mt_vars2':
+#       args.custom_range = "0,20,40,60,80,100,120,140,170,200,250,500"
+#   elif args.draw_com == 'event_taus[0].pt()':
+#       args.histo_range = '20,0,100'
+#   elif args.draw_com == 'event_leptons[0].pt()':
+#       args.histo_range = '20,0,150'
+#   elif args.draw_com == 'event_taus_sv_sign[0]':
+#       args.histo_range = '42,-1,20'
+#   elif args.draw_com == 'event_dilep_mass':
+#       args.histo_range = '100,0,400'
+#   # lep pt
+#   # sv sign
+#   # dilep mass
 
 draw_command = '{met_lep_mt_var}' if args.draw_com == 'std_mt_vars' else args.draw_com
 if args.custom_range:
@@ -175,7 +177,7 @@ if args.custom_range:
     temp_output_histo = TH1D("histotemp", "", n_bins, root_bin_edges) # root commands can access it by the name
 
     draw_command = draw_command + '>>' + "histotemp"
-elif args.histo_range:
+elif args.histo_range and args.histo_range != 'std':
     draw_command = draw_command + ">>h(%s)" % args.histo_range
 else:
     # TOFIX: without explicit range the histos won't add up
@@ -268,6 +270,15 @@ all_std_channels = {
 'mu_selVloose_ss': ('({selection_stage}==  6 || {selection_stage}==  4)', 'selection_stage'),
 'el_selVloose':    ('({selection_stage}== 17 || {selection_stage}== 15)', 'selection_stage'),
 'el_selVloose_ss': ('({selection_stage}== 16 || {selection_stage}== 14)', 'selection_stage'),
+
+'mu_selSV':          ('{selection_stage}==  7 && event_taus_sv_sign[0] > 2.5', 'selection_stage'),
+'mu_selSV_ss':       ('{selection_stage}==  6 && event_taus_sv_sign[0] > 2.5', 'selection_stage'),
+'el_selSV':          ('{selection_stage}== 17 && event_taus_sv_sign[0] > 2.5', 'selection_stage'),
+'el_selSV_ss':       ('{selection_stage}== 16 && event_taus_sv_sign[0] > 2.5', 'selection_stage'),
+'mu_selSVVloose':    ('({selection_stage}==  7 || {selection_stage}==  5) && event_taus_sv_sign[0] > 2.5', 'selection_stage'),
+'mu_selSVVloose_ss': ('({selection_stage}==  6 || {selection_stage}==  4) && event_taus_sv_sign[0] > 2.5', 'selection_stage'),
+'el_selSVVloose':    ('({selection_stage}== 17 || {selection_stage}== 15) && event_taus_sv_sign[0] > 2.5', 'selection_stage'),
+'el_selSVVloose_ss': ('({selection_stage}== 16 || {selection_stage}== 14) && event_taus_sv_sign[0] > 2.5', 'selection_stage'),
 
 'mu_sel_ljout':          ('{selection_stage}==  7 && event_jets_lj_var >  60.', 'selection_stage'),
 'mu_sel_ljout_ss':       ('{selection_stage}==  6 && event_jets_lj_var >  60.', 'selection_stage'),
