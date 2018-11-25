@@ -257,21 +257,136 @@ kind of the same but smaller
 
 
 
-## SV selections with 100fb
+## SV selections, with 100fb and with finer binning
+
+need to re-run plotting due to broken SV requirement
+-- new scripts, better bunch script
+
+
+hadd quick-test/distrs_v27dilep2_mc_6fixed.root quick-test/v27-dilep2_hadds/MC*root
+cp quick-test/distrs_v27dilep2_mc_6fixed.root jobsums/distrs/distrs_v27dilep2_mc_6fixed.root
+
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -o plots/v27dilep2_6fixed/ --lumi 31300 -c el_selSV        -d Mt_lep_met_f  --wjet 0.8 --skip-QCD -p -r
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -o plots/v27dilep2_6fixed/ --lumi 31300 -c el_selSV        -d Mt_lep_met_c  --bin-norm --wjet 0.8 --skip-QCD -p -r
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -o plots/v27dilep2_6fixed/ --lumi 31300 -c el_selSV        -d Mt_lep_met_c2 --bin-norm --wjet 0.8 --skip-QCD -p -r
+
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -o histosels/v27dilep2_100fb/ --lumi 100000 -c dy_mutau      -d lep_pt --wjet 0.8 --skip-QCD --systematic $sys
+end
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -o histosels/v27dilep2_100fb/ --lumi 100000 -c el_selSV        -d Mt_lep_met_c --wjet 0.8 --skip-QCD --systematic $sys
+end
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -o histosels/v27dilep2_100fb/ --lumi 100000 -c tt_elmu       -d Mt_lep_met_c --wjet 0.8 --skip-QCD --systematic $sys
+end
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -o histosels/v27dilep2_100fb/ --lumi 100000 -c mu_selSV        -d Mt_lep_met_c --wjet 0.8 --skip-QCD --systematic $sys
+end
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -o histosels/v27dilep2_100fb/ --lumi 100000 -c dy_mumu       -d lep_pt --wjet 0.8 --skip-QCD --systematic $sys
+end
+
+source histos_100fb_1 &
+source histos_100fb_2 &
+source histos_100fb_3 &
+source histos_100fb_4 &
+source histos_100fb_5 &
+
+mv histosels/v27dilep2_100fb/distrs histosels/v27dilep2_100fb/distrs_6fixed
+
+hadd histosels/histosels_v27dilep2_100fb_6fixed.root histosels/v27dilep2_100fb/distrs_6fixed/*root
+
+python numbers_for_datacard.py histosels/histosels_v27dilep2_100fb_6fixed.root -d Mt_lep_met_f -c el_sel,tt_elmu   --no-sums
+
+regular and with SV
+
+observation  29777.000000
+obs 2268.000000
+
+bin           el_sel     el_sel     el_sel     el_sel          el_sel          el_sel          el_sel          el_sel          el_sel          el_sel          el_sel          el_sel          el_sel
+process       tt_eltau   tt_lj      tt_taulj   tt_taultauh     tt_other        dibosons        s_top_lj        s_top_other     s_top_eltau     wjets_taul      wjets_other     dy_other        dy_tautau                
+process       0          3          4          5               -1              7               8               9               12              14              15              16              17                       
+rate          42032.528  26228.145  1377.737   2450.843        1192.183        361.616         2737.479        371.600         2543.948        106.128         2705.632        1061.322        2735.255                 
+
+bin           el_selSV      el_selSV      el_selSV      el_selSV      el_selSV      el_selSV      el_selSV      el_selSV      el_selSV      el_selSV      el_selSV      el_selSV      el_selSV                                               process       tt_eltau      tt_lj         tt_taulj      tt_taultauh   tt_other      dibosons      s_top_lj      s_top_other   s_top_eltau   wjets_taul    wjets_other   dy_other      dy_tautau                      
+process       0             3             4             5             6             7             8             9             12            14            15            16            17                                                     rate          4474.943      1846.215      109.259       266.666       89.286        24.929        174.936       29.349        269.531       4.675         78.869        24.794        226.260                      
+
+-- almost 10 times less true taus
+
+
+combineCards.py el=ttxsec/v27dilep2_ratio_6fixed_100fb_el.txt elmu=ttxsec/v27dilep2_ratio_6_100fb_elmu.txt > ttxsec/v27dilep2_ratio_6fixed1_100fb_multi_el_elmu.txt
+combineCards.py el=ttxsec/v27dilep2_ratio_6fixed_100fb_el.txt elmu=ttxsec/v27dilep2_ratio_6_100fb_elmu.txt dy_mumu=ttxsec/v27dilep2_ratio_6_100fb_dy_mumu.txt dy_mutau=ttxsec/v27dilep2_ratio_6_100fb_dy_mutau.txt > ttxsec/v27dilep2_ratio_6fixed1_100fb_all.txt
+
+vim -p ttxsec/v27dilep2_ratio_6fixed1_100fb_all.txt ttxsec/v27dilep2_ratio_6fixed1_100fb_multi_el_elmu.txt ttxsec/v27dilep2_ratio_el_elmu.txt
+
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_6fixed1_100fb_multi_el_elmu.txt
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_6fixed1_100fb_all.txt
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_6fixed1_100fb_multi_el_elmu.root -m 125 --robustFit 1 --doInitialFit                            -n RatioElMuShapesExpect6noSV_100fbSV
+
+in 6 100fb:
+was
+   tau_ratio :    +1.000   -0.049/+0.051 (68%)
+
+now
+   tau_ratio :    +1.000   -0.069/+0.072 (68%)
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_6fixed1_100fb_multi_el_elmu.root -m 125 --robustFit 1 --doFits --parallel 5                     -n RatioElMuShapesExpect6noSV_100fbSV
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_6fixed1_100fb_multi_el_elmu.root -m 125 -o latest_ratioElMu_toys_asimov_impacts6noSV_100fbSV.json -n RatioElMuShapesExpect6noSV_100fbSV
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratioElMu_toys_asimov_impacts6noSV_100fbSV.json -o latest_ratioElMu_toys_asimov_impacts6noSV_100fbSV
+
+
+all channels
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_6fixed1_100fb_all.root -m 125 --robustFit 1 --doInitialFit                            -n RatioAllShapesExpect6noSV_100fbSV
+
+in 6 100fb:
+was
+   tau_ratio :    +1.000   -0.027/+0.027 (68%)
+
+now
+   tau_ratio :    +1.000   -0.043/+0.041 (68%)
+
+damn!
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_6fixed1_100fb_all.root -m 125 --robustFit 1 --doFits --parallel 5                     -n RatioAllShapesExpect6noSV_100fbSV
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_6fixed1_100fb_all.root -m 125 -o latest_ratioAll_toys_asimov_impacts6noSV_100fb.json  -n RatioAllShapesExpect6noSV_100fbSV
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratioAll_toys_asimov_impacts6noSV_100fb.json -o latest_ratioAll_toys_asimov_impacts6noSV_100fb
+
+there are some errors
+ ---------------------------
+
+ WARNING: MultiDimFit failed
+
+ ---------------------------
+
+and
+
+File higgsCombine_paramFit_RatioAllShapesExpect6noSV_100fbSV_LEPelTRG.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_RatioAllShapesExpect6noSV_100fbSV_PU.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+File higgsCombine_paramFit_RatioAllShapesExpect6noSV_100fbSV_wjets_norm.MultiDimFit.mH125.root did not contain a sufficient number of entries, skipping
+Missing inputs: LEPelTRG,PU,wjets_norm
+
+similar picture to before:
+
+1. fakes 2%
+2. TES   1.5%
+3. ID    1.2%
+4. mu ID 1%
 
 
 
+### fine binning
 
+### custom binning 2
 
-## SV selections with finer binning
-
-
-
-
-
-
-
-
+### double ratio with dy
 
 
 
