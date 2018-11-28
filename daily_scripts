@@ -1,3 +1,14 @@
+
+# plots in the SV tau selections
+
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -p -r -o plots/v27dilep2_6fixed/ --lumi 35800 -c dy_mumu              -d lep_pt --wjet 0.8 --skip-QCD --ratio-range 0.5 --bin-norm --title "" --title-x "p_{T}(#mu) [GeV]"  --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root     -p -r -o plots/v27dilep2_6fixed/ --lumi 35800 -c dy_mutau             -d lep_pt --wjet 0.8 --skip-QCD --ratio-range 0.5 --bin-norm --title "" --title-x "p_{T}(#mu) [GeV]"  --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -p -r -o plots/v27dilep2_6fixed/ --lumi 31300 -c el_selSV             -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"  --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -p -r -o plots/v27dilep2_6fixed/ --lumi 31300 -c tt_elmu              -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"  --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+
+
 # new bins and normalization to 100 fb^-1
 
 hadd quick-test/distrs_v27dilep2_mc_6.root quick-test/v27-dilep2_hadds/MC*root
@@ -328,6 +339,30 @@ elTRGDown
 check it agains NOMINAL for all distrs
 
 
+10k true SV taus in electron-tau channel
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -o histosels/v27dilep2_10kSV/ --lumi 225000 -c el_selSV        -d Mt_lep_met_f  --wjet 0.8 --skip-QCD --systematic $sys
+end
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -o histosels/v27dilep2_10kSV/ --lumi 225000 -c el_selSV        -d Mt_lep_met_c2 --wjet 0.8 --skip-QCD --systematic $sys
+end
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleElectron.root -o histosels/v27dilep2_10kSV/ --lumi 225000 -c el_selSV        -d Mt_lep_met_c  --wjet 0.8 --skip-QCD --systematic $sys
+end
+
+source histos_10kSV_1 &
+source histos_10kSV_2 &
+source histos_10kSV_3 &
+
+hadd histosels/histosels_v27dilep2_6fixed_10kSV.root histosels/v27dilep2_10kSV//distrs/*
+
+python numbers_for_datacard.py histosels/histosels_v27dilep2_6fixed_10kSV.root -d Mt_lep_met_c2 -c el_selSV --no-sums
+
+
+
 mv histosels/v27dilep2_100fb/distrs histosels/v27dilep2_100fb/distrs_6fixed
 
 hadd histosels/histosels_v27dilep2_100fb_6fixed.root histosels/v27dilep2_100fb/distrs_6fixed/*root
@@ -643,6 +678,37 @@ TODO:
 1. confirm this statistical thing
 2. how many taus are needed? (10k can be done with mutau and 140fb)
 
+
+
+### 10k true SV taus in tt
+
+combineCards.py el=ttxsec/v27dilep2_ratio_6fixed2_10kSV_el_Mt_c2.txt elmu=ttxsec/v27dilep2_ratio_6_100fb_elmu.txt dy_mumu=ttxsec/v27dilep2_ratio_6_100fb_dy_mumu.txt dy_mutau=ttxsec/v27dilep2_ratio_6_100fb_dy_mutau.txt > ttxsec/v27dilep2_ratio_6fixed2_10kSV_all.txt
+
+vim -p ttxsec/v27dilep2_ratio_6fixed2_10kSV_all.txt ttxsec/v27dilep2_ratio_el_elmu.txt
+
+./scripts/text2workspace.py ttxsec/v27dilep2_ratio_6fixed2_10kSV_all.txt
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_6fixed2_10kSV_all.root -m 125 --robustFit 1 --doInitialFit                            -n RatioAllShapesExpect6_10kSV
+
+one of old runs:
+   tau_ratio :    +1.000   -0.039/+0.039 (68%)
+
+   tau_ratio :    +1.000   -0.031/+0.028 (68%)
+
+so we get 3%
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_6fixed2_10kSV_all.root -m 125 --robustFit 1 --doFits --parallel 5                     -n RatioAllShapesExpect6_10kSV
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts --redefineSignalPOIs tau_ratio --freezeParameters r --setParameters r=1.0 -t -1 -d ttxsec/v27dilep2_ratio_6fixed2_10kSV_all.root -m 125 -o latest_ratioAll_toys_asimov_impacts6SV_10k_Mt_c2.json  -n RatioAllShapesExpect6_10kSV
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_ratioAll_toys_asimov_impacts6SV_10k_Mt_c2.json -o latest_ratioAll_toys_asimov_impacts6SV_10k_Mt_c2
+
+1 +- 0.0299
+
+1. TES about 1.3%
+2. wjets     1.1%
+3. tau ID    1  %
+4. fakes     1  %
+5. mu ID     1  %
 
 
 
