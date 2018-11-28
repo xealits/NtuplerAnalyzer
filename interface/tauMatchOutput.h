@@ -459,3 +459,12 @@ Float_t_in_NTuple(OUTNTUPLE, PV_fit_z)
 OBJECT_in_NTuple(OUTNTUPLE, math::Error<3>::type, PV_cov)
 
 
+// undefine all macro
+#undef VECTOR_PARAMs_in_NTuple
+#undef VECTOR_OBJECTs_in_NTuple
+#undef OBJECT_in_NTuple
+#undef Float_t_in_NTuple
+#undef Int_t_in_NTuple
+#undef ULong64_t_in_NTuple
+#undef Bool_t_in_NTuple
+

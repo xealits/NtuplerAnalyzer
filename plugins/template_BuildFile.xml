@@ -24,4 +24,5 @@
 <use name="UserCode/NtuplerAnalyzer"/>
 
 <flags EDM_PLUGIN="1"/>
+<flags CPPDEFINES="BFRAG_PROC=2016"/>
 

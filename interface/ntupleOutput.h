@@ -63,6 +63,7 @@
  *    1) the object name in current namespace is `NT_Name`
  *    2) the branch name in the ntuple is `Name`
  */
+
 #if defined(NTUPLE_INTERFACE_CLASS_DECLARE) // ALSO: in EDM Classes NTuple is pointer to TFile Service!
 	// to declare vector of types (int/float etc): declate just vector
 	#define VECTOR_PARAMs_in_NTuple(NTuple, TYPE, Name)   std::vector<TYPE> NT_##Name;
@@ -74,6 +75,7 @@
 	#define Int_t_in_NTuple(NTuple, Name)           Int_t   NT_##Name;
 	#define ULong64_t_in_NTuple(NTuple, Name)       ULong64_t   NT_##Name;
 	#define Bool_t_in_NTuple(NTuple, Name)          Bool_t  NT_##Name;
+
 #elif defined(NTUPLE_INTERFACE_CLASS_INITIALIZE)
 	// hook up branch
 	#define VECTOR_PARAMs_in_NTuple(NTuple, TYPE, Name)   NTuple->Branch(#Name, &NT_##Name);
@@ -207,7 +209,9 @@ typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
 typedef ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag> Vector_3D;
 #endif /* NTUPLEOUTPUT_LORENTZVECTOR_H */
 
+#ifndef COMMA
 #define COMMA ,
+#endif
 
 //#endif /* NTUPLEOUTPUT_INTERFACE_H */
 
@@ -606,4 +610,13 @@ Float_t_in_NTuple(OUTNTUPLE, PV_fit_y)
 Float_t_in_NTuple(OUTNTUPLE, PV_fit_z)
 OBJECT_in_NTuple(OUTNTUPLE, math::Error<3>::type, PV_cov)
 
+
+// undefine all macro
+#undef VECTOR_PARAMs_in_NTuple
+#undef VECTOR_OBJECTs_in_NTuple
+#undef OBJECT_in_NTuple
+#undef Float_t_in_NTuple
+#undef Int_t_in_NTuple
+#undef ULong64_t_in_NTuple
+#undef Bool_t_in_NTuple
 

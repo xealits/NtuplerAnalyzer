@@ -77,6 +77,21 @@
 
 //#include "UserCode/NtuplerAnalyzer/interface/handy.h"
 
+
+/*
+ * hadnling the per-year sources (plugins, functions etc)
+ * Ntupler receives their output in some per-year-specific format and packs into the TTree as needed
+ */
+
+// defaults
+//#ifndef BFRAG_PROC
+//#define BFRAG_PROC 2016
+//#endif
+// no defaults is probably safer
+
+
+
+
 static double pu_vector_NOMINAL[] = {0, 0.360609416811339, 0.910848525427002, 1.20629960507795, 0.965997726573782, 1.10708082813183, 1.14843491548622, 0.786526251164482, 0.490577792661333, 0.740680941110478,
 0.884048630953726, 0.964813189764159, 1.07045369167689, 1.12497267309738, 1.17367530613108, 1.20239808206413, 1.20815108390021, 1.20049333094509, 1.18284686347315, 1.14408796655615,
 1.0962284704313, 1.06549162803223, 1.05151011089581, 1.05159666626121, 1.05064452078328, 1.0491726301522, 1.05772537082991, 1.07279673875566, 1.0837536468865, 1.09536667397119,
@@ -403,7 +418,6 @@ Int_t   min_index = -99;
 // numbers for different kinds of particles
 // and the sign is for the pdgId sign of the provenance particle of these final states
 // i.e. the sign of W, b, tau or leptons
-int gen_id = 1;
 for (unsigned int i = 0; i<gen_collection.size(); i++)
 	{
 	Float_t dR = reco::deltaR(p4, gen_collection[i]);
@@ -1640,6 +1654,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer/blob/master/plugins/BFragmentationWeightProducer.cc
 		// TODO: check the genJet info checks
 
+		#if defined(BFRAG_PROC)
+		#if BFRAG_PROC==2016
 		edm::Handle<edm::ValueMap<float> > centralFrag;
 		iEvent.getByToken(centralFragToken_, centralFrag);
 		edm::Handle<edm::ValueMap<float> > upFrag;
@@ -1709,9 +1725,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_gen_weight_PetersonFrag  = weight_PetersonFrag ;
 		NT_gen_weight_semilepbrUp   = weight_semilepbrUp  ;
 		NT_gen_weight_semilepbrDown = weight_semilepbrDown;
-
+		#endif
 
 		LogInfo("Demo") << "MC systematic weights for jet fragmentation";
+		#endif
 
 		LogInfo ("Demo") << "Processing MC, gen particles";
 		// ----------------------- GENERATED PARTICLES
@@ -2832,7 +2849,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	event_checkpoint++;
 
-	bool leps_passed_relIso = true;
 	for(size_t l=0; l<selMuons.size(); ++l)
 		{
 		LogInfo ("Demo") << "saving mu " << l;
@@ -2854,7 +2870,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_relIso.push_back(rel_iso);
 		// using old procedures for now
 		NT_lep_passIso.push_back(patUtils::passIso(selMuons[l], patUtils::llvvMuonIso::Tight, patUtils::CutVersion::Moriond17Cut));
-		//leps_passed_relIso &= passIso;
 		if (isMC)
 			{
 			struct gen_matching match = match_to_gen(selMuons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods);
@@ -2891,7 +2906,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_relIso.push_back(rel_iso);
 		//bool passIso = patUtils::passIso(selMuons[l], el_ISO, patUtils::CutVersion::Moriond17Cut, rho);
 		NT_lep_passIso.push_back(patUtils::passIso(selElectrons[l], patUtils::llvvElecIso::Tight, patUtils::CutVersion::Moriond17Cut, NT_fixedGridRhoFastjetAll));
-		//leps_passed_relIso &= passIso;
 		if (isMC)
 			{
 			struct gen_matching match = match_to_gen(selElectrons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods);
