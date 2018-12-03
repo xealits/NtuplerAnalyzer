@@ -1,14 +1,273 @@
 #  remainders
 
+! "Please show the compoistion for all control regions"
 table of event composition in other control regions?
+event yields in other control regions?
 
 QCD calculation plots?
 
-event yields in other control regions?
+! the fake rates per number of jets
 
 is tau-candidate required in the preselection?
 do we have the plots with jets-only preselection and MC QCD?
 
+! PU is too large:
+variation plots for dominant systematics (variations in lep_pt and met for PU?)
+check PU normalization
+--- checked, indeed there is a corrections to be done,
+    the result is as predicted slightly smalle r in mu-tau
+	and slightly smaller PU impact
+
+! goodness of fit
+muon-tau ok
+electron-tau not so great --- all 3 methods show about the same 0.02 p value
+indeed prefit and postfit distrs look weird
+
+
+## quick test of eltau?
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_1_PUnorm/el-shapes/ --lumi 31300 -c el_sel    -x el_selVloose    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_1_PUnorm/el-shapes/ --lumi 31300 -c el_sel    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_1_PUnorm/el-shapes/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_1_PUnorm/el-shapes/ --lumi 31300 -c el_sel_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_1_PUnorm/el-shapes/ --lumi 31300 -c el_sel_ljout    -x el_selVloose_ljout    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_1_PUnorm/el-shapes/ --lumi 31300 -c el_sel_ljout    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+
+the trend in ljout is more pronounced
+the step in QCD at low Mt and at the peak
+
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_1_PUnorm/mu-shapes/ --lumi 35800 -c mu_sel       -x mu_selVloose       -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_1_PUnorm/mu-shapes/ --lumi 35800 -c mu_sel    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_1_PUnorm/mu-shapes/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_1_PUnorm/mu-shapes/ --lumi 35800 -c mu_sel_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_1_PUnorm/mu-shapes/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_1_PUnorm/mu-shapes/ --lumi 35800 -c mu_sel_ljout    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+
+
+
+
+
+
+
+## PU normalization re-check
+
+the result for now:
+indeed it seems there is a mistake in PU normalization,
+correction will reduce the yield variation by 1% or less
+and it will shift the nominal MC a bit up in both channels,
+which probably will make the yields agree more,
+but will diverge even more in muon-tau at high Mt values
+
+
+v26 resub1
+MC TT
+
+nominal
+7.70812e+07
+
+mu pu
+7.81511e+07
+up
+7.66839e+07
+down
+7.99003e+07
+
+7.81511e+07 / 7.70812e+07
+1.01388
+7.66839e+07 / 7.70812e+07
+0.994846
+7.99003e+07 / 7.70812e+07
+1.03657
+
+el pu
+7.94754e+07
+up
+7.77688e+07
+down
+8.14887e+07
+
+7.94754e+07 / 7.70812e+07
+1.03106
+7.77688e+07 / 7.70812e+07
+1.00892
+8.14887e+07 / 7.70812e+07
+1.05718
+
+
+differences
+               Up    Down
+in electrons: -2.2  +2.6%
+in muons:     -2.0  +2.3%
+
+
+
+'NOMINAL': 'event_weight',
+'PUUp'   : "event_weight*event_weight_PUUp/event_weight_PU"    ,
+'PUDown' : "event_weight*event_weight_PUDown/event_weight_PU"    ,
+
+        event_weight[0] = nom_sys_weight * weight_bSF_to_apply
+        nom_sys_weight            = weight_init * weight_th * weight_pu * weight_top_pt_NOM
+        event_weight_PU[0]    = weight_pu
+
+-- PU weight is ok (!=1)
+
+
+pu_factor = 1.
+if 'PUUp' in fixed_sys_name:
+    pu_factor = 1. / (1.01995 if '_el_' in channel or 'el_sel' in channel else 0.9979) # 0.97 # 1./ 0.9979
+elif 'PUDown' in fixed_sys_name:
+    pu_factor = 1. / (1.07766 if '_el_' in channel or 'el_sel' in channel else 1.0485) # 1.17 # 1./ 1.485
+else:
+    pu_factor = 1. / (1.04678 if '_el_' in channel or 'el_sel' in channel else 1.022)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
+    #pu_factor = 1. / (1.04678 if '_el_' in channel else 1.014)
+
+very close, but how much
+
+differences
+               Up    Down
+in electrons: -3.5  +3.0%
+in muons:     -2.3  +2.6%
+
+change in nominals:
+
+electrons to 1.5% more mc
+muons     to 0.8% more mc
+
+-- practically perfect match in event yields with these?
+   but the Mt shape will be even worse in muons?
+
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/v25v26redo_more-info --lumi 35800 -c mu_sel -x mu_selVloose -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --y-max 250.
+
+mc
+23949.749168
+data
+24147.0
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/v25v26redo_more-info --lumi 35800 -c mu_sel_lj -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --y-max 250.
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/v25v26redo_more-info --lumi 35800 -c mu_sel_lj -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --y-max 250. --systematic PUUp
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/v25v26redo_more-info --lumi 35800 -c mu_sel_lj -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --y-max 250. --systematic PUDown
+
+10671.760896
+10847.128083
+10478.456504
+
+
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/v25v26redo_more-info --lumi 31300 -c el_sel -x el_selVloose -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --y-max 150.
+
+mc
+13986.815900
+data
+14383.0
+
+
+
+and rerun histosel
+
+
+foreach sys (`cat syst-test.syst-list.1`)
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1_PUnorm/ --lumi 35800 -c mu_sel    -x mu_selVloose    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --systematic $sys
+end
+
+foreach sys (`cat syst-test.syst-list.1`)
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1_PUnorm/ --lumi 31300 -c el_sel    -x el_selVloose    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --systematic $sys
+end
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1_PUnorm/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+end
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleMuon.root     -o histosels/redo-v25-v26_1_PUnorm/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+end
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1_PUnorm/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+end
+
+foreach sys (`cat syst-test.syst-list.1 syst-test.syst-list.2_pdfs`)
+python stack_plot.py distrs/distrs_redo_v25v26_mc.root ../quick-test/redo-v25-v26_1_cats_hadds/SingleElectron.root -o histosels/redo-v25-v26_1_PUnorm/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --sys $sys &
+end
+
+source histos_1 &
+source histos_2 &
+source histos_3 &
+source histos_4 &
+source histos_5 &
+source histos_6 &
+
+hadd histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  histosels/redo-v25-v26_1_PUnorm/distrs/*root
+
+python numbers_for_datacard.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -d Mt_lep_met_f -c mu_sel_lj,mu_sel_ljout --no-sums
+
+python numbers_for_datacard.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout --no-sums
+
+
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.txt
+
+remove the damaged pdf systs
+PDFCT14n11      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -
+PDFCT14n21      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -
+PDFCT14n44      shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -
+
+tt_th_pdf   group = Mr Mf Mfr AlphaS PDFCT14n1 PDFCT14n2 PDFCT14n3 PDFCT14n4 PDFCT14n5 PDFCT14n6 PDFCT14n7 PDFCT14n8 PDFCT14n9 PDFCT14n11 PDFCT14n12 PDFCT14n13 PDFCT14n14 PDFCT14n15 PDFCT14n16 PDFCT14n17 PDFCT14n18 PDFCT14n19 PDFCT14n21 PDFCT14n22 PDFCT14n23 PDFCT14n24 PDFCT14n25 PDFCT14n26 PDFCT14n27 PDFCT14n28 PDFCT14n29 PDFCT14n31 PDFCT14n32 PDFCT14n33 PDFCT14n34 PDFCT14n35 PDFCT14n36 PDFCT14n37 PDFCT14n38 PDFCT14n39 PDFCT14n41 PDFCT14n42 PDFCT14n43 PDFCT14n44 PDFCT14n45 PDFCT14n46 PDFCT14n47 PDFCT14n48 PDFCT14n49 PDFCT14n51 PDFCT14n52 PDFCT14n53 PDFCT14n54 PDFCT14n55 PDFCT14n56
+
+
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.txt
+
+-- notice there is no lnU in both of these
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root --freezeParameters lumi_13TeV -m 125 --robustFit 1 --doInitialFit           -n FixNormEl
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root --freezeParameters lumi_13TeV -m 125 --robustFit 1 --doFits --parallel 5    -n FixNormEl
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root --freezeParameters lumi_13TeV -m 125 -o latest_el_impacts_FixNormEl.json    -n FixNormEl
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_FixNormEl.json -o latest_el_impacts_FixNormEl
+
+-- and PU is very marginaly after the TOP
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root --freezeParameters lumi_13TeV -m 125 --robustFit 1 --doInitialFit            -n FixNormMu
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root --freezeParameters lumi_13TeV -m 125 --robustFit 1 --doFits --parallel 5     -n FixNormMu
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root --freezeParameters lumi_13TeV -m 125 -o latest_mu_impacts_FixNormMu.json     -n FixNormMu
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_FixNormMu.json -o latest_mu_impacts_FixNormMu
+
+-- PU is 4th in mu-tau, TOPPT is still not pulled
+r = 0.908 +- 0.072
+--slightly smaller
+
+
+
+goodness of fit after PU norm fix:
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --algo=saturated -n FixPUnormEl
+Best fit test statistic: 33.938
+
+same stuff
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --algo=saturated -n FixPUnormMu
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --algo=saturated -t 10 -s 123 --expectSignal 1.0 --toysFreq --freezeParameters lumi_13TeV -n FixPUnormElToys
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --algo=saturated -t 10 -s 123 --expectSignal 1.0 --toysFreq --freezeParameters lumi_13TeV -n FixPUnormMuToys
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --algo=AD -n FixPUnormEl_AD
+Anderson-Darling test statistic: 2.49251
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --algo=AD -t 10 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n FixPUnormEl_AD_Toys
+mean   expected limit: r < 1.20274 +/- 0.201028 @ 95%CL (10 toyMC)
+median expected limit: r < 1.00493 @ 95%CL (10 toyMC)
+   68% expected band : 0.667163 < r < 2.38349
+      95% expected band : 0.564572 < r < 2.38349
+
+-- something weird with electron-tau fit over whole range of bins.
+   it is weird, since by eye the electron-tau looks ok!
+
+   check the postfit distrs? --- indeed postfit is weird!
+   and same pattern in prefit! was it there before?
 
 
 
@@ -269,12 +528,10 @@ mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.
 combine -M GoodnessOfFit ttxsec/latest_datacard_mu.root   --algo=AD -t 1000 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV
 mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.mu1000AD.root
 
-combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=saturated -t 1000 -s 123 --expectSignal 1.0 --toysFreq --freezeParameters lumi_13TeV
-mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.both1000.root
-combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=KS -t 1000 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV
-mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.both1000KS.root
-combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=AD -t 1000 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV
-mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.both1000AD.root
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=saturated -t 100 -s 123 --expectSignal 1.0 --toysFreq --freezeParameters lumi_13TeV -n BothSaturated100 &
+combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=KS -t 100 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n BothKS100 &
+combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=AD -t 100 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n BothAD100 &
 
 
 
@@ -285,6 +542,25 @@ h_c->Draw()
 
 h_c->GetBinContent(h_c->FindBin(33.7))
 2.0
+
+el1000
+15.0000
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=saturated -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV
+Best fit test statistic: 33.7364
+
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=KS -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV
+Kolmogorov-Smirnov test statistic: 0.0179
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=KS -s 123                    --freezeParameters lumi_13TeV
+Kolmogorov-Smirnov test statistic: 0.0179
+
+h_c->GetBinContent(h_c->FindBin(0.0179))
+38.0000
+
+
+
 
 --- but it was reported slightly below 95% band!
    95% expected band : 7.73915 < r < 33.9236
