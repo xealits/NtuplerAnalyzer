@@ -1,3 +1,217 @@
+# questions
+
+ - About the Ele27 trigger: I think for pT > 34 GeV there exists a L1
+seed for the whole 2016 period and above pT > 30 GeV you only loose a
+very small fraction of the data. Did you consider this?
+
+-- no
+
+
+- Sec. 4.3 What is the fraction of signal events and other ttbar events
+in the SS region? How do you treat those? Please show the compositions
+for all control regions.
+
+-- practically no signal events, add the plot too
+getting the tables for old control regions will be a pain
+
+
+- Fig. 11. I am confused about the QCD background for the pre-selection.
+Do not you need the tau requirement to define the SS/OS regions? For the
+pre-selection you only require jets, right?
+
+-- in QCD study also a tau candidate is required
+
+
+- Figs 21/22: the right plots are signal-rich?
+
+-- ?
+
+
+- l. 408 tau mis-identification: here you say Gaussian constraint, while
+in Tab. 10 it is LnU. Are there no better estimates than 50% of the
+rate. For a dominant uncertainty the estimate seems rather rough. It
+should depend on the number of jets per event ...
+
+-- the AN is outdated. Three methods were tried: 1) lnN 50%, 2) free parameter and lnU parameter with 50% variation.
+They yield similar results, lnN was left as the most convenient in higgsCombine.
+
+{We could implement more complicated model of the fake rates,
+ but 1) it is integrated in the final shape,
+ 2) how higgsCombine treats the nuisances in the estimation of systematic effects.}
+
+
+- Figs 25/28: it seems surprising that PU has a dominant impact. Does it
+play an important role for the tau identification? Please include plots
+of the dominant shape variations and correlation plots of the fit
+parameters.
+
+-- PU slightly affects the shape, probably that's the reason, add the variation plots
+
+
+- Looking at the Tabs 8 and 9 the expected number of events in all
+categories are close to the expected yields. In addition, the ratio in
+the electron and muon channels seem to be similar. This makes it
+surprising that there is a 12% difference in the final cross sections.
+Are the two channels compatible, given that most of their uncertainties
+are correlated?
+
+-- if the tables in AN are updated then the event yields should be similar to the fitted signal strength
+(remember from the plots of Mt)
+
+
+
+
+
+# goodness of fit
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=saturated
+combine -M GoodnessOfFit ttxsec/latest_datacard_mu.root   --algo=saturated
+combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=saturated
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=saturated -t 100 -s 123
+
+
+for electron
+Best fit test statistic: 33.7334
+
+muon
+Best fit test statistic: 18.8882
+
+both
+Best fit test statistic: 53.1044
+
+
+
+
+toys are between 10-20
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=saturated -t 10 -s 123
+mean   expected limit: r < 17.1208 +/- 0.986556 @ 95%CL (10 toyMC)
+median expected limit: r < 17.6656 @ 95%CL (10 toyMC)
+   68% expected band : 14.5446 < r < 21.179
+   95% expected band : 10.3705 < r < 21.179
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=saturated -t 10 -s 123 --expectSignal 1.0
+mean   expected limit: r < 18.7988 +/- 2.79837 @ 95%CL (10 toyMC)
+median expected limit: r < 16.57 @ 95%CL (10 toyMC)
+   68% expected band : 11.7623 < r < 36.4192
+   95% expected band : 9.91369 < r < 36.4192
+
+
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=saturated -t 100 -s 123 --expectSignal 1.0 --toysFreq
+mean   expected limit: r < 16.1015 +/- 0.584242 @ 95%CL (100 toyMC)
+median expected limit: r < 14.5195 @ 95%CL (100 toyMC)
+   68% expected band : 10.6021 < r < 21.6731
+   95% expected band : 7.73915 < r < 33.9236
+
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.el.root
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=saturated -t 1000 -s 123 --expectSignal 1.0 --toysFreq --freezeParameters lumi_13TeV
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.el1000.root
+
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_mu.root   --algo=saturated -t 100 -s 123 --expectSignal 1.0 --toysFreq
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.mu.root
+
+mean   expected limit: r < 17.2454 +/- 0.619727 @ 95%CL (100 toyMC)
+median expected limit: r < 16.9058 @ 95%CL (100 toyMC)
+   68% expected band : 10.8435 < r < 23.3768
+   95% expected band : 8.26929 < r < 34.6872
+
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=saturated -t 100 -s 123 --expectSignal 1.0 --toysFreq
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.both.root
+
+mean   expected limit: r < 34.1409 +/- 0.813827 @ 95%CL (100 toyMC)
+median expected limit: r < 32.6283 @ 95%CL (100 toyMC)
+   68% expected band : 26.2625 < r < 41.2145
+   95% expected band : 21.0095 < r < 59.1942
+
+
+full script:
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=saturated -t 1000 -s 123 --expectSignal 1.0 --toysFreq --freezeParameters lumi_13TeV
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.el1000.root
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=KS -t 1000 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.el1000KS.root
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=AD -t 1000 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.el1000AD.root
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_mu.root   --algo=saturated -t 1000 -s 123 --expectSignal 1.0 --toysFreq --freezeParameters lumi_13TeV
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.mu1000.root
+combine -M GoodnessOfFit ttxsec/latest_datacard_mu.root   --algo=KS -t 1000 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.mu1000KS.root
+combine -M GoodnessOfFit ttxsec/latest_datacard_mu.root   --algo=AD -t 1000 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.mu1000AD.root
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=saturated -t 1000 -s 123 --expectSignal 1.0 --toysFreq --freezeParameters lumi_13TeV
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.both1000.root
+combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=KS -t 1000 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.both1000KS.root
+combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=AD -t 1000 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV
+mv higgsCombineTest.GoodnessOfFit.mH120.123.root higgsCombineTest.GoodnessOfFit.mH120.123.both1000AD.root
+
+
+
+limit->Draw("limit")
+h = (TH1D*) limit->GetHistogram()
+h_c = (TH1D*) h->GetCumulative(kFALSE)
+h_c->Draw()
+
+h_c->GetBinContent(h_c->FindBin(33.7))
+2.0
+
+--- but it was reported slightly below 95% band!
+   95% expected band : 7.73915 < r < 33.9236
+
+h_c->GetBinContent(h_c->FindBin(18.8882))
+37.000
+
+
+damn are these correct datacards?
+
+
+
+
+
+
+## checking the datacards
+
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec//latest_datacard_el.root --freezeParameters lumi_13TeV -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec//latest_datacard_el.root --freezeParameters lumi_13TeV -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec//latest_datacard_el.root --freezeParameters lumi_13TeV -m 125 -o latest_el_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts.json -o latest_el_impacts
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec//latest_datacard_mu.root --freezeParameters lumi_13TeV -m 125 --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec//latest_datacard_mu.root --freezeParameters lumi_13TeV -m 125 --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec//latest_datacard_mu.root --freezeParameters lumi_13TeV -m 125 -o latest_mu_impacts.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts.json -o latest_mu_impacts
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec//latest_datacard_both.root --freezeParameters lumi_13TeV -m 125 --robustFit 1 --doInitialFit         --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec//latest_datacard_both.root --freezeParameters lumi_13TeV -m 125 --robustFit 1 --doFits --parallel 5  --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec//latest_datacard_both.root --freezeParameters lumi_13TeV -m 125 -o latest_both_impacts.json          --name BothImpacts
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts.json -o latest_both_impacts
+
+
+-rw-r--r-- 1 olek t3cms 37922 Nov  8 17:51 postfit_both_impacts.pdf
+-rw------- 1 olek t3cms 34916 Nov  8 17:37 postfit_el_impacts.pdf
+-rw------- 1 olek t3cms 35004 Nov  8 17:31 postfit_mu_impacts.pdf
+
+./latest_el_impacts.pdf
+./latest_mu_impacts.pdf
+./latest_both_impacts.pdf
+
+el same (indeed PU is dominant)
+mu same (PU third after TOPPT)
+both same
+
+
+--- what if PU incorrectly normalized???
+
+
+
 
 # plots in the SV tau selections
 
