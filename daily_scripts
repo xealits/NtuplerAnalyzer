@@ -24,6 +24,33 @@ electron-tau not so great --- all 3 methods show about the same 0.02 p value
 indeed prefit and postfit distrs look weird
 
 
+
+## composition of all control regions
+
+
+
+
+## systematic variations
+
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_lj -c el_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_lj -c el_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_eltau -c el_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_eltau -c el_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_lj    -c mu_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_lj    -c mu_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_mutau -c mu_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_mutau -c mu_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+
+
+
+
+
+
 ## quick test of eltau?
 
 python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_1_PUnorm/el-shapes/ --lumi 31300 -c el_sel    -x el_selVloose    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
@@ -49,6 +76,21 @@ python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-
 python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_1_PUnorm/mu-shapes/ --lumi 35800 -c mu_sel_ljout    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
 
 
+root -l gstore_outdirs/v26/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v26_MC2016_Summer16_TTJets_powheg/180412_180008/0000/MC2016_Summer16_TTJets_powheg_91.root
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("jet_matching_lep[0]*jet_initial_p4[0].pt() + jet_matching_lep[1]*jet_initial_p4[1].pt() + jet_matching_lep[2]*jet_initial_p4[2].pt() + jet_matching_lep[3]*jet_initial_p4[3].pt() + jet_matching_lep[4]*jet_initial_p4[4].pt()", "abs(leps_ID) == 13")
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("jet_matching_lep[0]*jet_initial_p4[0].pt()*(1 - jet_jer_factor[0]) + jet_matching_lep[1]*jet_initial_p4[1].pt()*(1 - jet_jer_factor[1]) + jet_matching_lep[2]*jet_initial_p4[2].pt()*(1 - jet_jer_factor[2]) + jet_matching_lep[3]*jet_initial_p4[3].pt()*(1 - jet_jer_factor[3]) + jet_matching_lep[4]*jet_initial_p4[4].pt()*(1 - jet_jer_factor[4])", "(jet_matching_lep[0] + jet_matching_lep[1] + jet_matching_lep[2] + jet_matching_lep[3] + jet_matching_lep[4] > 0) && abs(leps_ID) == 11")
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("jet_matching_lep[0]*jet_initial_p4[0].pt()*(1 - jet_jer_factor[0]) + jet_matching_lep[1]*jet_initial_p4[1].pt()*(1 - jet_jer_factor[1]) + jet_matching_lep[2]*jet_initial_p4[2].pt()*(1 - jet_jer_factor[2]) + jet_matching_lep[3]*jet_initial_p4[3].pt()*(1 - jet_jer_factor[3]) + jet_matching_lep[4]*jet_initial_p4[4].pt()*(1 - jet_jer_factor[4])", "(jet_matching_lep[0] + jet_matching_lep[1] + jet_matching_lep[2] + jet_matching_lep[3] + jet_matching_lep[4] > 0) && abs(leps_ID) == 13")
+
+approximately the same distrsm skewed towards negative values, mean = -1
+-- must decrease met and slightly correct the Mt distr!
+
+
+
+NCG machines don't work -- stop this, finish the rest of simple questions
+(if NCG machines are not needed there)
 
 
 
@@ -375,6 +417,9 @@ python mc_per_sys.py distrs/distrs_redo_v25v26_alldata_4.root -p tt_lj -c el_sel
 
 python mc_per_sys.py distrs/distrs_redo_v25v26_alldata_4.root -p tt_eltau -c el_sel_lj    -d lep_pt -s PUUp,PUDown --no-data --ratio
 python mc_per_sys.py distrs/distrs_redo_v25v26_alldata_4.root -p tt_eltau -c el_sel_ljout -d lep_pt -s PUUp,PUDown --no-data --ratio
+
+python mc_per_sys.py distrs/distrs_redo_v25v26_alldata_4.root -p tt_eltau -c el_sel_lj    -d lep_pt -s bSFUp,bSFDown --no-data --ratio
+python mc_per_sys.py distrs/distrs_redo_v25v26_alldata_4.root -p tt_eltau -c el_sel_ljout -d lep_pt -s bSFUp,bSFDown --no-data --ratio
 
 
 

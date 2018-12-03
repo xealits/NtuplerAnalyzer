@@ -17,11 +17,11 @@ with_bSF = True
 WITH_RECOIL_CORRECTIONS = False
 
 ISO_LEPS    = True
-JETS_PT_CUT = 21. # 30. 
-TAUS_PT_CUT = 21. # 30. # 20GeV for DY->tautau selection
+JETS_PT_CUT = 30. # 21. # 
+TAUS_PT_CUT = 30. # 21. # # 20GeV for DY->tautau selection
 TAUS_ID_CUT_Medium = 2
 TAUS_ID_CUT_VLoose = 0
-TAUS_ID_CUT = TAUS_ID_CUT_Medium # TAUS_ID_CUT_VLoose # Vloose cut for the shape
+TAUS_ID_CUT = TAUS_ID_CUT_VLoose # TAUS_ID_CUT_Medium # Vloose cut for the shape
 ONLY_3PI_TAUS = False
 SV_SIGN_CUT = 2.5
 
@@ -3247,21 +3247,21 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                         if b_tagged_medium:
                             N_jets_nom_med_alliso += 1
 
+                # correct the met from all jets including the lep-matched jet
+                if jet_pt > JETS_PT_CUT:
+                    proc_met -= p4 * (en_factor - 1.)
+                if jet_pt_JERUp > JETS_PT_CUT:
+                    proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
+                if jet_pt_JERDown > JETS_PT_CUT:
+                    proc_met_JERDown -= p4 * (jet_factor_JERDown - 1.)
+
+                if jet_pt_JESUp > JETS_PT_CUT:
+                    proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
+                if jet_pt_JESDown > JETS_PT_CUT:
+                    proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
+
                 # match lep
                 if not match_lep:
-
-                  # correct the met from all jets including the lep-matched jet
-                  if jet_pt > JETS_PT_CUT:
-                      proc_met -= p4 * (en_factor - 1.)
-                  if jet_pt_JERUp > JETS_PT_CUT:
-                      proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
-                  if jet_pt_JERDown > JETS_PT_CUT:
-                      proc_met_JERDown -= p4 * (jet_factor_JERDown - 1.)
-
-                  if jet_pt_JESUp > JETS_PT_CUT:
-                      proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
-                  if jet_pt_JESDown > JETS_PT_CUT:
-                      proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
 
                   # multiply the b weights for all possible combinations
                   # and correct the met with all except lep-jet
