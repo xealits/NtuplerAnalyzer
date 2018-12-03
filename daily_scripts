@@ -1,3 +1,127 @@
+#  remainders
+
+table of event composition in other control regions?
+
+QCD calculation plots?
+
+event yields in other control regions?
+
+is tau-candidate required in the preselection?
+do we have the plots with jets-only preselection and MC QCD?
+
+
+
+
+# second round of questions
+
+(the update to 1 round did not get to github..)
+
+Tabs 8 and 9
+-- no, muon is indeed strange, the signal-dominated region has more data than MC?
+   it must be effect of the shape in muon-tau,
+   the bins in region of large Mt have less or equal amount of data per MC
+
+it must be the effect of the shape in muon-tau. The bins in the region of large Mt have less or equal amount of data per MC. Therefore they pull the overall signal strength down. The channels are compatible within the uncertainty. An investigation of the shape differences probably will be inconclusive, since we'll run into lack of statistics and large systematic uncertainties.
+
+
+Sec 4.3 fraction of signal and other ttbar in SS
+-- compositions for all control regions
+(the table for anti-iso QCD is there
+ include wjets and dy control regions?
+ add plots on QCD calculation?)
+
+
+-- table 7
+   are electron and muon labels flipped?
+   very small contribution of signal events -- in anti-iso
+
+v27 contains antiiso
+v27p1 has the channels
+
+presel mu-tau alliso
+tt_lj
+515158.
+
+el-tau
+304581.
+ss
+242454.
+
+the caption is flipped
+but p1 is wrong? -- !! it's not only anti-iso
+
+the el-tau preselection, tt_lj yield in AN:
+325667
+mutau:
+551462
+
+-- both larger than all-iso for QCD, definitely larger than the iso-region in QCD study
+   does it include the tau-candidate requirement?
+   probably no, but not sure
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel_ss -x mu_selVloose_ss -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --y-max 250.
+
+python numbers_for_datacard.py distrs/distrs_redo_v25v26_alldata_4.root -d Mt_lep_met_f -c mu_sel,mu_sel_ss -y  --no-sums
+
+In the application of this procedure in the main selection the contribution of signal events in SS region is still on order of 2%.
+
+bin           mu_sel_ss                mu_sel_ss                mu_sel_ss                mu_sel_ss                mu_sel_ss                mu_sel_ss                mu_sel_ss                mu_sel_ss                mu_sel_ss                mu_sel_ss                mu_sel_ss                mu_sel_ss                mu_sel_ss                mu_sel_ss                
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons                 s_top_lj                 s_top_other              s_top_mutau              wjets_taul               wjets_other              dy_other                 dy_tautau                qcd                      
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       14                       15                       16                       17                       18                       
+rate          188.106                  2546.372                 162.211                  12.239                   193.481                  23.434                   214.561                  22.494                   6.867                    8.320                    456.641                  96.920                   23.105                   2.136                    
+mu_sel_ss/data/NOMINAL/mu_sel_ss_data_NOMINAL_Mt_lep_met_f
+obs 4208.000000
+
+-- and QCD is
+
+l = [188.106                  2546.372                 162.211                  12.239                   193.481                  23.434                   214.561                  22.494                   6.867                    8.320                    456.641                  96.920                   23.105]
+
+sum(l)
+3954.7510000000016
+
+250 events
+
+
+l 408 mis-identification, rough estimate, should depend on number of jets
+-- did not address this,
+   the dependency on number of jets is "integrated over"
+   it is embedded in the physical process
+
+-- need the old study with numbers of b and W jets
+   and the calculation of fake rate of lj categories from preselection to final selection in MC
+
+
+pile-up variation plots (CHECK normalization?) -- the variation of Mt and MET with lep_pt
+and other systematics
+
+python mc_per_sys.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root -p tt_lj -c el_sel -d Mt_lep_met_f -s PUUp,PUDown
+
+python mc_per_sys.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root -p tt_lj -c el_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+python mc_per_sys.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root -p tt_lj -c el_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+
+python mc_per_sys.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root -p tt_eltau -c el_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+python mc_per_sys.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root -p tt_eltau -c el_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+
+
+python mc_per_sys.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root -p tt_lj    -c mu_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+python mc_per_sys.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root -p tt_lj    -c mu_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+
+python mc_per_sys.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root -p tt_mutau -c mu_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+python mc_per_sys.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root -p tt_mutau -c mu_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+
+
+
+python mc_per_sys.py distrs/distrs_redo_v25v26_alldata_4.root -p tt_lj -c el_sel_lj    -d lep_pt -s PUUp,PUDown --no-data --ratio
+python mc_per_sys.py distrs/distrs_redo_v25v26_alldata_4.root -p tt_lj -c el_sel_ljout -d lep_pt -s PUUp,PUDown --no-data --ratio
+
+python mc_per_sys.py distrs/distrs_redo_v25v26_alldata_4.root -p tt_eltau -c el_sel_lj    -d lep_pt -s PUUp,PUDown --no-data --ratio
+python mc_per_sys.py distrs/distrs_redo_v25v26_alldata_4.root -p tt_eltau -c el_sel_ljout -d lep_pt -s PUUp,PUDown --no-data --ratio
+
+
+
+
+
+
 # questions
 
  - About the Ele27 trigger: I think for pT > 34 GeV there exists a L1
