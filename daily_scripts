@@ -25,7 +25,61 @@ indeed prefit and postfit distrs look weird
 
 
 
+
+## goodness of fit tests
+
+add in a table?
+add next tot the post-fit distrs
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --algo=saturated -n FixPUnormEl
+
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=KS -s 123 --freezeParameters lumi_13TeV -n  ElKS &
+combine -M GoodnessOfFit ttxsec/latest_datacard_mu.root   --algo=KS -s 123 --freezeParameters lumi_13TeV -n  MuKS &
+combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=KS -s 123 --freezeParameters lumi_13TeV -n  BothKS &
+
+combine -M GoodnessOfFit ttxsec/latest_datacard_el.root   --algo=KS -t 100 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  ElKS100 &
+combine -M GoodnessOfFit ttxsec/latest_datacard_mu.root   --algo=KS -t 100 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  MuKS100 &
+combine -M GoodnessOfFit ttxsec/latest_datacard_both.root --algo=KS -t 100 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  BothKS100 &
+
+Kolmogorov-Smirnov test statistic: 0.016415
+Kolmogorov-Smirnov test statistic: 0.00763032
+Kolmogorov-Smirnov test statistic: 0.0277083
+
+
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --algo=KS -s 123 --freezeParameters lumi_13TeV -n  PUfixElKS &
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --algo=KS -s 123 --freezeParameters lumi_13TeV -n  PUfixMuKS &
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --algo=KS -t 100 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  PUfixElKS100 &
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --algo=KS -t 100 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  PUfixMuKS100 &
+
+
+combineCards.py mu=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.txt el=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.txt > ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.txt
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.txt
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root --algo=KS -t 100 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  PUfixBothKS100 &
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root --algo=KS -s 123 --freezeParameters lumi_13TeV -n  PUfixBothKS &
+
+
+
+
 ## composition of all control regions
+
+I have dileptons and elmu in not so good condition
+but where is wjets?
+
+find . -name "*ctr_mu_wjet*png"
+
+v27p1
+
+./mc_v27p1_amcatnlo1.root
+
+merged data is gone
+but
+../lstore_outdirs/v27/p1/Data13TeV_SingleMuon2016G_03Feb2017_v1/Data13TeV_SingleMuon2016G_03Feb2017_v1_58.root
 
 
 
