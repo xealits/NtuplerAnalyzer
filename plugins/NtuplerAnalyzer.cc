@@ -2595,9 +2595,18 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	string matched_muTriggerName2("");
 	//edm::TriggerResultsByName tr = ev.triggerResultsByName ("HLT");
 
+	// HLT matching
+	// objects of our triggers
+	vector<pat::TriggerObjectStandAlone> el_trig_objs;
+	vector<pat::TriggerObjectStandAlone> mu_trig_objs, mu_trig_objs1, mu_trig_objs2;
+
 	if (withHLT)
 		{
-		edm::TriggerResultsByName tr = iEvent.triggerResultsByName (HLT_source);
+		iEvent.getByToken( trigResults_, trigResults );
+
+		//edm::TriggerResultsByName tr = iEvent.triggerResultsByName (HLT_source);
+		edm::TriggerResultsByName tr = iEvent.triggerResultsByName(trigResults);
+
 		//if (!tr.isValid ()){
 			// HLT2 was a quirk of Spring16 MC campaigns (noHLT/reHLT/withHLT thing)
 			// need to compare 2016-2015 in tau SV
@@ -2633,41 +2642,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			{
 			jetsHLT = jetsHLT140 || jetsHLT400;
 			}
-		}
 
-	event_checkpoint++;
+		// get trigger objects for HLT matching
 
-	event_checkpoint++;
-	if (eTrigger)
-		event_counter ->Fill(event_checkpoint);
-
-	event_checkpoint++;
-	if (muTrigger)
-		event_counter ->Fill(event_checkpoint);
-
-	event_checkpoint++;
-
-	if (!record_all && !record_signal && !(eTrigger || muTrigger || lepMonitorTrigger || jetsHLT)) return; // orthogonalization is done afterwards
-	event_counter ->Fill(event_checkpoint++);
-	weight_counter->Fill(event_checkpoint, weight);
-
-	NT_HLT_el = eTrigger;
-	NT_HLT_mu = muTrigger;
-	NT_HLT_lepMonitor = lepMonitorTrigger;
-	NT_HLT_jets140 = jetsHLT140;
-	NT_HLT_jets400 = jetsHLT400;
-
-	// HLT matching
-	// objects of our triggers
-	vector<pat::TriggerObjectStandAlone> el_trig_objs;
-	vector<pat::TriggerObjectStandAlone> mu_trig_objs, mu_trig_objs1, mu_trig_objs2;
-
-	if (withHLT)
-		{
 		// names for trigger bits
 		//edm::EDGetTokenT<edm::TriggerResults> trigResults_ = consumes<edm::TriggerResults>(trigResultsTag);
 		//ev.getByLabel(*trigResultsTag, trigResults);
-		iEvent.getByToken( trigResults_, trigResults );
 		const edm::TriggerNames& trigNames = iEvent.triggerNames(*trigResults);
 
 		//fwlite::Handle<vector<pat::TriggerObjectStandAlone>> triggerObjectsHandle;
@@ -2696,7 +2676,30 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			mu_trig_objs.insert(mu_trig_objs.end(), mu_trig_objs1.begin(), mu_trig_objs1.end());
 			mu_trig_objs.insert(mu_trig_objs.end(), mu_trig_objs2.begin(), mu_trig_objs2.end());
 			}
+
 		}
+
+	event_checkpoint++;
+
+	event_checkpoint++;
+	if (eTrigger)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+	if (muTrigger)
+		event_counter ->Fill(event_checkpoint);
+
+	event_checkpoint++;
+
+	if (!record_all && !record_signal && !(eTrigger || muTrigger || lepMonitorTrigger || jetsHLT)) return; // orthogonalization is done afterwards
+	event_counter ->Fill(event_checkpoint++);
+	weight_counter->Fill(event_checkpoint, weight);
+
+	NT_HLT_el = eTrigger;
+	NT_HLT_mu = muTrigger;
+	NT_HLT_lepMonitor = lepMonitorTrigger;
+	NT_HLT_jets140 = jetsHLT140;
+	NT_HLT_jets400 = jetsHLT400;
 
 	LogInfo ("Demo") << "passed HLT " << eTrigger << ' ' << muTrigger << '(' << muTrigger1 << ',' << muTrigger2 << ')' << ';' << matched_elTriggerName << ' ' << matched_muTriggerName1 << ',' << matched_muTriggerName2 << ' ' << el_trig_objs.size() << ' ' << mu_trig_objs.size() << '(' << mu_trig_objs1.size() << ',' << mu_trig_objs2.size() << ')';
 	//LogInfo ("Demo") << "our trigger objects: " << el_trig_objs.size() << ' ' << mu_trig_objs.size();
