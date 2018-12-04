@@ -486,27 +486,100 @@ python mc_per_sys.py distrs/distrs_redo_v25v26_alldata_4.root -p tt_eltau -c el_
 seed for the whole 2016 period and above pT > 30 GeV you only loose a
 very small fraction of the data. Did you consider this?
 
--- no
+%BLUE% >> initially we decided the reduced certificate is good enough
+since the analysis is not statistically bound
+and did not consider the seed for Ele27.
 
 
 - Sec. 4.3 What is the fraction of signal events and other ttbar events
 in the SS region? How do you treat those? Please show the compositions
 for all control regions.
 
--- practically no signal events, add the plot too
-getting the tables for old control regions will be a pain
+%BLUE% >> contribution of signal events is negligible, especially in anti-isolated region.
+Added tables and the plots of rel iso.
+
+{QCD control in pre-selection event yields in data:
+158k OS and 142k SS in muon,
+66k and 60k in electron.
+The main preselection, data event yields:
+600k in electron-tau, 998k in muon-tau.
+--- CHECK THIS TABLE CAPTION! ELECTRON AND MUON ARE FLIPED
+CHECK THE lep-tau YIELDS IN THE TABLE, are they TOO LOW?}
+
+python stack_plot.py distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel -x mu_selVloose -d dilep_mass --wjet 0.8 --skip-QCD --ratio-range 0.3 --bin-norm --title "" --title-x "M(#mu, #tau) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+python numbers_for_datacard.py histosels/histosels_v27dilep2_5.root -d Mt_lep_met_f -c el_sel --no-sums
+
+distrs/distrs_redo_v27dilep1_mc.root ../quick-test/v27-dilep1_hadds/SingleMuon.root
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/ --lumi 35800 -c mu_sel_ss -x mu_selVloose_ss -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --y-max 250.
+
+python numbers_for_datacard.py distrs/distrs_redo_v25v26_alldata_4.root -d Mt_lep_met_f -c mu_sel,mu_sel_ss    --no-sums --scale 358000 -y
+
+                                 process    mu_sel mu_sel_ss
+                                tt_mutau$     13940 \pm        223 $$       188 \pm         25 $
+                             tt_taultauh$       902 \pm         52 $$        12 \pm          6 $
+                                   tt_lj$      6376 \pm        130 $$      2546 \pm         82 $
+                                tt_taulj$       407 \pm         28 $$       162 \pm         18 $
+                                tt_other$       289 \pm         31 $$       193 \pm         26 $
+                             s_top_mutau$       728 \pm         36 $$         7 \pm          3 $
+                             s_top_other$       103 \pm         12 $$        22 \pm          5 $
+                                s_top_lj$       539 \pm         26 $$       215 \pm         17 $
+                               dy_tautau$       666 \pm         75 $$        23 \pm         13 $
+                                dy_other$        85 \pm         62 $$        97 \pm         36 $
+                             wjets_other$       935 \pm         72 $$       457 \pm         49 $
+                              wjets_taul$        34 \pm         10 $$         8 \pm          5 $
+                                dibosons$        85 \pm         15 $$        23 \pm          7 $
+                                     qcd$        76 \pm         73 $$         2 \pm          2 $
+                                    data$     23801 \pm        462 $$      4208 \pm        181 $
+
+python numbers_for_datacard.py distrs/distrs_redo_v25v26_alldata_4.root -d Mt_lep_met_f -c mu_sel_lj,mu_sel_lj_ss    --no-sums --scale 35800 -y
+
+                                tt_mutau$      5481 \pm        140 $$        68 \pm         15 $
+                             tt_taultauh$       350 \pm         32 $$         3 \pm          3 $
+                                   tt_lj$      3809 \pm        100 $$      1384 \pm         60 $
+                                tt_taulj$       243 \pm         21 $$       100 \pm         14 $
+                                tt_other$       106 \pm         19 $$        63 \pm         14 $
+                             s_top_mutau$       248 \pm         21 $$         2 \pm          2 $
+                             s_top_other$        40 \pm          7 $$         9 \pm          3 $
+                                s_top_lj$       238 \pm         17 $$        81 \pm         10 $
+                               dy_tautau$       213 \pm         40 $$        13 \pm         10 $
+                                dy_other$        22 \pm         43 $$        21 \pm         11 $
+                             wjets_other$       385 \pm         48 $$       163 \pm         31 $
+                              wjets_taul$        14 \pm          7 $$         4 \pm          3 $
+                                dibosons$        26 \pm          7 $$         9 \pm          4 $
+                                     qcd$         0 \pm          0 $$         0 \pm          0 $
+                                    data$     10251 \pm        298 $$      2022 \pm        124 $
+
+python numbers_for_datacard.py distrs/distrs_redo_v25v26_alldata_4.root -d Mt_lep_met_f -c mu_sel_ljout,mu_sel_ljout_ss    --no-sums --scale 35800 -y
+
+                                tt_mutau$      8459 \pm        174 $$       120 \pm         20 $
+                             tt_taultauh$       552 \pm         41 $$         9 \pm          5 $
+                                   tt_lj$      2567 \pm         82 $$      1162 \pm         55 $
+                                tt_taulj$       164 \pm         18 $$        62 \pm         11 $
+                                tt_other$       183 \pm         25 $$       130 \pm         22 $
+                             s_top_mutau$       480 \pm         29 $$         5 \pm          3 $
+                             s_top_other$        62 \pm         10 $$        13 \pm          4 $
+                                s_top_lj$       300 \pm         19 $$       134 \pm         13 $
+                               dy_tautau$       453 \pm         62 $$        10 \pm          6 $
+                                dy_other$        63 \pm         36 $$        76 \pm         33 $
+                             wjets_other$       550 \pm         52 $$       294 \pm         36 $
+                              wjets_taul$        20 \pm          8 $$         5 \pm          4 $
+                                dibosons$        59 \pm         13 $$        14 \pm          5 $
+                                     qcd$        76 \pm         73 $$         2 \pm          2 $
+                                    data$     13550 \pm        352 $$      2186 \pm        131 $
 
 
 - Fig. 11. I am confused about the QCD background for the pre-selection.
 Do not you need the tau requirement to define the SS/OS regions? For the
 pre-selection you only require jets, right?
 
--- in QCD study also a tau candidate is required
-
+%BLUE% >> in QCD study a "tau candidate" is required,
+a jet which passes all the requirements of tau object except the final anti-jet discrimination ID.
 
 - Figs 21/22: the right plots are signal-rich?
 
--- ?
+%BLUE% >> yes, corrected the caption.
 
 
 - l. 408 tau mis-identification: here you say Gaussian constraint, while
@@ -514,7 +587,7 @@ in Tab. 10 it is LnU. Are there no better estimates than 50% of the
 rate. For a dominant uncertainty the estimate seems rather rough. It
 should depend on the number of jets per event ...
 
--- the AN is outdated. Three methods were tried: 1) lnN 50%, 2) free parameter and lnU parameter with 50% variation.
+%BLUE% >> the AN is outdated. Three methods were tried: 1) lnN 50%, 2) free parameter and lnU parameter with 50% variation.
 They yield similar results, lnN was left as the most convenient in higgsCombine.
 
 {We could implement more complicated model of the fake rates,
@@ -527,7 +600,7 @@ play an important role for the tau identification? Please include plots
 of the dominant shape variations and correlation plots of the fit
 parameters.
 
--- PU slightly affects the shape, probably that's the reason, add the variation plots
+%BLUE% >> PU slightly affects the shape, add the variation plots.
 
 
 - Looking at the Tabs 8 and 9 the expected number of events in all
@@ -537,7 +610,7 @@ surprising that there is a 12% difference in the final cross sections.
 Are the two channels compatible, given that most of their uncertainties
 are correlated?
 
--- if the tables in AN are updated then the event yields should be similar to the fitted signal strength
+%BLUE% >> if the tables in AN are updated then the event yields should be similar to the fitted signal strength
 (remember from the plots of Mt)
 
 
