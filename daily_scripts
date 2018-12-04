@@ -81,6 +81,58 @@ merged data is gone
 but
 ../lstore_outdirs/v27/p1/Data13TeV_SingleMuon2016G_03Feb2017_v1/Data13TeV_SingleMuon2016G_03Feb2017_v1_58.root
 
+make merge_proc dtags=sw-dir/merge-sets/jobs_hadd.dtags.single-muon nt=v27 proc=p1 merge_dir=lstore_outdirs/merge-sets/
+
+now it's here
+
+lstore_outdirs/merge-sets//v27/p1/SingleMuon.root
+
+ls -lh lstore_outdirs/merge-sets//v27/p1/SingleMuon.root sw-dir/jobsums/./mc_v27p1_amcatnlo1.root
+
+hadd
+jobsums/v27p1_WJetsAmcatnlo1_SingleMuon.root
+
+python numbers_for_datacard.py v27p1_WJetsAmcatnlo1_SingleMuon.root -d Mt_lep_met_f -c ctr_mu_wjet --no-sums
+python numbers_for_datacard.py v27p1_WJetsAmcatnlo1_SingleMuon.root -d Mt_lep_met_f -c ctr_mu_wjet --no-sums -y --scale 35800 --latex
+
+
+
+from dilep runs
+
+hadd distrs/distrs_v27dilep2_mc_and_data.root distrs/distrs_v27dilep2_mc.root ../quick-test/v27-dilep2_hadds/SingleMuon.root
+
+DY -> mumu
+python numbers_for_datacard.py distrs/distrs_v27dilep2_mc_and_data.root -d lep_pt       -c dy_mumu --no-sums -y --scale 35800 --latex
+python numbers_for_datacard.py distrs/distrs_v27dilep2_mc_and_data.root -d Mt_lep_met_f -c dy_mumu --no-sums -y --scale 35800 --latex
+
+bin           dy_mumu     dy_mumu     dy_mumu     dy_mumu     dy_mumu     dy_mumu     dy_mumu     dy_mumu     dy_mumu     dy_mumu     dy_mumu     dy_mumu     dy_mumu     dy_mumu
+process       tt_mutau    tt_lj       tt_taulj    tt_taultauh tt_other    dibosons    s_top_lj    s_top_other s_top_mutau wjets_tauh  wjets_taul  wjets_other dy_other    dy_tautau
+process       0           3           4           5           6           7           8           9           11          13          14          15          16          17
+rate          19.351      202.984     17.686      2.408       18935.508   9759.452    51.542      1619.548    1.043       0.000       4.300       73.288      7562485.076 4639.072
+
+not signal tt
+single top
+wjets
+sum([202.984,     17.686,      2.408,       18935.508])
+sum([51.542,      1619.548,    1.043])
+sum([0.000 ,      4.300,       73.288])
+
+19158.586000000003
+1672.1329999999998
+77.588
+
+   sqrt(sum([i**2 for i in [2, 36, 8, 361 ]))
+
+and elmu
+
+python numbers_for_datacard.py distrs/distrs_v27dilep2_mc_and_data.root -d lep_pt       -c tt_elmu --no-sums -y --scale 35800
+python numbers_for_datacard.py distrs/distrs_v27dilep2_mc_and_data.root -d lep_pt       -c tt_elmu --no-sums -y --scale 35800 --latex
+
+-- this one has b-tag!!!!!!! using old one
+
+python numbers_for_datacard.py v27p1_WJetsAmcatnlo1_SingleMuon.root -d Mt_lep_met_f -c ctr_mu_tt_em --no-sums
+python numbers_for_datacard.py v27p1_WJetsAmcatnlo1_SingleMuon.root -d Mt_lep_met_f -c ctr_mu_tt_em --no-sums -y --scale 35800
+python numbers_for_datacard.py v27p1_WJetsAmcatnlo1_SingleMuon.root -d Mt_lep_met_f -c ctr_mu_tt_em --no-sums -y --scale 35800 --latex
 
 
 
@@ -91,6 +143,8 @@ python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnorm
 python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_lj -c el_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]"
 
 foreach sys (PUUp,PUDown bSFUp,bSFDown TOPPTUp,TOPPTDown FragUp,FragDown)
+
+foreach sys (FragUp,FragDown TOPPTUp,TOPPTDown)
 foreach el_chan (el_sel_lj el_sel_ljout)
 foreach proc (tt_eltau tt_lj)
 python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p $proc -c $el_chan -d Mt_lep_met_f -s $sys --no-data --ratio  --add-titles --title-x "M_{T} [GeV]"
