@@ -12,7 +12,7 @@ all_known_sorted_processes = [
     's_top_elmu',
     's_top_eltau',  's_top_mutau',   's_top_other', 's_top_lj',
     'dy_tautau', 'dy_other',
-    'wjets_other', 'wjets_taul', # 'wjets_tauh',
+    'wjets', 'wjets_other', 'wjets_taul', 'wjets_tauh',
     'dibosons',
     'qcd']
 
@@ -29,7 +29,7 @@ processes_el = ['dy_tautau', 'dy_other',  'wjets_other', 'wjets_taul', 'wjets_ta
 processes_el_id = {'qcd': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets_other': 11,  'wjets_taul': 10,  'wjets_tauh': 9,     's_top_eltau': 8,   's_top_other': 7, 's_top_lj': 6,    'dibosons': 5,     'tt_other': 4, 'tt_taultauh': 3, 'tt_taulj': 2,  'tt_lj': 1,  'tt_eltau':0}
 
 processes_id = {'qcd': 18, 'dy_tautau': 17, 'dy_other': 16,
-   'wjets_other': 15,  'wjets_taul': 14,  'wjets_tauh': 13,
+   'wjets': 15, 'wjets_other': 15,  'wjets_taul': 14,  'wjets_tauh': 13,
    's_top_eltau': 12, 's_top_mutau': 11, 's_top_elmu': 10,
    's_top_other': 9, 's_top_lj': 8,
    'dibosons': 7,
@@ -57,10 +57,12 @@ process_latex_strings = {
 'dy_tautau' : "$\\text{DY}\\rightarrow{\\tau_{\\ell}\\tau_{h}}+ {\\rm jets}$" ,
 'dy_other'  : "$\\text{DY}\\rightarrow{\\rm other}$"                       ,
 
+    'wjets':           "$\\text{W+jets} \\rightarrow\\ell\\nu+ {\\rm jets}$"         ,
     'wjets_other':     "$\\text{W+jets} \\rightarrow\\ell\\nu+ {\\rm jets}$"         ,
     'wjets_taul':      "$\\text{W+jets} \\rightarrow\\tau_{\\ell}\\nu + {\\rm jets}$" ,
     'wjets_tauh':      "$\\text{W+jets} \\rightarrow\\tau_{h}\\nu + {\\rm jets}$"    ,
 
+    's_top_elmu':    "$\\text{single top}\\rightarrow{e\\mu}+X$" ,
     's_top_eltau':   "$\\text{single top}\\rightarrow{{\\rm \\ell} \\tau}+X$" ,
     's_top_mutau':   "$\\text{single top}\\rightarrow{{\\rm \\ell} \\tau}+X$" ,
     's_top_other':   "$\\text{single top}\\rightarrow{\\rm other}$"         ,
@@ -72,6 +74,10 @@ process_latex_strings = {
     'tt_other':  "$\\ttbar\\rightarrow{\\rm other}$",
     'tt_mutau':  "$\\ttbar\\rightarrow{\\ell\\tau}\\nu\\nu b\\bar{b}$ ($\\ell=e,\\mu$)",
     'tt_eltau':  "$\\ttbar\\rightarrow{\\ell\\tau}\\nu\\nu b\\bar{b}$ ($\\ell=e,\\mu$)",
+
+    'tt_elmu':       "$\\ttbar\\rightarrow{e^{\\pm}\\mu^{\\mp}}\\nu\\nu b\\bar{b}$",
+    'tt_ltaul':      "$\\ttbar\\rightarrow{\\ell^{\\pm}\\tau_{\\ell^{\\mp}}}\\nu\\nu b\\bar{b}$ ($\\ell=e,\\mu$)",
+    'tt_taueltaumu': "$\\ttbar\\rightarrow{\\tau_{e^{\\pm}}\\tau_{\\mu^{\\mp}}}\\nu\\nu b\\bar{b}$",
 
     'dibosons':                       '$\\text{dibosons}$',
     'qcd':                            '$\\text{QCD}$'
@@ -327,7 +333,7 @@ def string_yield(integral):
         else:
             return (item_s + '.0f') % integral
 
-separator = ' & ' if args.latex else ''
+separator = ' & ' if args.latex else '   '
 line_end = ' \\\\' if args.latex else ''
 
 if args.event_yields:
@@ -360,6 +366,8 @@ if args.event_yields:
             continue
 
 
+    print "aaa!"
+    print proc_s % 'mc_resum' + separator + separator.join([(item_s + '.3f') % (mc_sums[channel][0]) for channel in channels]) + line_end
     if args.no_sums:
         if args.ratios:
             print proc_s % 'mc_sum_ratio' + separator + separator.join([(item_s + '.3f') % (mc_sums[channel][0]/data_yields[channel][0]) for channel in channels]) + line_end

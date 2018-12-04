@@ -24,7 +24,7 @@ parser.add_argument("-l", "--logy", action='store_true', help="set logarithmic s
 parser.add_argument("--normalize", action='store_true', help="normalize the integral to data")
 parser.add_argument("-o", "--output-directory", type=str, default='', help="optional output directory")
 
-parser.add_argument("--systematic-uncertainty",  type=str, help="add systematic variations to the hs sum uncertainty")
+parser.add_argument("--uncertainty-systematic",  type=str, help="add systematic variations to the hs sum uncertainty")
 
 parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
 
@@ -392,12 +392,19 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                    tauIDSF_factor = 0.95
 
                pu_factor = 1.
+               #if 'PUUp' in fixed_sys_name:
+               #    pu_factor = 1. / (1.01995 if '_el_' in channel or 'el_sel' in channel else 0.9979) # 0.97 # 1./ 0.9979
+               #elif 'PUDown' in fixed_sys_name:
+               #    pu_factor = 1. / (1.07766 if '_el_' in channel or 'el_sel' in channel else 1.0485) # 1.17 # 1./ 1.485
+               #else:
+               #    pu_factor = 1. / (1.04678 if '_el_' in channel or 'el_sel' in channel else 1.022)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
+               #    #pu_factor = 1. / (1.04678 if '_el_' in channel else 1.014)
                if 'PUUp' in fixed_sys_name:
-                   pu_factor = 1. / (1.01995 if '_el_' in channel or 'el_sel' in channel else 0.9979) # 0.97 # 1./ 0.9979
+                   pu_factor = 1. / (1.00892 if '_el_' in channel or 'el_sel' in channel else 0.994846) # 0.97 # 1./ 0.9979
                elif 'PUDown' in fixed_sys_name:
-                   pu_factor = 1. / (1.07766 if '_el_' in channel or 'el_sel' in channel else 1.0485) # 1.17 # 1./ 1.485
+                   pu_factor = 1. / (1.05718 if '_el_' in channel or 'el_sel' in channel else 1.03657) # 1.17 # 1./ 1.485
                else:
-                   pu_factor = 1. / (1.04678 if '_el_' in channel or 'el_sel' in channel else 1.022)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
+                   pu_factor = 1. / (1.03106 if '_el_' in channel or 'el_sel' in channel else 1.01388)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
                    #pu_factor = 1. / (1.04678 if '_el_' in channel else 1.014)
 
                th_factor = 1.
@@ -651,10 +658,10 @@ used_histos_per_distr, hs_sums2, hs_sums_noqcd, hs_sums2_ss = get_histos_with_da
 # which is summed from hs stacks
 # but it actually equals to hs_sum2 = hs_sums2[0]
 
-if args.systematic_uncertainty:
-    logging.debug("adding systematic uncertainties %s" % args.systematic_uncertainty)
+if args.uncertainty_systematic:
+    logging.debug("adding systematic uncertainties %s" % args.uncertainty_systematic)
     nominal_sum = hs_sums2[0]
-    for sys_var in args.systematic_uncertainty.split(','):
+    for sys_var in args.uncertainty_systematic.split(','):
         _, hs_sums2_Up,   _, _ = get_histos_with_data_qcd(sys_var + 'Up')
         _, hs_sums2_Down, _, _ = get_histos_with_data_qcd(sys_var + 'Down')
         hs_sum2_Up   = hs_sums2_Up[0]

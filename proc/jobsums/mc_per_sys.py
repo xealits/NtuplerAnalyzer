@@ -21,9 +21,12 @@ parser.add_argument('-p', '--process',    type=str, default=None, help="process 
 parser.add_argument('--no-data',     action='store_true', help="don't draw data")
 parser.add_argument('-r', '--ratio', action='store_true', help="add ratio plot")
 
+parser.add_argument('--add-titles', action='store_true', help="the left and right titles")
+parser.add_argument("--title-x", type=str, help="set title of X axis on the plot")
+
 parser.add_argument("-o", "--output-directory", type=str, default='./', help="optional output directory")
 
-parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
+parser.add_argument("--ratio-range", type=float, default=0.3, help="range of ratio plot (1-range 1+range)")
 parser.add_argument("--y-max",       type=float,              help="set the maximum on Y axis")
 
 
@@ -39,7 +42,7 @@ else:
 logging.info("import ROOT")
 
 import ROOT
-from ROOT import gStyle, gROOT, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan
+from ROOT import gStyle, gROOT, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, kBlue
 gROOT.SetBatch()
 gStyle.SetOptStat(0)
 
@@ -57,8 +60,27 @@ else:
     nom_MC = fdata.Get(args.channel + '/sums_%s/mc_sum1_%s' % (sys, sys))
 nom_MC.Print()
 
+nom_MC.SetFillStyle(3004);
+nom_MC.SetFillColor(1);
+nom_MC.SetMarkerStyle(1)
+nom_MC.SetMarkerColor(0)
+
+nom_MC.GetXaxis().SetLabelFont(63)
+nom_MC.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
+nom_MC.GetYaxis().SetLabelFont(63)
+nom_MC.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
+nom_MC.GetXaxis().SetTitleFont(63)
+nom_MC.GetXaxis().SetTitleSize(20)
+nom_MC.GetYaxis().SetTitleFont(63)
+nom_MC.GetYaxis().SetTitleSize(20)
+
+if args.title_x and not args.ratio:
+    title_x = args.title_x
+    nom_MC.SetXTitle(title_x)
+    nom_MC.GetXaxis().SetTitleOffset(2)
+
 #leg.AddEntry(nom_MC, "MC NOMINAL", "L")
-leg.AddEntry(nom_MC, "MC NOMINAL", "f")
+leg.AddEntry(nom_MC, "NOMINAL", "f")
 
 # and data if not specified otherwise
 if not args.no_data:
@@ -66,16 +88,18 @@ if not args.no_data:
     data.Print()
     leg.AddEntry(data, "Data", "lep")
 
-sys_color = {'TOPPTUp': kRed,
-    'PUUp':   kGreen,
-    'PUDown': kGreen + 1,
-    'bSFUp':   kGreen,
+sys_color = {'TOPPTUp': kBlue,
+    'FragUp':   kBlue,
+    'FragDown': kGreen,
+    'PUUp':   kBlue,
+    'PUDown': kGreen,
+    'bSFUp':   kBlue,
     'bSFDown': kGreen + 1,
-    'JERUp':   kGreen,
+    'JERUp':   kBlue,
     'JERDown': kGreen + 1,
-    'JESUp':   kGreen,
+    'JESUp':   kBlue,
     'JESDown': kGreen + 1,
-    'TESUp':   kGreen,
+    'TESUp':   kBlue,
     'TESDown': kGreen + 1,
     'ISRUp'   : kOrange,
     'ISRDown' : kOrange + 1,
@@ -99,7 +123,7 @@ for sys in sys_names:
         sys_MC.SetLineColor(kRed)
     elif 'Down' in sys:
         sys_MC.SetLineColor(kRed+1)
-    leg.AddEntry(sys_MC, "MC %s" % sys, "L")
+    leg.AddEntry(sys_MC, "%s" % sys, "L")
     sys_MCs.append(sys_MC)
 
 
@@ -142,12 +166,40 @@ if not args.no_data:
 
 leg.Draw("same")
 
+if args.add_titles:
+    logging.debug("adding left titles")
+    left_title = TPaveText(0.12, 0.82, 0.28, 0.88, "brNDC")
+    left_title.AddText("CMS")
+    left_title.SetTextFont(1)
+    left_title.SetFillColor(0)
+    left_title .Draw("same")
+
+    left_title2 = TPaveText(0.12, 0.76, 0.28, 0.82, "brNDC")
+    left_title2.AddText("simulation")
+    left_title2.SetTextFont(1)
+    left_title2.SetFillColor(0)
+    left_title2 .Draw("same")
+
 if args.ratio:
     pad2.cd()
 
     nom_MC_rel = nom_MC.Clone()
     if not args.no_data:
         data_rel = data.Clone()
+
+    nom_MC_rel.GetXaxis().SetLabelFont(63)
+    nom_MC_rel.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
+    nom_MC_rel.GetYaxis().SetLabelFont(63)
+    nom_MC_rel.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
+    nom_MC_rel.GetXaxis().SetTitleFont(63)
+    nom_MC_rel.GetXaxis().SetTitleSize(20)
+    nom_MC_rel.GetYaxis().SetTitleFont(63)
+    nom_MC_rel.GetYaxis().SetTitleSize(20)
+
+    if args.title_x:
+        title_x = args.title_x
+        nom_MC_rel.SetXTitle(title_x)
+        nom_MC_rel.GetXaxis().SetTitleOffset(2.)
 
     ratio_max = 1. + args.ratio_range
     ratio_min = 1. - args.ratio_range
@@ -163,6 +215,11 @@ if args.ratio:
         h_rel.SetDirectory(0)
         h_rel.Print()
         h_rel.Divide(nom_MC)
+
+        #if args.title_x:
+        #    title_x = args.title_x
+        #    h_rel.SetXTitle(title_x)
+
         sys_MCs_rel.append(h_rel)
 
     nom_MC_rel.Divide(nom_MC)
@@ -173,6 +230,13 @@ if args.ratio:
     if not args.no_data:
         data_rel.Divide(nom_MC)
         data_rel.Draw("same")
+
+    #right_title = TPaveText(0.65, 0.9, 0.9,  0.95, "brNDC")
+    #right_title.AddText("%s fb^{-1} (13 TeV)" % (args.lumi / 1000. if args.lumi else args.lumi_label))
+    #right_title.SetTextFont(132)
+    #right_title.SetFillColor(0)
+    #right_title.Draw("same")
+
 
 cst.SaveAs(args.output_directory + '/MC-systs_%s_%s_%s_%s_%s.png' % (args.data_file, args.channel, args.process, args.distr, args.systematic))
 
