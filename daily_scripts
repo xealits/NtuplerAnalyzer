@@ -21,7 +21,7 @@ check PU normalization
 ! goodness of fit
 muon-tau ok
 electron-tau not so great --- all 3 methods show about the same 0.02 p value
-indeed prefit and postfit distrs look weird
+indeed prefit and postfit distrs look weird --> maybe met propagation? --> before full run plot recalc Mt with shifted met
 
 
 
@@ -87,18 +87,22 @@ but
 ## systematic variations
 
 
-python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_lj -c el_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
-python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_lj -c el_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_lj -c el_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]"
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_lj -c el_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]"
 
-python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_eltau -c el_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
-python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_eltau -c el_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+foreach sys (PUUp,PUDown bSFUp,bSFDown TOPPTUp,TOPPTDown FragUp,FragDown)
+foreach el_chan (el_sel_lj el_sel_ljout)
+foreach proc (tt_eltau tt_lj)
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p $proc -c $el_chan -d Mt_lep_met_f -s $sys --no-data --ratio  --add-titles --title-x "M_{T} [GeV]"
+end
+end
 
-
-python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_lj    -c mu_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
-python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_lj    -c mu_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
-
-python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_mutau -c mu_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
-python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_mutau -c mu_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio
+foreach mu_chan (mu_sel_lj mu_sel_ljout)
+foreach proc (tt_mutau tt_lj)
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p $proc -c $mu_chan -d Mt_lep_met_f -s $sys --no-data --ratio  --add-titles --title-x "M_{T} [GeV]"
+end
+end
+end
 
 
 
