@@ -110,39 +110,6 @@ namespace patUtils
 
 
 
-
-   class MetFilter{
-    private :
-     struct RuLuEv {
-        unsigned int Run;  unsigned int Lumi;  unsigned int Event;
-        RuLuEv(unsigned int Run_, unsigned int Lumi_, unsigned int Event_){ Run = Run_; Lumi = Lumi_; Event = Event_;}
-        bool operator==(const RuLuEv &other) const { return (Run == other.Run && Lumi == other.Lumi && Event == other.Event); }
-     };
-     struct RuLuEvHasher{
-         std::size_t operator()(const RuLuEv& k) const{ using std::size_t; using std::hash;  using std::string;
-            return ((hash<unsigned int>()(k.Run) ^ (hash<unsigned int>()(k.Lumi) << 1)) >> 1) ^ (hash<unsigned int>()(k.Event) << 1);
-         }
-     };
-
-     typedef std::unordered_map<RuLuEv, int, RuLuEvHasher> MetFilterMap;
-     MetFilterMap map;
-    public :
-     MetFilter(){}
-     ~MetFilter(){}
-     void Clear(){map.clear();}
-     void FillBadEvents(std::string path);
-
-     //     New Met Filters for 2016 Run II:    
-     bool passBadPFMuonFilter(const fwlite::Event& ev);
-     bool passBadChargedCandidateFilter(const fwlite::Event& ev);   
-     
-     int  passMetFilterInt(const fwlite::Event& ev);
-     int  passMetFilterInt(const fwlite::Event& ev, bool is2016); 
-     bool passMetFilter(const fwlite::Event& ev);
-     bool BadGlobalMuonTaggerFilter(const fwlite::Event& ev,std::unique_ptr<edm::PtrVector<reco::Muon>> &out, bool selectClones=false);
-     bool BadGlobalMuonTaggerFilter(const fwlite::Event& ev,std::unique_ptr<std::vector<reco::Muon*>> &out, bool selectClones=false);
-   };
-
 }
 
 #endif
