@@ -23,7 +23,8 @@ namespace patUtils
     double resol         = fabs((1/el.ecalEnergy())-(el.eSuperClusterOverP()/el.ecalEnergy()));
     double dxy           = fabs(el.gsfTrack()->dxy(vtx.position()));
     double dz            = fabs(el.gsfTrack()->dz(vtx.position())); 
-    double mHits         = el.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS);
+    //double mHits         = el.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS);
+    double mHits         = el.gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS);
     bool conversionVeto = el.passConversionVeto(); 
     bool barrel = (fabs(el.superCluster()->eta()) <= 1.479);
     bool endcap = (!barrel && fabs(el.superCluster()->eta()) < 2.5);
@@ -686,6 +687,7 @@ namespace patUtils
     return false;          
   }
 
+/*
   bool passPhotonTrigger(fwlite::Event &ev, float &triggerThreshold, float &triggerPrescale, float& triggerThresholdHigh ){
     edm::TriggerResultsByName tr = ev.triggerResultsByName("HLT");
     if( !tr.isValid() ) return false;
@@ -827,7 +829,7 @@ namespace patUtils
 
     return hasPhotonTrigger; 
   }
-  
+*/
 
   bool passPFJetID(std::string label,
                   pat::Jet jet){

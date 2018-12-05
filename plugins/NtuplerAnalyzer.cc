@@ -1066,8 +1066,7 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	vtx_ = consumes<reco::VertexCollection>(edm::InputTag("offlineSlimmedPrimaryVertices"));
 	rho_ = consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
 	// declare consuming the HLT to be able to get triggers in the following
-	if (withHLT)
-		trigResults_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","", HLT_source));
+	trigResults_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","", HLT_source));
 	edm::LogInfo ("Demo") << "HLT results";
 	//trigResults2_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT2"));
 	trigResultsRECO_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","RECO"));
@@ -2413,6 +2412,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 *   https://hypernews.cern.ch/HyperNews/CMS/get/met.html
 	 */
 
+	/* sting interface in 2016
 	string filters_name = "";
 	// 2016 data, Aug 2017 rereco
 	if (is2017rereco)
@@ -2424,7 +2424,33 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// 2016 data, Feb 2017 rereco
 		filters_name = "PAT";
 		}
-	edm::TriggerResultsByName patFilters = iEvent.triggerResultsByName(filters_name); //is present only if PAT (and miniAOD) is not run simultaniously with RECO
+	*/
+
+	/* Token interface in 2016
+	*/
+	// get trigger results for all the tokens:
+	//trigger result object for "HLT" triggers, for "RECO" and "PAT", these are 3 different sources of triggers
+	edm::Handle<edm::TriggerResults> trigResults, trigResultsRECO, trigResultsPAT, trigResults_with_met_filters;
+	//edm::InputTag * trigResultsTag; // the tag object, trigResults are extracted from the event via this tag
+
+	iEvent.getByToken( trigResults_, trigResults );
+	iEvent.getByToken( trigResultsRECO_, trigResultsRECO );
+	iEvent.getByToken( trigResultsPAT_, trigResultsPAT );
+
+	// 2016 data, Aug 2017 rereco
+	if (is2017rereco)
+		{
+		//is present only if PAT (and miniAOD) is not run simultaniously with RECO
+		trigResults_with_met_filters = trigResultsRECO;
+		}
+	else
+		{
+		// 2016 data, Feb 2017 rereco
+		trigResults_with_met_filters = trigResultsPAT;
+		}
+
+	edm::TriggerResultsByName patFilters = iEvent.triggerResultsByName(*trigResults_with_met_filters);
+
 	//if(!isMC && !metFilters.isValid()){metFilters = iEvent.triggerResultsByName("PAT");} //if not present, then it's part of RECO
 	//if(!isMC && !metFilters.isValid()){       
 	//	LogInfo("Demo") << "TriggerResultsByName for MET filters is not found in the process, as a consequence the MET filter is disabled for this event";
@@ -2587,8 +2613,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	bool jetsHLT140 = !withHLT, jetsHLT400 = !withHLT, jetsHLT = !withHLT;
 
 	// TriggerNames for TriggerObjects --------------------
-	edm::Handle<edm::TriggerResults> trigResults; //our trigger result object
-	//edm::InputTag * trigResultsTag; // the tag object, trigResults are extracted from the event via this tag
 
 	string matched_elTriggerName("");
 	string matched_muTriggerName1("");
@@ -2602,10 +2626,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	if (withHLT)
 		{
-		iEvent.getByToken( trigResults_, trigResults );
-
 		//edm::TriggerResultsByName tr = iEvent.triggerResultsByName (HLT_source);
-		edm::TriggerResultsByName tr = iEvent.triggerResultsByName(trigResults);
+		edm::TriggerResultsByName tr = iEvent.triggerResultsByName(*trigResults);
 
 		//if (!tr.isValid ()){
 			// HLT2 was a quirk of Spring16 MC campaigns (noHLT/reHLT/withHLT thing)
