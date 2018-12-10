@@ -34,6 +34,7 @@ python jobsums/get_shapes.py  --norm-binwidth --formula " OLD : NEW " -c el_selV
 
 seems like it's worse now
 
+
 ## full new stack
 
 python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_sel_ljout    -x el_selVloose_ljout    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
@@ -46,6 +47,171 @@ python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v
 -- nope, resub1 has wrong cuts!
 
 python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_sel_ljout    -d Mt_lep_met_f --wjet 0.8 --skip-QCD 
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_sel_lj       -d Mt_lep_met_f --wjet 0.8 --skip-QCD 
+
+-- absent tt in el_sel_lj! the hadd is broken
+hadd quick-test/v25v26-resub2_hadds/MC2016_Summer16_TTJets_powheg_mu_sel_.root  quick-test/v25v26-resub2/*TTJe*mu_sel_*       &
+hadd quick-test/v25v26-resub2_hadds/MC2016_Summer16_TTJets_powheg_mu_selVloose_.root  quick-test/v25v26-resub2/*TTJe*mu_selVloose_* &
+hadd quick-test/v25v26-resub2_hadds/MC2016_Summer16_TTJets_powheg_el_sel_.root  quick-test/v25v26-resub2/*TTJe*el_sel_*       &
+hadd quick-test/v25v26-resub2_hadds/MC2016_Summer16_TTJets_powheg_el_selVloose_.root  quick-test/v25v26-resub2/*TTJe*el_selVloose_* &
+
+
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.qcd`)
+
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.all-tt-systs_main`)
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.small_main`)
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main`)
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main`)
+foreach dtag (SingleMuon SingleElectron)
+hadd quick-test/v25v26-resub2_hadds/${dtag}_mu_sel_.root       quick-test/v25v26-resub2/$dtag*mu_sel_*root &
+hadd quick-test/v25v26-resub2_hadds/${dtag}_mu_selVloose_.root quick-test/v25v26-resub2/$dtag*mu_selVloose_*root &
+hadd quick-test/v25v26-resub2_hadds/${dtag}_el_sel_.root       quick-test/v25v26-resub2/$dtag*el_sel_*root &
+hadd quick-test/v25v26-resub2_hadds/${dtag}_el_selVloose_.root quick-test/v25v26-resub2/$dtag*el_selVloose_*root &
+end
+
+hadd quick-test/v25v26-resub2_hadds/${dtag}.root       quick-test/v25v26-resub2/${dtag}_*root &
+end
+
+hadd quick-test/v25v26-resub2_hadds/MC2016_Summer16_TTJets_powheg.root quick-test/v25v26-resub2/MC2016_Summer16_TTJets_powheg_*root &
+
+
+effect on mu shapes:
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 35800 -c mu_sel_ljout    -d Mt_lep_met_f --wjet 0.8 --skip-QCD 
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 35800 -c mu_sel_lj       -d Mt_lep_met_f --wjet 0.8 --skip-QCD 
+
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 35800 -c mu_sel_ljout  -x mu_selVloose_ljout  -d Mt_lep_met_f --wjet 0.8 --skip-QCD 
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 35800 -c mu_sel_lj     -x mu_selVloose_lj     -d Mt_lep_met_f --wjet 0.8 --skip-QCD 
+
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 35800 -c mu_sel_ljout  -x mu_selVloose_ljout  -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 35800 -c mu_sel_lj     -x mu_selVloose_lj     -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 
+
+still
+DEBUG:root:absent NOMINAL mu_selVloose_lj_ss_tt_mutau_NOMINAL_Mt_lep_met_f
+DEBUG:root:mu_selVloose_lj_ss_tt_taultauh_NOMINAL_Mt_lep_met_f
+
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_sel_ljout   -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_sel_lj      -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_sel_ljout  -x el_selVloose_ljout   -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_sel_lj     -x el_selVloose_lj      -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 
+
+DEBUG:root:absent NOMINAL
+DEBUG:root:absent NOMINAL el_sel_lj_tt_taulj_NOMINAL_Mt_lep_met_f
+DEBUG:root:el_sel_lj_tt_taultauh_NOMINAL_Mt_lep_met_f
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_sel_ljout_ss     -d Mt_lep_met_f --wjet 0.8 --skip-QCD
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_sel_lj_ss        -d Mt_lep_met_f --wjet 0.8 --skip-QCD
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_selVloose_ljout_ss -d Mt_lep_met_f --wjet 0.8 --skip-QCD
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_selVloose_lj_ss    -d Mt_lep_met_f --wjet 0.8 --skip-QCD
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_sel_ljout  -x el_selVloose_ljout   -d Mt_lep_met_c --wjet 0.8 --qcd 1.05 
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_sel_lj     -x el_selVloose_lj      -d Mt_lep_met_c --wjet 0.8 --qcd 1.05 
+
+
+## numbers VS old ones
+
+python numbers_for_datacard.py  histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout --no-sums -y
+
+python numbers_for_datacard.py  histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -d Mt_lep_met_f -c mu_sel_lj,mu_sel_ljout --no-sums -y
+
+                                 process    el_sel_lj   el_sel_ljout
+                                tt_eltau   $      3010 \pm         88 $   $      4691 \pm        111 $
+                             tt_taultauh   $       170 \pm         20 $   $       280 \pm         26 $
+                                   tt_lj   $      2215 \pm         43 $   $      1457 \pm         34 $
+                                tt_taulj   $       118 \pm          8 $   $        76 \pm          7 $
+                                tt_other   $        60 \pm          9 $   $       100 \pm         11 $
+                             s_top_eltau   $       152 \pm         14 $   $       274 \pm         19 $
+                             s_top_other   $        21 \pm          3 $   $        31 \pm          5 $
+                                s_top_lj   $       151 \pm          8 $   $       169 \pm          8 $
+                               dy_tautau   $       103 \pm         28 $   $       190 \pm         29 $
+                                dy_other   $        34 \pm         14 $   $       103 \pm         25 $
+                             wjets_other   $       194 \pm         22 $   $       241 \pm         15 $
+                              wjets_taul   $         7 \pm          3 $   $         7 \pm          3 $
+                              wjets_tauh   $         0 \pm          0 $   $         1 \pm          1 $
+                                dibosons   $        13 \pm          4 $   $        31 \pm          6 $
+                                     qcd   $       136 \pm         57 $   $       327 \pm         68 $
+aaa!
+                                mc_resum     6383.362     7980.707
+                                    data   $      6190 \pm        236 $   $      7906 \pm        273 $
+
+
+                                 process    mu_sel_lj   mu_sel_ljout
+                                tt_mutau   $      5136 \pm        116 $   $      7926 \pm        144 $
+                             tt_taultauh   $       328 \pm         27 $   $       517 \pm         34 $
+                                   tt_lj   $      3757 \pm         57 $   $      2532 \pm         46 $
+                                tt_taulj   $       240 \pm         13 $   $       161 \pm         10 $
+                                tt_other   $       104 \pm         12 $   $       181 \pm         15 $
+                             s_top_mutau   $       232 \pm         17 $   $       450 \pm         25 $
+                             s_top_other   $        40 \pm          5 $   $        61 \pm          7 $
+                                s_top_lj   $       235 \pm         10 $   $       296 \pm         11 $
+                               dy_tautau   $       200 \pm         32 $   $       424 \pm         52 $
+                                dy_other   $        22 \pm         14 $   $        62 \pm         18 $
+                             wjets_other   $       303 \pm         22 $   $       434 \pm         22 $
+                              wjets_taul   $        11 \pm          3 $   $        16 \pm          4 $
+                              wjets_tauh   $         0 \pm          0 $   $         0 \pm          0 $
+                                dibosons   $        25 \pm          5 $   $        58 \pm         10 $
+                                     qcd   $       173 \pm         42 $   $       258 \pm         53 $
+aaa!
+                                mc_resum    10805.584    13376.781
+                                    data   $     10251 \pm        298 $   $     13550 \pm        352 $
+
+
+
+python numbers_for_datacard.py  histosels/redo-v25-v26_resub2/HISTOSELS_v25v25redo_resub2.root  -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout --no-sums -y
+python numbers_for_datacard.py  histosels/redo-v25-v26_resub2/HISTOSELS_v25v25redo_resub2.root  -d Mt_lep_met_f -c mu_sel_lj,mu_sel_ljout --no-sums -y
+
+
+### numbers for the new reseb2 run 1, failed lstore jobs
+
+                                 process    el_sel_lj   el_sel_ljout
+                                tt_eltau   $      3010 \pm        126 $   $      4688 \pm        160 $
+                             tt_taultauh   $       168 \pm         27 $   $       279 \pm         35 $
+                                   tt_lj   $      2218 \pm         58 $   $      1456 \pm         47 $
+                                tt_taulj   $       118 \pm         11 $   $        78 \pm          9 $
+                                tt_other   $        59 \pm         13 $   $        98 \pm         16 $
+                             s_top_eltau   $        78 \pm         11 $   $       137 \pm         15 $
+                             s_top_other   $        12 \pm          3 $   $        15 \pm          3 $
+                                s_top_lj   $        86 \pm          7 $   $       129 \pm          9 $
+                               dy_tautau   $        97 \pm         35 $   $       186 \pm         36 $
+                                dy_other   $        22 \pm         15 $   $        61 \pm         24 $
+                             wjets_other   $        93 \pm         34 $   $       112 \pm         86 $
+                              wjets_taul   $         7 \pm          7 $   $         0 \pm          0 $
+                              wjets_tauh   $         0 \pm          0 $   $         0 \pm          0 $
+                                dibosons   $        12 \pm          6 $   $        18 \pm          7 $
+                                     qcd   $       132 \pm         89 $   $       355 \pm         92 $
+aaa!
+                                mc_resum     6113.805     7612.033
+                                    data   $      5759 \pm        314 $   $      7290 \pm        363 $
+
+                                 process    mu_sel_lj   mu_sel_ljout
+                                tt_mutau   $      5133 \pm        165 $   $      7932 \pm        205 $
+                             tt_taultauh   $       328 \pm         37 $   $       511 \pm         46 $
+                                   tt_lj   $      3754 \pm         77 $   $      2536 \pm         62 $
+                                tt_taulj   $       240 \pm         16 $   $       161 \pm         13 $
+                                tt_other   $       107 \pm         18 $   $       179 \pm         21 $
+                             s_top_mutau   $       115 \pm         19 $   $       446 \pm         39 $
+                             s_top_other   $        22 \pm          5 $   $        62 \pm         10 $
+                                s_top_lj   $       143 \pm         11 $   $       296 \pm         16 $
+                               dy_tautau   $       208 \pm         40 $   $       428 \pm         69 $
+                                dy_other   $        10 \pm         13 $   $        46 \pm         22 $
+                             wjets_other   $        23 \pm         14 $   $        14 \pm          7 $
+                              wjets_taul   $         0 \pm          0 $   $         0 \pm          0 $
+                              wjets_tauh   $         0 \pm          0 $   $         0 \pm          0 $
+                                dibosons   $        28 \pm         12 $   $        63 \pm         20 $
+                                     qcd   $        74 \pm         32 $   $       326 \pm         92 $
+aaa!
+                                mc_resum    10186.293    13002.965
+                                    data   $      9255 \pm        388 $   $     12203 \pm        461 $
+
+less data???
+-- less in lstore!!!!
+
+
 
 
 #  remainders
