@@ -11,10 +11,17 @@ merge_proc:
 	hadd ${merge_dir}/${nt}/${proc}/$$d.root /lstore/cms/olek/outdirs/${nt}/${proc}/$$d/*.root & \
 	done
 
+merge_tt: merge_dir=merge-sets/
 merge_tt:
 	for fl in `ls tt_files_*`; \
 	do \
-	hadd merge-sets/${nt}/${proc}/$$fl.root `sed 's,^,/lstore/cms/olek/outdirs/${nt}/${proc}/${dtag}/,' $$fl` & \
+	hadd ${merge_dir}/${nt}/${proc}/$$fl.root `sed 's,^,/lstore/cms/olek/outdirs/${nt}/${proc}/${dtag}/,' $$fl` & \
+	done
+
+hadds_distrs:
+	for dtag in `cat ${dtag_file}`; \
+	do \
+	hadd ${distr_dir}_hadds/$$dtag.root ${distr_dir}/$$dtag*root & \
 	done
 
 #plot_mc: dtags=merge-sets/jobs_hadd.dtags.mc

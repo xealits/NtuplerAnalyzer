@@ -165,7 +165,13 @@ temp_output_histo = None # histo-template for custom bins
 #   # sv sign
 #   # dilep mass
 
-draw_command = '{met_lep_mt_var}' if args.draw_com == 'std_mt_vars' else args.draw_com
+if   args.draw_com == 'std_mt_vars':
+    draw_command = '{met_lep_mt_var}' 
+elif args.draw_com == 'std_met_vars':
+    draw_command = '{met_var}' 
+else:
+    draw_command =  args.draw_com
+
 if args.custom_range:
     bin_edges = [float(b) for b in args.custom_range.split(',')]
     n_bin_edges = len(bin_edges)
@@ -342,6 +348,15 @@ systs_objects_mt_variation = {
 'JESDown'  : 'event_met_lep_mt_JESDown', 
 'TESUp'    : 'event_met_lep_mt_TESUp',   
 'TESDown'  : 'event_met_lep_mt_TESDown', 
+}
+
+systs_objects_met_variation = {
+'JERUp'    : 'event_met_JERUp.pt()',   
+'JERDown'  : 'event_met_JERDown.pt()', 
+'JESUp'    : 'event_met_JESUp.pt()',   
+'JESDown'  : 'event_met_JESDown.pt()', 
+'TESUp'    : 'event_met_TESUp.pt()',   
+'TESDown'  : 'event_met_TESDown.pt()', 
 }
 
 # check is a syst name is in objects
@@ -929,6 +944,13 @@ for filename in input_files:
                         logging.debug('substituted draw command to %s at %s sys' % (draw_command_final, sys_name))
                     else:
                         draw_command_final = draw_command.format(met_lep_mt_var='event_met_lep_mt')
+                        logging.debug('substituted draw command to default %s at %s sys' % (draw_command_final, sys_name))
+                elif args.draw_com == 'std_met_vars':
+                    if sys_name in systs_objects:
+                        draw_command_final = draw_command.format(met_var=systs_objects_met_variation[sys_name])
+                        logging.debug('substituted draw command to %s at %s sys' % (draw_command_final, sys_name))
+                    else:
+                        draw_command_final = draw_command.format(met_var='event_met.pt()')
                         logging.debug('substituted draw command to default %s at %s sys' % (draw_command_final, sys_name))
 
                 final_cond = conditions[:]

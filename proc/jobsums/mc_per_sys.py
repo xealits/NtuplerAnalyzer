@@ -196,10 +196,17 @@ if args.ratio:
     nom_MC_rel.GetYaxis().SetTitleFont(63)
     nom_MC_rel.GetYaxis().SetTitleSize(20)
 
+    offset_x_title = 3
+
+    nom_MC_rel.GetXaxis().SetLabelOffset(0.01)
+    nom_MC_rel.GetXaxis().SetTitleOffset(offset_x_title)
+    #nom_MC_rel.GetYaxis().SetTitleOffset(1.4)
+    #nom_MC_rel.GetXaxis().SetLabelSize(14)
+
     if args.title_x:
         title_x = args.title_x
         nom_MC_rel.SetXTitle(title_x)
-        nom_MC_rel.GetXaxis().SetTitleOffset(2.)
+        #nom_MC_rel.GetXaxis().SetTitleOffset(2.)
 
     ratio_max = 1. + args.ratio_range
     ratio_min = 1. - args.ratio_range
@@ -223,12 +230,15 @@ if args.ratio:
         sys_MCs_rel.append(h_rel)
 
     nom_MC_rel.Divide(nom_MC)
+    nom_MC_rel.Draw("H")
     nom_MC_rel.Draw("e2")
     for h_rel in sys_MCs_rel:
+        h_rel.GetXaxis().SetTitleOffset(offset_x_title)
         h_rel.Draw("same")
 
     if not args.no_data:
         data_rel.Divide(nom_MC)
+        data_rel.GetXaxis().SetTitleOffset(offset_x_title)
         data_rel.Draw("same")
 
     #right_title = TPaveText(0.65, 0.9, 0.9,  0.95, "brNDC")

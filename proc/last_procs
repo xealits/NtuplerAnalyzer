@@ -1,3 +1,18 @@
+
+# v25-v26 with met propagation from lep-matched jet after the el shapes investigation and test1
+python genjobs.py v25 resub2 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc,data_mu,data_el,updowns,updowns_extra --without-dtags MC2016_Summer16_TTJets_powheg --submit queue 
+source queue_dir/v25/resub2/jobs_dir/submit
+
+python genjobs.py v25 resub2 --do-W-stitching channels_nom_sys_muon_sel_main --submit queue --dtags data_mu,data_el 
+python genjobs.py v25 resub2 --do-W-stitching channels_nom_sys_muon_sel_main --submit queue --dtags Data13TeV_SingleElectron2016H_03Feb2017_ver2
+python genjobs.py v25 resub2 --do-W-stitching channels_nom_sys_muon_sel_main --submit queue --dtags updowns,updowns_extra
+python genjobs.py v25 resub2 --do-W-stitching channels_nom_sys_muon_sel_main --submit queue --dtags std_mc --without-dtags MC2016_Summer16_TTJets_powheg
+
+python genjobs.py v26 resub2 --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_TTJets_powheg --submit queue 
+source queue_dir/v26/resub2/jobs_dir/submit
+
+
+
 # v27 with dileptons, but no extra MC datasets -- no extra DY
 python genjobs.py v27 dilep1 --do-W-stitching channels_nom_sys_muon_sel_main --dtags std_mc,data_mu,data_el --submit queue 
 python genjobs.py v27 dilep1 --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_TTJets_powheg --submit queue 
