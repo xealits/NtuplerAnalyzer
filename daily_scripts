@@ -1,3 +1,39 @@
+# test with eta and other distrs
+
+hadd quick-test/distrs_v25v26resub2_mc_test1.root quick-test/v25v26-resub2_tests1_hadds/MC2016*.root
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v26-resub2_tests1_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2_test1/ --lumi 31300 -c el_sel_ljout    -x el_selVloose_ljout    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v26-resub2_tests1_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2_test1/ --lumi 31300 -c el_sel_ljout    -x el_selVloose_ljout    -d lep_eta --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v26-resub2_tests1_hadds/SingleMuon.root     -p -r -o plots/redo-v25-v26_resub2_test1/ --lumi 35800 -c mu_sel_ljout    -x mu_selVloose_ljout    -d lep_eta --wjet 0.8 --qcd 1.05
+
+--- no problems with electron or muon eta
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v26-resub2_tests1_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2_test1/ --lumi 31300 -c el_sel_ljout    -x el_selVloose_ljout    -d met_c   --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v26-resub2_tests1_hadds/SingleMuon.root     -p -r -o plots/redo-v25-v26_resub2_test1/ --lumi 35800 -c mu_sel_ljout    -x mu_selVloose_ljout    -d met_c   --wjet 0.8 --qcd 1.05
+
+--- electron met ok, muon is not (?? this is new)
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v26-resub2_tests1_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2_test1/ --lumi 31300 -c el_sel_ljout -d met_c   --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v26-resub2_tests1_hadds/SingleMuon.root     -p -r -o plots/redo-v25-v26_resub2_test1/ --lumi 35800 -c mu_sel_ljout -d met_c   --wjet 0.8 --qcd 1.05
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v26-resub2_tests1_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2_test1/ --lumi 31300 -c el_sel       -d met_c   --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v26-resub2_tests1_hadds/SingleMuon.root     -p -r -o plots/redo-v25-v26_resub2_test1/ --lumi 35800 -c mu_sel       -d met_c   --wjet 0.8 --qcd 1.05
+
+--- not so bad without Vloose and in inclusive selection
+    and el channel is all the same
+
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v26-resub2_tests1_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2_test1/ --lumi 31300 -c el_sel_ljout    -d tau_eta --wjet 0.8 --qcd 1.05
+python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v26-resub2_tests1_hadds/SingleMuon.root     -p -r -o plots/redo-v25-v26_resub2_test1/ --lumi 35800 -c mu_sel_ljout    -d tau_eta --wjet 0.8 --qcd 1.05
+
+--- variations, but ok too
+
+
+
+
+
+
 # test1 of the shape in el-tau
 
 python -W ignore sumup_ttree_draw.py "sqrt(2*(sqrt((event_met.Px()*event_met.Px() + event_met.Py()*event_met.Py())*(event_leptons[0].Px()*event_leptons[0].Px() + event_leptons[0].Py()*event_leptons[0].Py())) - (event_met.Px()*event_leptons[0].Px() + event_met.Py()*event_leptons[0].Py())))" --ttree ttree_out --custom-range 0,20,40,60,80,100,130,160,200,250 --cond-com "" --output quick-test/redo-v25-v26_tests/MC2016_Summer16_TTJets_powheg_mu_sel_NOMINAL.root    --std-histos --histo-name el_sel_lj,el_sel_ljout/std_procs/NOMINAL/Mt_lep_met_m  --save-weight lstore_outdirs/merge-sets/v26/resub1/MC2016_Summer16_TTJets_powheg.root &
@@ -50,10 +86,10 @@ python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v
 python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_data_resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/el-shapes/ --lumi 31300 -c el_sel_lj       -d Mt_lep_met_f --wjet 0.8 --skip-QCD 
 
 -- absent tt in el_sel_lj! the hadd is broken
-hadd quick-test/v25v26-resub2_hadds/MC2016_Summer16_TTJets_powheg_mu_sel_.root  quick-test/v25v26-resub2/*TTJe*mu_sel_*       &
-hadd quick-test/v25v26-resub2_hadds/MC2016_Summer16_TTJets_powheg_mu_selVloose_.root  quick-test/v25v26-resub2/*TTJe*mu_selVloose_* &
-hadd quick-test/v25v26-resub2_hadds/MC2016_Summer16_TTJets_powheg_el_sel_.root  quick-test/v25v26-resub2/*TTJe*el_sel_*       &
-hadd quick-test/v25v26-resub2_hadds/MC2016_Summer16_TTJets_powheg_el_selVloose_.root  quick-test/v25v26-resub2/*TTJe*el_selVloose_* &
+hadd quick-test/v25v26-resub2_tests1_hadds/MC2016_Summer16_TTJets_powheg_mu_sel_.root        quick-test/v25v26-resub2_tests1/*TTJe*mu_sel_*       &
+hadd quick-test/v25v26-resub2_tests1_hadds/MC2016_Summer16_TTJets_powheg_mu_selVloose_.root  quick-test/v25v26-resub2_tests1/*TTJe*mu_selVloose_* &
+hadd quick-test/v25v26-resub2_tests1_hadds/MC2016_Summer16_TTJets_powheg_el_sel_.root        quick-test/v25v26-resub2_tests1/*TTJe*el_sel_*       &
+hadd quick-test/v25v26-resub2_tests1_hadds/MC2016_Summer16_TTJets_powheg_el_selVloose_.root  quick-test/v25v26-resub2_tests1/*TTJe*el_selVloose_* &
 
 
 foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.qcd`)
@@ -63,19 +99,37 @@ foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.small_main`)
 foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main`)
 foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main`)
 foreach dtag (SingleMuon SingleElectron)
-hadd quick-test/v25v26-resub2_hadds/${dtag}_mu_sel_.root       quick-test/v25v26-resub2/$dtag*mu_sel_*root &
-hadd quick-test/v25v26-resub2_hadds/${dtag}_mu_selVloose_.root quick-test/v25v26-resub2/$dtag*mu_selVloose_*root &
-hadd quick-test/v25v26-resub2_hadds/${dtag}_el_sel_.root       quick-test/v25v26-resub2/$dtag*el_sel_*root &
-hadd quick-test/v25v26-resub2_hadds/${dtag}_el_selVloose_.root quick-test/v25v26-resub2/$dtag*el_selVloose_*root &
+hadd quick-test/v25v26-resub2_tests1_hadds/${dtag}_mu_sel_.root       quick-test/v25v26-resub2_tests1/$dtag*mu_sel_*root &
+hadd quick-test/v25v26-resub2_tests1_hadds/${dtag}_mu_selVloose_.root quick-test/v25v26-resub2_tests1/$dtag*mu_selVloose_*root &
+hadd quick-test/v25v26-resub2_tests1_hadds/${dtag}_el_sel_.root       quick-test/v25v26-resub2_tests1/$dtag*el_sel_*root &
+hadd quick-test/v25v26-resub2_tests1_hadds/${dtag}_el_selVloose_.root quick-test/v25v26-resub2_tests1/$dtag*el_selVloose_*root &
 end
 
-hadd quick-test/v25v26-resub2_hadds/${dtag}.root       quick-test/v25v26-resub2/${dtag}_*root &
+hadd quick-test/v25v26-resub2_tests1_hadds/${dtag}.root       quick-test/v25v26-resub2_tests1/${dtag}_*root &
 end
 
-hadd quick-test/v25v26-resub2_hadds/${dtag}.root       quick-test/v25v26-resub2_hadds/parts/${dtag}_*root &
+hadd quick-test/v25v26-resub2_tests1_hadds/${dtag}.root       quick-test/v25v26-resub2_tests1_hadds/parts/${dtag}_*root &
 end
 
-hadd quick-test/v25v26-resub2_hadds/MC2016_Summer16_TTJets_powheg.root quick-test/v25v26-resub2/MC2016_Summer16_TTJets_powheg_*root &
+hadd quick-test/v25v26-resub2_tests1_hadds/${dtag}.root       quick-test/v25v26-resub2_tests1_hadds/${dtag}_*root &
+end
+
+hadd quick-test/v25v26-resub2_tests1_hadds/MC2016_Summer16_TTJets_powheg.root quick-test/v25v26-resub2_tests1_hadds/MC2016_Summer16_TTJets_powheg_*root &
+
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.small_main`)
+hadd quick-test/v25v26-resub2_tests1_hadds/${dtag}.root       quick-test/v25v26-resub2_tests1_hadds/parts/${dtag}_*root &
+end
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main`)
+hadd quick-test/v25v26-resub2_tests1_hadds/${dtag}.root       quick-test/v25v26-resub2_tests1_hadds/parts/${dtag}_*root &
+end
+foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main`)
+hadd quick-test/v25v26-resub2_tests1_hadds/${dtag}.root       quick-test/v25v26-resub2_tests1_hadds/parts/${dtag}_*root &
+end
+foreach dtag (SingleMuon SingleElectron)
+hadd quick-test/v25v26-resub2_tests1_hadds/${dtag}.root       quick-test/v25v26-resub2_tests1_hadds/parts/${dtag}_*root &
+end
+
+hadd quick-test/v25v26-resub2_tests1_hadds/MC2016_Summer16_TTJets_powheg.root quick-test/v25v26-resub2_tests1_hadds/parts/MC2016_Summer16_TTJets_powheg_*root &
 
 
 effect on mu shapes:
@@ -239,6 +293,19 @@ median expected limit: r < 0.0101835 @ 95%CL (10 toyMC)
 
 combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=KS -t 100   -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  lepMETpropElKS100   &
 combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=KS -t 1000  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  lepMETpropElKS1000  &
+
+
+in 100
+
+h = (TH1D*) limit->GetHistogram()
+h_c = (TH1D*) h->GetCumulative(kFALSE)
+h_c->Draw()
+h_c->GetBinContent(h_c->FindBin(0.0166576))
+7.00000
+
+not that great...
+
+but 110 in 1000!
 
 
 
