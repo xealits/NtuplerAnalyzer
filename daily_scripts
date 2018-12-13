@@ -1,3 +1,53 @@
+# just some notes
+
+brilcalc lumi -i /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json --normtag /afs/cern.ch/user/l/lumipro/public/normtag_file/normtag_DATACERT.json -u /pb --hltpath="HLT_Ele27_WPTight_Gsf_v*" | tee -a logs.brilcalc
+
+
+checking a prescaled trigger
+
+brilcalc lumi -i /afs/cern.ch/work/o/otoldaie/public/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_DATACERT.json -u /pb --hltpath "HLT_PFHT125_*"
+...
+#Summary: 
+#+----------------+-------+------+--------+-------------------+------------------+
+#| hltpath        | nfill | nrun | ncms   | totdelivered(/pb) | totrecorded(/pb) |
+#+----------------+-------+------+--------+-------------------+------------------+
+#| HLT_PFHT125_v1 | 23    | 66   | 29602  | 1.231             | 1.183            |
+#| HLT_PFHT125_v2 | 48    | 149  | 100900 | 1.645             | 1.583            |
+#| HLT_PFHT125_v3 | 41    | 92   | 54253  | 0.473             | 0.454            |
+#| HLT_PFHT125_v5 | 32    | 86   | 47447  | 0.393             | 0.378            |
+#+----------------+-------+------+--------+-------------------+------------------+
+##Check JSON:
+##(run,ls) in json but not in results: []
+
+brilcalc lumi -i /afs/cern.ch/work/o/otoldaie/public/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_DATACERT.json -u /pb
+...
+#Summary: 
+#+-------+------+--------+--------+-------------------+------------------+
+#| nfill | nrun | nls    | ncms   | totdelivered(/pb) | totrecorded(/pb) |
+#+-------+------+--------+--------+-------------------+------------------+
+#| 144   | 393  | 232259 | 232241 | 37381.753         | 35863.818        |
+#+-------+------+--------+--------+-------------------+------------------+
+##Check JSON:
+##(run,ls) in json but not in results: []
+#
+
+
+also info on prescales by run:
+
+brilcalc trg --hltpath "HLT_Ele27_WPTight_Gsf_v*" --prescale
+
+
+
+
+
+# redo sel Mt plots
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/ --lumi 31300 -c el_sel  -x el_selVloose   -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --title "" --title-x "M_{T}(e, E^{miss}_{T})"
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root     -p -r -o plots/redo-v25-v26_resub2/ --lumi 35800 -c mu_sel  -x mu_selVloose   -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --title "" --title-x "M_{T}(#mu, E^{miss}_{T})"
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub2/ --lumi 31300 -c el_sel  -x el_selVloose   -d Mt_lep_met_c --wjet 0.8 --qcd 1.05 --title "" --title-x "M_{T}(e, E^{miss}_{T})"   --title-y "[Events/GeV]" --bin-norm
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root     -p -r -o plots/redo-v25-v26_resub2/ --lumi 35800 -c mu_sel  -x mu_selVloose   -d Mt_lep_met_c --wjet 0.8 --qcd 1.05 --title "" --title-x "M_{T}(#mu, E^{miss}_{T})" --title-y "[Events/GeV]" --bin-norm
+>
 # test with eta and other distrs
 
 hadd quick-test/distrs_v25v26resub2_mc_test1.root quick-test/v25v26-resub2_tests1_hadds/MC2016*.root
@@ -28,7 +78,6 @@ python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v
 python stack_plot.py distrs/distrs_v25v26resub2_mc_test1.root ../quick-test/v25v26-resub2_tests1_hadds/SingleMuon.root     -p -r -o plots/redo-v25-v26_resub2_test1/ --lumi 35800 -c mu_sel_ljout    -d tau_eta --wjet 0.8 --qcd 1.05
 
 --- variations, but ok too
-
 
 
 
@@ -517,6 +566,27 @@ end
 end
 end
 
+
+variations for mc sum:
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -c el_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio --ratio-range 0.2 --add-titles --title-x "M_{T} [GeV]"
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -c el_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio --ratio-range 0.2 --add-titles --title-x "M_{T} [GeV]"
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -c el_sel_lj    -d Mt_lep_met_f -s bSFUp,bSFDown --no-data --ratio --ratio-range 0.2 --add-titles --title-x "M_{T} [GeV]"
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -c el_sel_ljout -d Mt_lep_met_f -s bSFUp,bSFDown --no-data --ratio --ratio-range 0.2 --add-titles --title-x "M_{T} [GeV]"
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -c el_sel_lj    -d Mt_lep_met_f -s FragUp,FragDown --no-data --ratio --ratio-range 0.2 --add-titles --title-x "M_{T} [GeV]"
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -c el_sel_ljout -d Mt_lep_met_f -s FragUp,FragDown --no-data --ratio --ratio-range 0.2 --add-titles --title-x "M_{T} [GeV]"
+
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -c mu_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio --ratio-range 0.1 --add-titles --title-x "M_{T} [GeV]  "
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -c mu_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio --ratio-range 0.1 --add-titles --title-x "M_{T} [GeV]  "
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -c mu_sel_lj    -d Mt_lep_met_f -s bSFUp,bSFDown --no-data --ratio --ratio-range 0.1 --add-titles --title-x "M_{T} [GeV]  "
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -c mu_sel_ljout -d Mt_lep_met_f -s bSFUp,bSFDown --no-data --ratio --ratio-range 0.1 --add-titles --title-x "M_{T} [GeV]  "
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -c mu_sel_lj    -d Mt_lep_met_f -s FragUp,FragDown --no-data --ratio --ratio-range 0.1 --add-titles --title-x "M_{T} [GeV]  "
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root  -c mu_sel_ljout -d Mt_lep_met_f -s FragUp,FragDown --no-data --ratio --ratio-range 0.1 --add-titles --title-x "M_{T} [GeV]  "
 
 
 
@@ -2939,6 +3009,8 @@ end
 
 ls batch_jobs/ | wc -l
 936
+
+ls batch_jobs/ | sed -e 's,^\(.*\)$,qsub -l h_vmem=1G "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/\1",' | grep -v submit > batch_jobs/submit
 
 ls batch_jobs/ > batch_jobs/submit
 
