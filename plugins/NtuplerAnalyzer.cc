@@ -1786,6 +1786,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				// new homogeneous gen final states
 				if (p.fromHardProcessFinalState() || p.isPromptFinalState() || p.isDirectHardProcessTauDecayProductFinalState())
 					{
+					LogInfo ("Demo") << "got hard process final state";
 					NT_gen_final_p4              .push_back(p.p4());
 					NT_gen_final_PromptFinal     .push_back(p.isPromptFinalState());
 					NT_gen_final_fromHardFinal   .push_back(p.fromHardProcessFinalState());
@@ -1794,6 +1795,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					NT_gen_final_status          .push_back(p.status());
 					NT_gen_final_ndaughters      .push_back(p.numberOfDaughters());
 					NT_gen_final_chainId         .push_back(parse_chain_id(p));
+					LogInfo ("Demo") << "saved hard process final state";
 					}
 
 				// prompt decayed are b-mesons and w-jet hadrons and tau stuff
@@ -1849,6 +1851,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					//(p.isDirectHardProcessTauDecayProduct()))
 					(p.isDirectHardProcessTauDecayProductFinalState())) // same stuff
 					{
+					LogInfo ("Demo") << "got hard process lepton";
 					// saving the hard leptons from here if it is not TT
 					// apparently single top and WJets also have explicit W in the decay tree
 					// the W is caught later
@@ -1938,6 +1941,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						sum_final_cands(&p, gen_tt_tau_prods, gen_tt_tau_invis, false);
 						NT_gen_tt_tau_invis_p4.push_back(gen_tt_tau_invis);
 						}
+					LogInfo ("Demo") << "processed hard process lepton";
 					}
 
 				if (abs(id) == 6 && n_daughters == 2)
@@ -1945,18 +1949,23 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					// it is a decay vertex of t to something
 					// (could use p.isLastCopy())
 					{
+					LogInfo ("Demo") << "got decayed t";
 					// calculate top_pt weights:
 					weight_TopPT *= TMath::Sqrt(top_pT_SF(p.pt()));
+					LogInfo ("Demo") << "got decayed t pt";
 					// find the W decay channel in this top
 					unsigned int d0_id = abs(p.daughter(0)->pdgId());
+					LogInfo ("Demo") << "got decayed daughter 0 pdgId = " << d0_id;
 					unsigned int d1_id = abs(p.daughter(1)->pdgId());
+					LogInfo ("Demo") << "got decayed daughter 1 pdgId = " << d1_id;
 					int W_num = d0_id == 24 ? 0 : (d1_id == 24 ? 1 : -1) ;
 					if (W_num < 0) continue;
 					const reco::Candidate * W = p.daughter( W_num );
 					const reco::Candidate * b = p.daughter( 1 - W_num );
+					LogInfo ("Demo") << "got decayed fixed daughters";
 					const reco::Candidate * W_final = find_W_decay(W);
-					LogInfo ("Demo") << "t " << id << " decay W "  << W_final ->pdgId() << " final pointer " << W_final;
-					LogInfo ("Demo") << "t " << id << " decay b  " << b       ->pdgId() << " pointer " << b;
+					LogInfo ("Demo") << "t " << id << " decay W "  << W_final ->pdgId() << " final pointer " << W_final << " #daughters = " << W_final->numberOfDaughters();
+					LogInfo ("Demo") << "t " << id << " decay b  " << b       ->pdgId() << " pointer "       << b       << " #daughters = " << b->numberOfDaughters();
 
 					int decay_id = 1;
 					// = id of lepton or 1 for quarks
@@ -2071,30 +2080,36 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 							NT_gen_tb_b_final_p4 += NT_gen_tb_b_final_p4s[i];
 							}
 						}
+					LogInfo ("Demo") << "processed t";
 					}
 
 				// if it is a tau -- save the non-neutrino part to the output
 				//  the status is 1 or 2
 				//  1. final state, not decays, so it should never happen for tau
 				//  2. decayed or fragmented -- the case for tau
-				if (abs(id) == 15 && st == 1)
-					NT_gen_tau_p4.push_back(p.p4()); 
-				else if (abs(id) == 15 && st == 2)
+				if (abs(id) == 15)
 					{
-					// it's a final state tau
-					// select its' daughters, skipping neutrinos
-					// add their momenta -- use the sum as a visible_gen_tau
-					LorentzVector vis_ds(0,0,0,0);
-					LogInfo ("Demo") << "N tau daughters: " << n_daughters;
-					for (int j = 0; j < n_daughters; ++j)
+					LogInfo ("Demo") << "got a tau " << st;
+					if (st == 1)
+						NT_gen_tau_p4.push_back(p.p4()); 
+					else if (st == 2)
 						{
-						const reco::Candidate * d = p.daughter(j);
-						unsigned int d_id = abs(d->pdgId());
-						LogInfo ("Demo") << j << " tau daughter ID = " << d->pdgId();
-						if (d_id == 12 || d_id == 14 || d_id == 16) continue;
-						vis_ds += d->p4();
+						// it's a final state tau
+						// select its' daughters, skipping neutrinos
+						// add their momenta -- use the sum as a visible_gen_tau
+						LorentzVector vis_ds(0,0,0,0);
+						LogInfo ("Demo") << "N tau daughters: " << n_daughters;
+						for (int j = 0; j < n_daughters; ++j)
+							{
+							const reco::Candidate * d = p.daughter(j);
+							unsigned int d_id = abs(d->pdgId());
+							LogInfo ("Demo") << j << " tau daughter ID = " << d->pdgId();
+							if (d_id == 12 || d_id == 14 || d_id == 16) continue;
+							vis_ds += d->p4();
+							}
+						NT_gen_tau_p4.push_back(vis_ds); 
 						}
-					NT_gen_tau_p4.push_back(vis_ds); 
+					LogInfo ("Demo") << "processed tau";
 					}
 
 				// Prompt leptons ID for Z->LL
@@ -2104,6 +2119,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				// and their ID
 				if ((abs(id) == 11 || abs(id) == 13 || abs(id) == 15) && st > 20 && st < 30)
 					{
+					LogInfo ("Demo") << "got prompt lepton";
 					NT_gen_pythia8_prompt_leptons_N += 1;
 					int gen_prompt_lepton_ID = id;
 					if (abs(id) == 15)
@@ -2115,6 +2131,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				// but madgraph DY (50-Inf, i.e. the main one) has the Z-s............
 				if (abs(id) == 23 && n_daughters == 2)
 					{
+					LogInfo ("Demo") << "got Z";
 					NT_gen_N_zdecays += 1;
 					int d0_id = p.daughter(0)->pdgId();
 					int d1_id = p.daughter(1)->pdgId();
@@ -2195,10 +2212,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						}
 					// TODO: check if it can go backwards in the t-channel tree?
 
-					LogInfo ("Demo") << "done with W";
-
 					NT_gen_N_wdecays += 1;
 					NT_gen_wdecays_IDs.push_back(wdecay_id);
+					LogInfo ("Demo") << "done with W";
 					}
 				}
 

@@ -1,5 +1,6 @@
 #include "UserCode/NtuplerAnalyzer/interface/ProcessingGenParticles.h"
 #include "TMath.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 using namespace std;
 
@@ -24,6 +25,16 @@ const reco::Candidate* find_W_decay(const reco::Candidate * W) {
 	// 
 	// assume there can be only W->W transitions inbetween (TODO: to check actually)
 	//while (!found_decay) {
+	int hops_count = 0;
+	while (p->numberOfDaughters() == 1 && hops_count < 100)
+		{
+		p = p->daughter(0);
+		hops_count++;
+		}
+
+	return p;
+
+	/*
 	while (true) {
 		int n = p->numberOfDaughters();
 		switch(n) {
@@ -34,18 +45,11 @@ const reco::Candidate* find_W_decay(const reco::Candidate * W) {
 		case 2: // so, it should be the decay
 			//found_decay = true;
 			return p;
-			/* all this is derived from p
-			d0_id = fabs(p->daughter(0)->pdgId());
-			d1_id = fabs(p->daughter(1)->pdgId());
-			if (d0_id == 15 || d1_id == 15 ) return string("tau");
-			if (d0_id == 11 || d1_id == 11 ) return string("el");
-			if (d0_id == 13 || d1_id == 13 ) return string("mu");
-			return string("q"); // FiXME: quite dangerous control-flow!
-			*/
 		default: // probably, it can happen for hadronic W?
 			return W;
 		}
 	}
+	*/
 }
 
 /*
