@@ -990,6 +990,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	*/
 	#define NTUPLE_INTERFACE_CLASS_DECLARE
 	#include "UserCode/NtuplerAnalyzer/interface/ntupleOutput.h"
+	#undef NTUPLE_INTERFACE_CLASS_DECLARE
 };
 
 //
@@ -1282,9 +1283,9 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	*/
 
 	// connect the branch with macro:
-	#undef NTUPLE_INTERFACE_CLASS_DECLARE
 	#define NTUPLE_INTERFACE_CLASS_INITIALIZE
 	#include "UserCode/NtuplerAnalyzer/interface/ntupleOutput.h"
+	#undef NTUPLE_INTERFACE_CLASS_INITIALIZE
 
 	//now do what ever initialization is needed
 	usesResource("TFileService");
@@ -1324,10 +1325,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	LogInfo ("Demo") << "entered event " << iEvent.eventAuxiliary().run() << ' ' << iEvent.eventAuxiliary().luminosityBlock();
 
 	// reset the output objects with macro
-	#undef NTUPLE_INTERFACE_CLASS_DECLARE
-	#undef NTUPLE_INTERFACE_CLASS_INITIALIZE
 	#define NTUPLE_INTERFACE_CLASS_RESET
 	#include "UserCode/NtuplerAnalyzer/interface/ntupleOutput.h"
+	#undef NTUPLE_INTERFACE_CLASS_RESET
 	// if output contains stand-alone objects (not vector of LorentxVector-s, but just 1 LorentzVector, like MET or something)
 	// you have to reset them yourself, since each object might have its' own method
 	NT_met_init.SetXYZT(0,0,0,0);

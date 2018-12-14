@@ -53,6 +53,16 @@
 	#define OUTNTUPLE NT_output_ttree
 #endif
 
+#ifndef COMMA
+#define COMMA ,
+#endif
+
+// another way of passing a comma, since in CMSSW94 the COMMA does not work anymore
+#define UNPACK( ... ) __VA_ARGS__
+
+#define STRINGIFY(x) #x
+#define UNPACKS( ... ) #__VA_ARGS__
+
 #ifndef DEFAULT_PARAMETER
 #define DEFAULT_PARAMETER -111
 #endif
@@ -68,9 +78,9 @@
 	// to declare vector of types (int/float etc): declate just vector
 	#define VECTOR_PARAMs_in_NTuple(NTuple, TYPE, Name)   std::vector<TYPE> NT_##Name;
 	// to declare vector of objects: declate vector and a pointer to it
-	#define VECTOR_OBJECTs_in_NTuple(NTuple, VECTOR_CLASS, Name)   VECTOR_CLASS NT_##Name; VECTOR_CLASS* pt_NT_##Name;
+	#define VECTOR_OBJECTs_in_NTuple(NTuple, Name, ...)   __VA_ARGS__ NT_##Name; __VA_ARGS__* pt_NT_##Name;
 	// objects and types (simple parameters)
-	#define OBJECT_in_NTuple(NTuple, CLASS, Name)   CLASS   NT_##Name;
+	#define OBJECT_in_NTuple(NTuple, Name, ...)     __VA_ARGS__   NT_##Name;
 	#define Float_t_in_NTuple(NTuple, Name)         Float_t NT_##Name;
 	#define Int_t_in_NTuple(NTuple, Name)           Int_t   NT_##Name;
 	#define ULong64_t_in_NTuple(NTuple, Name)       ULong64_t   NT_##Name;
@@ -80,19 +90,21 @@
 	// hook up branch
 	#define VECTOR_PARAMs_in_NTuple(NTuple, TYPE, Name)   NTuple->Branch(#Name, &NT_##Name);
 	// hook up pointer for vectors of objects
-	#define VECTOR_OBJECTs_in_NTuple(NTuple, VECTOR_CLASS, Name)   pt_NT_##Name = & NT_##Name; NTuple->Branch(#Name, #VECTOR_CLASS, &pt_NT_##Name);
+	#define VECTOR_OBJECTs_in_NTuple(NTuple, Name, ...)   pt_NT_##Name = & NT_##Name; NTuple->Branch(#Name, #__VA_ARGS__, &pt_NT_##Name);
+	// handle possible commas
+	//#define VECTOR_OBJECTs_in_NTuple(NTuple, VECTOR_CLASS_MACRO, Name)   pt_NT_##Name = & NT_##Name; NTuple->Branch(#Name, VECTOR_CLASS_MACRO, &pt_NT_##Name);
 	// objects and types (simple parameters)
-	#define OBJECT_in_NTuple(NTuple, CLASS, Name)   NTuple->Branch(#Name, #CLASS, &NT_##Name);
+	#define OBJECT_in_NTuple(NTuple, Name, ...)     NTuple->Branch(#Name, #__VA_ARGS__, &NT_##Name);
 	#define Float_t_in_NTuple(NTuple, Name)         NTuple->Branch(#Name, &NT_##Name, #Name "/F");
 	#define Int_t_in_NTuple(NTuple, Name)           NTuple->Branch(#Name, &NT_##Name, #Name "/I");
 	#define ULong64_t_in_NTuple(NTuple, Name)       NTuple->Branch(#Name, &NT_##Name, #Name "/l");
 	#define Bool_t_in_NTuple(NTuple, Name)          NTuple->Branch(#Name, &NT_##Name, #Name "/O");
 #elif defined(NTUPLE_INTERFACE_CLASS_RESET)
 	#define VECTOR_PARAMs_in_NTuple(NTuple, TYPE, Name)            NT_##Name.clear();
-	#define VECTOR_OBJECTs_in_NTuple(NTuple, VECTOR_CLASS, Name)   NT_##Name.clear();
+	#define VECTOR_OBJECTs_in_NTuple(NTuple, Name, ...)   NT_##Name.clear();
 	// objects and types (simple parameters)
 	//#define OBJECT_in_NTuple(NTuple, CLASS, Name)   CLASS   NT_##Name; NTuple.Branch(#Name, #CLASS, &NT_##Name);
-	#define OBJECT_in_NTuple(NTuple, CLASS, Name)
+	#define OBJECT_in_NTuple(NTuple, Name, ...)
 	// WARNING: you'll have to reset your object yourself!
 	// and these are defaults:
 	#define Float_t_in_NTuple(NTuple, Name)         NT_##Name = DEFAULT_PARAMETER ;
@@ -103,14 +115,14 @@
 // the following are outdated at the moment:
 #elif defined(NTUPLE_INTERFACE_CREATE)
 	#define VECTOR_PARAMs_in_NTuple(NTuple, TYPE, Name)   std::vector<TYPE> NT_##Name; NTuple.Branch(#Name, &NT_##Name);
-	#define VECTOR_OBJECTs_in_NTuple(NTuple, VECTOR_CLASS, Name)   VECTOR_CLASS NT_##Name; VECTOR_CLASS* pt_NT_##Name ; NTuple.Branch(#Name, #VECTOR_CLASS, &pt_NT_##Name);
-	#define OBJECT_in_NTuple(NTuple, CLASS, Name)   CLASS   NT_##Name; NTuple.Branch(#Name, #CLASS, &NT_##Name);
+	#define VECTOR_OBJECTs_in_NTuple(NTuple, Name, ...)   __VA_ARGS__ NT_##Name; __VA_ARGS__* pt_NT_##Name ; NTuple.Branch(#Name, #__VA_ARGS__, &pt_NT_##Name);
+	#define OBJECT_in_NTuple(NTuple, Name, ...)     __VA_ARGS__   NT_##Name; NTuple.Branch(#Name, #__VA_ARGS__, &NT_##Name);
 	#define Float_t_in_NTuple(NTuple, Name)         Float_t NT_##Name; NTuple.Branch(#Name, &NT_##Name, #Name "/F");
 	#define Int_t_in_NTuple(NTuple, Name)           Int_t   NT_##Name; NTuple.Branch(#Name, &NT_##Name, #Name "/I");
 	#define ULong64_t_in_NTuple(NTuple, Name)       ULong64_t   NT_##Name; NTuple.Branch(#Name, &NT_##Name, #Name "/l");
 	#define Bool_t_in_NTuple(NTuple, Name)          Bool_t  NT_##Name; NTuple.Branch(#Name, &NT_##Name, #Name "/O");
 #elif defined(NTUPLE_INTERFACE_OPEN)
-	#define OBJECT_in_NTuple(NTuple, CLASS, Name)   CLASS*  NT_##Name = 0; NTuple->SetBranchAddress(#Name, &NT_##Name);
+	#define OBJECT_in_NTuple(NTuple, Name, ...)     __VA_ARGS__*  NT_##Name = 0; NTuple->SetBranchAddress(#Name, &NT_##Name);
 	#define PARAMETER_in_NTuple(NTuple, TYPE, Name)  TYPE   NT_##Name; NTuple->SetBranchAddress(#Name, &NT_##Name);
 	#define Float_t_in_NTuple(NTuple, Name)         PARAMETER_in_NTuple(NTuple, Float_t, Name);
 	#define Int_t_in_NTuple(NTuple, Name)           PARAMETER_in_NTuple(NTuple, Int_t, Name);
@@ -207,11 +219,15 @@
 // the exact LorentzVector declaration
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
 typedef ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag> Vector_3D;
+typedef ROOT::Math::SMatrix<double,3,3,ROOT::Math::MatRepSym<double,3>>  Error_3D;
 #endif /* NTUPLEOUTPUT_LORENTZVECTOR_H */
 
-#ifndef COMMA
-#define COMMA ,
-#endif
+/* Then:
+#define UNPACK(...) __VA_ARGS__
+#define FOO(type,name) type name
+
+FOO(UNPACK(std::map<int, int>), map_var);
+*/
 
 //#endif /* NTUPLEOUTPUT_INTERFACE_H */
 
@@ -238,29 +254,29 @@ Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_decay_id)
 // final states of t/tb b and W:
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_w1_final_pdgIds)
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_w1_final_statuses)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_t_w1_final_p4s)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen_t_w1_final_p4s, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_w2_final_pdgIds)
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_w2_final_statuses)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_t_w2_final_p4s)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen_t_w2_final_p4s, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_b_final_pdgIds)
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_b_final_statuses)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_t_b_final_p4s)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen_t_b_final_p4s, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_tb_w1_final_pdgIds)
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_tb_w1_final_statuses)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tb_w1_final_p4s)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen_tb_w1_final_p4s, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_tb_w2_final_pdgIds)
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_tb_w2_final_statuses)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tb_w2_final_p4s)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen_tb_w2_final_p4s, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_tb_b_final_pdgIds)
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_tb_b_final_statuses)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tb_b_final_p4s)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen_tb_b_final_p4s, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 // sums of p4-s
-OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, gen_t_w1_final_p4)
-OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, gen_t_w2_final_p4)
-OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, gen_t_b_final_p4)
-OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, gen_tb_w1_final_p4)
-OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, gen_tb_w2_final_p4)
-OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, gen_tb_b_final_p4)
+OBJECT_in_NTuple(OUTNTUPLE, gen_t_w1_final_p4 , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
+OBJECT_in_NTuple(OUTNTUPLE, gen_t_w2_final_p4 , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
+OBJECT_in_NTuple(OUTNTUPLE, gen_t_b_final_p4  , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
+OBJECT_in_NTuple(OUTNTUPLE, gen_tb_w1_final_p4, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
+OBJECT_in_NTuple(OUTNTUPLE, gen_tb_w2_final_p4, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
+OBJECT_in_NTuple(OUTNTUPLE, gen_tb_b_final_p4 , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
 
 Int_t_in_NTuple(OUTNTUPLE, gen_pythia8_prompt_leptons_N)  // N leptons with status = 21-29 (pythia 8, "particles from hardest subprocess", "Pythia 8 worksheet" for tutorial at the ASP 2012 Summer School)
 //Int_t_in_NTuple(OUTNTUPLE, gen_prompt_leptons_ID) // product of their ID-s, tau ID = pdgID * by (20 + 5*...)
@@ -277,8 +293,8 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  gen2_jets_lep_dR_matched)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, gen2_jets_lep_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   gen2_leptons_pdgId)
 
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen2_jets_p4)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen2_leptons_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen2_jets_p4   , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen2_leptons_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen2_fatjets_pdgId)
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen2_fatjets_p4)
@@ -288,7 +304,7 @@ VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::
  * should substitute all the above
  */
 
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_final_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen_final_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, gen_final_PromptFinal)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, gen_final_fromHardFinal)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, gen_final_PromptTauDecay)
@@ -301,7 +317,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,  gen_final_chainId)
 // custom ID: +-4 t,  +-3 b,  +- 2W,  +-1 tau
 // multiplied by power of 10 in order of the decay chain
 
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_PromptDecayed_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen_PromptDecayed_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_PromptDecayed_pdgId)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_PromptDecayed_status)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_PromptDecayed_chainId)
@@ -402,18 +418,18 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_y_err)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_z_err)
 
 // MET OUTPUT
-OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, met_init)
-OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, met_uncorrected)
-OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, met_corrected)
-OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, met_slimmedMets)
-OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, met_slimmedMETsMuEGClean)
-OBJECT_in_NTuple(OUTNTUPLE, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >, jets_full_correction)
+OBJECT_in_NTuple(OUTNTUPLE, met_init                , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_uncorrected         , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_corrected           , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_slimmedMets         , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_slimmedMETsMuEGClean, ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, jets_full_correction    , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
 //Float_t_in_NTuple(OUTNTUPLE, pfmetcorr_ex) // corrected with recoil corrections
 //Float_t_in_NTuple(OUTNTUPLE, pfmetcorr_ey)
 
 // LEPTONS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, lep_id)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, lep_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, lep_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_dxy)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_dz)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_relIso)
@@ -433,7 +449,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_matching_gen_collection_dR)
 // allIso LEPTONS
 Int_t_in_NTuple(OUTNTUPLE, leps_ID_allIso)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, lep_alliso_id)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, lep_alliso_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, lep_alliso_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_alliso_relIso)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  lep_alliso_matched_HLT)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_alliso_matched_HLT_dR)
@@ -442,9 +458,9 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_alliso_matching_gen_dR)
 
 // JETS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, jet_id)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_initial_p4)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_p4)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_uncorrected_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, jet_initial_p4    , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, jet_p4            , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, jet_uncorrected_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_matching_gen_dR)
@@ -456,7 +472,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_matching_lep_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  jet_matching_allIso_lep)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, jet_matching_allIso_lep_dR)
 
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, jet_matched_genjet_p4)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, jet_matched_genjet_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  genjet_matched)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, genjet_pt)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, genjet_dR)
@@ -489,17 +505,17 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_hadronFlavour)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   jet_partonFlavour)
 
 // GEN TAUS
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tau_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen_tau_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 
 // for tau momentum transitions study
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tt_tau_vis_p4)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tt_tau_invis_p4)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, gen_tt_tau_orig_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen_tt_tau_vis_p4  , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen_tt_tau_invis_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, gen_tt_tau_orig_p4 , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_tt_tau_simpleID)
 
 // TAUS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_id)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_IDlev)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_decayMode)
 
@@ -509,7 +525,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_dR)
 // tau gen matches in DY and TT for studying the momentum transition at different stages
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen_collection)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_collection_dR)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_matching_gen_p4)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_matching_gen_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 
 // info on lep matching
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t,  tau_matching_lep)
@@ -533,17 +549,17 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_matchingQuality)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_x)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_y)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_z)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<math::Error<3>::type>, tau_SV_cov)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_cov, std::vector<ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3>>>)
 // info on tracks of the tau
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_ntracks) // for control
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_SS_p4)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_OS1_p4)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_OS2_p4)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS_p4 , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_OS1_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_OS2_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 
 // these are from sigCands
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_OS_p4)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_SS1_p4)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>, tau_SV_fit_track_SS2_p4)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_OS_p4 , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS1_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS2_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 // closest tracks, indexes in the tracks vectors
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_OS_matched_track)
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS1_matched_track)
@@ -570,24 +586,25 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_SS2_matched_track_pdg
 
 // the impact parameter is ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>
 // I'd like to save TVector3.. TVector3 is not writable to TTree branches without magic
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_OS_matched_track_b)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS1_matched_track_b)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS2_matched_track_b)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_OS_matched_track_p3)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS1_matched_track_p3)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<TVector3>, tau_SV_fit_track_SS2_matched_track_p3)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double> COMMA ROOT::Math::DefaultCoordinateSystemTag>>, tau_SV_fit_track_OS_matched_track_b)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double> COMMA ROOT::Math::DefaultCoordinateSystemTag>>, tau_SV_fit_track_SS1_matched_track_b)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double> COMMA ROOT::Math::DefaultCoordinateSystemTag>>, tau_SV_fit_track_SS2_matched_track_b)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double> COMMA ROOT::Math::DefaultCoordinateSystemTag>>, tau_SV_fit_track_OS_matched_track_p3)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double> COMMA ROOT::Math::DefaultCoordinateSystemTag>>, tau_SV_fit_track_SS1_matched_track_p3)
-VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double> COMMA ROOT::Math::DefaultCoordinateSystemTag>>, tau_SV_fit_track_SS2_matched_track_p3)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<Vector_3D>, tau_SV_fit_track_OS_matched_track_b)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<Vector_3D>, tau_SV_fit_track_SS1_matched_track_b)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<Vector_3D>, tau_SV_fit_track_SS2_matched_track_b)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<Vector_3D>, tau_SV_fit_track_OS_matched_track_p3)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<Vector_3D>, tau_SV_fit_track_SS1_matched_track_p3)
-//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, std::vector<Vector_3D>, tau_SV_fit_track_SS2_matched_track_p3)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_OS_matched_track_b  , std::vector<TVector3>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS1_matched_track_b , std::vector<TVector3>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS2_matched_track_b , std::vector<TVector3>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_OS_matched_track_p3 , std::vector<TVector3>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS1_matched_track_p3, std::vector<TVector3>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS2_matched_track_p3, std::vector<TVector3>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_OS_matched_track_b  , std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS1_matched_track_b , std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS2_matched_track_b , std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_OS_matched_track_p3 , std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS1_matched_track_p3, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS2_matched_track_p3, std::vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>>)
+
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_OS_matched_track_b  , std::vector<Vector_3D>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS1_matched_track_b , std::vector<Vector_3D>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS2_matched_track_b , std::vector<Vector_3D>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_OS_matched_track_p3 , std::vector<Vector_3D>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS1_matched_track_p3, std::vector<Vector_3D>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_SV_fit_track_SS2_matched_track_p3, std::vector<Vector_3D>)
 
 // closest gen tau products, indexes in the products vectors
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_SV_fit_track_OS_matched_gen)
@@ -608,7 +625,10 @@ Bool_t_in_NTuple(OUTNTUPLE, PV_fit_isOk)
 Float_t_in_NTuple(OUTNTUPLE, PV_fit_x)
 Float_t_in_NTuple(OUTNTUPLE, PV_fit_y)
 Float_t_in_NTuple(OUTNTUPLE, PV_fit_z)
-OBJECT_in_NTuple(OUTNTUPLE, math::Error<3>::type, PV_cov)
+OBJECT_in_NTuple(OUTNTUPLE, PV_cov, ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3>>)
+//OBJECT_in_NTuple(OUTNTUPLE, UNPACK(ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3>>), PV_cov)
+
+// The class requested (vector<math::Error<3>::type>) for "tau_SV_cov" is different from the type of the pointer passed (vector<ROOT::Math::SMatrix<double,3,3,ROOT::Math::MatRepSym<double,3> > >)
 
 
 // undefine all macro
