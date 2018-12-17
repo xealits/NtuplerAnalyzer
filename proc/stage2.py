@@ -19,6 +19,7 @@ WITH_RECOIL_CORRECTIONS = False
 ISO_LEPS    = True
 JETS_PT_CUT = 30. # 21. # 
 TAUS_PT_CUT = 30. # 21. # # 20GeV for DY->tautau selection
+TAUS_ID_CUT_Tight  = 3  # Tight = 4-5, VTight = 5
 TAUS_ID_CUT_Medium = 2
 TAUS_ID_CUT_VLoose = 0
 TAUS_ID_CUT = TAUS_ID_CUT_VLoose # TAUS_ID_CUT_Medium # Vloose cut for the shape
@@ -90,6 +91,8 @@ def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     if len(taus) > 0:
         tau_IDlev = taus[0][4]
 
+    pass_Tight_sel     = old_jet_sel    and tau_IDlev > TAUS_ID_CUT_Tight
+    pass_Tight_sel_os  = pass_Tight_sel and leps[4][0] * taus[0][2] < 0
     pass_old_sel       = old_jet_sel and tau_IDlev > TAUS_ID_CUT_Medium
     pass_old_sel_os    = pass_old_sel and leps[4][0] * taus[0][2] < 0
     pass_old_selVLoose       = old_jet_sel and tau_IDlev > TAUS_ID_CUT_VLoose
@@ -97,7 +100,11 @@ def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     #lep_p4, lep_relIso, lep_matching_gen, lep_matching_gen_dR, lep_id = leps
     # taus_nom.medium.append((p4, TES_factor, tau_pdgID, i, jetmatched))
 
-    if   pass_mu and pass_old_sel_os:
+    if   pass_mu and pass_Tight_sel_os:
+        channel_stage = 9
+    elif pass_mu and pass_Tight_sel:
+        channel_stage = 8
+    elif pass_mu and pass_old_sel_os:
         channel_stage = 7
     elif pass_mu and pass_old_sel:
         channel_stage = 6
@@ -114,6 +121,10 @@ def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     #elif pass_mu and pass_old_presel:
     #    channel_stage = 2
 
+    elif pass_el and pass_Tight_sel_os:
+        channel_stage = 19
+    elif pass_el and pass_Tight_sel:
+        channel_stage = 18
     elif pass_el and pass_old_sel_os:
         channel_stage = 17
     elif pass_el and pass_old_sel:

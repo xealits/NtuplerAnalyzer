@@ -1,10 +1,15 @@
 
 distrs_leptonic = [('std_mt_vars', 'Mt_lep_met_c'), ('std_mt_vars', 'Mt_lep_met_c2'), ('event_met_lep_mt', 'Mt_lep_met_f'), ('event_dilep_mass', 'dilep_mass'), ('event_leptons[0].pt()', 'lep_pt')]
-distrs_tauonic  = [('std_mt_vars', 'Mt_lep_met_c'), ('std_mt_vars', 'Mt_lep_met_c2'), ('event_met_lep_mt', 'Mt_lep_met_f'), ('event_dilep_mass', 'dilep_mass'), ('event_leptons[0].pt()', 'lep_pt'),
-        ('event_leptons[0].eta()', 'lep_eta'),
-        ('std_met_vars', 'met_c'), ('std_met_vars', 'met_f'),
+distrs_tauonic_std  = [('std_mt_vars', 'Mt_lep_met_c'), ('std_mt_vars', 'Mt_lep_met_c2'), ('event_met_lep_mt', 'Mt_lep_met_f'), ('event_dilep_mass', 'dilep_mass'), ('event_leptons[0].pt()', 'lep_pt'),
         ('event_taus[0].pt()', 'tau_pt'), ('event_taus[0].eta()', 'tau_eta'),
         ('event_taus_sv_sign[0]', 'tau_sv_sign')]
+
+distrs_tauonic_2  = [
+        ('event_leptons[0].eta()', 'lep_eta'),
+        ('std_met_vars', 'met_c'), ('std_met_vars', 'met_f')]
+
+distrs_tauonic  = distrs_tauonic_std + distrs_tauonic_2
+distrs_tauonic  = distrs_tauonic_std
 
 distr_ranges = {'Mt_lep_met_c': '--custom-range 0,20,40,60,80,100,130,160,200,250',
     'Mt_lep_met_c2': '--custom-range 0,20,40,60,80,100,120,140,170,200,250,500',
@@ -22,14 +27,27 @@ distr_ranges = {'Mt_lep_met_c': '--custom-range 0,20,40,60,80,100,130,160,200,25
 # channels and conditions
 tt_dileptons    = (['tt_elmu'], '', distrs_leptonic)
 tt_leptauSV     = (['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], '', distrs_tauonic)
-tt_leptau       = (['el_sel', 'el_sel_ss', 'el_selVloose', 'el_selVloose_ss',   'mu_sel', 'mu_sel_ss', 'mu_selVloose', 'mu_selVloose_ss'], '', distrs_tauonic)
-tt_leptau_lj    = (['el_sel_lj', 'el_sel_lj_ss', 'el_selVloose_lj', 'el_selVloose_lj_ss',   'mu_sel_lj', 'mu_sel_lj_ss', 'mu_selVloose_lj', 'mu_selVloose_lj_ss'], '', distrs_tauonic)
-tt_leptau_ljout = (['el_sel_ljout', 'el_sel_ljout_ss', 'el_selVloose_ljout', 'el_selVloose_ljout_ss',   'mu_sel_ljout', 'mu_sel_ljout_ss', 'mu_selVloose_ljout', 'mu_selVloose_ljout_ss'], '', distrs_tauonic)
+
+tt_leptau       = (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'], '', distrs_tauonic)
+tt_leptau_lj    = (['el_sel_lj',    'el_sel_lj_ss',    'mu_sel_lj',    'mu_sel_lj_ss'], '', distrs_tauonic)
+tt_leptau_ljout = (['el_sel_ljout', 'el_sel_ljout_ss', 'mu_sel_ljout', 'mu_sel_ljout_ss'], '', distrs_tauonic)
+
+tt_leptau_Vloose       = (['el_selVloose',       'el_selVloose_ss',       'mu_selVloose',       'mu_selVloose_ss'], '', distrs_tauonic)
+tt_leptau_Vloose_lj    = (['el_selVloose_lj',    'el_selVloose_lj_ss',    'mu_selVloose_lj',    'mu_selVloose_lj_ss'], '', distrs_tauonic)
+tt_leptau_Vloose_ljout = (['el_selVloose_ljout', 'el_selVloose_ljout_ss', 'mu_selVloose_ljout', 'mu_selVloose_ljout_ss'], '', distrs_tauonic)
+
+tt_leptau_Tight       = (['el_selTight',       'el_selTight_ss',       'mu_selTight',       'mu_selTight_ss'], '', distrs_tauonic)
+tt_leptau_Tight_lj    = (['el_selTight_lj',    'el_selTight_lj_ss',    'mu_selTight_lj',    'mu_selTight_lj_ss'], '', distrs_tauonic)
+tt_leptau_Tight_ljout = (['el_selTight_ljout', 'el_selTight_ljout_ss', 'mu_selTight_ljout', 'mu_selTight_ljout_ss'], '', distrs_tauonic)
+
 dy_dileptons    = (['dy_mumu',  'dy_elel'],  '--cond-com "std_mt_vars < 40."', distrs_leptonic)
 dy_leptau       = (['dy_mutau', 'dy_eltau'], '--cond-com "event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."', distrs_tauonic)
 
 select_channels = [tt_dileptons, tt_leptau, tt_leptauSV, dy_dileptons, dy_leptau]
 select_channels = [tt_leptau, tt_leptau_lj, tt_leptau_ljout]
+select_channels = [tt_leptau, tt_leptau_lj, tt_leptau_ljout] + [tt_leptau_Tight, tt_leptau_Tight_lj, tt_leptau_Tight_ljout] + [tt_leptau_Vloose, tt_leptau_Vloose_lj, tt_leptau_Vloose_ljout]
+# simple group
+select_channels = [([','.join(chans)], cond, distrs) for chans, cond, distrs  in select_channels]
 
 # dtags and systematics
 data = ['SingleMuon', 'SingleElectron'], ['nom']
@@ -85,12 +103,12 @@ draw_command_template = """python -W ignore sumup_ttree_draw.py --cut-w0jets "{d
 #batch_jobs/j_${dtag}_${chans}_${systs}
 #merge_dir ='v27/dilep1'
 merge_dir = 'v25/resub1'
-merge_dir = 'v25v26/resub2'
+merge_dir = 'v25v26/resub3'
 
 output_dir = 'quick-test/v27-dilep2'
 output_dir = 'quick-test/v25v26-resub2_data_resub2'
 output_dir = 'quick-test/v25v26-resub2'
-output_dir = 'quick-test/v25v26-resub2_tests1'
+output_dir = 'quick-test/v25v26-resub3'
 
 samples = [data]
 samples = [(['MC2016_Summer16_W2Jets_madgraph'], ['nom', 'common', 'obj'])]
@@ -99,7 +117,7 @@ samples = [qcd_mc]
 samples = [data, tt, other_mc, qcd_mc]
 
 # set all nominal sys
-samples = [(dtags, ['nom']) for dtags, _ in samples]
+#samples = [(dtags, ['nom']) for dtags, _ in samples]
 
 for (dtags, systs) in samples:
     for dtag in dtags:
