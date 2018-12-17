@@ -3147,6 +3147,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             jet_pt  = p4.pt() * en_factor
             jet_eta = p4.eta()
 
+            # nominals
             jet_pt_JERUp   = jet_pt
             jet_pt_JERDown = jet_pt
             jet_pt_JESUp   = jet_pt
@@ -3215,20 +3216,29 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                     if with_JER_sys:
                         #jer_factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
                         up, down = ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
-                        jet_factor_JERUp   = (up   / jer_factor) if jer_factor > 0 else 0
-                        jet_factor_JERDown = (down / jer_factor) if jer_factor > 0 else 0
+                        jet_factor_JERUp   = up    if jer_factor > 0 else 0
+                        jet_factor_JERDown = down  if jer_factor > 0 else 0
 
-                        jet_pt_JERUp   = jet_pt * jet_factor_JERUp
-                        jet_pt_JERDown = jet_pt * jet_factor_JERDown
+                        #jet_pt_JERUp   = jet_pt * jet_factor_JERUp
+                        #jet_pt_JERDown = jet_pt * jet_factor_JERDown
+                        # --- this is correct, jet_pt is * jer_factor * jer_up / jer_factor
+                        #     the jer_up factor must be * jer_nom
+                        # for consistency let's make sys jet en corrections work like the nominal
+                        jet_pt_JERUp    = p4.pt() * jet_factor_JERUp  
+                        jet_pt_JERDown  = p4.pt() * jet_factor_JERDown
 
                     if with_JES_sys:
                         #jes_shift = ev.jet_jes_correction_relShift[i]
                         jes_shift = ev.jet_jes_uncertainty[i]
-                        jet_factor_JESUp   = 1 + jes_shift
-                        jet_factor_JESDown = 1 - jes_shift
+                        # for consistency:
+                        jet_factor_JESUp   = en_factor * (1 + jes_shift)
+                        jet_factor_JESDown = en_factor * (1 - jes_shift)
 
-                        jet_pt_JESUp   = jet_pt * jet_factor_JESUp
-                        jet_pt_JESDown = jet_pt * jet_factor_JESDown
+                        #jet_pt_JESUp   = jet_pt * jet_factor_JESUp
+                        #jet_pt_JESDown = jet_pt * jet_factor_JESDown
+                        # --- these are correct, jet_pt = jet * jer_factor * jes_up
+                        jet_pt_JESUp    = p4.pt() * jet_factor_JESUp  
+                        jet_pt_JESDown  = p4.pt() * jet_factor_JESDown
 
                 en_factors  = (en_factor, jet_factor_JERUp, jet_factor_JERDown, jet_factor_JESUp, jet_factor_JESDown)
                 bSF_weights = (jet_weight_bSF_nom, jet_weight_bSFUp, jet_weight_bSFDown)
@@ -3259,6 +3269,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                     proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
                 if jet_pt_JESDown > JETS_PT_CUT:
                     proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
+                # these were broken! the nominal jer factor was not applied, but now it is.
 
                 # match lep
                 if not match_lep:
