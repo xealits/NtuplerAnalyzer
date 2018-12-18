@@ -531,6 +531,11 @@ def get_histos_with_data_qcd(sys_name):
 
         logging.warning("qcd hist  %d  %d" % (data_hist.GetEntries(), mc_hist.GetEntries()))
         qcd_hist = data_hist - mc_hist
+        # nulify negative bins
+        for bini in range(qcd_hist.GetSize()):
+            if qcd_hist.GetBinContent(bini) < 0:
+                qcd_hist.SetBinContent(bini, 0)
+
         # scale by the given factor and return
         qcd_hist.Scale(args.qcd)
 
@@ -572,6 +577,8 @@ def get_histos_with_data_qcd(sys_name):
                 logging.debug('calulating qcd  %d  %d' % (data_hist.GetSize(), mc_hist.GetSize()))
 
                 qcd_hist = data_hist - mc_hist
+                logging.debug('data qcd got in channel, Integral = %f, difference %f' % (qcd_hist.Integral(), data_hist.Integral() - mc_hist.Integral()))
+
                 # negative qcd bins are equalized to zero:
                 '''
                 for (Int_t i=0; i<=histo->GetSize(); i++)
@@ -593,7 +600,7 @@ def get_histos_with_data_qcd(sys_name):
                     shape_qcd.Scale(qcd_hist.Integral() / shape_qcd.Integral())
                     qcd_hist = shape_qcd
 
-                logging.debug('data qcd got shape')
+                    logging.debug('data qcd got shape from %s, Integral = %f' % (args.shape, qcd_hist.Integral()))
 
                 for bini in range(qcd_hist.GetSize()):
                     if qcd_hist.GetBinContent(bini) < 0:

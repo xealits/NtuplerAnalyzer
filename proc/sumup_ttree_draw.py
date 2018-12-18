@@ -896,6 +896,8 @@ for filename in input_files:
           else:
               main_name, proc_defs = dtags_procs[dtag]
 
+          proc_defs = proc_defs[:]
+
           logging.debug("channel procs, %s %s" % (main_name, repr(proc_defs)))
 
           if proc_defs:

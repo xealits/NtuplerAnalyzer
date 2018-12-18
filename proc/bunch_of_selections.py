@@ -109,12 +109,17 @@ output_dir = 'quick-test/v27-dilep2'
 output_dir = 'quick-test/v25v26-resub2_data_resub2'
 output_dir = 'quick-test/v25v26-resub2'
 output_dir = 'quick-test/v25v26-resub3'
+output_dir = 'quick-test/v25v26-resub3_new_data'
 
-samples = [data]
+output_dir = 'temp/'
+
 samples = [(['MC2016_Summer16_W2Jets_madgraph'], ['nom', 'common', 'obj'])]
 samples = [(['MC2016_Summer16_TTJets_powheg'],   ['nom', 'common', 'obj', "tt_weights", "tt_hard", "tt_pdf1", "tt_pdf10", "tt_pdf20", "tt_pdf30", "tt_pdf40", "tt_pdf50,tt_alpha"])]
 samples = [qcd_mc]
 samples = [data, tt, other_mc, qcd_mc]
+samples = [data]
+
+samples = [(['MC2016_Summer16_W3Jets_madgraph'], ['nom'])]
 
 # set all nominal sys
 #samples = [(dtags, ['nom']) for dtags, _ in samples]
