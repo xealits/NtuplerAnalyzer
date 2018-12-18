@@ -1,3 +1,124 @@
+# tests for L1 ECAL prefiring
+
+in endcaps excess of electrons and jets at some pt-s
+
+check at final selection (Medium WP)
+2D histo of pt-eta
+for electrons and for jets
+
+check number of jets with event_jets_n_jets
+
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_n_jets"                            --ttree ttree_out --histo-range 10,0,10              --output temp//SingleElectron_el_sel_n_jets.root          --std-histos --histo-name el_sel/std_procs/nom/n_jets  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*
+
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_leptons[0].pt():event_leptons[0].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_electron_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/electron_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*
+
+
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_b[0].pt():event_jets_b[0].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_b_0_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_b_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_b[1].pt():event_jets_b[1].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_b_1_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_b_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_b[2].pt():event_jets_b[2].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_b_2_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_b_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_b[3].pt():event_jets_b[3].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_b_3_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_b_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_b[4].pt():event_jets_b[4].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_b_4_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_b_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+
+
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_r[0].pt():event_jets_r[0].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_r_0_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_r_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_r[1].pt():event_jets_r[1].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_r_1_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_r_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_r[2].pt():event_jets_r[2].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_r_2_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_r_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_r[3].pt():event_jets_r[3].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_r_3_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_r_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_r[4].pt():event_jets_r[4].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_r_4_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_r_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+
+
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_l[0].pt():event_jets_l[0].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_l_0_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_l_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_l[1].pt():event_jets_l[1].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_l_1_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_l_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_l[2].pt():event_jets_l[2].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_l_2_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_l_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_l[3].pt():event_jets_l[3].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_l_3_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_l_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_l[4].pt():event_jets_l[4].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_l_4_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_l_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+
+
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_t[0].pt():event_jets_t[0].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_t_0_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_t_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_t[1].pt():event_jets_t[1].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_t_1_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_t_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_t[2].pt():event_jets_t[2].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_t_2_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_t_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_t[3].pt():event_jets_t[3].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_t_3_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_t_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_t[4].pt():event_jets_t[4].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//SingleElectron_el_sel_jets_t_4_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_t_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*SingleElectron*  &
+
+
+and in TT:
+
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_b[0].pt():event_jets_b[0].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_b_0_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_b_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_b[1].pt():event_jets_b[1].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_b_1_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_b_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_b[2].pt():event_jets_b[2].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_b_2_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_b_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_b[3].pt():event_jets_b[3].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_b_3_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_b_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_b[4].pt():event_jets_b[4].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_b_4_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_b_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_r[0].pt():event_jets_r[0].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_r_0_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_r_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_r[1].pt():event_jets_r[1].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_r_1_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_r_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_r[2].pt():event_jets_r[2].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_r_2_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_r_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_r[3].pt():event_jets_r[3].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_r_3_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_r_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_r[4].pt():event_jets_r[4].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_r_4_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_r_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+
+
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_l[0].pt():event_jets_l[0].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_l_0_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_l_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_l[1].pt():event_jets_l[1].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_l_1_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_l_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_l[2].pt():event_jets_l[2].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_l_2_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_l_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_l[3].pt():event_jets_l[3].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_l_3_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_l_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_l[4].pt():event_jets_l[4].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_l_4_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_l_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+
+
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_t[0].pt():event_jets_t[0].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_t_0_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_t_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_t[1].pt():event_jets_t[1].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_t_1_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_t_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_t[2].pt():event_jets_t[2].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_t_2_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_t_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_t[3].pt():event_jets_t[3].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_t_3_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_t_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+python -W ignore sumup_ttree_draw.py --cut-w0jets "event_jets_t[4].pt():event_jets_t[4].eta()" --ttree ttree_out --histo-range 50,-2.5,2.5,20,0,200 --output temp//MC2016_Summer16_TTJets_powheg_el_sel_jets_t_4_pt_eta.root --std-histos --histo-name el_sel/std_procs/nom/jets_t_pt_eta  --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/v25v26/resub3/*MC2016_Summer16_TTJets_powheg*  &
+
+ttree_out->Draw("event_jets_b[].pt():event_jets_b[].eta()", "(selection_stage==17 || selection_stage==19) && !(abs(event_jets_t[0].eta()) > 2.25 && event_jets_t[0].pt() > 100)", "col")
+
+ttree_out->Draw("@event_jets_b.size()", "(selection_stage==17 || selection_stage==19) && !(abs(event_jets_t[0].eta()) > 2.25 && event_jets_t[0].pt() > 100)")
+
+ttree_out->Draw("5", "(selection_stage==17 || selection_stage==19)")
+41272
+ttree_out->Draw("5", "(selection_stage==17 || selection_stage==19) && !(abs(event_leptons[0].eta()) > 2.25 && event_leptons[0].pt() > 50)")
+40957
+
+
+ttree_out->Draw("5", "(selection_stage==17 || selection_stage==19) && !(abs(event_leptons[0].eta()) > 2.25 && event_leptons[0].pt() > 50) && !(abs(event_jets_t[0].eta()) > 2.25 && event_jets_t[0].pt() > 100)")
+40657
+ttree_out->Draw("5", "(selection_stage==17 || selection_stage==19) && !(abs(event_leptons[0].eta()) > 2.25 && event_leptons[0].pt() > 50) && !(abs(event_jets_t[].eta()) > 2.25 && event_jets_t[].pt() > 100)")
+40657
+ttree_out->Draw("5", "(selection_stage==17 || selection_stage==19) && !(abs(event_leptons[0].eta()) > 2.25 && event_leptons[0].pt() > 50) && !(abs(event_jets_t[].eta()) > 2.25 && event_jets_t[].pt() > 100) && !(abs(event_jets_b[0].eta()) > 2.25 && event_jets_b[0].pt() > 100)")
+40539
+ttree_out->Draw("5", "(selection_stage==17 || selection_stage==19) && !(abs(event_leptons[0].eta()) > 2.25 && event_leptons[0].pt() > 50) && !(abs(event_jets_t[].eta()) > 2.25 && event_jets_t[].pt() > 100) && !(abs(event_jets_b[].eta()) > 2.25 && event_jets_b[].pt() > 100)")
+40539
+ttree_out->Draw("5", "(selection_stage==17 || selection_stage==19) && !(abs(event_leptons[0].eta()) > 2.25 && event_leptons[0].pt() > 50) && !(abs(event_jets_t[].eta()) > 2.25 && event_jets_t[].pt() > 100) && !(abs(event_jets_b[].eta()) > 2.25 && event_jets_b[].pt() > 100) && !(abs(event_jets_r[0].eta()) > 2.25 && event_jets_r[0].pt() > 100)")
+34195
+ttree_out->Draw("5", "(selection_stage==17 || selection_stage==19) && !(abs(event_leptons[0].eta()) > 2.25 && event_leptons[0].pt() > 50) && !(abs(event_jets_t[].eta()) > 2.25 && event_jets_t[].pt() > 100) && !(abs(event_jets_b[].eta()) > 2.25 && event_jets_b[].pt() > 100) && !(abs(event_jets_r[].eta()) > 2.25 && event_jets_r[].pt() > 100)")
+34195
+ttree_out->Draw("5", "(selection_stage==17 || selection_stage==19) && !(abs(event_leptons[0].eta()) > 2.25 && event_leptons[0].pt() > 50) && !(abs(event_jets_t[].eta()) > 2.25 && event_jets_t[].pt() > 100) && !(abs(event_jets_b[].eta()) > 2.25 && event_jets_b[].pt() > 100) && !(abs(event_jets_r[].eta()) > 2.25 && event_jets_r[].pt() > 100) && !(abs(event_jets_l[].eta()) > 2.25 && event_jets_l[].pt() > 100)")
+31477
+
+ttree_out->Draw("event_met_lep_mt", "(selection_stage==17 || selection_stage==19)")
+ttree_out->Draw("event_met_lep_mt", "(selection_stage==17 || selection_stage==19) && !(abs(event_leptons[0].eta()) > 2.25 && event_leptons[0].pt() > 50) && !(abs(event_jets_t[].eta()) > 2.25 && event_jets_t[].pt() > 100) && !(abs(event_jets_b[].eta()) > 2.25 && event_jets_b[].pt() > 100) && !(abs(event_jets_r[].eta()) > 2.25 && event_jets_r[].pt() > 100) && !(abs(event_jets_l[].eta()) > 2.25 && event_jets_l[].pt() > 100)")
+
+h = (TH1D*) ttree_out->GetHistogram()
+
+h_all = (TH1D*) h->Clone()
+h_all->SetDirectory(0)
+h_all->SetName("all")
+
+h_cut = (TH1D*) h->Clone()
+h_cut->SetDirectory(0)
+h_cut->SetName("cut")
+h_cut->SetLineColor(kRed)
+
+h_cut->Scale(1./h_cut->Integral())
+h_all->Scale(1./h_all->Integral())
+
+h_all->Draw()
+h_cut->Draw("same")
+
+root -l lstore_outdirs/merge-sets/v25v26/resub3/SingleElectron.root
+
+
+
+
 # resub3
 
 foreach dtag (`cat sw-dir/merge-sets/jobs_hadd.dtags.all-tt-systs_main`)
