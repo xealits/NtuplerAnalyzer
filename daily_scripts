@@ -116,6 +116,9 @@ h_cut->Draw("same")
 
 root -l lstore_outdirs/merge-sets/v25v26/resub3/SingleElectron.root
 
+ttree_out->Draw("event_met_lep_mt", "(gen_proc_id == 41 || gen_proc_id == 42) && (selection_stage==17 || selection_stage==19)")
+ttree_out->Draw("event_met_lep_mt", "(gen_proc_id == 41 || gen_proc_id == 42) && (selection_stage==17 || selection_stage==19) && !(abs(event_leptons[0].eta()) > 2.25 && event_leptons[0].pt() > 50) && !(abs(event_jets_t[].eta()) > 2.25 && event_jets_t[].pt() > 100) && !(abs(event_jets_b[].eta()) > 2.25 && event_jets_b[].pt() > 100) && !(abs(event_jets_r[].eta()) > 2.25 && event_jets_r[].pt() > 100) && !(abs(event_jets_l[].eta()) > 2.25 && event_jets_l[].pt() > 100)")
+
 
 
 
