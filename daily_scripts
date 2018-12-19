@@ -1,3 +1,35 @@
+# foobar
+
+bash batch_jobs/j_MC2016_Summer16_TTJets_powheg_el_selTight_lj,el_selTight_lj_ss,mu_selTight_lj,mu_selTight_lj_ss_tt_pdf30           &
+bash batch_jobs/j_MC2016_Summer16_TTJets_powheg_el_selTight_lj,el_selTight_lj_ss,mu_selTight_lj,mu_selTight_lj_ss_tt_pdf40           &
+bash batch_jobs/j_MC2016_Summer16_TTJets_powheg_el_selTight_lj,el_selTight_lj_ss,mu_selTight_lj,mu_selTight_lj_ss_tt_pdf50,tt_alpha  &
+bash batch_jobs/j_MC2016_Summer16_TTJets_powheg_el_selTight_lj,el_selTight_lj_ss,mu_selTight_lj,mu_selTight_lj_ss_tt_weights         &
+
+bash batch_jobs/j_MC2016_Summer16_TTJets_powheg_el_selTight_ljout,el_selTight_ljout_ss,mu_selTight_ljout,mu_selTight_ljout_ss_tt_pdf50,tt_alpha  &
+bash batch_jobs/j_MC2016_Summer16_TTJets_powheg_el_selTight_ljout,el_selTight_ljout_ss,mu_selTight_ljout,mu_selTight_ljout_ss_tt_weights         &
+bash batch_jobs/j_MC2016_Summer16_TTJets_powheg_el_selVloose,el_selVloose_ss,mu_selVloose,mu_selVloose_ss_nom,common                             &
+bash batch_jobs/j_MC2016_Summer16_TTJets_powheg_el_selVloose,el_selVloose_ss,mu_selVloose,mu_selVloose_ss_obj                                    &
+
+bash batch_jobs/j_MC2016_Summer16_TTJets_powheg_el_sel_ljout,el_sel_ljout_ss,mu_sel_ljout,mu_sel_ljout_ss_tt_pdf30 &
+bash batch_jobs/j_MC2016_Summer16_TTJets_powheg_el_sel_ljout,el_sel_ljout_ss,mu_sel_ljout,mu_sel_ljout_ss_tt_pdf40 &
+bash batch_jobs/j_MC2016_Summer16_TTJets_powheg_el_sel_ljout,el_sel_ljout_ss,mu_sel_ljout,mu_sel_ljout_ss_tt_pdf50,tt_alpha &
+bash batch_jobs/j_MC2016_Summer16_TTJets_powheg_el_sel_ljout,el_sel_ljout_ss,mu_sel_ljout,mu_sel_ljout_ss_tt_weights &
+
+
+foreach p ( `ps -u olek | grep python | sed 's/^[ ]*\([0-9][0-9]*\)[ ]*.*$/\1/'` )
+echo $p 
+cat /proc/$p/cmdline
+echo
+end
+
+
+hadd quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg_Mt_lep_met_f.root  quick-test/v25v26-resub3/MC2016_Summer16_TTJets_powheg*Mt_lep_met_f.root  &
+hadd quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg_Mt_lep_met_c.root  quick-test/v25v26-resub3/MC2016_Summer16_TTJets_powheg*Mt_lep_met_c.root  &
+hadd quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg_Mt_lep_met_c2.root quick-test/v25v26-resub3/MC2016_Summer16_TTJets_powheg*Mt_lep_met_c2.root &
+
+
+
+
 # tests for L1 ECAL prefiring
 
 in endcaps excess of electrons and jets at some pt-s
@@ -148,6 +180,15 @@ python stack_plot.py distrs/distrs_v25v26_resub3_mc.root ../quick-test/v25v26-re
 python stack_plot.py distrs/distrs_v25v26_resub3_mc.root ../quick-test/v25v26-resub3_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub3/ --lumi 31300 -c el_selTight  -x el_selVloose -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --title "" --title-x "M_{T}(e, E^{miss}_{T})"
 
 not much loss, but noticeable 10% missing data -- lstore? yep
+
+
+python stack_plot.py distrs/distrs_v25v26_resub3_mc.root ../quick-test/v25v26-resub3_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub3/ --lumi 31300 -c el_selTight_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --title "" --title-x "M_{T}(e, E^{miss}_{T})"
+python stack_plot.py distrs/distrs_v25v26_resub3_mc.root ../quick-test/v25v26-resub3_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub3/ --lumi 31300 -c el_selTight_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --title "" --title-x "M_{T}(e, E^{miss}_{T})"
+
+python stack_plot.py distrs/distrs_v25v26_resub3_mc.root ../quick-test/v25v26-resub3_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_resub3/ --lumi 35800 -c mu_selTight_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --title "" --title-x "M_{T}(#mu, E^{miss}_{T})"
+python stack_plot.py distrs/distrs_v25v26_resub3_mc.root ../quick-test/v25v26-resub3_hadds/SingleMuon.root -p -r -o plots/redo-v25-v26_resub3/ --lumi 35800 -c mu_selTight_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --title "" --title-x "M_{T}(#mu, E^{miss}_{T})"
+
+
 
 
 
