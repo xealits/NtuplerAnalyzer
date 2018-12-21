@@ -275,6 +275,111 @@ python stack_plot.py distrs/distrs_v25v26_resub3_mc.root ../quick-test/v25v26-re
 
 
 
+both, shaped
+
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight.txt
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight_c.txt
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight_c2.txt
+
+
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight_c.txt
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_shaped_Tight_c.txt
+
+combineCards.py mu=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_shaped_Tight_c.txt el=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_shaped_Tight_c.txt > ttxsec/both_tight_shaped_c.txt
+
+./scripts/text2workspace.py ttxsec/both_tight_shaped_c.txt
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/both_tight_shaped_c.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit              --name BothTightShapedC
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/both_tight_shaped_c.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5       --name BothTightShapedC
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/both_tight_shaped_c.root --freezeParameters lumi_13TeV  -m 125 -o latest_impacts_resub3_both_Tight_shaped_c.json  --name BothTightShapedC
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_impacts_resub3_both_Tight_shaped_c.json -o postfit_impacts_both_resub3_Tight_shaped_c
+
+   r :    +1.000   -0.086/+0.092 (68%)
+
+(wow)
+
+python ttxsec/fit-stuff/new_impact_table.py --merge-pdf latest_impacts_resub3_both_Tight_shaped_c.json
+
+$\tauh$ jet identification  &  5.3 \\
+         jet energy scale  &  4.7 \\
+        top quark $p_{T}$  &  2.8 \\
+$\tauh$ misidentification background  &  2.7 \\
+     b-tagging efficiency  &  2.2 \\
+       pileup uncertainty  &  1.9 \\
+     W+jets normalization  &  1.1 \\
+     $\tauh$ Energy Scale  &  0.9 \\
+       muon ID efficiency  &  0.8 \\
+ Single Top normalization  &  0.6 \\
+    jet energy resolution  &  0.5 \\
+electron trigger efficiency  &  0.4 \\
+        QCD normalization  &  0.3 \\
+  muon trigger efficiency  &  0.3 \\
+         DY normalization  &  0.2 \\
+   electron ID efficiency  &  0.2 \\
+   Dibosons normalization  &  0.0 \\
+               Luminosity  &  0.0 \\
+  final   state radiation  &  3.3 \\
+          b fragmentation  &  2.2 \\
+  initial state radiation  &  2.0 \\
+underlying event (Pythia tune)  &  0.8 \\
+ ME Renormalization scale  &  0.5 \\
+   ME Factorization scale  &  0.4 \\
+semi-leptonic b-hadron BRs  &  0.3 \\
+   ME-PS matching (hdamp)  &  0.3 \\
+ME combined scale variation  &  0.1 \\
+                      PDF  &  1.5 \\
+            MC statistics  &  2.2 \\
+
+-- how???
+
+
+combineCards.py mu=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight_c.txt el=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight_c.txt > ttxsec/both_tight_c.txt
+
+./scripts/text2workspace.py ttxsec/both_tight_c.txt
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/both_tight_c.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit              --name BothTightC
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/both_tight_c.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5       --name BothTightC
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/both_tight_c.root --freezeParameters lumi_13TeV  -m 125 -o latest_impacts_resub3_both_Tight_c.json  --name BothTightC
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_impacts_resub3_both_Tight_c.json -o postfit_impacts_both_resub3_Tight_c
+
+   r :    +0.967   -0.080/+0.088 (68%)
+
+python ttxsec/fit-stuff/new_impact_table.py --merge-pdf latest_impacts_resub3_both_Tight_c.json
+
+$\tauh$ jet identification  &  5.0 \\
+        top quark $p_{T}$  &  2.8 \\
+     $\tauh$ Energy Scale  &  2.7 \\
+$\tauh$ misidentification background  &  2.0 \\
+       pileup uncertainty  &  2.0 \\
+         jet energy scale  &  1.7 \\
+     b-tagging efficiency  &  1.1 \\
+        QCD normalization  &  0.7 \\
+ Single Top normalization  &  0.6 \\
+       muon ID efficiency  &  0.5 \\
+electron trigger efficiency  &  0.4 \\
+   electron ID efficiency  &  0.3 \\
+         DY normalization  &  0.3 \\
+    jet energy resolution  &  0.2 \\
+  muon trigger efficiency  &  0.2 \\
+     W+jets normalization  &  0.1 \\
+   Dibosons normalization  &  0.0 \\
+               Luminosity  &  0.0 \\
+          b fragmentation  &  2.8 \\
+  final   state radiation  &  2.6 \\
+  initial state radiation  &  1.7 \\
+ ME Renormalization scale  &  0.9 \\
+ME combined scale variation  &  0.5 \\
+underlying event (Pythia tune)  &  0.5 \\
+   ME Factorization scale  &  0.5 \\
+semi-leptonic b-hadron BRs  &  0.4 \\
+   ME-PS matching (hdamp)  &  0.2 \\
+                      PDF  &  1.3 \\
+            MC statistics  &  6.1 \\
+
+
+
+
+
 ## goodness of fit of shaped distrs
 
 
@@ -311,6 +416,22 @@ h_c->GetBinContent(h_c->FindBin(0.0166576))
 KS100:
 mu 0.25
 el 0.18
+
+
+combine -M GoodnessOfFit ttxsec/both_tight_shaped_c.root --algo=KS         -s 123                    --freezeParameters lumi_13TeV -n  TightShapedCbothKS
+combine -M GoodnessOfFit ttxsec/both_tight_shaped_c.root --algo=KS -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  TightShapedCbothKS100 &
+
+Kolmogorov-Smirnov test statistic: 0.028867
+
+mean   expected limit: r < 0.0242662 +/- 0.000611384 @ 95%CL (100 toyMC)
+median expected limit: r < 0.0236975 @ 95%CL (100 toyMC)
+   68% expected band : 0.0186415 < r < 0.0307812
+   95% expected band : 0.0136383 < r < 0.0362143
+
+root [6] h_c->GetBinContent(h_c->FindBin(0.02886))
+(Double_t) 24.0000
+
+
 
 
 
