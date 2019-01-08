@@ -1,3 +1,7 @@
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
 
 distr_ranges = {'Mt_lep_met_c': '--custom-range 0,20,40,60,80,100,130,160,200,250',
     'Mt_lep_met_c2': '--custom-range 0,20,40,60,80,100,120,140,170,200,250,500',
@@ -110,14 +114,14 @@ draw_command_template = """python -W ignore sumup_ttree_draw.py --cut-w0jets "{d
 #batch_jobs/j_${dtag}_${chans}_${systs}
 #merge_dir ='v27/dilep1'
 merge_dir = 'v25/resub1'
-merge_dir = 'v25v26/resub3'
+merge_dir = 'v25v26/resub4'
 
 output_dir = 'temp/'
 output_dir = 'quick-test/v27-dilep2'
 output_dir = 'quick-test/v25v26-resub2_data_resub2'
 output_dir = 'quick-test/v25v26-resub2'
 output_dir = 'quick-test/v25v26-resub3_new_data'
-output_dir = 'quick-test/v25v26-resub3'
+output_dir = 'quick-test/v25v26-resub4'
 
 
 samples = [(['MC2016_Summer16_W2Jets_madgraph'], ['nom', 'common', 'obj'], select_channels_all_leptau_joined)]
@@ -130,6 +134,8 @@ samples = [data, tt, other_mc, qcd_mc]
 
 # set all nominal sys
 #samples = [(dtags, ['nom']) for dtags, _ in samples]
+
+logging.info("merge_dir = %s  -->  output_dir = %s" % (merge_dir, output_dir))
 
 for (dtags, systs, select_channels) in samples:
     for dtag in dtags:
