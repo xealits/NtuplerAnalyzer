@@ -1,3 +1,143 @@
+# repeate acceptance study properly, the files were removed for space issues, acceptance breakdown
+
+make merge_proc dtags=sw-dir/merge-sets/jobs_hadd.dtags.tt               nt=v34 proc=t1 merge_dir=lstore_outdirs/merge-sets/
+make merge_proc dtags=sw-dir/merge-sets/jobs_hadd.dtags.tt-updowns.extra nt=v34 proc=t1 merge_dir=lstore_outdirs/merge-sets/
+
+hadd the extras
+
+the acceptances with systematic variations:
+
+python print_acceptances.py --sys-weights lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg.root
+
+nominal acceptances in all files:
+python print_acceptances.py               lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg*.root
+
+also stats:
+python print_acceptances.py --sys-weights lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg.root --with-stat
+
+"all process" of TT, not only signals, does not work in v34 which recorded only signal:
+python print_acceptances.py lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg.root --sys-weights --all-procs
+
+
+               eltau           0.1687     0.1689     0.1686     0.1684     0.1691     0.1685     0.1690     0.1688     0.1686     0.1687     0.1688     0.1683     0.1684     0.1690     0.1686     0.1686     0.1685     0.1683     0.1691     0.1689     0.1686     0.1681     0.1691     0.1687     0.1687     0.1686     0.1688     0.1692     0.1682     0.1688     0.1684     0.1684     0.1690     0.1691     0.1683     0.1687     0.1688     0.1687     0.1687     0.1688     0.1686     0.1685     0.1691     0.1686     0.1689     0.1689     0.1683     0.1689     0.1686     0.1684     0.1691     0.1682     0.1693     0.1688     0.1687     0.1686     0.1681     0.1682     0.1683     0.1688     0.1687     0.1689     0.1688     0.1687     0.1687     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000
+               mutau           0.1756     0.1759     0.1756     0.1754     0.1761     0.1756     0.1760     0.1758     0.1756     0.1757     0.1758     0.1753     0.1754     0.1760     0.1755     0.1757     0.1755     0.1752     0.1762     0.1759     0.1755     0.1749     0.1762     0.1757     0.1757     0.1756     0.1758     0.1763     0.1751     0.1759     0.1754     0.1754     0.1760     0.1761     0.1753     0.1756     0.1758     0.1756     0.1757     0.1758     0.1756     0.1755     0.1761     0.1756     0.1759     0.1760     0.1753     0.1759     0.1756     0.1754     0.1761     0.1752     0.1763     0.1757     0.1757     0.1755     0.1751     0.1752     0.1752     0.1757     0.1757     0.1760     0.1758     0.1757     0.1758     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000
+                 sum           0.1722     0.1724     0.1721     0.1719     0.1726     0.1721     0.1725     0.1723     0.1721     0.1722     0.1723     0.1718     0.1719     0.1725     0.1721     0.1722     0.1720     0.1717     0.1727     0.1724     0.1721     0.1715     0.1726     0.1722     0.1722     0.1721     0.1723     0.1727     0.1717     0.1724     0.1719     0.1719     0.1725     0.1726     0.1718     0.1722     0.1723     0.1721     0.1722     0.1723     0.1721     0.1720     0.1726     0.1721     0.1724     0.1725     0.1718     0.1724     0.1721     0.1719     0.1726     0.1717     0.1728     0.1722     0.1722     0.1720     0.1716     0.1717     0.1717     0.1723     0.1722     0.1725     0.1723     0.1722     0.1722     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000     0.0000
+
+               eltau           0.1687     0.1689     0.1686     0.1684     0.1691     0.1685     0.1690     0.1688     0.1686     0.1687     0.1688     0.1683     0.1684     0.1690     0.1686     0.1686     0.1685     0.1683     0.1691     0.1689     0.1686     0.1681     0.1691     0.1687     0.1687     0.1686     0.1688     0.1692     0.1682     0.1688     0.1684     0.1684     0.1690     0.1691     0.1683     0.1687     0.1688     0.1687     0.1687     0.1688     0.1686     0.1685     0.1691     0.1686     0.1689     0.1689     0.1683     0.1689     0.1686     0.1684     0.1691     0.1682     0.1693     0.1688     0.1687     0.1686     0.1681     0.1682     0.1683     0.1688     0.1687     0.1689     0.1688     0.1687     0.1687
+               mutau           0.1756     0.1759     0.1756     0.1754     0.1761     0.1756     0.1760     0.1758     0.1756     0.1757     0.1758     0.1753     0.1754     0.1760     0.1755     0.1757     0.1755     0.1752     0.1762     0.1759     0.1755     0.1749     0.1762     0.1757     0.1757     0.1756     0.1758     0.1763     0.1751     0.1759     0.1754     0.1754     0.1760     0.1761     0.1753     0.1756     0.1758     0.1756     0.1757     0.1758     0.1756     0.1755     0.1761     0.1756     0.1759     0.1760     0.1753     0.1759     0.1756     0.1754     0.1761     0.1752     0.1763     0.1757     0.1757     0.1755     0.1751     0.1752     0.1752     0.1757     0.1757     0.1760     0.1758     0.1757     0.1758
+                 sum           0.1722     0.1724     0.1721     0.1719     0.1726     0.1721     0.1725     0.1723     0.1721     0.1722     0.1723     0.1718     0.1719     0.1725     0.1721     0.1722     0.1720     0.1717     0.1727     0.1724     0.1721     0.1715     0.1726     0.1722     0.1722     0.1721     0.1723     0.1727     0.1717     0.1724     0.1719     0.1719     0.1725     0.1726     0.1718     0.1722     0.1723     0.1721     0.1722     0.1723     0.1721     0.1720     0.1726     0.1721     0.1724     0.1725     0.1718     0.1724     0.1721     0.1719     0.1726     0.1717     0.1728     0.1722     0.1722     0.1720     0.1716     0.1717     0.1717     0.1723     0.1722     0.1725     0.1723     0.1722     0.1722
+
+
+nice table is done
+-- merge groups of systematics
+
+
+
+
+
+
+# fix of met propagation in jes and jer
+
+python jobsums/get_shapes.py  --norm-binwidth --formula " OLD : NEW " -c el_selVloose -d Mt_lep_met_f -p tt_lj    NEW:quick-test/v25v26-resub4_hadds/MC2016_Summer16_TTJets_powheg.root OLD:quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg.root
+python jobsums/get_shapes.py  --norm-binwidth --formula " OLD : NEW " -c el_selVloose -d Mt_lep_met_f -p tt_eltau NEW:quick-test/v25v26-resub4_hadds/MC2016_Summer16_TTJets_powheg.root OLD:quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg.root
+
+-- same OK
+
+python jobsums/get_shapes.py  --norm-binwidth --formula " OLD : NEW " -c el_selVloose -s JESUp   -d Mt_lep_met_f -p tt_lj    NEW:quick-test/v25v26-resub4_hadds/MC2016_Summer16_TTJets_powheg.root OLD:quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg.root
+python jobsums/get_shapes.py  --norm-binwidth --formula " OLD : NEW " -c el_selVloose -s JESUp   -d Mt_lep_met_f -p tt_eltau NEW:quick-test/v25v26-resub4_hadds/MC2016_Summer16_TTJets_powheg.root OLD:quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg.root
+
+python jobsums/get_shapes.py  --norm-binwidth --formula " OLD : NEW " -c el_selVloose -s JESDown -d Mt_lep_met_f -p tt_lj    NEW:quick-test/v25v26-resub4_hadds/MC2016_Summer16_TTJets_powheg.root OLD:quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg.root
+python jobsums/get_shapes.py  --norm-binwidth --formula " OLD : NEW " -c el_selVloose -s JESDown -d Mt_lep_met_f -p tt_eltau NEW:quick-test/v25v26-resub4_hadds/MC2016_Summer16_TTJets_powheg.root OLD:quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg.root
+
+
+python jobsums/get_shapes.py  --norm-binwidth --formula " OLD : NEW " -c el_selVloose -s JERUp   -d Mt_lep_met_f -p tt_lj    NEW:quick-test/v25v26-resub4_hadds/MC2016_Summer16_TTJets_powheg.root OLD:quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg.root
+python jobsums/get_shapes.py  --norm-binwidth --formula " OLD : NEW " -c el_selVloose -s JERUp   -d Mt_lep_met_f -p tt_eltau NEW:quick-test/v25v26-resub4_hadds/MC2016_Summer16_TTJets_powheg.root OLD:quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg.root
+
+python jobsums/get_shapes.py  --norm-binwidth --formula " OLD : NEW " -c el_selVloose -s JERDown -d Mt_lep_met_f -p tt_lj    NEW:quick-test/v25v26-resub4_hadds/MC2016_Summer16_TTJets_powheg.root OLD:quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg.root
+python jobsums/get_shapes.py  --norm-binwidth --formula " OLD : NEW " -c el_selVloose -s JERDown -d Mt_lep_met_f -p tt_eltau NEW:quick-test/v25v26-resub4_hadds/MC2016_Summer16_TTJets_powheg.root OLD:quick-test/v25v26-resub3_hadds/MC2016_Summer16_TTJets_powheg.root
+
+python mc_per_sys.py v25v26resub3_tt.root -p tt_lj    -c el_sel -d Mt_lep_met_f -s JESUp,JESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]"
+python mc_per_sys.py v25v26resub3_tt.root -p tt_eltau -c el_sel -d Mt_lep_met_f -s JESUp,JESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]"
+
+python mc_per_sys.py v25v26resub4_tt.root -p tt_lj    -c el_sel -d Mt_lep_met_f -s JESUp,JESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]"
+python mc_per_sys.py v25v26resub4_tt.root -p tt_eltau -c el_sel -d Mt_lep_met_f -s JESUp,JESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]"
+
+-- all the same!
+python jobsums/get_shapes.py  --norm-binwidth --formula " OLD : NEW " -c el_selVloose -s JERDown -d Mt_lep_met_f -p tt_eltau NEW:quick-test/v25v26-resub4_hadds/MC2016_Summer16_TTJets_powheg.root OLD:quick-test/v25v26-resub2_hadds/MC2016_Summer16_TTJets_powheg.root
+
+-- also the same....
+
+root -l lstore_outdirs/merge-sets/v26/resub2/MC2016_Summer16_TTJets_powheg.root lstore_outdirs/merge-sets/v25v26/resub4/MC2016_Summer16_TTJets_powheg.root
+
+_file0->Get("ttree_out")->Draw("event_met_lep_mt_JERUp>>h(200,0,400)")
+TH1D* h0 = (TH1D*) ((TTree*) _file0->Get("ttree_out"))->GetHistogram()
+h0->SetDirectory(0)
+h0->SetName("old")
+
+_file1->Get("ttree_out")->Draw("event_met_lep_mt_JERUp>>h(200,0,400)")
+TH1D* h1 = (TH1D*) ((TTree*) _file1->Get("ttree_out"))->GetHistogram()
+h1->SetDirectory(0)
+h1->SetName("new")
+
+h0->SetLineColor(kRed)
+
+h0->Draw()
+h1->Draw("same")
+
+-- they are slightly different..
+
+h0->Divide(h1)
+h0->Draw()
+
+-- indeed there is a difference
+
+ratio in plotting:
+
+h0 = (TH1D*) _file0->Get("el_selVloose/tt_eltau/NOMINAL/el_selVloose_tt_eltau_NOMINAL_Mt_lep_met_f")
+h1 = (TH1D*) _file1->Get("el_selVloose/tt_eltau/NOMINAL/el_selVloose_tt_eltau_NOMINAL_Mt_lep_met_f")
+
+h0->SetLineColor(kRed)
+
+h0->Draw()
+h1->Draw("same")
+
+h0->Divide(h1)
+h0->Draw()
+
+-- exactly the same, = 1
+
+
+Check the original difference in a final selection:
+
+((TTree*) _file0->Get("ttree_out"))->Draw("event_met_lep_mt_JERUp>>h(200,0,400)", "selection_stage==9 || selection_stage==7")
+TH1D* h0 = (TH1D*) ((TTree*) _file0->Get("ttree_out"))->GetHistogram()
+h0->SetDirectory(0)
+h0->SetName("old")
+
+((TTree*) _file1->Get("ttree_out"))->Draw("event_met_lep_mt_JERUp>>h(200,0,400)", "selection_stage==9 || selection_stage==7")
+TH1D* h1 = (TH1D*) ((TTree*) _file1->Get("ttree_out"))->GetHistogram()
+h1->SetDirectory(0)
+h1->SetName("new")
+
+-- practically no difference
+
+((TTree*) _file0->Get("ttree_out"))->Draw("event_met_lep_mt_JESUp>>h(200,0,400)", "selection_stage==9 || selection_stage==7")
+TH1D* h0 = (TH1D*) ((TTree*) _file0->Get("ttree_out"))->GetHistogram()
+h0->SetDirectory(0)
+h0->SetName("old")
+
+((TTree*) _file1->Get("ttree_out"))->Draw("event_met_lep_mt_JESUp>>h(200,0,400)", "selection_stage==9 || selection_stage==7")
+TH1D* h1 = (TH1D*) ((TTree*) _file1->Get("ttree_out"))->GetHistogram()
+h1->SetDirectory(0)
+h1->SetName("new")
+
+-- practically no difference here too
+
+
+
+
+
+
 # uncertainties with ratio to 17-001
 
 elmu
@@ -614,11 +754,11 @@ end
 
 
 
-make hadds_distrs distr_dir=quick-test/v25v26-resub3 dtag_file=sw-dir/merge-sets/jobs_hadd.dtags.tt
-make hadds_distrs distr_dir=quick-test/v25v26-resub3 dtag_file=sw-dir/merge-sets/jobs_hadd.dtags.small_main
-make hadds_distrs distr_dir=quick-test/v25v26-resub3 dtag_file=sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main
-make hadds_distrs distr_dir=quick-test/v25v26-resub3 dtag_file=sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main
-make hadds_distrs distr_dir=quick-test/v25v26-resub3 dtag_file=sw-dir/merge-sets/jobs_hadd.dtags.data
+make hadds_distrs dtag_file=sw-dir/merge-sets/jobs_hadd.dtags.tt            distr_dir=quick-test/v25v26-resub4
+make hadds_distrs dtag_file=sw-dir/merge-sets/jobs_hadd.dtags.small_main    distr_dir=quick-test/v25v26-resub4
+make hadds_distrs dtag_file=sw-dir/merge-sets/jobs_hadd.dtags.large_aa_main distr_dir=quick-test/v25v26-resub4
+make hadds_distrs dtag_file=sw-dir/merge-sets/jobs_hadd.dtags.large_ab_main distr_dir=quick-test/v25v26-resub4
+make hadds_distrs dtag_file=sw-dir/merge-sets/jobs_hadd.dtags.data          distr_dir=quick-test/v25v26-resub4
 
 
 python stack_plot.py distrs/distrs_v25v26_resub3_mc.root ../quick-test/v25v26-resub3_hadds/SingleElectron.root -p -r -o plots/redo-v25-v26_resub3/ --lumi 31300 -c el_sel  -x el_selVloose   -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --title "" --title-x "M_{T}(e, E^{miss}_{T})"
@@ -3659,7 +3799,7 @@ end
 ls batch_jobs/ | wc -l
 936
 
-ls batch_jobs/ | sed -e 's,^\(.*\)$,qsub -l h_vmem=1G "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/\1",' | grep -v submit > batch_jobs/submit
+ls batch_jobs/ | sed -e 's,^\(.*\)$,qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/\1",' | grep -v submit > batch_jobs/submit
 
 ls batch_jobs/ > batch_jobs/submit
 
