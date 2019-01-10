@@ -64,6 +64,8 @@ else:
     "mutau"    : OrderedDict(),
     "eltau"    : OrderedDict()}
 
+sum_channel = OrderedDict()
+
 # nicknames of the systematic files
 filenames = []
 
@@ -140,14 +142,15 @@ for file_i, input_filename in enumerate(args.input_files):
             file_numbers[file_nickname][weight_name] = (histo_cut.GetBinContent(i), histo_cut.GetBinError(i))
 
     # save the acceptance of the sum of the processes (usefull only for signal processes!)
-    results['sum'] = OrderedDict()
-    results['sum'][file_nickname] = OrderedDict()
+    sum_channel[file_nickname] = OrderedDict()
     if args.yields:
-        results['sum'][file_nickname]['event_yield'] = (sum_all_histos.GetBinContent(1), sum_all_histos.GetBinError(1))
+        sum_channel[file_nickname]['event_yield'] = (sum_all_histos.GetBinContent(1), sum_all_histos.GetBinError(1))
 
     for i in range(1,range_length):
         weight_name = sys_weght_name_ind[i]
-        results['sum'][file_nickname][weight_name]   = (sum_cut_histos.GetBinContent(i), sum_cut_histos.GetBinError(i))
+        sum_channel[file_nickname][weight_name]   = (sum_cut_histos.GetBinContent(i), sum_cut_histos.GetBinError(i))
+
+results['sum'] = sum_channel
 
 # calculate relative deviations of systematics from nominals
 # the statistical uncertainty of deviations in each nominal file does not matter
