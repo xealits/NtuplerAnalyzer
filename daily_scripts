@@ -30,8 +30,75 @@ python print_acceptances.py lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJ
 
 nice table is done
 -- merge groups of systematics
+   Done
+
+$ python print_acceptances.py --sys-weights lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg*.root --devs merge_files --with-stat
+INFO:root:import ROOT
+INFO:root:done
+                               eltau      mutau        sum
+ nominal_0 nom                           0.1687 +- 0.0004     0.1756 +- 0.0004     0.1722 +- 0.0003
+ nominal_0 scales                        0.0006 +- 0.0000     0.0008 +- 0.0000     0.0007 +- 0.0000
+ nominal_0 alphas                        0.0002 +- 0.0000     0.0002 +- 0.0000     0.0002 +- 0.0000
+ nominal_0 pdfs                          0.0022 +- 0.0000     0.0025 +- 0.0000     0.0023 +- 0.0000
+      tune nom                           0.0006 +- 0.0004     0.0005 +- 0.0004     0.0005 +- 0.0003
+     hdamp nom                           0.0020 +- 0.0004     0.0026 +- 0.0004     0.0023 +- 0.0003
+       isr nom                           0.0012 +- 0.0003     0.0006 +- 0.0003     0.0008 +- 0.0002
+       fsr nom                           0.0047 +- 0.0003     0.0049 +- 0.0003     0.0048 +- 0.0002
+
+separated scales:
+
+$ python print_acceptances.py --sys-weights lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg*.root --devs merge_files_rel --how-print cols
+INFO:root:import ROOT
+INFO:root:done
+                               eltau      mutau        sum
+ nominal_0 nom                           0.1687     0.1756     0.1722
+ nominal_0 scales_renorm                 0.0010     0.0018     0.0014
+ nominal_0 scales_refact                 0.0029     0.0030     0.0029
+ nominal_0 scales_both                   0.0021     0.0025     0.0022
+ nominal_0 pdfs                          0.0129     0.0141     0.0133
+      tune nom                           0.0035     0.0027     0.0030
+     hdamp nom                           0.0119     0.0147     0.0133
+       isr nom                           0.0071     0.0035     0.0047
+       fsr nom                           0.0280     0.0281     0.0281
+
+python print_acceptances.py --sys-weights lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg*.root --devs merge_files
+
+INFO:root:import ROOT
+INFO:root:done
+             channel               nominal_0 nom      nominal_0 scales      nominal_0 alphas        nominal_0 pdfs              tune nom             hdamp nom               isr nom               fsr nom
+               eltau                      0.1687                0.0006                0.0002                0.0022                0.0006                0.0020                0.0012                0.0047
+               mutau                      0.1756                0.0008                0.0002                0.0025                0.0005                0.0026                0.0006                0.0049
+                 sum                      0.1722                0.0007                0.0002                0.0023                0.0005                0.0023                0.0008                0.0048
+
+sqrt(sum([0.0006                0.0002                0.0022                0.0006                0.0020                0.0012                0.0047].^2))
+0.005755866572463264
+
+sqrtsum(x) = sqrt(sum(x.^2))
+
+acc_el_err = sqrtsum([0.0006                0.0002                0.0022                0.0006                0.0020                0.0012                0.0047])
+0.005755866572463264
+
+acc_mu_err = sqrtsum([0.0008                0.0002                0.0025                0.0005                0.0026                0.0006                0.0049])
+0.006189507250177513
+
+sacc_bt_err = qrtsum([0.0007                0.0002                0.0023                0.0005                0.0023                0.0008                0.0048])
+0.0059194594347794964
 
 
+
+found a mistake in AN: the electron and muon systematics are flipped!
+
+acc_mu_err = sum(([0.1759     0.1756     0.1754     0.1761     0.1756     0.1760     0.1758     0.1756     0.1757     0.1758     0.1753     0.1754     0.1760     0.1755     0.1757     0.1755     0.1752     0.1762     0.1759     0.1755     0.1749     0.1762     0.1757     0.1757     0.1756     0.1758     0.1763     0.1751     0.1759     0.1754     0.1754     0.1760     0.1761     0.1753     0.1756     0.1758     0.1756     0.1757     0.1758     0.1756     0.1755     0.1761     0.1756     0.1759     0.1760     0.1753     0.1759     0.1756     0.1754     0.1761     0.1752     0.1763     0.1757     0.1757     0.1755     0.1751     0.1752     0.1752     0.1757     0.1757     0.1760     0.1758     0.1757     0.1758] - 0.1756) .^ 2) ^ 0.5
+0.0025455844122715655
+
+acc_el_err = sum(([0.1689     0.1686     0.1684     0.1691     0.1685     0.1690     0.1688     0.1686     0.1687     0.1688     0.1683     0.1684     0.1690     0.1686     0.1686     0.1685     0.1683     0.1691     0.1689     0.1686     0.1681     0.1691     0.1687     0.1687     0.1686     0.1688     0.1692     0.1682     0.1688     0.1684     0.1684     0.1690     0.1691     0.1683     0.1687     0.1688     0.1687     0.1687     0.1688     0.1686     0.1685     0.1691     0.1686     0.1689     0.1689     0.1683     0.1689     0.1686     0.1684     0.1691     0.1682     0.1693     0.1688     0.1687     0.1686     0.1681     0.1682     0.1683     0.1688     0.1687     0.1689     0.1688     0.1687     0.1687] - 0.1687) .^ 2) ^ 0.5
+0.0022605309110914646
+
+but the AN reports reversed numbers: 25 for electron and 22 for muon channels
+
+Also, clearly if does not include the FSR-ISR?
+-- where do I normalize to FSR-ISR acceptance?
+   in stack_plot, and the FSR-ISR acceptance deviations are a bit smaller, by about factor of 2 -- different handling of up-down?
 
 
 
