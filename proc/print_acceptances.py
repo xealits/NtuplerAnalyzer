@@ -76,9 +76,17 @@ filenames = []
 # weight names to indexes
 systs_pdfs = ['PDFCTn%s' % str(n) for n in range(1, 57)]
 systs_scales = ['scale_renorm_Up', 'scale_renorm_Down', 'scale_refrag_Up', 'scale_refrag_Down', 'scale_comb_Up', 'scale_comb_Down']
-systs_alphas = ['alpha_Up', 'alpha_Down']
-sys_weght_name_ind = {n+1: name for n, name in enumerate(['nom'] + systs_scales + systs_alphas + systs_pdfs)}
+systs_scales_renorm = ['scale_renorm_Up', 'scale_renorm_Down']
+systs_scales_refact = ['scale_refrag_Up', 'scale_refrag_Down']
+systs_scales_both   = ['scale_comb_Up',   'scale_comb_Down']
 
+systs_alphas = ['alpha_Up', 'alpha_Down']
+
+#systs_used_groups = [('scales', systs_scales), ('alphas', systs_alphas), ('pdfs', systs_pdfs)]
+#systs_used_groups = [('scales_renorm', systs_scales_renorm), ('scales_refact', systs_scales_refact), ('scales_both', systs_scales_both), ('alphas', systs_alphas), ('pdfs', systs_pdfs)]
+systs_used_groups = [('scales_renorm', systs_scales_renorm), ('scales_refact', systs_scales_refact), ('scales_both', systs_scales_both), ('pdfs', systs_pdfs + systs_alphas)]
+
+sys_weght_name_ind = {n+1: name for n, name in enumerate(['nom'] + [sys_name for _, snames in systs_used_groups for sys_name in snames])}
 range_length = (len(sys_weght_name_ind) + 1) if args.sys_weights else 2
 
 # nicknames of the nominal and systematic files
@@ -168,7 +176,7 @@ if args.devs:
             if 'merge' in args.devs:
                 update_numbers = OrderedDict()
                 update_numbers['nom'] = numbers['nom']
-                for sys_group_name, sys_group in [('scales', systs_scales), ('alphas', systs_alphas), ('pdfs', systs_pdfs)]:
+                for sys_group_name, sys_group in systs_used_groups:
                     if any(sys_name in numbers for sys_name in sys_group):
                         if 'rel' in args.devs:
                             devs = [(sys_val-nominal)/nominal for sname, (sys_val, _) in numbers.items() if sname in sys_group]
