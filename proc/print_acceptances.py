@@ -15,6 +15,8 @@ parser = argparse.ArgumentParser(
     description = "signal acceptance printout",
     epilog = """Example:
 python print_acceptances.py temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets2_signal_recordAll.root
+python print_acceptances.py --sys-weights lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg*.root --devs merge
+python print_acceptances.py --sys-weights lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg*.root --devs merge_files_rel --with-stat
 """
     )
 
@@ -80,6 +82,16 @@ range_length = (len(sys_weght_name_ind) + 1) if args.sys_weights else 2
 # nicknames of the nominal and systematic files
 nominal_file_n = 0
 
+systematic_filenames = {'CUETP8M2T4down': 'tune_Down',
+'CUETP8M2T4up': 'tune_Up',
+'hdampUP':   'hdamp_Up',
+'hdampDOWN': 'hdamp_Down',
+'fsrup':   'fsr_Up',
+'fsrdown': 'fsr_Down',
+'isrup':   'isr_Up',
+'isrdown': 'isr_Down'}
+
+
 for file_i, input_filename in enumerate(args.input_files):
     if not isfile(input_filename):
         logging.info("missing: " + input_filename)
@@ -87,23 +99,13 @@ for file_i, input_filename in enumerate(args.input_files):
 
     logging.debug(input_filename)
 
-    if   'CUETP8M2T4down' in input_filename:
-        file_nickname = 'tune_Down'
-    elif 'CUETP8M2T4up'   in input_filename:
-        file_nickname = 'tune_Up'
-    elif 'hdampUP'   in input_filename:
-        file_nickname = 'hdampUP'
-    elif 'hdampDOWN' in input_filename:
-        file_nickname = 'hdampDOWN'
-    elif 'fsrup'   in input_filename:
-        file_nickname = 'fsrup'
-    elif 'fsrdown' in input_filename:
-        file_nickname = 'fsrdown'
-    elif 'isrup'   in input_filename:
-        file_nickname = 'isrup'
-    elif 'isrdown' in input_filename:
-        file_nickname = 'isrdown'
-    else:
+    file_nickname = None
+    for fname in systematic_filenames:
+        if fname in input_filename:
+            file_nickname = systematic_filenames[fname]
+            break
+
+    if not file_nickname:
         file_nickname = 'nominal_' + str(nominal_file_n)
         nominal_file_n += 1
 
@@ -161,12 +163,15 @@ if args.devs:
             nominal, _ = numbers['nom']
 
             # when merging systematic groups, construct new dict with results
-            if args.devs == 'merge':
+            if 'merge' in args.devs:
                 update_numbers = OrderedDict()
                 update_numbers['nom'] = numbers['nom']
                 for sys_group_name, sys_group in [('scales', systs_scales), ('alphas', systs_alphas), ('pdfs', systs_pdfs)]:
                     if any(sys_name in numbers for sys_name in sys_group):
-                        devs = [(sys_val-nominal)/nominal for sname, (sys_val, _) in numbers.items() if sname in sys_group]
+                        if 'rel' in args.devs:
+                            devs = [(sys_val-nominal)/nominal for sname, (sys_val, _) in numbers.items() if sname in sys_group]
+                        else:
+                            devs = [sys_val-nominal for sname, (sys_val, _) in numbers.items() if sname in sys_group]
                         logging.debug(devs)
                         sqrt_sum_dev = sqrt(sum(dev**2 for dev in devs))
                         logging.debug(sqrt_sum_dev)
@@ -177,8 +182,35 @@ if args.devs:
             else:
                 for sys_name, (sys_val, sys_err) in numbers.items():
                     if sys_name == 'nom': continue
-                    numbers[sys_name] = ((sys_val-nominal)/nominal, sys_err/nominal)
+                    if 'rel' in args.devs:
+                        numbers[sys_name] = ((sys_val-nominal)/nominal, sys_err/nominal)
+                    else:
+                        numbers[sys_name] = (sys_val-nominal, sys_err)
 
+if 'merge_files' in args.devs:
+    for channel, file_results in results.items():
+        # get the nominal file:
+        nominal, _ = file_results['nominal_0']['nom']
+
+        # for all other files get and merge the Up-Down nominal deviations
+        merged_files = OrderedDict()
+        for sys_name, sys_group_names in [('tune', ('tune_Up', 'tune_Down')), ('hdamp', ('hdamp_Up', 'hdamp_Down')), ('tune', ('tune_Up', 'tune_Down')), ('isr', ('isr_Up', 'isr_Down')), ('fsr', ('fsr_Up', 'fsr_Down'))]:
+            sys_group = [file_results[fn]['nom'] for fn in sys_group_names if fn in sys_group_names]
+            if 'rel' in args.devs:
+                sys_dev  = sqrt(sum(((nominal - sys_val) / nominal)**2 for sys_val, _ in sys_group))
+                sys_stat = sqrt(sum((sys_sta / nominal)**2 for _, sys_sta in sys_group))/len(sys_group)
+            else:
+                sys_dev  = sqrt(sum((nominal - sys_val)**2 for sys_val, _ in sys_group))
+                sys_stat = sqrt(sum((sys_sta)**2 for _, sys_sta in sys_group))/len(sys_group)
+            merged_files.setdefault(sys_name, OrderedDict())['nom'] = sys_dev, sys_stat
+
+        # pop the separate up-downs deviations from non-nominal files:
+        for fn in file_results:
+            if fn == 'nominal_0': continue
+            file_results.pop(fn)
+
+        # update with the merged devs
+        file_results.update(merged_files)
 
 ## print stuff in rows
 #for name, numbers in results.items():
@@ -208,17 +240,6 @@ for name, numbers in per_sys.items():
     if args.with_stat:
         print ("%10s %-20s " % name) + ' '*5 + ' '.join(["%10.4f +- %6.4f" % numbers[pn] for pn in proc_names])
     else:
-        #print str(numbers)
-        #print [numbers[pn] for pn in proc_names]
-        #print [numbers[pn][0] for pn in proc_names]
-        #print [val for pn in proc_names for val in numbers[pn]]
-        ##print [val for pn in proc_names for val, _ in numbers[pn]]
-        ##print ["%10.4f" % val for pn in proc_names for val, _ in numbers[pn]]
-        #print ["%10.4f" % numbers[pn][0] for pn in proc_names]
-        #print ' '.join(["%10.4f" % numbers[pn][0] for pn in proc_names])
-        #print name
-        #print ("%20s " % name)
-        #print ("%20s " % name) + ' '*5
         print ("%10s %-20s " % name) + ' '*5 + ' '.join(["%10.4f" % numbers[pn][0] for pn in proc_names])
 
 ## TODO: what is this ratio for? it does not work now
