@@ -17,13 +17,15 @@ python print_acceptances.py temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets2_sign
 """
     )
 
+parser.add_argument("--debug",       action='store_true', help="DEBUG level of logging")
+
 #parser.add_argument("input_filename",  type=str, help="the path tot he file with acceptances")
 parser.add_argument("--sys-weights", action='store_true', help="print weight-based systematics too")
 parser.add_argument("--yields",      action='store_true', help="print number of events processed")
 #parser.add_argument("--ratio",       action='store_true', help="calculate ratio to the first value")
 parser.add_argument("--all-procs",   action='store_true', help="print for all processes")
 parser.add_argument("--with-stat",   action='store_true', help="print stat error too")
-parser.add_argument("--debug",       action='store_true', help="DEBUG level of logging")
+parser.add_argument("--devs",        action='store_true', help="calculate the relative systematic deviations")
 
 parser.add_argument('input_files', nargs="+", help="""files with acceptances""")
 
@@ -120,26 +122,40 @@ for file_i, input_filename in enumerate(args.input_files):
     sum_cut_histos.Divide(sum_all_histos)
 
     # divide for acceptance and save all processes
-    for name, numbers in results.items():
+    for name, file_numbers in results.items():
         histo_all = tfile.Get("all_ev_" + name)
         histo_cut = tfile.Get("cut_ev_" + name)
         histo_cut.Divide(histo_all)
 
+        file_numbers[file_nickname] = OrderedDict()
+
         if args.yields:
-            numbers[(file_nickname, 'event_yield')] = (histo_all.GetBinContent(1), histo_all.GetBinError(1))
+            file_numbers[file_nickname]['event_yield'] = (histo_all.GetBinContent(1), histo_all.GetBinError(1))
 
         for i in range(1,range_length):
             weight_name = sys_weght_name_ind[i]
-            numbers[(file_nickname, weight_name)] = (histo_cut.GetBinContent(i), histo_cut.GetBinError(i))
+            file_numbers[file_nickname][weight_name] = (histo_cut.GetBinContent(i), histo_cut.GetBinError(i))
 
     # save the acceptance of the sum of the processes (usefull only for signal processes!)
     results['sum'] = OrderedDict()
+    results['sum'][file_nickname] = OrderedDict()
     if args.yields:
-        results['sum'][(file_nickname, 'event_yield')] = (sum_all_histos.GetBinContent(1), sum_all_histos.GetBinError(1))
+        results['sum'][file_nickname]['event_yield'] = (sum_all_histos.GetBinContent(1), sum_all_histos.GetBinError(1))
 
     for i in range(1,range_length):
         weight_name = sys_weght_name_ind[i]
-        results['sum'][(file_nickname, weight_name)]   = (sum_cut_histos.GetBinContent(i), sum_cut_histos.GetBinError(i))
+        results['sum'][file_nickname][weight_name]   = (sum_cut_histos.GetBinContent(i), sum_cut_histos.GetBinError(i))
+
+# calculate relative deviations of systematics from nominals
+# the statistical uncertainty of deviations in each nominal file does not matter
+# it's relevant only for the difference different files (different events)
+if args.devs:
+    for channel, file_results in results.items():
+        for file_nickname, numbers in file_results.items():
+            nominal, _ = numbers['nom']
+            for sys_name, (sys_val, _) in numbers.items():
+                if sys_name == 'nom': continue
+                numbers[sys_name] = ((sys_val-nominal)/nominal, 0.)
 
 ## print stuff in rows
 #for name, numbers in results.items():
@@ -154,7 +170,8 @@ for file_i, input_filename in enumerate(args.input_files):
 # revert it for syst per row
 per_sys = OrderedDict()
 for pn, numbers in results.items():
-    for sys_name, val_unc in numbers.items():
+    for file_nickname in numbers:
+      for sys_name, val_unc in numbers[file_nickname].items():
         per_sys.setdefault(sys_name, OrderedDict())[pn] = val_unc
 
 proc_names = results.keys()
