@@ -16,7 +16,8 @@ parser = argparse.ArgumentParser(
     epilog = """Example:
 python print_acceptances.py temp/NtuplerAnalyzer_test_METfiltersOFF_TTJets2_signal_recordAll.root
 python print_acceptances.py --sys-weights lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg*.root --devs merge
-python print_acceptances.py --sys-weights lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg*.root --devs merge_files_rel --with-stat
+python print_acceptances.py --sys-weights lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg*.root --devs merge_files_rel --with-stat --how-print cols
+python print_acceptances.py --sys-weights lstore_outdirs/merge-sets/v34/t1/MC2016_Summer16_TTJets_powheg*.root --devs merge_files
 """
     )
 
@@ -29,6 +30,7 @@ parser.add_argument("--yields",      action='store_true', help="print number of 
 parser.add_argument("--all-procs",   action='store_true', help="print for all processes")
 parser.add_argument("--with-stat",   action='store_true', help="print stat error too")
 parser.add_argument("--devs",        type=str, help="calculate the relative systematic deviations")
+parser.add_argument("--how-print",   type=str, default='rows', help="the default output is in rows, if any argument is given print columns")
 
 parser.add_argument('input_files', nargs="+", help="""files with acceptances""")
 
@@ -213,34 +215,39 @@ if 'merge_files' in args.devs:
         file_results.update(merged_files)
 
 ## print stuff in rows
-#for name, numbers in results.items():
-#    #
-#    if args.with_stat:
-#        print "%20s " % name + ' '*5, ' '.join("%10.4f +- %6.4f" % (val, unc) for val, unc in numbers.values())
-#    else:
-#        print "%20s " % name + ' '*5, ' '.join("%10.4f" % val for val, _ in numbers.values())
+if args.how_print == 'rows':
+    # get the sysnames from any first channel saved in results
+    sys_names = [' %20s' % ' '.join((fname, sysname)) for fname, fsysts in results.values()[0].items() for sysname in fsysts]
+    print "%20s " % 'channel' + ' '*5, ' '.join(sys_names)
+    for channel, file_numbers in results.items():
+        numbers = [v for f in file_numbers.values() for v in f.values()]
+        #
+        if args.with_stat:
+            print "%20s " % channel + ' '*5, ' '.join(" %10.4f +- %6.4f" % (val, unc) for val, unc in numbers)
+        else:
+            print "%20s " % channel + ' '*5, ' '.join(" %20.4f"          % val for val, _ in numbers)
 
 # print stuff in columns per process
+else:
+    # revert it for syst per row
+    per_sys = OrderedDict()
+    for pn, numbers in results.items():
+        for file_nickname in numbers:
+          for sys_name, val_unc in numbers[file_nickname].items():
+            per_sys.setdefault((file_nickname, sys_name), OrderedDict())[pn] = val_unc
 
-# revert it for syst per row
-per_sys = OrderedDict()
-for pn, numbers in results.items():
-    for file_nickname in numbers:
-      for sys_name, val_unc in numbers[file_nickname].items():
-        per_sys.setdefault((file_nickname, sys_name), OrderedDict())[pn] = val_unc
+    proc_names = results.keys()
+    logging.debug(proc_names)
 
-proc_names = results.keys()
-logging.debug(proc_names)
-
-print ' '*21 + ' '*5 + ' '.join(['%10s' % p for p in proc_names])
-for name, numbers in per_sys.items():
-    #
-    logging.debug(name)
-    logging.debug(repr(numbers))
-    if args.with_stat:
-        print ("%10s %-20s " % name) + ' '*5 + ' '.join(["%10.4f +- %6.4f" % numbers[pn] for pn in proc_names])
-    else:
-        print ("%10s %-20s " % name) + ' '*5 + ' '.join(["%10.4f" % numbers[pn][0] for pn in proc_names])
+    print ' '*21 + ' '*5 + ' '.join(['%10s' % p for p in proc_names])
+    for name, numbers in per_sys.items():
+        #
+        logging.debug(name)
+        logging.debug(repr(numbers))
+        if args.with_stat:
+            print ("%10s %-20s " % name) + ' '*5 + ' '.join(["%10.4f +- %6.4f" % numbers[pn] for pn in proc_names])
+        else:
+            print ("%10s %-20s " % name) + ' '*5 + ' '.join(["%10.4f" % numbers[pn][0] for pn in proc_names])
 
 ## TODO: what is this ratio for? it does not work now
 #if args.ratio:
