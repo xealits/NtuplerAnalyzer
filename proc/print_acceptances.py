@@ -6,6 +6,7 @@ import ctypes
 from array import array
 from sys import exit
 from collections import OrderedDict
+from math import sqrt
 
 
 
@@ -25,7 +26,7 @@ parser.add_argument("--yields",      action='store_true', help="print number of 
 #parser.add_argument("--ratio",       action='store_true', help="calculate ratio to the first value")
 parser.add_argument("--all-procs",   action='store_true', help="print for all processes")
 parser.add_argument("--with-stat",   action='store_true', help="print stat error too")
-parser.add_argument("--devs",        action='store_true', help="calculate the relative systematic deviations")
+parser.add_argument("--devs",        type=str, help="calculate the relative systematic deviations")
 
 parser.add_argument('input_files', nargs="+", help="""files with acceptances""")
 
@@ -67,8 +68,10 @@ else:
 filenames = []
 
 # weight names to indexes
-pdf_names = ['PDFCTn%s' % str(n) for n in range(1, 57)]
-sys_weght_name_ind = {n+1: name for n, name in enumerate(['nom', 'scale_renorm_Up', 'scale_renorm_Down', 'scale_refrag_Up', 'scale_refrag_Down', 'scale_comb_Up', 'scale_comb_Down', 'alpha_Up', 'alpha_Down'] + pdf_names)}
+systs_pdfs = ['PDFCTn%s' % str(n) for n in range(1, 57)]
+systs_scales = ['scale_renorm_Up', 'scale_renorm_Down', 'scale_refrag_Up', 'scale_refrag_Down', 'scale_comb_Up', 'scale_comb_Down']
+systs_alphas = ['alpha_Up', 'alpha_Down']
+sys_weght_name_ind = {n+1: name for n, name in enumerate(['nom'] + systs_scales + systs_alphas + systs_pdfs)}
 
 range_length = (len(sys_weght_name_ind) + 1) if args.sys_weights else 2
 
@@ -153,9 +156,26 @@ if args.devs:
     for channel, file_results in results.items():
         for file_nickname, numbers in file_results.items():
             nominal, _ = numbers['nom']
-            for sys_name, (sys_val, _) in numbers.items():
-                if sys_name == 'nom': continue
-                numbers[sys_name] = ((sys_val-nominal)/nominal, 0.)
+
+            # when merging systematic groups, construct new dict with results
+            if args.devs == 'merge':
+                update_numbers = OrderedDict()
+                update_numbers['nom'] = numbers['nom']
+                for sys_group_name, sys_group in [('scales', systs_scales), ('alphas', systs_alphas), ('pdfs', systs_pdfs)]:
+                    if any(sys_name in numbers for sys_name in sys_group):
+                        devs = [(sys_val-nominal)/nominal for sname, (sys_val, _) in numbers.items() if sname in sys_group]
+                        logging.debug(devs)
+                        sqrt_sum_dev = sqrt(sum(dev**2 for dev in devs))
+                        logging.debug(sqrt_sum_dev)
+                        update_numbers[sys_group_name] = sqrt_sum_dev, 0
+
+                file_results[file_nickname] = update_numbers
+
+            else:
+                for sys_name, (sys_val, sys_err) in numbers.items():
+                    if sys_name == 'nom': continue
+                    numbers[sys_name] = ((sys_val-nominal)/nominal, sys_err/nominal)
+
 
 ## print stuff in rows
 #for name, numbers in results.items():
@@ -172,13 +192,16 @@ per_sys = OrderedDict()
 for pn, numbers in results.items():
     for file_nickname in numbers:
       for sys_name, val_unc in numbers[file_nickname].items():
-        per_sys.setdefault(sys_name, OrderedDict())[pn] = val_unc
+        per_sys.setdefault((file_nickname, sys_name), OrderedDict())[pn] = val_unc
 
 proc_names = results.keys()
+logging.debug(proc_names)
 
 print ' '*21 + ' '*5 + ' '.join(['%10s' % p for p in proc_names])
 for name, numbers in per_sys.items():
     #
+    logging.debug(name)
+    logging.debug(repr(numbers))
     if args.with_stat:
         print ("%10s %-20s " % name) + ' '*5 + ' '.join(["%10.4f +- %6.4f" % numbers[pn] for pn in proc_names])
     else:
