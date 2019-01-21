@@ -832,7 +832,7 @@ just in case, the convertion of txt -> workspace.root:
 
 
 
-## covariance matrices
+## covariance matrices (correlations)
 
 they are done in simple
 

@@ -1,3 +1,47 @@
+# covariance, correlation matrix
+
+The last results were with PU fixed
+
+ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root
+ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root
+ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root
+
+correlations without PDFs:
+
+combine -M FitDiagnostics ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --freezeNuisanceGroup tt_th_pdf --plots --saveShapes --saveWithUncertainties --name ElCorrel
+mv covariance_fit_s.png covariance_fit_s_ElCorrel.png
+combine -M FitDiagnostics ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --freezeNuisanceGroup tt_th_pdf --plots --saveShapes --saveWithUncertainties --name MuCorrel
+mv covariance_fit_s.png covariance_fit_s_MuCorrel.png
+combine -M FitDiagnostics ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root --freezeNuisanceGroup tt_th_pdf --plots --saveShapes --saveWithUncertainties --name BothCorrel
+mv covariance_fit_s.png covariance_fit_s_BothCorrel.png
+
+(aside: so how to do a version control?)
+
+make it without MC stat too?
+
+cp ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.txt   ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_noMC.txt  
+cp ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.txt   ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_noMC.txt
+cp ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.txt ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_noMC.txt
+
+vim -p ttxsec/datacard_v25v26redo_*_lnU_noQCDpu_fixPUnorms_noMC.txt
+
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_noMC.txt  
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_noMC.txt
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_noMC.txt
+
+combine -M FitDiagnostics ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_noMC.root   --freezeNuisanceGroup tt_th_pdf --plots --saveShapes --saveWithUncertainties --name ElCorrel
+mv covariance_fit_s.png covariance_fit_s_ElCorrel.png
+combine -M FitDiagnostics ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_noMC.root   --freezeNuisanceGroup tt_th_pdf --plots --saveShapes --saveWithUncertainties --name MuCorrel
+mv covariance_fit_s.png covariance_fit_s_MuCorrel.png
+combine -M FitDiagnostics ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_noMC.root --freezeNuisanceGroup tt_th_pdf --plots --saveShapes --saveWithUncertainties --name BothCorrel
+mv covariance_fit_s.png covariance_fit_s_BothCorrel.png
+
+
+
+
+
+
+
 # repeate acceptance study properly, the files were removed for space issues, acceptance breakdown
 
 make merge_proc dtags=sw-dir/merge-sets/jobs_hadd.dtags.tt               nt=v34 proc=t1 merge_dir=lstore_outdirs/merge-sets/
@@ -209,6 +253,32 @@ h1->SetName("new")
 
 elmu
 
+804.1 ± 2.3 ( stat ) ± 31.2 ( syst ) ± 19.6 ( lum ) pb.
+
+\sigma_{\ttbar}(\ell\tau) &= 783 \pm  7 \rm{(stat.)} \pm 60 \rm{(syst.)} \pm 20 \rm{(lumi.)} pb.
+
+dilep  = 804.1
+leptau = 783.
+ratio = leptau / dilep
+0.9737594826514114
+
+lumi_dilep  = 2.44
+lumi_leptau = 2.5
+unc_lumi = sqrt((lumi_dilep - lumi_leptau)^2)
+0.06000000000000005
+
+stat_dilep  = 0.29
+stat_leptau = 0.7
+unc_stats = sqrt(stat_dilep^2 + stat_leptau^2)
+0.7576938695805846
+
+Combined systematic =
+unc_syst = 7.44
+
+ratio .* [unc_stats unc_syst unc_lumi] ./ 100
+ 0.00737812  0.0724477  0.000584256
+
+
 
 
 
@@ -271,6 +341,7 @@ ME combined scale variation  &  0.2 \\
 
 
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight_c2.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doInitialFit              --name ElImpactsTight
+
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight_c2.root --freezeParameters lumi_13TeV  -m 125 --robustFit 1 --doFits --parallel 5       --name ElImpactsTight
 ../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight_c2.root --freezeParameters lumi_13TeV  -m 125 -o latest_el_impacts_resub3_Tight_c2.json --name ElImpactsTight
 ../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_resub3_Tight_c2.json -o postfit_el_impacts_resub3_Tight_c2
