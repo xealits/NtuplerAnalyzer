@@ -1285,6 +1285,172 @@ but 110 in 1000!
 
 
 
+### ok, same datacards with AD and saturated
+
+datafile HISTOSELS_v25v25redo_resub2.root
+datacard ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.txt
+copy muons:
+ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.txt
+
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.txt
+
+no FragUp in mu_sel_lj
+and some pdfs are missing
+
+ls histosels/redo-v25-v26_resub2/distrs | grep -i mu_sel | wc -l; ls histosels/redo-v25-v26_resub2/distrs | grep -i el_sel | wc -l
+
+ls histosels/redo-v25-v26_resub2/distrs | grep -i "mu_sel.*PDF" | sed 's/.*\(PDF[^_]*\).*/\1/' | sort > tmp.mu_pdfs
+ls histosels/redo-v25-v26_resub2/distrs | grep -i "el_sel.*PDF" | sed 's/.*\(PDF[^_]*\).*/\1/' | sort > tmp.el_pdfs
+diff tmp.mu_pdfs tmp.el_pdfs
+
+ls histosels/redo-v25-v26_resub2/distrs | grep -i "mu_sel.*PDFCT14n9Up"
+ls histosels/redo-v25-v26_resub2/distrs | grep -i "el_sel.*PDFCT14n9Up"
+
+ls histosels/redo-v25-v26_resub2/distrs | grep -i mu_sel | sed 's/.*_\([^_]*\)_data-qcd.*/\1/' | sort > tmp.mu_systs
+ls histosels/redo-v25-v26_resub2/distrs | grep -i el_sel | sed 's/.*_\([^_]*\)_data-qcd.*/\1/' | sort > tmp.el_systs
+diff tmp.mu_systs tmp.el_systs
+
+foreach sys (`cat syst-test.syst-list.1`)
+foreach sys (FragUp FragDown)
+foreach sys (PDFCT14n10Up PDFCT14n11Up PDFCT14n12Up PDFCT14n13Up PDFCT14n14Up PDFCT14n15Up PDFCT14n16Up PDFCT14n17Up PDFCT14n18Up PDFCT14n19Up PDFCT14n1Up PDFCT14n20Up PDFCT14n21Up PDFCT14n22Up PDFCT14n23Up PDFCT14n24Up PDFCT14n25Up PDFCT14n26Up PDFCT14n27Up PDFCT14n28Up PDFCT14n29Up PDFCT14n2Up PDFCT14n30Up PDFCT14n31Up PDFCT14n32Up PDFCT14n33Up PDFCT14n34Up PDFCT14n35Up PDFCT14n36Up PDFCT14n37Up PDFCT14n38Up PDFCT14n39Up PDFCT14n3Up PDFCT14n40Up PDFCT14n41Up PDFCT14n42Up PDFCT14n43Up PDFCT14n44Up PDFCT14n45Up PDFCT14n46Up PDFCT14n47Up PDFCT14n48Up PDFCT14n49Up PDFCT14n4Up PDFCT14n50Up PDFCT14n51Up PDFCT14n52Up PDFCT14n53Up PDFCT14n54Up PDFCT14n55Up PDFCT14n56Up PDFCT14n5Up PDFCT14n6Up PDFCT14n7Up PDFCT14n8Up PDFCT14n9Up)
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root     -o histosels/redo-v25-v26_resub2/ --lumi 35800 -c mu_sel_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --systematic $sys
+end
+
+foreach sys (PDFCT14n10Up PDFCT14n11Up PDFCT14n12Up PDFCT14n13Up PDFCT14n14Up PDFCT14n15Up PDFCT14n16Up PDFCT14n17Up PDFCT14n18Up PDFCT14n19Up PDFCT14n1Up PDFCT14n20Up PDFCT14n21Up PDFCT14n22Up PDFCT14n23Up PDFCT14n24Up PDFCT14n25Up PDFCT14n26Up PDFCT14n27Up PDFCT14n28Up PDFCT14n29Up PDFCT14n2Up PDFCT14n30Up PDFCT14n31Up PDFCT14n32Up PDFCT14n33Up PDFCT14n34Up PDFCT14n35Up PDFCT14n36Up PDFCT14n37Up PDFCT14n38Up PDFCT14n39Up PDFCT14n3Up PDFCT14n40Up PDFCT14n41Up PDFCT14n42Up PDFCT14n43Up PDFCT14n44Up PDFCT14n45Up PDFCT14n46Up PDFCT14n47Up PDFCT14n48Up PDFCT14n49Up PDFCT14n4Up PDFCT14n50Up PDFCT14n51Up PDFCT14n52Up PDFCT14n53Up PDFCT14n54Up PDFCT14n55Up PDFCT14n56Up PDFCT14n5Up PDFCT14n6Up PDFCT14n7Up PDFCT14n8Up PDFCT14n9Up)
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root     -o histosels/redo-v25-v26_resub2/ --lumi 35800 -c mu_sel_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --systematic $sys
+end
+
+foreach sys (AlphaSDown AlphaSUp FragDown FragUp MfDown MfUp MfrDown MfrUp MrDown MrUp PetersonDown PetersonUp SemilepBRDown SemilepBRUp TOPPTDown TOPPTUp)
+
+source histos_tmp_mu_pdf1 &
+source histos_tmp_mu_pdf2 &
+
+combineCards.py mu=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.txt el=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.txt > ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.txt
+
+./scripts/text2workspace.py ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.txt
+
+finally!
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=AD         -s 123 --freezeParameters lumi_13TeV -n  lepMETprop_el_AD
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=AD -t 1000 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  lepMETprop_el_AD1000
+Anderson-Darling test statistic: 2.22412
+
+mean   expected limit: r < 1.03373 +/- 0.0181239 @ 95%CL (1000 toyMC)
+median expected limit: r < 0.89925 @ 95%CL (1000 toyMC)
+   68% expected band : 0.53467 < r < 1.53498
+   95% expected band : 0.366707 < r < 2.61621
+
+h_c->GetBinContent(h_c->FindBin(2.22412))
+48
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=AD -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  lepMETprop_el_AD100
+
+h_c->GetBinContent(h_c->FindBin(2.22412))
+2
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=AD         -s 123 --freezeParameters lumi_13TeV -n  lepMETprop_mu_AD
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=AD -t 1000 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  lepMETprop_mu_AD1000
+Anderson-Darling test statistic: 0.868249
+
+mean   expected limit: r < 1.04414 +/- 0.0170752 @ 95%CL (1000 toyMC)
+median expected limit: r < 0.929795 @ 95%CL (1000 toyMC)
+   68% expected band : 0.575564 < r < 1.47665
+   95% expected band : 0.381466 < r < 2.48017
+
+h_c->GetBinContent(h_c->FindBin(0.868249))
+571
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=AD -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  lepMETprop_mu_AD100
+
+h_c->GetBinContent(h_c->FindBin(0.868249))
+57
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=AD         -s 123 --freezeParameters lumi_13TeV -n  lepMETprop_both_AD
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=AD -t 1000 -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n  lepMETprop_both_AD1000
+Anderson-Darling test statistic: 3.36603
+
+both 100
+Done in 0.46 min (cpu), 0.47 min (real)
+mean   expected limit: r < 2.36336 +/- 0.0965533 @ 95%CL (100 toyMC)
+median expected limit: r < 2.17736 @ 95%CL (100 toyMC)
+   68% expected band : 1.52079 < r < 3.45352
+      95% expected band : 0.941743 < r < 5.61603
+
+h_c->GetBinContent(h_c->FindBin(3.36603))
+17.0000
+
+
+saturated
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=saturated         -s 123 --freezeParameters lumi_13TeV -n  lepMETprop_el_saturated
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=saturated -t 1000 -s 123 --toysFreq --expectSignal 1.0 --freezeParameters lumi_13TeV -n  lepMETprop_el_saturated1000
+Best fit test statistic: 51.843
+
+Done in 0.37 min (cpu), 0.37 min (real)
+mean   expected limit: r < 38.7258 +/- 0.290528 @ 95%CL (1000 toyMC)
+median expected limit: r < 38.1894 @ 95%CL (1000 toyMC)
+   68% expected band : 29.8957 < r < 47.2548
+      95% expected band : 23.8485 < r < 58.7099
+
+h_c->GetBinContent(h_c->FindBin(51.843))
+89.0000
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=saturated         -s 123 --freezeParameters lumi_13TeV -n  lepMETprop_mu_saturated
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=saturated -t 1000 -s 123 --toysFreq --expectSignal 1.0 --freezeParameters lumi_13TeV -n  lepMETprop_mu_saturated1000
+Best fit test statistic: 41.6766
+
+mean   expected limit: r < 38.4835 +/- 0.275204 @ 95%CL (1000 toyMC)
+median expected limit: r < 37.7171 @ 95%CL (1000 toyMC)
+   68% expected band : 29.8359 < r < 47.3778
+   95% expected band : 23.5349 < r < 57.8657
+
+370
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=saturated -t 100  -s 123 --toysFreq --expectSignal 1.0 --freezeParameters lumi_13TeV -n  lepMETprop_mu_saturated100
+
+mean   expected limit: r < 38.1009 +/- 0.895594 @ 95%CL (100 toyMC)
+median expected limit: r < 38.1994 @ 95%CL (100 toyMC)
+   68% expected band : 28.459 < r < 46.9401
+      95% expected band : 21.2939 < r < 58.6912
+
+h_c->GetBinContent(h_c->FindBin(41.6766))
+35
+
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=saturated         -s 123 --freezeParameters lumi_13TeV -n  lepMETprop_both_saturated
+combine -M GoodnessOfFit ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root --algo=saturated -t 1000 -s 123 --toysFreq --expectSignal 1.0 --freezeParameters lumi_13TeV -n  lepMETprop_both_saturated1000
+Best fit test statistic: 92.1385
+
+mean   expected limit: r < 78.6697 +/- 0.405327 @ 95%CL (1000 toyMC)
+median expected limit: r < 77.8688 @ 95%CL (1000 toyMC)
+   68% expected band : 65.277 < r < 91.6886
+   95% expected band : 56.4439 < r < 104.386
+
+156
+
+
+both in 100
+
+Done in 0.15 min (cpu), 0.15 min (real)
+mean   expected limit: r < 78.0232 +/- 1.24656 @ 95%CL (100 toyMC)
+median expected limit: r < 76.0517 @ 95%CL (100 toyMC)
+   68% expected band : 65.6768 < r < 93.0271
+      95% expected band : 55.2496 < r < 105.175
+
+limit->Draw("limit")
+h = (TH1D*) limit->GetHistogram()
+h_c = (TH1D*) h->GetCumulative(kFALSE)
+h_c->Draw()
+
+h_c->GetBinContent(h_c->FindBin(92.1385))
+17.0000
+
+
+
+
 ### numbers for the new reseb2 run 1, failed lstore jobs
 
                                  process    el_sel_lj   el_sel_ljout
