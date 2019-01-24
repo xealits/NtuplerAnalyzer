@@ -1,3 +1,123 @@
+# check the recent impacts?
+
+datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root
+datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root
+datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root   --freezeParameters lumi_13TeV -m 125  --name MuImpactsRecent   --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root   --freezeParameters lumi_13TeV -m 125  --name MuImpactsRecent   --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root   --freezeParameters lumi_13TeV -m 125  --name MuImpactsRecent   -o latest_el_impacts_recent.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_recent.json -o postfit_el_impacts_recent
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root   --freezeParameters lumi_13TeV -m 125  --name ElImpactsRecent   --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root   --freezeParameters lumi_13TeV -m 125  --name ElImpactsRecent   --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root   --freezeParameters lumi_13TeV -m 125  --name ElImpactsRecent   -o latest_mu_impacts_recent.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_recent.json -o postfit_mu_impacts_recent
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root --freezeParameters lumi_13TeV -m 125  --name BothImpactsRecent --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root --freezeParameters lumi_13TeV -m 125  --name BothImpactsRecent --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root --freezeParameters lumi_13TeV -m 125  --name BothImpactsRecent -o latest_both_impacts_recent.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts_recent.json -o postfit_both_impacts_recent
+
+-- a bit of a shift in results, not like the original test with fixedPUnorms...
+
+latest_both_impacts_recent.json
+latest_mu_impacts_recent.json
+latest_el_impacts_recent.json
+
+python new_impact_table.py --merge-pdf latest_el_impacts_recent.json latest_mu_impacts_recent.json latest_both_impacts_recent.json
+
+$\tauh$ jet identification  &  5.1 &  4.8 &  4.8 \\
+        top quark $p_{T}$  &  2.8 &  3.6 &  2.8 \\
+$\tauh$ misidentification background  &  2.6 &  2.8 &  2.7 \\
+        QCD normalization  &  0.4 &  1.7 &  2.3 \\
+     b-tagging efficiency  &  1.9 &  2.0 &  2.2 \\
+       pileup uncertainty  &  2.6 &  2.1 &  2.2 \\
+     W+jets normalization  &  0.4 &  1.4 &  1.5 \\
+     $\tauh$ Energy Scale  &  1.0 &  1.3 &  1.3 \\
+electron trigger efficiency  &  2.7 &  1.1 \\
+         jet energy scale  &  1.3 &  1.7 &  1.0 \\
+       muon ID efficiency  &  0.8 &  0.8 \\
+   electron ID efficiency  &  2.1 &  0.7 \\
+ Single Top normalization  &  0.7 &  0.5 &  0.5 \\
+         DY normalization  &  0.3 &  0.3 &  0.5 \\
+  muon trigger efficiency  &  0.4 &  0.3 \\
+    jet energy resolution  &  0.2 &  0.3 &  0.1 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  2.8 &  2.5 &  2.8 \\
+  final   state radiation  &  2.0 &  2.1 &  2.0 \\
+  initial state radiation  &  2.0 &  1.6 &  1.5 \\
+underlying event (Pythia tune)  &  0.6 &  0.7 &  0.8 \\
+ME combined scale variation  &  0.5 &  0.9 &  0.8 \\
+ ME Renormalization scale  &  0.8 &  0.9 &  0.6 \\
+   ME Factorization scale  &  0.3 &  0.4 &  0.4 \\
+semi-leptonic b-hadron BRs  &  0.5 &  0.2 &  0.3 \\
+   ME-PS matching (hdamp)  &  0.0 &  0.1 &  0.2 \\
+                      PDF  &  1.4 &  1.2 &  1.3 \\
+            MC statistics  &  2.9 &  1.8 &  2.4 \\
+
+
+ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root
+ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root
+ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --freezeParameters lumi_13TeV -m 125  --name MuImpactsRecent   --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --freezeParameters lumi_13TeV -m 125  --name MuImpactsRecent   --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --freezeParameters lumi_13TeV -m 125  --name MuImpactsRecent   -o latest_el_impacts_recentOrig1.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_recentOrig1.json -o postfit_el_impacts_recentOrig1
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --freezeParameters lumi_13TeV -m 125  --name ElImpactsRecent   --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --freezeParameters lumi_13TeV -m 125  --name ElImpactsRecent   --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --freezeParameters lumi_13TeV -m 125  --name ElImpactsRecent   -o latest_mu_impacts_recentOrig1.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_recentOrig1.json -o postfit_mu_impacts_recentOrig1
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root --freezeParameters lumi_13TeV -m 125  --name BothImpactsRecent --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root --freezeParameters lumi_13TeV -m 125  --name BothImpactsRecent --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root --freezeParameters lumi_13TeV -m 125  --name BothImpactsRecent -o latest_both_impacts_recentOrig1.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts_recentOrig1.json -o postfit_both_impacts_recentOrig1
+
+seems ok
+
+python new_impact_table.py --merge-pdf latest_el_impacts_recentOrig1.json latest_mu_impacts_recentOrig1.json latest_both_impacts_recentOrig1.json
+
+$\tauh$ jet identification  &  5.1 &  4.7 &  4.5 \\
+       pileup uncertainty  &  2.9 &  2.4 &  2.5 \\
+$\tauh$ misidentification background  &  2.8 &  2.5 &  2.4 \\
+        top quark $p_{T}$  &  2.9 &  3.0 &  2.3 \\
+        QCD normalization  &  0.2 &  1.2 &  1.4 \\
+     b-tagging efficiency  &  1.6 &  1.5 &  1.4 \\
+     W+jets normalization  &  0.3 &  1.1 &  1.1 \\
+       muon ID efficiency  &  0.7 &  0.7 \\
+         DY normalization  &  0.3 &  0.3 &  0.6 \\
+ Single Top normalization  &  0.6 &  0.5 &  0.4 \\
+electron trigger efficiency  &  2.6 &  0.4 \\
+  muon trigger efficiency  &  0.4 &  0.3 \\
+   electron ID efficiency  &  1.9 &  0.3 \\
+     $\tauh$ Energy Scale  &  0.3 &  0.4 &  0.3 \\
+    jet energy resolution  &  0.1 &  0.1 &  0.2 \\
+         jet energy scale  &  0.3 &  0.2 &  0.1 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  2.7 &  2.6 &  2.7 \\
+  final   state radiation  &  2.2 &  1.6 &  1.8 \\
+  initial state radiation  &  1.9 &  1.3 &  1.3 \\
+ME combined scale variation  &  0.6 &  1.1 &  0.9 \\
+ ME Renormalization scale  &  0.8 &  1.2 &  0.9 \\
+   ME-PS matching (hdamp)  &  0.2 &  0.6 &  0.6 \\
+underlying event (Pythia tune)  &  0.5 &  0.4 &  0.5 \\
+semi-leptonic b-hadron BRs  &  0.5 &  0.3 &  0.3 \\
+   ME Factorization scale  &  0.3 &  0.3 &  0.1 \\
+                      PDF  &  1.5 &  1.2 &  1.4 \\
+            MC statistics  &  2.4 &  1.7 &  1.8 \\
+
+damn
+
+
+
+
+
+
 # covariance, correlation matrix
 
 The last results were with PU fixed
@@ -277,6 +397,36 @@ unc_syst = 7.44
 
 ratio .* [unc_stats unc_syst unc_lumi] ./ 100
  0.00737812  0.0724477  0.000584256
+
+
+and text
+
+\subsection{Ratio to the dilepton cross section and partial width}
+\label{sec:ratio_dilep}
+
+The ratio of the cross-section of the simultaneous fit in the lepton-tau final state %$\sigma_{\ttbar}(\ell\tau)$
+divided by the dilepton cross section measurement~\cite{Sirunyan:2018goh} from the same 2016 data-taking period is calculated
+by accounting for the uncertainties correlated as in the Table~\ref{tab:ratiosyscorr}.
+The ratio provides the cancellation of the common uncertainties.
+%The ratio provides access to $Br(W\rightarrow\tau)/Br(W\rightarrow\ell)$
+% Say somethings about the cancelation of systematics?
+% Better about the method overal
+For the combined systematic uncertainty of the ratio,
+the uncorrelated sources of uncertainty are added in quadrature, while
+the combined uncertainty of the correlated sources is estimated as the difference $|\delta_{\ell\tau} - \delta_{\ell\ell}|$,
+where $\delta_{\ell\tau}$ and $\delta_{\ell\ell}$ are the relative uncertainties in the lepton-tau and dilepton cross section measurements, respectively.
+The ratio is estimated to be $R_{\ell\tauh/\ell\ell}=0.974 \pm 0.007 \rm{(stat.)} \pm 0.072 \rm{(syst.)} \pm 0.001 \rm{(lumi.)}$, consistent with lepton universality.
+
+We also estimate the ratio of the partial to the total width, $R_{\Gamma}=\Gamma(t\rightarrow\tauh\nu_{\tau}b)/\Gamma_{\rm total}$.
+In the measurement, the cross section in the $\ell\tauh$ final state is multiplied by the BR($W\rightarrow\tauh\nu_\tau$)~\cite{PDG2016}
+and divided by the \ttbar dilepton cross section~\cite{Sirunyan:2018goh}.
+%The measurement is in the channel $\ttbar\rightarrow (b\ell\nu_{\ell})(b\tauh\nu_{\tauh})$, where $\tau$ decays into hadrons ($\tauh$), and \ell (\ell=e,\mu$) include \ell from \tau decays.
+The result yields the value $R_{\Gamma}=0.1047 \pm 0.0008 \rm{(stat.)} \pm 0.0077 \rm{(syst.)} \pm 0.0001 \rm{(lumi.)}$.
+
+
+((TTree*) ntupler->Get("reduced_ttree"))->GetEntries()
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("5", "abs(gen_t_w_decay_id)  > 14")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("5", "abs(gen_tb_w_decay_id) > 14")
 
 
 
