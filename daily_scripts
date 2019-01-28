@@ -1,3 +1,23 @@
+# substitution of the abstract in AN
+
+A measurement of the cross section of the process $t\bar{t}\rightarrow (\ell\nu_\ell) (\tau_h \nu_\tau) b\bar{b}$, ($\ell=e, \mu$) is performed.
+The data sample corresponds to an integrated luminosity of 31.3~fb$^{-1}$ and 35.8~fb$^{-1}$ for the $e\tau_{h}$ and $\mu\tau_{h}$ final states,
+respectively, and collected by the CMS detector in proton-proton collisions at $\sqrt{s}=13$~TeV.
+The measured value is $\sigma_{t\bar{t}} = 783 \pm  7 \rm{(stat.)} \pm 60 \rm{(syst.)} \pm 20 \rm{(lumi.)}$~pb.
+
+The cross section of the process $t\bar{t}\rightarrow (b\ell\nu_{\ell})(b\tau_{h}\nu_{\tau})$ is measured,
+where the $\tau$ decays into hadrons ($\tau_{h}$), and $\ell$ ($e$ or $\mu$) includes $\ell$ from $\tau$ decays.
+The data sample corresponds to an integrated luminosity of 31.3~fb$^{-1}$ and 35.8~fb$^{-1}$ for the $e\tau_{h}$ and $\mu\tau_{h}$ final states,
+respectively, and it was collected by the CMS detector in proton-proton collisions at $\sqrt{s}=13$~TeV.
+The measured value is $\sigma_{t\bar{t}} = 783 \pm  7 \rm{(stat.)} \pm 60 \rm{(syst.)} \pm 20 \rm{(lumi.)}$~pb.
+The measurement of the ratio of the cross sections in the lepton-tau final state divided by the dilepton cross section yields a value
+$R_{\ell\tau_{h}/\ell\ell}=0.974 \pm 0.007 \rm{(stat.)} \pm 0.072 \rm{(syst.)} \pm 0.001 \rm{(lumi.)}$, consistent with lepton universality.
+The ratio of the partial to the total width
+$\Gamma(t\rightarrow\tau_{h}\nu_{\tau}b)/\Gamma_{\rm total}=0.1047 \pm 0.0008 \rm{(stat.)} \pm 0.0077 \rm{(syst.)} \pm 0.0001 \rm{(lumi.)}$ is also measured.
+
+
+
+
 # check the recent impacts?
 
 datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root

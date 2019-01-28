@@ -26,6 +26,7 @@ TAUS_ID_CUT = TAUS_ID_CUT_VLoose # TAUS_ID_CUT_Medium # Vloose cut for the shape
 ONLY_3PI_TAUS = False
 SV_SIGN_CUT = 2.5
 
+REQUIRE_MLB = True #
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all):
     #return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all or pass_mumu
@@ -522,6 +523,46 @@ def calc_lj_var(ev, light_jets, b_jets, save_all_permutations=False, isMC=False)
                 closest_b_gen = ev.jet_matching_gen[jet_index]
 
     return TMath.Sqrt(dist_W*dist_W + dist_t*dist_t), closest_to_W.mass(), closest_to_t.mass(), (closest_pair_gens, closest_b_gen), all_masses
+
+def solve_quadratic(a, b, c):
+
+    # calculate the discriminant
+    d = (b**2) - (4*a*c)
+    if d < 0:
+        return False, (0, 0)
+
+    # find two solutions
+    sol1 = (-b-cmath.sqrt(d))/(2*a)
+    sol2 = (-b+cmath.sqrt(d))/(2*a)
+
+    return True, (sol1.real, sol2.real)
+
+def solve_met_z_coef(met_pt, l_pt, l_z, l_e):
+    # met*lep = (m_w^2 - m_l^2)/2
+    # z = k*e + b
+
+    b = (- met_pt * l_pt - m_w_boson**2 / 2) / l_z
+    k = (l_e) / l_z
+
+    return k, b
+
+def solve_met_e_z(met_pt, l_pt, l_z, l_e):
+
+    k, b = solve_met_z_coef(met_pt, l_pt, l_z, l_e)
+
+    solved, e1, e2 = solve_quadratic((k**2 - 1), 2*k*b, (b**2 + met_pt**2))
+    if not solved:
+        print "met E could not be found"
+
+    if (e1 < 0) and (e2 < 0):
+        print "both met E < 0"
+    elif (e1 > 0) and (e2 > 0):
+        print "both met E > 0"
+
+    e = max(e1, e2)
+
+    z = k*e + b
+    return e, z
 
 
 #def PFTau_FlightLength_significance(TVector3 pv,TMatrixTSym<double> PVcov, TVector3 sv, TMatrixTSym<double> SVcov ){
@@ -1821,6 +1862,14 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
     event_dilep_mass = array('f', [0])
     ttree_out.Branch('event_dilep_mass', event_dilep_mass, 'event_dilep_mass/f')
+
+    event_top_masses_medium = ROOT.LorentzVectorS()
+    ttree_out.Branch("event_top_masses_medium", event_top_masses_medium)
+    all_vector_branches.append(event_top_masses_medium)
+
+    event_top_masses_loose = ROOT.LorentzVectorS()
+    ttree_out.Branch("event_top_masses_loose", event_top_masses_loose)
+    all_vector_branches.append(event_top_masses_loose)
 
     event_leptons = ROOT.LorentzVectorS()
     ttree_out.Branch("event_leptons", event_leptons)
@@ -3835,6 +3884,22 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         event_jets_lj_var[0] = lj_var
         event_jets_input_has[0] = jets_input_has
         event_jets_found_has[0] = jets_found_has
+
+        # calc the top mass from the met+l+b
+        if REQUIRE_MLB:
+            lep = sel_leps[0]
+            met_e, met_z = solve_met_e_z(proc_met.pt(), lep.pt(), lep.z(), lep.e())
+            full_met     = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(proc_met.x(), proc_met.y(), met_z, met_e)
+            met_lep = full_met + lep
+            # loop over b jets and save TODO: loose b-jets?
+            #b_cand_jets     = jets.medium + jets.taumatched[0] + jets.loose
+            for j, mult, _, _, _, _, jet_index in jets.medium + jets.taumatched[0]:
+                m_t = (met_lep + mult*j).mass()
+                event_top_masses_medium .push_back(m_t)
+
+            for j, mult, _, _, _, _, jet_index in jets.loose:
+                m_t = (met_lep + mult*j).mass()
+                event_top_masses_loose  .push_back(m_t)
 
         event_jets_n_jets[0]  = N_jets_nom_all
         event_jets_n_bjets[0] = N_jets_nom_med
