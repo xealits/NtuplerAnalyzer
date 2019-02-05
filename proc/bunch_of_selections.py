@@ -1,6 +1,28 @@
 import logging
+import argparse
 
-logging.basicConfig(level=logging.DEBUG)
+
+parser = argparse.ArgumentParser(
+    formatter_class = argparse.RawDescriptionHelpFormatter,
+    description = "generate jobs for bunch of selections",
+    epilog = "Example:\n$ python bunch_of_selections.py lstore_outdirs/merge-sets/v36/test1/ quick-test/v36-test1/"
+    )
+
+parser.add_argument('inp_dir',    help="input directory, lstore or merge")
+parser.add_argument('out_dir',    help="output directory, like quick-test")
+parser.add_argument('--set-sys',     type=str, help="set systematics for all samples")
+parser.add_argument('--set-samples', type=str, help="set samples to process")
+parser.add_argument('--select-channels', default='all_leptau_joined', type=str, help="channels to select (with hard-coded distrs if not overwritten)")
+parser.add_argument('--set-distrs',  type=str, help='overwrite distrs "draw_command,distr_name[-dr2,nm2]"')
+
+parser.add_argument("-d", "--debug",    action='store_true', help="DEBUG level of logging")
+
+args = parser.parse_args()
+
+if args.debug:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.INFO)
 
 
 distr_ranges = {'Mt_lep_met_c': '--custom-range 0,20,40,60,80,100,130,160,200,250',
@@ -33,37 +55,42 @@ distrs_tauonic  = distrs_tauonic_std
 distrs_for_leptau = distrs_tauonic_fit
 
 # channels and conditions
-tt_dileptons    = (['tt_elmu'], '', distrs_leptonic)
-tt_leptauSV     = (['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], '', distrs_tauonic)
+channels_defs = {
+'tt_dileptons'    : [(['tt_elmu'], '', distrs_leptonic)],
+'tt_leptauSV'     : [(['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], '', distrs_tauonic)],
 
-tt_leptau       = (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'], '', distrs_for_leptau)
-tt_leptau_lj    = (['el_sel_lj',    'el_sel_lj_ss',    'mu_sel_lj',    'mu_sel_lj_ss'], '', distrs_for_leptau)
-tt_leptau_ljout = (['el_sel_ljout', 'el_sel_ljout_ss', 'mu_sel_ljout', 'mu_sel_ljout_ss'], '', distrs_for_leptau)
+'tt_leptau'       : [(['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'], '', distrs_for_leptau)],
+'tt_leptau_lj'    : [(['el_sel_lj',    'el_sel_lj_ss',    'mu_sel_lj',    'mu_sel_lj_ss'], '', distrs_for_leptau)],
+'tt_leptau_ljout' : [(['el_sel_ljout', 'el_sel_ljout_ss', 'mu_sel_ljout', 'mu_sel_ljout_ss'], '', distrs_for_leptau)],
 
-tt_leptau_Vloose       = (['el_selVloose',       'el_selVloose_ss',       'mu_selVloose',       'mu_selVloose_ss'], '', distrs_for_leptau)
-tt_leptau_Vloose_lj    = (['el_selVloose_lj',    'el_selVloose_lj_ss',    'mu_selVloose_lj',    'mu_selVloose_lj_ss'], '', distrs_for_leptau)
-tt_leptau_Vloose_ljout = (['el_selVloose_ljout', 'el_selVloose_ljout_ss', 'mu_selVloose_ljout', 'mu_selVloose_ljout_ss'], '', distrs_for_leptau)
+'tt_leptau_Vloose'       : [(['el_selVloose',       'el_selVloose_ss',       'mu_selVloose',       'mu_selVloose_ss'], '', distrs_for_leptau)],
+'tt_leptau_Vloose_lj'    : [(['el_selVloose_lj',    'el_selVloose_lj_ss',    'mu_selVloose_lj',    'mu_selVloose_lj_ss'], '', distrs_for_leptau)],
+'tt_leptau_Vloose_ljout' : [(['el_selVloose_ljout', 'el_selVloose_ljout_ss', 'mu_selVloose_ljout', 'mu_selVloose_ljout_ss'], '', distrs_for_leptau)],
 
-tt_leptau_Tight       = (['el_selTight',       'el_selTight_ss',       'mu_selTight',       'mu_selTight_ss'], '', distrs_for_leptau)
-tt_leptau_Tight_lj    = (['el_selTight_lj',    'el_selTight_lj_ss',    'mu_selTight_lj',    'mu_selTight_lj_ss'], '', distrs_for_leptau)
-tt_leptau_Tight_ljout = (['el_selTight_ljout', 'el_selTight_ljout_ss', 'mu_selTight_ljout', 'mu_selTight_ljout_ss'], '', distrs_for_leptau)
+'tt_leptau_Tight'       : [(['el_selTight',       'el_selTight_ss',       'mu_selTight',       'mu_selTight_ss'], '', distrs_for_leptau)],
+'tt_leptau_Tight_lj'    : [(['el_selTight_lj',    'el_selTight_lj_ss',    'mu_selTight_lj',    'mu_selTight_lj_ss'], '', distrs_for_leptau)],
+'tt_leptau_Tight_ljout' : [(['el_selTight_ljout', 'el_selTight_ljout_ss', 'mu_selTight_ljout', 'mu_selTight_ljout_ss'], '', distrs_for_leptau)],
 
-dy_dileptons    = (['dy_mumu',  'dy_elel'],  '--cond-com "std_mt_vars < 40."', distrs_leptonic)
-dy_leptau       = (['dy_mutau', 'dy_eltau'], '--cond-com "event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."', distrs_tauonic)
+'dy_dileptons'    : [(['dy_mumu',  'dy_elel'],  '--cond-com "std_mt_vars < 40."', distrs_leptonic)],
+'dy_leptau'       : [(['dy_mutau', 'dy_eltau'], '--cond-com "event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."', distrs_tauonic)],
 
-select_channels_sv_test    = [tt_dileptons, tt_leptau, tt_leptauSV, dy_dileptons, dy_leptau]
-select_channels_std_leptau = [tt_leptau, tt_leptau_lj, tt_leptau_ljout]
-select_channels_all_leptau = [tt_leptau, tt_leptau_lj, tt_leptau_ljout] + [tt_leptau_Tight, tt_leptau_Tight_lj, tt_leptau_Tight_ljout] + [tt_leptau_Vloose, tt_leptau_Vloose_lj, tt_leptau_Vloose_ljout]
+'sv_test'    : [tt_dileptons, tt_leptau, tt_leptauSV, dy_dileptons, dy_leptau],
+'std_leptau' : [tt_leptau, tt_leptau_lj, tt_leptau_ljout],
+'all_leptau' : [tt_leptau, tt_leptau_lj, tt_leptau_ljout] + [tt_leptau_Tight, tt_leptau_Tight_lj, tt_leptau_Tight_ljout] + [tt_leptau_Vloose, tt_leptau_Vloose_lj, tt_leptau_Vloose_ljout],
 # simple group
-select_channels_all_leptau_joined = [([','.join(chans)], cond, distrs) for chans, cond, distrs  in select_channels_all_leptau]
+'all_leptau_joined' : [([','.join(chans)], cond, distrs) for chans, cond, distrs  in select_channels_all_leptau]
+}
 
-select_sparse_channels = select_channels_all_leptau
-select_joined_channels = select_channels_all_leptau_joined
+select_sparse_channels = channels_defs ['all_leptau']
+select_joined_channels = channels_defs ['all_leptau_joined']
+
+select_channels = channels_defs[args.select_channels]
 
 # dtags and systematics
-data = ['SingleMuon', 'SingleElectron'], ['nom'], select_joined_channels
-tt = ['MC2016_Summer16_TTJets_powheg'],  ["nom,common", "obj", "tt_weights", "tt_hard", "tt_pdf1", "tt_pdf10", "tt_pdf20", "tt_pdf30", "tt_pdf40", "tt_pdf50,tt_alpha"], select_joined_channels#select_sparse_channels
-other_mc = ['MC2016_Summer16_DYJetsToLL_10to50_amcatnlo',
+sample_info = {
+'data': (['SingleMuon', 'SingleElectron'], ['nom']),
+'tt'  : (['MC2016_Summer16_TTJets_powheg'],  ["nom,common", "obj", "tt_weights", "tt_hard", "tt_pdf1", "tt_pdf10", "tt_pdf20", "tt_pdf30", "tt_pdf40", "tt_pdf50,tt_alpha"]), #select_sparse_channels
+'other_mc': (['MC2016_Summer16_DYJetsToLL_10to50_amcatnlo',
 'MC2016_Summer16_DYJetsToLL_50toInf_madgraph',
 'MC2016_Summer16_SingleT_tW_5FS_powheg',
 'MC2016_Summer16_SingleTbar_tW_5FS_powheg',
@@ -82,16 +109,17 @@ other_mc = ['MC2016_Summer16_DYJetsToLL_10to50_amcatnlo',
 'MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin',
 'MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo',
 'MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg',
-'MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg'], ['nom', 'common', 'obj'], select_joined_channels
+'MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg'], ['nom', 'common', 'obj']),
 
-qcd_mc = ['MC2016_Summer16_QCD_HT-100-200',
+'qcd_mc': (['MC2016_Summer16_QCD_HT-100-200',
 'MC2016_Summer16_QCD_HT-200-300',
 'MC2016_Summer16_QCD_HT-300-500',
 'MC2016_Summer16_QCD_HT-500-700',
 'MC2016_Summer16_QCD_HT-700-1000',
 'MC2016_Summer16_QCD_HT-1000-1500',
 'MC2016_Summer16_QCD_HT-1500-2000',
-'MC2016_Summer16_QCD_HT-2000-Inf'], ['nom'], select_joined_channels
+'MC2016_Summer16_QCD_HT-2000-Inf'], ['nom'])
+}
 
 
 intro = """
@@ -109,38 +137,47 @@ cd UserCode/NtuplerAnalyzer/proc/
 {draw_commands}
 """
 
-draw_command_template = """python -W ignore sumup_ttree_draw.py --cut-w0jets "{draw}"           --ttree ttree_out {histo_range} --output {output_dir}/{dtag}_{chan}_{sys}_{distr_name}.root  --std-histos --histo-name {chan}/std_procs/{sys}/{distr_name} {cond} --per-weight --try-xsec --save-weight lstore_outdirs/merge-sets/{merge_dir}/*{dtag}*.root"""
+draw_command_template = """python -W ignore sumup_ttree_draw.py --cut-w0jets "{draw}"           --ttree ttree_out {histo_range} --output {output_dir}/{dtag}_{chan}_{sys}_{distr_name}.root  --std-histos --histo-name {chan}/std_procs/{sys}/{distr_name} {cond} --per-weight --try-xsec --save-weight {merge_dir}/*{dtag}*.root"""
 
 #batch_jobs/j_${dtag}_${chans}_${systs}
 #merge_dir ='v27/dilep1'
-merge_dir = 'v25/resub1'
-merge_dir = 'v25v26/resub4'
+merge_dir = 'lstore_outdirs/merge-sets/v25/resub1'
+merge_dir = 'lstore_outdirs/merge-sets/v36/test1'
+merge_dir = args.inp_dir
 
 output_dir = 'temp/'
 output_dir = 'quick-test/v27-dilep2'
 output_dir = 'quick-test/v25v26-resub2_data_resub2'
 output_dir = 'quick-test/v25v26-resub2'
 output_dir = 'quick-test/v25v26-resub3_new_data'
-output_dir = 'quick-test/v25v26-resub4'
+output_dir = 'quick-test/v36-test1'
+output_dir = args.out_dir
 
 
 samples = [(['MC2016_Summer16_W2Jets_madgraph'], ['nom', 'common', 'obj'], select_channels_all_leptau_joined)]
 samples = [(['MC2016_Summer16_W3Jets_madgraph'], ['nom'], select_channels_all_leptau_joined)]
 samples = [(['MC2016_Summer16_TTJets_powheg'],   ['nom', 'common', 'obj', "tt_weights", "tt_hard", "tt_pdf1", "tt_pdf10", "tt_pdf20", "tt_pdf30", "tt_pdf40", "tt_pdf50,tt_alpha"], select_channels_all_leptau)]
-samples = [qcd_mc]
-samples = [data]
-samples = [data, tt, other_mc, qcd_mc]
+samples = [sample_info['qcd_mc']]
+samples = [sample_info['data']]
+samples = [sample_info['data'], sample_info['tt'], sample_info['other_mc'], sample_info['qcd_mc']]
 
+if args.set_samples:
+    samples_list = args.set_samples.split(',')
+    samples = [sample_info.get(samp, samp) in samples_list]
 
-# set all nominal sys
-#samples = [(dtags, ['nom']) for dtags, _ in samples]
+# set systematics
+if args.set_sys:
+    syst_list = args.set_sys.split(',')
+    samples = {name: (dtags, syst_list) for name, (dtags, _) in samples.items()}
 
 logging.info("merge_dir = %s  -->  output_dir = %s" % (merge_dir, output_dir))
 
-for (dtags, systs, select_channels) in samples:
+for dtags, systs in samples.items():
     for dtag in dtags:
         for sys in systs:
             for chans, cond, distrs  in select_channels:
+                if args.set_distrs:
+                    distrs = [distr.split(',') for distr in args.set_distrs.split('-')]
                 for chan in chans:
                     with open('batch_jobs/j_{dtag}_{chan}_{sys}'.format(dtag=dtag, chan=chan, sys=sys), 'w') as f:
                         draw_coms = '\n'.join([draw_command_template.format(draw=draw, distr_name=name, dtag=dtag, chan=chan, output_dir=output_dir, merge_dir=merge_dir, sys=sys, cond=cond, histo_range=distr_ranges[name]) for draw, name in distrs])

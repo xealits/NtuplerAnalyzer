@@ -1,3 +1,7 @@
+# v36 test (without presel and alliso)
+python genjobs.py v36 test1 --do-W-stitching channels_nom_sys_muon_sel_main --submit queue --dtags std_mc,data_mu,data_el
+source queue_dir/v36/test1/jobs_dir/submit
+
 # patch with pat tau sign
 python genjobs.py v26 resub4p --do-W-stitching channels_nom_sys_muon_sel_main --dtags MC2016_Summer16_TTJets_powheg --submit queue 
 source queue_dir/v26/resub4p/jobs_dir/submit
