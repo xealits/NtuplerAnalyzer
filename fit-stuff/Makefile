@@ -83,11 +83,15 @@ full_three_card_fit: points=100
 full_three_card_fit: min=0.5
 full_three_card_fit: max=1.5
 full_three_card_fit: both
+full_three_card_fit: muname=mu
+full_three_card_fit: elname=el
+full_three_card_fit: bothname=both
 full_three_card_fit:
-	make workspace datacard=${mucard}
 	make workspace datacard=${elcard}
+	make workspace datacard=${mucard}
 	make workspace datacard=${bothcard}
-	make full_card_fit workspace=${mucard}.root   nn=mu
-	make full_card_fit workspace=${elcard}.root   nn=el
-	make full_card_fit workspace=${bothcard}.root nn=both
+	make full_card_fit workspace=${elcard}.root   nn=${elname}
+	make full_card_fit workspace=${mucard}.root   nn=${muname}
+	make full_card_fit workspace=${bothcard}.root nn=${bothname}
+	python new_impact_table.py --merge-pdf latest_impacts_${elname}.json latest_impacts_${muname}.json latest_impacts_${bothname}.json > impact_table_${elname}_${muname}_${bothname}
 
