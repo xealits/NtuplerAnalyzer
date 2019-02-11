@@ -3353,9 +3353,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                     # only presel is relevant, therefore don't count tau dR
                     if jet_pt > JETS_PT_CUT:
                         N_jets_nom_all_alliso += 1
-                        #if b_tagged_medium and not jet_tau_match_alliso:
                         # emulate preselection, don't count the tau candidate
-                        if b_tagged_medium:
+                        #if b_tagged_medium:
+                        # no, there is a basic preselection without tau candidate and the special preselection with the candidate
+                        if b_tagged_medium and not jet_tau_match_alliso:
                             N_jets_nom_med_alliso += 1
 
                 # correct the met from all jets including the lep-matched jet
