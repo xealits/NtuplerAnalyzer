@@ -2666,8 +2666,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			//}
 
 		if (!tr.isValid ()){
-			cout << HLT_source << " is NOT valid!" << endl;
-			return;
+			//cout << HLT_source << " is NOT valid!" << endl;
+			//return;
+			throw cms::Exception("NoTrigger") << "!tr.isValid()" << "\n";
 			}
 		else
 			{
