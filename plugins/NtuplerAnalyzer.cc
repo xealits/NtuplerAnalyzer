@@ -908,9 +908,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	edm::EDGetTokenT<reco::VertexCollection> vtx_;
 	edm::EDGetTokenT<double> rho_;
 	edm::EDGetTokenT<edm::TriggerResults> trigResults_, trigResultsRECO_, trigResultsPAT_;
-	//triggerObjectsHandle.getByLabel(ev, "selectedPatTrigger");
-	//iEvent.getByToken(triggerObjects_, triggerObjectsHandle);
-	edm::EDGetTokenT<vector<pat::TriggerObjectStandAlone>> triggerObjects_;
+
 	edm::EDGetTokenT<LHEEventProduct> lheEPToken_;
 	edm::EDGetTokenT< std::vector < PileupSummaryInfo > > puInfo_;
 	edm::EDGetTokenT< std::vector < PileupSummaryInfo > > puInfo2_;
@@ -968,6 +966,14 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	lumiUtils::GoodLumiFilter goodLumiFilter;
 	std::vector < std::string > urls; // = runProcess.getUntrackedParameter < std::vector < std::string > >("input");
 	TString outUrl;
+
+	//triggerObjectsHandle.getByLabel(ev, "selectedPatTrigger");
+	//iEvent.getByToken(triggerObjects_, triggerObjectsHandle);
+	edm::EDGetTokenT<vector<pat::TriggerObjectStandAlone>> triggerObjects_;
+	edm::InputTag triggerObjects_InputTag;
+	//edm::EDGetTokenT triggerObjects_; // they do this in the workbook and it does not compile
+	// https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2017#Trigger
+	// error: invalid use of template-name 'edm::EDGetTokenT' without an argument list
 
 	edm::EDGetTokenT<bool> BadChCandFilterToken_;
 	edm::EDGetTokenT<bool> BadPFMuonFilterToken_;
@@ -1048,11 +1054,14 @@ jet_kino_cuts_eta   (iConfig.getParameter<double>("jet_kino_cuts_eta")),
 btag_threshold   (iConfig.getParameter<double>("btag_threshold")),
 goodLumiFilter   (iConfig.getUntrackedParameter<std::vector<edm::LuminosityBlockRange>>("lumisToProcess", std::vector<edm::LuminosityBlockRange>())),
 urls   (iConfig.getUntrackedParameter <std::vector <std::string> >("input")),
-outUrl (iConfig.getParameter<std::string>("outfile"))
+outUrl (iConfig.getParameter<std::string>("outfile")),
 //BadChCandFilterToken_(consumes<bool>(iConfig.getParameter<edm::InputTag>("BadChargedCandidateFilter"))),
 //BadPFMuonFilterToken_(consumes<bool>(iConfig.getParameter<edm::InputTag>("BadPFMuonFilter")))
 // here it breaks with
 // MissingParameter: Parameter 'BadChargedCandidateFilter' not found.
+//triggerObjects_ (consumes(iConfig.getParameter<edm::InputTag>("hlt_objects")) //"selectedPatTrigger"))
+// error: no matching function for call to 'NtuplerAnalyzer::consumes(edm::InputTag)'
+triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 
 {
 	edm::LogInfo ("Demo") << "building the object";
@@ -1072,7 +1081,10 @@ outUrl (iConfig.getParameter<std::string>("outfile"))
 	//trigResults2_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","HLT2"));
 	trigResultsRECO_    = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","RECO"));
 	trigResultsPAT_     = consumes<edm::TriggerResults>(edm::InputTag("TriggerResults","","PAT"));
-	triggerObjects_ = consumes<vector<pat::TriggerObjectStandAlone>>(edm::InputTag("selectedPatTrigger"));
+	//triggerObjects_ = consumes<vector<pat::TriggerObjectStandAlone>>(edm::InputTag("selectedPatTrigger"));
+	//triggerObjects_ = consumes<vector<pat::TriggerObjectStandAlone>>(edm::InputTag("slimmedPatTrigger")); // damn!!!!!!!!!!!!!
+	triggerObjects_ = consumes<vector<pat::TriggerObjectStandAlone>>(triggerObjects_InputTag); // damn!!!!!!!!!!!!!
+
 	//fwlite::Handle<double> rhoHandle;
 	//rhoHandle.getByLabel(ev, "fixedGridRhoFastjetAll");
 	lheEPToken_ = consumes<LHEEventProduct>(edm::InputTag("externalLHEProducer"));
@@ -2694,8 +2706,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		iEvent.getByToken(triggerObjects_, triggerObjectsHandle);
 		if (!triggerObjectsHandle.isValid())
 			{
-			LogInfo("Demo") << "!triggerObjectsHandle.isValid()";
-			return;
+			//LogInfo("Demo") << "!triggerObjectsHandle.isValid()";
+			//return;
+			throw cms::Exception("NoTriggerObjects") << "!triggerObjectsHandle.isValid() -- no products under the given name " << triggerObjects_InputTag.label() << "\n";
 			}
 		LogInfo ("Demo") << "got trigger objects";
 		vector<pat::TriggerObjectStandAlone> trig_objs = *triggerObjectsHandle;

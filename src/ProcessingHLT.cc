@@ -20,15 +20,21 @@
 // select only our_hlt_trigger_objects
 int Processing_selectHLTobjects(
 	std::vector<pat::TriggerObjectStandAlone>& trig_objs,                  // input:  trigger objects in the event
+	//edm::Handle& trig_objs,
+	// error: missing template arguments before '&' token
 	const edm::TriggerNames& trigNames,                               // input:  names for trigger bits in the event
 	std::vector<pat::TriggerObjectStandAlone>& our_hlt_trigger_objects,    // output: trigger objects matching target HLT
 	std::string& targetHLT // target HLT string-pattern (like "HLT_IsoMuon24_v" or "HLT_IsoMuon_v4")
 	)
 
 {
-for (size_t i = 0; i < trig_objs.size(); i++)
+//for (size_t i = 0; i < trig_objs.size(); i++)
+//	{
+//	pat::TriggerObjectStandAlone& obj = trig_objs[i];
+
+//for (pat::TriggerObjectStandAlone obj : *trig_objs) // in the workbook they pass the handle here
+for (pat::TriggerObjectStandAlone obj : trig_objs)
 	{
-	pat::TriggerObjectStandAlone& obj = trig_objs[i];
 	obj.unpackPathNames(trigNames);
 
 	bool is_our_hlt = false;

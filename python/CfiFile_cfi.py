@@ -31,6 +31,9 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v7"),
     lepMonitorHLT = cms.string("HLT_PFHT400_*"),
 
+    #hlt_objects = cms.InputTag("selectedPatTrigger"), # 2016
+    hlt_objects = cms.InputTag("slimmedPatTrigger"),  # legacy 2016 and 2017
+
     jecDir          = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/'),
     resolutionFile  = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt'),
     scaleFactorFile = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Spring16_25nsV10_MC_SF_AK4PFchs.txt'),
