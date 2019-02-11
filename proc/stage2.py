@@ -76,6 +76,40 @@ def passes_elmu_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
 
     return channel_stage
 
+def passes_tt_preselection_stages(passed_triggers, leps, N_jets, taus, proc_met):
+    n_b_notau, n_b_all, n_all_jets = N_jets
+    channel_stage = 0
+    pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
+
+    #old_jet_sel = len(jets.medium) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 2
+    # N b-tagged, N all jets
+    old_jet_presel      = n_b_all   > 0 and n_all_jets > 2 and len(leps[0]) == 1
+    old_jet_presel_cand = n_b_notau > 0 and n_all_jets > 2 and len(leps[0]) == 1
+    tau_cand_os = len(taus)>0 and leps[4][0] * taus[0][2] < 0
+
+    if   pass_mu and old_jet_presel_cand and tau_cand_os:
+        channel_stage = 9
+    elif pass_mu and old_jet_presel_cand:
+        channel_stage = 8
+
+    elif pass_mu and old_jet_presel and tau_cand_os:
+        channel_stage = 7
+    elif pass_mu and old_jet_presel:
+        channel_stage = 6
+
+    elif pass_el and old_jet_presel_cand and tau_cand_os:
+        channel_stage = 19
+    elif pass_el and old_jet_presel_cand:
+        channel_stage = 18
+
+    elif pass_el and old_jet_presel and tau_cand_os:
+        channel_stage = 17
+    elif pass_el and old_jet_presel:
+        channel_stage = 16
+
+    return channel_stage
+
+
 def passes_tt_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     channel_stage = 0
     pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
@@ -3075,7 +3109,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         # MC jets are corrected for JER, which is propagated to met
         #jet_cor
 
-        N_jets_nom_med     = 0
+        N_jets_nom_med     = 0 # b-tagged jets not matching medium tau
+        N_jets_nom_med_all = 0 # all b-taged jets, regardless of taus
         N_jets_nom_all     = 0
         N_jets_JERUp_med   = 0
         N_jets_JERUp_all   = 0
@@ -3363,6 +3398,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                       weight_bSF_JESDown *= jet_weight_bSF_nom
 
                   # count the jets
+                  if b_tagged_medium:
+                      if jet_pt > JETS_PT_CUT:
+                          N_jets_nom_med_all += 1
                   if not jet_tau_match_old and b_tagged_medium:
                       if jet_pt > JETS_PT_CUT:
                           N_jets_nom_med += 1
@@ -3696,7 +3734,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         sel_leps, sel_jets = leps, jets_nom
 
         # final CHANNEL SELECTION decision
-        tt_channel_presel_stage = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), taus_candidates, proc_met)
+        tt_channel_presel_stage = passes_tt_preselection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_med_all, N_jets_nom_all), taus_candidates, proc_met)
 
         # nominal
         tt_channel_sel_stage    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
@@ -3774,10 +3812,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         notpasses_dy_tautau = dy_channel_sel_stage < 1 and dy_channel_sel_stage_TESUp < 1 and dy_channel_sel_stage_TESDown < 1 and dy_channel_sel_stage_JESUp < 1 and dy_channel_sel_stage_JESDown < 1 and dy_channel_sel_stage_JERUp < 1 and dy_channel_sel_stage_JERDown < 1
         notpasses_dy_mumu   = dy_mumu_channel_sel_stage < 1 and dy_mumu_channel_sel_stage_TESUp < 1 and dy_mumu_channel_sel_stage_TESDown < 1 and dy_mumu_channel_sel_stage_JESUp < 1 and dy_mumu_channel_sel_stage_JESDown < 1 and dy_mumu_channel_sel_stage_JERUp < 1 and dy_mumu_channel_sel_stage_JERDown < 1
 
+        notpasses_presel = tt_channel_presel_stage < 1
+        notpasses_wjets  = selection_wjets_control < 1
 
-        notpasses_wjets = selection_wjets_control < 1
-
-        if notpasses_tt_leptau and notpasses_em and notpasses_dy_tautau and notpasses_dy_mumu and notpasses_wjets: # and notpasses_alliso
+        if notpasses_tt_leptau and notpasses_em and notpasses_dy_tautau and notpasses_dy_mumu and notpasses_wjets and notpasses_alliso and notpasses_presel:
             continue
 
         # SAVE SELECTION, objects and weights
