@@ -14,6 +14,7 @@ parser.add_argument('--set-sys',     type=str, help="set systematics for all sam
 parser.add_argument('--set-samples', type=str, help="set samples to process")
 parser.add_argument('--select-channels', default='all_leptau_joined', type=str, help="channels to select (with hard-coded distrs if not overwritten)")
 parser.add_argument('--set-distrs',  type=str, help='overwrite distrs "draw_command,distr_name[-dr2,nm2]"')
+parser.add_argument('--jobs-dir',     type=str, default='batch_jobs', help="the directory for jobs scripts")
 
 parser.add_argument("-d", "--debug",    action='store_true', help="DEBUG level of logging")
 
@@ -73,13 +74,17 @@ channels_defs = {
 
 'dy_dileptons'    : [(['dy_mumu',  'dy_elel'],  '--cond-com "std_mt_vars < 40."', distrs_leptonic)],
 'dy_leptau'       : [(['dy_mutau', 'dy_eltau'], '--cond-com "event_taus_sv_sign[0] > 2.5 && std_mt_vars < 40."', distrs_tauonic)],
-
-'sv_test'    : [tt_dileptons, tt_leptau, tt_leptauSV, dy_dileptons, dy_leptau],
-'std_leptau' : [tt_leptau, tt_leptau_lj, tt_leptau_ljout],
-'all_leptau' : [tt_leptau, tt_leptau_lj, tt_leptau_ljout] + [tt_leptau_Tight, tt_leptau_Tight_lj, tt_leptau_Tight_ljout] + [tt_leptau_Vloose, tt_leptau_Vloose_lj, tt_leptau_Vloose_ljout],
-# simple group
-'all_leptau_joined' : [([','.join(chans)], cond, distrs) for chans, cond, distrs  in select_channels_all_leptau]
 }
+
+channels_defs['sv_test']    = channels_defs['tt_dileptons'] + channels_defs['tt_leptau'] + channels_defs['tt_leptauSV'] + channels_defs['dy_dileptons'] + channels_defs['dy_leptau']
+channels_defs['std_leptau'] = channels_defs['tt_leptau']    + channels_defs['tt_leptau_lj'] + channels_defs['tt_leptau_ljout']
+channels_defs['all_leptau'] = channels_defs['tt_leptau'] + channels_defs['tt_leptau_lj'] + channels_defs['tt_leptau_ljout'] + \
+    channels_defs['tt_leptau_Tight']  + channels_defs['tt_leptau_Tight_lj']  + channels_defs['tt_leptau_Tight_ljout'] + \
+    channels_defs['tt_leptau_Vloose'] + channels_defs['tt_leptau_Vloose_lj'] + channels_defs['tt_leptau_Vloose_ljout']
+select_channels_all_leptau = channels_defs['all_leptau']
+# simple group
+channels_defs['all_leptau_joined'] = [([','.join(chans)], cond, distrs) for chans, cond, distrs  in select_channels_all_leptau]
+select_channels_all_leptau_joined  = channels_defs['all_leptau_joined']
 
 select_sparse_channels = channels_defs ['all_leptau']
 select_joined_channels = channels_defs ['all_leptau_joined']
@@ -154,32 +159,32 @@ output_dir = 'quick-test/v36-test1'
 output_dir = args.out_dir
 
 
-samples = [(['MC2016_Summer16_W2Jets_madgraph'], ['nom', 'common', 'obj'], select_channels_all_leptau_joined)]
-samples = [(['MC2016_Summer16_W3Jets_madgraph'], ['nom'], select_channels_all_leptau_joined)]
-samples = [(['MC2016_Summer16_TTJets_powheg'],   ['nom', 'common', 'obj', "tt_weights", "tt_hard", "tt_pdf1", "tt_pdf10", "tt_pdf20", "tt_pdf30", "tt_pdf40", "tt_pdf50,tt_alpha"], select_channels_all_leptau)]
+samples = [(['MC2016_Summer16_W2Jets_madgraph'], ['nom', 'common', 'obj'])]
+samples = [(['MC2016_Summer16_W3Jets_madgraph'], ['nom'])]
+samples = [(['MC2016_Summer16_TTJets_powheg'],   ['nom', 'common', 'obj', "tt_weights", "tt_hard", "tt_pdf1", "tt_pdf10", "tt_pdf20", "tt_pdf30", "tt_pdf40", "tt_pdf50,tt_alpha"])]
 samples = [sample_info['qcd_mc']]
 samples = [sample_info['data']]
 samples = [sample_info['data'], sample_info['tt'], sample_info['other_mc'], sample_info['qcd_mc']]
 
 if args.set_samples:
     samples_list = args.set_samples.split(',')
-    samples = [sample_info.get(samp, samp) in samples_list]
+    samples = [sample_info.get(samp) in samples_list] # TODO: implement separate dtags
 
 # set systematics
 if args.set_sys:
     syst_list = args.set_sys.split(',')
-    samples = {name: (dtags, syst_list) for name, (dtags, _) in samples.items()}
+    samples = [(dtags, syst_list) for name, (dtags, _) in samples]
 
 logging.info("merge_dir = %s  -->  output_dir = %s" % (merge_dir, output_dir))
 
-for dtags, systs in samples.items():
+for dtags, systs in samples:
     for dtag in dtags:
         for sys in systs:
             for chans, cond, distrs  in select_channels:
                 if args.set_distrs:
                     distrs = [distr.split(',') for distr in args.set_distrs.split('-')]
                 for chan in chans:
-                    with open('batch_jobs/j_{dtag}_{chan}_{sys}'.format(dtag=dtag, chan=chan, sys=sys), 'w') as f:
+                    with open(args.jobs_dir + '/j_{dtag}_{chan}_{sys}'.format(dtag=dtag, chan=chan, sys=sys), 'w') as f:
                         draw_coms = '\n'.join([draw_command_template.format(draw=draw, distr_name=name, dtag=dtag, chan=chan, output_dir=output_dir, merge_dir=merge_dir, sys=sys, cond=cond, histo_range=distr_ranges[name]) for draw, name in distrs])
                         f.write(intro.format(draw_commands=draw_coms) + '\n')
 

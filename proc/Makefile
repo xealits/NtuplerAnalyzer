@@ -1,3 +1,6 @@
+submit_batch_plots: batch_jobs=batch_jobs
+submit_batch_plots:
+	ls ${batch_jobs}/ | sed -e 's,^\(.*\)$$,qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/'${batch_jobs}'/\1",' | grep -v submit > ${batch_jobs}/submit
 
 sub_proc:
 	ls /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/queue_dir/${nt}/${proc}/${node}/com
