@@ -36,7 +36,7 @@ for gr in groups:
     os.system('hadd %s %s' % (out_file, inp_files))
 
 if args.hadd_first:
-    for first_group in [d.split('-') for d in args.defs.split(':')[0]]:
+    for first_group in [d for d in args.defs.split(':')[0].split('-')]:
         grp_file  = args.out_dir + '/%s.root' % first_group
         if os.path.isfile(grp_file):
             logging.debug('first group file %s exists, skipping' % grp_file)
