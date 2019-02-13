@@ -1,3 +1,79 @@
+# fractions of jets in lj-ljout at preselection
+
+ttree_out->Draw("event_jets_b_genmatch[]", "selection_stage_presel > 0 && event_jets_lj_var >  20.")
+histo = (TH1D*) ttree_out->GetHistogram()
+genmatch_b_ljout = (TH1D*) histo->Clone()
+genmatch_b_ljout->SetDirectory(0)
+genmatch_b_ljout->SetName("b_ljout")
+
+ttree_out->Draw("event_jets_l_genmatch[]", "selection_stage_presel > 0 && event_jets_lj_var >  20.")
+histo = (TH1D*) ttree_out->GetHistogram()
+genmatch_l_ljout = (TH1D*) histo->Clone()
+genmatch_l_ljout->SetDirectory(0)
+genmatch_l_ljout->SetName("l_ljout")
+
+ttree_out->Draw("event_jets_r_genmatch[]", "selection_stage_presel > 0 && event_jets_lj_var >  20.")
+histo = (TH1D*) ttree_out->GetHistogram()
+genmatch_r_ljout = (TH1D*) histo->Clone()
+genmatch_r_ljout->SetDirectory(0)
+genmatch_r_ljout->SetName("r_ljout")
+
+ttree_out->Draw("event_jets_t_genmatch[]", "selection_stage_presel > 0 && event_jets_lj_var >  20.")
+histo = (TH1D*) ttree_out->GetHistogram()
+genmatch_t_ljout = (TH1D*) histo->Clone()
+genmatch_t_ljout->SetDirectory(0)
+genmatch_t_ljout->SetName("t_ljout")
+
+genmatch_sum3_ljout = (TH1D*) genmatch_b_ljout->Clone()
+genmatch_sum3_ljout->SetName("genmatch_3_ljout")
+genmatch_sum3_ljout->Add(genmatch_l_ljout)
+genmatch_sum3_ljout->Add(genmatch_r_ljout)
+
+genmatch_sum2_ljout = (TH1D*) genmatch_b_ljout->Clone()
+genmatch_sum2_ljout->SetName("genmatch_2_ljout")
+genmatch_sum2_ljout->Add(genmatch_r_ljout)
+
+
+ttree_out->Draw("event_jets_b_genmatch[]", "selection_stage_presel > 0 && event_jets_lj_var <= 20.")
+histo = (TH1D*) ttree_out->GetHistogram()
+genmatch_b_lj    = (TH1D*) histo->Clone()
+genmatch_b_lj   ->SetDirectory(0)
+genmatch_b_lj   ->SetName("b_lj")
+
+ttree_out->Draw("event_jets_l_genmatch[]", "selection_stage_presel > 0 && event_jets_lj_var <= 20.")
+histo = (TH1D*) ttree_out->GetHistogram()
+genmatch_l_lj    = (TH1D*) histo->Clone()
+genmatch_l_lj   ->SetDirectory(0)
+genmatch_l_lj   ->SetName("l_lj")
+
+ttree_out->Draw("event_jets_r_genmatch[]", "selection_stage_presel > 0 && event_jets_lj_var <= 20.")
+histo = (TH1D*) ttree_out->GetHistogram()
+genmatch_r_lj    = (TH1D*) histo->Clone()
+genmatch_r_lj   ->SetDirectory(0)
+genmatch_r_lj   ->SetName("r_lj")
+
+ttree_out->Draw("event_jets_t_genmatch[]", "selection_stage_presel > 0 && event_jets_lj_var <= 20.")
+histo = (TH1D*) ttree_out->GetHistogram()
+genmatch_t_lj    = (TH1D*) histo->Clone()
+genmatch_t_lj   ->SetDirectory(0)
+genmatch_t_lj   ->SetName("t_lj")
+
+genmatch_sum3_lj = (TH1D*) genmatch_b_lj->Clone()
+genmatch_sum3_lj->SetName("genmatch_3_lj")
+genmatch_sum3_lj->Add(genmatch_l_lj)
+genmatch_sum3_lj->Add(genmatch_r_lj)
+
+genmatch_sum2_lj = (TH1D*) genmatch_b_lj->Clone()
+genmatch_sum2_lj->SetName("genmatch_2_lj")
+genmatch_sum2_lj->Add(genmatch_r_lj)
+
+
+
+
+
+
+
+
 # substitution of the abstract in AN
 
 A measurement of the cross section of the process $t\bar{t}\rightarrow (\ell\nu_\ell) (\tau_h \nu_\tau) b\bar{b}$, ($\ell=e, \mu$) is performed.

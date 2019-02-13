@@ -84,8 +84,9 @@ def passes_tt_preselection_stages(passed_triggers, leps, N_jets, taus, proc_met)
     #old_jet_sel = len(jets.medium) > 0 and (len(jets.taumatched[0]) + len(jets.taumatched[1]) + len(jets.medium) + len(jets.loose) + len(jets.rest)) > 2
     # N b-tagged, N all jets
     old_jet_presel      = n_b_all   > 0 and n_all_jets > 2 and len(leps[0]) == 1
-    old_jet_presel_cand = n_b_notau > 0 and n_all_jets > 2 and len(leps[0]) == 1
-    tau_cand_os = len(taus)>0 and leps[4][0] * taus[0][2] < 0
+    has_tau_cand = len(taus) > 0
+    old_jet_presel_cand = n_b_notau > 0 and n_all_jets > 2 and len(leps[0]) == 1 and has_tau_cand
+    tau_cand_os = has_tau_cand and leps[4][0] * taus[0][2] < 0
 
     if   pass_mu and old_jet_presel_cand and tau_cand_os:
         channel_stage = 9
@@ -94,8 +95,10 @@ def passes_tt_preselection_stages(passed_triggers, leps, N_jets, taus, proc_met)
 
     elif pass_mu and old_jet_presel and tau_cand_os:
         channel_stage = 7
-    elif pass_mu and old_jet_presel:
+    elif pass_mu and old_jet_presel and has_tau_cand:
         channel_stage = 6
+    elif pass_mu and old_jet_presel:
+        channel_stage = 5
 
     elif pass_el and old_jet_presel_cand and tau_cand_os:
         channel_stage = 19
@@ -104,8 +107,10 @@ def passes_tt_preselection_stages(passed_triggers, leps, N_jets, taus, proc_met)
 
     elif pass_el and old_jet_presel and tau_cand_os:
         channel_stage = 17
-    elif pass_el and old_jet_presel:
+    elif pass_el and old_jet_presel and has_tau_cand:
         channel_stage = 16
+    elif pass_el and old_jet_presel:
+        channel_stage = 15
 
     return channel_stage
 
@@ -1958,6 +1963,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     event_taus_ids = ROOT.IntVector()
     ttree_out.Branch("event_taus_ids", event_taus_ids)
     all_vector_branches.append(event_taus_ids)
+    event_taus_IDlev = ROOT.IntVector()
+    ttree_out.Branch("event_taus_IDlev", event_taus_IDlev)
+    all_vector_branches.append(event_taus_IDlev)
 
     event_taus_TES_up = ROOT.DoubleVector()
     ttree_out.Branch("event_taus_TES_up", event_taus_TES_up)
@@ -4100,6 +4108,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             event_taus_TES_up   .push_back(TES_up / TES_nom)
             event_taus_TES_down .push_back(TES_down / TES_nom)
             event_taus_ids.push_back(tau[2])
+            event_taus_IDlev.push_back(tau[4])
             if isMC:
                 event_taus_genmatch.push_back(ev.tau_matching_gen[tau_index])
 
