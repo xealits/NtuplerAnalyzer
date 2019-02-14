@@ -1,3 +1,40 @@
+# testing missing jobs on gstore or lstore
+
+python sumup_ttree_draw.py "5" --histo-range 10,0,10 --cond-com "HLT_el && abs(leps_ID) == 11 && lep_matched_HLT[0] && no_iso_veto_leps && ntaus > 0" --output test1_v37el.root --histo-name test1v37el gstore_outdirs/v37/SingleElectron/Ntupler_v37_Data13TeV_SingleEl*/*/*/Data13*.root  &
+python sumup_ttree_draw.py "5" --histo-range 10,0,10 --cond-com "HLT_el && abs(leps_ID) == 11 && lep_matched_HLT[0] && no_iso_veto_leps && ntaus > 0" --output test1_v25el.root --histo-name test1v25el gstore_outdirs/v25/SingleElectron/Ntupler_v25_Data13TeV_SingleEl*/*/*/Data13*.root  &
+
+python sumup_ttree_draw.py "5" --histo-range 10,0,10 --cond-com "HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0] && no_iso_veto_leps && ntaus > 0" --output test1_v37mu.root --histo-name test1v37mu gstore_outdirs/v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMu*/*/*/Data13*.root      &
+python sumup_ttree_draw.py "5" --histo-range 10,0,10 --cond-com "HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0] && no_iso_veto_leps && ntaus > 0" --output test1_v25mu.root --histo-name test1v25mu gstore_outdirs/v25/SingleMuon/Ntupler_v25_Data13TeV_SingleMu*/*/*/Data13*.root      &
+
+TH1.Print Name  = test1v25el_test1v25el, Entries= 14667126, Total sum= 1.46671e+07
+root [4] 
+root [4] 
+root [4] test1v37el->Get("test1v37el_test1v37el")->Print()
+TH1.Print Name  = test1v37el_test1v37el, Entries= 15462924, Total sum= 1.54629e+07
+root [5] 1.54629e+07 / 1.46671e+07
+(double) 1.05426
+root [6] 
+root [6] 
+root [6] test1v25mu->Get("test1v25mu_test1v25mu")->Print()
+TH1.Print Name  = test1v25mu_test1v25mu, Entries= 22411254, Total sum= 2.24112e+07
+root [7] test1v37mu->Get("test1v37mu_test1v37mu")->Print()
+TH1.Print Name  = test1v37mu_test1v37mu, Entries= 22133699, Total sum= 2.21337e+07
+root [8] 
+
+damn
+
+python sumup_ttree_draw.py "5" --histo-range 10,0,10 --cond-com "HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0] && no_iso_veto_leps && ntaus > 0" --output test1_v37muG.root --histo-name test1v37muG gstore_outdirs/v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMuon2016G*/*/*/Data13*.root      &
+python sumup_ttree_draw.py "5" --histo-range 10,0,10 --cond-com "HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0] && no_iso_veto_leps && ntaus > 0" --output test1_v25muG.root --histo-name test1v25muG gstore_outdirs/v25/SingleMuon/Ntupler_v25_Data13TeV_SingleMuon2016G*/*/*/Data13*.root      &
+
+python sumup_ttree_draw.py "5" --histo-range 10,0,10 --cond-com "HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0] && no_iso_veto_leps && ntaus > 0" --output test1_v37muB.root --histo-name test1v37muB gstore_outdirs/v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMuon2016B*/*/*/Data13*.root      &
+python sumup_ttree_draw.py "5" --histo-range 10,0,10 --cond-com "HLT_mu && abs(leps_ID) == 13 && lep_matched_HLT[0] && no_iso_veto_leps && ntaus > 0" --output test1_v25muB.root --histo-name test1v25muB gstore_outdirs/v25/SingleMuon/Ntupler_v25_Data13TeV_SingleMuon2016B*/*/*/Data13*.root      &
+
+
+
+
+
+
+
 # fractions of jets in lj-ljout at preselection
 
 ttree_out->Draw("event_jets_b_genmatch[]", "selection_stage_presel > 0 && event_jets_lj_var >  20.")
