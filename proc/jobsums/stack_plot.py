@@ -188,8 +188,8 @@ if not args.no_data and args.bin_norm:
 logging.info("# data histograms = %d" % len(histos_data_per_distr))
 
 syst_factors = {
-              "FragUp":             1.001123,
-            "FragDown":             0.999304,
+              "FragUp":             0.958852, #1.001123,
+            "FragDown":             1.02936,  #0.999304,
          "SemilepBRUp":             1.008565,
        "SemilepBRDown":             0.987050,
           "PetersonUp":             1.000032,
