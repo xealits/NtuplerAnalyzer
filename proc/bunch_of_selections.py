@@ -36,7 +36,8 @@ distr_ranges = {'Mt_lep_met_c': '--custom-range 0,20,40,60,80,100,130,160,200,25
     'lep_eta':       '--histo-range 26,-2.6,2.6',
     'tau_sv_sign':   '--histo-range 42,-1,20',
     'tau_pt':        '--histo-range 20,0,100',
-    'tau_eta':       '--histo-range 26,-2.6,2.6'
+    'tau_eta':       '--histo-range 26,-2.6,2.6',
+    'yield':         '--histo-range 3,0.0,3.0'
 }
 
 distrs_leptonic = [('std_mt_vars', 'Mt_lep_met_c'), ('std_mt_vars', 'Mt_lep_met_c2'), ('event_met_lep_mt', 'Mt_lep_met_f'), ('event_dilep_mass', 'dilep_mass'), ('event_leptons[0].pt()', 'lep_pt')]
@@ -173,7 +174,7 @@ if args.set_samples:
 # set systematics
 if args.set_sys:
     syst_list = args.set_sys.split(',')
-    samples = [(dtags, syst_list) for name, (dtags, _) in samples]
+    samples = [(dtags, syst_list) for dtags, _ in samples]
 
 logging.info("merge_dir = %s  -->  output_dir = %s" % (merge_dir, output_dir))
 

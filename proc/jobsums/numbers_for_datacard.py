@@ -112,6 +112,7 @@ process_latex_strings = {
 
 
 import argparse
+from math import sqrt
 
 
 parser = argparse.ArgumentParser(
@@ -142,6 +143,7 @@ parser.add_argument("--range-min",    type=float, help="calculate from")
 parser.add_argument("--range-max",    type=float, help="calculate up to")
 
 parser.add_argument("--latex",       action='store_true', help="output in latex")
+parser.add_argument("--sqrt-unc",    action='store_true', help="sqrt sum of squares of uncertainties in bins")
 
 
 args = parser.parse_args()
@@ -220,9 +222,15 @@ def range_integral(histo):
         uncertainty = 0.
         for bini in range(histo.GetSize()):
             bin_x   = histo.GetBinCenter(bini)
-            uncertainty += histo.GetBinError(bini)
+            if args.sqrt_unc:
+                uncertainty += histo.GetBinError(bini)**2
+            else:
+                uncertainty += histo.GetBinError(bini)
 
-    return integral, uncertainty
+    if args.sqrt_unc:
+        return integral, sqrt(uncertainty)
+    else:
+        return integral, uncertainty
 
 # sumhistos in the channel
 mc_sums_sumhisto = {}
