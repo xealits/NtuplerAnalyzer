@@ -47,6 +47,7 @@ parser.add_argument("--qcd",   type=float, default=0., help="get QCD from corres
 parser.add_argument("--qcd-factor",   type=float, default=1., help="factor for MC QCD")
 parser.add_argument("--osss",     action='store_true', help="plot the ratio in OS/SS of data-other bkcg")
 parser.add_argument("--osss-mc",  action='store_true', help="plot the ratio in OS/SS of MC QCD")
+parser.add_argument("--vert-lines", type=str, help="add vertical lines to the plot at 'x1[,x2]' positions")
 
 parser.add_argument("--wjets", type=float, default=0., help="scale factor for wjets (from the control region)")
 parser.add_argument("--factor-dy", type=float, help="scale factor for dy (from the control region)")
@@ -86,7 +87,7 @@ assert isfile(args.data_file)
 logging.info("import ROOT")
 
 import ROOT
-from ROOT import TFile, THStack, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan
+from ROOT import TFile, THStack, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, TLine
 import plotting_root
 from draw_overflows import DrawOverflow
 
@@ -1052,6 +1053,12 @@ elif args.osss or args.osss_mc:
     histo_diff_os.SetYTitle(title_y)
     histo_diff_os.SetTitle(title_plot)
     histo_diff_os.Draw()
+
+    if args.vert_lines:
+        x_positions = [float(x) for x in args.vert_lines.split(',')]
+        for x in x_positions:
+            l = TLine(x, 1, x, 100)
+            l.Draw("same")
 
     #left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
     #left_title.AddText("CMS preliminary at 13 TeV")
