@@ -988,7 +988,8 @@ for filename in input_files:
                 draw_and_save(ttree, (chan, (main_name + '_' + proc_name) if proc_name else main_name, sys_name), draw_command_final, final_cond, args.test)
 
     else:
-        draw_and_save(ttree, tuple(histo_path), draw_command, args.cond_com, args.test)
+        logging.debug("the fast track else")
+        draw_and_save(ttree, tuple(histo_path + [histo_name]), draw_command, args.cond_com, args.test)
 
     if args.test:
         continue
@@ -1097,6 +1098,7 @@ fout.cd()
 #        out_histo.SetName(histo_name)
 
 for path_tuple, histo in output_histos.items():
+    logging.debug(repr(path_tuple))
     histo_path = '/'.join(path_tuple)
     # check if this directory already exists in the file (a feature for future)
     #out_dir_name = ''.join(part + '/' for part in histo_path)

@@ -1,6 +1,19 @@
+clear_gstore_failed: nt=v37
+clear_gstore_failed:
+	for f in `find gstore_outdirs/${nt}/ -name failed -type d | sed 's,gstore_outdirs/,,'`; do \
+	    gfal-rm -r "srm://srm01.ncg.ingrid.pt:8444/srm/managerv2?SFN=/cmst3/store/user/otoldaie/$$f" ; \
+	done
+
 submit_batch_plots: batch_jobs=batch_jobs
 submit_batch_plots:
 	ls ${batch_jobs}/ | sed -e 's,^\(.*\)$$,qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/'${batch_jobs}'/\1",' | grep -v submit > ${batch_jobs}/submit
+
+cur_gstore_lstore_jobs: nt=v37
+cur_gstore_lstore_jobs: proc=test1
+cur_gstore_lstore_jobs: pattern=*MC
+cur_gstore_lstore_jobs:
+	find gstore_outdirs/${nt}/ -name "${pattern}*root" | sed 's,^.*/,,' | sort > cur_jobs_gstore
+	find lstore_outdirs/${nt}/${proc} -name "${pattern}*root" | sed 's,^.*/,,' | sort > cur_jobs_lstore
 
 sub_proc:
 	ls /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/queue_dir/${nt}/${proc}/${node}/com

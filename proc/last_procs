@@ -1,5 +1,8 @@
 # v36 test (without presel and alliso)
 python genjobs.py v37 test1 --do-W-stitching channels_nom_sys_muon_sel_main --submit queue --dtags std_mc,data_mu,data_el
+# too few electron data, less than v25 -- checking all stage2 finished
+python genjobs.py v37 test1 --do-W-stitching channels_nom_sys_muon_sel_main --submit queue --dtags data_el
+python genjobs.py v37 test1 --do-W-stitching channels_nom_sys_muon_sel_main --submit queue --dtags updowns,updowns_extra
 source queue_dir/v37/test1/jobs_dir/submit
 
 # patch with pat tau sign
