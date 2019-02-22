@@ -2,6 +2,7 @@ import argparse
 import logging
 from os.path import isfile
 from math import sqrt
+from sys import exit
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -890,6 +891,11 @@ if not args.plot and not args.ratio:
 
     filename = out_dir + args.mc_file.split('.root')[0] + '_HISTOSEL_%s_%s_%s%s.root' % (distr_name, channel, sys_name, options)
     logging.info('saving root %s' % filename)
+
+    if isfile(filename):
+        print filename, "exists, nothing written"
+        exit(0)
+
     #fout = TFile(filename, 'RECREATE')
     fout = TFile(filename, 'CREATE')
     fout.cd()
@@ -947,6 +953,8 @@ if not args.plot and not args.ratio:
     fout.Write()
     fout.Close()
 
+    #from ROOT import gROOT
+    #gROOT.Reset()
     logging.info("no segfault here")
 
 elif args.form_shapes:
@@ -1449,11 +1457,16 @@ else:
        leg.Draw("same")
 
     if args.output_name:
-        cst.SaveAs(out_dir + args.output_name + '.png')
+        filename = out_dir + args.output_name + '.png'
     else:
         stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
         shape_chan = ('_x_' + args.shape) if args.shape else ''
-        cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ('_noQCD' if args.skip_QCD else '') + ('_nodata' if args.no_data else '') + ".png")
+        filename = out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ('_noQCD' if args.skip_QCD else '') + ('_nodata' if args.no_data else '') + ".png"
+
+    if isfile(filename):
+        print filename, "exists, nothing written"
+    else:
+        cst.SaveAs(filename)
 
 
 logging.info("segfault after here")

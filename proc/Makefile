@@ -27,6 +27,12 @@ merge_proc:
 	hadd ${merge_dir}/${nt}/${proc}/$$d.root /lstore/cms/olek/outdirs/${nt}/${proc}/$$d/*.root & \
 	done
 
+merge_proc_parallel: merge_dir=merge-sets/
+merge_proc_parallel: n_proc=4
+merge_proc_parallel: dtags=jobs_hadd.dtags
+merge_proc_parallel:
+	cat ${dtags} | xargs -P ${n_proc} -I DTAG sh -c "hadd ${merge_dir}/${nt}/${proc}/DTAG.root /lstore/cms/olek/outdirs/${nt}/${proc}/DTAG/*.root || true"
+
 merge_tt: merge_dir=merge-sets/
 merge_tt:
 	for fl in `ls tt_files_*`; \

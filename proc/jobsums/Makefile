@@ -1,3 +1,15 @@
+histosel: systs_files=syst-test.syst-list.1
+histosel: n_proc=2
+histosel: distrs_mc=distrs/distrs_v25v26resub2_mc_noqcd.root
+histosel: distrs_data=../quick-test/v25v26-resub2_hadds/SingleMuon.root
+histosel: out=histosels/redo-v25-v26_resub2_test-prallel
+histosel: lumi=35800
+histosel: chan=mu_sel
+histosel: distr=Mt_lep_met_c
+histosel: opt=
+histosel:
+	cat ${systs_files} | xargs -P ${n_proc} -I SYS sh -c "python stack_plot.py ${distrs_mc} ${distrs_data} -o ${out} --lumi ${lumi} -c ${chan} -d ${distr} ${opt} --wjet 0.8 --qcd 1.05 --systematic SYS || true"
+
 
 # hadd ${merge_dir}/${nt}/${proc}/$$d.root /lstore/cms/olek/outdirs/${nt}/${proc}/$$d/*.root &
 run_histos: systematics=NOMINAL

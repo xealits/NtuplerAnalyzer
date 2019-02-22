@@ -1,0 +1,3 @@
+#!/bin/bash
+python stack_plot.py "$@" || exit 0
+
