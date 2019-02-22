@@ -1,3 +1,128 @@
+# looking for distrs, histosels files of last update and automating everything
+
+python numbers_for_datacard.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -y -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --latex
+
+elsel tt_eltau 3010
+
+damn
+
+the one from datacard:
+
+python numbers_for_datacard.py histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix.root -y -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --latex
+
+-- no such directory now
+
+[olek@fermi02 jobsums]$ find histosels -name "*objfix*"
+[olek@fermi02 jobsums]$ 
+
+no objfix...
+
+[olek@fermi02 proc]$ find sw-dir/jobsums/histosels/ -name "*objfix*"
+sw-dir/jobsums/histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix.root
+sw-dir/jobsums/histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix_with_selOS.root
+[olek@fermi02 proc]$ 
+
+-- copied and got 2964 in tt_eltau at elsel!
+
+also:
+
+[olek@fermi02 jobsums]$ cmp histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1_objfix.root /lstore/cms/olek/CMSSW_8_1_0/src/HiggsAnalysis/CombinedLimit/fitting/ttxsec/HISTOSELS_redo_v25_v26_1_objfix.root 
+[olek@fermi02 jobsums]$ 
+
+match
+
+and the distrs file?
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/tests/ --lumi 35800 -c mu_sel_lj    -x mu_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/tests/ --lumi 35800 -c mu_sel_ljout -x mu_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/tests/ --lumi 31300 -c el_sel_lj    -x el_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/tests/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+-- 3009.63
+mc sum  6383.362342
+instead 6307
+and     7884 in ljout
+
+factor of histosel
+original tt_eltau: 0.104359 (entries of sel_lj = 10478, selVloose_lj = 13403)
+after scales:      3009.63  (entries 13403)
+3009.63 / 0.104359 = 28839.2
+2964. / 28839.2 = 0.102777   --- looking for this
+
+data: 6190 7906 (6280 8103) ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root
+note: 6190 7906
+
+distrs/distrs_redo_v25v26_mc.root    same
+distrs/distrs_redo_v25v26_mc_*.root  same all
+
+without full histosell cannot find the distrs file...
+
+ok, distrs/distrs_redo_v25v26_mc_4.root is close enough
+
+
+## the prefit plotting scripts
+
+### input versioned files
+
+nt
+proc   (stage2)
+distrs (batch plots, define channels, sys and distr)
+mc and data file
+
+distrs/distrs_redo_v25v26_mc_4.root
+../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root
+
+2 locations:
+in  proc/jobsums/distrs/
+and proc/quick-test/
+
+move to proc/jobsums/distrs/
+leave quick-test/ for tests
+
+the standard out dir:
+proc/jobsums/distrs/vNTID_procID_distrsID/all/
+
+then hadd to
+proc/jobsums/distrs/vNTID_procID_distrsID/
+
+and the distrs files are:
+proc/jobsums/distrs/vNTID_procID_distrsID_mc.root
+proc/jobsums/distrs/vNTID_procID_distrsID/SingleMuon.root
+proc/jobsums/distrs/vNTID_procID_distrsID/SingleElectron.root
+
+### all the plotting scripts, definitions and run with xargs in parallel
+
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleElectron.root -p -r -o plots/tests/ --lumi 31300 -c el_sel_ljout -x el_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+output plots/vNTID_procID_distrsID/
+
+el or mu set a distrs of constants: lumi, distrs data file.
+
+then there are groups of plots where
+channel, distr, distr shape, qcd handling and SYS might change
+plus options of titles etc
+
+let's just glob them in makefile tasks
+
+for example v25v26_redo_4
+
+
+
+
+# histosel loops with xargs for parallelism
+
+cat syst-test.syst-list.1 | xargs -P 2 -I SYS ./no_error_stack_plot distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root -o histosels/redo-v25-v26_resub2_test-prallel --lumi 35800 -c mu_sel -d Mt_lep_met_c --wjet 0.8 --qcd 1.05 --systematic SYS
+
+or
+
+cat syst-test.syst-list.1 | xargs -P 2 -I SYS sh -c "python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root -o histosels/redo-v25-v26_resub2_test-prallel --lumi 35800 -c mu_sel -d Mt_lep_met_c --wjet 0.8 --qcd 1.05 --systematic SYS || true"
+
+
+
+
+
+
 # yield distrs, nominal sys
 
 python bunch_of_selections.py --set-sys nom --set-distrs "1,yield" lstore_outdirs/merge-sets/v37/test1/ quick-test/v37-test1/
@@ -5,6 +130,62 @@ python bunch_of_selections.py --set-sys nom --set-distrs "1,yield" lstore_outdir
 python bunch_of_selections.py --set-sys nom --set-distrs "1,yield" lstore_outdirs/merge-sets/v25v26/resub4/ quick-test/v25v26-resub4-yield/
 
 -- save this in some coherent script file!
+
+python numbers_for_datacard.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout --no-sums -y --sqrt-unc
+
+INFO:root:import ROOT
+
+INFO:root:el_sel_lj
+INFO:root:el_sel_ljout
+                                 process    el_sel_lj   el_sel_ljout
+                                tt_eltau   $      3010 \pm         29 $   $      4691 \pm         36 $
+                             tt_taultauh   $       170 \pm          7 $   $       280 \pm          9 $
+                                   tt_lj   $      2215 \pm         16 $   $      1457 \pm         13 $
+                                tt_taulj   $       118 \pm          4 $   $        76 \pm          3 $
+                                tt_other   $        60 \pm          3 $   $       100 \pm          4 $
+                             s_top_eltau   $       152 \pm          5 $   $       274 \pm          6 $
+                             s_top_other   $        21 \pm          1 $   $        31 \pm          2 $
+                                s_top_lj   $       151 \pm          3 $   $       169 \pm          3 $
+                               dy_tautau   $       103 \pm         13 $   $       190 \pm         14 $
+                                dy_other   $        34 \pm          6 $   $       103 \pm          9 $
+                             wjets_other   $       194 \pm         10 $   $       241 \pm          6 $
+                              wjets_taul   $         7 \pm          1 $   $         7 \pm          1 $
+                              wjets_tauh   $         0 \pm          0 $   $         1 \pm          1 $
+                                dibosons   $        13 \pm          1 $   $        31 \pm          2 $
+                                     qcd   $       136 \pm         21 $   $       327 \pm         24 $
+aaa!
+                                mc_resum     6383.362     7980.707
+                                    data   $      6190 \pm         79 $   $      7906 \pm         90 $
+
+python numbers_for_datacard.py histosels/redo-v25-v26_resub4_yields/distrs_v25v26resub4_yields_all_HISTOSEL.root -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout --no-sums -y --distr yield
+INFO:root:import ROOT
+INFO:root:el_sel_lj
+INFO:root:el_sel_ljout
+                                 process    el_sel_lj   el_sel_ljout
+                                tt_eltau   $      3093 \pm         29 $   $      4858 \pm         36 $
+                             tt_taultauh   $       171 \pm          7 $   $       284 \pm          9 $
+                                   tt_lj   $      2216 \pm         16 $   $      1460 \pm         13 $
+                                tt_taulj   $       118 \pm          4 $   $        76 \pm          3 $
+                                tt_other   $        61 \pm          3 $   $       104 \pm          4 $
+                             s_top_eltau   $       161 \pm          5 $   $       293 \pm          6 $
+                             s_top_other   $        21 \pm          1 $   $        32 \pm          2 $
+                                s_top_lj   $       151 \pm          3 $   $       169 \pm          3 $
+                               dy_tautau   $       103 \pm         13 $   $       190 \pm         14 $
+                                dy_other   $        20 \pm          4 $   $        62 \pm          7 $
+                             wjets_other   $        91 \pm          7 $   $       111 \pm          4 $
+                              wjets_taul   $         7 \pm          1 $   $         7 \pm          1 $
+                              wjets_tauh   $         0 \pm          0 $   $         1 \pm          1 $
+                                dibosons   $        13 \pm          1 $   $        32 \pm          2 $
+                                     qcd   $       211 \pm         19 $   $       493 \pm         25 $
+aaa!
+                                mc_resum     6436.279     8171.649
+                                    data   $      6455 \pm         80 $   $      8393 \pm         92 $
+
+
+-- the stat unc with yield is practically the same as the shape with sqrt of sum of squares
+
+
+
 
 
 # check b Frag weights, the variation seems to be too large
