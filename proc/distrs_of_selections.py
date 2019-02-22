@@ -4,12 +4,12 @@ import argparse
 
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
-    description = "generate jobs for bunch of selections",
-    epilog = "Example:\n$ python bunch_of_selections.py lstore_outdirs/merge-sets/v36/test1/ quick-test/v36-test1/"
+    description = "generate jobs for distrs of selections",
+    epilog = "Example:\n$ python distrs_of_selections.py lstore_outdirs/merge-sets/v36/test1/ jobsums/distrs/v36test1_distrs1/all/"
     )
 
 parser.add_argument('inp_dir',    help="input directory, lstore or merge")
-parser.add_argument('out_dir',    help="output directory, like quick-test")
+parser.add_argument('out_dir',    help="output directory, like jobsums/distrs/v36test1_distrs1/all/")
 parser.add_argument('--set-sys',     type=str, help="set systematics for all samples")
 parser.add_argument('--set-samples', type=str, help="set samples to process")
 parser.add_argument('--select-channels', default='all_leptau_joined', type=str, help="channels to select (with hard-coded distrs if not overwritten)")

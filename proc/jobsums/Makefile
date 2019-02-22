@@ -47,3 +47,44 @@ run_std_histos:
 	make run_histos mc=${mc} data=${data_mu} lumi=${lumi_mu} out=${out} chan=mu_sel & \
 	make run_histos mc=${mc} data=${data_el} lumi=${lumi_el} out=${out} chan=el_sel & 
 
+#plot_sel_1: nt=v25v26
+#plot_sel_1: proc=redo
+#plot_sel_1: distrs=4
+#plot_sel_1: lumi=31300
+#plot_sel_1: datafile=SingleElectron
+#plot_sel_1: chan_tag=el
+#plot_sel_1: title_lep=e
+
+
+plot_sel_1:
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_sel_ljout -x ${chan_tag}_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_sel_lj    -x ${chan_tag}_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+plot_sel1_mu: nt=v25v26
+plot_sel1_mu: proc=redo
+plot_sel1_mu: distrs=4
+plot_sel1_mu: lumi=35800
+plot_sel1_mu: datafile=SingleMuon
+plot_sel1_mu: chan_tag=mu
+plot_sel1_mu: title_lep=#mu
+plot_sel1_mu: plot_sel_1
+
+plot_sel1_el: nt=v25v26
+plot_sel1_el: proc=redo
+plot_sel1_el: distrs=4
+plot_sel1_el: lumi=31300
+plot_sel1_el: datafile=SingleElectron
+plot_sel1_el: chan_tag=el
+plot_sel1_el: title_lep=e
+plot_sel1_el: plot_sel_1
+
+# this does not work on its own with defaults and dependencies
+# # it runs only 1 dependency
+# hence the explicit re-make
+plot_sel: nt=v25v26
+plot_sel: proc=redo
+plot_sel: distrs=4
+plot_sel:
+	make plot_sel1_mu nt=${nt} proc=${proc} distrs=${distrs}
+	make plot_sel1_el nt=${nt} proc=${proc} distrs=${distrs}
+
