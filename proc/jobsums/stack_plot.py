@@ -52,6 +52,8 @@ parser.add_argument("--vert-lines", type=str, help="add vertical lines to the pl
 parser.add_argument("--wjets", type=float, default=0., help="scale factor for wjets (from the control region)")
 parser.add_argument("--factor-dy", type=float, help="scale factor for dy (from the control region)")
 
+parser.add_argument("--factor-rate-systematic", type=str, help="scale the procs by the factor to simulate the rate syst (tau ID, mis-ID): tt_eltau,tt_taultauh,s_top_eltau,s_top_other,dy_tautau:0.95 tt_lj,tt_taulj,tt_other:0.5")
+
 parser.add_argument("--draw-overflows", type=float, default=0., help="draw the overflow bin with the specified width")
 
 parser.add_argument("--fake-rate", action='store_true', help='(ad-hocish) the fake rate in MC and data, i.e. ratio of whatever two distributions given as "nominator/denominator"')
@@ -187,6 +189,12 @@ if not args.no_data and args.bin_norm:
               histo.SetBinError(bini, error/width)
 
 logging.info("# data histograms = %d" % len(histos_data_per_distr))
+
+factor_rate_systematic = None
+if args.factor_rate_systematic:
+    # tt_eltau,tt_taultauh,s_top_eltau,s_top_other,dy_tautau:0.95
+    procs, factor = args.factor_rate_systematic.split(':')
+    factor_rate_systematic = (procs.split(','), float(factor))
 
 syst_factors = {
               "FragUp":             0.958852, #1.001123,
@@ -458,6 +466,9 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
            # dy normalization
            if args.factor_dy and 'dy' in nick:
                histo.Scale(args.factor_dy)
+
+           if factor_rate_systematic and nick in factor_rate_systematic[0]:
+               histo.Scale(factor_rate_systematic[1])
 
            # mc qcd normalization
            if nick == 'qcd':
