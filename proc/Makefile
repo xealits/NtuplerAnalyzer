@@ -22,6 +22,7 @@ sub_proc:
 #make merge_proc dtags=merge-sets/jobs_hadd.dtags.large_ab nt=v25 proc=p3
 merge_proc: merge_dir=merge-sets/
 merge_proc:
+	echo `date` merge_proc nt=${nt} proc=${proc} dtags=${dtags} >> logs
 	for d in `cat ${dtags}`; \
 	do \
 	hadd ${merge_dir}/${nt}/${proc}/$$d.root /lstore/cms/olek/outdirs/${nt}/${proc}/$$d/*.root & \
@@ -31,10 +32,12 @@ merge_proc_parallel: merge_dir=merge-sets/
 merge_proc_parallel: n_proc=4
 merge_proc_parallel: dtags=jobs_hadd.dtags
 merge_proc_parallel:
+	echo `date` merge_proc_parallel nt=${nt} proc=${proc} dtags=${dtags} >> logs
 	cat ${dtags} | xargs -P ${n_proc} -I DTAG sh -c "hadd ${merge_dir}/${nt}/${proc}/DTAG.root /lstore/cms/olek/outdirs/${nt}/${proc}/DTAG/*.root || true"
 
 merge_tt: merge_dir=merge-sets/
 merge_tt:
+	echo `date` merge_tt nt=${nt} proc=${proc} dtags=${dtags} >> logs
 	for fl in `ls tt_files_*`; \
 	do \
 	hadd ${merge_dir}/${nt}/${proc}/$$fl.root `sed 's,^,/lstore/cms/olek/outdirs/${nt}/${proc}/${dtag}/,' $$fl` & \
