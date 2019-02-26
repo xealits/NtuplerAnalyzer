@@ -294,25 +294,230 @@ for s_d in named_systs_weights_all.values():
 
 systs_weights_all.update(systs_weights_tt_updowns)
 
-named_systs_weights_all_2 = {'nom': systs_weights_nominal,
-'common': systs_weights_common,
-'obj':    systs_weights_objects,
-'tt_weights': systs_weights_tt,
-'tt_hard':  systs_weights_tt_hard,
-'tt_pdf':   systs_weights_tt_alpha_pdf,
-'tt_alpha': systs_weights_tt_alpha,
-'tt_pdf1':  systs_weights_tt_pdf1,
-'tt_pdf10': systs_weights_tt_pdf10,
-'tt_pdf20': systs_weights_tt_pdf20,
-'tt_pdf30': systs_weights_tt_pdf30,
-'tt_pdf40': systs_weights_tt_pdf40,
-'tt_pdf50': systs_weights_tt_pdf50,
+# systs2 with event functions
+
+systs2_weights_nominal = {
+'NOMINAL': lambda ev: ev.event_weight,
 }
 
-systs_weights_all_2 = {}
-for s_d in named_systs_weights_all_2.values():
-    systs_weights_all_2.update(s_d)
-systs_weights_all_2.update(systs_weights_tt_updowns)
+systs2_weights_common = {
+'PUUp'   : lambda ev: ev.event_weight*ev.event_weight_PUUp    / ev.event_weight_PU  if ev.event_weight_PU  > 0. else 0.,
+'PUDown' : lambda ev: ev.event_weight*ev.event_weight_PUDown  / ev.event_weight_PU  if ev.event_weight_PU  > 0. else 0.,
+'bSFUp'  : lambda ev: ev.event_weight*ev.event_weight_bSFUp   / ev.event_weight_bSF if ev.event_weight_bSF > 0. else 0.,
+'bSFDown': lambda ev: ev.event_weight*ev.event_weight_bSFDown / ev.event_weight_bSF if ev.event_weight_bSF > 0. else 0.,
+
+'LEPelIDUp'   : lambda ev: ev.event_weight*ev.event_weight_LEPelIDUp   ,
+'LEPelIDDown' : lambda ev: ev.event_weight*ev.event_weight_LEPelIDDown ,
+'LEPelTRGUp'  : lambda ev: ev.event_weight*ev.event_weight_LEPelTRGUp  ,
+'LEPelTRGDown': lambda ev: ev.event_weight*ev.event_weight_LEPelTRGDown,
+'LEPmuIDUp'   : lambda ev: ev.event_weight*ev.event_weight_LEPmuIDUp   ,
+'LEPmuIDDown' : lambda ev: ev.event_weight*ev.event_weight_LEPmuIDDown ,
+'LEPmuTRGUp'  : lambda ev: ev.event_weight*ev.event_weight_LEPmuTRGUp  ,
+'LEPmuTRGDown': lambda ev: ev.event_weight*ev.event_weight_LEPmuTRGDown,
+}
+
+systs2_weights_tt = {
+'TOPPTDown'     : lambda ev: ev.event_weight                           ,
+'TOPPTUp'       : lambda ev: ev.event_weight*ev.event_weight_toppt        ,
+'FragUp'        : lambda ev: ev.event_weight*ev.event_weight_FragUp       ,
+'FragDown'      : lambda ev: ev.event_weight*ev.event_weight_FragDown     ,
+'SemilepBRUp'   : lambda ev: ev.event_weight*ev.event_weight_SemilepBRUp  ,
+'SemilepBRDown' : lambda ev: ev.event_weight*ev.event_weight_SemilepBRDown,
+'PetersonUp'    : lambda ev: ev.event_weight*ev.event_weight_PetersonUp   ,
+'PetersonDown'  : lambda ev: ev.event_weight                           ,
+}
+
+systs2_weights_tt_hard = {
+'MrUp'    : lambda ev: ev.event_weight*ev.event_weight_me_f_rUp,
+'MrDown'  : lambda ev: ev.event_weight*ev.event_weight_me_f_rDn,
+'MfUp'    : lambda ev: ev.event_weight*ev.event_weight_me_fUp_r,
+'MfDown'  : lambda ev: ev.event_weight*ev.event_weight_me_fDn_r,
+'MfrUp'   : lambda ev: ev.event_weight*ev.event_weight_me_frUp ,
+'MfrDown' : lambda ev: ev.event_weight*ev.event_weight_me_frDn ,
+}
+
+systs2_weights_tt_alpha = {
+'AlphaSUp'  : lambda ev: ev.event_weight*ev.ev.event_weight_AlphaS_up,
+'AlphaSDown': lambda ev: ev.event_weight*ev.ev.event_weight_AlphaS_dn,
+}
+
+systs2_weights_tt_pdf1 = {
+'PDFCT14n1Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[0] ,
+'PDFCT14n2Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[1] ,
+'PDFCT14n3Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[2] ,
+'PDFCT14n4Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[3] ,
+'PDFCT14n5Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[4] ,
+'PDFCT14n6Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[5] ,
+'PDFCT14n7Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[6] ,
+'PDFCT14n8Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[7] ,
+'PDFCT14n9Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[8] ,
+'PDFCT14n10Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[9] ,
+}
+
+systs2_weights_tt_pdf10 = {
+'PDFCT14n11Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[10],
+'PDFCT14n12Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[11],
+'PDFCT14n13Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[12],
+'PDFCT14n14Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[13],
+'PDFCT14n15Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[14],
+'PDFCT14n16Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[15],
+'PDFCT14n17Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[16],
+'PDFCT14n18Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[17],
+'PDFCT14n19Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[18],
+'PDFCT14n20Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[19],
+}
+
+systs2_weights_tt_pdf20 = {
+'PDFCT14n21Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[20],
+'PDFCT14n22Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[21],
+'PDFCT14n23Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[22],
+'PDFCT14n24Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[23],
+'PDFCT14n25Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[24],
+'PDFCT14n26Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[25],
+'PDFCT14n27Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[26],
+'PDFCT14n28Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[27],
+'PDFCT14n29Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[28],
+'PDFCT14n30Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[29],
+}
+
+systs2_weights_tt_pdf30 = {
+'PDFCT14n31Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[30],
+'PDFCT14n32Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[31],
+'PDFCT14n33Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[32],
+'PDFCT14n34Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[33],
+'PDFCT14n35Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[34],
+'PDFCT14n36Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[35],
+'PDFCT14n37Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[36],
+'PDFCT14n38Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[37],
+'PDFCT14n39Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[38],
+'PDFCT14n40Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[39],
+}
+
+systs2_weights_tt_pdf40 = {
+'PDFCT14n41Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[40],
+'PDFCT14n42Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[41],
+'PDFCT14n43Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[42],
+'PDFCT14n44Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[43],
+'PDFCT14n45Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[44],
+'PDFCT14n46Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[45],
+'PDFCT14n47Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[46],
+'PDFCT14n48Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[47],
+'PDFCT14n49Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[48],
+'PDFCT14n50Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[49],
+}
+
+systs2_weights_tt_pdf50 = {
+'PDFCT14n51Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[50],
+'PDFCT14n52Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[51],
+'PDFCT14n53Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[52],
+'PDFCT14n54Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[53],
+'PDFCT14n55Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[54],
+'PDFCT14n56Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[55],
+}
+
+
+systs2_weights_tt_alpha_pdf = {
+'AlphaSUp'  : lambda ev: ev.event_weight*ev.event_weight_AlphaS_up,
+'AlphaSDown': lambda ev: ev.event_weight*ev.event_weight_AlphaS_dn,
+
+'PDFCT14n1Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[0] ,
+'PDFCT14n2Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[1] ,
+'PDFCT14n3Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[2] ,
+'PDFCT14n4Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[3] ,
+'PDFCT14n5Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[4] ,
+'PDFCT14n6Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[5] ,
+'PDFCT14n7Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[6] ,
+'PDFCT14n8Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[7] ,
+'PDFCT14n9Up'     : lambda ev: ev.event_weight*ev.event_weight_pdf[8] ,
+'PDFCT14n10Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[9] ,
+'PDFCT14n11Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[10],
+'PDFCT14n12Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[11],
+'PDFCT14n13Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[12],
+'PDFCT14n14Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[13],
+'PDFCT14n15Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[14],
+'PDFCT14n16Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[15],
+'PDFCT14n17Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[16],
+'PDFCT14n18Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[17],
+'PDFCT14n19Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[18],
+'PDFCT14n20Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[19],
+'PDFCT14n21Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[20],
+'PDFCT14n22Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[21],
+'PDFCT14n23Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[22],
+'PDFCT14n24Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[23],
+'PDFCT14n25Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[24],
+'PDFCT14n26Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[25],
+'PDFCT14n27Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[26],
+'PDFCT14n28Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[27],
+'PDFCT14n29Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[28],
+'PDFCT14n30Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[29],
+'PDFCT14n31Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[30],
+'PDFCT14n32Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[31],
+'PDFCT14n33Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[32],
+'PDFCT14n34Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[33],
+'PDFCT14n35Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[34],
+'PDFCT14n36Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[35],
+'PDFCT14n37Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[36],
+'PDFCT14n38Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[37],
+'PDFCT14n39Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[38],
+'PDFCT14n40Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[39],
+'PDFCT14n41Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[40],
+'PDFCT14n42Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[41],
+'PDFCT14n43Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[42],
+'PDFCT14n44Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[43],
+'PDFCT14n45Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[44],
+'PDFCT14n46Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[45],
+'PDFCT14n47Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[46],
+'PDFCT14n48Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[47],
+'PDFCT14n49Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[48],
+'PDFCT14n50Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[49],
+'PDFCT14n51Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[50],
+'PDFCT14n52Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[51],
+'PDFCT14n53Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[52],
+'PDFCT14n54Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[53],
+'PDFCT14n55Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[54],
+'PDFCT14n56Up'    : lambda ev: ev.event_weight*ev.event_weight_pdf[55],
+}
+
+systs2_weights_tt_updowns = {
+'TuneCUETP8M2T4Down' : lambda ev: ev.event_weight,
+'TuneCUETP8M2T4Up'   : lambda ev: ev.event_weight,
+'FSRDown'            : lambda ev: ev.event_weight,
+'FSRUp'              : lambda ev: ev.event_weight,
+'HDAMPDown'          : lambda ev: ev.event_weight,
+'HDAMPUp'            : lambda ev: ev.event_weight,
+'ISRDown'            : lambda ev: ev.event_weight,
+'ISRUp'              : lambda ev: ev.event_weight,
+}
+
+systs2_weights_objects = {
+'JERDown':  lambda ev: ev.event_weight,
+'JERUp'  :  lambda ev: ev.event_weight,
+'JESDown':  lambda ev: ev.event_weight,
+'JESUp'  :  lambda ev: ev.event_weight,
+'TESDown':  lambda ev: ev.event_weight,
+'TESUp'  :  lambda ev: ev.event_weight,
+}
+
+
+named_systs2_weights_all = {'nom': systs2_weights_nominal,
+'common': systs2_weights_common,
+'obj':    systs2_weights_objects,
+'tt_weights': systs2_weights_tt,
+'tt_hard':  systs2_weights_tt_hard,
+'tt_pdf':   systs2_weights_tt_alpha_pdf,
+'tt_alpha': systs2_weights_tt_alpha,
+'tt_pdf1':  systs2_weights_tt_pdf1,
+'tt_pdf10': systs2_weights_tt_pdf10,
+'tt_pdf20': systs2_weights_tt_pdf20,
+'tt_pdf30': systs2_weights_tt_pdf30,
+'tt_pdf40': systs2_weights_tt_pdf40,
+'tt_pdf50': systs2_weights_tt_pdf50,
+}
+
+systs2_weights_all = {}
+for s_d in named_systs2_weights_all.values():
+    systs2_weights_all.update(s_d)
+systs2_weights_all.update(systs_weights_tt_updowns)
 
 
 # ----- event-function weights
