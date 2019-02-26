@@ -651,6 +651,7 @@ distr_defs = {
     'met_f':         (systs_objects_met_variation, ('histo-range',  [20,0,300])),
     'met_c':         (systs_objects_met_variation, ('custom-range', [0,20,40,60,80,100,120,140,200,500])),
     'dilep_mass':    ({'NOMINAL': lambda ev: ev.event_dilep_mass},       ('histo-range',  [100,0,400])),
+    'dilep_mass_dy': ({'NOMINAL': lambda ev: ev.event_dilep_mass},       ('histo-range',  [50,50,100])),
     'lep_pt':        ({'NOMINAL': lambda ev: ev.event_leptons[0].pt()},  ('histo-range',  [20,0,150])),
     'lep_eta':       ({'NOMINAL': lambda ev: ev.event_leptons[0].eta()}, ('histo-range',  [26,-2.6,2.6])),
     'tau_sv_sign':   ({'NOMINAL': lambda ev: ev.event_taus_sv_sign[0]},  ('histo-range',  [42,-1,20])),
@@ -670,7 +671,7 @@ def make_histo(name, histo_range):
         #bin_edges = [float(b) for b in args.custom_range.split(',')]
         n_bin_edges = len(bin_edges)
         n_bins = n_bin_edges - 1
-        logging.debug("making %d bins from %s" % (n_bins, args.custom_range))
+        logging.debug("making %d bins from %s" % (n_bins, repr(bin_edges)))
         root_bin_edges = (ctypes.c_double * n_bin_edges)(*bin_edges)
         output_histo = TH1D(name, "", n_bins, root_bin_edges)
 
@@ -705,15 +706,6 @@ main_sel_stages = {
 
 # new selection stages
 std_channels_ev_loop = {
-'mu_selSV':          (lambda sel_stage, ev: (sel_stage==  9 or sel_stage==  7) and event_taus_sv_sign[0] > 2.5, main_sel_stages),
-'mu_selSV_ss':       (lambda sel_stage, ev: (sel_stage==  8 or sel_stage==  6) and event_taus_sv_sign[0] > 2.5, main_sel_stages),
-'el_selSV':          (lambda sel_stage, ev: (sel_stage== 19 or sel_stage== 17) and event_taus_sv_sign[0] > 2.5, main_sel_stages),
-'el_selSV_ss':       (lambda sel_stage, ev: (sel_stage== 18 or sel_stage== 16) and event_taus_sv_sign[0] > 2.5, main_sel_stages),
-'mu_selSVVloose':    (lambda sel_stage, ev: (sel_stage==  9 or sel_stage==  7 or sel_stage==  5) and event_taus_sv_sign[0] > 2.5, main_sel_stages),
-'mu_selSVVloose_ss': (lambda sel_stage, ev: (sel_stage==  8 or sel_stage==  6 or sel_stage==  4) and event_taus_sv_sign[0] > 2.5, main_sel_stages),
-'el_selSVVloose':    (lambda sel_stage, ev: (sel_stage== 19 or sel_stage== 17 or sel_stage== 15) and event_taus_sv_sign[0] > 2.5, main_sel_stages),
-'el_selSVVloose_ss': (lambda sel_stage, ev: (sel_stage== 18 or sel_stage== 16 or sel_stage== 14) and event_taus_sv_sign[0] > 2.5, main_sel_stages),
-
 'mu_selTight':     (lambda sel_stage, ev: (sel_stage==  9), main_sel_stages),
 'mu_selTight_ss':  (lambda sel_stage, ev: (sel_stage==  8), main_sel_stages),
 'el_selTight':     (lambda sel_stage, ev: (sel_stage== 19), main_sel_stages),
@@ -754,13 +746,154 @@ std_channels_ev_loop = {
 'el_selVloose_lj_ss': (lambda sel_stage, ev: (sel_stage== 18 or sel_stage== 16 or sel_stage== 14) and ev.event_jets_lj_var <= 60., main_sel_stages),
 
 # additional channels
-'dy_mutau': (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103), {'NOMINAL': lambda _, ev: ev.selection_stage_dy}),
-'dy_eltau': (lambda sel_stage, ev: (sel_stage== 112 or sel_stage== 113), {'NOMINAL': lambda _, ev: ev.selection_stage_dy}),
-'dy_mumu':  (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103 or sel_stage== 105), {'NOMINAL': lambda _, ev: ev.selection_stage_dy_mumu}),
-'dy_elel':  (lambda sel_stage, ev: (sel_stage== 112 or sel_stage== 113 or sel_stage== 115), {'NOMINAL': lambda _, ev: ev.selection_stage_dy_mumu}),
+'dy_mutau': (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
+'dy_eltau': (lambda sel_stage, ev: (sel_stage== 112 or sel_stage== 113), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
+'dy_mumu':  (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103 or sel_stage== 105) and ev.event_met_lep_mt < 40., {'NOMINAL': lambda ev: ev.selection_stage_dy_mumu}),
+'dy_elel':  (lambda sel_stage, ev: (sel_stage== 112 or sel_stage== 113 or sel_stage== 115) and ev.event_met_lep_mt < 40., {'NOMINAL': lambda ev: ev.selection_stage_dy_mumu}),
 
-'tt_elmu':  (lambda sel_stage, ev: (sel_stage== 205), lambda _, ev: ev.selection_stage_em),
+'wjets_mu': (lambda sel_stage, ev: (sel_stage==  7 or sel_stage==  6) and ev.event_met_lep_mt > 40., {'NOMINAL': lambda ev: ev.selection_stage_wjets}),
+'wjets_el': (lambda sel_stage, ev: (sel_stage== 17 or sel_stage== 16) and ev.event_met_lep_mt > 40., {'NOMINAL': lambda ev: ev.selection_stage_wjets}),
+
+'tt_elmu':  (lambda sel_stage, ev: (sel_stage== 205), {'NOMINAL': lambda ev: ev.selection_stage_em}),
 }
 # calculation of standard systematic weights
+
+more_channels_ev_loop = {
+'mu_selSV':          (lambda sel_stage, ev: (sel_stage==  9 or sel_stage==  7) and ev.event_taus_sv_sign[0] > 2.5, main_sel_stages),
+'mu_selSV_ss':       (lambda sel_stage, ev: (sel_stage==  8 or sel_stage==  6) and ev.event_taus_sv_sign[0] > 2.5, main_sel_stages),
+'el_selSV':          (lambda sel_stage, ev: (sel_stage== 19 or sel_stage== 17) and ev.event_taus_sv_sign[0] > 2.5, main_sel_stages),
+'el_selSV_ss':       (lambda sel_stage, ev: (sel_stage== 18 or sel_stage== 16) and ev.event_taus_sv_sign[0] > 2.5, main_sel_stages),
+'mu_selSVVloose':    (lambda sel_stage, ev: (sel_stage==  9 or sel_stage==  7 or sel_stage==  5) and ev.event_taus_sv_sign[0] > 2.5, main_sel_stages),
+'mu_selSVVloose_ss': (lambda sel_stage, ev: (sel_stage==  8 or sel_stage==  6 or sel_stage==  4) and ev.event_taus_sv_sign[0] > 2.5, main_sel_stages),
+'el_selSVVloose':    (lambda sel_stage, ev: (sel_stage== 19 or sel_stage== 17 or sel_stage== 15) and ev.event_taus_sv_sign[0] > 2.5, main_sel_stages),
+'el_selSVVloose_ss': (lambda sel_stage, ev: (sel_stage== 18 or sel_stage== 16 or sel_stage== 14) and ev.event_taus_sv_sign[0] > 2.5, main_sel_stages),
+}
+
+all_channels_ev_loop = {}
+all_channels_ev_loop.update(more_channels_ev_loop)
+all_channels_ev_loop.update(std_channels_ev_loop)
+
+
+
+
+# the standard distrs in channels
+
+distrs_leptonic = ['Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta']
+distrs_dy       = ['Mt_lep_met_c', 'dilep_mass', 'dilep_mass_dy', 'lep_pt', 'lep_eta']
+distrs_wjets    = ['Mt_lep_met_c', 'dilep_mass',                  'lep_pt', 'lep_eta']
+distrs_tauonic_std  = ['Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta',
+        'tau_pt', 'tau_eta', 'tau_sv_sign']
+distrs_tauonic = distrs_tauonic_std
+
+channels_distrs = {
+'tt_dileptons'    : (['tt_elmu'], distrs_leptonic),
+'tt_leptauSV'     : (['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], distrs_tauonic),
+
+'tt_leptau'       : (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'],       distrs_tauonic),
+'tt_leptau_lj'    : (['el_sel_lj',    'el_sel_lj_ss',    'mu_sel_lj',    'mu_sel_lj_ss'],    distrs_tauonic),
+'tt_leptau_ljout' : (['el_sel_ljout', 'el_sel_ljout_ss', 'mu_sel_ljout', 'mu_sel_ljout_ss'], distrs_tauonic),
+
+'tt_leptau_Vloose'       : (['el_selVloose',       'el_selVloose_ss',       'mu_selVloose',       'mu_selVloose_ss'],        distrs_tauonic),
+'tt_leptau_Vloose_lj'    : (['el_selVloose_lj',    'el_selVloose_lj_ss',    'mu_selVloose_lj',    'mu_selVloose_lj_ss'],     distrs_tauonic),
+'tt_leptau_Vloose_ljout' : (['el_selVloose_ljout', 'el_selVloose_ljout_ss', 'mu_selVloose_ljout', 'mu_selVloose_ljout_ss'],  distrs_tauonic),
+
+'tt_leptau_Tight'       : (['el_selTight',       'el_selTight_ss',       'mu_selTight',       'mu_selTight_ss'],        distrs_tauonic),
+'tt_leptau_Tight_lj'    : (['el_selTight_lj',    'el_selTight_lj_ss',    'mu_selTight_lj',    'mu_selTight_lj_ss'],     distrs_tauonic),
+'tt_leptau_Tight_ljout' : (['el_selTight_ljout', 'el_selTight_ljout_ss', 'mu_selTight_ljout', 'mu_selTight_ljout_ss'],  distrs_tauonic),
+
+'dy_dileptons'    : (['dy_mumu',  'dy_elel'],   distrs_dy),
+'dy_leptau'       : (['dy_mutau', 'dy_eltau'],  distrs_tauonic),
+'wjets'           : (['wjets_mu', 'wjets_el'],  distrs_wjets),
+}
+
+
+# the standard systematics per dtag
+
+sample_info = {
+'data': ([
+'Data13TeV_SingleElectron2016B_03Feb2017_ver2',
+'Data13TeV_SingleElectron2016C_03Feb2017_v1',
+'Data13TeV_SingleElectron2016D_03Feb2017_v1',
+'Data13TeV_SingleElectron2016E_03Feb2017_v1',
+'Data13TeV_SingleElectron2016F_03Feb2017_v1',
+'Data13TeV_SingleElectron2016G_03Feb2017_v1',
+'Data13TeV_SingleElectron2016H_03Feb2017_ver2',
+'Data13TeV_SingleElectron2016H_03Feb2017_ver3',
+'Data13TeV_SingleMuon2016B_03Feb2017_ver2',
+'Data13TeV_SingleMuon2016C_03Feb2017_v1',
+'Data13TeV_SingleMuon2016D_03Feb2017_v1',
+'Data13TeV_SingleMuon2016E_03Feb2017_v1',
+'Data13TeV_SingleMuon2016F_03Feb2017_v1',
+'Data13TeV_SingleMuon2016G_03Feb2017_v1',
+'Data13TeV_SingleMuon2016H_03Feb2017_ver2',
+'Data13TeV_SingleMuon2016H_03Feb2017_ver3'], ['nom']),
+
+'tt'  : (['MC2016_Summer16_TTJets_powheg'],
+  ['nom', 'common', 'obj', 'tt_weights', "tt_hard", 'tt_pdf']), # "tt_pdf1", "tt_pdf10", "tt_pdf20", "tt_pdf30", "tt_pdf40", "tt_pdf50,tt_alpha"]),
+
+'tt_syst': ([
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down',
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down_ext1',
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up',
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up_ext1',
+'MC2016_Summer16_TTJets_powheg_fsrdown',
+'MC2016_Summer16_TTJets_powheg_fsrdown_ext1',
+'MC2016_Summer16_TTJets_powheg_fsrdown_ext2',
+'MC2016_Summer16_TTJets_powheg_fsrup',
+'MC2016_Summer16_TTJets_powheg_fsrup_ext1',
+'MC2016_Summer16_TTJets_powheg_fsrup_ext2',
+'MC2016_Summer16_TTJets_powheg_hdampDOWN',
+'MC2016_Summer16_TTJets_powheg_hdampDOWN_ext1',
+'MC2016_Summer16_TTJets_powheg_hdampUP',
+'MC2016_Summer16_TTJets_powheg_hdampUP_ext1',
+'MC2016_Summer16_TTJets_powheg_isrdown',
+'MC2016_Summer16_TTJets_powheg_isrdown_ext1',
+'MC2016_Summer16_TTJets_powheg_isrdown_ext2',
+'MC2016_Summer16_TTJets_powheg_isrup'],
+  ['nom']),
+
+'other_mc': ([
+'MC2016_Summer16_DYJetsToLL_10to50_amcatnlo',
+'MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_v1_ext1',
+'MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_v2',
+'MC2016_Summer16_DYJetsToLL_50toInf_madgraph',
+'MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1',
+
+'MC2016_Summer16_W1Jets_madgraph',
+'MC2016_Summer16_W2Jets_madgraph',
+'MC2016_Summer16_W2Jets_madgraph_ext1',
+'MC2016_Summer16_W3Jets_madgraph',
+'MC2016_Summer16_W3Jets_madgraph_ext1',
+'MC2016_Summer16_W4Jets_madgraph',
+'MC2016_Summer16_W4Jets_madgraph_ext1',
+'MC2016_Summer16_W4Jets_madgraph_ext2',
+'MC2016_Summer16_WJets_madgraph',
+'MC2016_Summer16_WJets_madgraph_ext2_v1',
+
+'MC2016_Summer16_WWTo2L2Nu_powheg',
+'MC2016_Summer16_WWToLNuQQ_powheg',
+'MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin',
+'MC2016_Summer16_WZTo1L3Nu_amcatnlo_madspin',
+'MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin',
+'MC2016_Summer16_WZTo3LNu_powheg',
+'MC2016_Summer16_ZZTo2L2Nu_powheg',
+'MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin',
+'MC2016_Summer16_SingleT_tW_5FS_powheg',
+'MC2016_Summer16_SingleTbar_tW_5FS_powheg',
+'MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo',
+'MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg',
+'MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg'], ['nom', 'common', 'obj']),
+
+'qcd_mc': (['MC2016_Summer16_QCD_HT-100-200',
+'MC2016_Summer16_QCD_HT-200-300',
+'MC2016_Summer16_QCD_HT-300-500',
+'MC2016_Summer16_QCD_HT-500-700',
+'MC2016_Summer16_QCD_HT-700-1000',
+'MC2016_Summer16_QCD_HT-1000-1500',
+'MC2016_Summer16_QCD_HT-1500-2000',
+'MC2016_Summer16_QCD_HT-2000-Inf'], ['nom'])
+}
+
+
 
 

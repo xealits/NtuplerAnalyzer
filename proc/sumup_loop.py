@@ -73,6 +73,8 @@ assert dtag
 
 dtag_proc_defs = gen_proc_defs.dtags_procs[dtag]
 
+logging.debug(dtag_proc_defs)
+
 # general process of this dtag:
 general_process = dtag_proc_defs['el'][0] + '_other'
 # it will be chosen if no other definitions pass
@@ -127,10 +129,11 @@ for definition in args.loop_definitions:
     for chan in dchan.split(','):
         logging.debug('making chan %s' % chan)
         # channels selection functions, including the possible object systematic selections
-        chan_def = {}
-        sel_func, sel_stage_dict_funcs = std_defs.std_channels_ev_loop[chan]
-        for sysname in sel_stage_dict_funcs:
-            chan_def[sysname] = lambda ev: sel_func(sel_stage_dict_funcs[sysname](ev), ev)
+        #chan_def = {}
+        #sel_func, sel_stage_dict_funcs = std_defs.all_channels_ev_loop[chan]
+        #for sysname in sel_stage_dict_funcs:
+        #    chan_def[sysname] = lambda ev: sel_func(sel_stage_dict_funcs[sysname](ev), ev)
+        chan_def = std_defs.all_channels_ev_loop[chan]
         # so, I'll recalculate selection stage for all systematics
         # TODO; I need to explicitly separate object systematics, which require all these recalculations
 
@@ -142,7 +145,7 @@ for definition in args.loop_definitions:
             if 'el_' in chan:
                 proc_defs = dtag_proc_defs['el']
             else:
-                proc_defs = dtag_proc_defs['mu']
+                proc_defs = dtag_proc_defs.get('mu', dtag_proc_defs['el'])
         elif dproc == 'el':
             proc_defs = dtag_proc_defs['el']
         elif dproc == 'mu':
@@ -193,7 +196,11 @@ for iev, ev in enumerate(ttree):
         # --- these systematics have separate selection_stage parameters in main selection
         #     to implement the movement of events between selection categories
         # precalculate the chan def of nominal systematic:
-        chan_pass_nominal = chan_def['NOMINAL'](ev)
+        chan_func, chan_stage_at_sys = chan_def
+        chan_nom_stage = chan_stage_at_sys['NOMINAL'](ev)
+        chan_pass_nominal = chan_func(chan_nom_stage, ev)
+        logging.debug("%s %s %d" % (chan_name, repr(chan_pass_nominal), chan_nom_stage))
+        if not chan_pass_nominal: continue
 
         # define event's gen proc ID within this channel
         event_chan_proc = general_process
@@ -206,10 +213,12 @@ for iev, ev in enumerate(ttree):
         # if they are not already calculated
         for sname, sweight_func in chan_systs:
             # pass channel definition at this systematic
-            if sname in chan_def:
-                if not chan_def[sname](ev): continue
-            elif not chan_pass_nominal: continue
+            #if sname in chan_stage_at_sys:
+            #    sys_stage = chan_stage_at_sys[sname](ev)
+            #    if not chan_func(sys_stage, ev): continue
+            #elif not chan_pass_nominal: continue
             #if not chan_def.get(sname, chan_def['NOMINAL'])(ev): continue
+            logging.debug(chan_pass_nominal)
 
             # get systematic weight
             # hopefully getting hashed item is faster than recomputing the weight (TODO: probably it's not?)

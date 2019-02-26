@@ -337,3 +337,19 @@ distrs_usual_nominal_sel:
 
 
 
+# some handy scripts
+jobmaking: inp_dir=lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg/
+jobmaking: template_file=template_file
+jobmaking: template_name=INPUTFILE_PATH
+jobmaking: job_dir=./
+jobmaking:
+	ls ${inp_dir} | grep .root | xargs -n 1 -I FOO sh -c 'sed "s,${template_name},${inp_dir}/FOO," ${template_file} > ${job_dir}/FOO.job'
+
+# same with find
+jobmaking2: inp_dir=lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg/
+jobmaking2: template_file=template_file
+jobmaking2: template_name=INPUTFILE_PATH
+jobmaking2: job_dir=./
+jobmaking2:
+	find ${inp_dir} -name "*.root" -exec sh -c 'sed "s,${template_name},${inp_dir}/{}," ${template_file} > ${job_dir}/`basename {}`.job' \;
+

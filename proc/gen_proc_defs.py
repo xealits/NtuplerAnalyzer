@@ -154,8 +154,25 @@ dtags_procs = {
 'MC2016_Summer16_WJets_madgraph'   : genprocs_ltau_wjets,
 'MC2016_Summer16_WJets_amcatnlo'   : genprocs_ltau_wjets,
 
-'SingleMuon'     : ('data', []),
-'SingleElectron' : ('data', []),
+'SingleMuon'     : {'el': ('data', [])},
+'SingleElectron' : {'el': ('data', [])},
+
+'Data13TeV_SingleElectron2016B_03Feb2017_ver2' : {'el': ('data', [])},
+'Data13TeV_SingleElectron2016C_03Feb2017_v1'   : {'el': ('data', [])},
+'Data13TeV_SingleElectron2016D_03Feb2017_v1'   : {'el': ('data', [])},
+'Data13TeV_SingleElectron2016E_03Feb2017_v1'   : {'el': ('data', [])},
+'Data13TeV_SingleElectron2016F_03Feb2017_v1'   : {'el': ('data', [])},
+'Data13TeV_SingleElectron2016G_03Feb2017_v1'   : {'el': ('data', [])},
+'Data13TeV_SingleElectron2016H_03Feb2017_ver2' : {'el': ('data', [])},
+'Data13TeV_SingleElectron2016H_03Feb2017_ver3' : {'el': ('data', [])},
+'Data13TeV_SingleMuon2016B_03Feb2017_ver2' : {'el': ('data', [])},
+'Data13TeV_SingleMuon2016C_03Feb2017_v1'   : {'el': ('data', [])},
+'Data13TeV_SingleMuon2016D_03Feb2017_v1'   : {'el': ('data', [])},
+'Data13TeV_SingleMuon2016E_03Feb2017_v1'   : {'el': ('data', [])},
+'Data13TeV_SingleMuon2016F_03Feb2017_v1'   : {'el': ('data', [])},
+'Data13TeV_SingleMuon2016G_03Feb2017_v1'   : {'el': ('data', [])},
+'Data13TeV_SingleMuon2016H_03Feb2017_ver2' : {'el': ('data', [])},
+'Data13TeV_SingleMuon2016H_03Feb2017_ver3' : {'el': ('data', [])},
 }
 
 #dtags_procs_el = {
