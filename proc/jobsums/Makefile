@@ -90,6 +90,46 @@ plot_control_wjets_amcatnlo:
 	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc_wjetsamcatnlo.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c wjets_el -d lep_pt         --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3 --title "" --title-x "leading electron p_{T} [GeV]"      --title-y "[Events]"
 	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc_wjetsamcatnlo.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c wjets_el -d Mt_lep_met_c   --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3 --title "" --title-x "M_{T}(e, MET) [GeV]"    --bin-norm --title-y "[Events/GeV]"
 
+
+plot_lj_1: chan_tag=mu
+plot_lj_1: mW=80.385
+plot_lj_1: mt=172.5
+plot_lj_1:
+	echo `date` plot_lj_1 nt=${nt} proc=${proc} distrs=${distrs} >> logs
+	mkdir -p plots/${nt}_${proc}_${distrs}/
+	# Comparison qcd data-driven VS MC in wjets and presel control regions
+	# wjets
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_wjets -d Mt_lep_met_c --wjet 0.8 --qcd        1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_wjets -d Mt_lep_met_c --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_wjets -d lep_pt --wjet 0.8 --qcd        1.05 --ratio-range 0.3                  --title "" --title-x "lepton p_{T} [GeV]" --title-y "[Events]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_wjets -d lep_pt --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3                  --title "" --title-x "lepton p_{T} [GeV]" --title-y "[Events]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_wjets -d met_pt --wjet 0.8 --qcd        1.05 --ratio-range 0.3       --bin-norm --title "" --title-x "E^{miss}_{T} [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_wjets -d met_pt --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3       --bin-norm --title "" --title-x "E^{miss}_{T} [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	# presel
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_preselCand -d Mt_lep_met_c --wjet 0.8 --qcd        1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_preselCand -d Mt_lep_met_c --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_preselCand -d lep_pt --wjet 0.8 --qcd        1.05 --ratio-range 0.3                  --title "" --title-x "lepton p_{T} [GeV]" --title-y "[Events]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_preselCand -d lep_pt --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3                  --title "" --title-x "lepton p_{T} [GeV]" --title-y "[Events]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_preselCand -d met_pt --wjet 0.8 --qcd        1.05 --ratio-range 0.3       --bin-norm --title "" --title-x "E^{miss}_{T} [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_preselCand -d met_pt --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3       --bin-norm --title "" --title-x "E^{miss}_{T} [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	# lj parameters, with MC and data-driven QCD
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_preselCand -d dijet_mass        --wjet 0.8 --qcd        1.05 --ratio-range 0.3       --bin-norm --title "" --title-x  "di-jet mass [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_preselCand -d trijet_mass       --wjet 0.8 --qcd        1.05 --ratio-range 0.3       --bin-norm --title "" --title-x "tri-jet mass [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_preselCand -d dijet_trijet_mass --wjet 0.8 --qcd        1.05 --ratio-range 0.3       --bin-norm --title "" --title-x "#sqrt{(m_{2j} - ${mW})^{2} + (m_{3j} - ${mt})^{2}} [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_preselCand -d dijet_mass        --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3       --bin-norm --title "" --title-x  "di-jet mass [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_preselCand -d trijet_mass       --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3       --bin-norm --title "" --title-x "tri-jet mass [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_preselCand -d dijet_trijet_mass --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3       --bin-norm --title "" --title-x "#sqrt{(m_{2j} - ${mW})^{2} + (m_{3j} - ${mt})^{2}} [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+plot_tt_dilep:
+	echo `date` plot_tt_dilep nt=${nt} proc=${proc} distrs=${distrs} >> logs
+	mkdir -p plots/${nt}_${proc}_${distrs}/
+	# plots for control of the shapes of single-top and dibosons
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c tt_elmu -d Mt_lep_met_c --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c tt_elmu -d lep_pt       --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3            --title "" --title-x "lepton p_{T} [GeV]" --title-y "[Events]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c tt_elmu -d met_pt       --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3 --bin-norm --title "" --title-x "E^{miss}_{T} [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+
+
+
 #plot_sel_1: nt=v25v26
 #plot_sel_1: proc=redo
 #plot_sel_1: distrs=4
@@ -119,20 +159,22 @@ plot_presel_lj_1:
 	echo `date` plot_presel_lj_1 nt=${nt} proc=${proc} distrs=${distrs} chan=${chan_tag}_presel${presel_lev} lj-ljout ${the_distr} >> logs
 	mkdir -p plots/${nt}_${proc}_${distrs}/
 	# event categories pre-fit plots
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_presel${presel_lev}_ljout out -d ${the_distr} --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_presel${presel_lev}_lj        -d ${the_distr} --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_presel${presel_lev}_ljout -d ${the_distr} --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_presel${presel_lev}_lj    -d ${the_distr} --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
 
 
+# the prefit Mt distrs in categories
 plot_sel_lj_1: the_distr=Mt_lep_met_f
 plot_sel_lj_1:
-	echo `date` plot_sel_lj_1 nt=${nt} proc=${proc} distrs=${distrs} chan=${chan_tag}_sel lj-ljout ${the_distr} >> logs
+	echo `date` plot_sel_lj_1 pre-fit nt=${nt} proc=${proc} distrs=${distrs} chan=${chan_tag}_sel lj-ljout ${the_distr} >> logs
 	mkdir -p plots/${nt}_${proc}_${distrs}/
 	# event categories pre-fit plots
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_sel_ljout -x ${chan_tag}_selVloose_ljout -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_sel_lj    -x ${chan_tag}_selVloose_lj    -d Mt_lep_met_f --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_sel_ljout -x ${chan_tag}_selVloose_ljout -d Mt_lep_met_c --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c ${chan_tag}_sel_lj    -x ${chan_tag}_selVloose_lj    -d Mt_lep_met_c --wjet 0.8 --qcd 1.05 --ratio-range 0.3 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"   --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
 
 
 
+# main selection plots without categories
 plot_sel_1:
 	echo `date` plot_sel_1 nt=${nt} proc=${proc} distrs=${distrs} chan=${chan_tag}_sel >> logs
 	mkdir -p plots/${nt}_${proc}_${distrs}/

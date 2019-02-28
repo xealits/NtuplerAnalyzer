@@ -1,6 +1,8 @@
+from datetime import datetime
 import argparse
 import logging
 from os.path import isfile, basename
+from sys import exit
 
 
 parser = argparse.ArgumentParser(
@@ -18,13 +20,18 @@ parser.add_argument("--per-weight",  action='store_true', help="normalize by eve
 parser.add_argument('--try-xsec',    action='store_true', help="scale histos by xsec")
 
 parser.add_argument('--test',        type=int, help="test run on N events")
+parser.add_argument('--time',        action='store_true', help="print timing counters")
+parser.add_argument('--overwrite',   action='store_true', help="overwrite output if needed")
 parser.add_argument('-d', '--debug', action='store_true', help="DEBUG level of logging")
 
 parser.add_argument('loop_definitions', nargs='+', help='standard chan/proc/sys/distr and shortcuts like: chan/all, chan/all/nom/Mt_lep_met_f, chan/incl/nom/all')
 
 args = parser.parse_args()
 
-assert not isfile(args.out_file)
+if isfile(args.out_file) and not args.overwrite:
+    print 'output file exists: %s' % args.out_file
+    exit(0)
+
 assert     isfile(args.inp_file)
 
 if args.debug:
@@ -33,9 +40,15 @@ else:
     logging.basicConfig(level=logging.INFO)
 
 logging.debug('importing ROOT')
+preroot_time = datetime.now()
 import ROOT
-from ROOT import TFile
+from ROOT import TFile,TDirectory
+from ROOT import gDirectory
 logging.debug('done')
+
+start_time = datetime.now()
+if args.time:
+    print "root import time %s" % str(start_time - preroot_time)
 
 """
 define each part separately:
@@ -87,6 +100,11 @@ def proc_def_func(ids):
 
 histos = {}
 defined_channels = {}
+
+
+fout = TFile(args.out_file, "RECREATE")
+fout.Write()
+output_dirs = []
 
 for definition in args.loop_definitions:
     # chan/proc/sys/distr
@@ -142,7 +160,7 @@ for definition in args.loop_definitions:
         # TODO: add inclusive processes
         # the processes are defined for different flavours
         if dproc == 'std':
-            if 'el_' in chan:
+            if 'el_' in chan[:3]:
                 proc_defs = dtag_proc_defs['el']
             else:
                 proc_defs = dtag_proc_defs.get('mu', dtag_proc_defs['el'])
@@ -151,7 +169,7 @@ for definition in args.loop_definitions:
         elif dproc == 'mu':
             proc_defs = dtag_proc_defs['mu']
         else:
-            raise ValueError('process definition %s is unkonwn, in %s' % (dproc, definition))
+            raise ValueError('process definition %s is unknown, in %s' % (dproc, definition))
 
         # proc defs -> into a flat list [(name, function(ev))]
         main_name, subprocs = proc_defs
@@ -161,12 +179,24 @@ for definition in args.loop_definitions:
         # channel definitions
         defined_channels[chan] = (chan_def, proc_def, systematics, distrs)
 
+        # trying to output quickly
+        #output_channel_dir = TDirectory(chan, chan)
+        fout.cd()
+        output_channel_dir = fout.mkdir(chan)
+        output_dirs.append(output_channel_dir)
+
         # and create histograms
         for proc, _ in proc_def:
+          output_channel_dir.cd()
+          proc_dir = output_channel_dir.mkdir(proc)
           for sys, _ in systematics:
+            proc_dir.cd()
+            sys_dir = proc_dir.mkdir(sys) # + '/')
             for distr, _, distr_range in distrs:
                 histo_name = '_'.join([chan, proc, sys, distr])
-                histos[(chan, proc, sys, distr)] = std_defs.make_histo(histo_name, distr_range)
+                out_histo = std_defs.make_histo(histo_name, distr_range)
+                out_histo.SetDirectory(sys_dir)
+                histos[(chan, proc, sys, distr)] = out_histo
 
 # ----------------
 
@@ -200,7 +230,7 @@ for iev, ev in enumerate(ttree):
         chan_nom_stage = chan_stage_at_sys['NOMINAL'](ev)
         chan_pass_nominal = chan_func(chan_nom_stage, ev)
         logging.debug("%s %s %d" % (chan_name, repr(chan_pass_nominal), chan_nom_stage))
-        if not chan_pass_nominal: continue
+        #if not chan_pass_nominal: continue
 
         # define event's gen proc ID within this channel
         event_chan_proc = general_process
@@ -213,10 +243,10 @@ for iev, ev in enumerate(ttree):
         # if they are not already calculated
         for sname, sweight_func in chan_systs:
             # pass channel definition at this systematic
-            #if sname in chan_stage_at_sys:
-            #    sys_stage = chan_stage_at_sys[sname](ev)
-            #    if not chan_func(sys_stage, ev): continue
-            #elif not chan_pass_nominal: continue
+            if sname in chan_stage_at_sys:
+                sys_stage = chan_stage_at_sys[sname](ev)
+                if not chan_func(sys_stage, ev): continue
+            elif not chan_pass_nominal: continue
             #if not chan_def.get(sname, chan_def['NOMINAL'])(ev): continue
             logging.debug(chan_pass_nominal)
 
@@ -253,6 +283,11 @@ for iev, ev in enumerate(ttree):
 
 logging.debug('finished the event loop')
 
+if args.time:
+    loop_time = str(datetime.now() - start_time)
+    print "loop finished, time elapsed %s" % loop_time
+
+
 # scale histos as needed
 
 # by MC event weight
@@ -274,33 +309,51 @@ logging.debug('scaled all')
 
 # write histos out
 
-fout = TFile(args.out_file, "RECREATE")
-fout.Write()
+#fout = TFile(args.out_file, "RECREATE")
+#fout.Write()
 
-fout.cd()
+#fout.cd()
+#top
+#print 'AAAA', gDirectory.pwd()
+#
+#for chan_dir in output_dirs:
+#    #print chan_dir.GetDirectory()
+#    print type(chan_dir)
+#    print chan_dir.GetName()
+#    #chan_dir.Write()
+#    gDirectory.WriteObject(chan_dir, chan_dir.GetName())
 
+'''
 for path_tuple, histo in histos.items():
     logging.debug(repr(path_tuple))
     histo_path = '/'.join(path_tuple[:-1]) # skip the distr name -- histo name is used there
     # check if this directory already exists in the file (a feature for future)
     #out_dir_name = ''.join(part + '/' for part in histo_path)
 
-    if histo_path and fout.Get(histo_path):
-        logging.debug('found  ' + histo_path)
-        out_dir = fout.Get(histo_path)
-    else:
-        logging.debug('making ' + histo_path)
-        # iteratively create each directory fout -> part0 -> part1 -> ...
-        # somehow root did not work for creating them in 1 go
-        out_dir = fout
-        for directory in histo_path.split('/'):
-            logging.debug('making ' + directory)
-            nested_dir = out_dir.Get(directory) if out_dir.Get(directory) else out_dir.mkdir(directory)
-            nested_dir.cd()
-            out_dir = nested_dir
+    #if histo_path and fout.Get(histo_path):
+    #    logging.debug('found  ' + histo_path)
+    #    out_dir = fout.Get(histo_path)
+    #else:
+    #    logging.debug('making ' + histo_path)
+    #    # iteratively create each directory fout -> part0 -> part1 -> ...
+    #    # somehow root did not work for creating them in 1 go
+    #    out_dir = fout
+    #    for directory in histo_path.split('/'):
+    #        logging.debug('making ' + directory)
+    #        nested_dir = out_dir.Get(directory) if out_dir.Get(directory) else out_dir.mkdir(directory)
+    #        nested_dir.cd()
+    #        out_dir = nested_dir
 
-    histo.SetDirectory(out_dir)
+    # new directory making
+    #fout.cd()
+    fout.mkdir(histo_path)
+    #fout.cd(histo_path)
+
+    #histo.SetDirectory(out_dir)
+    #histo.SetDirectory(gDirectory) # suggestion on root forums, does not work
+    histo.SetDirectory(fout.Get(histo_path))
     histo.Write()
+'''
 
 # save weight counters etc in the top directory in the file
 if args.save_weight:
@@ -310,5 +363,9 @@ if args.save_weight:
 
 fout.Write()
 fout.Close()
+
+if args.time:
+    work_time = str(datetime.now() - start_time)
+    print "output written, time elapsed %s" % work_time
 
 _

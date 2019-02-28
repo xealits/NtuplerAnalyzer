@@ -644,12 +644,16 @@ systs_objects_met_variation = {
 'TESDown'  : lambda ev: ev.event_met_TESDown.pt(),
 }
 
+from ROOT import TMath
+
 distr_defs = {
     'Mt_lep_met_c':  (systs_objects_mt_variation,  ('custom-range', [0,20,40,60,80,100,130,160,200,250])),
     'Mt_lep_met_c2': (systs_objects_mt_variation,  ('custom-range', [0,20,40,60,80,100,120,140,170,200,250,500])),
     'Mt_lep_met_f':  (systs_objects_mt_variation,  ('histo-range',  [20,0,250])),
     'met_f':         (systs_objects_met_variation, ('histo-range',  [20,0,300])),
     'met_c':         (systs_objects_met_variation, ('custom-range', [0,20,40,60,80,100,120,140,200,500])),
+    'cos_phi_met_lep':   ({'NOMINAL': lambda ev: TMath.Cos(ev.event_leptons[0].phi() - ev.event_met.phi())},       ('histo-range',  [42,-1.05,1.05])),
+    'phi_met_lep':       ({'NOMINAL': lambda ev: ev.event_leptons[0].phi() - ev.event_met.phi()},    ('histo-range',  [42,-2*3.15,2*3.15])),
     'dilep_mass':    ({'NOMINAL': lambda ev: ev.event_dilep_mass},       ('histo-range',  [100,0,400])),
     'dilep_mass_dy': ({'NOMINAL': lambda ev: ev.event_dilep_mass},       ('histo-range',  [50,50,100])),
     'lep_pt':        ({'NOMINAL': lambda ev: ev.event_leptons[0].pt()},  ('histo-range',  [20,0,150])),
@@ -657,7 +661,12 @@ distr_defs = {
     'tau_sv_sign':   ({'NOMINAL': lambda ev: ev.event_taus_sv_sign[0]},  ('histo-range',  [42,-1,20])),
     'tau_pt':        ({'NOMINAL': lambda ev: ev.event_taus[0].pt()},     ('histo-range',  [20,0,100])),
     'tau_eta':       ({'NOMINAL': lambda ev: ev.event_taus[0].eta()},    ('histo-range',  [26,-2.6,2.6])),
-    'yield':         ({'NOMINAL': lambda ev: 1},                         ('histo-range',  [3,0.0,3.0]))
+    'bjet_pt':       ({'NOMINAL': lambda ev: ev.event_jets_b[0].pt()},  ('histo-range',  [20,0,300])),
+    'bjet_eta':      ({'NOMINAL': lambda ev: ev.event_jets_b[0].eta()}, ('histo-range',  [26,-2.6,2.6])),
+    'nbjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_bjets},                        ('histo-range',  [3,0.0,3.0]))
+    'nrjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_jets - ev.event_jets_n_bjets}, ('histo-range',  [6,0.0,6.0]))
+    'najets':        ({'NOMINAL': lambda ev: ev.event_jets_n_jets},                         ('histo-range',  [10,0.0,10.0]))
+    'yield':         ({'NOMINAL': lambda ev: 1},     ('histo-range',  [3,0.0,3.0]))
 }
 
 # TODO: implement multi-dim histos?
@@ -697,6 +706,8 @@ main_sel_stages = {
 'TESDown':  lambda ev: ev.selection_stage_TESDown,
 'TESUp'  :  lambda ev: ev.selection_stage_TESUp  ,
 }
+
+main_presel_stages = {'NOMINAL': lambda ev: ev.selection_stage_presel}
 
 #def main_sel_stages(sname, event):
 #    if sname in main_selection_stages:
@@ -745,6 +756,17 @@ std_channels_ev_loop = {
 'el_selVloose_lj':    (lambda sel_stage, ev: (sel_stage== 19 or sel_stage== 17 or sel_stage== 15) and ev.event_jets_lj_var <= 60., main_sel_stages),
 'el_selVloose_lj_ss': (lambda sel_stage, ev: (sel_stage== 18 or sel_stage== 16 or sel_stage== 14) and ev.event_jets_lj_var <= 60., main_sel_stages),
 
+'mu_presel':          (lambda sel_stage, ev: (sel_stage >  1 and sel_stage < 10), main_presel_stages),
+'mu_presel_lj':       (lambda sel_stage, ev: (sel_stage >  1 and sel_stage < 10) and ev.event_jets_lj_var <= 60., main_presel_stages),
+'mu_presel_ljout':    (lambda sel_stage, ev: (sel_stage >  1 and sel_stage < 10) and ev.event_jets_lj_var  > 60., main_presel_stages),
+'el_presel':          (lambda sel_stage, ev: (sel_stage > 10 and sel_stage < 20), main_presel_stages),
+'el_presel_lj':       (lambda sel_stage, ev: (sel_stage > 10 and sel_stage < 20) and ev.event_jets_lj_var <= 60., main_presel_stages),
+'el_presel_ljout':    (lambda sel_stage, ev: (sel_stage > 10 and sel_stage < 20) and ev.event_jets_lj_var  > 60., main_presel_stages),
+'mu_preselCand':      (lambda sel_stage, ev: (sel_stage==  9), main_presel_stages),
+'mu_preselCand_ss':   (lambda sel_stage, ev: (sel_stage==  8), main_presel_stages),
+'el_preselCand':      (lambda sel_stage, ev: (sel_stage== 19), main_presel_stages),
+'el_preselCand_ss':   (lambda sel_stage, ev: (sel_stage== 18), main_presel_stages),
+
 # additional channels
 'dy_mutau': (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
 'dy_eltau': (lambda sel_stage, ev: (sel_stage== 112 or sel_stage== 113), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
@@ -778,32 +800,59 @@ all_channels_ev_loop.update(std_channels_ev_loop)
 
 # the standard distrs in channels
 
-distrs_leptonic = ['Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta']
-distrs_dy       = ['Mt_lep_met_c', 'dilep_mass', 'dilep_mass_dy', 'lep_pt', 'lep_eta']
-distrs_wjets    = ['Mt_lep_met_c', 'dilep_mass',                  'lep_pt', 'lep_eta']
-distrs_tauonic_std  = ['Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta',
-        'tau_pt', 'tau_eta', 'tau_sv_sign']
-distrs_tauonic = distrs_tauonic_std
+distrs_mt       = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f'}
+distrs_leptonic = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta', 'met_c'}
+distrs_lep      = {'Mt_lep_met_c', 'lep_pt', 'lep_eta', 'met_c'}
+distrs_dy       = {'met_c', 'Mt_lep_met_c', 'dilep_mass', 'dilep_mass_dy', 'lep_pt', 'lep_eta'}
+distrs_wjets    = {'met_c', 'Mt_lep_met_c', 'dilep_mass',                  'lep_pt', 'lep_eta'}
+
+distrs_on_jets = {'nbjets', 'nrjets', 'bjet_pt', 'bjet_eta'}
+
+distrs_tauonic_std  = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta', 'met_c'
+        'tau_pt', 'tau_eta', 'tau_sv_sign'}
+distrs_tauonic_nomt  = distrs_tauonic_std - {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f'}
+distrs_tauonic = distrs_tauonic_nomt
+
+
+main_sys = ['nom', 'common', 'obj']
+full_sys = ['nom', 'common', 'obj', 'tt_weights', "tt_hard", 'tt_pdf']
+presel_sys = ['NOMINAL', 'TOPPTDown', 'TOPPTUp', 'PUUp', 'PUDown']
 
 channels_distrs = {
-'tt_dileptons'    : (['tt_elmu'], distrs_leptonic),
-'tt_leptauSV'     : (['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], distrs_tauonic),
+'tt_dileptons'    : (['tt_elmu'], sorted(distrs_leptonic), main_sys),
+'tt_leptauSV'     : (['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], sorted(distrs_tauonic), ['nom']),
 
-'tt_leptau'       : (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'],       distrs_tauonic),
-'tt_leptau_lj'    : (['el_sel_lj',    'el_sel_lj_ss',    'mu_sel_lj',    'mu_sel_lj_ss'],    distrs_tauonic),
-'tt_leptau_ljout' : (['el_sel_ljout', 'el_sel_ljout_ss', 'mu_sel_ljout', 'mu_sel_ljout_ss'], distrs_tauonic),
+'fit_tt_leptau'       : (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'],       sorted(distrs_mt), full_sys),
+'fit_tt_leptau_lj'    : (['el_sel_lj',    'el_sel_lj_ss',    'mu_sel_lj',    'mu_sel_lj_ss'],    sorted(distrs_mt), full_sys),
+'fit_tt_leptau_ljout' : (['el_sel_ljout', 'el_sel_ljout_ss', 'mu_sel_ljout', 'mu_sel_ljout_ss'], sorted(distrs_mt), full_sys),
 
-'tt_leptau_Vloose'       : (['el_selVloose',       'el_selVloose_ss',       'mu_selVloose',       'mu_selVloose_ss'],        distrs_tauonic),
-'tt_leptau_Vloose_lj'    : (['el_selVloose_lj',    'el_selVloose_lj_ss',    'mu_selVloose_lj',    'mu_selVloose_lj_ss'],     distrs_tauonic),
-'tt_leptau_Vloose_ljout' : (['el_selVloose_ljout', 'el_selVloose_ljout_ss', 'mu_selVloose_ljout', 'mu_selVloose_ljout_ss'],  distrs_tauonic),
+'fit_tt_leptau_Vloose'       : (['el_selVloose',       'el_selVloose_ss',       'mu_selVloose',       'mu_selVloose_ss'],        sorted(distrs_mt), full_sys),
+'fit_tt_leptau_Vloose_lj'    : (['el_selVloose_lj',    'el_selVloose_lj_ss',    'mu_selVloose_lj',    'mu_selVloose_lj_ss'],     sorted(distrs_mt), full_sys),
+'fit_tt_leptau_Vloose_ljout' : (['el_selVloose_ljout', 'el_selVloose_ljout_ss', 'mu_selVloose_ljout', 'mu_selVloose_ljout_ss'],  sorted(distrs_mt), full_sys),
 
-'tt_leptau_Tight'       : (['el_selTight',       'el_selTight_ss',       'mu_selTight',       'mu_selTight_ss'],        distrs_tauonic),
-'tt_leptau_Tight_lj'    : (['el_selTight_lj',    'el_selTight_lj_ss',    'mu_selTight_lj',    'mu_selTight_lj_ss'],     distrs_tauonic),
-'tt_leptau_Tight_ljout' : (['el_selTight_ljout', 'el_selTight_ljout_ss', 'mu_selTight_ljout', 'mu_selTight_ljout_ss'],  distrs_tauonic),
+'fit_tt_leptau_Tight'       : (['el_selTight',       'el_selTight_ss',       'mu_selTight',       'mu_selTight_ss'],        sorted(distrs_mt), full_sys),
+'fit_tt_leptau_Tight_lj'    : (['el_selTight_lj',    'el_selTight_lj_ss',    'mu_selTight_lj',    'mu_selTight_lj_ss'],     sorted(distrs_mt), full_sys),
+'fit_tt_leptau_Tight_ljout' : (['el_selTight_ljout', 'el_selTight_ljout_ss', 'mu_selTight_ljout', 'mu_selTight_ljout_ss'],  sorted(distrs_mt), full_sys),
 
-'dy_dileptons'    : (['dy_mumu',  'dy_elel'],   distrs_dy),
-'dy_leptau'       : (['dy_mutau', 'dy_eltau'],  distrs_tauonic),
-'wjets'           : (['wjets_mu', 'wjets_el'],  distrs_wjets),
+'tt_leptau'       : (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'],       sorted(distrs_tauonic + distrs_on_jets), main_sys),
+'tt_leptau_lj'    : (['el_sel_lj',    'el_sel_lj_ss',    'mu_sel_lj',    'mu_sel_lj_ss'],    sorted(distrs_tauonic), main_sys),
+'tt_leptau_ljout' : (['el_sel_ljout', 'el_sel_ljout_ss', 'mu_sel_ljout', 'mu_sel_ljout_ss'], sorted(distrs_tauonic), main_sys),
+
+'tt_leptau_Vloose'       : (['el_selVloose',       'el_selVloose_ss',       'mu_selVloose',       'mu_selVloose_ss'],        sorted(distrs_tauonic), main_sys),
+'tt_leptau_Vloose_lj'    : (['el_selVloose_lj',    'el_selVloose_lj_ss',    'mu_selVloose_lj',    'mu_selVloose_lj_ss'],     sorted(distrs_tauonic), main_sys),
+'tt_leptau_Vloose_ljout' : (['el_selVloose_ljout', 'el_selVloose_ljout_ss', 'mu_selVloose_ljout', 'mu_selVloose_ljout_ss'],  sorted(distrs_tauonic), main_sys),
+
+'tt_leptau_Tight'       : (['el_selTight',       'el_selTight_ss',       'mu_selTight',       'mu_selTight_ss'],        sorted(distrs_tauonic), main_sys),
+'tt_leptau_Tight_lj'    : (['el_selTight_lj',    'el_selTight_lj_ss',    'mu_selTight_lj',    'mu_selTight_lj_ss'],     sorted(distrs_tauonic), main_sys),
+'tt_leptau_Tight_ljout' : (['el_selTight_ljout', 'el_selTight_ljout_ss', 'mu_selTight_ljout', 'mu_selTight_ljout_ss'],  sorted(distrs_tauonic), main_sys),
+
+'tt_presel_cands' : (['el_preselCand', 'el_preselCand_ss', 'mu_preselCand', 'mu_preselCand_ss',], sorted(distrs_tauonic + distrs_on_jets), presel_sys),
+'tt_presel_lj_mu' : (['mu_presel',    'mu_presel_lj',    'mu_presel_ljout',], sorted(distrs_on_jets + distrs_lep), presel_sys),
+'tt_presel_lj_el' : (['el_presel',    'el_presel_lj',    'el_presel_ljout',], sorted(distrs_on_jets + distrs_lep), presel_sys),
+
+'dy_dileptons'    : (['dy_mumu',  'dy_elel'],   sorted(distrs_dy     ), main_sys),
+'dy_leptau'       : (['dy_mutau', 'dy_eltau'],  sorted(distrs_tauonic), main_sys),
+'wjets'           : (['wjets_mu', 'wjets_el'],  sorted(distrs_wjets  ), main_sys),
 }
 
 
@@ -829,7 +878,7 @@ sample_info = {
 'Data13TeV_SingleMuon2016H_03Feb2017_ver3'], ['nom']),
 
 'tt'  : (['MC2016_Summer16_TTJets_powheg'],
-  ['nom', 'common', 'obj', 'tt_weights', "tt_hard", 'tt_pdf']), # "tt_pdf1", "tt_pdf10", "tt_pdf20", "tt_pdf30", "tt_pdf40", "tt_pdf50,tt_alpha"]),
+  full_sys), # "tt_pdf1", "tt_pdf10", "tt_pdf20", "tt_pdf30", "tt_pdf40", "tt_pdf50,tt_alpha"]),
 
 'tt_syst': ([
 'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down',
@@ -882,7 +931,7 @@ sample_info = {
 'MC2016_Summer16_SingleTbar_tW_5FS_powheg',
 'MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo',
 'MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg',
-'MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg'], ['nom', 'common', 'obj']),
+'MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg'], main_sys),
 
 'qcd_mc': (['MC2016_Summer16_QCD_HT-100-200',
 'MC2016_Summer16_QCD_HT-200-300',
