@@ -52,6 +52,7 @@ parser.add_argument("--vert-lines", type=str, help="add vertical lines to the pl
 
 parser.add_argument("--wjets", type=float, default=0., help="scale factor for wjets (from the control region)")
 parser.add_argument("--factor-dy", type=float, help="scale factor for dy (from the control region)")
+parser.add_argument("--factor-procs", type=str, help="scale factor for given procs p1,p2,p3:factor -- for effect of rate systematics, tau ID and mis-ID")
 
 parser.add_argument("--factor-rate-systematic", type=str, help="scale the procs by the factor to simulate the rate syst (tau ID, mis-ID): tt_eltau,tt_taultauh,s_top_eltau,s_top_other,dy_tautau:0.95 tt_lj,tt_taulj,tt_other:0.5")
 
@@ -81,6 +82,7 @@ parser.add_argument("--title-y", type=str, default="", help="set title of Y axis
 parser.add_argument("--title",   type=str, default="default", help="set title of the plot")
 
 parser.add_argument("--output-name",   type=str, help="name for the output file")
+parser.add_argument("--output-suffix", type=str, default='', help="additional suffix in output name")
 
 args = parser.parse_args()
 
@@ -467,6 +469,10 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
            # dy normalization
            if args.factor_dy and 'dy' in nick:
                histo.Scale(args.factor_dy)
+
+           if args.factor_procs and nick in args.factor_procs:
+               _, factor = args.factor_procs.split(':')
+               histo.Scale(float(factor))
 
            if factor_rate_systematic and nick in factor_rate_systematic[0]:
                histo.Scale(factor_rate_systematic[1])
@@ -1461,7 +1467,7 @@ else:
     else:
         stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
         shape_chan = ('_x_' + args.shape) if args.shape else ''
-        filename = out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ('_noQCD' if args.skip_QCD else '') + ('_nodata' if args.no_data else '') + ".png"
+        filename = out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ('_noQCD' if args.skip_QCD else '') + ('_nodata' if args.no_data else '') + args.output_suffix + ".png"
 
     if isfile(filename):
         print filename, "exists, nothing written"
