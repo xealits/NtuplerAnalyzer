@@ -19,6 +19,17 @@ hadd_distrs: max_procs=4
 hadd_distrs:
 	ls distrs/${nt}_${proc}_${distrs}/all/${dtag}/ | xargs -P ${max_procs} -I CHANS sh -c "hadd distrs/${nt}_${proc}_${distrs}/all/${dtag}/CHANS.root distrs/${nt}_${proc}_${distrs}/all/${dtag}/CHANS/*root"
 
+multihadd2_distrs: nt=v37
+multihadd2_distrs: proc=test1
+multihadd2_distrs: distrs=bunch2
+multihadd2_distrs: dtag=MC2016_Summer16_TTJets_powheg
+multihadd2_distrs: max_procs=4
+multihadd2_distrs: file_pattern=tt_files_a?
+multihadd2_distrs: size=10
+multihadd2_distrs:
+	python multihadd2.py -i ${size} distrs/${nt}_${proc}_${distrs}/all/${dtag}/all_chans.root `find distrs/${nt}_${proc}_${distrs}/all/${dtag}/ -name "*root"` > temp.multihadd2_coms
+	cat temp.multihadd2_coms | xargs -P ${max_procs} -d "\n" -I COMM sh -c "COMM || true"
+
 # hadd ${merge_dir}/${nt}/${proc}/$$d.root /lstore/cms/olek/outdirs/${nt}/${proc}/$$d/*.root &
 run_histos: systematics=NOMINAL
 run_histos: mc=distrs/distrs_v25v26resub2_mc_noqcd.root
