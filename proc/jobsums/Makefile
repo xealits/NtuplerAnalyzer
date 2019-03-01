@@ -11,6 +11,13 @@ histosel:
 	echo `date` histosel distrs_mc=${distrs_mc} distrs_data=${distrs_data} out=${out} chan=${chan} distr=${distr} systs_files=${systs_files} >> logs
 	cat ${systs_files} | xargs -P ${n_proc} -I SYS sh -c "python stack_plot.py ${distrs_mc} ${distrs_data} -o ${out} --lumi ${lumi} -c ${chan} -d ${distr} ${opt} --wjet 0.8 --qcd 1.05 --systematic SYS || true"
 
+hadd_distrs: nt=v37
+hadd_distrs: proc=test1
+hadd_distrs: distrs=bunch2
+hadd_distrs: dtag=MC2016_Summer16_TTJets_powheg
+hadd_distrs: max_procs=4
+hadd_distrs:
+	ls distrs/${nt}_${proc}_${distrs}/all/${dtag}/ | xargs -P ${max_procs} -I CHANS sh -c "hadd distrs/${nt}_${proc}_${distrs}/all/${dtag}/CHANS.root distrs/${nt}_${proc}_${distrs}/all/${dtag}/CHANS/*root"
 
 # hadd ${merge_dir}/${nt}/${proc}/$$d.root /lstore/cms/olek/outdirs/${nt}/${proc}/$$d/*.root &
 run_histos: systematics=NOMINAL

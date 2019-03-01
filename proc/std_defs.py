@@ -800,6 +800,7 @@ all_channels_ev_loop.update(std_channels_ev_loop)
 
 # the standard distrs in channels
 
+distrs_mt_fit   = {'Mt_lep_met_c'}
 distrs_mt       = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f'}
 distrs_leptonic = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta', 'met_c'}
 distrs_lep      = {'Mt_lep_met_c', 'lep_pt', 'lep_eta', 'met_c'}
@@ -808,10 +809,9 @@ distrs_wjets    = {'met_c', 'Mt_lep_met_c', 'dilep_mass',                  'lep_
 
 distrs_on_jets = {'nbjets', 'nrjets', 'bjet_pt', 'bjet_eta'}
 
-distrs_tauonic_std  = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta', 'met_c'
-        'tau_pt', 'tau_eta', 'tau_sv_sign'}
-distrs_tauonic_nomt  = distrs_tauonic_std - {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f'}
-distrs_tauonic = distrs_tauonic_nomt
+distrs_tauonic_std  = {'tau_pt', 'tau_eta', 'tau_sv_sign'}
+#distrs_tauonic_nomt  = distrs_tauonic_std - {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f'}
+#distrs_tauonic = distrs_tauonic_nomt
 
 
 main_sys = ['nom', 'common', 'obj']
@@ -820,7 +820,7 @@ presel_sys = ['NOMINAL', 'TOPPTDown', 'TOPPTUp', 'PUUp', 'PUDown']
 
 channels_distrs = {
 'tt_dileptons'    : (['tt_elmu'], sorted(distrs_leptonic), main_sys),
-'tt_leptauSV'     : (['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], sorted(distrs_tauonic), ['nom']),
+'tt_leptauSV'     : (['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), ['nom']),
 
 'fit_tt_leptau'       : (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'],       sorted(distrs_mt), full_sys),
 'fit_tt_leptau_lj'    : (['el_sel_lj',    'el_sel_lj_ss',    'mu_sel_lj',    'mu_sel_lj_ss'],    sorted(distrs_mt), full_sys),
@@ -834,24 +834,24 @@ channels_distrs = {
 'fit_tt_leptau_Tight_lj'    : (['el_selTight_lj',    'el_selTight_lj_ss',    'mu_selTight_lj',    'mu_selTight_lj_ss'],     sorted(distrs_mt), full_sys),
 'fit_tt_leptau_Tight_ljout' : (['el_selTight_ljout', 'el_selTight_ljout_ss', 'mu_selTight_ljout', 'mu_selTight_ljout_ss'],  sorted(distrs_mt), full_sys),
 
-'tt_leptau'       : (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'],       sorted(distrs_tauonic + distrs_on_jets), main_sys),
-'tt_leptau_lj'    : (['el_sel_lj',    'el_sel_lj_ss',    'mu_sel_lj',    'mu_sel_lj_ss'],    sorted(distrs_tauonic), main_sys),
-'tt_leptau_ljout' : (['el_sel_ljout', 'el_sel_ljout_ss', 'mu_sel_ljout', 'mu_sel_ljout_ss'], sorted(distrs_tauonic), main_sys),
+'tt_leptau'       : (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'],       sorted(distrs_tauonic_std.union(distrs_leptonic, distrs_on_jets) - distrs_mt_fit), main_sys),
+'tt_leptau_lj'    : (['el_sel_lj',    'el_sel_lj_ss',    'mu_sel_lj',    'mu_sel_lj_ss'],    sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), main_sys),
+'tt_leptau_ljout' : (['el_sel_ljout', 'el_sel_ljout_ss', 'mu_sel_ljout', 'mu_sel_ljout_ss'], sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), main_sys),
 
-'tt_leptau_Vloose'       : (['el_selVloose',       'el_selVloose_ss',       'mu_selVloose',       'mu_selVloose_ss'],        sorted(distrs_tauonic), main_sys),
-'tt_leptau_Vloose_lj'    : (['el_selVloose_lj',    'el_selVloose_lj_ss',    'mu_selVloose_lj',    'mu_selVloose_lj_ss'],     sorted(distrs_tauonic), main_sys),
-'tt_leptau_Vloose_ljout' : (['el_selVloose_ljout', 'el_selVloose_ljout_ss', 'mu_selVloose_ljout', 'mu_selVloose_ljout_ss'],  sorted(distrs_tauonic), main_sys),
+'tt_leptau_Vloose'       : (['el_selVloose',       'el_selVloose_ss',       'mu_selVloose',       'mu_selVloose_ss'],        sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), main_sys),
+'tt_leptau_Vloose_lj'    : (['el_selVloose_lj',    'el_selVloose_lj_ss',    'mu_selVloose_lj',    'mu_selVloose_lj_ss'],     sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), main_sys),
+'tt_leptau_Vloose_ljout' : (['el_selVloose_ljout', 'el_selVloose_ljout_ss', 'mu_selVloose_ljout', 'mu_selVloose_ljout_ss'],  sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), main_sys),
 
-'tt_leptau_Tight'       : (['el_selTight',       'el_selTight_ss',       'mu_selTight',       'mu_selTight_ss'],        sorted(distrs_tauonic), main_sys),
-'tt_leptau_Tight_lj'    : (['el_selTight_lj',    'el_selTight_lj_ss',    'mu_selTight_lj',    'mu_selTight_lj_ss'],     sorted(distrs_tauonic), main_sys),
-'tt_leptau_Tight_ljout' : (['el_selTight_ljout', 'el_selTight_ljout_ss', 'mu_selTight_ljout', 'mu_selTight_ljout_ss'],  sorted(distrs_tauonic), main_sys),
+'tt_leptau_Tight'       : (['el_selTight',       'el_selTight_ss',       'mu_selTight',       'mu_selTight_ss'],        sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), main_sys),
+'tt_leptau_Tight_lj'    : (['el_selTight_lj',    'el_selTight_lj_ss',    'mu_selTight_lj',    'mu_selTight_lj_ss'],     sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), main_sys),
+'tt_leptau_Tight_ljout' : (['el_selTight_ljout', 'el_selTight_ljout_ss', 'mu_selTight_ljout', 'mu_selTight_ljout_ss'],  sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), main_sys),
 
-'tt_presel_cands' : (['el_preselCand', 'el_preselCand_ss', 'mu_preselCand', 'mu_preselCand_ss',], sorted(distrs_tauonic + distrs_on_jets), presel_sys),
+'tt_presel_cands' : (['el_preselCand', 'el_preselCand_ss', 'mu_preselCand', 'mu_preselCand_ss',], sorted(distrs_tauonic_std.union(distrs_leptonic, distrs_on_jets) - distrs_mt_fit), presel_sys),
 'tt_presel_lj_mu' : (['mu_presel',    'mu_presel_lj',    'mu_presel_ljout',], sorted(distrs_on_jets + distrs_lep), presel_sys),
 'tt_presel_lj_el' : (['el_presel',    'el_presel_lj',    'el_presel_ljout',], sorted(distrs_on_jets + distrs_lep), presel_sys),
 
 'dy_dileptons'    : (['dy_mumu',  'dy_elel'],   sorted(distrs_dy     ), main_sys),
-'dy_leptau'       : (['dy_mutau', 'dy_eltau'],  sorted(distrs_tauonic), main_sys),
+'dy_leptau'       : (['dy_mutau', 'dy_eltau'],  sorted(distrs_tauonic_std.union(distrs_leptonic)), main_sys),
 'wjets'           : (['wjets_mu', 'wjets_el'],  sorted(distrs_wjets  ), main_sys),
 }
 
