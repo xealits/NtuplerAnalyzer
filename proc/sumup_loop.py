@@ -15,6 +15,8 @@ parser.add_argument('out_file',   help='output file')
 parser.add_argument('inp_file',   help='input file')
 parser.add_argument('--ttree',    type=str, default='ttree_out', help='path to the TTree in the file')
 
+parser.add_argument("--wjets-nup-cut", action='store_true', help="do cut WJets for NJets stitching")
+
 parser.add_argument("--save-weight", action='store_true', help="save the weight counters in the output file")
 parser.add_argument("--per-weight",  action='store_true', help="normalize by event weight of datasets")
 parser.add_argument('--try-xsec',    action='store_true', help="scale histos by xsec")
@@ -112,6 +114,7 @@ for definition in args.loop_definitions:
     # each is a coma-separated def
 
     systematics = []
+    # [(sys_name, sys_weight function)]
     # std systematics per dtag
     if dsys == 'std':
         logging.debug('making dsys=std')
@@ -126,10 +129,12 @@ for definition in args.loop_definitions:
     for sys in dsys.split(','):
         logging.debug('making sys %s' % sys)
 
+        # fill in the named blocks of systematics
         if sys in std_defs.named_systs2_weights_all:
             for k, v in std_defs.named_systs2_weights_all[sys].items():
                 systematics.append((k, v))
 
+        # fill in the individual systematics
         elif sys in std_defs.systs2_weights_all:
             systematics.append((sys, std_defs.systs2_weights_all[sys]))
         else:
@@ -213,6 +218,9 @@ for iev, ev in enumerate(ttree):
     if args.test and iev > args.test:
         logging.debug('breaking the event loop for test')
         break
+
+    if args.wjets_nup_cut and 'WJets_madgraph' in dtag and ev.nup > 5:
+        continue
 
     # no functools.lru_cache in python 2.7...
     event_weights = {}

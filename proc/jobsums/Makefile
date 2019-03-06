@@ -23,12 +23,23 @@ multihadd2_distrs: nt=v37
 multihadd2_distrs: proc=test1
 multihadd2_distrs: distrs=bunch2
 multihadd2_distrs: dtag=MC2016_Summer16_TTJets_powheg
-multihadd2_distrs: max_procs=4
-multihadd2_distrs: file_pattern=tt_files_a?
 multihadd2_distrs: size=10
+multihadd2_distrs: max_procs=4
 multihadd2_distrs:
 	python multihadd2.py -i ${size} distrs/${nt}_${proc}_${distrs}/all/${dtag}/all_chans.root `find distrs/${nt}_${proc}_${distrs}/all/${dtag}/ -name "*root"` > temp.multihadd2_coms
 	cat temp.multihadd2_coms | xargs -P ${max_procs} -d "\n" -I COMM sh -c "COMM || true"
+	hadd distrs/${nt}_${proc}_${distrs}/all/${dtag}.root distrs/${nt}_${proc}_${distrs}/all/${dtag}/all_chans.root.*
+
+multihadd2_distrs_all_dtags: nt=v37
+multihadd2_distrs_all_dtags: proc=test1
+multihadd2_distrs_all_dtags: distrs=bunch2
+multihadd2_distrs_all_dtags: size=30
+multihadd2_distrs_all_dtags: max_procs=10
+multihadd2_distrs_all_dtags:
+	for dtag in `ls distrs/${nt}_${proc}_${distrs}/all/`; \
+	do \
+	make multihadd2_distrs dtag=$$dtag nt=${nt} proc=${proc} distrs=${distrs} size=${size} max_procs=${max_procs} ; \
+	done
 
 # hadd ${merge_dir}/${nt}/${proc}/$$d.root /lstore/cms/olek/outdirs/${nt}/${proc}/$$d/*.root &
 run_histos: systematics=NOMINAL
@@ -146,6 +157,9 @@ plot_tt_dilep:
 	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c tt_elmu -d lep_pt       --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3            --title "" --title-x "lepton p_{T} [GeV]" --title-y "[Events]" --draw-overflows 5 --legend-shift 0.02
 	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ -p -r --lumi ${lumi} -c tt_elmu -d met_pt       --wjet 0.8 --qcd-factor 1.5  --ratio-range 0.3 --bin-norm --title "" --title-x "E^{miss}_{T} [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02
 
+plot_tt_dilep_mu: datafile=SingleMuon
+plot_tt_dilep_mu: lumi=35800
+plot_tt_dilep_mu: plot_tt_dilep
 
 
 #plot_sel_1: nt=v25v26

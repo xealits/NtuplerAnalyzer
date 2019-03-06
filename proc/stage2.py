@@ -15,7 +15,7 @@ OLD_MINIAOD_JETS = False
 DO_W_STITCHING = False
 ALL_JETS = False
 with_bSF = True
-WITH_RECOIL_CORRECTIONS = False
+WITH_RECOIL_CORRECTIONS = True
 
 ISO_LEPS    = True
 JETS_PT_CUT = 30. # 21. # 
@@ -749,7 +749,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     doRecoilCorrections = WITH_RECOIL_CORRECTIONS and (isWJets or isDY) # TODO: check if it is needed for DY
     if doRecoilCorrections:
         logging.info("will use Recoil Corrections")
-        ROOT.gROOT.ProcessLine(".L /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/recoil_corrections.C+") # TODO: change absolute path to relative
+        #ROOT.gROOT.ProcessLine(".L /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/lib/slc6_amd64_gcc530/libHTT-utilitiesRecoilCorrections.so")
+        ROOT.gROOT.ProcessLine(".L /lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/libHTT-utilitiesRecoilCorrections.so")
+
+        #ROOT.gROOT.ProcessLine(".L /exper-sw/cmst3/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/recoil_corrections.C+") # TODO: change absolute path to relative
+        ROOT.gROOT.ProcessLine(".L /lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/recoil_corrections.C+")
         #recoil_corrections_data_file = TString("/HTT-utilities/RecoilCorrections/data/TypeIPFMET_2016BCD.root")
         #recoilPFMetCorrector = ROOT.RecoilCorrector(recoil_corrections_data_file);
         #ROOT.BTagCalibrationReader
@@ -1777,6 +1781,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     ttree_out.Branch( 'event_weight_init', event_weight_init, 'event_weight_init/f' )
     event_weight_PU = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_weight_PU', event_weight_PU, 'event_weight_PU/f' )
+    event_weight_PU_el = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_PU_el', event_weight_PU_el, 'event_weight_PU_el/f' )
+    event_weight_PU_mu = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_PU_mu', event_weight_PU_mu, 'event_weight_PU_mu/f' )
+
     event_weight_th = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_weight_th', event_weight_th, 'event_weight_th/f' )
     event_weight_bSF = array( 'f', [ 0 ] )
@@ -1825,6 +1834,16 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     ttree_out.Branch( 'event_weight_PUUp', event_weight_PUUp, 'event_weight_PUUp/f' )
     event_weight_PUDown = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_weight_PUDown', event_weight_PUDown, 'event_weight_PUDown/f' )
+
+    event_weight_PUUp_el = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_PUUp_el', event_weight_PUUp_el, 'event_weight_PUUp_el/f' )
+    event_weight_PUDown_el = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_PUDown_el', event_weight_PUDown_el, 'event_weight_PUDown_el/f' )
+
+    event_weight_PUUp_mu = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_PUUp_mu', event_weight_PUUp_mu, 'event_weight_PUUp_mu/f' )
+    event_weight_PUDown_mu = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_weight_PUDown_mu', event_weight_PUDown_mu, 'event_weight_PUDown_mu/f' )
 
     event_weight_PetersonUp = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_weight_PetersonUp', event_weight_PetersonUp, 'event_weight_PetersonUp/f' )
@@ -2403,6 +2422,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         weight = 1. # common weight of event (1. for data)
         weight_pu = 1.
+        weight_pu_el = 1.
+        weight_pu_mu = 1.
         #weights_th = namedtuple('th_weights', 'AlphaSUp AlphaSDown FragUp FragDown')
         #weights_th = (1., 1., 1., 1.)
         weights_gen_weight_alphas = (1., 1.)
@@ -2418,7 +2439,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 weight_pu_mu    = pileup_ratio[ev.nvtx_gen]
                 weight_pu_mu_up = pileup_ratio_up[ev.nvtx_gen]
                 weight_pu_mu_dn = pileup_ratio_down[ev.nvtx_gen]
-                if passed_ele_event:
+                if False and passed_ele_event: # v37+ run Ele w golden json
                     weight_pu    = weight_pu_el   
                     weight_pu_up = weight_pu_el_up
                     weight_pu_dn = weight_pu_el_dn
@@ -3585,62 +3606,6 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         syst_weights_nominal = [weight, 1., 1.]
         syst_weights = {} # {'NOMINAL': syst_weights_nominal}
         syst_objects = {'NOMINAL': [jets_nom, taus_main, taus_candidates, proc_met]}
-        '''
-        # data and tt systematic datasets have all nominal systematic variations -- they are a systematic themselves
-        if isTT_systematic:
-            syst_objects = {isTT_systematic: [jets_nom, taus_nom, proc_met]}
-        elif not isMC:
-            syst_objects = {'NOMINAL': [jets_nom, taus_nom, proc_met]}
-        elif isMC:
-            syst_objects = {'NOMINAL'  : [jets_nom,     taus_nom,    proc_met    ],
-                           'JESUp'     : [jets_JESUp,   taus_nom,    proc_met_JESUp   ],
-                           'JESDown'   : [jets_JESDown, taus_nom,    proc_met_JESDown ],
-                           'JERUp'     : [jets_JERUp,   taus_nom,    proc_met_JERUp   ],
-                           'JERDown'   : [jets_JERDown, taus_nom,    proc_met_JERDown ],
-                           'TauESUp'   : [jets_nom,     taus_ESUp  , proc_met ],
-                           'TauESDown' : [jets_nom,     taus_ESDown, proc_met ],
-                           'bSFUp'     : [jets_bUp,     taus_nom,    proc_met ],
-                           'bSFDown'   : [jets_bDown,   taus_nom,    proc_met ],
-                           }
-            syst_weights.update({
-                           'LEPUp'     : [weight_lep_Up,   weight_pu,    1, 1.],
-                           'LEPDown'   : [weight_lep_Down, weight_pu,    1, 1.],
-                           'PUUp'      : [weight,          weight_pu_up, 1, 1.],
-                           'PUDown'    : [weight,          weight_pu_dn, 1, 1.],
-                           })
-
-            if isTT:
-                syst_weights['TOPPTUp']    = [weight, weight_pu, weight_top_pt, 1.]
-                syst_weights['TOPPTDown']  = [weight, weight_pu, 1.,            1.]
-                if with_AlphaS_sys:
-                    syst_weights['AlphaSUp']   = [weight, weight_pu, 1.,  weights_gen_weight_alphas_up]
-                    syst_weights['AlphaSDown'] = [weight, weight_pu, 1.,  weights_gen_weight_alphas_dn]
-                if with_Frag_sys:
-                    syst_weights['FragUp']        = [weight, weight_pu, 1.,  weights_gen_weight_Frag[0] / weights_gen_weight_centralFrag]
-                    syst_weights['FragDown']      = [weight, weight_pu, 1.,  weights_gen_weight_Frag[1] / weights_gen_weight_centralFrag]
-                    syst_weights['SemilepBRUp']   = [weight, weight_pu, 1.,  weights_gen_weight_semilepbr[0] / weights_gen_weight_centralFrag]
-                    syst_weights['SemilepBRDown'] = [weight, weight_pu, 1.,  weights_gen_weight_semilepbr[1] / weights_gen_weight_centralFrag]
-                    syst_weights['PetersonUp']    = [weight, weight_pu, 1.,  weights_gen_weight_Peterson / weights_gen_weight_centralFrag]
-                    syst_weights['PetersonDown']  = [weight, weight_pu, 1.,  1.]
-                if with_MEscale_sys:
-                    syst_weights['MrUp']    = [weight, weight_pu, 1., weights_gen_weight_f_rUp]
-                    syst_weights['MrDown']  = [weight, weight_pu, 1., weights_gen_weight_f_rDn]
-                    syst_weights['MfUp']    = [weight, weight_pu, 1., weights_gen_weight_fUp_r]
-                    syst_weights['MfDown']  = [weight, weight_pu, 1., weights_gen_weight_fDn_r]
-                    syst_weights['MfrUp']   = [weight, weight_pu, 1., weights_gen_weight_frUp ]
-                    syst_weights['MfrDown'] = [weight, weight_pu, 1., weights_gen_weight_frDn ]
-                # and PDFs
-
-        # remove not requested syst_objects to reduce the loop:
-        for name, _ in syst_objects.items():
-            if name not in requested_systematics:
-                syst_objects.pop(name)
-        # same for weights
-        for name, _ in syst_weights.items():
-            if name not in requested_systematics:
-                syst_weights.pop(name)
-        '''
-
         #print syst_objects.keys()
         #print syst_weights.keys()
 
@@ -4229,7 +4194,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         event_weight[0] = nom_sys_weight * weight_bSF_to_apply
         event_weight_init[0]  = weight_init
+
         event_weight_PU[0]    = weight_pu
+        event_weight_PU_el[0] = weight_pu_el
+        event_weight_PU_mu[0] = weight_pu_mu
+
         event_weight_th[0]    = weight_th
         event_weight_bSF[0]     = weight_bSF
         event_weight_bSFUp[0]   = weight_bSFUp
@@ -4254,6 +4223,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             event_weight_LEPelTRGDown[0] = (weight_lepEL_trg_Down / weight_lep) if weight_lep > 0.0001 else 0.
             event_weight_PUUp[0]    = weight_pu_up
             event_weight_PUDown[0]  = weight_pu_dn
+            event_weight_PUUp_el[0]    = weight_pu_el_up
+            event_weight_PUDown_el[0]  = weight_pu_el_dn
+            event_weight_PUUp_mu[0]    = weight_pu_mu_up
+            event_weight_PUDown_mu[0]  = weight_pu_mu_dn
 
         if with_Frag_sys and isTT:
             event_weight_PetersonUp[0] = weights_gen_weight_Peterson / weights_gen_weight_centralFrag

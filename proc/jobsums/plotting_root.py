@@ -23,6 +23,7 @@ nick_info = {
 "wjets_taul":  {'color': kCyan+4,  'legend': 'W+jets#rightarrow #tau_{l}'},
 
 "dibosons":    {'color': kCyan,    'legend': 'dibosons'},
+"dibosons_other":    {'color': kCyan,    'legend': 'dibosons'},
 "singletop":   {'color': kAzure,   'legend': 'singletop'},
 "single_top":  {'color': kAzure,   'legend': 'singletop'},
 "s_top_eltau": {'color': kAzure,   'legend': 's.top#rightarrow e#tau'},
@@ -56,7 +57,8 @@ nick_info = {
 "tt_taulj":      {'color': rgb(210,29,32),     'legend': 't#bar{t}#rightarrow #tau_{l}j'},
 "tt_other":      {'color': rgb(189,0,38),      'legend': 't#bar{t}#rightarrow other'},
 
-"qcd": {'color': kViolet, 'legend': 'qcd'},
+"qcd"       : {'color': kViolet, 'legend': 'qcd'},
+"qcd_other" : {'color': kViolet, 'legend': 'qcd'},
 }
 
 nick_colour = {nick: nick_info[nick]['color'] for nick in nick_info}
@@ -93,8 +95,10 @@ nick_order = {
 "s_top_other": -34,
 "s_top":       -34,
 
-"dibosons": -40,
-"qcd": -50,
+"dibosons"       : -40,
+"dibosons_other" : -40,
+"qcd"       : -50,
+"qcd_other" : -50,
 }
 
 def stack_n_legend(used_histos, shift=0., exp_legend=False, sort_dy=False, leg=None):

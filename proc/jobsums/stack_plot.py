@@ -53,6 +53,7 @@ parser.add_argument("--vert-lines", type=str, help="add vertical lines to the pl
 parser.add_argument("--wjets", type=float, default=0., help="scale factor for wjets (from the control region)")
 parser.add_argument("--factor-dy", type=float, help="scale factor for dy (from the control region)")
 parser.add_argument("--factor-procs", type=str, help="scale factor for given procs p1,p2,p3:factor -- for effect of rate systematics, tau ID and mis-ID")
+parser.add_argument("--factor-xsec",  type=str, help="guess x-sec/gen_lumi scale based on usual gen_lumi")
 
 parser.add_argument("--factor-rate-systematic", type=str, help="scale the procs by the factor to simulate the rate syst (tau ID, mis-ID): tt_eltau,tt_taultauh,s_top_eltau,s_top_other,dy_tautau:0.95 tt_lj,tt_taulj,tt_other:0.5")
 
@@ -67,6 +68,8 @@ parser.add_argument("--cumulative-fractions", action='store_true', help="cumulat
 parser.add_argument("-f", "--form-shapes", action='store_true', help="plot the shapes of distributions normalized to 1")
 #parser.add_argument("-e", "--shape-evolution", type=str, default='usual', help="plot the same distr in different channels normalized to 1")
 parser.add_argument("--processes", type=str, default='all', help="set processes to consider (all by default)")
+
+parser.add_argument("--data-nick", type=str, default='data', help="data nick")
 
 parser.add_argument("--exp-legend",   action='store_true', help="experimentary legend drawing")
 parser.add_argument("--legend-shift", type=float,          help="shift legend on X axis")
@@ -83,6 +86,8 @@ parser.add_argument("--title",   type=str, default="default", help="set title of
 
 parser.add_argument("--output-name",   type=str, help="name for the output file")
 parser.add_argument("--output-suffix", type=str, default='', help="additional suffix in output name")
+
+parser.add_argument("--overwrite",   action='store_true', help="overwrite the output even if it exists")
 
 args = parser.parse_args()
 
@@ -153,6 +158,8 @@ histos_data_distrs_ss = []
 histos_data_per_distr    = []
 histos_data_per_distr_ss = []
 
+data_nick = args.data_nick
+
 if not args.no_data:
   for distr_name in distr_names:
     data_distr_name = distr_name[:]
@@ -162,15 +169,15 @@ if not args.no_data:
     # get overflows if requested
     if args.draw_overflows:
         #h_overflows = draw_overflows.DrawOverflow(histo, args.draw_overflows)
-        histos_data_distrs.append((data_distr_name, [(DrawOverflow(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', data_distr_name])), args.draw_overflows), 'data', channel) for channel in channels]))
+        histos_data_distrs.append((data_distr_name, [(DrawOverflow(fdata.Get(channel + '/' + data_nick + '/NOMINAL/' + '_'.join([channel, data_nick, 'NOMINAL', data_distr_name])), args.draw_overflows), data_nick, channel) for channel in channels]))
     else:
-        histos_data_distrs.append((data_distr_name, [(fdata.Get(channel + '/data/NOMINAL/' + '_'.join([channel, 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
+        histos_data_distrs.append((data_distr_name, [(fdata.Get(channel + '/' + data_nick + '/NOMINAL/' + '_'.join([channel, data_nick, 'NOMINAL', data_distr_name])), data_nick, channel) for channel in channels]))
 
     if args.qcd > 0. or args.osss or args.osss_mc:
         if args.draw_overflows:
-            histos_data_distrs_ss.append((data_distr_name, [(DrawOverflow(fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', data_distr_name])), args.draw_overflows), 'data', channel) for channel in channels]))
+            histos_data_distrs_ss.append((data_distr_name, [(DrawOverflow(fdata.Get(channel + '_ss' + '/' + data_nick + '/NOMINAL/' + '_'.join([channel + '_ss', data_nick, 'NOMINAL', data_distr_name])), args.draw_overflows), data_nick, channel) for channel in channels]))
         else:
-            histos_data_distrs_ss.append((data_distr_name, [(fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', data_distr_name])), 'data', channel) for channel in channels]))
+            histos_data_distrs_ss.append((data_distr_name, [(fdata.Get(channel + '_ss' + '/' + data_nick + '/NOMINAL/' + '_'.join([channel + '_ss', data_nick, 'NOMINAL', data_distr_name])), data_nick, channel) for channel in channels]))
 
   if args.cumulative or args.cumulative_fractions:
     histos_data_per_distr    = [(name, [(histo.GetCumulative(False), n, c) for histo, n, c in distrs]) for name, distrs in histos_data_distrs]
@@ -314,6 +321,7 @@ syst_factors_updowns = {
   syst_factors_updowns_mu
 }
 
+data_nicks = ('data', 'data_other')
 
 def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=False):
     """get_histos(infile)
@@ -341,7 +349,7 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                continue
            #logging.info(nick)
 
-           if nick == 'data':
+           if nick in data_nicks:
                continue
 
            # handlinn=g the tt systematics:
@@ -478,7 +486,7 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                histo.Scale(factor_rate_systematic[1])
 
            # mc qcd normalization
-           if nick == 'qcd':
+           if nick in ('qcd', 'qcd_other'):
                histo.Scale(args.qcd_factor)
 
            # rename the histo for the correct systematic name in case of TT systematics
@@ -535,7 +543,7 @@ def get_histos_with_data_qcd(sys_name):
         logging.warning("datadriven qcd")
         # get SS data and MC
         used_histos_per_distr_ss = get_histos(f, [channel + '_ss'], args.shape, sys, distr)
-        data_hist = fdata.Get(channel + '_ss' + '/data/NOMINAL/' + '_'.join([channel + '_ss', 'data', 'NOMINAL', distr]))
+        data_hist = fdata.Get(channel + '_ss' + '/' + data_nick + '/NOMINAL/' + '_'.join([channel + '_ss', data_nick, 'NOMINAL', distr]))
 
         if args.draw_overflows:
             h_overflows = DrawOverflow(data_hist, args.draw_overflows)
@@ -545,7 +553,7 @@ def get_histos_with_data_qcd(sys_name):
         mc_hist = used_histos_per_distr_ss[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
         mc_hist.SetName('mc_sum2_ss')
         for h, nick, channel in used_histos_per_distr_ss[1:]:
-            if nick == 'qcd': continue # don't include QCD MC -- its sum of no-QCD MC
+            if 'qcd' in nick: continue # don't include QCD MC -- its sum of no-QCD MC
             mc_hist.Add(h)
 
         logging.warning("qcd hist  %d  %d" % (data_hist.GetEntries(), mc_hist.GetEntries()))
@@ -572,7 +580,7 @@ def get_histos_with_data_qcd(sys_name):
             hs_sum2.SetName('mc_sum2_ss')
 
             for h, nick, channel in histos[1:]: # I sum different channels?... the old hacked not fixed yet
-                if nick == 'qcd': continue # don't include QCD MC -- its sum of no-QCD MC
+                if 'qcd' in nick: continue # don't include QCD MC -- its sum of no-QCD MC
                 hs_sum2.Add(h)
             channel = histos[0][2]
             logging.debug("all channels are the same: %r" % all(ch == channel for _, _, ch in histos))
@@ -653,13 +661,13 @@ def get_histos_with_data_qcd(sys_name):
 
         # substitute QCD
         for i, (h, nick, channel) in enumerate(histos[0:]):
-            if args.qcd > 0. and nick == 'qcd':
+            if args.qcd > 0. and 'qcd' in nick:
                 # then take the qcd from the differences in ss region
                 h = qcd_hists[(distr, channel + '_ss')]
                 # and substitute it in the list (if it won't brak everything)
                 histos[i] = (h, nick, channel) # h is new here!
             hs_sum2.Add(h)
-            if nick != 'qcd':
+            if 'qcd' not in nick:
                 hs_sum_noqcd.Add(h)
 
         hs_sum2.SetFillStyle(3004);
@@ -1469,7 +1477,7 @@ else:
         shape_chan = ('_x_' + args.shape) if args.shape else ''
         filename = out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ('_noQCD' if args.skip_QCD else '') + ('_nodata' if args.no_data else '') + args.output_suffix + ".png"
 
-    if isfile(filename):
+    if isfile(filename) and not args.overwrite:
         print filename, "exists, nothing written"
     else:
         cst.SaveAs(filename)

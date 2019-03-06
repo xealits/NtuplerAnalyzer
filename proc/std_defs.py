@@ -663,10 +663,10 @@ distr_defs = {
     'tau_eta':       ({'NOMINAL': lambda ev: ev.event_taus[0].eta()},    ('histo-range',  [26,-2.6,2.6])),
     'bjet_pt':       ({'NOMINAL': lambda ev: ev.event_jets_b[0].pt()},  ('histo-range',  [20,0,300])),
     'bjet_eta':      ({'NOMINAL': lambda ev: ev.event_jets_b[0].eta()}, ('histo-range',  [26,-2.6,2.6])),
-    'nbjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_bjets},                        ('histo-range',  [3,0.0,3.0]))
-    'nrjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_jets - ev.event_jets_n_bjets}, ('histo-range',  [6,0.0,6.0]))
-    'najets':        ({'NOMINAL': lambda ev: ev.event_jets_n_jets},                         ('histo-range',  [10,0.0,10.0]))
-    'yield':         ({'NOMINAL': lambda ev: 1},     ('histo-range',  [3,0.0,3.0]))
+    'nbjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_bjets},                        ('histo-range',  [3,0.0,3.0])),
+    'nrjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_jets - ev.event_jets_n_bjets}, ('histo-range',  [6,0.0,6.0])),
+    'najets':        ({'NOMINAL': lambda ev: ev.event_jets_n_jets},                         ('histo-range',  [10,0.0,10.0])),
+    'yield':         ({'NOMINAL': lambda ev: 1},     ('histo-range',  [3,0.0,3.0])),
 }
 
 # TODO: implement multi-dim histos?
@@ -770,13 +770,15 @@ std_channels_ev_loop = {
 # additional channels
 'dy_mutau': (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
 'dy_eltau': (lambda sel_stage, ev: (sel_stage== 112 or sel_stage== 113), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
-'dy_mumu':  (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103 or sel_stage== 105) and ev.event_met_lep_mt < 40., {'NOMINAL': lambda ev: ev.selection_stage_dy_mumu}),
-'dy_elel':  (lambda sel_stage, ev: (sel_stage== 112 or sel_stage== 113 or sel_stage== 115) and ev.event_met_lep_mt < 40., {'NOMINAL': lambda ev: ev.selection_stage_dy_mumu}),
+'dy_mumu':  (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103 or sel_stage== 105), {'NOMINAL': lambda ev: ev.selection_stage_dy_mumu}),
+'dy_elel':  (lambda sel_stage, ev: (sel_stage== 112 or sel_stage== 113 or sel_stage== 115), {'NOMINAL': lambda ev: ev.selection_stage_dy_mumu}),
 
-'wjets_mu': (lambda sel_stage, ev: (sel_stage==  7 or sel_stage==  6) and ev.event_met_lep_mt > 40., {'NOMINAL': lambda ev: ev.selection_stage_wjets}),
-'wjets_el': (lambda sel_stage, ev: (sel_stage== 17 or sel_stage== 16) and ev.event_met_lep_mt > 40., {'NOMINAL': lambda ev: ev.selection_stage_wjets}),
+'wjets_mu'    : (lambda sel_stage, ev: (sel_stage==  7), {'NOMINAL': lambda ev: ev.selection_stage_wjets}),
+'wjets_mu_ss' : (lambda sel_stage, ev: (sel_stage==  6), {'NOMINAL': lambda ev: ev.selection_stage_wjets}),
+'wjets_el'    : (lambda sel_stage, ev: (sel_stage== 17), {'NOMINAL': lambda ev: ev.selection_stage_wjets}),
+'wjets_el_ss' : (lambda sel_stage, ev: (sel_stage== 16), {'NOMINAL': lambda ev: ev.selection_stage_wjets}),
 
-'tt_elmu':  (lambda sel_stage, ev: (sel_stage== 205), {'NOMINAL': lambda ev: ev.selection_stage_em}),
+'tt_elmu':  (lambda sel_stage, ev: (sel_stage> 200 and sel_stage < 210), {'NOMINAL': lambda ev: ev.selection_stage_em}),
 }
 # calculation of standard systematic weights
 
@@ -804,8 +806,8 @@ distrs_mt_fit   = {'Mt_lep_met_c'}
 distrs_mt       = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f'}
 distrs_leptonic = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta', 'met_c'}
 distrs_lep      = {'Mt_lep_met_c', 'lep_pt', 'lep_eta', 'met_c'}
-distrs_dy       = {'met_c', 'Mt_lep_met_c', 'dilep_mass', 'dilep_mass_dy', 'lep_pt', 'lep_eta'}
-distrs_wjets    = {'met_c', 'Mt_lep_met_c', 'dilep_mass',                  'lep_pt', 'lep_eta'}
+distrs_dy       = {'met_c', 'Mt_lep_met_c', 'Mt_lep_met_f', 'dilep_mass', 'dilep_mass_dy', 'lep_pt', 'lep_eta'}
+distrs_wjets    = {'met_c', 'Mt_lep_met_c', 'Mt_lep_met_f', 'dilep_mass',                  'lep_pt', 'lep_eta'}
 
 distrs_on_jets = {'nbjets', 'nrjets', 'bjet_pt', 'bjet_eta'}
 
@@ -847,12 +849,13 @@ channels_distrs = {
 'tt_leptau_Tight_ljout' : (['el_selTight_ljout', 'el_selTight_ljout_ss', 'mu_selTight_ljout', 'mu_selTight_ljout_ss'],  sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), main_sys),
 
 'tt_presel_cands' : (['el_preselCand', 'el_preselCand_ss', 'mu_preselCand', 'mu_preselCand_ss',], sorted(distrs_tauonic_std.union(distrs_leptonic, distrs_on_jets) - distrs_mt_fit), presel_sys),
-'tt_presel_lj_mu' : (['mu_presel',    'mu_presel_lj',    'mu_presel_ljout',], sorted(distrs_on_jets + distrs_lep), presel_sys),
-'tt_presel_lj_el' : (['el_presel',    'el_presel_lj',    'el_presel_ljout',], sorted(distrs_on_jets + distrs_lep), presel_sys),
+'tt_presel_lj_mu' : (['mu_presel',    'mu_presel_lj',    'mu_presel_ljout',], sorted(distrs_on_jets.union(distrs_lep)), presel_sys),
+'tt_presel_lj_el' : (['el_presel',    'el_presel_lj',    'el_presel_ljout',], sorted(distrs_on_jets.union(distrs_lep)), presel_sys),
 
 'dy_dileptons'    : (['dy_mumu',  'dy_elel'],   sorted(distrs_dy     ), main_sys),
 'dy_leptau'       : (['dy_mutau', 'dy_eltau'],  sorted(distrs_tauonic_std.union(distrs_leptonic)), main_sys),
 'wjets'           : (['wjets_mu', 'wjets_el'],  sorted(distrs_wjets  ), main_sys),
+'wjets_ss'        : (['wjets_mu_ss', 'wjets_el_ss'],  sorted(distrs_wjets  ), main_sys),
 }
 
 
@@ -918,6 +921,9 @@ sample_info = {
 'MC2016_Summer16_W4Jets_madgraph_ext2',
 'MC2016_Summer16_WJets_madgraph',
 'MC2016_Summer16_WJets_madgraph_ext2_v1',
+
+'MC2016_Summer16_WJets_amcatnlo',
+'MC2016_Summer16_WJets_amcatnlo_ext2_v2',
 
 'MC2016_Summer16_WWTo2L2Nu_powheg',
 'MC2016_Summer16_WWToLNuQQ_powheg',
