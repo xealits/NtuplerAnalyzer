@@ -181,7 +181,14 @@ python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc" -d Mt_lep_met_f
 
 python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_lep_pt v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,lep_pt  wjets_amc:mc_norm/v37_test1_bunch6/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,lep_pt
 
--- both are slightly undecisively different!
+-- both are slightly indecisively different!
+   is v27p1 aMCatNLO?
+
+python get_shapes.py --norm-binwidth --formula "v27p1:v27_p1_amc:wjets_amc" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_lep_pt v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,lep_pt wjets_amc:mc_norm/v37_test1_bunch6/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,lep_pt v27_p1_amc:../lstore_outdirs/v27/p1/MC2016_Summer16_WJets_amcatnlo.root:ctr_mu_wjet,wjets,NOMINAL,lep_pt
+
+python get_shapes.py --norm-binwidth --formula "v27p1:v27_p1_amc" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_lep_pt v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,lep_pt wjets_amc:mc_norm/v37_test1_bunch6/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,lep_pt v27_p1_amc:../lstore_outdirs/v27/p1/MC2016_Summer16_WJets_amcatnlo.root:ctr_mu_wjet,wjets,NOMINAL,lep_pt
+
+-- yes, v27p1 was amcatnlo
 
 python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_Mt_f v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,Mt_lep_met_f  wjets_amc:mc_norm/v37_test1_bunch6/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,Mt_lep_met_f
 
@@ -229,16 +236,47 @@ in data
 !!! also! try sorting tau cands by pT only!!!!
 -- but why only met changes and lep_pt does not?
 
-python get_shapes.py --norm-binwidth --formula "v27p1 :now_data_sortpt" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p data_Mt_f   v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,Mt_lep_met_f now_data_sortpt:distrs/v37_test3_bunch1/SingleMuon.root:wjets_mu,data_other,NOMINAL,Mt_lep_met_f
-python get_shapes.py --norm-binwidth --formula "v27p1 :now_data_sortpt" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p data_met_f  v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,met          now_data_sortpt:distrs/v37_test3_bunch1/SingleMuon.root:wjets_mu,data_other,NOMINAL,met_f
-python get_shapes.py --norm-binwidth --formula "v27p1 :now_data_sortpt" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p data_lep_pt v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,lep_pt       now_data_sortpt:distrs/v37_test3_bunch1/SingleMuon.root:wjets_mu,data_other,NOMINAL,lep_pt
+python get_shapes.py --norm-binwidth --formula "v27p1 :now_data_sortpt" -d Mt_lep_met_f -c test_wjets_v37test3_v27p1 -p data_Mt_f   v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,Mt_lep_met_f now_data_sortpt:distrs/v37_test3_bunch1/SingleMuon.root:wjets_mu,data_other,NOMINAL,Mt_lep_met_f
+python get_shapes.py --norm-binwidth --formula "v27p1 :now_data_sortpt" -d Mt_lep_met_f -c test_wjets_v37test3_v27p1 -p data_met_f  v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,met          now_data_sortpt:distrs/v37_test3_bunch1/SingleMuon.root:wjets_mu,data_other,NOMINAL,met_f
+python get_shapes.py --norm-binwidth --formula "v27p1 :now_data_sortpt" -d Mt_lep_met_f -c test_wjets_v37test3_v27p1 -p data_lep_pt v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,lep_pt       now_data_sortpt:distrs/v37_test3_bunch1/SingleMuon.root:wjets_mu,data_other,NOMINAL,lep_pt
+
+-- sort by pT only does not change anything
+   probably most of taus are candidates without any ID, as expected
+
 
 so the questions are:
 * for data lep_pt is not changed, met and mT are different, met is smaller and mT is larger now
   why?
 * for MC both lep_pt and met are different, which is strange
   why lep_pt changed?
+  I compare aMCatNLO with v27p1 --- was v27p1 aMCatNLO?(yes) how different lepton pT in madgraph and amcatnlo?
+  yes v27p1 is amcatnlo but without extras!
+  + compare without extras
+
+python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc0" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_met_f  v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,met           wjets_amc0:distrs/v37_test4_bunch1/all/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,met_f
+python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc0" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_lep_pt v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,lep_pt        wjets_amc0:distrs/v37_test4_bunch1/all/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,lep_pt
+python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc0" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_Mt_f   v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,Mt_lep_met_f  wjets_amc0:distrs/v37_test4_bunch1/all/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,Mt_lep_met_f
+
+  --- very minor difference in all distrs!
+      probably due to the 1 jobfile missing (out of 28)
+	  and some of the met propagations (jet cut 20GeV etc)
+      so, the only diveregence is in the data met........... how?
+
 * try the met propagation without lep-jet only
+  + try full run -- test4, mc converges with v27p1, data??
+
+
+lep-jet only and rest jets
+
+time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_lepjets --metmuegclean true  -l logss temp/nolepjets/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo/190206_135323/0000/MC2016_Summer16_WJets_amcatnlo_16.root &
+time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_jets    --metmuegclean true  -l logss temp/nojets/    channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo/190206_135323/0000/MC2016_Summer16_WJets_amcatnlo_16.root &
+
+-- effect from lepjets is significant, hard to say how relevent it is for all events at full selection
+
+time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_tau --metmuegclean true  -l logss temp/notau/   channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo/190206_135323/0000/MC2016_Summer16_WJets_amcatnlo_16.root &
+time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_tau,no_prop_jets --metmuegclean true  -l logss temp/notaunojets/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo/190206_135323/0000/MC2016_Summer16_WJets_amcatnlo_16.root &
+time python channel_distrs_full_loop.py --do-W-stitching --metmuegclean true  -l logss temp/orig/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo/190206_135323/0000/MC2016_Summer16_WJets_amcatnlo_16.root &
+
 
 
 ## so, which corrections should be there and how to test it?
