@@ -1,3 +1,281 @@
+# another wjets shape investigation
+
+comparison to v27p1 in Mt_f
+
+wjets
+
+python get_shapes.py --norm-binwidth --formula "now : v27p1 :wjets_amc " -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_Mt_f v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,Mt_lep_met_f now:distrs/v37_test1_bunch3-5_mc_1_amcatnlo_recoils.root:wjets_mu,wjets_other,NOMINAL,Mt_lep_met_f wjets_amc:distrs/v37_test1_bunch5/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,Mt_lep_met_f
+
+-- v27 is slightly smaller
+
+data
+
+python get_shapes.py --norm-binwidth --formula "v27p1 :now_data" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p data_Mt_f v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,Mt_lep_met_f now_data:distrs/v37_test1_bunch5/SingleMuon.root:wjets_mu,data_other,NOMINAL,Mt_lep_met_f
+
+-- v27 is also slightly smaller
+(in data! there should have been no differences!)
+
+data met:
+
+python get_shapes.py --norm-binwidth --formula "v27p1 :now_data" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p data_met    v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,met now_data:distrs/v37_test1_bunch5/SingleMuon.root:wjets_mu,data_other,NOMINAL,met_c
+
+-- again nothing is clear, need met_f
+
+python get_shapes.py --norm-binwidth --formula "v27p1 :now_data" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p data_met_f  v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,met now_data:distrs/v37_test1_bunch6/SingleMuon.root:wjets_mu,data_other,NOMINAL,met_f
+
+-- now met is smaller now, the peak grows
+   but mT is larger? -- turned against the lepton, like a lepton-related propagation?
+
+python get_shapes.py --norm-binwidth --formula "v27p1 :now_data" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p data_lep_pt v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,lep_pt now_data:distrs/v37_test1_bunch6/SingleMuon.root:wjets_mu,data_other,NOMINAL,lep_pt
+
+-- exactly the same
+   only slight difference at small pt, probably the missing couple jobs
+
+qcd
+
+python get_shapes.py --norm-binwidth --formula "v27p1 :now_qcd" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_Mt_f v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,qcd,NOMINAL,Mt_lep_met_f now_qcd:mc_norm/v37_test1_bunch5/qcd.root:wjets_mu,qcd_other,NOMINAL,Mt_lep_met_f
+
+-- also slightly smaller
+
+So:
+1) what changes data?
+2) what is different in MC corrections?
+-- 3) what was the v27p1 procedure?
+
+event_met        = proc_met (not the double corrections)
+event_met_lep_mt = calc on lep_p4[0] and proc_met
+ -- and these are correct leptons
+
+now MC met:
+* comes from met_init
+  or ROOT.met_pt_recoilcor_x of met_init, gen_genPx and gen_visPx
+  or met_slimmedMETsMuEGClean for data                                  --- in v27p1 the same
+* correction from all jets passing 20GeV, including lep-matched         --- all jets, no 20GeV
+* corrections from TES of all taus (any candidate, no ID requirement)   --- these corrections are done at the end, only for sel_taus
+
+-- all corrections are done to data with factor 0, so they should not apply
+
+does met or lep_pt divert in data (and MC-s)?
+   --- lep_pt is the same, so it is not an event selection or event weight problem
+       but met peaks!
+does data get weighted?
+   --- according 1 Muon file no,
+   event_weight_init and event_weight == 1
+is there a difference at WJets selection and some events are skipped?
+
+
+old full_selection.py:
+
+  taus_nom    .presel.sort(key=lambda it: it[1]*it[0].pt(), reverse=True)
+
+    if pass_mu and len(jets.old.medium) == 0 and taus.presel:
+        presel_os = taus.presel[0][2] * ev.lep_id[0] < 0
+        sel_b_weight = weight_bSF_lowest
+        if presel_os:
+            passed_channels.append(('ctr_mu_wjet', sel_b_weight, leps.iso, jets.old, taus.presel))
+        else:
+            passed_channels.append(('ctr_mu_wjet_ss', sel_b_weight, leps.iso, jets.old, taus.presel))
+
+sorting of the tau cands now:
+
+  taus_candidates       .sort(key=lambda it: (it[4], it[1]   *it[0].pt()), reverse=True)
+
+--- maybe there are a lot of vloose taus in wjets control and they have different pt?
+try sorting by pt
+
+tau cands now:
+
+    # nominals
+    if tau_pt > 20. and not match_lep:
+        taus_candidates.append((p4, TES_factor, tau_pdgID, i, tau_ID, jetmatched))
+
+was:
+
+    # nominals
+    if tau_pt > 20.:
+        if not match_lep:
+            taus_nom               .presel.append((p4, TES_factor, tau_pdgID, i, jetmatched))
+
+b-tagged cands now:
+
+        selection_wjets_control = passes_wjets_control_selection(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), taus_candidates, proc_met)
+
+           if not match_lep:
+             # count the jets
+             if b_tagged_medium:
+                 if jet_pt > JETS_PT_CUT:
+                     N_jets_nom_med_all += 1
+             if not jet_tau_match_old and b_tagged_medium:
+                 if jet_pt > JETS_PT_CUT:
+                     N_jets_nom_med += 1
+             if jet_pt > JETS_PT_CUT:
+                 N_jets_nom_all += 1
+             if not jet_tau_match_old:
+               if b_tagged_medium:
+                   jets_nom.medium.append((p4, en_factors, bSF_weights, jet_b_discr, HF, PF, jet_index))
+
+was:
+
+    pt_cut = 30.
+    # match lep
+    if not match_lep:
+      # match tau
+      if not jet_tau_match_old:
+        # the same, but the cuts and lowest -> cuts
+        # nominals
+        # match b-tag
+        if b_tagged_medium:
+            # pass pt cuts
+            if jet_pt > pt_cut:
+                jets_nom.old.medium.append((p4, en_factor, jet_weight_bSF_nom, jet_b_discr, HF, PF, jet_index))
+
+and muon pt cut is at 26GeV
+
+-- everything looks exactly the same
+
+
+## why met peaks in data?
+
+1) it seems the correctlions should not apply
+2) the initial met is the same as in v27 -- met_slimmedMETsMuEGClean
+
+according to git tag v27p1
+met_slimmedMETsMuEGClean is produced in the same way
+but it is not used in the processing!
+met_init is used!
+
+Mt_lep_met and met_pt come from met_x_prop met_y_prop
+which includes jet and tau corrections at the end, but again for data it should cancel with 1.
+
+-- testing met_init
+
+python get_shapes.py --norm-binwidth --formula "v27p1:now_data" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_Mt_f v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,Mt_lep_met_f now_data:distrs/v37_test2_bunch1/SingleMuon.root:wjets_mu,data_other,NOMINAL,Mt_lep_met_f
+
+python get_shapes.py --norm-binwidth --formula "now_data_MuEGClean:now_data_init" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_Mt_f now_data_MuEGClean:distrs/v37_test1_bunch6/SingleMuon.root:wjets_mu,data_other,NOMINAL,Mt_lep_met_f now_data_init:distrs/v37_test2_bunch1/SingleMuon.root:wjets_mu,data_other,NOMINAL,Mt_lep_met_f
+
+-- the same?
+check met_init and slimmed in gstore data
+
+-- practically identical numbers!!!!
+
+
+so, 1) it must be a correction and 2) it must somehow propagate in data!
+
+to check:
+* all corrections in data VS original met
+* lept pt and met in MC -- confirm that lep pt is the same
+
+time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_tau  --metmuegclean false  -l logss temp/notau/  channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/SingleElectron/Ntupler_v37_Data13TeV_SingleElectron2016H_03Feb2017_ver2/190205_181606/0000/Data13TeV_SingleElectron2016H_03Feb2017_ver2_20.root &
+time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_jets --metmuegclean false  -l logss temp/nojets/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/SingleElectron/Ntupler_v37_Data13TeV_SingleElectron2016H_03Feb2017_ver2/190205_181606/0000/Data13TeV_SingleElectron2016H_03Feb2017_ver2_20.root &
+time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_tau,no_prop_jets --metmuegclean false  -l logss temp/notaunojets/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/SingleElectron/Ntupler_v37_Data13TeV_SingleElectron2016H_03Feb2017_ver2/190205_181606/0000/Data13TeV_SingleElectron2016H_03Feb2017_ver2_20.root &
+
+-- in each event_met is the same as event_met_init
+
+??? v27p1 must have some correction in data???
+
+let's check MC for clues
+check lep_pt and met in MC now and v27p1: lep_pt must be the same, met -- different.
+test all corrections in MC
+
+python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_met_f v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,met  wjets_amc:mc_norm/v37_test1_bunch6/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,met_f
+
+python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_lep_pt v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,lep_pt  wjets_amc:mc_norm/v37_test1_bunch6/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,lep_pt
+
+-- both are slightly undecisively different!
+
+python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p wjets_Mt_f v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,Mt_lep_met_f  wjets_amc:mc_norm/v37_test1_bunch6/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,Mt_lep_met_f
+
+qcd:
+
+python get_shapes.py --norm-binwidth --formula "v27p1:qcd_now" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p qcd_met_f  v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,qcd,NOMINAL,met    qcd_now:mc_norm/v37_test1_bunch6/qcd.root:wjets_mu,qcd_other,NOMINAL,met_f
+
+python get_shapes.py --norm-binwidth --formula "v27p1:qcd_now" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p qcd_lep_pt v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,qcd,NOMINAL,lep_pt qcd_now:mc_norm/v37_test1_bunch6/qcd.root:wjets_mu,qcd_other,NOMINAL,lep_pt
+
+-- both are slightly undecisively different
+
+??? why lep_pt is different???
+
+python get_shapes.py --norm-binwidth --formula "v27p1:qcd_now" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p qcd_Mt_f v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,qcd,NOMINAL,Mt_lep_met_f qcd_now:mc_norm/v37_test1_bunch6/qcd.root:wjets_mu,qcd_other,NOMINAL,Mt_lep_met_f
+
+let's test turning off the corrections, if it has any effect in MC...
+
+time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_tau --metmuegclean true  -l logss temp/notau/   channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo/190206_135323/0000/MC2016_Summer16_WJets_amcatnlo_16.root &
+time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_jets --metmuegclean true  -l logss temp/nojets/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo/190206_135323/0000/MC2016_Summer16_WJets_amcatnlo_16.root &
+time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_tau,no_prop_jets --metmuegclean true  -l logss temp/notaunojets/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo/190206_135323/0000/MC2016_Summer16_WJets_amcatnlo_16.root &
+time python channel_distrs_full_loop.py --do-W-stitching --metmuegclean true  -l logss temp/orig/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo/190206_135323/0000/MC2016_Summer16_WJets_amcatnlo_16.root &
+
+ttree_out->Draw("event_met_init.pt()>>h(40,0,200)")
+ttree_out->Draw("event_met.pt()>>h(40,0,200)")
+
+ttree_out->Draw("event_met.pt()>>h(40,0,200)")
+h_ = (TH1D*) ttree_out->GetHistogram()
+h_met = (TH1D*) h_->Clone()
+h_met->SetDirectory(0)
+h_met->SetName("met")
+h_met->SetLineColor(kRed)
+ttree_out->Draw("event_met_init.pt()>>h(40,0,200)")
+h_ = (TH1D*) ttree_out->GetHistogram()
+h_met_init = (TH1D*) h_->Clone()
+h_met_init->SetDirectory(0)
+h_met_init->SetName("met_init")
+
+h_met_init->Draw()
+h_met->Draw("same")
+
+-- mostly jet corrections change stuff, tau is minimal
+   and they slightly increase met
+
+in data
+!!! also! try sorting tau cands by pT only!!!!
+-- but why only met changes and lep_pt does not?
+
+python get_shapes.py --norm-binwidth --formula "v27p1 :now_data_sortpt" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p data_Mt_f   v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,Mt_lep_met_f now_data_sortpt:distrs/v37_test3_bunch1/SingleMuon.root:wjets_mu,data_other,NOMINAL,Mt_lep_met_f
+python get_shapes.py --norm-binwidth --formula "v27p1 :now_data_sortpt" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p data_met_f  v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,met          now_data_sortpt:distrs/v37_test3_bunch1/SingleMuon.root:wjets_mu,data_other,NOMINAL,met_f
+python get_shapes.py --norm-binwidth --formula "v27p1 :now_data_sortpt" -d Mt_lep_met_f -c test_wjets_v37test1_v27p1 -p data_lep_pt v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,data,NOMINAL,lep_pt       now_data_sortpt:distrs/v37_test3_bunch1/SingleMuon.root:wjets_mu,data_other,NOMINAL,lep_pt
+
+so the questions are:
+* for data lep_pt is not changed, met and mT are different, met is smaller and mT is larger now
+  why?
+* for MC both lep_pt and met are different, which is strange
+  why lep_pt changed?
+* try the met propagation without lep-jet only
+
+
+## so, which corrections should be there and how to test it?
+
+I'd say:
+
+no TES propagation
+and
+all jets (20GeV or all?) without lep-matched
+--- test this shape in 1 wjets file
+
+
+
+## info on shapes
+
+all WNJets, inclusive madgraph and amcatnlo
+
+python get_shapes.py --formula "w0jets : w1jets : w2jets: w3jets:w4jets " -c wjets_mu -d Mt_lep_met_f -p wjets_other w0jets:distrs/v37_test1_bunch5/MC2016_Summer16_WJets_madgraph.root w1jets:distrs/v37_test1_bunch5/MC2016_Summer16_W1Jets_madgraph.root w2jets:distrs/v37_test1_bunch5/MC2016_Summer16_W2Jets_madgraph.root w3jets:distrs/v37_test1_bunch5/MC2016_Summer16_W3Jets_madgraph.root w4jets:distrs/v37_test1_bunch5/MC2016_Summer16_W4Jets_madgraph.root
+
+-- w0jets is narrow, wNjets are broader
+
+with amcatnlo
+
+python get_shapes.py --formula "w0jets : w1jets : w2jets: w3jets:w4jets:wjets_amc" -c wjets_mu -d Mt_lep_met_f -p wjets_other w0jets:distrs/v37_test1_bunch5/MC2016_Summer16_WJets_madgraph.root w1jets:distrs/v37_test1_bunch5/MC2016_Summer16_W1Jets_madgraph.root w2jets:distrs/v37_test1_bunch5/MC2016_Summer16_W2Jets_madgraph.root w3jets:distrs/v37_test1_bunch5/MC2016_Summer16_W3Jets_madgraph.root w4jets:distrs/v37_test1_bunch5/MC2016_Summer16_W4Jets_madgraph.root wjets_amc:distrs/v37_test1_bunch5/MC2016_Summer16_WJets_amcatnlo.root
+
+amcatnlo VS sum of WNJets
+
+python get_shapes.py --formula "wNjets:wjets_amc" -c wjets_mu -d Mt_lep_met_f -p wjets_other wNjets:mc_norm/v37_test1_bunch5/w0jets_wNjets.root wjets_amc:distrs/v37_test1_bunch5/MC2016_Summer16_WJets_amcatnlo.root
+
+-- very close
+
+
+shape of all qcd
+
+
+
+
 # looking for distrs, histosels files of last update and automating everything
 
 python numbers_for_datacard.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -y -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --latex

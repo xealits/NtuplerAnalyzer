@@ -27,6 +27,11 @@ TAUS_ID_CUT = TAUS_ID_CUT_VLoose # TAUS_ID_CUT_Medium # Vloose cut for the shape
 ONLY_3PI_TAUS = False
 SV_SIGN_CUT = 2.5
 
+METMuEGClean = True # the met for data
+PROP_TAU     = True
+PROP_LEPJET  = True
+PROP_JETS    = True
+
 REQUIRE_MLB = False
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all):
@@ -1904,6 +1909,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     event_met_TESDown = LorentzVector_Class(0., 0., 0., 0.)
     ttree_out.Branch("event_met_TESDown", event_met_TESDown)
 
+    event_met_init = LorentzVector_Class(0., 0., 0., 0.)
+    ttree_out.Branch("event_met_init", event_met_init)
+    event_met_lep_mt_init = array('f', [0])
+    ttree_out.Branch('event_met_lep_mt_init', event_met_lep_mt_init, 'event_met_lep_mt_init/f')
+
     event_met_lep_mt = array('f', [0])
     ttree_out.Branch('event_met_lep_mt', event_met_lep_mt, 'event_met_lep_mt/f')
     event_met_lep_mt_JERUp   = array('f', [0])
@@ -2381,7 +2391,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             #Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px(), ev.tau_p4[0].Py(), ev.pfmetcorr_ex, ev.pfmetcorr_ey)
             # TODO: tau is corrected with systematic ES
 
-        elif not isMC:
+        elif not isMC and METMuEGClean:
             met_x = ev.met_slimmedMETsMuEGClean.Px()
             met_y = ev.met_slimmedMETsMuEGClean.Py()
         # to test: is it = met_init
@@ -2404,6 +2414,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             #Mt_tau_met_nominal = transverse_mass_pts(ev.tau_p4[0].Px(), ev.tau_p4[0].Py(), ev.met_corrected.Px(), ev.met_corrected.Py())
         # also
         #Mt_lep_met_d = (ev.lep_p4[0] + ev.met_corrected).Mt()
+
+        event_met_init.SetPx(met_x)
+        event_met_init.SetPy(met_y)
+        event_met_lep_mt_init[0] = transverse_mass_pts(ev.lep_p4[0].Px(), ev.lep_p4[0].Py(), met_x, met_y)
 
         proc_met         = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
         proc_met_JERUp   = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
@@ -2955,7 +2969,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 taus_main.append((p4, (TES_factor, TES_factor_up, TES_factor_dn), tau_pdgID, i, tau_ID, jetmatched))
 
             # all taus to met?
-            if tau_pt > TAUS_PT_CUT:
+            if PROP_TAU and tau_pt > TAUS_PT_CUT:
                 proc_met         -= p4 * (TES_factor - 1.)
                 proc_met_JERUp   -= p4 * (TES_factor - 1.)
                 proc_met_JERDown -= p4 * (TES_factor - 1.)
@@ -2967,10 +2981,14 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             if tau_pt_down > TAUS_PT_CUT:
                 proc_met_TESDown -=  p4 * (TES_factor_dn - 1.)
 
-        # sort by IDlev and pt
-        taus_candidates_alliso.sort(key=lambda it: (it[4], it[1]   *it[0].pt()), reverse=True)
-        taus_candidates       .sort(key=lambda it: (it[4], it[1]   *it[0].pt()), reverse=True)
-        taus_main             .sort(key=lambda it: (it[4], it[1][0]*it[0].pt()), reverse=True)
+        ## sort by IDlev and pt
+        #taus_candidates_alliso.sort(key=lambda it: (it[4], it[1]   *it[0].pt()), reverse=True)
+        #taus_candidates       .sort(key=lambda it: (it[4], it[1]   *it[0].pt()), reverse=True)
+        #taus_main             .sort(key=lambda it: (it[4], it[1][0]*it[0].pt()), reverse=True)
+        # sort by pt only
+        taus_candidates_alliso.sort(key=lambda it: it[1]   *it[0].pt(), reverse=True)
+        taus_candidates       .sort(key=lambda it: it[1]   *it[0].pt(), reverse=True)
+        taus_main             .sort(key=lambda it: it[1][0]*it[0].pt(), reverse=True)
 
 
         # ---------- JETS
@@ -3389,18 +3407,19 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                             N_jets_nom_med_alliso += 1
 
                 # correct the met from all jets including the lep-matched jet
-                if jet_pt > JETS_PT_CUT:
-                    proc_met -= p4 * (en_factor - 1.)
-                if jet_pt_JERUp > JETS_PT_CUT:
-                    proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
-                if jet_pt_JERDown > JETS_PT_CUT:
-                    proc_met_JERDown -= p4 * (jet_factor_JERDown - 1.)
+                if PROP_JETS:
+                    if jet_pt > JETS_PT_CUT:
+                        proc_met -= p4 * (en_factor - 1.)
+                    if jet_pt_JERUp > JETS_PT_CUT:
+                        proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
+                    if jet_pt_JERDown > JETS_PT_CUT:
+                        proc_met_JERDown -= p4 * (jet_factor_JERDown - 1.)
 
-                if jet_pt_JESUp > JETS_PT_CUT:
-                    proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
-                if jet_pt_JESDown > JETS_PT_CUT:
-                    proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
-                # these were broken! the nominal jer factor was not applied, but now it is.
+                    if jet_pt_JESUp > JETS_PT_CUT:
+                        proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
+                    if jet_pt_JESDown > JETS_PT_CUT:
+                        proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
+                    # these were broken! the nominal jer factor was not applied, but now it is.
 
                 # match lep
                 if not match_lep:

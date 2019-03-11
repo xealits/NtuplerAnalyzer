@@ -650,13 +650,14 @@ distr_defs = {
     'Mt_lep_met_c':  (systs_objects_mt_variation,  ('custom-range', [0,20,40,60,80,100,130,160,200,250])),
     'Mt_lep_met_c2': (systs_objects_mt_variation,  ('custom-range', [0,20,40,60,80,100,120,140,170,200,250,500])),
     'Mt_lep_met_f':  (systs_objects_mt_variation,  ('histo-range',  [20,0,250])),
-    'met_f':         (systs_objects_met_variation, ('histo-range',  [20,0,300])),
+    'met_f':         (systs_objects_met_variation, ('histo-range',  [30,0,300])),
     'met_c':         (systs_objects_met_variation, ('custom-range', [0,20,40,60,80,100,120,140,200,500])),
     'cos_phi_met_lep':   ({'NOMINAL': lambda ev: TMath.Cos(ev.event_leptons[0].phi() - ev.event_met.phi())},       ('histo-range',  [42,-1.05,1.05])),
     'phi_met_lep':       ({'NOMINAL': lambda ev: ev.event_leptons[0].phi() - ev.event_met.phi()},    ('histo-range',  [42,-2*3.15,2*3.15])),
     'dilep_mass':    ({'NOMINAL': lambda ev: ev.event_dilep_mass},       ('histo-range',  [100,0,400])),
     'dilep_mass_dy': ({'NOMINAL': lambda ev: ev.event_dilep_mass},       ('histo-range',  [50,50,100])),
-    'lep_pt':        ({'NOMINAL': lambda ev: ev.event_leptons[0].pt()},  ('histo-range',  [20,0,150])),
+    'lep_pt_f':      ({'NOMINAL': lambda ev: ev.event_leptons[0].pt()},  ('histo-range',  [20,0,150])),
+    'lep_pt':        ({'NOMINAL': lambda ev: ev.event_leptons[0].pt()},  ('histo-range',  [40,0,200])),
     'lep_eta':       ({'NOMINAL': lambda ev: ev.event_leptons[0].eta()}, ('histo-range',  [26,-2.6,2.6])),
     'tau_sv_sign':   ({'NOMINAL': lambda ev: ev.event_taus_sv_sign[0]},  ('histo-range',  [42,-1,20])),
     'tau_pt':        ({'NOMINAL': lambda ev: ev.event_taus[0].pt()},     ('histo-range',  [20,0,100])),
@@ -806,8 +807,8 @@ distrs_mt_fit   = {'Mt_lep_met_c'}
 distrs_mt       = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f'}
 distrs_leptonic = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta', 'met_c'}
 distrs_lep      = {'Mt_lep_met_c', 'lep_pt', 'lep_eta', 'met_c'}
-distrs_dy       = {'met_c', 'Mt_lep_met_c', 'Mt_lep_met_f', 'dilep_mass', 'dilep_mass_dy', 'lep_pt', 'lep_eta'}
-distrs_wjets    = {'met_c', 'Mt_lep_met_c', 'Mt_lep_met_f', 'dilep_mass',                  'lep_pt', 'lep_eta'}
+distrs_dy       = {'met_c',          'Mt_lep_met_c', 'Mt_lep_met_f', 'dilep_mass', 'dilep_mass_dy', 'lep_pt', 'lep_eta'}
+distrs_wjets    = {'met_c', 'met_f', 'Mt_lep_met_c', 'Mt_lep_met_f', 'dilep_mass',                  'lep_pt', 'lep_eta'}
 
 distrs_on_jets = {'nbjets', 'nrjets', 'bjet_pt', 'bjet_eta'}
 

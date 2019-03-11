@@ -1,3 +1,6 @@
+qwatch:
+	watch -n 10 'qstat | grep " r     " | wc -l ; qstat | wc -l'
+
 clear_gstore_failed: nt=v37
 clear_gstore_failed:
 	for f in `find gstore_outdirs/${nt}/ -name failed -type d | sed 's,gstore_outdirs/,,'`; do \

@@ -19,10 +19,11 @@ parser.add_argument('-d', '--distr',  type=str, default='Mt_lep_met_f', help="di
 parser.add_argument('--logy',     action='store_true', help="log Y")
 parser.add_argument('--no-norm',  action='store_true', help="don't normalize each histo to 1")
 parser.add_argument('--norm-binwidth',  action='store_true', help="normalize each bin to width")
-parser.add_argument('--norm-formulas',     action='store_true', help="normalize the formulas of histos to 1")
+parser.add_argument('--norm-formulas',  action='store_true', help="normalize the formulas of histos to 1")
 parser.add_argument("--y-range",     type=str,      help="set Y range as `ymin,ymax`")
 parser.add_argument("--x-title",     type=str,      help="title of X axis")
 parser.add_argument("--y-title",     type=str,      help="title of Y axis")
+parser.add_argument('--left-title',  action='store_true', help="add the left label title")
 
 parser.add_argument('--formula',  type=str, help="to plot h1 overlayed with 123*h2+982*h3: `h1 : 123 h2 , 982h3`")
 
@@ -212,7 +213,7 @@ else:
                 histo.SetBinError(bini, error/width)
 
             # rescale to 1 just in case
-            histo.Scale(1./histo.Integral())
+            #histo.Scale(1./histo.Integral())
 
         if drawn:
             if y_max is not None and y_min is not None:
@@ -248,17 +249,18 @@ for histo, subform in reversed(plots_to_legend):
     else:
         leg.AddEntry(histo, subform) #, "l")
 
-left_title = TPaveText(0.12, 0.8, 0.36, 0.88, "brNDC")
-left_title.AddText("CMS simulation")
-left_title.SetTextFont(1)
-left_title.SetFillColor(0)
+if args.left_title:
+    left_title = TPaveText(0.12, 0.8, 0.36, 0.88, "brNDC")
+    left_title.AddText("CMS simulation")
+    left_title.SetTextFont(1)
+    left_title.SetFillColor(0)
+    left_title .Draw("same")
 
 right_title = TPaveText(0.65, 0.9, 0.9, 0.95, "brNDC")
 right_title.AddText("(13 TeV)")
 right_title.SetTextFont(132)
 right_title.SetFillColor(0)
 
-left_title .Draw("same")
 right_title.Draw("same")
 
 

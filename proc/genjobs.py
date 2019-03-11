@@ -57,6 +57,8 @@ parser.add_argument("--scheme", type=str, help="the scheme of queue as 5,5,0,15,
 parser.add_argument("--submit", type=str, default='online', help="the type of the jobs (online by default, other option is 'queue')")
 parser.add_argument("--mem-size",  type=str, default='1G', help="make the queue jobs with given memory size (1G default)")
 
+parser.add_argument("--metmuegclean", type=str, default='true', help="use slimmedMETsMuEGClean MET for data")
+
 parser.add_argument("--do-W-stitching", action='store_true', help="turn ON skipping NUP events of inclusive sample")
 parser.add_argument("--all-jets",       action='store_true', help="propagate corrections to met from all selected jets, including lep and tau matched")
 parser.add_argument("--without-bSF",    action='store_true', help="don't apply b tagging SF")
@@ -380,6 +382,8 @@ if args.without_bSF:
     add_options += "--without-bSF "
 if args.old_loop:
     add_options += "--old-loop "
+if args.metmuegclean:
+    add_options += "--metmuegclean %s " % args.metmuegclean
 
 if args.acceptance_study:
     job_template = "python signal_acceptance.py " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ {job_file}   || true"

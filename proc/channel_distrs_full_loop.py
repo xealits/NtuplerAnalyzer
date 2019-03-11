@@ -33,6 +33,10 @@ if __name__ == '__main__':
     parser.add_argument("--without-bSF",       action='store_true', help="don't apply b tagging SF")
     parser.add_argument("--old-loop",          action='store_true', help="run on old full selection")
 
+    parser.add_argument("--metmuegclean",      type=str, default='true', help="use slimmedMETsMuEGClean MET for data")
+
+    parser.add_argument("--options", type=str, help="options for stage2")
+
     args = parser.parse_args()
 
     # configure log and common file for threads
@@ -79,15 +83,28 @@ if __name__ == '__main__':
             full_selection.ALL_JETS = args.all_jets
             if args.without_bSF:
                 full_selection.with_bSF = False
+
         else:
             import stage2
             from stage2 import main # ROOT stuff is loaded here
             stage2.OLD_MINIAOD_JETS = args.old_miniaod_jets
             stage2.W_STITCHING = args.do_W_stitching
+            if args.metmuegclean and args.metmuegclean == 'false':
+                stage2.METMuEGClean = not (args.metmuegclean == 'false')
+                print 'METMuEGClean', stage2.METMuEGClean
+            else:
+                print 'no METMuEGClean'
             stage2.ALL_JETS = args.all_jets
             stage2.ALL_JETS = args.all_jets
             if args.without_bSF:
                 stage2.with_bSF = False
+
+            if args.options and 'no_prop_tau' in args.options:
+                stage2.PROP_TAU = False
+                print 'no_prop_tau', stage2.PROP_TAU
+            if args.options and 'no_prop_jets' in args.options:
+                stage2.PROP_JETS = False
+                print 'no_prop_jets', stage2.PROP_JETS
 
         t = threading.Thread(target=main, args=(input_filename, fout_name, args.outdir, args.channels))
         t.start()
