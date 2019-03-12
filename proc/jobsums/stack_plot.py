@@ -209,9 +209,13 @@ if args.factor_rate_systematic:
 syst_factors = {
               "FragUp":             0.958852, #1.001123,
             "FragDown":             1.02936,  #0.999304,
-         "SemilepBRUp":             1.008565,
-       "SemilepBRDown":             0.987050,
-          "PetersonUp":             1.000032,
+       #  "SemilepBRUp":             1.008565,
+       #"SemilepBRDown":             0.987050,
+       #   "PetersonUp":             1.000032,
+         "SemilepBRUp":             1.002650,
+       "SemilepBRDown":             1.035812,
+          "PetersonUp":             0.990578,
+# it seems all b-frag related are wrong -- probably I got the weights before the fix there
                 "MrUp":             0.896601,
               "MrDown":             1.114154,
                 "MfUp":             0.980610,
