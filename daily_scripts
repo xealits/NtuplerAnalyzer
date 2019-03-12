@@ -368,6 +368,12 @@ And the same correction is applied for JES and JER variations.
 The lepjet is not varied by JES, JER, it is unclustered.
 And the unclustering is propagated to the met.
 
+python stack_plot.py distrs/v37_test5_bunch1_mc.root distrs/v37_test5_bunch1/SingleMuon.root     -o plots/v37_test5_bunch1/ -p -r -c wjets_mu --data-nick data_other -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.85
+
+python stack_plot.py distrs/v37_test5_bunch1_mc.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c wjets_el --data-nick data_other -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.85
+
+-- many data jobs failed, hence poor normalization
+   but overall it looks like the same trend as in test4
 
 
 ## so, which corrections should be there and how to test it?
