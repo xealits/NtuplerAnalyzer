@@ -34,6 +34,7 @@ if __name__ == '__main__':
     parser.add_argument("--old-loop",          action='store_true', help="run on old full selection")
 
     parser.add_argument("--metmuegclean",      type=str, default='true', help="use slimmedMETsMuEGClean MET for data")
+    parser.add_argument("--n-recoil-jets",     type=int, help="set recoil jets for W+jets and dy+jets")
 
     parser.add_argument("--options", type=str, help="options for stage2")
 
@@ -99,12 +100,25 @@ if __name__ == '__main__':
             if args.without_bSF:
                 stage2.with_bSF = False
 
-            if args.options and 'no_prop_tau' in args.options:
+            if args.n_recoil_jets:
+                stage2.N_RECOIL_JETS = args.n_recoil_jets
+
+            if args.options:
+              if 'no_prop_tau' in args.options:
                 stage2.PROP_TAU = False
                 print 'no_prop_tau', stage2.PROP_TAU
-            if args.options and 'no_prop_jets' in args.options:
+              if 'no_prop_jets' in args.options:
                 stage2.PROP_JETS = False
                 print 'no_prop_jets', stage2.PROP_JETS
+              if 'on_prop_lepjets' in args.options:
+                stage2.PROP_LEPJET = True
+                print 'on_prop_lepjets', stage2.PROP_LEPJET
+              if 'no_prop_lepjets' in args.options:
+                stage2.PROP_LEPJET = False
+                print 'no_prop_lepjets', stage2.PROP_LEPJET
+              if 'no_prop_lepjets_uncluster' in args.options:
+                stage2.PROP_LEPJET_UNCLUSTER = False
+                print 'no_prop_lepjets_uncluster', stage2.PROP_LEPJET_UNCLUSTER
 
         t = threading.Thread(target=main, args=(input_filename, fout_name, args.outdir, args.channels))
         t.start()

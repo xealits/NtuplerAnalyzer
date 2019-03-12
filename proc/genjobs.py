@@ -58,6 +58,7 @@ parser.add_argument("--submit", type=str, default='online', help="the type of th
 parser.add_argument("--mem-size",  type=str, default='1G', help="make the queue jobs with given memory size (1G default)")
 
 parser.add_argument("--metmuegclean", type=str, default='true', help="use slimmedMETsMuEGClean MET for data")
+parser.add_argument("--options", type=str, help="more options of stage2")
 
 parser.add_argument("--do-W-stitching", action='store_true', help="turn ON skipping NUP events of inclusive sample")
 parser.add_argument("--all-jets",       action='store_true', help="propagate corrections to met from all selected jets, including lep and tau matched")
@@ -203,6 +204,11 @@ dtags_std_mc_ext_wjets_madgraph = [
 "MC2016_Summer16_W2Jets_madgraph_ext1",
 ]
 
+dtags_std_mc_dy = [
+"MC2016_Summer16_DYJetsToLL_10to50_amcatnlo",
+"MC2016_Summer16_DYJetsToLL_50toInf_madgraph",
+]
+
 dtags_std_mc_ext_dy = [
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1",
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_v1_ext1",
@@ -331,6 +337,8 @@ dtags_std_min      = dtags_std_mc_min      + dtags_std_data
 dtag_groups = {'std': dtags_std, 'std_amcatnlo': dtags_std_amcatnlo,
     'std_min': dtags_std_min, 'std_data': dtags_std_data, 'data_el': dtags_std_data_el, 'data_mu': dtags_std_data_mu,
     'std_mc': dtags_std_mc,
+    'dy_std': dtags_std_mc_dy,
+    'dy_ext': dtags_std_mc_ext_dy,
     'std_qcd': dtags_std_mc_qcd,
     'qcd_ext': dtags_mc_qcd_ext,
     'qcd_muenriched': dtags_mc_qcd_mu_enriched,
@@ -384,6 +392,8 @@ if args.old_loop:
     add_options += "--old-loop "
 if args.metmuegclean:
     add_options += "--metmuegclean %s " % args.metmuegclean
+if args.options:
+    add_options += "--options %s " % args.options
 
 if args.acceptance_study:
     job_template = "python signal_acceptance.py " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ {job_file}   || true"

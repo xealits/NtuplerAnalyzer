@@ -650,6 +650,8 @@ distr_defs = {
     'Mt_lep_met_c':  (systs_objects_mt_variation,  ('custom-range', [0,20,40,60,80,100,130,160,200,250])),
     'Mt_lep_met_c2': (systs_objects_mt_variation,  ('custom-range', [0,20,40,60,80,100,120,140,170,200,250,500])),
     'Mt_lep_met_f':  (systs_objects_mt_variation,  ('histo-range',  [20,0,250])),
+    'Mt_lep_met_init_f': ({'NOMINAL': lambda ev: ev.event_met_lep_mt_init2}, ('histo-range',  [20,0,250])),
+    'met_init_f':        ({'NOMINAL': lambda ev: ev.event_met_init2.pt()},   ('histo-range',  [30,0,300])),
     'met_f':         (systs_objects_met_variation, ('histo-range',  [30,0,300])),
     'met_c':         (systs_objects_met_variation, ('custom-range', [0,20,40,60,80,100,120,140,200,500])),
     'cos_phi_met_lep':   ({'NOMINAL': lambda ev: TMath.Cos(ev.event_leptons[0].phi() - ev.event_met.phi())},       ('histo-range',  [42,-1.05,1.05])),
@@ -808,7 +810,7 @@ distrs_mt       = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f'}
 distrs_leptonic = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta', 'met_c'}
 distrs_lep      = {'Mt_lep_met_c', 'lep_pt', 'lep_eta', 'met_c'}
 distrs_dy       = {'met_c',          'Mt_lep_met_c', 'Mt_lep_met_f', 'dilep_mass', 'dilep_mass_dy', 'lep_pt', 'lep_eta'}
-distrs_wjets    = {'met_c', 'met_f', 'Mt_lep_met_c', 'Mt_lep_met_f', 'dilep_mass',                  'lep_pt', 'lep_eta'}
+distrs_wjets    = {'met_c', 'met_f', 'met_init_f', 'Mt_lep_met_c', 'Mt_lep_met_f', 'Mt_lep_met_init_f', 'dilep_mass',                  'lep_pt', 'lep_eta'}
 
 distrs_on_jets = {'nbjets', 'nrjets', 'bjet_pt', 'bjet_eta'}
 
