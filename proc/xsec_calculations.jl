@@ -34,9 +34,13 @@ xsec_bt_vis = [bt_sig bt_stat bt_sys 0.025 ]
 
 xsec_vis = 831.76 * accept
 
-xsec_el_vis * xsec_vis[1]
-xsec_mu_vis * xsec_vis[2]
-xsec_bt_vis * xsec_vis[3]
+xsec_visible_el = xsec_el_vis * xsec_vis[1]
+xsec_visible_mu = xsec_mu_vis * xsec_vis[2]
+xsec_visible_bt = xsec_bt_vis * xsec_vis[3]
+
+println(xsec_visible_el)
+println(xsec_visible_mu)
+println(xsec_visible_bt)
 
 
 el_sys_extr = sum([el_sys acc_el_err / acc_el].^2) ^ 0.5

@@ -1,3 +1,67 @@
+# couple refitting questions
+
+the old files
+
+datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root
+datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root
+datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root   --freezeParameters lumi_13TeV -m 125  --name MuImpactsRecent   --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root   --freezeParameters lumi_13TeV -m 125  --name MuImpactsRecent   --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root   --freezeParameters lumi_13TeV -m 125  --name MuImpactsRecent   -o latest_el_impacts_recent.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_recent.json -o postfit_el_impacts_recent
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root   --freezeParameters lumi_13TeV -m 125  --name ElImpactsRecent   --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root   --freezeParameters lumi_13TeV -m 125  --name ElImpactsRecent   --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root   --freezeParameters lumi_13TeV -m 125  --name ElImpactsRecent   -o latest_mu_impacts_recent.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_recent.json -o postfit_mu_impacts_recent
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root --freezeParameters lumi_13TeV -m 125  --name BothImpactsRecent --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root --freezeParameters lumi_13TeV -m 125  --name BothImpactsRecent --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root --freezeParameters lumi_13TeV -m 125  --name BothImpactsRecent -o latest_both_impacts_recent.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts_recent.json -o postfit_both_impacts_recent
+
+
+ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root
+ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root
+ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --freezeParameters lumi_13TeV -m 125  --name MuImpactsRecent   --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --freezeParameters lumi_13TeV -m 125  --name MuImpactsRecent   --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --freezeParameters lumi_13TeV -m 125  --name MuImpactsRecent   -o latest_el_impacts_recentOrig1.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_el_impacts_recentOrig1.json -o postfit_el_impacts_recentOrig1
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --freezeParameters lumi_13TeV -m 125  --name ElImpactsRecent   --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --freezeParameters lumi_13TeV -m 125  --name ElImpactsRecent   --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --freezeParameters lumi_13TeV -m 125  --name ElImpactsRecent   -o latest_mu_impacts_recentOrig1.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_mu_impacts_recentOrig1.json -o postfit_mu_impacts_recentOrig1
+
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root --freezeParameters lumi_13TeV -m 125  --name BothImpactsRecent --robustFit 1 --doInitialFit
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root --freezeParameters lumi_13TeV -m 125  --name BothImpactsRecent --robustFit 1 --doFits --parallel 5
+../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts -d fitting/ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root --freezeParameters lumi_13TeV -m 125  --name BothImpactsRecent -o latest_both_impacts_recentOrig1.json
+../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_both_impacts_recentOrig1.json -o postfit_both_impacts_recentOrig1
+
+python new_impact_table.py --merge-pdf latest_el_impacts_recent.json latest_mu_impacts_recent.json latest_both_impacts_recent.json
+
+python fitting/new_impact_table.py --merge-pdf latest_el_impacts_recent.json      latest_mu_impacts_recent.json
+python fitting/new_impact_table.py --merge-pdf latest_el_impacts_recentOrig1.json latest_mu_impacts_recentOrig1.json
+
+lets try to find by scanning
+
+make fit_unc nn=el_orig1 workspace=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root
+make fit_unc nn=mu_orig1 workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root
+make fit_unc nn=bt_orig1 workspace=ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root
+
+-- close, but not exactly the same
+
+make fit_unc nn=el_lepMETprop workspace=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root
+make fit_unc nn=mu_lepMETprop workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root
+make fit_unc nn=bt_lepMETprop workspace=ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_lepMETprop.root
+
+-- el is not close, r=0.98
+
+
+
 # another wjets shape investigation
 
 comparison to v27p1 in Mt_f
