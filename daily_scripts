@@ -247,6 +247,41 @@ python get_shapes.py --norm-binwidth --formula "v27p1 :now_data_sortpt" -d Mt_le
 so the questions are:
 * for data lep_pt is not changed, met and mT are different, met is smaller and mT is larger now
   why?
+  --- according to git tag v27p1 that version had an error:
+      in data the jets were corrected with jes re-correcting factor and it was propafated to met
+	  in mc this factor canceled out with uncor factor
+	  (not clear why uncor was applied only to mc --- maybe I thought it was for jer instead of jes)
+	  it seems this should not be done, since miniaod jets are already jes-corrected (and I checked that)
+	  and the correction is propagated to met (type1 met includes jec corrections, jec=jes it's just yet another naming)
+
+  + test different recoils of wjets?
+
+python channel_distrs_full_loop.py --do-W-stitching --metmuegclean false --options no_prop_lepjets  -l logss --n-recoil-jets 0 temp/recoil0 channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo_ext2_v2/190211_115413/0000/MC2016_Summer16_WJets_amcatnlo_ext2_v2_177.root &
+python channel_distrs_full_loop.py --do-W-stitching --metmuegclean false --options no_prop_lepjets  -l logss --n-recoil-jets 1 temp/recoil1 channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo_ext2_v2/190211_115413/0000/MC2016_Summer16_WJets_amcatnlo_ext2_v2_177.root &
+python channel_distrs_full_loop.py --do-W-stitching --metmuegclean false --options no_prop_lepjets  -l logss --n-recoil-jets 2 temp/recoil2 channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo_ext2_v2/190211_115413/0000/MC2016_Summer16_WJets_amcatnlo_ext2_v2_177.root &
+python channel_distrs_full_loop.py --do-W-stitching --metmuegclean false --options no_prop_lepjets  -l logss --n-recoil-jets 3 temp/recoil3 channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo_ext2_v2/190211_115413/0000/MC2016_Summer16_WJets_amcatnlo_ext2_v2_177.root &
+python channel_distrs_full_loop.py --do-W-stitching --metmuegclean false --options no_prop_lepjets  -l logss --n-recoil-jets 5 temp/recoil5 channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo_ext2_v2/190211_115413/0000/MC2016_Summer16_WJets_amcatnlo_ext2_v2_177.root &
+
+ttree_out->Draw("event_met_init2.pt()>>h(40,0,200)")
+ttree_out->Draw("event_met_init.pt()>>h(40,0,200)")
+
+ttree_out->Draw("event_met_lep_mt_init2.pt()>>h(40,0,200)")
+h_ = (TH1D*) ttree_out->GetHistogram()
+h_met = (TH1D*) h_->Clone()
+h_met->SetDirectory(0)
+h_met->SetName("mt_init2_recoiled")
+h_met->SetLineColor(kRed)
+ttree_out->Draw("event_met_lep_mt_init.pt()>>h(40,0,200)")
+h_ = (TH1D*) ttree_out->GetHistogram()
+h_met_init = (TH1D*) h_->Clone()
+h_met_init->SetDirectory(0)
+h_met_init->SetName("mt_init")
+
+h_met_init->Draw()
+h_met->Draw("same")
+
+--- no effect from recoils on mT in this 1 file
+
 * for MC both lep_pt and met are different, which is strange
   why lep_pt changed?
   I compare aMCatNLO with v27p1 --- was v27p1 aMCatNLO?(yes) how different lepton pT in madgraph and amcatnlo?
@@ -263,7 +298,11 @@ python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc0" -d Mt_lep_met_
       so, the only diveregence is in the data met........... how?
 
 * try the met propagation without lep-jet only
-  + try full run -- test4, mc converges with v27p1, data??
+  + try full run -- test4, mc converges with v27p1, data has issues in met??
+
+python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc0" -d Mt_lep_met_f -c test_wjets_v37test4_nolepjet_v27p1 -p wjets_met_f  v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,met           wjets_amc0:distrs/v37_test4_bunch1/all/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,met_f
+python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc0" -d Mt_lep_met_f -c test_wjets_v37test4_nolepjet_v27p1 -p wjets_lep_pt v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,lep_pt        wjets_amc0:distrs/v37_test4_bunch1/all/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,lep_pt
+python get_shapes.py --norm-binwidth --formula "v27p1:wjets_amc0" -d Mt_lep_met_f -c test_wjets_v37test4_nolepjet_v27p1 -p wjets_Mt_f   v27p1:v27p1_WJetsAmcatnlo1_SingleMuon.root:ctr_mu_wjet,wjets,NOMINAL,Mt_lep_met_f  wjets_amc0:distrs/v37_test4_bunch1/all/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,Mt_lep_met_f
 
 
 lep-jet only and rest jets
@@ -276,6 +315,58 @@ time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_jets 
 time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_tau --metmuegclean true  -l logss temp/notau/   channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo/190206_135323/0000/MC2016_Summer16_WJets_amcatnlo_16.root &
 time python channel_distrs_full_loop.py --do-W-stitching --options no_prop_tau,no_prop_jets --metmuegclean true  -l logss temp/notaunojets/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo/190206_135323/0000/MC2016_Summer16_WJets_amcatnlo_16.root &
 time python channel_distrs_full_loop.py --do-W-stitching --metmuegclean true  -l logss temp/orig/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/Ntupler_v37_MC2016_Summer16_WJets_amcatnlo/190206_135323/0000/MC2016_Summer16_WJets_amcatnlo_16.root &
+
+
+So now the question is one at it goes like this:
+apparently the past good data-mc agreement was due to a mistake in handling data,
+specifically due to double-propagating jes corrections to met of data,
+now maybe there is a mistake-double somewhere which overlaped before but now it is on it's own and is evident.
+What could it be? Propagation of lep-jets and tes? Substitution of a the lep-jet with the lepton?
+
+At the moment only jer is propagated in MC.
+And it is, supposedly, a small contribution, even for lep-matched jet. (Will see in the test.)
+Substitution did not work before. Maybe due to this error?
+Anyway, another good option is to remove jes correction of lep-matched jet.
+It is physical for type1 met: return to unclustered particles.
+
+Comparison with no lep-jets:
+
+python get_shapes.py --norm-binwidth --formula "now:now_noljet" -d Mt_lep_met_f -c test_wjets_v37test1_v37test4 -p wjets_met_f  now:distrs/v37_test1_bunch6/init/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,met_f         now_noljet:distrs/v37_test4_bunch1/all/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,met_f
+python get_shapes.py --norm-binwidth --formula "now:now_noljet" -d Mt_lep_met_f -c test_wjets_v37test1_v37test4 -p wjets_lep_pt now:distrs/v37_test1_bunch6/init/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,lep_pt        now_noljet:distrs/v37_test4_bunch1/all/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,lep_pt
+python get_shapes.py --norm-binwidth --formula "now:now_noljet" -d Mt_lep_met_f -c test_wjets_v37test1_v37test4 -p wjets_mT_f   now:distrs/v37_test1_bunch6/init/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,Mt_lep_met_f  now_noljet:distrs/v37_test4_bunch1/all/MC2016_Summer16_WJets_amcatnlo.root:wjets_mu,wjets_other,NOMINAL,Mt_lep_met_f
+
+-- mT seems to be a bit smaller, closer to cover the gap.
+
+Finish the test4 (no prop of lep-jet JER) with DY MC.
+
+python stack_plot.py distrs/v37_test4_bunch1_mc.root distrs/v37_test1_bunch6/SingleMuon.root -o plots/v37_test4_bunch1/ -p -r -c wjets_mu --data-nick data_other -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 1.2
+
+-- ok, though with a trend at high mT!!!
+
+and a bunch of jobs failed?
+
+[olek@fermi05 proc]$ ls lstore_outdirs/v37/test4/MC2016_Summer16_WJets_amcatnlo*/*root | wc -l
+214
+[olek@fermi05 proc]$ ls lstore_outdirs/v37/test1/MC2016_Summer16_WJets_amcatnlo*/*root | wc -l
+251
+
+--- not sure why? probably due to updating stage2.py while running.
+
+now to finish test4 if test5 does not work better....
+
+
+Start test5 with jes of lep-jet returned to met --- unclustering of the lep-matched jet.
+
+which means
+
+    proc_met -= p4 * (en_factor - 1.)
+
+-- here p4*1. is the old jet and p4*en_factor is the correction factor,
+   therefore jes uncor must be used for the correction
+
+And the same correction is applied for JES and JER variations.
+The lepjet is not varied by JES, JER, it is unclustered.
+And the unclustering is propagated to the met.
 
 
 
