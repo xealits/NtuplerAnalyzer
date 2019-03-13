@@ -94,98 +94,98 @@ h_nom ->Scale(1./h_nom->Integral())
 h_isrup1 ->SetLineColor(kRed)
 h_nom    ->SetLineColor(kGreen)
 
-h_isrup1   ->SetBinError(1,  h_isrup1->GetBinError(1) /(int_h_isrup1 * h_isrup1->GetBinContent(1) ))
-h_isrup1   ->SetBinError(2,  h_isrup1->GetBinError(2) /(int_h_isrup1 * h_isrup1->GetBinContent(2) ))
-h_isrup1   ->SetBinError(3,  h_isrup1->GetBinError(3) /(int_h_isrup1 * h_isrup1->GetBinContent(3) ))
-h_isrup1   ->SetBinError(4,  h_isrup1->GetBinError(4) /(int_h_isrup1 * h_isrup1->GetBinContent(4) ))
-h_isrup1   ->SetBinError(5,  h_isrup1->GetBinError(5) /(int_h_isrup1 * h_isrup1->GetBinContent(5) ))
-h_isrup1   ->SetBinError(6,  h_isrup1->GetBinError(6) /(int_h_isrup1 * h_isrup1->GetBinContent(6) ))
-h_isrup1   ->SetBinError(7,  h_isrup1->GetBinError(7) /(int_h_isrup1 * h_isrup1->GetBinContent(7) ))
-h_isrup1   ->SetBinError(8,  h_isrup1->GetBinError(8) /(int_h_isrup1 * h_isrup1->GetBinContent(8) ))
-h_isrup1   ->SetBinError(9,  h_isrup1->GetBinError(9) /(int_h_isrup1 * h_isrup1->GetBinContent(9) ))
-h_isrup1   ->SetBinError(10, h_isrup1->GetBinError(10)/(int_h_isrup1 * h_isrup1->GetBinContent(10)))
-h_isrup1   ->SetBinError(11, h_isrup1->GetBinError(11)/(int_h_isrup1 * h_isrup1->GetBinContent(11)))
-h_isrup1   ->SetBinError(12, h_isrup1->GetBinError(12)/(int_h_isrup1 * h_isrup1->GetBinContent(12)))
-h_isrup1   ->SetBinError(13, h_isrup1->GetBinError(13)/(int_h_isrup1 * h_isrup1->GetBinContent(13)))
-h_isrup1   ->SetBinError(14, h_isrup1->GetBinError(14)/(int_h_isrup1 * h_isrup1->GetBinContent(14)))
-h_isrup1   ->SetBinError(15, h_isrup1->GetBinError(15)/(int_h_isrup1 * h_isrup1->GetBinContent(15)))
-h_isrup1   ->SetBinError(16, h_isrup1->GetBinError(16)/(int_h_isrup1 * h_isrup1->GetBinContent(16)))
-h_isrup1   ->SetBinError(17, h_isrup1->GetBinError(17)/(int_h_isrup1 * h_isrup1->GetBinContent(17)))
-h_isrup1   ->SetBinError(18, h_isrup1->GetBinError(18)/(int_h_isrup1 * h_isrup1->GetBinContent(18)))
-h_isrup1   ->SetBinError(19, h_isrup1->GetBinError(19)/(int_h_isrup1 * h_isrup1->GetBinContent(19)))
-h_isrup1   ->SetBinError(20, h_isrup1->GetBinError(20)/(int_h_isrup1 * h_isrup1->GetBinContent(20)))
-h_isrup1   ->SetBinError(21, h_isrup1->GetBinError(21)/(int_h_isrup1 * h_isrup1->GetBinContent(21)))
-h_isrup1   ->SetBinError(22, h_isrup1->GetBinError(22)/(int_h_isrup1 * h_isrup1->GetBinContent(22)))
-h_isrup1   ->SetBinError(23, h_isrup1->GetBinError(23)/(int_h_isrup1 * h_isrup1->GetBinContent(23)))
-h_isrup1   ->SetBinError(24, h_isrup1->GetBinError(24)/(int_h_isrup1 * h_isrup1->GetBinContent(24)))
-h_isrup1   ->SetBinError(25, h_isrup1->GetBinError(25)/(int_h_isrup1 * h_isrup1->GetBinContent(25)))
-h_isrup1   ->SetBinError(26, h_isrup1->GetBinError(26)/(int_h_isrup1 * h_isrup1->GetBinContent(26)))
-h_isrup1   ->SetBinError(27, h_isrup1->GetBinError(27)/(int_h_isrup1 * h_isrup1->GetBinContent(27)))
-h_isrup1   ->SetBinError(28, h_isrup1->GetBinError(28)/(int_h_isrup1 * h_isrup1->GetBinContent(28)))
-h_isrup1   ->SetBinError(29, h_isrup1->GetBinError(29)/(int_h_isrup1 * h_isrup1->GetBinContent(29)))
-h_isrup1   ->SetBinError(30, h_isrup1->GetBinError(30)/(int_h_isrup1 * h_isrup1->GetBinContent(30)))
+h_isrup   ->SetBinError(1,  h_isrup->GetBinError(1) /(int_isrup * h_isrup->GetBinContent(1) ))
+h_isrup   ->SetBinError(2,  h_isrup->GetBinError(2) /(int_isrup * h_isrup->GetBinContent(2) ))
+h_isrup   ->SetBinError(3,  h_isrup->GetBinError(3) /(int_isrup * h_isrup->GetBinContent(3) ))
+h_isrup   ->SetBinError(4,  h_isrup->GetBinError(4) /(int_isrup * h_isrup->GetBinContent(4) ))
+h_isrup   ->SetBinError(5,  h_isrup->GetBinError(5) /(int_isrup * h_isrup->GetBinContent(5) ))
+h_isrup   ->SetBinError(6,  h_isrup->GetBinError(6) /(int_isrup * h_isrup->GetBinContent(6) ))
+h_isrup   ->SetBinError(7,  h_isrup->GetBinError(7) /(int_isrup * h_isrup->GetBinContent(7) ))
+h_isrup   ->SetBinError(8,  h_isrup->GetBinError(8) /(int_isrup * h_isrup->GetBinContent(8) ))
+h_isrup   ->SetBinError(9,  h_isrup->GetBinError(9) /(int_isrup * h_isrup->GetBinContent(9) ))
+h_isrup   ->SetBinError(10, h_isrup->GetBinError(10)/(int_isrup * h_isrup->GetBinContent(10)))
+h_isrup   ->SetBinError(11, h_isrup->GetBinError(11)/(int_isrup * h_isrup->GetBinContent(11)))
+h_isrup   ->SetBinError(12, h_isrup->GetBinError(12)/(int_isrup * h_isrup->GetBinContent(12)))
+h_isrup   ->SetBinError(13, h_isrup->GetBinError(13)/(int_isrup * h_isrup->GetBinContent(13)))
+h_isrup   ->SetBinError(14, h_isrup->GetBinError(14)/(int_isrup * h_isrup->GetBinContent(14)))
+h_isrup   ->SetBinError(15, h_isrup->GetBinError(15)/(int_isrup * h_isrup->GetBinContent(15)))
+h_isrup   ->SetBinError(16, h_isrup->GetBinError(16)/(int_isrup * h_isrup->GetBinContent(16)))
+h_isrup   ->SetBinError(17, h_isrup->GetBinError(17)/(int_isrup * h_isrup->GetBinContent(17)))
+h_isrup   ->SetBinError(18, h_isrup->GetBinError(18)/(int_isrup * h_isrup->GetBinContent(18)))
+h_isrup   ->SetBinError(19, h_isrup->GetBinError(19)/(int_isrup * h_isrup->GetBinContent(19)))
+h_isrup   ->SetBinError(20, h_isrup->GetBinError(20)/(int_isrup * h_isrup->GetBinContent(20)))
+h_isrup   ->SetBinError(21, h_isrup->GetBinError(21)/(int_isrup * h_isrup->GetBinContent(21)))
+h_isrup   ->SetBinError(22, h_isrup->GetBinError(22)/(int_isrup * h_isrup->GetBinContent(22)))
+h_isrup   ->SetBinError(23, h_isrup->GetBinError(23)/(int_isrup * h_isrup->GetBinContent(23)))
+h_isrup   ->SetBinError(24, h_isrup->GetBinError(24)/(int_isrup * h_isrup->GetBinContent(24)))
+h_isrup   ->SetBinError(25, h_isrup->GetBinError(25)/(int_isrup * h_isrup->GetBinContent(25)))
+h_isrup   ->SetBinError(26, h_isrup->GetBinError(26)/(int_isrup * h_isrup->GetBinContent(26)))
+h_isrup   ->SetBinError(27, h_isrup->GetBinError(27)/(int_isrup * h_isrup->GetBinContent(27)))
+h_isrup   ->SetBinError(28, h_isrup->GetBinError(28)/(int_isrup * h_isrup->GetBinContent(28)))
+h_isrup   ->SetBinError(29, h_isrup->GetBinError(29)/(int_isrup * h_isrup->GetBinContent(29)))
+h_isrup   ->SetBinError(30, h_isrup->GetBinError(30)/(int_isrup * h_isrup->GetBinContent(30)))
 
-h_isrdown1   ->SetBinError(1,  h_isrdown1->GetBinError(1) /(int_h_isrdown1*h_isrdown1->GetBinContent(1) ))
-h_isrdown1   ->SetBinError(2,  h_isrdown1->GetBinError(2) /(int_h_isrdown1*h_isrdown1->GetBinContent(2) ))
-h_isrdown1   ->SetBinError(3,  h_isrdown1->GetBinError(3) /(int_h_isrdown1*h_isrdown1->GetBinContent(3) ))
-h_isrdown1   ->SetBinError(4,  h_isrdown1->GetBinError(4) /(int_h_isrdown1*h_isrdown1->GetBinContent(4) ))
-h_isrdown1   ->SetBinError(5,  h_isrdown1->GetBinError(5) /(int_h_isrdown1*h_isrdown1->GetBinContent(5) ))
-h_isrdown1   ->SetBinError(6,  h_isrdown1->GetBinError(6) /(int_h_isrdown1*h_isrdown1->GetBinContent(6) ))
-h_isrdown1   ->SetBinError(7,  h_isrdown1->GetBinError(7) /(int_h_isrdown1*h_isrdown1->GetBinContent(7) ))
-h_isrdown1   ->SetBinError(8,  h_isrdown1->GetBinError(8) /(int_h_isrdown1*h_isrdown1->GetBinContent(8) ))
-h_isrdown1   ->SetBinError(9,  h_isrdown1->GetBinError(9) /(int_h_isrdown1*h_isrdown1->GetBinContent(9) ))
-h_isrdown1   ->SetBinError(10, h_isrdown1->GetBinError(10)/(int_h_isrdown1*h_isrdown1->GetBinContent(10)))
-h_isrdown1   ->SetBinError(11, h_isrdown1->GetBinError(11)/(int_h_isrdown1*h_isrdown1->GetBinContent(11)))
-h_isrdown1   ->SetBinError(12, h_isrdown1->GetBinError(12)/(int_h_isrdown1*h_isrdown1->GetBinContent(12)))
-h_isrdown1   ->SetBinError(13, h_isrdown1->GetBinError(13)/(int_h_isrdown1*h_isrdown1->GetBinContent(13)))
-h_isrdown1   ->SetBinError(14, h_isrdown1->GetBinError(14)/(int_h_isrdown1*h_isrdown1->GetBinContent(14)))
-h_isrdown1   ->SetBinError(15, h_isrdown1->GetBinError(15)/(int_h_isrdown1*h_isrdown1->GetBinContent(15)))
-h_isrdown1   ->SetBinError(16, h_isrdown1->GetBinError(16)/(int_h_isrdown1*h_isrdown1->GetBinContent(16)))
-h_isrdown1   ->SetBinError(17, h_isrdown1->GetBinError(17)/(int_h_isrdown1*h_isrdown1->GetBinContent(17)))
-h_isrdown1   ->SetBinError(18, h_isrdown1->GetBinError(18)/(int_h_isrdown1*h_isrdown1->GetBinContent(18)))
-h_isrdown1   ->SetBinError(19, h_isrdown1->GetBinError(19)/(int_h_isrdown1*h_isrdown1->GetBinContent(19)))
-h_isrdown1   ->SetBinError(20, h_isrdown1->GetBinError(20)/(int_h_isrdown1*h_isrdown1->GetBinContent(20)))
-h_isrdown1   ->SetBinError(21, h_isrdown1->GetBinError(21)/(int_h_isrdown1*h_isrdown1->GetBinContent(21)))
-h_isrdown1   ->SetBinError(22, h_isrdown1->GetBinError(22)/(int_h_isrdown1*h_isrdown1->GetBinContent(22)))
-h_isrdown1   ->SetBinError(23, h_isrdown1->GetBinError(23)/(int_h_isrdown1*h_isrdown1->GetBinContent(23)))
-h_isrdown1   ->SetBinError(24, h_isrdown1->GetBinError(24)/(int_h_isrdown1*h_isrdown1->GetBinContent(24)))
-h_isrdown1   ->SetBinError(25, h_isrdown1->GetBinError(25)/(int_h_isrdown1*h_isrdown1->GetBinContent(25)))
-h_isrdown1   ->SetBinError(26, h_isrdown1->GetBinError(26)/(int_h_isrdown1*h_isrdown1->GetBinContent(26)))
-h_isrdown1   ->SetBinError(27, h_isrdown1->GetBinError(27)/(int_h_isrdown1*h_isrdown1->GetBinContent(27)))
-h_isrdown1   ->SetBinError(28, h_isrdown1->GetBinError(28)/(int_h_isrdown1*h_isrdown1->GetBinContent(28)))
-h_isrdown1   ->SetBinError(29, h_isrdown1->GetBinError(29)/(int_h_isrdown1*h_isrdown1->GetBinContent(29)))
-h_isrdown1   ->SetBinError(30, h_isrdown1->GetBinError(30)/(int_h_isrdown1*h_isrdown1->GetBinContent(30)))
+h_isrdown   ->SetBinError(1,  h_isrdown->GetBinError(1) /(int_isrdown*h_isrdown->GetBinContent(1) ))
+h_isrdown   ->SetBinError(2,  h_isrdown->GetBinError(2) /(int_isrdown*h_isrdown->GetBinContent(2) ))
+h_isrdown   ->SetBinError(3,  h_isrdown->GetBinError(3) /(int_isrdown*h_isrdown->GetBinContent(3) ))
+h_isrdown   ->SetBinError(4,  h_isrdown->GetBinError(4) /(int_isrdown*h_isrdown->GetBinContent(4) ))
+h_isrdown   ->SetBinError(5,  h_isrdown->GetBinError(5) /(int_isrdown*h_isrdown->GetBinContent(5) ))
+h_isrdown   ->SetBinError(6,  h_isrdown->GetBinError(6) /(int_isrdown*h_isrdown->GetBinContent(6) ))
+h_isrdown   ->SetBinError(7,  h_isrdown->GetBinError(7) /(int_isrdown*h_isrdown->GetBinContent(7) ))
+h_isrdown   ->SetBinError(8,  h_isrdown->GetBinError(8) /(int_isrdown*h_isrdown->GetBinContent(8) ))
+h_isrdown   ->SetBinError(9,  h_isrdown->GetBinError(9) /(int_isrdown*h_isrdown->GetBinContent(9) ))
+h_isrdown   ->SetBinError(10, h_isrdown->GetBinError(10)/(int_isrdown*h_isrdown->GetBinContent(10)))
+h_isrdown   ->SetBinError(11, h_isrdown->GetBinError(11)/(int_isrdown*h_isrdown->GetBinContent(11)))
+h_isrdown   ->SetBinError(12, h_isrdown->GetBinError(12)/(int_isrdown*h_isrdown->GetBinContent(12)))
+h_isrdown   ->SetBinError(13, h_isrdown->GetBinError(13)/(int_isrdown*h_isrdown->GetBinContent(13)))
+h_isrdown   ->SetBinError(14, h_isrdown->GetBinError(14)/(int_isrdown*h_isrdown->GetBinContent(14)))
+h_isrdown   ->SetBinError(15, h_isrdown->GetBinError(15)/(int_isrdown*h_isrdown->GetBinContent(15)))
+h_isrdown   ->SetBinError(16, h_isrdown->GetBinError(16)/(int_isrdown*h_isrdown->GetBinContent(16)))
+h_isrdown   ->SetBinError(17, h_isrdown->GetBinError(17)/(int_isrdown*h_isrdown->GetBinContent(17)))
+h_isrdown   ->SetBinError(18, h_isrdown->GetBinError(18)/(int_isrdown*h_isrdown->GetBinContent(18)))
+h_isrdown   ->SetBinError(19, h_isrdown->GetBinError(19)/(int_isrdown*h_isrdown->GetBinContent(19)))
+h_isrdown   ->SetBinError(20, h_isrdown->GetBinError(20)/(int_isrdown*h_isrdown->GetBinContent(20)))
+h_isrdown   ->SetBinError(21, h_isrdown->GetBinError(21)/(int_isrdown*h_isrdown->GetBinContent(21)))
+h_isrdown   ->SetBinError(22, h_isrdown->GetBinError(22)/(int_isrdown*h_isrdown->GetBinContent(22)))
+h_isrdown   ->SetBinError(23, h_isrdown->GetBinError(23)/(int_isrdown*h_isrdown->GetBinContent(23)))
+h_isrdown   ->SetBinError(24, h_isrdown->GetBinError(24)/(int_isrdown*h_isrdown->GetBinContent(24)))
+h_isrdown   ->SetBinError(25, h_isrdown->GetBinError(25)/(int_isrdown*h_isrdown->GetBinContent(25)))
+h_isrdown   ->SetBinError(26, h_isrdown->GetBinError(26)/(int_isrdown*h_isrdown->GetBinContent(26)))
+h_isrdown   ->SetBinError(27, h_isrdown->GetBinError(27)/(int_isrdown*h_isrdown->GetBinContent(27)))
+h_isrdown   ->SetBinError(28, h_isrdown->GetBinError(28)/(int_isrdown*h_isrdown->GetBinContent(28)))
+h_isrdown   ->SetBinError(29, h_isrdown->GetBinError(29)/(int_isrdown*h_isrdown->GetBinContent(29)))
+h_isrdown   ->SetBinError(30, h_isrdown->GetBinError(30)/(int_isrdown*h_isrdown->GetBinContent(30)))
 
-h_nom   ->SetBinError(1,  h_nom->GetBinError(1) /(int_h_nom*h_nom->GetBinContent(1) ))
-h_nom   ->SetBinError(2,  h_nom->GetBinError(2) /(int_h_nom*h_nom->GetBinContent(2) ))
-h_nom   ->SetBinError(3,  h_nom->GetBinError(3) /(int_h_nom*h_nom->GetBinContent(3) ))
-h_nom   ->SetBinError(4,  h_nom->GetBinError(4) /(int_h_nom*h_nom->GetBinContent(4) ))
-h_nom   ->SetBinError(5,  h_nom->GetBinError(5) /(int_h_nom*h_nom->GetBinContent(5) ))
-h_nom   ->SetBinError(6,  h_nom->GetBinError(6) /(int_h_nom*h_nom->GetBinContent(6) ))
-h_nom   ->SetBinError(7,  h_nom->GetBinError(7) /(int_h_nom*h_nom->GetBinContent(7) ))
-h_nom   ->SetBinError(8,  h_nom->GetBinError(8) /(int_h_nom*h_nom->GetBinContent(8) ))
-h_nom   ->SetBinError(9,  h_nom->GetBinError(9) /(int_h_nom*h_nom->GetBinContent(9) ))
-h_nom   ->SetBinError(10, h_nom->GetBinError(10)/(int_h_nom*h_nom->GetBinContent(10)))
-h_nom   ->SetBinError(11, h_nom->GetBinError(11)/(int_h_nom*h_nom->GetBinContent(11)))
-h_nom   ->SetBinError(12, h_nom->GetBinError(12)/(int_h_nom*h_nom->GetBinContent(12)))
-h_nom   ->SetBinError(13, h_nom->GetBinError(13)/(int_h_nom*h_nom->GetBinContent(13)))
-h_nom   ->SetBinError(14, h_nom->GetBinError(14)/(int_h_nom*h_nom->GetBinContent(14)))
-h_nom   ->SetBinError(15, h_nom->GetBinError(15)/(int_h_nom*h_nom->GetBinContent(15)))
-h_nom   ->SetBinError(16, h_nom->GetBinError(16)/(int_h_nom*h_nom->GetBinContent(16)))
-h_nom   ->SetBinError(17, h_nom->GetBinError(17)/(int_h_nom*h_nom->GetBinContent(17)))
-h_nom   ->SetBinError(18, h_nom->GetBinError(18)/(int_h_nom*h_nom->GetBinContent(18)))
-h_nom   ->SetBinError(19, h_nom->GetBinError(19)/(int_h_nom*h_nom->GetBinContent(19)))
-h_nom   ->SetBinError(20, h_nom->GetBinError(20)/(int_h_nom*h_nom->GetBinContent(20)))
-h_nom   ->SetBinError(21, h_nom->GetBinError(21)/(int_h_nom*h_nom->GetBinContent(21)))
-h_nom   ->SetBinError(22, h_nom->GetBinError(22)/(int_h_nom*h_nom->GetBinContent(22)))
-h_nom   ->SetBinError(23, h_nom->GetBinError(23)/(int_h_nom*h_nom->GetBinContent(23)))
-h_nom   ->SetBinError(24, h_nom->GetBinError(24)/(int_h_nom*h_nom->GetBinContent(24)))
-h_nom   ->SetBinError(25, h_nom->GetBinError(25)/(int_h_nom*h_nom->GetBinContent(25)))
-h_nom   ->SetBinError(26, h_nom->GetBinError(26)/(int_h_nom*h_nom->GetBinContent(26)))
-h_nom   ->SetBinError(27, h_nom->GetBinError(27)/(int_h_nom*h_nom->GetBinContent(27)))
-h_nom   ->SetBinError(28, h_nom->GetBinError(28)/(int_h_nom*h_nom->GetBinContent(28)))
-h_nom   ->SetBinError(29, h_nom->GetBinError(29)/(int_h_nom*h_nom->GetBinContent(29)))
-h_nom   ->SetBinError(30, h_nom->GetBinError(30)/(int_h_nom*h_nom->GetBinContent(30)))
+h_nom   ->SetBinError(1,  h_nom->GetBinError(1) /(int_nom*h_nom->GetBinContent(1) ))
+h_nom   ->SetBinError(2,  h_nom->GetBinError(2) /(int_nom*h_nom->GetBinContent(2) ))
+h_nom   ->SetBinError(3,  h_nom->GetBinError(3) /(int_nom*h_nom->GetBinContent(3) ))
+h_nom   ->SetBinError(4,  h_nom->GetBinError(4) /(int_nom*h_nom->GetBinContent(4) ))
+h_nom   ->SetBinError(5,  h_nom->GetBinError(5) /(int_nom*h_nom->GetBinContent(5) ))
+h_nom   ->SetBinError(6,  h_nom->GetBinError(6) /(int_nom*h_nom->GetBinContent(6) ))
+h_nom   ->SetBinError(7,  h_nom->GetBinError(7) /(int_nom*h_nom->GetBinContent(7) ))
+h_nom   ->SetBinError(8,  h_nom->GetBinError(8) /(int_nom*h_nom->GetBinContent(8) ))
+h_nom   ->SetBinError(9,  h_nom->GetBinError(9) /(int_nom*h_nom->GetBinContent(9) ))
+h_nom   ->SetBinError(10, h_nom->GetBinError(10)/(int_nom*h_nom->GetBinContent(10)))
+h_nom   ->SetBinError(11, h_nom->GetBinError(11)/(int_nom*h_nom->GetBinContent(11)))
+h_nom   ->SetBinError(12, h_nom->GetBinError(12)/(int_nom*h_nom->GetBinContent(12)))
+h_nom   ->SetBinError(13, h_nom->GetBinError(13)/(int_nom*h_nom->GetBinContent(13)))
+h_nom   ->SetBinError(14, h_nom->GetBinError(14)/(int_nom*h_nom->GetBinContent(14)))
+h_nom   ->SetBinError(15, h_nom->GetBinError(15)/(int_nom*h_nom->GetBinContent(15)))
+h_nom   ->SetBinError(16, h_nom->GetBinError(16)/(int_nom*h_nom->GetBinContent(16)))
+h_nom   ->SetBinError(17, h_nom->GetBinError(17)/(int_nom*h_nom->GetBinContent(17)))
+h_nom   ->SetBinError(18, h_nom->GetBinError(18)/(int_nom*h_nom->GetBinContent(18)))
+h_nom   ->SetBinError(19, h_nom->GetBinError(19)/(int_nom*h_nom->GetBinContent(19)))
+h_nom   ->SetBinError(20, h_nom->GetBinError(20)/(int_nom*h_nom->GetBinContent(20)))
+h_nom   ->SetBinError(21, h_nom->GetBinError(21)/(int_nom*h_nom->GetBinContent(21)))
+h_nom   ->SetBinError(22, h_nom->GetBinError(22)/(int_nom*h_nom->GetBinContent(22)))
+h_nom   ->SetBinError(23, h_nom->GetBinError(23)/(int_nom*h_nom->GetBinContent(23)))
+h_nom   ->SetBinError(24, h_nom->GetBinError(24)/(int_nom*h_nom->GetBinContent(24)))
+h_nom   ->SetBinError(25, h_nom->GetBinError(25)/(int_nom*h_nom->GetBinContent(25)))
+h_nom   ->SetBinError(26, h_nom->GetBinError(26)/(int_nom*h_nom->GetBinContent(26)))
+h_nom   ->SetBinError(27, h_nom->GetBinError(27)/(int_nom*h_nom->GetBinContent(27)))
+h_nom   ->SetBinError(28, h_nom->GetBinError(28)/(int_nom*h_nom->GetBinContent(28)))
+h_nom   ->SetBinError(29, h_nom->GetBinError(29)/(int_nom*h_nom->GetBinContent(29)))
+h_nom   ->SetBinError(30, h_nom->GetBinError(30)/(int_nom*h_nom->GetBinContent(30)))
 
 h_isrup1   ->Draw()
 h_isrdown1 ->Draw("same")
@@ -193,10 +193,17 @@ h_nom ->Draw("same")
 
 
 need full sumup on gstore of v34 which stores full signal sample
+--histo-range 100,0,300
 
-python sumup_ttree_draw.py "lep_p4[0].pt()" --histo-range 100,0,300 --histo-name accept_el_isr_issue_nom_lep_pt     --output accept_el_isr_issue_nom.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
-python sumup_ttree_draw.py "lep_p4[0].pt()" --histo-range 100,0,300 --histo-name accept_el_isr_issue_isrup_lep_pt   --output accept_el_isr_issue_isrup.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
-python sumup_ttree_draw.py "lep_p4[0].pt()" --histo-range 100,0,300 --histo-name accept_el_isr_issue_isrdown_lep_pt --output accept_el_isr_issue_isrdown.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 20,24,28,32,40,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_nom_lep_pt     --output accept_incl_isr_issue_nom_lep_pt.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 20,24,28,32,40,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_isrup_lep_pt   --output accept_incl_isr_issue_isrup_lep_pt.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 20,24,28,32,40,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_isrdown_lep_pt --output accept_incl_isr_issue_isrdown_lep_pt.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+--- this one has the best hint of the ISR effect on lepton pT.
+
+hadd accept_isr_issue_reco_lep_pt.root accept_incl_isr_issue_nom_lep_pt.root accept_incl_isr_issue_isrup_lep_pt.root accept_incl_isr_issue_isrdown_lep_pt.root
+
+
 
 python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_nom_lep_pt     --output accept_incl_isr_issue_nom.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
 python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_isrup_lep_pt   --output accept_incl_isr_issue_isrup.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
@@ -212,6 +219,166 @@ python sumup_ttree_draw.py "lep_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) ==
 
 
 hadd accept_isr_issue.root accept_el_isr_issue_nom.root accept_el_isr_issue_isrup.root accept_el_isr_issue_isrdown.root accept_mu_isr_issue_nom.root accept_mu_isr_issue_isrup.root accept_mu_isr_issue_isrdown.root
+
+gen leps
+
+python sumup_ttree_draw.py "gen2_leptons_p4[0].pt()" --custom-range 0,10,20,30,40,50,60,70,90,110,140,200,300,500 --histo-name accept_gen_incl_isr_issue_nom_lep_pt     --output accept_gen_incl_isr_issue_nom.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "gen2_leptons_p4[0].pt()" --custom-range 0,10,20,30,40,50,60,70,90,110,140,200,300,500 --histo-name accept_gen_incl_isr_issue_isrup_lep_pt   --output accept_gen_incl_isr_issue_isrup.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "gen2_leptons_p4[0].pt()" --custom-range 0,10,20,30,40,50,60,70,90,110,140,200,300,500 --histo-name accept_gen_incl_isr_issue_isrdown_lep_pt --output accept_gen_incl_isr_issue_isrdown.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+python sumup_ttree_draw.py "gen2_leptons_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11" --custom-range 0,10,20,30,40,50,60,70,90,110,140,200,300,500 --histo-name accept_gen_el_isr_issue_nom_lep_pt     --output accept_gen_el_isr_issue_nom.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "gen2_leptons_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11" --custom-range 0,10,20,30,40,50,60,70,90,110,140,200,300,500 --histo-name accept_gen_el_isr_issue_isrup_lep_pt   --output accept_gen_el_isr_issue_isrup.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "gen2_leptons_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11" --custom-range 0,10,20,30,40,50,60,70,90,110,140,200,300,500 --histo-name accept_gen_el_isr_issue_isrdown_lep_pt --output accept_gen_el_isr_issue_isrdown.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+python sumup_ttree_draw.py "gen2_leptons_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13" --custom-range 0,10,20,30,40,50,60,70,90,110,140,200,300,500 --histo-name accept_gen_mu_isr_issue_nom_lep_pt     --output accept_gen_mu_isr_issue_nom.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "gen2_leptons_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13" --custom-range 0,10,20,30,40,50,60,70,90,110,140,200,300,500 --histo-name accept_gen_mu_isr_issue_isrup_lep_pt   --output accept_gen_mu_isr_issue_isrup.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "gen2_leptons_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13" --custom-range 0,10,20,30,40,50,60,70,90,110,140,200,300,500 --histo-name accept_gen_mu_isr_issue_isrdown_lep_pt --output accept_gen_mu_isr_issue_isrdown.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+
+hadd accept_gen_isr_issue.root accept_gen_el_isr_issue_nom.root accept_gen_el_isr_issue_isrup.root accept_gen_el_isr_issue_isrdown.root accept_gen_mu_isr_issue_nom.root accept_gen_mu_isr_issue_isrup.root accept_gen_mu_isr_issue_isrdown.root accept_gen_incl_isr_issue_nom.root accept_gen_incl_isr_issue_isrup.root accept_gen_incl_isr_issue_isrdown.root
+
+plots
+
+h_incl_nom = (TH1D*) accept_gen_incl_isr_issue_nom_lep_pt->Get("accept_gen_incl_isr_issue_nom_lep_pt_accept_gen_incl_isr_issue_nom_lep_pt")
+h_incl_isrup = (TH1D*) accept_gen_incl_isr_issue_isrup_lep_pt->Get("accept_gen_incl_isr_issue_isrup_lep_pt_accept_gen_incl_isr_issue_isrup_lep_pt")
+h_incl_isrdown = (TH1D*) accept_gen_incl_isr_issue_isrdown_lep_pt->Get("accept_gen_incl_isr_issue_isrdown_lep_pt_accept_gen_incl_isr_issue_isrdown_lep_pt")
+
+h_el_nom = (TH1D*) accept_gen_el_isr_issue_nom_lep_pt->Get("accept_gen_el_isr_issue_nom_lep_pt_accept_gen_el_isr_issue_nom_lep_pt")
+h_el_isrup = (TH1D*) accept_gen_el_isr_issue_isrup_lep_pt->Get("accept_gen_el_isr_issue_isrup_lep_pt_accept_gen_el_isr_issue_isrup_lep_pt")
+h_el_isrdown = (TH1D*) accept_gen_el_isr_issue_isrdown_lep_pt->Get("accept_gen_el_isr_issue_isrdown_lep_pt_accept_gen_el_isr_issue_isrdown_lep_pt")
+
+h_mu_nom = (TH1D*) accept_gen_mu_isr_issue_nom_lep_pt->Get("accept_gen_mu_isr_issue_nom_lep_pt_accept_gen_mu_isr_issue_nom_lep_pt")
+h_mu_isrup = (TH1D*) accept_gen_mu_isr_issue_isrup_lep_pt->Get("accept_gen_mu_isr_issue_isrup_lep_pt_accept_gen_mu_isr_issue_isrup_lep_pt")
+h_mu_isrdown = (TH1D*) accept_gen_mu_isr_issue_isrdown_lep_pt->Get("accept_gen_mu_isr_issue_isrdown_lep_pt_accept_gen_mu_isr_issue_isrdown_lep_pt")
+
+h_el_nom    ->Scale(1./h_el_nom->Integral())
+h_el_isrup  ->Scale(1./h_el_isrup->Integral())
+h_el_isrdown->Scale(1./h_el_isrdown->Integral())
+
+h_mu_nom    ->Scale(1./h_mu_nom->Integral())
+h_mu_isrup  ->Scale(1./h_mu_isrup->Integral())
+h_mu_isrdown->Scale(1./h_mu_isrdown->Integral())
+
+h_el_nom->Divide(h_mu_nom)
+h_el_isrup->Divide(h_mu_isrup)
+h_el_isrdown->Divide(h_mu_isrdown)
+
+h_el_nom->Draw()
+h_el_isrup->Draw()
+h_el_isrdown->Draw()
+
+-- seems like no significant difference between the generated electron and muon pT
+
+h_el_nom = (TH1D*) accept_el_isr_issue_nom_lep_pt->Get("accept_el_isr_issue_nom_lep_pt_accept_el_isr_issue_nom_lep_pt")
+h_el_isrup = (TH1D*) accept_el_isr_issue_isrup_lep_pt->Get("accept_el_isr_issue_isrup_lep_pt_accept_el_isr_issue_isrup_lep_pt")
+h_el_isrdown = (TH1D*) accept_el_isr_issue_isrdown_lep_pt->Get("accept_el_isr_issue_isrdown_lep_pt_accept_el_isr_issue_isrdown_lep_pt")
+
+h_mu_nom = (TH1D*) accept_mu_isr_issue_nom_lep_pt->Get("accept_mu_isr_issue_nom_lep_pt_accept_mu_isr_issue_nom_lep_pt")
+h_mu_isrup = (TH1D*) accept_mu_isr_issue_isrup_lep_pt->Get("accept_mu_isr_issue_isrup_lep_pt_accept_mu_isr_issue_isrup_lep_pt")
+h_mu_isrdown = (TH1D*) accept_mu_isr_issue_isrdown_lep_pt->Get("accept_mu_isr_issue_isrdown_lep_pt_accept_mu_isr_issue_isrdown_lep_pt")
+
+-- and noticeable difference in the reconstructed pT-s.
+Due to the turn on curves of the triggers.
+
+So, probably ISR Down touches some other parameter, which correlates with the reconstructed electron pT.
+Then the question is:
+if ISR Down moves another parameter, which is not related to the electron,
+then why the effect of it is different between electron and muon channels?
+Is it a correlation with the lepton in the event?
+In principle, ISR should generate more jets, therefore the jet cut should be involved.
+But how is it connected with the electron? The ISR jets confuse the electron reconstruction?
+Aren't they cross-cleaned in dR?
+
+Check gen eta to be sure.
+
+python sumup_ttree_draw.py "gen2_leptons_p4[0].eta()" --histo-range 50,-2.5,2.5 --histo-name accept_gen_incl_isr_issue_nom_lep_eta     --output accept_gen_incl_isr_issue_nom_lep_eta.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "gen2_leptons_p4[0].eta()" --histo-range 50,-2.5,2.5 --histo-name accept_gen_incl_isr_issue_isrup_lep_eta   --output accept_gen_incl_isr_issue_isrup_lep_eta.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "gen2_leptons_p4[0].eta()" --histo-range 50,-2.5,2.5 --histo-name accept_gen_incl_isr_issue_isrdown_lep_eta --output accept_gen_incl_isr_issue_isrdown_lep_eta.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+python sumup_ttree_draw.py "gen2_leptons_p4[0].eta()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11" --histo-range 50,-2.5,2.5 --histo-name accept_gen_el_isr_issue_nom_lep_eta     --output accept_gen_el_isr_issue_nom_lep_eta.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "gen2_leptons_p4[0].eta()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11" --histo-range 50,-2.5,2.5 --histo-name accept_gen_el_isr_issue_isrup_lep_eta   --output accept_gen_el_isr_issue_isrup_lep_eta.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "gen2_leptons_p4[0].eta()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11" --histo-range 50,-2.5,2.5 --histo-name accept_gen_el_isr_issue_isrdown_lep_eta --output accept_gen_el_isr_issue_isrdown_lep_eta.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+python sumup_ttree_draw.py "gen2_leptons_p4[0].eta()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13" --histo-range 50,-2.5,2.5 --histo-name accept_gen_mu_isr_issue_nom_lep_eta     --output accept_gen_mu_isr_issue_nom_lep_eta.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "gen2_leptons_p4[0].eta()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13" --histo-range 50,-2.5,2.5 --histo-name accept_gen_mu_isr_issue_isrup_lep_eta   --output accept_gen_mu_isr_issue_isrup_lep_eta.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "gen2_leptons_p4[0].eta()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13" --histo-range 50,-2.5,2.5 --histo-name accept_gen_mu_isr_issue_isrdown_lep_eta --output accept_gen_mu_isr_issue_isrdown_lep_eta.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+hadd accept_gen_lep_eta_isr_issue.root accept_gen_el_isr_issue_nom_lep_eta.root accept_gen_el_isr_issue_isrup_lep_eta.root accept_gen_el_isr_issue_isrdown_lep_eta.root accept_gen_mu_isr_issue_nom_lep_eta.root accept_gen_mu_isr_issue_isrup_lep_eta.root accept_gen_mu_isr_issue_isrdown_lep_eta.root accept_gen_incl_isr_issue_nom_lep_eta.root accept_gen_incl_isr_issue_isrup_lep_eta.root accept_gen_incl_isr_issue_isrdown_lep_eta.root 
+
+h_incl_nom = (TH1D*) accept_gen_incl_isr_issue_nom_lep_eta->Get("accept_gen_incl_isr_issue_nom_lep_eta_accept_gen_incl_isr_issue_nom_lep_eta")
+h_incl_isrup = (TH1D*) accept_gen_incl_isr_issue_isrup_lep_eta->Get("accept_gen_incl_isr_issue_isrup_lep_eta_accept_gen_incl_isr_issue_isrup_lep_eta")
+h_incl_isrdown = (TH1D*) accept_gen_incl_isr_issue_isrdown_lep_eta->Get("accept_gen_incl_isr_issue_isrdown_lep_eta_accept_gen_incl_isr_issue_isrdown_lep_eta")
+
+h_el_nom = (TH1D*) accept_gen_el_isr_issue_nom_lep_eta->Get("accept_gen_el_isr_issue_nom_lep_eta_accept_gen_el_isr_issue_nom_lep_eta")
+h_el_isrup = (TH1D*) accept_gen_el_isr_issue_isrup_lep_eta->Get("accept_gen_el_isr_issue_isrup_lep_eta_accept_gen_el_isr_issue_isrup_lep_eta")
+h_el_isrdown = (TH1D*) accept_gen_el_isr_issue_isrdown_lep_eta->Get("accept_gen_el_isr_issue_isrdown_lep_eta_accept_gen_el_isr_issue_isrdown_lep_eta")
+
+h_mu_nom = (TH1D*) accept_gen_mu_isr_issue_nom_lep_eta->Get("accept_gen_mu_isr_issue_nom_lep_eta_accept_gen_mu_isr_issue_nom_lep_eta")
+h_mu_isrup = (TH1D*) accept_gen_mu_isr_issue_isrup_lep_eta->Get("accept_gen_mu_isr_issue_isrup_lep_eta_accept_gen_mu_isr_issue_isrup_lep_eta")
+h_mu_isrdown = (TH1D*) accept_gen_mu_isr_issue_isrdown_lep_eta->Get("accept_gen_mu_isr_issue_isrdown_lep_eta_accept_gen_mu_isr_issue_isrdown_lep_eta")
+
+--- no difference, flat distrs.
+
+
+The number of generated vectors.
+
+python sumup_ttree_draw.py "@gen2_jets_p4.size()" --histo-range 12,0,12 --histo-name accept_gen_incl_isr_issue_nom_njets     --output accept_gen_incl_isr_issue_nom_njets.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "@gen2_jets_p4.size()" --histo-range 12,0,12 --histo-name accept_gen_incl_isr_issue_isrup_njets   --output accept_gen_incl_isr_issue_isrup_njets.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "@gen2_jets_p4.size()" --histo-range 12,0,12 --histo-name accept_gen_incl_isr_issue_isrdown_njets --output accept_gen_incl_isr_issue_isrdown_njets.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+python sumup_ttree_draw.py "@gen2_jets_p4[0].size()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11" --histo-range 12,0,12 --histo-name accept_gen_el_isr_issue_nom_njets     --output accept_gen_el_isr_issue_nom_njets.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "@gen2_jets_p4[0].size()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11" --histo-range 12,0,12 --histo-name accept_gen_el_isr_issue_isrup_njets   --output accept_gen_el_isr_issue_isrup_njets.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "@gen2_jets_p4[0].size()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11" --histo-range 12,0,12 --histo-name accept_gen_el_isr_issue_isrdown_njets --output accept_gen_el_isr_issue_isrdown_njets.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+python sumup_ttree_draw.py "@gen2_jets_p4[0].size()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13" --histo-range 12,0,12 --histo-name accept_gen_mu_isr_issue_nom_njets     --output accept_gen_mu_isr_issue_nom_njets.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "@gen2_jets_p4[0].size()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13" --histo-range 12,0,12 --histo-name accept_gen_mu_isr_issue_isrup_njets   --output accept_gen_mu_isr_issue_isrup_njets.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "@gen2_jets_p4[0].size()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13" --histo-range 12,0,12 --histo-name accept_gen_mu_isr_issue_isrdown_njets --output accept_gen_mu_isr_issue_isrdown_njets.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+hadd accept_isr_issue_gen_njets.root accept_gen_mu_isr_issue_isrdown_njets.root accept_gen_mu_isr_issue_isrup_njets.root accept_gen_mu_isr_issue_nom_njets.root accept_gen_el_isr_issue_isrdown_njets.root accept_gen_el_isr_issue_isrup_njets.root accept_gen_el_isr_issue_nom_njets.root accept_gen_incl_isr_issue_isrdown_njets.root accept_gen_incl_isr_issue_isrup_njets.root accept_gen_incl_isr_issue_nom_njets.root
+
+h_el_nom = (TH1D*) accept_gen_el_isr_issue_nom_njets->Get("accept_gen_el_isr_issue_nom_njets_accept_gen_el_isr_issue_nom_njets")
+h_el_isrup = (TH1D*) accept_gen_el_isr_issue_isrup_njets->Get("accept_gen_el_isr_issue_isrup_njets_accept_gen_el_isr_issue_isrup_njets")
+h_el_isrdown = (TH1D*) accept_gen_el_isr_issue_isrdown_njets->Get("accept_gen_el_isr_issue_isrdown_njets_accept_gen_el_isr_issue_isrdown_njets")
+
+h_mu_nom = (TH1D*) accept_gen_mu_isr_issue_nom_njets->Get("accept_gen_mu_isr_issue_nom_njets_accept_gen_mu_isr_issue_nom_njets")
+h_mu_isrup = (TH1D*) accept_gen_mu_isr_issue_isrup_njets->Get("accept_gen_mu_isr_issue_isrup_njets_accept_gen_mu_isr_issue_isrup_njets")
+h_mu_isrdown = (TH1D*) accept_gen_mu_isr_issue_isrdown_njets->Get("accept_gen_mu_isr_issue_isrdown_njets_accept_gen_mu_isr_issue_isrdown_njets")
+
+h_el_isrup->Divide(h_el_nom)
+h_el_isrdown->Divide(h_el_nom)
+
+h_mu_isrup->Divide(h_mu_nom)
+h_mu_isrdown->Divide(h_mu_nom)
+
+h_el_nom->Divide(h_el_nom)
+h_mu_nom->Divide(h_mu_nom)
+
+h_el_isrup->Draw()
+h_el_isrdown->Draw("same")
+h_el_nom->Draw("same")
+
+h_mu_isrup->Draw()
+h_mu_isrdown->Draw("same")
+h_mu_nom->Draw("same")
+
+-- significant effect, isrdown does not have more than 6 jets
+
+How might this correlate with the reconstructed electron?
+The cross-cleaning indeed was not performed.
+
+
+
+PLOTS
+
+
+h_nom     = (TH1D*) h_incl_nom
+h_isrup   = (TH1D*) h_incl_isrup
+h_isrdown = (TH1D*) h_incl_isrdown
+
+
+h_nom = (TH1D*) accept_incl_isr_issue_nom_lep_pt->Get("accept_incl_isr_issue_nom_lep_pt_accept_incl_isr_issue_nom_lep_pt")
+h_isrup = (TH1D*) accept_incl_isr_issue_isrup_lep_pt->Get("accept_incl_isr_issue_isrup_lep_pt_accept_incl_isr_issue_isrup_lep_pt")
+h_isrdown = (TH1D*) accept_incl_isr_issue_isrdown_lep_pt->Get("accept_incl_isr_issue_isrdown_lep_pt_accept_incl_isr_issue_isrdown_lep_pt")
 
 h_nom = (TH1D*) accept_el_isr_issue_nom_lep_pt->Get("accept_el_isr_issue_nom_lep_pt_accept_el_isr_issue_nom_lep_pt")
 h_isrup = (TH1D*) accept_el_isr_issue_isrup_lep_pt->Get("accept_el_isr_issue_isrup_lep_pt_accept_el_isr_issue_isrup_lep_pt")
@@ -246,9 +413,65 @@ h_isrdown->Draw()
 l = TLine(20, 1, 300, 1)
 l.Draw("same")
 
-c1->SaveAs("acceptances_issue_el_ISR_down_large_variation_ratio_of_lep_pt_of_ISRDown_to_ISRUp_in_all_signal_events.png")
+l = TLine(10, 1, 450, 1)
+l.Draw("same")
 
+c1->SaveAs("acceptances_issue_incl_ISR_down_large_variation_ratio_of_lep_pt_of_ISRDown_to_ISRUp_in_all_signal_events.png")
+c1->SaveAs("acceptances_issue_el_ISR_down_large_variation_ratio_of_lep_pt_of_ISRDown_to_ISRUp_in_all_signal_events.png")
 c1->SaveAs("acceptances_issue_mu_ISR_down_large_variation_ratio_of_lep_pt_of_ISRDown_to_ISRUp_in_all_signal_events.png")
+
+-- the ratio of reconstructed lep_pt does show slight trend, as if ISRDown shifts the pT to smaller values.
+This shift might have larger effect on electrons due to higher pT threshold there.
+But the distributions of reconstructed lep_pt-s are not similar enough to draw such conclusion.
+It seems they differ due to different turn-on curves...
+The gen lep pT do not have that trend in the ratio ISRDown/ISRUp.
+
+l = TLine(30, 0, 30, 0.14)
+l.Draw("same")
+
+l = TLine(26, 0, 26, 0.14)
+l.Draw("same")
+
+c1->SaveAs("acceptances_issue_el_ISR_down_large_variation_lep_pt_distr_w_cut_threshold.png")
+c1->SaveAs("acceptances_issue_mu_ISR_down_large_variation_lep_pt_distr_w_cut_threshold.png")
+
+
+how to normalize these bins by width?
+
+aptr = (TH1D*) h_nom
+aptr = (TH1D*) h_isrup
+aptr = (TH1D*) h_isrdown
+
+aptr   ->SetBinContent(1,  aptr->GetBinContent(1) / aptr->GetBinWidth(1) )
+aptr   ->SetBinContent(2,  aptr->GetBinContent(2) / aptr->GetBinWidth(2) )
+aptr   ->SetBinContent(3,  aptr->GetBinContent(3) / aptr->GetBinWidth(3) )
+aptr   ->SetBinContent(4,  aptr->GetBinContent(4) / aptr->GetBinWidth(4) )
+aptr   ->SetBinContent(5,  aptr->GetBinContent(5) / aptr->GetBinWidth(5) )
+aptr   ->SetBinContent(6,  aptr->GetBinContent(6) / aptr->GetBinWidth(6) )
+aptr   ->SetBinContent(7,  aptr->GetBinContent(7) / aptr->GetBinWidth(7) )
+aptr   ->SetBinContent(8,  aptr->GetBinContent(8) / aptr->GetBinWidth(8) )
+aptr   ->SetBinContent(9,  aptr->GetBinContent(9) / aptr->GetBinWidth(9) )
+aptr   ->SetBinContent(10, aptr->GetBinContent(10)/ aptr->GetBinWidth(10))
+aptr   ->SetBinContent(11, aptr->GetBinContent(11)/ aptr->GetBinWidth(11))
+aptr   ->SetBinContent(12, aptr->GetBinContent(12)/ aptr->GetBinWidth(12))
+aptr   ->SetBinContent(13, aptr->GetBinContent(13)/ aptr->GetBinWidth(13))
+aptr   ->SetBinContent(14, aptr->GetBinContent(14)/ aptr->GetBinWidth(14))
+aptr   ->SetBinContent(15, aptr->GetBinContent(15)/ aptr->GetBinWidth(15))
+aptr   ->SetBinContent(16, aptr->GetBinContent(16)/ aptr->GetBinWidth(16))
+aptr   ->SetBinContent(17, aptr->GetBinContent(17)/ aptr->GetBinWidth(17))
+aptr   ->SetBinContent(18, aptr->GetBinContent(18)/ aptr->GetBinWidth(18))
+aptr   ->SetBinContent(19, aptr->GetBinContent(19)/ aptr->GetBinWidth(19))
+aptr   ->SetBinContent(20, aptr->GetBinContent(20)/ aptr->GetBinWidth(20))
+aptr   ->SetBinContent(21, aptr->GetBinContent(21)/ aptr->GetBinWidth(21))
+aptr   ->SetBinContent(22, aptr->GetBinContent(22)/ aptr->GetBinWidth(22))
+aptr   ->SetBinContent(23, aptr->GetBinContent(23)/ aptr->GetBinWidth(23))
+aptr   ->SetBinContent(24, aptr->GetBinContent(24)/ aptr->GetBinWidth(24))
+aptr   ->SetBinContent(25, aptr->GetBinContent(25)/ aptr->GetBinWidth(25))
+aptr   ->SetBinContent(26, aptr->GetBinContent(26)/ aptr->GetBinWidth(26))
+aptr   ->SetBinContent(27, aptr->GetBinContent(27)/ aptr->GetBinWidth(27))
+aptr   ->SetBinContent(28, aptr->GetBinContent(28)/ aptr->GetBinWidth(28))
+aptr   ->SetBinContent(29, aptr->GetBinContent(29)/ aptr->GetBinWidth(29))
+aptr   ->SetBinContent(30, aptr->GetBinContent(30)/ aptr->GetBinWidth(30))
 
 
 
