@@ -250,8 +250,8 @@ for iev, event in enumerate(ttree):
     if not args.no_tau_cut and len(event.gen_tt_tau_vis_p4) > 0: continue
 
     # lepton cuts
-    if       is_eltau and not (event.gen2_leptons_p4[0].pt() > 30 and abs(event.gen2_leptons_p4[0].eta()) < 2.4): continue
-    elif not is_eltau and not (event.gen2_leptons_p4[0].pt() > 26 and abs(event.gen2_leptons_p4[0].eta()) < 2.4 and (abs(event.gen2_leptons_p4[0].eta()) < 1.442 or abs(event.gen2_leptons_p4[0].eta()) > 1.566)): continue
+    if       is_eltau and not (event.gen2_leptons_p4[0].pt() > 30 and abs(event.gen2_leptons_p4[0].eta()) < 2.4 and (abs(event.gen2_leptons_p4[0].eta()) < 1.442 or abs(event.gen2_leptons_p4[0].eta()) > 1.566)): continue
+    elif not is_eltau and not (event.gen2_leptons_p4[0].pt() > 26 and abs(event.gen2_leptons_p4[0].eta()) < 2.4): continue
 
     # tau cuts
     if not args.no_tau_cut and not (event.gen_tt_tau_vis_p4[0].pt() > 30 and abs(event.gen_tt_tau_vis_p4[0].eta()) < 2.4): continue
