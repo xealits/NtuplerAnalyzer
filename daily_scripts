@@ -198,16 +198,28 @@ python sumup_ttree_draw.py "lep_p4[0].pt()" --histo-range 100,0,300 --histo-name
 python sumup_ttree_draw.py "lep_p4[0].pt()" --histo-range 100,0,300 --histo-name accept_el_isr_issue_isrup_lep_pt   --output accept_el_isr_issue_isrup.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
 python sumup_ttree_draw.py "lep_p4[0].pt()" --histo-range 100,0,300 --histo-name accept_el_isr_issue_isrdown_lep_pt --output accept_el_isr_issue_isrdown.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
 
-python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_el_isr_issue_nom_lep_pt     --output accept_el_isr_issue_nom.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
-python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_el_isr_issue_isrup_lep_pt   --output accept_el_isr_issue_isrup.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
-python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_el_isr_issue_isrdown_lep_pt --output accept_el_isr_issue_isrdown.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_nom_lep_pt     --output accept_incl_isr_issue_nom.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_isrup_lep_pt   --output accept_incl_isr_issue_isrup.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_isrdown_lep_pt --output accept_incl_isr_issue_isrdown.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+python sumup_ttree_draw.py "lep_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_el_isr_issue_nom_lep_pt     --output accept_el_isr_issue_nom.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "lep_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_el_isr_issue_isrup_lep_pt   --output accept_el_isr_issue_isrup.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "lep_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_el_isr_issue_isrdown_lep_pt --output accept_el_isr_issue_isrdown.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+python sumup_ttree_draw.py "lep_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_mu_isr_issue_nom_lep_pt     --output accept_mu_isr_issue_nom.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "lep_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_mu_isr_issue_isrup_lep_pt   --output accept_mu_isr_issue_isrup.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "lep_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13" --custom-range 10,20,25,28,31,35,40,45,50,60,70,90,110,140,200,300 --histo-name accept_mu_isr_issue_isrdown_lep_pt --output accept_mu_isr_issue_isrdown.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
 
 
-hadd accept_el_isr_issue.root accept_el_isr_issue_nom.root accept_el_isr_issue_isrup.root accept_el_isr_issue_isrdown.root
+hadd accept_isr_issue.root accept_el_isr_issue_nom.root accept_el_isr_issue_isrup.root accept_el_isr_issue_isrdown.root accept_mu_isr_issue_nom.root accept_mu_isr_issue_isrup.root accept_mu_isr_issue_isrdown.root
 
 h_nom = (TH1D*) accept_el_isr_issue_nom_lep_pt->Get("accept_el_isr_issue_nom_lep_pt_accept_el_isr_issue_nom_lep_pt")
 h_isrup = (TH1D*) accept_el_isr_issue_isrup_lep_pt->Get("accept_el_isr_issue_isrup_lep_pt_accept_el_isr_issue_isrup_lep_pt")
 h_isrdown = (TH1D*) accept_el_isr_issue_isrdown_lep_pt->Get("accept_el_isr_issue_isrdown_lep_pt_accept_el_isr_issue_isrdown_lep_pt")
+
+h_nom = (TH1D*) accept_mu_isr_issue_nom_lep_pt->Get("accept_mu_isr_issue_nom_lep_pt_accept_mu_isr_issue_nom_lep_pt")
+h_isrup = (TH1D*) accept_mu_isr_issue_isrup_lep_pt->Get("accept_mu_isr_issue_isrup_lep_pt_accept_mu_isr_issue_isrup_lep_pt")
+h_isrdown = (TH1D*) accept_mu_isr_issue_isrdown_lep_pt->Get("accept_mu_isr_issue_isrdown_lep_pt_accept_mu_isr_issue_isrdown_lep_pt")
 
 h_isrup->SetLineColor(kGreen)
 h_isrdown->SetLineColor(kRed)
@@ -235,6 +247,8 @@ l = TLine(20, 1, 300, 1)
 l.Draw("same")
 
 c1->SaveAs("acceptances_issue_el_ISR_down_large_variation_ratio_of_lep_pt_of_ISRDown_to_ISRUp_in_all_signal_events.png")
+
+c1->SaveAs("acceptances_issue_mu_ISR_down_large_variation_ratio_of_lep_pt_of_ISRDown_to_ISRUp_in_all_signal_events.png")
 
 
 
