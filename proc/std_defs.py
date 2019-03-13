@@ -810,7 +810,7 @@ distrs_mt       = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f'}
 distrs_leptonic = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta', 'met_c'}
 distrs_lep      = {'Mt_lep_met_c', 'lep_pt', 'lep_eta', 'met_c'}
 distrs_dy       = {'met_c',          'Mt_lep_met_c', 'Mt_lep_met_f', 'dilep_mass', 'dilep_mass_dy', 'lep_pt', 'lep_eta'}
-distrs_wjets    = {'met_c', 'met_f', 'met_init_f', 'Mt_lep_met_c', 'Mt_lep_met_f', 'Mt_lep_met_init_f', 'dilep_mass',                  'lep_pt', 'lep_eta'}
+distrs_wjets    = {'met_c', 'met_f', 'met_init_f', 'Mt_lep_met_c', 'Mt_lep_met_f', 'Mt_lep_met_init_f', 'dilep_mass',                  'lep_pt', 'lep_eta', 'phi_met_lep', 'cos_phi_met_lep'}
 
 distrs_on_jets = {'nbjets', 'nrjets', 'bjet_pt', 'bjet_eta'}
 

@@ -235,7 +235,7 @@ the loop is done over processes and systematics
 for systematics there is an if for selection (objects) or weights
 '''
 
-from stf_defs import *
+from std_defs import *
 
 if args.std_histos:
     if   channels == 'all':

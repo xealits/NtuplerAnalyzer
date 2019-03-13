@@ -8,6 +8,8 @@ from sys import exit
 from collections import OrderedDict
 from math import sqrt
 
+import pdb
+
 
 
 parser = argparse.ArgumentParser(
@@ -139,9 +141,12 @@ for file_i, input_filename in enumerate(args.input_files):
     sum_cut_histos.Divide(sum_all_histos)
 
     # divide for acceptance and save all processes
-    for name, file_numbers in results.items():
-        histo_all = tfile.Get("all_ev_" + name)
-        histo_cut = tfile.Get("cut_ev_" + name)
+    # results = {channel: acceptance numbers}
+    # acceptance numbers file_numbers = {file_nickname: {sys_name: accept number}}
+    # sys_name 'nom' is used for nominal
+    for chan_name, file_numbers in results.items():
+        histo_all = tfile.Get("all_ev_" + chan_name)
+        histo_cut = tfile.Get("cut_ev_" + chan_name)
         histo_cut.Divide(histo_all)
 
         file_numbers[file_nickname] = OrderedDict()
@@ -164,6 +169,15 @@ for file_i, input_filename in enumerate(args.input_files):
 
 results['sum'] = sum_channel
 
+#pdb.set_trace()
+
+logging.debug(str(results))
+
+for chan_name, chan_file_numbs in results.items():
+    print chan_name
+    for fname, fnumbers in chan_file_numbs.items():
+        print fname, fnumbers['nom']
+
 # calculate relative deviations of systematics from nominals
 # the statistical uncertainty of deviations in each nominal file does not matter
 # it's relevant only for the difference different files (different events)
@@ -171,18 +185,20 @@ if args.devs:
     for channel, file_results in results.items():
         for file_nickname, numbers in file_results.items():
             nominal, _ = numbers['nom']
+            logging.debug('%s %f' % (file_nickname, nominal))
 
             # when merging systematic groups, construct new dict with results
             if 'merge' in args.devs:
                 update_numbers = OrderedDict()
                 update_numbers['nom'] = numbers['nom']
                 for sys_group_name, sys_group in systs_used_groups:
+                    logging.debug('%s %s' % (sys_group_name, str(sys_group)))
                     if any(sys_name in numbers for sys_name in sys_group):
                         if 'rel' in args.devs:
                             devs = [(sys_val-nominal)/nominal for sname, (sys_val, _) in numbers.items() if sname in sys_group]
                         else:
                             devs = [sys_val-nominal for sname, (sys_val, _) in numbers.items() if sname in sys_group]
-                        logging.debug(devs)
+                        logging.debug('%s %s' % (sys_group_name, str(devs)))
                         sqrt_sum_dev = sqrt(sum(dev**2 for dev in devs))
                         logging.debug(sqrt_sum_dev)
                         update_numbers[sys_group_name] = sqrt_sum_dev, 0
@@ -197,6 +213,8 @@ if args.devs:
                     else:
                         numbers[sys_name] = (sys_val-nominal, sys_err)
 
+logging.debug(str(file_results))
+
 if 'merge_files' in args.devs:
     for channel, file_results in results.items():
         # get the nominal file:
@@ -205,7 +223,7 @@ if 'merge_files' in args.devs:
         # for all other files get and merge the Up-Down nominal deviations
         merged_files = OrderedDict()
         for sys_name, sys_group_names in [('tune', ('tune_Up', 'tune_Down')), ('hdamp', ('hdamp_Up', 'hdamp_Down')), ('tune', ('tune_Up', 'tune_Down')), ('isr', ('isr_Up', 'isr_Down')), ('fsr', ('fsr_Up', 'fsr_Down'))]:
-            sys_group = [file_results[fn]['nom'] for fn in sys_group_names if fn in sys_group_names]
+            sys_group = [file_results[fn]['nom'] for fn in sys_group_names if fn in file_results]
             if 'rel' in args.devs:
                 sys_dev  = sqrt(sum(((nominal - sys_val) / nominal)**2 for sys_val, _ in sys_group))
                 sys_stat = sqrt(sum((sys_sta / nominal)**2 for _, sys_sta in sys_group))/len(sys_group)
@@ -222,6 +240,8 @@ if 'merge_files' in args.devs:
         # update with the merged devs
         file_results.update(merged_files)
 
+logging.debug(str(results))
+
 ## print stuff in rows
 if args.how_print == 'rows':
     # get the sysnames from any first channel saved in results
@@ -237,7 +257,7 @@ if args.how_print == 'rows':
 
 # print stuff in columns per process
 else:
-    # revert it for syst per row
+    # revert `results` it for syst per row
     per_sys = OrderedDict()
     for pn, numbers in results.items():
         for file_nickname in numbers:
