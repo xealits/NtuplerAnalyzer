@@ -29,7 +29,9 @@ parser.add_argument('--formula',  type=str, help="to plot h1 overlayed with 123*
 
 parser.add_argument('--set-file',  type=str, help=" histos come from this file, skip filename in the input_files definition, but : must be there")
 
-parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename[:chan,proc,sys[,distr]]`""")
+parser.add_argument('--no-std-path',  action='store_true', help="the histo is directly given by the path, it is not the standard `chan_proc_sys_distr`")
+#parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename[:chan,proc,sys[,distr]]`""")
+parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename[:chan/proc/sys[/distr]]` with any `p/a/th` to a TH histo""")
 
 args = parser.parse_args()
 
@@ -57,17 +59,18 @@ legend_names = {}
 
 for i, fileparameter in enumerate(args.input_files):
     pars = fileparameter.split(':')
-    assert len(pars) in (2, 3, 4)
+    assert len(pars) in (2, 3)
 
-    if len(pars) == 4:
-        legend, nick, filename, opts = pars
-        logging.debug('legend name for  %s  is  %s' % (nick, legend))
-        legend_names[nick] = legend
-    elif len(pars) == 3:
-        nick, filename, opts = pars
+    #if len(pars) == 4:
+    #    legend, nick, filename, opts = pars
+    #    logging.debug('legend name for  %s  is  %s' % (nick, legend))
+    #    legend_names[nick] = legend
+
+    if len(pars) == 3:
+        nick, filename, path_to_h = pars
     else:
         nick, filename = pars
-        opts = None
+        path_to_h = None
 
     if args.set_file:
         filename = args.set_file
@@ -77,24 +80,28 @@ for i, fileparameter in enumerate(args.input_files):
         continue
     logging.debug("%s" % filename)
 
-    channel = process = systematic = distr = ''
-    if opts and len(opts.split(',')) == 4:
-        channel, process, systematic, distr = opts.split(',')
-    elif opts and len(opts.split(',')) == 3:
-        channel, process, systematic = opts.split(',')
-    elif opts and len(opts.split(',')) == 2:
-        channel, process = opts.split(',')
+    if args.no_std_path and path_to_h:
+        histo_path = path_to_h
 
-    if not channel:
-        channel    = args.channel
-    if not process:
-        process    = args.process
-    if not systematic:
-        systematic = args.systematic
-    if not distr:
-        distr = args.distr
+    else:
+        channel = process = systematic = distr = ''
+        if opts and len(opts.split('/')) == 4:
+            channel, process, systematic, distr = opts.split('/')
+        elif opts and len(opts.split('/')) == 3:
+            channel, process, systematic = opts.split('/')
+        elif opts and len(opts.split('/')) == 2:
+            channel, process = opts.split('/')
 
-    histo_path = "{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=channel, proc=process, sys=systematic, distr=distr)
+        if not channel:
+            channel    = args.channel
+        if not process:
+            process    = args.process
+        if not systematic:
+            systematic = args.systematic
+        if not distr:
+            distr = args.distr
+
+        histo_path = "{chan}/{proc}/{sys}/{chan}_{proc}_{sys}_{distr}".format(chan=channel, proc=process, sys=systematic, distr=distr)
 
     tfile = TFile(filename)
     logging.debug("%s" % histo_path)

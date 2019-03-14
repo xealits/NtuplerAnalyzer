@@ -33,6 +33,17 @@ if args.debug:
 else:
     logging.basicConfig(level=logging.INFO)
 
+input_filename = args.input_file
+if not isfile(input_filename):
+    logging.info("missing: " + input_filename)
+    exit(1)
+
+job_filename = input_filename.split('/')[-1]
+output_path = args.output_dir + '/' + job_filename
+logging.debug(output_path)
+
+assert not isfile(output_path)
+
 logging.info("import ROOT")
 
 import ROOT
@@ -148,6 +159,16 @@ histos = {
 'taumutauh': (TH1D("gen_tbw_taumutauh", "", 400, -200, 200), TH1D("gen_tw_taumutauh", "", 400, -200, 200), TH1D("all_ev_taumutauh", "", 200, 0, 200), TH1D("cut_ev_taumutauh", "", 200, 0, 200)),
 'other':     (TH1D("gen_tbw_other",     "", 400, -200, 200), TH1D("gen_tw_other",     "", 400, -200, 200), TH1D("all_ev_other",     "", 200, 0, 200), TH1D("cut_ev_other",     "", 200, 0, 200))}
 
+# some control distrs
+control_histos = {
+'pre_gen_lep_pt': TH1D("pre_gen_lep_pt",    "", 90, 20, 200),
+'pre_gen_el_pt':  TH1D("pre_gen_el_pt",     "", 90, 20, 200),
+'pre_gen_mu_pt':  TH1D("pre_gen_mu_pt",     "", 90, 20, 200),
+'gen_lep_pt':     TH1D("gen_lep_pt",    "", 90, 20, 200),
+'gen_el_pt':      TH1D("gen_el_pt",     "", 90, 20, 200),
+'gen_mu_pt':      TH1D("gen_mu_pt",     "", 90, 20, 200),
+}
+
 #el_histos = (histo_all_ev_eltau, histo_cut_ev_eltau)
 #mu_histos = (histo_all_ev_mutau, histo_cut_ev_mutau)
 
@@ -156,20 +177,17 @@ def round_pdf_weight(pdf_w):
         pdf_w = 1.
     return pdf_w
 
-input_filename = args.input_file
-if not isfile(input_filename):
-    logging.info("missing: " + input_filename)
-    exit(1)
-
 logging.debug(input_filename)
 
 tfile = TFile(input_filename)
 ttree = tfile.Get('ntupler/reduced_ttree')
 
 for iev, event in enumerate(ttree):
-    is_eltau = abs(event.gen_t_w_decay_id) == 11 or abs(event.gen_tb_w_decay_id) == 11 or abs(event.gen_t_w_decay_id) == 15*11 or abs(event.gen_tb_w_decay_id) == 15*11
+    is_electron_process = abs(event.gen_t_w_decay_id) == 11 or abs(event.gen_tb_w_decay_id) == 11 or abs(event.gen_t_w_decay_id) == 15*11 or abs(event.gen_tb_w_decay_id) == 15*11
+    is_eltau, is_mutau = False, False
     if   (abs(event.gen_t_w_decay_id) == 11    and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 11    and abs(event.gen_t_w_decay_id) > 15*15):
         process = 'eltau'
+        is_eltau = True
     elif (abs(event.gen_t_w_decay_id) == 11*15 and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 11*15 and abs(event.gen_t_w_decay_id) > 15*15):
         process = 'taueltauh'
     elif (abs(event.gen_t_w_decay_id) == 11    and abs(event.gen_tb_w_decay_id) == 1)    or (abs(event.gen_tb_w_decay_id) == 11    and abs(event.gen_t_w_decay_id) == 1):
@@ -179,6 +197,7 @@ for iev, event in enumerate(ttree):
 
     elif (abs(event.gen_t_w_decay_id) == 13    and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 13    and abs(event.gen_t_w_decay_id) > 15*15):
         process = 'mutau'
+        is_mutau = True
     elif (abs(event.gen_t_w_decay_id) == 13*15 and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 13*15 and abs(event.gen_t_w_decay_id) > 15*15):
         process = 'taumutauh'
     elif (abs(event.gen_t_w_decay_id) == 13    and abs(event.gen_tb_w_decay_id) == 1)    or (abs(event.gen_tb_w_decay_id) == 13    and abs(event.gen_t_w_decay_id) == 1):
@@ -196,7 +215,7 @@ for iev, event in enumerate(ttree):
 
     # the nominal event weight
     # consists of only PU (no amcatnlo, z or recoil for ttbar)
-    if is_eltau:
+    if is_electron_process:
         the_mc_weight = pileup_ratio_ele[event.nvtx_gen]
         #weight_pu_el_up = pileup_ratio_up_ele  [ev.nvtx_gen]
         #weight_pu_el_dn = pileup_ratio_down_ele[ev.nvtx_gen]
@@ -250,8 +269,14 @@ for iev, event in enumerate(ttree):
     if not args.no_tau_cut and len(event.gen_tt_tau_vis_p4) > 0: continue
 
     # lepton cuts
-    if       is_eltau and not (event.gen2_leptons_p4[0].pt() > 30 and abs(event.gen2_leptons_p4[0].eta()) < 2.4 and (abs(event.gen2_leptons_p4[0].eta()) < 1.442 or abs(event.gen2_leptons_p4[0].eta()) > 1.566)): continue
-    elif not is_eltau and not (event.gen2_leptons_p4[0].pt() > 26 and abs(event.gen2_leptons_p4[0].eta()) < 2.4): continue
+    if       is_electron_process and not (event.gen2_leptons_p4[0].pt() > 30 and abs(event.gen2_leptons_p4[0].eta()) < 2.4 and (abs(event.gen2_leptons_p4[0].eta()) < 1.442 or abs(event.gen2_leptons_p4[0].eta()) > 1.566)): continue
+    elif not is_electron_process and not (event.gen2_leptons_p4[0].pt() > 26 and abs(event.gen2_leptons_p4[0].eta()) < 2.4): continue
+
+    control_histos['pre_gen_lep_pt'].Fill(event.gen2_leptons_p4[0].pt())
+    if is_eltau:
+        control_histos['pre_gen_el_pt'].Fill(event.gen2_leptons_p4[0].pt())
+    elif is_mutau:
+        control_histos['pre_gen_mu_pt'].Fill(event.gen2_leptons_p4[0].pt())
 
     # tau cuts
     if not args.no_tau_cut and not (event.gen_tt_tau_vis_p4[0].pt() > 30 and abs(event.gen_tt_tau_vis_p4[0].eta()) < 2.4): continue
@@ -274,6 +299,12 @@ for iev, event in enumerate(ttree):
     # b-jet
     if not n_b_jets_pass > 0: continue
 
+    control_histos['gen_lep_pt'].Fill(event.gen2_leptons_p4[0].pt())
+    if is_eltau:
+        control_histos['gen_el_pt'].Fill(event.gen2_leptons_p4[0].pt())
+    elif is_mutau:
+        control_histos['gen_mu_pt'].Fill(event.gen2_leptons_p4[0].pt())
+
     for sys_i, sys_w in enumerate([the_mc_weight] + w_scale + w_alphas + w_pdf):
         cut_histo.Fill(sys_i, sys_w)
 
@@ -281,10 +312,6 @@ for iev, event in enumerate(ttree):
 
 
 
-
-job_filename = input_filename.split('/')[-1]
-output_path = args.output_dir + '/' + job_filename
-logging.debug(output_path)
 
 # make job dir if needed
 if not os.path.isdir(args.output_dir):
@@ -309,6 +336,10 @@ for count1, count2, out_histo1, out_histo2 in histos.values():
     out_histo1.Write()
     out_histo2.SetDirectory(fout)
     out_histo2.Write()
+
+for out_histo in control_histos.values():
+    out_histo.SetDirectory(fout)
+    out_histo.Write()
 
 fout.Write()
 fout.Close()

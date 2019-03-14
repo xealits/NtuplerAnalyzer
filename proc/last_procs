@@ -1,3 +1,15 @@
+# the question on ISR gen lep pt-s in the acceptance
+python genjobs.py v34 t1 --acceptance-study channels_nom_sys_both_sel_main --dtags MC2016_Summer16_TTJets_powheg,updowns,updowns_extra --scheme 5,5,2,12,12
+make sub_proc nt=v34 proc=t1 node=1
+
+python signal_acceptance.py --no-tau-cut temp/ gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_90.root
+
+cat accept_study_v34_t2_tt* | xargs -P 12 -d "\n" -I COMM sh -c "COMM || true"
+
+hadd lstore_outdirs/v34/t2/MC2016_Summer16_TTJets_powheg_isrdown.root lstore_outdirs/v34/t2/MC2016_Summer16_TTJets_powheg_isrdown/*.root &
+hadd lstore_outdirs/v34/t2/MC2016_Summer16_TTJets_powheg_isrup.root   lstore_outdirs/v34/t2/MC2016_Summer16_TTJets_powheg_isrup/*.root   &
+hadd lstore_outdirs/v34/t2/MC2016_Summer16_TTJets_powheg.root         lstore_outdirs/v34/t2/MC2016_Summer16_TTJets_powheg/*.root         &
+
 # run with "unclustered" lep-matched jets propagated to met in both data and mc
 # the jes correction of the lep-matched jet is returned to met
 # "unclustering" does not mean anything here, it is just anti-jes propagation
