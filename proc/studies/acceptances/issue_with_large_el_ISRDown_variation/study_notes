@@ -1,0 +1,52 @@
+ctr_cut_ev_eltau->GetBinContent(2)  / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(3)  / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(4)  / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(5)  / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(6)  / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(7)  / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(8)  / all_ev_eltau->GetBinContent(1)
+cut_ev_eltau->GetBinContent(1)      / all_ev_eltau->GetBinContent(1)
+
+nom     = [ 0.848275 0.848275 0.610371 0.223054 0.165136 0.165136 0.161626 0.161626 ]
+isrup   = [ 0.848247 0.848247 0.610363 0.222400 0.165429 0.165429 0.161876 0.161876 ]
+isrdown = [ 0.848384 0.848384 0.610110 0.222295 0.163943 0.163943 0.160578 0.160578 ]
+
+ctr_cut_ev_mutau->GetBinContent(2)  / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(3)  / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(4)  / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(5)  / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(6)  / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(7)  / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(8)  / all_ev_mutau->GetBinContent(1)
+cut_ev_mutau->GetBinContent(1)      / all_ev_mutau->GetBinContent(1)
+
+nom_mu     = [ 0.848148 0.848148 0.695899 0.252915 0.186949 0.186949 0.183190 0.183190 ]
+isrup_mu   = [ 0.847949 0.847949 0.695712 0.252597 0.187671 0.187671 0.183696 0.183696 ]
+isrdown_mu = [ 0.848335 0.848335 0.695701 0.252799 0.186695 0.186695 0.182958 0.182958 ]
+
+
+julia> isrup - nom
+1×8 Array{Float64,2}:
+ -2.8e-5  -2.8e-5  -8.0e-6  -0.000654  0.000293  0.000293  0.00025  0.00025
+
+julia> isrdown - nom
+1×8 Array{Float64,2}:
+ 0.000109  0.000109  -0.000261  -0.000759  -0.001193  -0.001193  -0.001048  -0.001048
+
+
+julia> isrup_mu - nom_mu
+1×8 Array{Float64,2}:
+ -0.000199  -0.000199  -0.000187  -0.000318  0.000722  0.000722  0.000506  0.000506
+
+julia> isrdown_mu - nom_mu
+1×8 Array{Float64,2}:
+ 0.000187  0.000187  -0.000198  -0.000116  -0.000254  -0.000254  -0.000232  -0.000232
+
+N gen leps > 0
+N gen taus > 0
+lep kino cuts
+tau kino cuts
+N jets
+N jets tau cands
+N b jets
+
