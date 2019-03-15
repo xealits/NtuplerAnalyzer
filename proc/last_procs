@@ -2,37 +2,6 @@
 python genjobs.py v34 t1 --acceptance-study channels_nom_sys_both_sel_main --dtags MC2016_Summer16_TTJets_powheg,updowns,updowns_extra --scheme 5,5,2,12,12
 make sub_proc nt=v34 proc=t1 node=1
 
-python signal_acceptance.py --no-tau-cut temp/ gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_90.root
-
-cat accept_study_v34_t2_tt* | xargs -P 12 -d "\n" -I COMM sh -c "COMM || true"
-
-hadd MC2016_Summer16_TTJets_powheg_isrdown.root MC2016_Summer16_TTJets_powheg_isrdown/*.root &
-hadd MC2016_Summer16_TTJets_powheg_isrup.root   MC2016_Summer16_TTJets_powheg_isrup/*.root   &
-hadd MC2016_Summer16_TTJets_powheg.root         MC2016_Summer16_TTJets_powheg/*.root         &
-
-python jobsums/get_shapes.py --norm-binwidth --no-std-path --formula "isrup:nom:isrdown" isrup:lstore_outdirs/v34/t2/MC2016_Summer16_TTJets_powheg_isrup.root:pre_gen_el_pt isrdown:lstore_outdirs/v34/t2/MC2016_Summer16_TTJets_powheg_isrdown.root:pre_gen_el_pt nom:lstore_outdirs/v34/t2/MC2016_Summer16_TTJets_powheg.root:pre_gen_el_pt
-python jobsums/get_shapes.py --norm-binwidth --no-std-path --formula "isrup:nom:isrdown" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:pre_gen_el_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:pre_gen_el_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:pre_gen_el_pt
-
-cut_ev_mutau->GetBinContent(1)      / all_ev_mutau->GetBinContent(1)
-cut_ev_eltau->GetBinContent(1)      / all_ev_eltau->GetBinContent(1)
-
-ctr_cut_ev_eltau->GetBinContent(1)
-
-tau kino:
-
-python jobsums/get_shapes.py --norm-binwidth --no-std-path --formula "isrup:nom:isrdown" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_mu_tau_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_mu_tau_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_mu_tau_pt
-mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png ./compare_accept_tau_pt_mu_nom,isrup,isrdown_formula.png
-
-python jobsums/get_shapes.py --norm-binwidth --no-std-path --formula "isrup:nom:isrdown" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_tau_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_tau_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_tau_pt
-mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png ./compare_accept_tau_pt_el_nom,isrup,isrdown_formula.png
-
-python jobsums/get_shapes.py --norm-binwidth --no-std-path --formula "isrup:nom:isrdown" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_mu_tau_eta isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_mu_tau_eta nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_mu_tau_eta
-mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png ./compare_accept_tau_eta_mu_nom,isrup,isrdown_formula.png
-
-python jobsums/get_shapes.py --norm-binwidth --no-std-path --formula "isrup:nom:isrdown" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_tau_eta isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_tau_eta nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_tau_eta
-mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png ./compare_accept_tau_eta_el_nom,isrup,isrdown_formula.png
-
-
 # run with "unclustered" lep-matched jets propagated to met in both data and mc
 # the jes correction of the lep-matched jet is returned to met
 # "unclustering" does not mean anything here, it is just anti-jes propagation
