@@ -172,6 +172,10 @@ control_histos = {
 'gen_mu_tau_pt':  TH1D("gen_mu_tau_pt",  "", 90, 20, 200),
 'gen_el_tau_eta': TH1D("gen_el_tau_eta", "", 50, -2.5, 2.5),
 'gen_mu_tau_eta': TH1D("gen_mu_tau_eta", "", 50, -2.5, 2.5),
+'gen_el_taucut_tau_pt':  TH1D("gen_el_taucut_tau_pt",  "", 90, 20, 200),
+'gen_mu_taucut_tau_pt':  TH1D("gen_mu_taucut_tau_pt",  "", 90, 20, 200),
+'gen_el_taucut_tau_eta': TH1D("gen_el_taucut_tau_eta", "", 50, -2.5, 2.5),
+'gen_mu_taucut_tau_eta': TH1D("gen_mu_taucut_tau_eta", "", 50, -2.5, 2.5),
 'dR_el_jet':      TH1D("dR_el_jet",      "", 100,  0, 2.),
 'dR_mu_jet':      TH1D("dR_mu_jet",      "", 100,  0, 2.),
 'dR_el_tau':      TH1D("dR_el_tau",      "", 100,  0, 2.),
@@ -302,6 +306,13 @@ for iev, event in enumerate(ttree):
     if not args.no_tau_cut and not (event.gen_tt_tau_vis_p4[0].pt() > 30 and abs(event.gen_tt_tau_vis_p4[0].eta()) < 2.4):
         continue
     cut_control_histo.Fill(4, the_mc_weight)
+
+    if is_eltau:
+        control_histos['gen_el_taucut_tau_pt']  .Fill(event.gen_tt_tau_vis_p4[0].pt())
+        control_histos['gen_el_taucut_tau_eta'] .Fill(event.gen_tt_tau_vis_p4[0].eta())
+    elif is_mutau:
+        control_histos['gen_mu_taucut_tau_pt']  .Fill(event.gen_tt_tau_vis_p4[0].pt())
+        control_histos['gen_mu_taucut_tau_eta'] .Fill(event.gen_tt_tau_vis_p4[0].eta())
 
     # pass dR cross cleaning, calculate dR to the lepton
     tlep_p4 = TLorentzVector(event.gen2_leptons_p4[0].X(),

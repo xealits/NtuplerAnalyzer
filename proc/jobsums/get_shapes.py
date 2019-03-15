@@ -3,8 +3,6 @@ import logging
 from os.path import isfile
 from sys import exit
 
-logging.basicConfig(level=logging.DEBUG)
-
 
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
@@ -16,6 +14,7 @@ parser.add_argument("-c", "--channel", type=str, default='mu_sel', help="channel
 parser.add_argument("-p", "--process", type=str, default='tt_lj', help="process")
 parser.add_argument('-s', '--systematic',  type=str, default='NOMINAL', help="systematic")
 parser.add_argument('-d', '--distr',  type=str, default='Mt_lep_met_f', help="distr")
+parser.add_argument('--debug',    action='store_true', help="logging the debug messages")
 parser.add_argument('--logy',     action='store_true', help="log Y")
 parser.add_argument('--no-norm',  action='store_true', help="don't normalize each histo to 1")
 parser.add_argument('--norm-binwidth',  action='store_true', help="normalize each bin to width")
@@ -24,6 +23,8 @@ parser.add_argument("--y-range",     type=str,      help="set Y range as `ymin,y
 parser.add_argument("--x-title",     type=str,      help="title of X axis")
 parser.add_argument("--y-title",     type=str,      help="title of Y axis")
 parser.add_argument('--left-title',  action='store_true', help="add the left label title")
+
+parser.add_argument('--no-legend',  action='store_true', help="do not plot the legend")
 
 parser.add_argument('--formula',  type=str, help="to plot h1 overlayed with 123*h2+982*h3: `h1 : 123 h2 , 982h3`")
 
@@ -34,6 +35,11 @@ parser.add_argument('--no-std-path',  action='store_true', help="the histo is di
 parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename[:chan/proc/sys[/distr]]` with any `p/a/th` to a TH histo""")
 
 args = parser.parse_args()
+
+if args.debug:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.INFO)
 
 if args.y_range:
     y_min, y_max = [float(x) for x in args.y_range.split(',')]
@@ -163,45 +169,68 @@ else:
     drawn = False
     form_histos = []
 
+    # a sub-form is a distribution to plot
+    # it can be a linear combination of distrs
+    # or a ratio of linear combinations
     for form_i, subform in enumerate(args.formula.split(':')): # sub-formulas
         # ' number  nick ' pairs
         logging.debug("subform " + subform)
         nicks = [nick for nick in histos.keys() if nick in subform]
         logging.debug("nicks %s" % str(nicks))
-        nick_pairs = []
-        for nick_pair in subform.split('+'):
-            for nick in nicks:
-                if nick in nick_pair:
-                    logging.debug("nick_pair " + nick_pair)
-                    number = nick_pair.replace(nick, '')
-                    logging.debug("number " + number)
-                    factor = float(number) if number.strip() else 1.
-                    logging.debug("factor %f" % factor)
-                    nick_pairs.append((factor, nick))
-                    break
 
-        logging.debug(nick_pairs)
+        # a subform might be a ratio of two distributions
+        sums_histos = []
+        for sum_i, linear_sum in enumerate(subform.split('/')):
 
-        ## normalize the histo
-        #if not args.no_norm:
-        #    histo.Scale(1./histo.Integral())
+            # get the nicks in the subform's linear_sum and scale them by their factors
+            nick_pairs = []
+            for nick_pair in linear_sum.split('+'):
+                for nick in nicks:
+                    if nick in nick_pair:
+                        logging.debug("nick_pair " + nick_pair)
+                        number = nick_pair.replace(nick, '')
+                        logging.debug("number " + number)
+                        factor = float(number) if number.strip() else 1.
+                        logging.debug("factor %f" % factor)
+                        nick_pairs.append((factor, nick))
+                        break
 
-        # construct the histo of the subform
-        factor, nick = nick_pairs[0]
-        histo = histos[nick].Clone()
-        histo.SetName("formula%d" % form_i)
+            logging.debug(nick_pairs)
+
+            ## normalize the histo
+            #if not args.norm:
+            #    histo.Scale(1./histo.Integral())
+
+            # construct the histo of the subform
+            factor, nick = nick_pairs[0]
+            histo = histos[nick].Clone()
+            histo.SetName("formula_%d_%d" % (form_i, sum_i))
+            histo.SetDirectory(0)
+            histo.Scale(factor)
+
+            # add up all the histos in the subform
+            for factor, nick in nick_pairs[1:]:
+                # not sure if pyroot can do h += h2*factor correctly, without mutation
+                h = histos[nick].Clone()
+                h.Scale(factor)
+                histo.Add(h)
+
+            # normalize the linear sum
+            if args.norm_formulas:
+                histo.Scale(1./histo.Integral())
+
+            logging.debug("histo %20s %f" % (nick, histo.Integral()))
+
+            #here histo is the linear combination in the formula
+            # save them
+            sums_histos.append(histo)
+
+        # how to divide this stuff? a / b / c = (a / b) / c
+        histo = sums_histos[0].Clone()
+        histo.SetName("formula_%d" % form_i)
         histo.SetDirectory(0)
-        histo.Scale(factor)
-        for factor, nick in nick_pairs[1:]:
-            # not sure if pyroot can do h += h2*factor correctly, without mutation
-            h = histos[nick].Clone()
-            h.Scale(factor)
-            histo.Add(h)
-
-        if args.norm_formulas:
-            histo.Scale(1./histo.Integral())
-
-        logging.debug("histo %20s %f" % (nick, histo.Integral()))
+        for operand_histo in sums_histos[1:]:
+            histo.Divide(operand_histo)
 
         form_histos.append(histo)
 
@@ -271,7 +300,8 @@ right_title.SetFillColor(0)
 right_title.Draw("same")
 
 
-leg.Draw("same")
+if not args.no_legend:
+    leg.Draw("same")
 
 cst.SaveAs('./compare_%s_%s_%s_%s_%s%s%s.png' % (args.channel, args.process, args.systematic, args.distr, ','.join(histos.keys()), '_formula' if args.formula else '', '_nonorm' if args.no_norm else ''))
 

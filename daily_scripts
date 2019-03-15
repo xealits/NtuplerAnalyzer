@@ -145,8 +145,21 @@ mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png ./c
 
 -- no difference!
 
+python jobsums/get_shapes.py --no-std-path --formula "isrup / nom:isrdown / nom" isrup:lstore_outdirs/v34/t3/5/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_tau_eta isrdown:lstore_outdirs/v34/t3/5/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_tau_eta nom:lstore_outdirs/v34/t3/5/MC2016_Summer16_TTJets_powheg.root:gen_el_tau_eta
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png ./compare_accept_tau_eta_el_ratio_nom,isrup,isrdown_formula.png
+
+python jobsums/get_shapes.py --no-std-path --formula "isrup / nom:isrdown / nom" isrup:lstore_outdirs/v34/t3/5/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_tau_pt isrdown:lstore_outdirs/v34/t3/5/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_tau_pt nom:lstore_outdirs/v34/t3/5/MC2016_Summer16_TTJets_powheg.root:gen_el_tau_pt
+
+python jobsums/get_shapes.py --no-std-path --formula "isrup / nom:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_taucut_tau_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_taucut_tau_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_taucut_tau_pt
+
+python jobsums/get_shapes.py --no-std-path --formula "isrup / nom:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_taucut_tau_eta isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_taucut_tau_eta nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_taucut_tau_eta
 
 
+python jobsums/get_shapes.py --no-std-path --no-legend --formula "isrup / isrdown:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_taucut_tau_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_taucut_tau_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_taucut_tau_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png ./compare_accept_attaucut_tau_pt_el_ratio_nom,isrup,isrdown_formula.png
+
+python jobsums/get_shapes.py --no-std-path --no-legend --formula "isrup / isrdown:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_taucut_tau_eta isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_taucut_tau_eta nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_taucut_tau_eta
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png ./compare_accept_attaucut_tau_eta_el_ratio_nom,isrup,isrdown_formula.png
 
 
 
