@@ -21,6 +21,7 @@ python proc/signal_acceptance.py temp/ NtuplerAnalyzer_test_METfiltersOFF_TTJets
 parser.add_argument("output_dir",  type=str, default="temp/", help="the path of output directory")
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 parser.add_argument("--no-tau-cut",  action='store_true', help="don't apply tau cut")
+parser.add_argument("--same-cuts",  action='store_true', help="apply mu kino cuts to el as well")
 
 parser.add_argument('input_file', help="""the job files to process: 
 /gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_0.root""")
@@ -47,7 +48,7 @@ assert not isfile(output_path)
 logging.info("import ROOT")
 
 import ROOT
-from ROOT import TH1D, TFile, TTree, gROOT
+from ROOT import TH1D, TFile, TTree, gROOT, TLorentzVector
 from ROOT import kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, TColor
 from ROOT import TLegend
 #from ROOT import THStack
@@ -149,24 +150,32 @@ and the separate datasets
 
 # for all systematic weights
 histos = {
-'eltau':     (TH1D("gen_tbw_eltau",     "", 400, -200, 200), TH1D("gen_tw_eltau",     "", 400, -200, 200), TH1D("all_ev_eltau",     "", 200, 0, 200), TH1D("cut_ev_eltau",     "", 200, 0, 200)),
-'elj':       (TH1D("gen_tbw_elj",       "", 400, -200, 200), TH1D("gen_tw_elj",       "", 400, -200, 200), TH1D("all_ev_elj",       "", 200, 0, 200), TH1D("cut_ev_elj",       "", 200, 0, 200)),
-'tauelj':    (TH1D("gen_tbw_tauelj",    "", 400, -200, 200), TH1D("gen_tw_tauelj",    "", 400, -200, 200), TH1D("all_ev_tauelj",    "", 200, 0, 200), TH1D("cut_ev_tauelj",    "", 200, 0, 200)),
-'taueltauh': (TH1D("gen_tbw_taueltauh", "", 400, -200, 200), TH1D("gen_tw_taueltauh", "", 400, -200, 200), TH1D("all_ev_taueltauh", "", 200, 0, 200), TH1D("cut_ev_taueltauh", "", 200, 0, 200)),
-'mutau':     (TH1D("gen_tbw_mutau",     "", 400, -200, 200), TH1D("gen_tw_mutau",     "", 400, -200, 200), TH1D("all_ev_mutau",     "", 200, 0, 200), TH1D("cut_ev_mutau",     "", 200, 0, 200)),
-'muj':       (TH1D("gen_tbw_muj",       "", 400, -200, 200), TH1D("gen_tw_muj",       "", 400, -200, 200), TH1D("all_ev_muj",       "", 200, 0, 200), TH1D("cut_ev_muj",       "", 200, 0, 200)),
-'taumuj':    (TH1D("gen_tbw_taumuj",    "", 400, -200, 200), TH1D("gen_tw_taumuj",    "", 400, -200, 200), TH1D("all_ev_taumuj",    "", 200, 0, 200), TH1D("cut_ev_taumuj",    "", 200, 0, 200)),
-'taumutauh': (TH1D("gen_tbw_taumutauh", "", 400, -200, 200), TH1D("gen_tw_taumutauh", "", 400, -200, 200), TH1D("all_ev_taumutauh", "", 200, 0, 200), TH1D("cut_ev_taumutauh", "", 200, 0, 200)),
-'other':     (TH1D("gen_tbw_other",     "", 400, -200, 200), TH1D("gen_tw_other",     "", 400, -200, 200), TH1D("all_ev_other",     "", 200, 0, 200), TH1D("cut_ev_other",     "", 200, 0, 200))}
+'eltau':     (TH1D("gen_tbw_eltau",     "", 400, -200, 200), TH1D("gen_tw_eltau",     "", 400, -200, 200), TH1D("all_ev_eltau",     "", 200, 0, 200), TH1D("cut_ev_eltau",     "", 200, 0, 200), TH1D("ctr_cut_ev_eltau",     "", 200, 0, 200)),
+'elj':       (TH1D("gen_tbw_elj",       "", 400, -200, 200), TH1D("gen_tw_elj",       "", 400, -200, 200), TH1D("all_ev_elj",       "", 200, 0, 200), TH1D("cut_ev_elj",       "", 200, 0, 200), TH1D("ctr_cut_ev_elj",       "", 200, 0, 200)),
+'tauelj':    (TH1D("gen_tbw_tauelj",    "", 400, -200, 200), TH1D("gen_tw_tauelj",    "", 400, -200, 200), TH1D("all_ev_tauelj",    "", 200, 0, 200), TH1D("cut_ev_tauelj",    "", 200, 0, 200), TH1D("ctr_cut_ev_tauelj",    "", 200, 0, 200)),
+'taueltauh': (TH1D("gen_tbw_taueltauh", "", 400, -200, 200), TH1D("gen_tw_taueltauh", "", 400, -200, 200), TH1D("all_ev_taueltauh", "", 200, 0, 200), TH1D("cut_ev_taueltauh", "", 200, 0, 200), TH1D("ctr_cut_ev_taueltauh", "", 200, 0, 200)),
+'mutau':     (TH1D("gen_tbw_mutau",     "", 400, -200, 200), TH1D("gen_tw_mutau",     "", 400, -200, 200), TH1D("all_ev_mutau",     "", 200, 0, 200), TH1D("cut_ev_mutau",     "", 200, 0, 200), TH1D("ctr_cut_ev_mutau",     "", 200, 0, 200)),
+'muj':       (TH1D("gen_tbw_muj",       "", 400, -200, 200), TH1D("gen_tw_muj",       "", 400, -200, 200), TH1D("all_ev_muj",       "", 200, 0, 200), TH1D("cut_ev_muj",       "", 200, 0, 200), TH1D("ctr_cut_ev_muj",       "", 200, 0, 200)),
+'taumuj':    (TH1D("gen_tbw_taumuj",    "", 400, -200, 200), TH1D("gen_tw_taumuj",    "", 400, -200, 200), TH1D("all_ev_taumuj",    "", 200, 0, 200), TH1D("cut_ev_taumuj",    "", 200, 0, 200), TH1D("ctr_cut_ev_taumuj",    "", 200, 0, 200)),
+'taumutauh': (TH1D("gen_tbw_taumutauh", "", 400, -200, 200), TH1D("gen_tw_taumutauh", "", 400, -200, 200), TH1D("all_ev_taumutauh", "", 200, 0, 200), TH1D("cut_ev_taumutauh", "", 200, 0, 200), TH1D("ctr_cut_ev_taumutauh", "", 200, 0, 200)),
+'other':     (TH1D("gen_tbw_other",     "", 400, -200, 200), TH1D("gen_tw_other",     "", 400, -200, 200), TH1D("all_ev_other",     "", 200, 0, 200), TH1D("cut_ev_other",     "", 200, 0, 200), TH1D("ctr_cut_ev_other",     "", 200, 0, 200))}
 
 # some control distrs
 control_histos = {
 'pre_gen_lep_pt': TH1D("pre_gen_lep_pt",    "", 90, 20, 200),
 'pre_gen_el_pt':  TH1D("pre_gen_el_pt",     "", 90, 20, 200),
 'pre_gen_mu_pt':  TH1D("pre_gen_mu_pt",     "", 90, 20, 200),
-'gen_lep_pt':     TH1D("gen_lep_pt",    "", 90, 20, 200),
-'gen_el_pt':      TH1D("gen_el_pt",     "", 90, 20, 200),
-'gen_mu_pt':      TH1D("gen_mu_pt",     "", 90, 20, 200),
+'gen_lep_pt':     TH1D("gen_lep_pt",     "", 90, 20, 200),
+'gen_el_pt':      TH1D("gen_el_pt",      "", 90, 20, 200),
+'gen_mu_pt':      TH1D("gen_mu_pt",      "", 90, 20, 200),
+'gen_el_tau_pt':  TH1D("gen_el_tau_pt",  "", 90, 20, 200),
+'gen_mu_tau_pt':  TH1D("gen_mu_tau_pt",  "", 90, 20, 200),
+'gen_el_tau_eta': TH1D("gen_el_tau_eta", "", 50, -2.5, 2.5),
+'gen_mu_tau_eta': TH1D("gen_mu_tau_eta", "", 50, -2.5, 2.5),
+'dR_el_jet':      TH1D("dR_el_jet",      "", 100,  0, 2.),
+'dR_mu_jet':      TH1D("dR_mu_jet",      "", 100,  0, 2.),
+'dR_el_tau':      TH1D("dR_el_tau",      "", 100,  0, 2.),
+'dR_mu_tau':      TH1D("dR_mu_tau",      "", 100,  0, 2.),
 }
 
 #el_histos = (histo_all_ev_eltau, histo_cut_ev_eltau)
@@ -208,7 +217,7 @@ for iev, event in enumerate(ttree):
     else:
         process = 'other'
 
-    count_gen_tw, count_gen_tbw, all_histo, cut_histo = histos[process]
+    count_gen_tw, count_gen_tbw, all_histo, cut_histo, cut_control_histo = histos[process]
 
     count_gen_tw  .Fill(event.gen_t_w_decay_id)
     count_gen_tbw .Fill(event.gen_tb_w_decay_id)
@@ -266,38 +275,93 @@ for iev, event in enumerate(ttree):
 
     # there is always 1 lepton and 1 tau in signal:
     if not len(event.gen2_leptons_p4) > 0: continue
-    if not args.no_tau_cut and len(event.gen_tt_tau_vis_p4) > 0: continue
+    cut_control_histo.Fill(1, the_mc_weight)
+
+    if not args.no_tau_cut and not len(event.gen_tt_tau_vis_p4) > 0: continue
+    cut_control_histo.Fill(2, the_mc_weight)
 
     # lepton cuts
-    if       is_electron_process and not (event.gen2_leptons_p4[0].pt() > 30 and abs(event.gen2_leptons_p4[0].eta()) < 2.4 and (abs(event.gen2_leptons_p4[0].eta()) < 1.442 or abs(event.gen2_leptons_p4[0].eta()) > 1.566)): continue
-    elif not is_electron_process and not (event.gen2_leptons_p4[0].pt() > 26 and abs(event.gen2_leptons_p4[0].eta()) < 2.4): continue
+    if args.same_cuts:
+      if not (event.gen2_leptons_p4[0].pt() > 26 and abs(event.gen2_leptons_p4[0].eta()) < 2.4): continue
+    else:
+      if       is_electron_process and not (event.gen2_leptons_p4[0].pt() > 30 and abs(event.gen2_leptons_p4[0].eta()) < 2.4 and (abs(event.gen2_leptons_p4[0].eta()) < 1.442 or abs(event.gen2_leptons_p4[0].eta()) > 1.566)): continue
+      elif not is_electron_process and not (event.gen2_leptons_p4[0].pt() > 26 and abs(event.gen2_leptons_p4[0].eta()) < 2.4): continue
+    cut_control_histo.Fill(3, the_mc_weight)
 
     control_histos['pre_gen_lep_pt'].Fill(event.gen2_leptons_p4[0].pt())
     if is_eltau:
         control_histos['pre_gen_el_pt'].Fill(event.gen2_leptons_p4[0].pt())
+        control_histos['gen_el_tau_pt']  .Fill(event.gen_tt_tau_vis_p4[0].pt())
+        control_histos['gen_el_tau_eta'] .Fill(event.gen_tt_tau_vis_p4[0].eta())
     elif is_mutau:
         control_histos['pre_gen_mu_pt'].Fill(event.gen2_leptons_p4[0].pt())
+        control_histos['gen_mu_tau_pt']  .Fill(event.gen_tt_tau_vis_p4[0].pt())
+        control_histos['gen_mu_tau_eta'] .Fill(event.gen_tt_tau_vis_p4[0].eta())
 
     # tau cuts
-    if not args.no_tau_cut and not (event.gen_tt_tau_vis_p4[0].pt() > 30 and abs(event.gen_tt_tau_vis_p4[0].eta()) < 2.4): continue
+    if not args.no_tau_cut and not (event.gen_tt_tau_vis_p4[0].pt() > 30 and abs(event.gen_tt_tau_vis_p4[0].eta()) < 2.4):
+        continue
+    cut_control_histo.Fill(4, the_mc_weight)
+
+    # pass dR cross cleaning, calculate dR to the lepton
+    tlep_p4 = TLorentzVector(event.gen2_leptons_p4[0].X(),
+                             event.gen2_leptons_p4[0].Y(),
+                             event.gen2_leptons_p4[0].Z(),
+                             event.gen2_leptons_p4[0].T())
+    ttau_p4 = TLorentzVector(event.gen_tt_tau_vis_p4[0].X(),
+                             event.gen_tt_tau_vis_p4[0].Y(),
+                             event.gen_tt_tau_vis_p4[0].Z(),
+                             event.gen_tt_tau_vis_p4[0].T())
+    dR_lep_tau = tlep_p4.DeltaR(ttau_p4)
+
+    if is_eltau:
+        control_histos['dR_el_tau'].Fill(dR_lep_tau)
+    elif is_mutau:
+        control_histos['dR_mu_tau'].Fill(dR_lep_tau)
 
     # jet cuts
     n_jets_pass = 0
     n_jets_taucands_pass = 0
     n_b_jets_pass = 0
+    n_jets_clean   = 0
+    n_b_jets_clean = 0
     for jet_p4, jet_pdgId in zip(event.gen2_jets_p4, event.gen2_jets_pdgId):
         if jet_p4.pt() > 30 and abs(jet_p4.eta()) < 2.5:
+            tjet_p4 = TLorentzVector(jet_p4.X(),
+                                     jet_p4.Y(),
+                                     jet_p4.Z(),
+                                     jet_p4.T())
+            dR_lep_jet = tlep_p4.DeltaR(tjet_p4)
+
+            if is_eltau:
+                control_histos['dR_el_jet'].Fill(dR_lep_jet)
+            elif is_mutau:
+                control_histos['dR_mu_jet'].Fill(dR_lep_jet)
+
             n_jets_pass += 1
+            if dR_lep_jet > 0.4:
+                n_jets_clean += 1
+
             if abs(jet_p4.eta()) < 2.4:
                 n_jets_taucands_pass += 1
             if jet_pdgId == 5:
                 n_b_jets_pass += 1
+                if dR_lep_jet > 0.4:
+                    n_b_jets_clean += 1
 
     if not n_jets_pass > 2: continue
+    cut_control_histo.Fill(5, the_mc_weight)
     if not n_jets_taucands_pass > 0: continue
+    cut_control_histo.Fill(6, the_mc_weight)
 
     # b-jet
     if not n_b_jets_pass > 0: continue
+    cut_control_histo.Fill(7, the_mc_weight)
+
+    if dR_lep_tau > 0.4:
+        cut_control_histo.Fill(8, the_mc_weight)
+    if dR_lep_tau > 0.4 and n_jets_clean > 2 and n_b_jets_clean > 0:
+        cut_control_histo.Fill(9, the_mc_weight)
 
     control_histos['gen_lep_pt'].Fill(event.gen2_leptons_p4[0].pt())
     if is_eltau:
@@ -326,16 +390,10 @@ fout.Write()
 
 fout.cd()
 
-for count1, count2, out_histo1, out_histo2 in histos.values():
-    count1.SetDirectory(fout)
-    count1.Write()
-    count2.SetDirectory(fout)
-    count2.Write()
-
-    out_histo1.SetDirectory(fout)
-    out_histo1.Write()
-    out_histo2.SetDirectory(fout)
-    out_histo2.Write()
+for all_out_histos in histos.values():
+    for histo in all_out_histos:
+        histo.SetDirectory(fout)
+        histo.Write()
 
 for out_histo in control_histos.values():
     out_histo.SetDirectory(fout)
