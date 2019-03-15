@@ -115,18 +115,186 @@ nom_el = [ 0.848275 0.848275 0.695915 0.253200 0.187230 0.187230 0.183309 0.1810
 isrdown_mu = [ 0.848335 0.848335 0.695701 0.252799 0.186695 0.186695 0.182958 0.180659 0.176632 ]
 isrdown_el = [ 0.848384 0.848384 0.695994 0.252162 0.185912 0.185912 0.182129 0.179843 0.175831 ]
 
-julia> isrdown_el - nom_el
-1x9 Array{Float64,2}:
- 0.000109  0.000109  7.9e-5  -0.001038  -0.001318  -0.001318  -0.00118  -0.001164  -0.001186
-
  julia> isrdown_mu - nom_mu
  1x9 Array{Float64,2}:
   0.000187  0.000187  -0.000198  -0.000116  -0.000254  -0.000254  -0.000232  -0.000248  -0.000239
 
+julia> isrdown_el - nom_el
+1x9 Array{Float64,2}:
+ 0.000109  0.000109  7.9e-5  -0.001038  -0.001318  -0.001318  -0.00118  -0.001164  -0.001186
+
 -- after lep kino cuts 7.9e-5 in el
    after tau kino cuts -0.001038
 
-then there must be a deviation in the tau kinematics?
+without weights:
+
+ctr_cut_ev_mutau->GetBinContent(1+101) / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(1+102) / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(1+103) / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(1+104) / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(1+105) / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(1+106) / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(1+107) / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(1+108) / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(1+109) / all_ev_mutau->GetBinContent(1)
+
+ctr_cut_ev_eltau->GetBinContent(1+101) / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(1+102) / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(1+103) / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(1+104) / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(1+105) / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(1+106) / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(1+107) / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(1+108) / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(1+109) / all_ev_eltau->GetBinContent(1)
+
+isrup_mu = [ 0.847673 0.847673 0.695526 0.252508 0.187575 0.187575 0.183614 0.181291 0.177417 ]
+isrup_el = [ 0.848021 0.848021 0.695725 0.252264 0.187577 0.187577 0.183575 0.181274 0.177399 ]
+
+nom_mu = [ 0.848054 0.848054 0.695796 0.253010 0.187021 0.187021 0.183281 0.180993 0.176967 ]
+nom_el = [ 0.848239 0.848239 0.695907 0.253108 0.187120 0.187120 0.183219 0.180896 0.176911 ]
+
+isrdown_mu = [ 0.848454 0.848454 0.695849 0.252731 0.186633 0.186633 0.182903 0.180617 0.176591 ]
+isrdown_el = [ 0.848026 0.848026 0.695728 0.252062 0.185826 0.185826 0.182044 0.179771 0.175742 ]
+
+isrdown_mu - nom_mu
+ 0.0004  0.0004  5.3e-5  -0.000279  -0.000388  -0.000388  -0.000378  -0.000376  -0.000376
+isrdown_el - nom_el
+ -0.000213  -0.000213  -0.000179  -0.001046  -0.001294  -0.001294  -0.001175  -0.001125  -0.001169
+
+-- aha! it's not in weights
+   and it is after the tau cuts
+
+isrup_mu - nom_mu
+ -0.000381  -0.000381  -0.00027  -0.000502  0.000554  0.000554  0.000333  0.000298  0.00045
+isrup_el - nom_el
+ -0.000218  -0.000218  -0.000182  -0.000844  0.000457  0.000457  0.000356  0.000378  0.000488
+
+
+is it only tau cuts or lep and tau together?
+nolep 3
+notau 4
+
+ctr_cut_ev_mutau->GetBinContent(1+3) / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(1+4) / all_ev_mutau->GetBinContent(1)
+
+ctr_cut_ev_eltau->GetBinContent(1+3) / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(1+4) / all_ev_eltau->GetBinContent(1)
+
+nom
+
+nom_mu_lepcut = 0.695899
+nom_mu_taucut = 0.306912
+nom_el_lepcut = 0.695915
+nom_el_taucut = 0.307436
+
+isrup
+
+isrup_mu_lepcut = 0.695712
+isrup_mu_taucut = 0.306410
+isrup_el_lepcut = 0.695876
+isrup_el_taucut = 0.306276
+
+isrdown
+
+isrdown_mu_lepcut = 0.695701
+isrdown_mu_taucut = 0.306819
+isrdown_el_lepcut = 0.695994
+isrdown_el_taucut = 0.306072
+
+isrdown_mu_lepcut - nom_mu_lepcut
+isrdown_el_lepcut - nom_el_lepcut
+
+-0.00019800000000003148
+7.900000000005125e-5
+
+isrdown_mu_taucut - nom_mu_taucut
+isrdown_el_taucut - nom_el_taucut
+
+-9.300000000000974e-5
+-0.0013639999999999763
+
+-- tau cuts only!!!
+
+isrup_mu_lepcut - nom_mu_lepcut
+isrup_el_lepcut - nom_el_lepcut
+
+-0.00018700000000004824
+-3.8999999999900226e-5
+
+isrup_mu_taucut - nom_mu_taucut
+isrup_el_taucut - nom_el_taucut
+
+-0.0005020000000000024
+-0.0011599999999999944
+
+isrup too??
+
+both up and down are negative, in el and mu
+
+but at final selection isrup in electrons is ok?
+
+ctr_cut_ev_mutau->GetBinContent(1+7) / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(1+7) / all_ev_eltau->GetBinContent(1)
+
+isrdown
+0.182958
+0.182129
+
+isrup
+0.183696
+0.183581
+
+nom
+0.183190
+0.183309
+
+-- yep
+
+check the kinematics at the tau cuts
+
+I did not save the weighted kinematics! check unweighted counters!
+
+ctr_cut_ev_mutau->GetBinContent(1+103) / all_ev_mutau->GetBinContent(1)
+ctr_cut_ev_mutau->GetBinContent(1+104) / all_ev_mutau->GetBinContent(1)
+
+ctr_cut_ev_eltau->GetBinContent(1+103) / all_ev_eltau->GetBinContent(1)
+ctr_cut_ev_eltau->GetBinContent(1+104) / all_ev_eltau->GetBinContent(1)
+
+
+gen_el_taucut_tau_pt
+gen_el_taucut_tau_eta
+
+gen_mu_taucut_tau_pt
+gen_mu_taucut_tau_eta
+
+python jobsums/get_shapes.py --y-range 0.95,1.05 --no-std-path --formula "isrup / nom:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_taucut_tau_eta isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_taucut_tau_eta nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_taucut_tau_eta
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png accept_compare_taucut_kino_tau_eta_el_chan.png
+
+python jobsums/get_shapes.py --y-range 0.95,1.05 --no-std-path --formula "isrup / nom:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_taucut_tau_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_taucut_tau_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_taucut_tau_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png accept_compare_taucut_kino_tau_pt_el_chan.png
+
+
+python jobsums/get_shapes.py --y-range 0.95,1.05 --no-std-path --formula "isrup / nom:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_mu_taucut_tau_eta isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_mu_taucut_tau_eta nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_mu_taucut_tau_eta
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png accept_compare_taucut_kino_tau_eta_mu_chan.png
+
+python jobsums/get_shapes.py --y-range 0.95,1.05 --no-std-path --formula "isrup / nom:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_mu_taucut_tau_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_mu_taucut_tau_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_mu_taucut_tau_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png accept_compare_taucut_kino_tau_pt_mu_chan.png
+
+large fluctuations in eta...
+and shit in tau pt?
+
+python jobsums/get_shapes.py -e --y-range 0.95,1.05 --no-std-path --formula "isrdown / isrup" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_taucut_tau_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_taucut_tau_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_taucut_tau_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png accept_compare_taucut_kino_tau_pt_el_chan_down-to-up.png
+
+python jobsums/get_shapes.py -e --y-range 0.95,1.05 --no-std-path --formula "isrdown / isrup" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_mu_taucut_tau_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_mu_taucut_tau_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_mu_taucut_tau_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png accept_compare_taucut_kino_tau_pt_mu_chan_down-to-up.png
+
+kind of seems like isrdown shifts tau pt down (like with the reco lep pt...)
+
+
+# if tau cuts do this, then there must be a deviation in the tau kinematics?
+
 ALSO: eta cut on tau now is 2.4 instead of 2.3!
 
 tau kino:
@@ -155,12 +323,65 @@ python jobsums/get_shapes.py --no-std-path --formula "isrup / nom:isrdown / nom"
 python jobsums/get_shapes.py --no-std-path --formula "isrup / nom:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_taucut_tau_eta isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_taucut_tau_eta nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_taucut_tau_eta
 
 
-python jobsums/get_shapes.py --no-std-path --no-legend --formula "isrup / isrdown:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_taucut_tau_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_taucut_tau_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_taucut_tau_pt
+python jobsums/get_shapes.py --y-range 0.9,1.1 --no-std-path --no-legend --formula "isrup / isrdown:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_taucut_tau_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_taucut_tau_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_taucut_tau_pt
 mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png ./compare_accept_attaucut_tau_pt_el_ratio_nom,isrup,isrdown_formula.png
 
 python jobsums/get_shapes.py --no-std-path --no-legend --formula "isrup / isrdown:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_taucut_tau_eta isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_taucut_tau_eta nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_taucut_tau_eta
 mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png ./compare_accept_attaucut_tau_eta_el_ratio_nom,isrup,isrdown_formula.png
 
+
+python jobsums/get_shapes.py --no-std-path --no-legend --formula "isrup / isrdown:isrdown / nom" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_el_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png ./compare_accept_el_pt_el_ratio_nom,isrup,isrdown_formula.png
+
+python jobsums/get_shapes.py --y-range 0.9,1.1 --no-std-path --formula "isrup_mu / isrdown_mu:isrup_el / isrdown_el" isrup_el:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_el_pt isrdown_el:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_el_pt isrup_mu:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_mu_pt isrdown_mu:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_mu_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_isrdown_el,isrdown_mu,isrup_mu,isrup_el_formula.png ./compare_accept_el_pt_mu_pt_ratio_isrup-isrdown.png
+
+python jobsums/get_shapes.py --no-std-path --formula "isrup_mu:isrdown_mu" isrup_mu:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_mu_pt isrdown_mu:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_mu_pt
+
+maybe the difference after the lep cuts matters somehow?
+
+python jobsums/get_shapes.py --y-range 0.9,1.1 --no-std-path --formula "isrup_mu / isrdown_mu:isrup_el / isrdown_el" isrup_el:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:pre_gen_el_pt isrdown_el:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:pre_gen_el_pt isrup_mu:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:pre_gen_mu_pt isrdown_mu:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:pre_gen_mu_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_isrdown_el,isrdown_mu,isrup_mu,isrup_el_formula.png ./compare_accept_pre_el_pt_mu_pt_ratio_isrup-isrdown.png
+
+-- fluctuations only
+
+
+
+## stats in samples
+
+all_ev_eltau->GetBinContent(1)
+all_ev_mutau->GetBinContent(1)
+
+nom
+1.15688e+06
+1.15776e+06
+
+isrup
+2.34496e+06
+2.34554e+06
+
+isrdown
+2.25934e+06
+2.25509e+06
+
+old:
+
+hdamp DOWN:
+733697.
+732305.
+
+isrup
+1.46485e+06
+1.46540e+06
+
+isrdown
+1.43009e+06
+1.42765e+06
+
+--- in new stats the isrdown still has the deviation
+
+
+## effect through event weight?
 
 
 

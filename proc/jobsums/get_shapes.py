@@ -24,6 +24,8 @@ parser.add_argument("--x-title",     type=str,      help="title of X axis")
 parser.add_argument("--y-title",     type=str,      help="title of Y axis")
 parser.add_argument('--left-title',  action='store_true', help="add the left label title")
 
+parser.add_argument('-e', '--draw-error-bars',  action='store_true', help="root's option e")
+
 parser.add_argument('--no-legend',  action='store_true', help="do not plot the legend")
 
 parser.add_argument('--formula',  type=str, help="to plot h1 overlayed with 123*h2+982*h3: `h1 : 123 h2 , 982h3`")
@@ -256,8 +258,10 @@ else:
                 logging.debug("setting min-max")
                 histo.SetMaximum(y_max)
                 histo.SetMinimum(y_min)
-            #histo.Draw("hist e same")
-            histo.Draw("hist same")
+            if args.draw_error_bars:
+                histo.Draw("hist e same")
+            else:
+                histo.Draw("hist same")
         else:
             if args.x_title:
                 #nom_MC.SetTitle(args.process)
@@ -275,8 +279,10 @@ else:
 
             # draw the first one with line
             histo.SetFillColor(0)
-            #histo.Draw("hist e")
-            histo.Draw("hist")
+            if args.draw_error_bars:
+                histo.Draw("hist e")
+            else:
+                histo.Draw("hist")
             drawn = True
 
 for histo, subform in reversed(plots_to_legend):
