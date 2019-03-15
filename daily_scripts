@@ -415,6 +415,95 @@ mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png acc
 python jobsums/get_shapes.py -e --y-range 0.95,1.05 --no-std-path --formula "isrdown / isrup" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:gen_mu_taucut_lep_eta_w isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:gen_mu_taucut_lep_eta_w nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:gen_mu_taucut_lep_eta_w
 mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png accept_compare_taucut_kino_lep_eta_w_mu_chan_down-to-up.png
 
+## check the el-mu deviations in isrdown at different cuts
+
+taucuts
+
+(ctr_cut_ev_eltau->GetBinContent(1+4) - ctr_cut_ev_mutau->GetBinContent(1+4)) / sqrt((ctr_cut_ev_eltau->GetBinContent(1+4) + ctr_cut_ev_mutau->GetBinContent(1+4))*0.5)
+
+isrup
+-0.583901
+
+nom
+0.560909
+
+isrdown
+0.197620
+0.642383
+-1.06799
+inc
+-0.459232
+
+damn
+
+
+lepcuts
+
+(ctr_cut_ev_eltau->GetBinContent(1+3) - ctr_cut_ev_mutau->GetBinContent(1+3)) / sqrt((ctr_cut_ev_eltau->GetBinContent(1+3) + ctr_cut_ev_mutau->GetBinContent(1+3))*0.5)
+
+isrup
+-0.0187096
+
+nom
+-0.665385
+
+isrdown
+2.89260
+
+
+
+## So is it just unfortunate double-fluctuation?
+
+in nominal there are
+a bit more muons     <-------- no! it would show up in all other systematics!
+in isrdown ---
+a bit more electrons
+
+or rather:
+
+in nominal the electrons pass
+a bit better         <--------- it would also show up in all ther other systematics?
+in isrdown ---
+a bit worse
+
+is that 0.7% = 0.007 within stat uncertainties?
+
+down
+nom
+up
+
+cut_ev_eltau->GetBinContent(1) / all_ev_eltau->GetBinContent(1)
+0.182129
+0.183309
+0.183581
+
+(0.182129 - 0.183309) / 0.183309
+-0.00643722
+
+sqrt(all_ev_eltau->GetBinContent(1)) / all_ev_eltau->GetBinContent(1)
+sqrt(cut_ev_eltau->GetBinContent(1)) / cut_ev_eltau->GetBinContent(1)
+
+isrdown
+0.000665287
+0.00155890
+
+nom
+0.000929730
+0.00217153
+
+isrup
+0.000653029
+0.00152412
+
+--- so, it is indeed within 1 sigma
+
+julia> 0.007 * 0.1687
+0.0011809
+
+but in the table of acceptance statistical uncertainty is only
+0.00004
+
+-- why??
 
 
 
