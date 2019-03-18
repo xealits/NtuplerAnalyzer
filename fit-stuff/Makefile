@@ -38,6 +38,37 @@ impacts:
 impacts_toys: toys=-t -1 --expectSignal 1
 impacts_toys: impacts
 
+
+# breakdown from Yuta's question
+#fit_unc_breakdown_yutas_q: workspace_nomc=ttxsec/latest_datacard_mu.root
+fit_unc_breakdown_yutas_q: workspace=ttxsec/latest_datacard_mu.root
+fit_unc_breakdown_yutas_q: chan=el
+fit_unc_breakdown_yutas_q: nn=el
+fit_unc_breakdown_yutas_q: points=100
+fit_unc_breakdown_yutas_q: min=0.5
+fit_unc_breakdown_yutas_q: max=1.5
+fit_unc_breakdown_yutas_q: toys=
+fit_unc_breakdown_yutas_q:
+	combine -M MultiDimFit --algo none              ${toys} --rMin ${min} --rMax ${max} ${workspace} --saveWorkspace -n ${nn}Bestfit
+	#combine -M MultiDimFit --algo none              ${toys} --rMin ${min} --rMax ${max} ${workspace_nomc} --saveWorkspace -n ${nn}BestfitNoMC
+	# trying to merge MC and no MC
+	# stat unc
+	combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan                   -n ${nn}NoSys
+	# no tau ID and MC stat
+	#combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}BestfitNoMC.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff,lumi_13TeV" -n ${nn}NoTauNoMC
+	combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff,lumi_13TeV,prop_bin${chan}_selTight_ljout_bin8,prop_bin${chan}_selTight_ljout_bin7,prop_bin${chan}_selTight_ljout_bin6,prop_bin${chan}_selTight_ljout_bin5,prop_bin${chan}_selTight_ljout_bin4,prop_bin${chan}_selTight_ljout_bin3,prop_bin${chan}_selTight_ljout_bin2,prop_bin${chan}_selTight_ljout_bin1,prop_bin${chan}_selTight_ljout_bin0,prop_bin${chan}_selTight_lj_bin8,prop_bin${chan}_selTight_lj_bin7,prop_bin${chan}_selTight_lj_bin6,prop_bin${chan}_selTight_lj_bin5,prop_bin${chan}_selTight_lj_bin4,prop_bin${chan}_selTight_lj_bin3,prop_bin${chan}_selTight_lj_bin2,prop_bin${chan}_selTight_lj_bin1,prop_bin${chan}_selTight_lj_bin0" -n ${nn}NoTauNoMC
+	# no MC stat
+	#combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}BestfitNoMC.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV" -n ${nn}NoMC
+	# correct no MC
+	combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,prop_bin${chan}_selTight_ljout_bin8,prop_bin${chan}_selTight_ljout_bin7,prop_bin${chan}_selTight_ljout_bin6,prop_bin${chan}_selTight_ljout_bin5,prop_bin${chan}_selTight_ljout_bin4,prop_bin${chan}_selTight_ljout_bin3,prop_bin${chan}_selTight_ljout_bin2,prop_bin${chan}_selTight_ljout_bin1,prop_bin${chan}_selTight_ljout_bin0,prop_bin${chan}_selTight_lj_bin8,prop_bin${chan}_selTight_lj_bin7,prop_bin${chan}_selTight_lj_bin6,prop_bin${chan}_selTight_lj_bin5,prop_bin${chan}_selTight_lj_bin4,prop_bin${chan}_selTight_lj_bin3,prop_bin${chan}_selTight_lj_bin2,prop_bin${chan}_selTight_lj_bin1,prop_bin${chan}_selTight_lj_bin0" -n ${nn}NoMC
+	#combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV,prop_bin_el_selTight_ljout_bin8" -n ${nn}NoMC
+	# all, with MC
+	combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV"                     -n ${nn}FullUncertaintyNoLumi
+	combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit                                                     -n ${nn}FullUncertaintyWLumi
+	# plot
+	plot1DScan.py --output scan_${nn} higgsCombine${nn}FullUncertaintyNoLumi.MultiDimFit.mH120.root --others 'higgsCombine${nn}NoMC.MultiDimFit.mH120.root:No MC:4' 'higgsCombine${nn}NoTauNoMC.MultiDimFit.mH120.root:No MC No Tau:3' 'higgsCombine${nn}NoSys.MultiDimFit.mH120.root:stat:2' --breakdown "MC,Tau,other syst,stat"
+
+
 # for toys pass
 #  -t -1 --expectSignal 1
 fit_unc: workspace=ttxsec/latest_datacard_mu.root
