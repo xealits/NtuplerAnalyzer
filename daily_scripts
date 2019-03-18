@@ -16,15 +16,108 @@ This effect is more significant for electron selection due to higher pT threshol
 I did check the distributions of gen pT in all events of the samples -- it does not vary with ISR.
 But maybe it varies with the selection requirements.
 
+
+from "more tests"
+
+clues:
+* the ISR Down deviation persists
+  with the same kinematic cuts on the generated electrons and muons
+* the reco lepton pT varies with ISR Down: pT is smaller with ISR Down
+  but the gen lepton pT does not vary
+* the number of electron events is systematically larger than muon events in all ISR Down datasets
+  but the deviation of the acceptance in the dataset with the smallest difference
+  is not small enough
+* statistical uncertainty estimated as sqrt(N events at each selection stage)
+  is larger than the reported 0.0004 (it is around 0.001)
+  but if the deviation of electrons were a stat fluctuation,
+  than it would show up in the same difit of other uncertainties,
+  since the number of events is similar
+  (especially in the Tune variation)
+  --- no! the true uncertainty is ratio * sqrt(N events)/N
+      then it is = to the estimation from the histograms, 0.0004
+	  0.001-0.002 is the relational uncertainty, it is 0.2% of uncertainty, when the deviation is 0.7%
+* but at final step of the selection the el-mu deviation varies in the other direction
+  (2.8sigma more el in all events and -1.7sigma less at final cut)
+* the pT distributions of taus have large uncertainties?
+  the isrup / isrdown ratio has too large uncertainties to notice anything, it variaes around 1 though
+
+%BLUE% >> The deviation in electron channel is due to the variation in ISR Down datasets only.
+The deviation of the acceptance is the same when the kinematic cuts of muons are applied to electrons.
+The deviation appears in the overall number of generated events and in the number of events passing the selection requirements.
+In ISR Down datasets the overall number of generated electron-tau events is larger than muon-tau events,
+in relation to the statistical uncertainty (sqrt(N)/N) it is larger by about 2.8sigma.
+And the number of electron-tau events passing the selection requirements is smaller than in muon-tau channel by about 1.7sigma of statistical uncertainty.
+It leads to the discrepancy in the acceptance ratio of passing to all events.
+A study of kinematic distributions at generation level does not show any difference between electron and muon channel in ISR Down.
+Therefore, we conclude that it is a statistical fluctuation.
+
+
+
+
 ## more tests
+
+commands running the acceptance study:
 
 python signal_acceptance.py --no-tau-cut temp/ gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_90.root
 
 cat accept_study_v34_t2_tt* | xargs -P 12 -d "\n" -I COMM sh -c "COMM || true"
 
-hadd MC2016_Summer16_TTJets_powheg_isrdown.root MC2016_Summer16_TTJets_powheg_isrdown/*.root &
-hadd MC2016_Summer16_TTJets_powheg_isrup.root   MC2016_Summer16_TTJets_powheg_isrup/*.root   &
-hadd MC2016_Summer16_TTJets_powheg.root         MC2016_Summer16_TTJets_powheg/*.root         &
+hadd  MC2016_Summer16_TTJets_powheg_isrdown.root  MC2016_Summer16_TTJets_powheg_isrdown/*.root &
+hadd  MC2016_Summer16_TTJets_powheg_isrup.root    MC2016_Summer16_TTJets_powheg_isrup/*.root   &
+hadd  MC2016_Summer16_TTJets_powheg.root          MC2016_Summer16_TTJets_powheg/*.root         &
+
+quick script
+
+python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 20,24,28,32,40,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_nom_lep_pt     --output accept_incl_isr_issue_nom_lep_pt.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 20,24,28,32,40,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_isrup_lep_pt   --output accept_incl_isr_issue_isrup_lep_pt.root   gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "lep_p4[0].pt()" --custom-range 20,24,28,32,40,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_isrdown_lep_pt --output accept_incl_isr_issue_isrdown_lep_pt.root gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+python sumup_ttree_draw.py "gen2_jets_p4[0].pt()" --custom-range 20,24,28,32,40,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_isrdown_jet_pt0    --output accept_incl_isr_issue_isrdown_jet_pt0.root     gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+
+python sumup_ttree_draw.py "gen2_jets_p4[].pt()"  --custom-range 20,24,28,32,40,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_nom_jet_pt_all     --output accept_incl_isr_issue_nom_jet_pt_all.root      gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "gen2_jets_p4[].pt()"  --custom-range 20,24,28,32,40,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_isrdown_jet_pt_all --output accept_incl_isr_issue_isrdown_jet_pt_all.root  gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "gen2_jets_p4[].pt()"  --custom-range 20,24,28,32,40,50,60,70,90,110,140,200,300 --histo-name accept_incl_isr_issue_isrup_jet_pt_all   --output accept_incl_isr_issue_isrup_jet_pt_all.root    gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root    &
+
+python jobsums/get_shapes.py --y-range 0.95,1.05 --no-std-path --formula "isrup/nom:isrdown/nom" isrup:accept_incl_isr_issue_isrup_jet_pt_all.root:accept_incl_isr_issue_isrup_jet_pt_all/accept_incl_isr_issue_isrup_jet_pt_all_accept_incl_isr_issue_isrup_jet_pt_all   isrdown:accept_incl_isr_issue_isrdown_jet_pt_all.root:accept_incl_isr_issue_isrdown_jet_pt_all/accept_incl_isr_issue_isrdown_jet_pt_all_accept_incl_isr_issue_isrdown_jet_pt_all   nom:accept_incl_isr_issue_nom_jet_pt_all.root:accept_incl_isr_issue_nom_jet_pt_all/accept_incl_isr_issue_nom_jet_pt_all_accept_incl_isr_issue_nom_jet_pt_all
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png compare_acceptance_issue_isrdown_el_ratio_of_jet_pT_up_down_to_nom.png
+
+python jobsums/get_shapes.py --y-range 0.95,1.05 --no-std-path --formula "isrup/isrdown" isrup:accept_incl_isr_issue_isrup_jet_pt_all.root:accept_incl_isr_issue_isrup_jet_pt_all/accept_incl_isr_issue_isrup_jet_pt_all_accept_incl_isr_issue_isrup_jet_pt_all   isrdown:accept_incl_isr_issue_isrdown_jet_pt_all.root:accept_incl_isr_issue_isrdown_jet_pt_all/accept_incl_isr_issue_isrdown_jet_pt_all_accept_incl_isr_issue_isrdown_jet_pt_all
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_isrup,isrdown_formula.png compare_acceptance_issue_isrdown_el_ratio_of_jet_pT_up_to_down.png
+
+-- yeah, there is the expected variation, isrup has more low pT, isrdown -- less
+
+gen_tt_tau_vis_p4
+
+python sumup_ttree_draw.py "gen_tt_tau_vis_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11"  --custom-range 0,20,25,30,40,50,70,90,120,150,300 --histo-name accept_incl_isr_issue_el_nom_tau_pt     --output accept_incl_isr_issue_el_nom_tau_pt.root      gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "gen_tt_tau_vis_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11"  --custom-range 0,20,25,30,40,50,70,90,120,150,300 --histo-name accept_incl_isr_issue_el_isrdown_tau_pt --output accept_incl_isr_issue_el_isrdown_tau_pt.root  gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "gen_tt_tau_vis_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 11 || abs(gen_tb_w_decay_id) == 11"  --custom-range 0,20,25,30,40,50,70,90,120,150,300 --histo-name accept_incl_isr_issue_el_isrup_tau_pt   --output accept_incl_isr_issue_el_isrup_tau_pt.root    gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root    &
+
+python sumup_ttree_draw.py "gen_tt_tau_vis_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13"  --custom-range 0,20,25,30,40,50,70,90,120,150,300 --histo-name accept_incl_isr_issue_mu_nom_tau_pt     --output accept_incl_isr_issue_mu_nom_tau_pt.root      gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root  &
+python sumup_ttree_draw.py "gen_tt_tau_vis_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13"  --custom-range 0,20,25,30,40,50,70,90,120,150,300 --histo-name accept_incl_isr_issue_mu_isrdown_tau_pt --output accept_incl_isr_issue_mu_isrdown_tau_pt.root  gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*root  &
+python sumup_ttree_draw.py "gen_tt_tau_vis_p4[0].pt()" --cond-com "abs(gen_t_w_decay_id) == 13 || abs(gen_tb_w_decay_id) == 13"  --custom-range 0,20,25,30,40,50,70,90,120,150,300 --histo-name accept_incl_isr_issue_mu_isrup_tau_pt   --output accept_incl_isr_issue_mu_isrup_tau_pt.root    gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*root    &
+
+python jobsums/get_shapes.py --draw-error-bars --y-range 0.95,1.05 --no-std-path --formula "isrup/isrdown" isrup:accept_incl_isr_issue_el_isrup_tau_pt.root:accept_incl_isr_issue_el_isrup_tau_pt/accept_incl_isr_issue_el_isrup_tau_pt_accept_incl_isr_issue_el_isrup_tau_pt   isrdown:accept_incl_isr_issue_el_isrdown_tau_pt.root:accept_incl_isr_issue_el_isrdown_tau_pt/accept_incl_isr_issue_el_isrdown_tau_pt_accept_incl_isr_issue_el_isrdown_tau_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_isrup,isrdown_formula.png compare_acceptance_issue_el_isrdown_el_tau_pt_up_to_down.png
+
+python jobsums/get_shapes.py --draw-error-bars --y-range 0.95,1.05 --no-std-path --formula "isrup/isrdown" isrup:accept_incl_isr_issue_mu_isrup_tau_pt.root:accept_incl_isr_issue_mu_isrup_tau_pt/accept_incl_isr_issue_mu_isrup_tau_pt_accept_incl_isr_issue_mu_isrup_tau_pt   isrdown:accept_incl_isr_issue_mu_isrdown_tau_pt.root:accept_incl_isr_issue_mu_isrdown_tau_pt/accept_incl_isr_issue_mu_isrdown_tau_pt_accept_incl_isr_issue_mu_isrdown_tau_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_isrup,isrdown_formula.png compare_acceptance_issue_mu_isrdown_mu_tau_pt_up_to_down.png
+
+-- large fluctuations
+
+python jobsums/get_shapes.py --draw-error-bars --y-range 0.95,1.05 --no-std-path --formula "isrup/nom:isrdown/nom" isrup:accept_incl_isr_issue_el_isrup_tau_pt.root:accept_incl_isr_issue_el_isrup_tau_pt/accept_incl_isr_issue_el_isrup_tau_pt_accept_incl_isr_issue_el_isrup_tau_pt   isrdown:accept_incl_isr_issue_el_isrdown_tau_pt.root:accept_incl_isr_issue_el_isrdown_tau_pt/accept_incl_isr_issue_el_isrdown_tau_pt_accept_incl_isr_issue_el_isrdown_tau_pt   nom:accept_incl_isr_issue_el_nom_tau_pt.root:accept_incl_isr_issue_el_nom_tau_pt/accept_incl_isr_issue_el_nom_tau_pt_accept_incl_isr_issue_el_nom_tau_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png compare_acceptance_issue_el_isrdown_el_ratio_of_tau_pt_up_down_to_nom.png
+
+python jobsums/get_shapes.py --draw-error-bars --no-std-path --formula "isrup:nom:isrdown" isrup:accept_incl_isr_issue_el_isrup_tau_pt.root:accept_incl_isr_issue_el_isrup_tau_pt/accept_incl_isr_issue_el_isrup_tau_pt_accept_incl_isr_issue_el_isrup_tau_pt   isrdown:accept_incl_isr_issue_el_isrdown_tau_pt.root:accept_incl_isr_issue_el_isrdown_tau_pt/accept_incl_isr_issue_el_isrdown_tau_pt_accept_incl_isr_issue_el_isrdown_tau_pt   nom:accept_incl_isr_issue_el_nom_tau_pt.root:accept_incl_isr_issue_el_nom_tau_pt/accept_incl_isr_issue_el_nom_tau_pt_accept_incl_isr_issue_el_nom_tau_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png compare_acceptance_issue_el_isrdown_el_tau_pt_up_down_nom.png
+
+python jobsums/get_shapes.py --y-range 0.95,1.05 --no-std-path --formula "isrup/nom:isrdown/nom" isrup:accept_incl_isr_issue_mu_isrup_tau_pt.root:accept_incl_isr_issue_mu_isrup_tau_pt/accept_incl_isr_issue_mu_isrup_tau_pt_accept_incl_isr_issue_mu_isrup_tau_pt   isrdown:accept_incl_isr_issue_mu_isrdown_tau_pt.root:accept_incl_isr_issue_mu_isrdown_tau_pt/accept_incl_isr_issue_mu_isrdown_tau_pt_accept_incl_isr_issue_mu_isrdown_tau_pt   nom:accept_incl_isr_issue_mu_nom_tau_pt.root:accept_incl_isr_issue_mu_nom_tau_pt/accept_incl_isr_issue_mu_nom_tau_pt_accept_incl_isr_issue_mu_nom_tau_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png compare_acceptance_issue_mu_isrdown_el_ratio_of_tau_pt_up_down_to_nom.png
+
+python jobsums/get_shapes.py --draw-error-bars --no-std-path --formula "isrup:nom:isrdown" isrup:accept_incl_isr_issue_mu_isrup_tau_pt.root:accept_incl_isr_issue_mu_isrup_tau_pt/accept_incl_isr_issue_mu_isrup_tau_pt_accept_incl_isr_issue_mu_isrup_tau_pt   isrdown:accept_incl_isr_issue_mu_isrdown_tau_pt.root:accept_incl_isr_issue_mu_isrdown_tau_pt/accept_incl_isr_issue_mu_isrdown_tau_pt_accept_incl_isr_issue_mu_isrdown_tau_pt   nom:accept_incl_isr_issue_mu_nom_tau_pt.root:accept_incl_isr_issue_mu_nom_tau_pt/accept_incl_isr_issue_mu_nom_tau_pt_accept_incl_isr_issue_mu_nom_tau_pt
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_nom,isrup,isrdown_formula.png compare_acceptance_issue_mu_isrdown_mu_tau_pt_up_down_nom.png
+
+
+compatisons of the kinematic shapes:
 
 python jobsums/get_shapes.py --norm-binwidth --no-std-path --formula "isrup:nom:isrdown" isrup:lstore_outdirs/v34/t2/MC2016_Summer16_TTJets_powheg_isrup.root:pre_gen_el_pt isrdown:lstore_outdirs/v34/t2/MC2016_Summer16_TTJets_powheg_isrdown.root:pre_gen_el_pt nom:lstore_outdirs/v34/t2/MC2016_Summer16_TTJets_powheg.root:pre_gen_el_pt
 python jobsums/get_shapes.py --norm-binwidth --no-std-path --formula "isrup:nom:isrdown" isrup:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root:pre_gen_el_pt isrdown:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root:pre_gen_el_pt nom:lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root:pre_gen_el_pt
@@ -86,6 +179,7 @@ nom:
 isrup:
 0.966180
 0.966324
+
 
 ## check the N events having gen leptons
 
@@ -216,10 +310,46 @@ isrdown_el_taucut - nom_el_taucut
 
 -- tau cuts only!!!
 
+
+## the el-mu difference per statistical uncertainty
+
+root -l lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg.root
+root -l lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrup.root
+root -l lstore_outdirs/v34/t3/MC2016_Summer16_TTJets_powheg_isrdown.root
+
+cut_ev_eltau->GetBinContent(1) / all_ev_eltau->GetBinContent(1)
+cut_ev_mutau->GetBinContent(1) / all_ev_mutau->GetBinContent(1)
+
+              el       mu
+isrup   0.183581 0.183696
+nom     0.183309 0.183190
+isrdown 0.182129 0.182958
+
+cut_ev_mutau->GetBinContent(1) / all_ev_eltau->GetBinContent(1)
+(double) 0.182613
+
+cut_ev_eltau->GetBinContent(1) / all_ev_mutau->GetBinContent(1)
+(double) 0.182473
+
+
 (all_ev_eltau->GetBinContent(1) - all_ev_mutau->GetBinContent(1)) / sqrt((all_ev_eltau->GetBinContent(1) + all_ev_mutau->GetBinContent(1))*0.5)
 (double) 2.83428
 
+and at cut steps
+
+(cut_ev_eltau->GetBinContent(1) - cut_ev_mutau->GetBinContent(1)) / sqrt((cut_ev_eltau->GetBinContent(1) + cut_ev_mutau->GetBinContent(1))*0.5)
+
+nom      -0.822783  -0.0543454
+isrup    -0.383495  -0.575477
+isrdown   2.83428   -1.70413
+
 number of all eltau events is 3sigma above the number of mutau in isrdown
+and the number of passing eltau events is 1.7sigma bellow
+hence the large difference in the ratio of passing/all events
+
+can this be a statistical flucatuation?
+
+
 let's try normalizing to muon yield
 
 ctr_cut_ev_eltau->GetBinContent(1+3) / all_ev_mutau->GetBinContent(1)
@@ -294,7 +424,7 @@ nom_el = [ 0.848275 0.848275 0.695915 0.253200 0.187230 0.187230 0.183309 0.1810
 isrdown_el     = [ 0.848384 0.848384 0.695994 0.252162 0.185912 0.185912 0.182129 0.179843 0.175831 ]
 isrdown_el_num = [ 0.847788 0.847788 0.696196 0.306360 0.186109 0.186109 0.182371 0.180066 0.175984 ]
 
---- 1 out of 12 closer...
+--- only 1 out of 12 closer...
 
 
 
@@ -335,7 +465,10 @@ nom
 
 -- yep
 
-check the kinematics at the tau cuts
+
+
+
+## check the kinematics at the tau cuts
 
 I did not save the weighted kinematics! check unweighted counters!
 
