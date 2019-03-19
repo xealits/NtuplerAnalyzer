@@ -1,3 +1,6 @@
+python get_shapes.py --norm-binwidth --y-range 0,0.01 --formula "el:mu" el:distrs/v25v26_redo_4_mc.root:el_sel/tt_eltau/NOMINAL/Mt_lep_met_f mu:distrs/v25v26_redo_4_mc.root:mu_sel/tt_mutau/NOMINAL/Mt_lep_met_f
+
+
 # the fitting stuff
 
 
