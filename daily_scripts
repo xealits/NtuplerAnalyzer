@@ -4,12 +4,134 @@
 
 ## refitting old datacards
 
-make fit_unc nn=el_orig1 workspace=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root
-make fit_unc nn=mu_orig1 workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root
-make fit_unc nn=bt_orig1 workspace=ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root
+make fit_unc nn=el_orig1 workspace=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   &
+make fit_unc nn=mu_orig1 workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   &
+make fit_unc nn=bt_orig1 workspace=ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root &
+
+make impacts nn=el_orig1 workspace=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   &
+make impacts nn=mu_orig1 workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   &
+make impacts nn=bt_orig1 workspace=ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root &
+
+-- how close are they?
+   what's the impact of mis-ID?
+
+python new_impact_table.py --merge-pdf latest_impacts_el_orig1.json  latest_impacts_mu_orig1.json latest_impacts_bt_orig1.json
+
+$\tauh$ jet identification  &  5.1 &  4.7 &  4.5 \\
+       pileup uncertainty  &  2.9 &  2.4 &  2.5 \\
+$\tauh$ misidentification background  &  2.8 &  2.5 &  2.4 \\
+        top quark $p_{T}$  &  2.9 &  3.0 &  2.3 \\
+        QCD normalization  &  0.2 &  1.2 &  1.4 \\
+     b-tagging efficiency  &  1.6 &  1.5 &  1.4 \\
+     W+jets normalization  &  0.3 &  1.1 &  1.1 \\
+       muon ID efficiency  &  0.7 &  0.7 \\
+         DY normalization  &  0.3 &  0.3 &  0.6 \\
+ Single Top normalization  &  0.6 &  0.5 &  0.4 \\
+electron trigger efficiency  &  2.6 &  0.4 \\
+  muon trigger efficiency  &  0.4 &  0.3 \\
+   electron ID efficiency  &  1.9 &  0.3 \\
+     $\tauh$ Energy Scale  &  0.3 &  0.4 &  0.3 \\
+    jet energy resolution  &  0.1 &  0.1 &  0.2 \\
+         jet energy scale  &  0.3 &  0.2 &  0.1 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  2.7 &  2.6 &  2.7 \\
+  final   state radiation  &  2.2 &  1.6 &  1.8 \\
+  initial state radiation  &  1.9 &  1.3 &  1.3 \\
+ME combined scale variation  &  0.6 &  1.1 &  0.9 \\
+ ME Renormalization scale  &  0.8 &  1.2 &  0.9 \\
+   ME-PS matching (hdamp)  &  0.2 &  0.6 &  0.6 \\
+underlying event (Pythia tune)  &  0.5 &  0.4 &  0.5 \\
+semi-leptonic b-hadron BRs  &  0.5 &  0.3 &  0.3 \\
+   ME Factorization scale  &  0.3 &  0.3 &  0.1 \\
+                      PDF  &  1.5 &  1.2 &  1.4 \\
+            MC statistics  &  2.4 &  1.7 &  1.8 \\
+
+
+the impacts
+in electron-tau are almost identical (PU changes the 2nd place with TOPPT due to correct normalization)
+and in muon tau too (PU also goes down the list, changes 3rd place with mis-ID)
+
+
+
+### readable pulls of nuisances withput PDF
+
+../scripts/text2workspace.py ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.txt
+../scripts/text2workspace.py ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.txt
+
+combine -M FitDiagnostics ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --name ElShape    --noMCbonly 0 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf_only &
+combine -M FitDiagnostics ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --name MuShape    --noMCbonly 0 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf_only &
+
+combine -M FitDiagnostics ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root   --name ElShape    --noMCbonly 0 --freezeParameters lumi_13TeV,prop_binel_sel_ljout_bin8,prop_binel_sel_ljout_bin7,prop_binel_sel_ljout_bin6,prop_binel_sel_ljout_bin5,prop_binel_sel_ljout_bin4,prop_binel_sel_ljout_bin3,prop_binel_sel_ljout_bin2,prop_binel_sel_ljout_bin1,prop_binel_sel_ljout_bin0,prop_binel_sel_lj_bin8,prop_binel_sel_lj_bin7,prop_binel_sel_lj_bin6,prop_binel_sel_lj_bin5,prop_binel_sel_lj_bin4,prop_binel_sel_lj_bin3,prop_binel_sel_lj_bin2,prop_binel_sel_lj_bin1,prop_binel_sel_lj_bin0 --freezeNuisanceGroup tt_th_pdf_only &
+combine -M FitDiagnostics ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root   --name MuShape    --noMCbonly 0 --freezeParameters lumi_13TeV,prop_binmu_sel_ljout_bin8,prop_binmu_sel_ljout_bin7,prop_binmu_sel_ljout_bin6,prop_binmu_sel_ljout_bin5,prop_binmu_sel_ljout_bin4,prop_binmu_sel_ljout_bin3,prop_binmu_sel_ljout_bin2,prop_binmu_sel_ljout_bin1,prop_binmu_sel_ljout_bin0,prop_binmu_sel_lj_bin8,prop_binmu_sel_lj_bin7,prop_binmu_sel_lj_bin6,prop_binmu_sel_lj_bin5,prop_binmu_sel_lj_bin4,prop_binmu_sel_lj_bin3,prop_binmu_sel_lj_bin2,prop_binmu_sel_lj_bin1,prop_binmu_sel_lj_bin0 --freezeNuisanceGroup tt_th_pdf_only &
+
+
+combine -M FitDiagnostics ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms.root --name BothShape  --noMCbonly 0 --freezeParameters lumi_13TeV
+
+Produce nuisances with custom script which skips background-only step:
+
+python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsElShape.root   -g pulls_of_nuisances_el_shape.root   -o
+python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsMuShape.root   -g pulls_of_nuisances_mu_shape.root   -o
+
+python fit-stuff/diffNuisances.py fitDiagnosticsBothShape.root -g pulls_of_nuisances_both_shape.root -o
+
+
 
 ### the impacts with mis-ID 20%
 
+vim -p ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_misID20.txt ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_misID20.txt ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_misID20.txt
+
+../scripts/text2workspace.py ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_misID20.txt
+../scripts/text2workspace.py ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_misID20.txt
+../scripts/text2workspace.py ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_misID20.txt
+
+make impacts nn=el_orig1_misID20 workspace=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_misID20.root   &
+make impacts nn=mu_orig1_misID20 workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_misID20.root   &
+make impacts nn=bt_orig1_misID20 workspace=ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_misID20.root &
+
+fakes go far down, rest is similar
+
+python new_impact_table.py --merge-pdf latest_impacts_el_orig1_misID20.json  latest_impacts_mu_orig1_misID20.json latest_impacts_bt_orig1_misID20.json
+
+$\tauh$ jet identification  &  5.1 &  4.7 &  4.5 \\
+        top quark $p_{T}$  &  3.0 &  3.0 &  2.4 \\
+       pileup uncertainty  &  2.8 &  2.3 &  2.3 \\
+     b-tagging efficiency  &  1.7 &  1.7 &  1.6 \\
+$\tauh$ misidentification background  &  1.7 &  1.4 &  1.5 \\
+        QCD normalization  &  0.1 &  1.2 &  1.4 \\
+     W+jets normalization  &  0.2 &  1.2 &  1.2 \\
+       muon ID efficiency  &  0.7 &  0.7 \\
+         DY normalization  &  0.3 &  0.4 &  0.7 \\
+ Single Top normalization  &  0.6 &  0.6 &  0.5 \\
+electron trigger efficiency  &  2.5 &  0.4 \\
+   electron ID efficiency  &  1.9 &  0.3 \\
+  muon trigger efficiency  &  0.4 &  0.3 \\
+         jet energy scale  &  0.2 &  0.1 &  0.2 \\
+     $\tauh$ Energy Scale  &  0.1 &  0.3 &  0.2 \\
+    jet energy resolution  &  0.1 &  0.0 &  0.2 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  2.5 &  2.4 &  2.6 \\
+  initial state radiation  &  2.0 &  1.5 &  1.5 \\
+ME combined scale variation  &  0.5 &  1.2 &  0.9 \\
+ ME Renormalization scale  &  0.8 &  1.3 &  0.9 \\
+underlying event (Pythia tune)  &  0.4 &  0.4 &  0.4 \\
+  final   state radiation  &  0.9 &  0.2 &  0.4 \\
+   ME-PS matching (hdamp)  &  0.0 &  0.5 &  0.4 \\
+semi-leptonic b-hadron BRs  &  0.5 &  0.3 &  0.3 \\
+   ME Factorization scale  &  0.4 &  0.3 &  0.1 \\
+                      PDF  &  1.4 &  1.2 &  1.2 \\
+            MC statistics  &  2.5 &  1.7 &  1.9 \\
+
+overall uncertainties
+
+el
+50%  9.06%
+20%  8.92%
+
+mu
+50%  7.20%
+20%  7.07%
 
 
 
@@ -93,10 +215,13 @@ plot1DScan.py --output scan_el_tight_noshape higgsCombineel_tight_noshapeFullUnc
 
 -- large "other syst"??
 
+
+## large "other systematics" 
+
 impacts:
 
-make impacts nn=el_tight_test workspace=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight_c.root
-make impacts nn=mu_tight_test workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight_c.root
+make impacts nn=el_tight_test workspace=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight_c.root &
+make impacts nn=mu_tight_test workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop_resub3_Tight_c.root &
 
 
 
