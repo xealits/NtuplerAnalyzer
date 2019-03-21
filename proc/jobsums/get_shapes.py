@@ -93,6 +93,7 @@ for i, fileparameter in enumerate(args.input_files):
 
     else:
         channel = process = systematic = distr = ''
+        opts = path_to_h
         if opts and len(opts.split('/')) == 4:
             channel, process, systematic, distr = opts.split('/')
         elif opts and len(opts.split('/')) == 3:
