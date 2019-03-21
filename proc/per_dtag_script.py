@@ -1,6 +1,6 @@
 dtags = {
 'MC2016_Summer16_DYJetsToLL_10to50_amcatnlo'   : ('dy', 18610),
-'MC2016_Summer16_DYJetsToLL_50toInf_madgraph'  : ('dy', 5765.4),
+'MC2016_Summer16_DYJetsToLL_50toInf_madgraph'  : ('dy', 6225.42), #5765.4),
 'MC2016_Summer16_QCD_HT-100-200'    : ('qcd', 27540000    * 0.0723985),
 'MC2016_Summer16_QCD_HT-200-300'    : ('qcd',  1717000    * 0.0967776),
 'MC2016_Summer16_QCD_HT-300-500'    : ('qcd',   351300    * 0.107775 ),
@@ -61,7 +61,7 @@ dtags = {
 'MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin'    : ('dibosons',  3.22   ),
 
 'MC2016_Summer16_WJets_amcatnlo'   : ('wjets', 61526.7),
-'MC2016_Summer16_WJets_madgraph'   : ('wjets', 50690 ),
+'MC2016_Summer16_WJets_madgraph'   : ('wjets', 52940), # 50690 ),
 'MC2016_Summer16_W1Jets_madgraph'  : ('wjets', 9493  ),
 'MC2016_Summer16_W2Jets_madgraph'  : ('wjets', 3120  ),
 'MC2016_Summer16_W3Jets_madgraph'  : ('wjets',  942.3),

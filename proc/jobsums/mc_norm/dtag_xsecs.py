@@ -13,9 +13,9 @@ br_tau_hadronic = 1 - br_tau_lepton;
 ttbar_xsec = 831.76;
 
 dtag_xsecs = {
-"MC2016_Summer16_DYJetsToLL_10to50_amcatnlo": 18610,
+"MC2016_Summer16_DYJetsToLL_10to50_amcatnlo":  18610,
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_": 18610,
-"MC2016_Summer16_DYJetsToLL_50toInf_madgraph": 5765.4, # but McM shows 4970
+"MC2016_Summer16_DYJetsToLL_50toInf_madgraph": 6225.42, #5765.4, # but McM shows 4970
 #"MC2016_Summer16_DYJetsToLL_50toInf_madgraph": 6025.2, # KIT TauTau uses this one FIXME: the DY x-section was updated by about 5%
 # link: https://github.com/cms-analysis/HiggsAnalysis-KITHiggsToTauTau/blob/704c2adb0148f62580c68d60dc309075639ff6e1/data/ArtusConfigs/Includes/settingsCrossSection.json
 # -- it's DY amcatnlo
@@ -197,8 +197,9 @@ dtag_xsecs = {
 ## TODO: need to replay this study..
 ## o.65 factor
 #"MC2016_Summer16_WJets_madgraph":  61526.7 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
-"MC2016_Summer16_WJets_madgraph":   50690 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
-"MC2016_Summer16_W0Jets_madgraph":  50690  , # with the NUP
+"MC2016_Summer16_WJets_madgraph_reduced":   52940 - 9493 - 3120 - 942.3 - 524.2, # 50690 - 9493 - 3120 - 942.3 - 524.2},
+"MC2016_Summer16_WJets_madgraph":   52940  , #50690  ,
+"MC2016_Summer16_W0Jets_madgraph":  52940  , #50690  , # with the NUP
 "MC2016_Summer16_W1Jets_madgraph":  9493   ,
 "MC2016_Summer16_W2Jets_madgraph":  3120   ,
 "MC2016_Summer16_W3Jets_madgraph":   942.3 ,
