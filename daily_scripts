@@ -1,9 +1,433 @@
+# final plots
+
+## the stat unc in the yields table
+
+python numbers_for_datacard.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -d Mt_lep_met_f -c el_sel,el_sel_lj,el_sel_ljout -y --sqrt-unc
+
+                                 process       el_sel    el_sel_lj   el_sel_ljout
+                                tt_eltau   $      7701 \pm         46 $   $      3010 \pm         29 $   $      4691 \pm         36 $
+                             tt_taultauh   $       450 \pm         11 $   $       170 \pm          7 $   $       280 \pm          9 $
+                                   tt_lj   $      3672 \pm         20 $   $      2215 \pm         16 $   $      1457 \pm         13 $
+                                tt_taulj   $       194 \pm          5 $   $       118 \pm          4 $   $        76 \pm          3 $
+                                tt_other   $       160 \pm          5 $   $        60 \pm          3 $   $       100 \pm          4 $
+                             s_top_eltau   $       427 \pm          8 $   $       152 \pm          5 $   $       274 \pm          6 $
+                             s_top_other   $        52 \pm          2 $   $        21 \pm          1 $   $        31 \pm          2 $
+                                s_top_lj   $       319 \pm          4 $   $       151 \pm          3 $   $       169 \pm          3 $
+                               dy_tautau   $       293 \pm         19 $   $       103 \pm         13 $   $       190 \pm         14 $
+                                dy_other   $       137 \pm         11 $   $        34 \pm          6 $   $       103 \pm          9 $
+                             wjets_other   $       436 \pm         11 $   $       194 \pm         10 $   $       241 \pm          6 $
+                              wjets_taul   $        14 \pm          2 $   $         7 \pm          1 $   $         7 \pm          1 $
+                              wjets_tauh   $         1 \pm          1 $   $         0 \pm          0 $   $         1 \pm          1 $
+                                dibosons   $        44 \pm          3 $   $        13 \pm          1 $   $        31 \pm          2 $
+                                     qcd   $       463 \pm         32 $   $       136 \pm         21 $   $       327 \pm         24 $
+aaa!
+                                mc_resum    14364.069     6383.362     7980.707
+                                   total   $     14364 \pm         67 $   $      6383 \pm         44 $   $      7981 \pm         50 $
+                                    data   $     14096 \pm        120 $   $      6190 \pm         79 $   $      7906 \pm         90 $
+
+
+--- a bit more MC than in AN.... data is on the spot (data was from v23?)
+
+python numbers_for_datacard.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -d Mt_lep_met_f -c mu_sel,mu_sel_lj,mu_sel_ljout -y --sqrt-unc
+
+                                 process       mu_sel    mu_sel_lj   mu_sel_ljout
+                                tt_mutau   $     13062 \pm         61 $   $      5136 \pm         38 $   $      7926 \pm         47 $
+                             tt_taultauh   $       845 \pm         15 $   $       328 \pm          9 $   $       517 \pm         12 $
+                                   tt_lj   $      6289 \pm         27 $   $      3757 \pm         21 $   $      2532 \pm         17 $
+                                tt_taulj   $       401 \pm          7 $   $       240 \pm          5 $   $       161 \pm          4 $
+                                tt_other   $       285 \pm          6 $   $       104 \pm          4 $   $       181 \pm          5 $
+                             s_top_mutau   $       682 \pm         10 $   $       232 \pm          6 $   $       450 \pm          8 $
+                             s_top_other   $       101 \pm          3 $   $        40 \pm          2 $   $        61 \pm          2 $
+                                s_top_lj   $       531 \pm          6 $   $       235 \pm          4 $   $       296 \pm          4 $
+                               dy_tautau   $       624 \pm         28 $   $       200 \pm         15 $   $       424 \pm         24 $
+                                dy_other   $        84 \pm         10 $   $        22 \pm          5 $   $        62 \pm          8 $
+                             wjets_other   $       738 \pm         12 $   $       303 \pm          8 $   $       434 \pm          8 $
+                              wjets_taul   $        27 \pm          2 $   $        11 \pm          1 $   $        16 \pm          2 $
+                              wjets_tauh   $         0 \pm          0 $   $         0 \pm          0 $   $         0 \pm          0 $
+                                dibosons   $        84 \pm          4 $   $        25 \pm          2 $   $        58 \pm          3 $
+                                     qcd   $       430 \pm         25 $   $       173 \pm         15 $   $       258 \pm         19 $
+aaa!
+                                mc_resum    24181.955    10805.584    13376.781
+                                   total   $     24182 \pm         81 $   $     10806 \pm         52 $   $     13377 \pm         62 $
+                                    data   $     23801 \pm        155 $   $     10251 \pm        102 $   $     13550 \pm        117 $
+
+-- again same data, more MC
+
+
+
+
+
+## OS/SS factor plot with vertical lines for iso region
+
+ok muons
+
+python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleMuon.root -o plots/answers_to_paper-draft-3_an-version-7/ --lumi 34800 --osss -c ctr_old_mu_presel_alliso -p -d lep_relIso --wjets 0.8 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "relative Isolation of muon" --y-range 0,1.5 --vert-lines 0.15
+
+python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleMuon.root        -o plots/answers_to_paper-draft-3_an-version-7/ --lumi 34800 --osss -c ctr_old_mu_presel_alliso -p -d lep_relIso --wjets 0.8 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "relative Isolation of muon" --y-range 0,1.5 --vert-lines 0.15
+
+muons
+
+python stack_plot.py v23p1_mc.root ../merge-sets/v23/p1_data/SingleMuon.root     -o plots/answers_to_paper-draft-3_an-version-7/ --lumi 32800 --osss -c ctr_old_mu_presel_alliso -p -d lep_relIso --wjets 0.8 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "relative Isolation of muon" --y-range 0,1.2
+
+
+
+v23p1
+
+python stack_plot.py ../sw-dir/jobsums/mc_norm/v23p1_backups/v23p1_mc_fast.root ../sw-dir/jobsums/mc_norm/v23p1_backups/v23p1_mc_fast.root   -o plots/answers_to_paper-draft-3_an-version-7/ --lumi 30000 --osss -c ctr_old_el_presel_alliso -p -d lep_relIso_el --lumi 30000 --wjets 0.8 --factor-dy 1.05 --lumi-label 31300 --title "" --title-x "relative Isolation of electron" --y-range 0,1.2
+
+-- no v23 data is left after the removals.........................!
+
+mix v27 data:
+
+python stack_plot.py ../sw-dir/jobsums/mc_norm/v23p1_backups/v23p1_mc_fast.root ../lstore_outdirs/merge-sets/v27/p1/SingleElectron.root   -o plots/answers_to_paper-draft-3_an-version-7/ --lumi 30000 --osss -c ctr_old_el_presel_alliso -p -d lep_relIso_el --lumi 30000 --wjets 0.8 --factor-dy 1.05 --lumi-label 31300 --title "" --title-x "relative Isolation of electron" --y-range 0,1.2
+
+-- no, same last bin problem
+
+
+no ss:
+
+../sw-dir/jobsums/plots/paper-draft-1_an-version-3/v23p1_mc_HISTOSEL_lep_relIso_el_ctr_old_el_presel_alliso_NOMINAL.root
+
+with ss:
+../sw-dir/jobsums/mc_norm/v23p1_backups/v23p1_mc_fast.root
+
+
+hadd v27p1_
+../sw-dir/jobsums/histosel-roots/mc_v27p1_HISTOSEL_lep_relIso_ctr_old_el_presel_alliso_NOMINAL.root
+../sw-dir/jobsums/histosel-roots/mc_v27p1_HISTOSEL_lep_relIso_el_ctr_old_el_presel_alliso_ss_NOMINAL.root
+
+
+and in v27
+
+python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleElectron.root    -o plots/answers_to_paper-draft-3_an-version-7/ --lumi 31300 --osss -c ctr_old_el_presel_alliso -p -d lep_relIso_el --wjets 0.8 --factor-dy 1.05 --y-range 0,1.4
+
+-- last bin is a bit up
+
+../sw-dir/jobsums/mc_v27p1_amcatnlo1.root
+
+python stack_plot.py ../sw-dir/jobsums/mc_v27p1_amcatnlo1.root ../lstore_outdirs/merge-sets/v27/p1/SingleElectron.root    -o plots/answers_to_paper-draft-3_an-version-7/ --lumi 31300 --osss -c ctr_old_el_presel_alliso -p -d lep_relIso_el --wjets 0.8 --factor-dy 1.05 --y-range 0,1.5 --title "" --title-x "relative Isolation of electron"  --vert-lines 0.058
+
+-- same bin up
+
+v28 data? -- pF does not have antiiso
+
+another v27?
+pR10 -- no antiiso
+
+
+
+## mT shape in signal- and background-enriched categories
+
+python get_shapes.py --norm-binwidth --formula "sig-enriched:bckg-enriched" sig-enriched:histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root:el_sel_ljout/tt_eltau/NOMINAL/Mt_lep_met_f   bckg-enriched:histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root:el_sel_lj/tt_eltau/NOMINAL/Mt_lep_met_f
+
+python get_shapes.py --norm-binwidth --formula "sig-enriched:bckg-enriched" sig-enriched:histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root:mu_sel_ljout/tt_mutau/NOMINAL/Mt_lep_met_f   bckg-enriched:histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root:mu_sel_lj/tt_mutau/NOMINAL/Mt_lep_met_f
+
+-- there is a slight difference, but within the stats?
+
+python get_shapes.py --norm-binwidth --formula "s_sig-enriched:s_bckg-enriched:b_sig-enriched:b_bckg-enriched" s_sig-enriched:histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root:mu_sel_ljout/tt_mutau/NOMINAL/Mt_lep_met_f   s_bckg-enriched:histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root:mu_sel_lj/tt_mutau/NOMINAL/Mt_lep_met_f   b_sig-enriched:histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root:mu_sel_ljout/tt_lj/NOMINAL/Mt_lep_met_f   b_bckg-enriched:histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root:mu_sel_lj/tt_lj/NOMINAL/Mt_lep_met_f
+
+-- yeah, the difference with backgrounds is much stronger
+
+python get_shapes.py --y-range 0,0.015 --left-title --x-title "M_{T}(e, MET) [GeV]" --y-title "arbitrary units" --outname compare_Mt_shape_signal-bckg_tt-eltau-tt-eljets_sigrich.png.png --norm-binwidth --formula "signal:background" signal:distrs/distrs_v25v26_resub3_mc.root:el_sel_ljout/tt_eltau/NOMINAL/Mt_lep_met_c   background:distrs/distrs_v25v26_resub3_mc.root:el_sel_ljout/tt_lj/NOMINAL/Mt_lep_met_c
+
+python get_shapes.py --y-range 0,0.015 --left-title --x-title "M_{T}(e, MET) [GeV]" --y-title "arbitrary units" --outname compare_Mt_shape_signal-bckg_tt-eltau-tt-eljets_bkgrich.png.png --norm-binwidth --formula "signal:background" signal:distrs/distrs_v25v26_resub3_mc.root:el_sel_lj/tt_eltau/NOMINAL/Mt_lep_met_c   background:distrs/distrs_v25v26_resub3_mc.root:el_sel_lj/tt_lj/NOMINAL/Mt_lep_met_c
+
+python get_shapes.py --y-range 0,0.015 --left-title --x-title "M_{T}(#mu, MET) [GeV]" --y-title "arbitrary units" --outname compare_Mt_shape_signal-bckg_tt-mutau-tt-mujets_sigrich.png.png --norm-binwidth --formula "signal:background" signal:distrs/distrs_v25v26_resub3_mc.root:mu_sel_ljout/tt_mutau/NOMINAL/Mt_lep_met_c   background:distrs/distrs_v25v26_resub3_mc.root:mu_sel_ljout/tt_lj/NOMINAL/Mt_lep_met_c
+
+python get_shapes.py --y-range 0,0.015 --left-title --x-title "M_{T}(#mu, MET) [GeV]" --y-title "arbitrary units" --outname compare_Mt_shape_signal-bckg_tt-mutau-tt-mujets_bkgrich.png.png --norm-binwidth --formula "signal:background" signal:distrs/distrs_v25v26_resub3_mc.root:mu_sel_lj/tt_mutau/NOMINAL/Mt_lep_met_c   background:distrs/distrs_v25v26_resub3_mc.root:mu_sel_lj/tt_lj/NOMINAL/Mt_lep_met_c
+
+-- yeah, the peak of bckg is sharper in sigrich....
+
+
+## all the systematic variations
+
+ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.root
+ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.root
+
+histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root
+
+PUUp,PUDown
+TOPPTUp,TOPPTDown
+
+bSFUp,bSFDown
+TESUp,TESDown
+JESUp,JESDown
+JERUp,JERDown
+
+FragUp,FragDown
+PetersonUp,PetersonDown
+SemilepBRUp,SemilepBRDown
+
+MfUp,MfDown
+MfrUp,MfrDown
+MrUp,MrDown
+
+LEPelIDUp
+LEPelIDDown
+LEPelTRGUp
+LEPelTRGDown
+
+LEPmuIDUp
+LEPmuIDDown
+LEPmuTRGUp
+LEPmuTRGDown
+
+test:
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root --y-max 1500 -c el_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname el_sel_lj_all_Mt_lep_met_f_PUUp,PUDown.png
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root --y-max 1500 -c el_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname el_sel_ljout_all_Mt_lep_met_f_PUUp,PUDown.png
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root --y-max 2500 -c mu_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname mu_sel_lj_all_Mt_lep_met_f_PUUp,PUDown.png
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root --y-max 2500 -c mu_sel_ljout -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname mu_sel_ljout_all_Mt_lep_met_f_PUUp,PUDown.png
+
+with Tight selection:
+
+./histosels/HISTOSELS_redo_v25v26_resub3_shaped.root
+./histosels/HISTOSELS_redo_v25v26_resub3_noshapes.root
+
+python mc_per_sys.py --ratio-range 0.1 ./histosels/HISTOSELS_redo_v25v26_resub3_shaped.root   --y-max 1500 -c el_selTight_lj    -d Mt_lep_met_c -s PUUp,PUDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname el_sel_lj_all_Mt_lep_met_f_PUUp,PUDown_Tight_shaped.png
+python mc_per_sys.py --ratio-range 0.1 ./histosels/HISTOSELS_redo_v25v26_resub3_noshapes.root --y-max 1500 -c el_selTight_lj    -d Mt_lep_met_c -s PUUp,PUDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname el_sel_lj_all_Mt_lep_met_f_PUUp,PUDown_Tight_noshapes.png
+
+-- shaped has much smaller band
+
+try this for MC stat:
+
+python mc_per_sys.py --ratio-range 0.1 histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root --y-max 1500 -c el_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname el_sel_lj_all_Mt_lep_met_f_PUUp,PUDown_std.png
+python mc_per_sys.py --ratio-range 0.1 ./histosels/redo-v25-v26_1/HISTOSELS_redo_v25_v26_1.root --y-max 1500 -c el_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname el_sel_lj_all_Mt_lep_met_f_PUUp,PUDown_another.png
+
+-- same shade size
+
+
+foreach sysdef (PUUp,PUDown)
+
+foreach sysdef (PUUp,PUDown TOPPTUp,TOPPTDown bSFUp,bSFDown TESUp,TESDown JESUp,JESDown JERUp,JERDown FragUp,FragDown PetersonUp,PetersonDown SemilepBRUp,SemilepBRDown MfUp,MfDown MfrUp,MfrDown MrUp,MrDown)
+python mc_per_sys.py --ratio-range 0.1 --y-max 1500. histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -c el_sel_lj    -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname el_sel_lj_all_Mt_lep_met_f_$sysdef.png
+python mc_per_sys.py --ratio-range 0.1 --y-max 1500. histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -c el_sel_ljout -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname el_sel_ljout_all_Mt_lep_met_f_$sysdef.png
+
+python mc_per_sys.py --ratio-range 0.1 --y-max 2500. histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -c mu_sel_lj    -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname mu_sel_lj_all_Mt_lep_met_f_$sysdef.png
+python mc_per_sys.py --ratio-range 0.1 --y-max 2500. histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -c mu_sel_ljout -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname mu_sel_ljout_all_Mt_lep_met_f_$sysdef.png
+end
+
+
+foreach sysdef ( LEPelIDUp,LEPelIDDown LEPelTRGUp,LEPelTRGDown)
+python mc_per_sys.py --ratio-range 0.1 --y-max 1500 histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -c el_sel_lj    -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname el_sel_lj_all_Mt_lep_met_f_$sysdef.png
+python mc_per_sys.py --ratio-range 0.1 --y-max 1500 histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -c el_sel_ljout -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname el_sel_ljout_all_Mt_lep_met_f_$sysdef.png
+end
+
+foreach sysdef ( LEPmuIDUp,LEPmuIDDown LEPmuTRGUp,LEPmuTRGDown)
+python mc_per_sys.py --ratio-range 0.1 --y-max 2500. histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -c mu_sel_lj    -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname mu_sel_lj_all_Mt_lep_met_f_$sysdef.png
+python mc_per_sys.py --ratio-range 0.1 --y-max 2500. histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -c mu_sel_ljout -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname mu_sel_ljout_all_Mt_lep_met_f_$sysdef.png
+end
+
+
+
+python mc_per_sys.py --y-max 80. plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root -c el_sel_lj    -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-var_tauid-misid/ --outname el_sel_lj_all_Mt_lep_met_f_TauMisIDUp,TauMisIDDown.png
+python mc_per_sys.py --y-max 80. plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root -c el_sel_ljout -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-var_tauid-misid/ --outname el_sel_ljout_all_Mt_lep_met_f_$sysdef.png
+
+python mc_per_sys.py --y-max 150. plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root -c mu_sel_lj    -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-var_tauid-misid/ --outname mu_sel_lj_all_Mt_lep_met_f_$sysdef.png
+python mc_per_sys.py --y-max 150. plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root -c mu_sel_ljout -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-var_tauid-misid/ --outname mu_sel_ljout_all_Mt_lep_met_f_$sysdef.png
+
+
+
+### the tau ID and tau mis-ID variation
+
+distrs/distrs_redo_v25v26_alldata_4.root
+
+root [4] mu_sel->Get("data/NOMINAL/mu_sel_data_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = mu_sel_data_NOMINAL_Mt_lep_met_f, Entries= 24147, Total sum= 23801
+
+and histosel:
+
+root [1] mu_sel->Get("data/NOMINAL/mu_sel_data_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = mu_sel_data_NOMINAL_Mt_lep_met_f, Entries= 24147, Total sum= 23801
+
+-- same
+
+try the tauID and misID
+
+python stack_plot.py distrs/distrs_redo_v25v26_alldata_4.root distrs/distrs_redo_v25v26_alldata_4.root  -o plots/distrs_redo_v25v26_alldata_4_sys_var_tauID_misID/ -p -r -c mu_sel --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8
+
+python stack_plot.py distrs/distrs_redo_v25v26_alldata_4.root distrs/distrs_redo_v25v26_alldata_4.root  -o plots/distrs_redo_v25v26_alldata_4_sys_var_tauID_misID/ -p -r -c el_sel --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8
+
+-- no el data
+
+lrwxrwxrwx 1 olek t3cms 42 Jan  9 13:25 ../quick-test/v25v26-resub4_hadds/SingleElectron.root -> ../v25v26-resub3_hadds/SingleElectron.root
+lrwxrwxrwx 1 olek t3cms 38 Jan  9 13:25 ../quick-test/v25v26-resub4_hadds/SingleMuon.root -> ../v25v26-resub3_hadds/SingleMuon.root
+
+[olek@fermi04 jobsums]$ root -l ../quick-test/v25v26-resub4_hadds/SingleElectron.root 
+root [2] el_sel->Get("data/NOMINAL/el_sel_data_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = el_sel_data_NOMINAL_Mt_lep_met_f, Entries= 14383, Total sum= 14096
+
+python stack_plot.py distrs/distrs_redo_v25v26_alldata_4.root ../quick-test/v25v26-resub4_hadds/SingleElectron.root  -o plots/distrs_redo_v25v26_alldata_4_sys_var_tauID_misID/ -p -r -c el_sel --data-nick data -d Mt_lep_met_c --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8
+
+    qcd_hist = data_hist - mc_hist
+TypeError: unsupported operand type(s) for -: 'TH1F' and 'TH1D'
+
+???
+
+python stack_plot.py distrs/v25v26_redo_4_mc.root ../quick-test/v25v26-resub4_hadds/SingleElectron.root  -o plots/distrs_redo_v25v26_alldata_4_sys_var_tauID_misID/ -p -r -c el_sel --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8
+
+from histos_1
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/ -p -r -c el_sel       --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/ -p -r -c el_sel_lj    --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/ -p -r -c el_sel_ljout --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/ -p -r -c mu_sel_lj    --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/ -p -r -c mu_sel_ljout --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8
+
+-- ok
+
+produce the variations from NOMINAL distrs:
+
+nominals
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c mu_sel_lj    --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c mu_sel_ljout --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c el_sel_lj    --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c el_sel_ljout --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8
+
+tauID
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c mu_sel_lj    --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDDown --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:0.95
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c mu_sel_ljout --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDDown --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:0.95
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c mu_sel_lj    --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDUp   --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:1.05
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c mu_sel_ljout --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDUp   --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:1.05
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c el_sel_lj    --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDDown --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:0.95
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c el_sel_ljout --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDDown --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:0.95
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c el_sel_lj    --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDUp   --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:1.05
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c el_sel_ljout --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDUp   --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:1.05
+
+misID
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c mu_sel_lj    --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:0.5
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c mu_sel_ljout --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:0.5
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c mu_sel_lj    --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:1.5
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleMuon.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c mu_sel_ljout --data-nick data -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:1.5
+
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c el_sel_lj    --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:0.5
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c el_sel_ljout --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:0.5
+
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c el_sel_lj    --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:1.5
+python stack_plot.py distrs/distrs_v25v26resub2_mc_noqcd.root ../quick-test/v25v26-resub2_hadds/SingleElectron.root  -o plots/distrs_v25v26resub2_sys_var_tauID_misID/  -c el_sel_ljout --data-nick data -d Mt_lep_met_f --bin-norm --lumi 31300 --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:1.5
+
+hadd plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/distrs*root
+
+variations of the MC sum:
+
+python mc_per_sys.py --y-max 80. plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root -c el_sel_lj    -d Mt_lep_met_f -s TauIDUp,TauIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname el_sel_lj_all_Mt_lep_met_f_TauIDUp,TauIDDown.png
+python mc_per_sys.py --y-max 80. plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root -c el_sel_ljout -d Mt_lep_met_f -s TauIDUp,TauIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname el_sel_ljout_all_Mt_lep_met_f_TauIDUp,TauIDDown.png
+
+python mc_per_sys.py --y-max 150. plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root -c mu_sel_lj    -d Mt_lep_met_f -s TauIDUp,TauIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname mu_sel_lj_all_Mt_lep_met_f_TauIDUp,TauIDDown.png
+python mc_per_sys.py --y-max 150. plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root -c mu_sel_ljout -d Mt_lep_met_f -s TauIDUp,TauIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname mu_sel_ljout_all_Mt_lep_met_f_TauIDUp,TauIDDown.png
+
+
+python mc_per_sys.py --y-max 80. plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root -c el_sel_lj    -d Mt_lep_met_f -s TauMisIDUp,TauMisIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname el_sel_lj_all_Mt_lep_met_f_TauMisIDUp,TauMisIDDown.png
+python mc_per_sys.py --y-max 80. plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root -c el_sel_ljout -d Mt_lep_met_f -s TauMisIDUp,TauMisIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname el_sel_ljout_all_Mt_lep_met_f_TauMisIDUp,TauMisIDDown.png
+
+python mc_per_sys.py --y-max 150. plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root -c mu_sel_lj    -d Mt_lep_met_f -s TauMisIDUp,TauMisIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname mu_sel_lj_all_Mt_lep_met_f_TauMisIDUp,TauMisIDDown.png
+python mc_per_sys.py --y-max 150. plots/distrs_v25v26resub2_sys_var_tauID_misID/distrs/histosel.root -c mu_sel_ljout -d Mt_lep_met_f -s TauMisIDUp,TauMisIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname mu_sel_ljout_all_Mt_lep_met_f_TauMisIDUp,TauMisIDDown.png
+
+
+el lj     80
+el ljout  80
+mu lj    150
+mu ljout 150
+
+TODO: automate, write it up in the Makefile
+
+
+### tauID and misID in old files -- not implemented all necessary stuff in the mc_per_sys
+
+old files:
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -p tt_lj -c el_sel_lj    -d Mt_lep_met_f -s PUUp,PUDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]"
+
+
+
+## difference in el and mu shapes
+
 python get_shapes.py --norm-binwidth --y-range 0,0.01 --formula "el:mu" el:distrs/v25v26_redo_4_mc.root:el_sel/tt_eltau/NOMINAL/Mt_lep_met_f mu:distrs/v25v26_redo_4_mc.root:mu_sel/tt_mutau/NOMINAL/Mt_lep_met_f
+
+## wjets control region
+
+-- not enough inclusive WJets
+weight
+"MC2016_Summer16_WJets_madgraph" : 51952262.172543,
+instead 85737026.803850,
+
+-- plugged new weights
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleMuon.root -o plots/v37_test5_bunch1/ -p -r -c wjets_mu --data-nick data_other -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.95
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c wjets_el --data-nick data_other -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd-factor 2.5 --overwrite --wjets 0.95
+
+-- the weight for MC QCD is 2.5 in electron channel
+   plus couple of bins with gigantic error
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wNjets.root distrs/v37_test5_bunch1/SingleMuon.root -o plots/v37_test5_bunch1/ -p -r -c wjets_mu --data-nick data_other -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 1.4
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wNjets.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c wjets_el --data-nick data_other -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd-factor 2.8 --overwrite --wjets 1.4
+
+??? 1.4 for WJets ???
+
+### the control plots for the deviation
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleMuon.root     -o plots/v37_test5_bunch1/ -p -r -c wjets_mu --data-nick data_other -d lep_eta --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.95
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c wjets_el --data-nick data_other -d lep_eta --bin-norm --lumi 35800 --qcd-factor 2.5 --overwrite --wjets 0.95
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleMuon.root     -o plots/v37_test5_bunch1/ -p -r -c wjets_mu --data-nick data_other -d lep_pt --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.95
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c wjets_el --data-nick data_other -d lep_pt --bin-norm --lumi 35800 --qcd-factor 2.5 --overwrite --wjets 0.95
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleMuon.root     -o plots/v37_test5_bunch1/ -p -r -c wjets_mu --data-nick data_other -d met_c --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.95
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c wjets_el --data-nick data_other -d met_c --bin-norm --lumi 35800 --qcd-factor 2.5 --overwrite --wjets 0.95
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleMuon.root     -o plots/v37_test5_bunch1/ -p -r -c wjets_mu --data-nick data_other -d phi_met_lep --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.95
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c wjets_el --data-nick data_other -d phi_met_lep --bin-norm --lumi 35800 --qcd-factor 2.5 --overwrite --wjets 0.95
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleMuon.root     -o plots/v37_test5_bunch1/ -p -r -c wjets_mu --data-nick data_other -d cos_phi_met_lep --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.95
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c wjets_el --data-nick data_other -d cos_phi_met_lep --bin-norm --lumi 35800 --qcd-factor 2.5 --overwrite --wjets 0.95
+
+
+## dy dilepton mass
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleMuon.root     -o plots/v37_test5_bunch1/ -p -r -c dy_mumu --data-nick data_other -d lep_pt --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.95 --factor-dy 1.1
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c dy_elel --data-nick data_other -d lep_pt --bin-norm --lumi 35800 --qcd-factor 2.5 --overwrite --wjets 0.95
+
+??? dy mumu needs 10% normalization correction but elel is ok ??? what's with lep efficiency SFs?
+   (also there is a tren at high pT?)
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleMuon.root     -o plots/v37_test5_bunch1/ -p -r -c dy_mumu --data-nick data_other -d lep_eta --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.95 --factor-dy 1.1
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c dy_elel --data-nick data_other -d lep_eta --bin-norm --lumi 35800 --qcd-factor 2.5 --overwrite --wjets 0.95
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleMuon.root     -o plots/v37_test5_bunch1/ -p -r -c dy_mumu --data-nick data_other -d met_c --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.95 --factor-dy 1.1
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c dy_elel --data-nick data_other -d met_c --bin-norm --lumi 35800 --qcd-factor 2.5 --overwrite --wjets 0.95
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleMuon.root     -o plots/v37_test5_bunch1/ -p -r -c dy_mumu --data-nick data_other -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.95 --factor-dy 1.1
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c dy_elel --data-nick data_other -d Mt_lep_met_f --bin-norm --lumi 35800 --qcd-factor 2.5 --overwrite --wjets 0.95
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleMuon.root     -o plots/v37_test5_bunch1/ -p -r -c dy_mumu --data-nick data_other -d dilep_mass_dy --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.95 --factor-dy 1.1
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c dy_elel --data-nick data_other -d dilep_mass_dy --bin-norm --lumi 35800 --qcd-factor 2.5 --overwrite --wjets 0.95
+
+
+was not stored:
+
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleMuon.root     -o plots/v37_test5_bunch1/ -p -r -c dy_mumu --data-nick data_other -d met_init_f --bin-norm --lumi 35800 --qcd-factor 2.0 --overwrite --wjets 0.95 --factor-dy 1.1
+python stack_plot.py distrs/v37_test5_bunch1_mc_2_wjets_amcatnlo.root distrs/v37_test5_bunch1/SingleElectron.root -o plots/v37_test5_bunch1/ -p -r -c dy_elel --data-nick data_other -d met_init_f --bin-norm --lumi 35800 --qcd-factor 2.5 --overwrite --wjets 0.95
+
+??? dy mumu has large deviation at large met, slight at lep_pt and lep_eta, also dilep mass is as usual ???
+    and same deviations in elel, but to a smaller degree
+
 
 
 # the fitting stuff
-
-
 
 ## refitting old datacards
 
@@ -55,6 +479,7 @@ the impacts
 in electron-tau are almost identical (PU changes the 2nd place with TOPPT due to correct normalization)
 and in muon tau too (PU also goes down the list, changes 3rd place with mis-ID)
 
+SO THESE ARE GOOD
 
 
 ### readable pulls of nuisances withput PDF
@@ -2052,7 +2477,7 @@ python bunch_of_selections.py --set-sys nom --set-distrs "1,yield" lstore_outdir
 
 python bunch_of_selections.py --set-sys nom --set-distrs "1,yield" lstore_outdirs/merge-sets/v25v26/resub4/ quick-test/v25v26-resub4-yield/
 
--- save this in some coherent script file!
+TODO: -- save this in some coherent script file!
 
 python numbers_for_datacard.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout --no-sums -y --sqrt-unc
 

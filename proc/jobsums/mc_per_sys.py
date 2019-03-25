@@ -16,6 +16,8 @@ parser.add_argument("data_file", help="data file name")
 parser.add_argument("-c", "--channel",    type=str, default='mu_sel', help="selection channels of events to consider (can be a list of channels for shape evolution study)")
 parser.add_argument("-d", "--distr",      type=str, default='Mt_lep_met_f', help="distribution name")
 parser.add_argument('-s', '--systematic', type=str, default=None, help="systematics to include (SYS1,SYS2,...)")
+parser.add_argument('--rate-systematic',  type=str, default=None, help="(NOT IMPLEMENTED YET) systematics of rate variation sname1:procs1:rate1,sname2:procs2:rate2,... --- must correspond to the SYS1,SYS2 input")
+
 parser.add_argument('-p', '--process',    type=str, default=None, help="process to target, if given only the process is taken instead of sum of MC")
 
 parser.add_argument('--no-data',     action='store_true', help="don't draw data")
@@ -23,8 +25,10 @@ parser.add_argument('-r', '--ratio', action='store_true', help="add ratio plot")
 
 parser.add_argument('--add-titles', action='store_true', help="the left and right titles")
 parser.add_argument("--title-x", type=str, help="set title of X axis on the plot")
+parser.add_argument("--title",   type=str, help="title of the plot")
 
 parser.add_argument("-o", "--output-directory", type=str, default='./', help="optional output directory")
+parser.add_argument("--outname", type=str, help="set the output filename")
 
 parser.add_argument("--ratio-range", type=float, default=0.3, help="range of ratio plot (1-range 1+range)")
 parser.add_argument("--y-max",       type=float,              help="set the maximum on Y axis")
@@ -36,6 +40,11 @@ assert isfile(args.data_file)
 
 if args.systematic:
     sys_names = args.systematic.split(',') 
+    ## the rates substitute sys name and add a rate for given procs
+    #if args.rate_systematic:
+    #    sys_rates = [srate.split(':') for srate in args.rate_systematic.split(',')]
+    #else:
+    #    sys_rates = None
 else:
     exit(1)
 
@@ -88,7 +97,8 @@ if not args.no_data:
     data.Print()
     leg.AddEntry(data, "Data", "lep")
 
-sys_color = {'TOPPTUp': kBlue,
+sys_color = {}
+foobar = {'TOPPTUp': kBlue,
     'FragUp':   kBlue,
     'FragDown': kGreen,
     'PUUp':   kBlue,
@@ -101,12 +111,12 @@ sys_color = {'TOPPTUp': kBlue,
     'JESDown': kGreen + 1,
     'TESUp':   kBlue,
     'TESDown': kGreen + 1,
-    'ISRUp'   : kOrange,
-    'ISRDown' : kOrange + 1,
-    'FSRUp'   : kOrange,
-    'FSRDown' : kOrange + 1,
-    'TuneCUETP8M2T4Up'   : kOrange,
-    'TuneCUETP8M2T4Down' : kOrange + 1,
+    'ISRUp'   : kBlue,
+    'ISRDown' : kGreen + 1,
+    'FSRUp'   : kBlue,
+    'FSRDown' : kGreen + 1,
+    'TuneCUETP8M2T4Up'   : kBlue,
+    'TuneCUETP8M2T4Down' : kGreen + 1,
 }
 
 sys_MCs = []
@@ -122,7 +132,7 @@ for sys in sys_names:
     elif 'Up' in sys:
         sys_MC.SetLineColor(kRed)
     elif 'Down' in sys:
-        sys_MC.SetLineColor(kRed+1)
+        sys_MC.SetLineColor(kBlue)
     leg.AddEntry(sys_MC, "%s" % sys, "L")
     sys_MCs.append(sys_MC)
 
@@ -147,7 +157,17 @@ else:
 
 pad1.cd()
 if args.y_max:
-    data.SetMaximum(args.y_max)
+    if args.no_data:
+        nom_MC.SetMaximum(args.y_max)
+    else:
+        data.SetMaximum(args.y_max)
+
+if args.title:
+    if not args.no_data:
+        data.SetTitle(args.title)
+    nom_MC.SetTitle(args.title)
+    for h in sys_MCs:
+        h.SetTitle(args.title)
 
 if args.ratio:
     #data.GetXaxis().SetLabelOffset(999)
@@ -248,5 +268,8 @@ if args.ratio:
     #right_title.Draw("same")
 
 
-cst.SaveAs(args.output_directory + '/MC-systs_%s_%s_%s_%s_%s.png' % (args.data_file, args.channel, args.process, args.distr, args.systematic))
+if args.outname:
+    cst.SaveAs(args.output_directory + '/' + args.outname)
+else:
+    cst.SaveAs(args.output_directory + '/MC-systs_%s_%s_%s_%s_%s.png' % (args.data_file, args.channel, args.process, args.distr, args.systematic))
 

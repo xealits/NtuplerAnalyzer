@@ -24,6 +24,8 @@ parser.add_argument("--x-title",     type=str,      help="title of X axis")
 parser.add_argument("--y-title",     type=str,      help="title of Y axis")
 parser.add_argument('--left-title',  action='store_true', help="add the left label title")
 
+parser.add_argument("--outname",     type=str,      help="set the output filename")
+
 parser.add_argument('-e', '--draw-error-bars',  action='store_true', help="root's option e")
 
 parser.add_argument('--no-legend',  action='store_true', help="do not plot the legend")
@@ -121,6 +123,7 @@ for i, fileparameter in enumerate(args.input_files):
     logging.debug("histo    : %20s" % nick)
     logging.debug("integral : %f" % histo.Integral())
     histo.SetDirectory(0)
+    histo.SetFillColor(0)
     histo.SetLineColor(1 + i)
     histo.SetLineWidth(3)
 
@@ -310,5 +313,8 @@ right_title.Draw("same")
 if not args.no_legend:
     leg.Draw("same")
 
-cst.SaveAs('./compare_%s_%s_%s_%s_%s%s%s.png' % (args.channel, args.process, args.systematic, args.distr, ','.join(histos.keys()), '_formula' if args.formula else '', '_nonorm' if args.no_norm else ''))
+if args.outname:
+    cst.SaveAs(args.outname)
+else:
+    cst.SaveAs('./compare_%s_%s_%s_%s_%s%s%s.png' % (args.channel, args.process, args.systematic, args.distr, ','.join(histos.keys()), '_formula' if args.formula else '', '_nonorm' if args.no_norm else ''))
 

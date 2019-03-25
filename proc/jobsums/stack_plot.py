@@ -56,6 +56,7 @@ parser.add_argument("--factor-procs", type=str, help="scale factor for given pro
 parser.add_argument("--factor-xsec",  type=str, help="guess x-sec/gen_lumi scale based on usual gen_lumi")
 
 parser.add_argument("--factor-rate-systematic", type=str, help="scale the procs by the factor to simulate the rate syst (tau ID, mis-ID): tt_eltau,tt_taultauh,s_top_eltau,s_top_other,dy_tautau:0.95 tt_lj,tt_taulj,tt_other:0.5")
+parser.add_argument("--rename-systematic",  type=str, help="save under different name, use for the rate systematics")
 
 parser.add_argument("--draw-overflows", type=float, default=0., help="draw the overflow bin with the specified width")
 
@@ -907,6 +908,9 @@ if not args.plot and not args.ratio:
     options += "_data-qcd" if args.qcd > 0. else ""
     options += ("_shape-%s" % args.shape) if args.shape else ""
 
+    if args.rename_systematic:
+        sys_name = args.rename_systematic
+
     filename = out_dir + args.mc_file.split('.root')[0] + '_HISTOSEL_%s_%s_%s%s.root' % (distr_name, channel, sys_name, options)
     logging.info('saving root %s' % filename)
 
@@ -1081,6 +1085,7 @@ elif args.osss or args.osss_mc:
     title_x = args.title_x if args.title_x else args.distr_name
     title_y = args.title_y if args.title_y else "OS/SS"
 
+    min_y, max_y = 0., 1.
     if args.y_range:
         min_y, max_y = [float(x) for x in args.y_range.split(',')]
         histo_diff_os.SetMaximum(max_y)
@@ -1094,7 +1099,8 @@ elif args.osss or args.osss_mc:
     if args.vert_lines:
         x_positions = [float(x) for x in args.vert_lines.split(',')]
         for x in x_positions:
-            l = TLine(x, 1, x, 100)
+            l = TLine(x, min_y, x, max_y)
+            l.SetLineStyle(7)
             l.Draw("same")
 
     #left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
