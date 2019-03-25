@@ -31,6 +31,11 @@ python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --
 
 python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --distrs bunch1 --chan-groups wjets,wjets_ss,dy_dileptons
 
+# the weights for proc
+make sumup_weights
+
+# presel and the new weights procedure
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --distrs bunch2 --chan-groups tt_presel_cands,tt_presel_lj_mu,tt_presel_lj_el
 
 
 # v36 test (without presel and alliso)

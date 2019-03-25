@@ -287,6 +287,18 @@ named_systs_weights_all = {'nom': systs_weights_nominal,
 'tt_pdf50': systs_weights_tt_pdf50,
 }
 
+def extend_full_sys_list(sys_list_with_nicknames):
+    # the list may contain either known nicknames of groups of systematics
+    # or concrete names of systematics
+    full_list = []
+    for sname in sys_list_with_nicknames:
+        if sname in named_systs_weights_all:
+            # extend-expand this list of the nickname for the output
+            full_list.extend(named_systs_weights_all[sname])
+        else:
+            # otherwise it's a concrete systematic name
+            full_list.append(sname)
+    return full_list
 
 systs_weights_all = {}
 for s_d in named_systs_weights_all.values():
@@ -661,9 +673,9 @@ distr_defs = {
     'lep_pt_f':      ({'NOMINAL': lambda ev: ev.event_leptons[0].pt()},  ('histo-range',  [20,0,150])),
     'lep_pt':        ({'NOMINAL': lambda ev: ev.event_leptons[0].pt()},  ('histo-range',  [40,0,200])),
     'lep_eta':       ({'NOMINAL': lambda ev: ev.event_leptons[0].eta()}, ('histo-range',  [26,-2.6,2.6])),
-    'tau_sv_sign':   ({'NOMINAL': lambda ev: ev.event_taus_sv_sign[0]},  ('histo-range',  [42,-1,20])),
-    'tau_pt':        ({'NOMINAL': lambda ev: ev.event_taus[0].pt()},     ('histo-range',  [20,0,100])),
-    'tau_eta':       ({'NOMINAL': lambda ev: ev.event_taus[0].eta()},    ('histo-range',  [26,-2.6,2.6])),
+    'tau_sv_sign':   ({'NOMINAL': lambda ev: ev.event_taus_sv_sign[0] if len(ev.event_taus_sv_sign) > 0 else -111.},  ('histo-range',  [42,-1,20])),
+    'tau_pt':        ({'NOMINAL': lambda ev: ev.event_taus[0].pt()    if len(ev.event_taus) > 0   else -111.},    ('histo-range',  [20,0,100])),
+    'tau_eta':       ({'NOMINAL': lambda ev: ev.event_taus[0].eta()   if len(ev.event_taus) > 0   else -111.},    ('histo-range',  [26,-2.6,2.6])),
     'bjet_pt':       ({'NOMINAL': lambda ev: ev.event_jets_b[0].pt()},  ('histo-range',  [20,0,300])),
     'bjet_eta':      ({'NOMINAL': lambda ev: ev.event_jets_b[0].eta()}, ('histo-range',  [26,-2.6,2.6])),
     'nbjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_bjets},                        ('histo-range',  [3,0.0,3.0])),

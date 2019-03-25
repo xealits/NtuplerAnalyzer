@@ -11,6 +11,17 @@ submit_batch_plots: batch_jobs=batch_jobs
 submit_batch_plots:
 	ls ${batch_jobs}/ | sed -e 's,^\(.*\)$$,qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/'${batch_jobs}'/\1",' | grep -v submit > ${batch_jobs}/submit
 
+sumup_weights: nt=v37
+sumup_weights: proc=test5
+sumup_weights: distrs=bunch1
+sumup_weights:
+	for dtag in `ls lstore_outdirs/${nt}/${proc}/`; \
+	do \
+	echo $$dtag ; \
+	mkdir -p jobsums/distrs/${nt}_${proc}_${distrs}/all/$$dtag/weights/ ; \
+	python sumup_weights.py --overwrite jobsums/distrs/${nt}_${proc}_${distrs}/all/$$dtag/weights/the_sums.root lstore_outdirs/${nt}/${proc}/$$dtag/$$dtag*.root ; \
+	done
+
 cur_gstore_lstore_jobs: nt=v37
 cur_gstore_lstore_jobs: proc=test1
 cur_gstore_lstore_jobs: pattern=*MC

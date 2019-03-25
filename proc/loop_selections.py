@@ -59,9 +59,9 @@ cd UserCode/NtuplerAnalyzer/proc/
 """
 
 
-template_command = "time python sumup_loop.py --save-weight {options} {out_file} {inp_file} {definitions}"
+template_command = "time python sumup_loop.py {options} {out_file} {inp_file} {definitions}"
 
-from std_defs import sample_info, channels_distrs
+from std_defs import sample_info, channels_distrs, extend_full_sys_list
 
 # construct [(dtag, sys)]
 requested_dtags = []
@@ -95,7 +95,10 @@ if args.chan_groups:
 
 # find files of each dtag, construct the job command
 for dtag, systs in requested_dtags:
-  logging.debug('%s' % dtag)
+  logging.debug('%s %s' % (dtag, repr(systs)))
+
+  # unpack the nicknamed systematics
+  systs = extend_full_sys_list(systs)
 
   # create output directory for the whole dtag
   out_dtag = template_out_dir.format(nt=nt, proc=proc, distrs_run=distrs_run, dtag=dtag) # + '/' + chan_group
@@ -118,6 +121,7 @@ for dtag, systs in requested_dtags:
   for chan_group in now_chan_groups:
 
       chans, distrs, allowed_systs = channels_distrs[chan_group]
+      allowed_systs = extend_full_sys_list(allowed_systs)
       if args.only_nominal:
           allowed_systs = ['nom']
 
