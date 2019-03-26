@@ -1,3 +1,5 @@
+# doc string
+# make histosel
 histosel: systs_files=syst-test.syst-list.1
 histosel: n_proc=2
 histosel: distrs_mc=distrs/distrs_v25v26resub2_mc_noqcd.root
@@ -10,6 +12,80 @@ histosel: opt=
 histosel:
 	echo `date` histosel distrs_mc=${distrs_mc} distrs_data=${distrs_data} out=${out} chan=${chan} distr=${distr} systs_files=${systs_files} >> logs
 	cat ${systs_files} | xargs -P ${n_proc} -I SYS sh -c "python stack_plot.py ${distrs_mc} ${distrs_data} -o ${out} --lumi ${lumi} -c ${chan} -d ${distr} ${opt} --wjet 0.8 --qcd 1.05 --systematic SYS || true"
+
+
+plot_sys_vars: histosel_file=histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root
+plot_sys_vars: outdir=an-v7-and-paper-draft-3_answers/sys-vars/
+plot_sys_vars:
+	# all common systematics, except PDF (and alpha_s)
+	for sysdef in PUUp,PUDown TOPPTUp,TOPPTDown bSFUp,bSFDown TESUp,TESDown JESUp,JESDown JERUp,JERDown FragUp,FragDown PetersonUp,PetersonDown SemilepBRUp,SemilepBRDown MfUp,MfDown MfrUp,MfrDown MrUp,MrDown ; \
+	python mc_per_sys.py --ratio-range 0.1 --y-max 1500. ${histosel_file} -c el_sel_lj    -d Mt_lep_met_f -s $$sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o ${outdir} --outname el_sel_lj_all_Mt_lep_met_f_$$sysdef.png ; \
+	python mc_per_sys.py --ratio-range 0.1 --y-max 1500. ${histosel_file} -c el_sel_ljout -d Mt_lep_met_f -s $$sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o ${outdir} --outname el_sel_ljout_all_Mt_lep_met_f_$$sysdef.png ; \
+	python mc_per_sys.py --ratio-range 0.1 --y-max 2500. ${histosel_file} -c mu_sel_lj    -d Mt_lep_met_f -s $$sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o ${outdir} --outname mu_sel_lj_all_Mt_lep_met_f_$$sysdef.png ; \
+	python mc_per_sys.py --ratio-range 0.1 --y-max 2500. ${histosel_file} -c mu_sel_ljout -d Mt_lep_met_f -s $$sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o ${outdir} --outname mu_sel_ljout_all_Mt_lep_met_f_$$sysdef.png ; \
+	end
+	# lep el systematics
+	for sysdef in LEPelIDUp,LEPelIDDown LEPelTRGUp,LEPelTRGDown ; \
+	python mc_per_sys.py --ratio-range 0.1 --y-max 1500 ${histosel_file} -c el_sel_lj    -d Mt_lep_met_f -s $$sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname el_sel_lj_all_Mt_lep_met_f_$$sysdef.png ; \
+	python mc_per_sys.py --ratio-range 0.1 --y-max 1500 ${histosel_file} -c el_sel_ljout -d Mt_lep_met_f -s $$sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname el_sel_ljout_all_Mt_lep_met_f_$$sysdef.png ; \
+	end
+	# lep mu systematics
+	for sysdef in LEPmuIDUp,LEPmuIDDown LEPmuTRGUp,LEPmuTRGDown ; \
+	python mc_per_sys.py --ratio-range 0.1 --y-max 2500. ${histosel_file} -c mu_sel_lj    -d Mt_lep_met_f -s $$sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname mu_sel_lj_all_Mt_lep_met_f_$$sysdef.png ; \
+	python mc_per_sys.py --ratio-range 0.1 --y-max 2500. ${histosel_file} -c mu_sel_ljout -d Mt_lep_met_f -s $$sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o an-v7-and-paper-draft-3_answers/sys-vars/ --outname mu_sel_ljout_all_Mt_lep_met_f_$$sysdef.png ; \
+	end
+
+plot_sys_vars_tau_ID_misID: distr_mc=distrs/distrs_v25v26resub2_mc_noqcd.root
+plot_sys_vars_tau_ID_misID: distr_data=../quick-test/v25v26-resub2_hadds/SingleMuon.root
+plot_sys_vars_tau_ID_misID: output=plots/distrs_v25v26resub2_sys_var_tauID_misID/
+plot_sys_vars_tau_ID_misID: data_nick=data
+plot_sys_vars_tau_ID_misID: lumi_mu=35800
+plot_sys_vars_tau_ID_misID: lumi_el=31300
+plot_sys_vars_tau_ID_misID:
+	# plots with the variations
+	# tauID
+	# UP
+	python stack_plot.py ${distr_mc} ${distr_data}  -o ${output}  -c mu_sel_lj    --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_mu} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDDown --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:0.95
+	python stack_plot.py ${distr_mc} ${distr_data}  -o ${output}  -c mu_sel_ljout --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_mu} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDDown --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:0.95
+	# UP
+	python stack_plot.py ${distr_mc} ${distr_data}  -o ${output}  -c mu_sel_lj    --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_mu} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDUp   --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:1.05
+	python stack_plot.py ${distr_mc} ${distr_data}  -o ${output}  -c mu_sel_ljout --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_mu} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDUp   --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:1.05
+	#
+	# same for el
+	python stack_plot.py ${distr_mc} ${distr_data}  -o ${output}  -c el_sel_lj    --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_el} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDDown --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:0.95
+	python stack_plot.py ${distr_mc} ${distr_data}  -o ${output}  -c el_sel_ljout --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_el} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDDown --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:0.95
+	#
+	python stack_plot.py ${distr_mc} ${distr_data}  -o ${output}  -c el_sel_lj    --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_el} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDUp   --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:1.05
+	python stack_plot.py ${distr_mc} ${distr_data}  -o ${output}  -c el_sel_ljout --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_el} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauIDUp   --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau:1.05
+	# 
+	# misID
+	# DOWN
+	python stack_plot.py  ${distr_mc} ${distr_data} -o ${output} -c mu_sel_lj    --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_mu} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:0.5
+	python stack_plot.py  ${distr_mc} ${distr_data} -o ${output} -c mu_sel_ljout --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_mu} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:0.5
+	# UP
+	python stack_plot.py  ${distr_mc} ${distr_data} -o ${output} -c mu_sel_lj    --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_mu} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:1.5
+	python stack_plot.py  ${distr_mc} ${distr_data} -o ${output} -c mu_sel_ljout --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_mu} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:1.5
+	# for el
+	python stack_plot.py  ${distr_mc} ${distr_data} -o ${output} -c el_sel_lj    --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_el} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:0.5
+	python stack_plot.py  ${distr_mc} ${distr_data} -o ${output} -c el_sel_ljout --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_el} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:0.5
+	#
+	python stack_plot.py  ${distr_mc} ${distr_data} -o ${output} -c el_sel_lj    --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_el} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:1.5
+	python stack_plot.py  ${distr_mc} ${distr_data} -o ${output} -c el_sel_ljout --data-nick ${data_nick} -d Mt_lep_met_f --bin-norm --lumi ${lumi_el} --qcd 1.05 --overwrite --wjets 0.8  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj,dibosons:1.5
+	#
+	hadd ${output}/distrs/histosel.root ${output}/distrs/distrs*root
+	#
+	python mc_per_sys.py --y-max 80.  ${output}/distrs/histosel.root -c el_sel_lj    -d Mt_lep_met_f -s TauIDUp,TauIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname el_sel_lj_all_Mt_lep_met_f_TauIDUp,TauIDDown.png
+	python mc_per_sys.py --y-max 80.  ${output}/distrs/histosel.root -c el_sel_ljout -d Mt_lep_met_f -s TauIDUp,TauIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname el_sel_ljout_all_Mt_lep_met_f_TauIDUp,TauIDDown.png
+	python mc_per_sys.py --y-max 150. ${output}/distrs/histosel.root -c mu_sel_lj    -d Mt_lep_met_f -s TauIDUp,TauIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname mu_sel_lj_all_Mt_lep_met_f_TauIDUp,TauIDDown.png
+	python mc_per_sys.py --y-max 150. ${output}/distrs/histosel.root -c mu_sel_ljout -d Mt_lep_met_f -s TauIDUp,TauIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname mu_sel_ljout_all_Mt_lep_met_f_TauIDUp,TauIDDown.png
+	#
+	python mc_per_sys.py --y-max 80.  ${output}/distrs/histosel.root -c el_sel_lj    -d Mt_lep_met_f -s TauMisIDUp,TauMisIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname el_sel_lj_all_Mt_lep_met_f_TauMisIDUp,TauMisIDDown.png
+	python mc_per_sys.py --y-max 80.  ${output}/distrs/histosel.root -c el_sel_ljout -d Mt_lep_met_f -s TauMisIDUp,TauMisIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname el_sel_ljout_all_Mt_lep_met_f_TauMisIDUp,TauMisIDDown.png
+	python mc_per_sys.py --y-max 150. ${output}/distrs/histosel.root -c mu_sel_lj    -d Mt_lep_met_f -s TauMisIDUp,TauMisIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname mu_sel_lj_all_Mt_lep_met_f_TauMisIDUp,TauMisIDDown.png
+	python mc_per_sys.py --y-max 150. ${output}/distrs/histosel.root -c mu_sel_ljout -d Mt_lep_met_f -s TauMisIDUp,TauMisIDDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " --outname mu_sel_ljout_all_Mt_lep_met_f_TauMisIDUp,TauMisIDDown.png
+
+
+
 
 hadd_distrs: nt=v37
 hadd_distrs: proc=test1

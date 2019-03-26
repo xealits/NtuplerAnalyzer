@@ -871,6 +871,15 @@ channels_distrs = {
 'dy_leptau'       : (['dy_mutau', 'dy_eltau'],  sorted(distrs_tauonic_std.union(distrs_leptonic)), main_sys),
 'wjets'           : (['wjets_mu', 'wjets_el'],  sorted(distrs_wjets  ), main_sys),
 'wjets_ss'        : (['wjets_mu_ss', 'wjets_el_ss'],  sorted(distrs_wjets  ), main_sys),
+
+'yields_el_presel' : (['el_preselCand', 'el_preselCand_ss', 'el_presel',], sorted({'yield'}), ['NOMINAL']),
+'yields_el_sel'    : (['el_sel', 'el_sel_ss', 'el_sel_lj', 'el_sel_lj_ss', 'el_sel_ljout', 'el_sel_ljout_ss'], sorted({'yield'}), ['NOMINAL']),
+'yields_mu_presel' : (['mu_preselCand', 'mu_preselCand_ss', 'mu_presel',], sorted({'yield'}), ['NOMINAL']),
+'yields_mu_sel'    : (['mu_sel', 'mu_sel_ss', 'mu_sel_lj', 'mu_sel_lj_ss', 'mu_sel_ljout', 'mu_sel_ljout_ss'], sorted({'yield'}), ['NOMINAL']),
+
+'yields_control_wjets'    : (['wjets_mu', 'wjets_el', 'wjets_mu_ss', 'wjets_el_ss'], sorted({'yield'}), ['NOMINAL']),
+'yields_control_dyjets'   : (['dy_mumu',  'dy_elel'], sorted({'yield'}), ['NOMINAL']),
+'yields_control_tt_em'    : (['tt_elmu',], sorted({'yield'}), ['NOMINAL']),
 }
 
 

@@ -22,6 +22,45 @@ sumup_weights:
 	python sumup_weights.py --overwrite jobsums/distrs/${nt}_${proc}_${distrs}/all/$$dtag/weights/the_sums.root lstore_outdirs/${nt}/${proc}/$$dtag/$$dtag*.root ; \
 	done
 
+std_changroups: nt=v37
+std_changroups: proc=test5
+std_changroups: distrs=bunch1
+std_changroups: sumup_weights
+	# groups:
+	# control
+	# presel
+	# sel
+	python loop_selections.py --options " --wjets-nup-cut " --nt ${nt} --proc ${proc} --distrs ${distrs} --chan-groups ${changroup}
+
+# groups:
+# control
+# presel
+# sel
+std_changroups_all: nt=v37
+std_changroups_all: proc=test5
+std_changroups_all: distrs=bunch1
+std_changroups_all: changroup=wjets,wjets_ss,dy_dileptons,tt_dileptons,tt_presel_cands,tt_presel_lj_mu,tt_presel_lj_el,fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout,tt_leptau,tt_leptau_lj,tt_leptau_ljout,tt_leptau_Vloose,tt_leptau_Vloose_lj,tt_leptau_Vloose_ljout
+std_changroups_all: sumup_weights
+
+std_changroups_control: nt=v37
+std_changroups_control: proc=test5
+std_changroups_control: distrs=bunch1
+std_changroups_control: changroup=wjets,wjets_ss,dy_dileptons,tt_dileptons
+std_changroups_control: sumup_weights
+
+std_changroups_presel: nt=v37
+std_changroups_presel: proc=test5
+std_changroups_presel: distrs=bunch1
+std_changroups_presel: changroup=tt_presel_cands,tt_presel_lj_mu,tt_presel_lj_el
+std_changroups_presel: sumup_weights
+
+std_changroups_sel_fit: nt=v37
+std_changroups_sel_fit: proc=test5
+std_changroups_sel_fit: distrs=bunch1
+std_changroups_sel_fit: changroup=fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout,tt_leptau,tt_leptau_lj,tt_leptau_ljout,tt_leptau_Vloose,tt_leptau_Vloose_lj,tt_leptau_Vloose_ljout
+std_changroups_sel_fit: sumup_weights
+
+
 cur_gstore_lstore_jobs: nt=v37
 cur_gstore_lstore_jobs: proc=test1
 cur_gstore_lstore_jobs: pattern=*MC
