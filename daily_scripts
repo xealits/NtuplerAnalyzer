@@ -1,3 +1,130 @@
+# new comments from Enrique
+
+why FSR and ISR are only rate and not shape?
+the number of events in nominal and FSR/ISR datasets at final selection
+
+in histosel of the fit:
+root [3] el_sel->Get("tt_eltau/NOMINAL/el_sel_tt_eltau_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = el_sel_tt_eltau_NOMINAL_Mt_lep_met_f, Entries= 34685, Total sum= 7701.12
+
+but no FSR or ISR
+
+in v25 r4?
+
+in v37 with quick tests
+-- only test1 has updowns
+
+python sumup_ttree_draw.py --ttree ttree_out "1" --cond-com "selection_stage==17 || selection_stage==19" --per-weight --histo-range 3,0,3 --histo-name tt_yields_v37test1_nom_el_sel      --output tt_yields_v37test1_nom_el_sel.root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_*root    &
+python sumup_ttree_draw.py --ttree ttree_out "1" --cond-com "selection_stage==17 || selection_stage==19" --per-weight --histo-range 3,0,3 --histo-name tt_yields_v37test1_fsrup_el_sel    --output tt_yields_v37test1_fsrup_el_sel.root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg_fsrup*/MC2016_Summer16_TTJets_powheg_fsrup*root    &
+python sumup_ttree_draw.py --ttree ttree_out "1" --cond-com "selection_stage==17 || selection_stage==19" --per-weight --histo-range 3,0,3 --histo-name tt_yields_v37test1_fsrdown_el_sel  --output tt_yields_v37test1_fsrdown_el_sel.root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg_fsrdown*/MC2016_Summer16_TTJets_powheg_fsrdown*root    &
+python sumup_ttree_draw.py --ttree ttree_out "1" --cond-com "selection_stage==17 || selection_stage==19" --per-weight --histo-range 3,0,3 --histo-name tt_yields_v37test1_isrup_el_sel    --output tt_yields_v37test1_isrup_el_sel.root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg_isrup*/MC2016_Summer16_TTJets_powheg_isrup*root    &
+python sumup_ttree_draw.py --ttree ttree_out "1" --cond-com "selection_stage==17 || selection_stage==19" --per-weight --histo-range 3,0,3 --histo-name tt_yields_v37test1_isrdown_el_sel  --output tt_yields_v37test1_isrdown_el_sel.root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg_isrdown*/MC2016_Summer16_TTJets_powheg_isrdown*root    &
+
+python sumup_ttree_draw.py --ttree ttree_out "1" --cond-com "selection_stage==7 || selection_stage==9"   --per-weight --histo-range 3,0,3 --histo-name tt_yields_v37test1_nom_mu_sel      --output tt_yields_v37test1_nom_mu_sel.root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_*root    &
+python sumup_ttree_draw.py --ttree ttree_out "1" --cond-com "selection_stage==7 || selection_stage==9"   --per-weight --histo-range 3,0,3 --histo-name tt_yields_v37test1_fsrup_mu_sel    --output tt_yields_v37test1_fsrup_mu_sel.root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg_fsrup*/MC2016_Summer16_TTJets_powheg_fsrup*root    &
+python sumup_ttree_draw.py --ttree ttree_out "1" --cond-com "selection_stage==7 || selection_stage==9"   --per-weight --histo-range 3,0,3 --histo-name tt_yields_v37test1_fsrdown_mu_sel  --output tt_yields_v37test1_fsrdown_mu_sel.root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg_fsrdown*/MC2016_Summer16_TTJets_powheg_fsrdown*root    &
+python sumup_ttree_draw.py --ttree ttree_out "1" --cond-com "selection_stage==7 || selection_stage==9"   --per-weight --histo-range 3,0,3 --histo-name tt_yields_v37test1_isrup_mu_sel    --output tt_yields_v37test1_isrup_mu_sel.root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg_isrup*/MC2016_Summer16_TTJets_powheg_isrup*root    &
+python sumup_ttree_draw.py --ttree ttree_out "1" --cond-com "selection_stage==7 || selection_stage==9"   --per-weight --histo-range 3,0,3 --histo-name tt_yields_v37test1_isrdown_mu_sel  --output tt_yields_v37test1_isrdown_mu_sel.root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg_isrdown*/MC2016_Summer16_TTJets_powheg_isrdown*root    &
+
+fixing empty files
+ls -l lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_*root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg_fsrup*/MC2016_Summer16_TTJets_powheg_fsrup*root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg_fsrdown*/MC2016_Summer16_TTJets_powheg_fsrdown*root > empty_files
+ls -l lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg_isrup*/MC2016_Summer16_TTJets_powheg_isrup*root lstore_outdirs/v37/test1/MC2016_Summer16_TTJets_powheg_isrdown*/MC2016_Summer16_TTJets_powheg_isrdown*root > empty_files
+
+hadd tt_yields_v37test1.root tt_yields_v37test1_*.root
+
+tt_yields_v37test1_nom_el_sel->Get("tt_yields_v37test1_nom_el_sel_tt_yields_v37test1_nom_el_sel")->Print()
+tt_yields_v37test1_fsrup_el_sel->Get("tt_yields_v37test1_fsrup_el_sel_tt_yields_v37test1_fsrup_el_sel")->Print()
+tt_yields_v37test1_fsrdown_el_sel->Get("tt_yields_v37test1_fsrdown_el_sel_tt_yields_v37test1_fsrdown_el_sel")->Print()
+tt_yields_v37test1_isrup_el_sel->Get("tt_yields_v37test1_isrup_el_sel_tt_yields_v37test1_isrup_el_sel")->Print()
+tt_yields_v37test1_isrdown_el_sel->Get("tt_yields_v37test1_isrdown_el_sel_tt_yields_v37test1_isrdown_el_sel")->Print()
+
+tt_yields_v37test1_nom_mu_sel->Get("tt_yields_v37test1_nom_mu_sel_tt_yields_v37test1_nom_mu_sel")->Print()
+tt_yields_v37test1_fsrup_mu_sel->Get("tt_yields_v37test1_fsrup_mu_sel_tt_yields_v37test1_fsrup_mu_sel")->Print()
+tt_yields_v37test1_fsrdown_mu_sel->Get("tt_yields_v37test1_fsrdown_mu_sel_tt_yields_v37test1_fsrdown_mu_sel")->Print()
+tt_yields_v37test1_isrup_mu_sel->Get("tt_yields_v37test1_isrup_mu_sel_tt_yields_v37test1_isrup_mu_sel")->Print()
+tt_yields_v37test1_isrdown_mu_sel->Get("tt_yields_v37test1_isrdown_mu_sel_tt_yields_v37test1_isrdown_mu_sel")->Print()
+
+
+tt_yields_v37test1_nom_el_sel->Get("tt_yields_v37test1_nom_el_sel_tt_yields_v37test1_nom_el_sel")->Print()
+ Name  = tt_yields_v37test1_nom_el_sel_tt_yields_v37test1_nom_el_sel, Entries= 39493, Total sum= 39493
+tt_yields_v37test1_fsrup_el_sel->Get("tt_yields_v37test1_fsrup_el_sel_tt_yields_v37test1_fsrup_el_sel")->Print()
+ Name  = tt_yields_v37test1_fsrup_el_sel_tt_yields_v37test1_fsrup_el_sel, Entries= 62113, Total sum= 62113
+tt_yields_v37test1_fsrdown_el_sel->Get("tt_yields_v37test1_fsrdown_el_sel_tt_yields_v37test1_fsrdown_el_sel")->Print()
+ Name  = tt_yields_v37test1_fsrdown_el_sel_tt_yields_v37test1_fsrdown_el_sel, Entries= 96223, Total sum= 96223
+tt_yields_v37test1_isrup_el_sel->Get("tt_yields_v37test1_isrup_el_sel_tt_yields_v37test1_isrup_el_sel")->Print()
+ Name  = tt_yields_v37test1_isrup_el_sel_tt_yields_v37test1_isrup_el_sel, Entries= 30082, Total sum= 0.000515432
+tt_yields_v37test1_isrdown_el_sel->Get("tt_yields_v37test1_isrdown_el_sel_tt_yields_v37test1_isrdown_el_sel")->Print()
+ Name  = tt_yields_v37test1_isrdown_el_sel_tt_yields_v37test1_isrdown_el_sel, Entries= 78255, Total sum= 0.000531874
+
+el_sel = [39493 62113 96223 30082 78255]
+
+tt_yields_v37test1_nom_mu_sel->Get("tt_yields_v37test1_nom_mu_sel_tt_yields_v37test1_nom_mu_sel")->Print()
+ Name  = tt_yields_v37test1_nom_mu_sel_tt_yields_v37test1_nom_mu_sel, Entries= 62270, Total sum= 62270
+tt_yields_v37test1_fsrup_mu_sel->Get("tt_yields_v37test1_fsrup_mu_sel_tt_yields_v37test1_fsrup_mu_sel")->Print()
+ Name  = tt_yields_v37test1_fsrup_mu_sel_tt_yields_v37test1_fsrup_mu_sel, Entries= 95965, Total sum= 95965
+ tt_yields_v37test1_fsrdown_mu_sel->Get("tt_yields_v37test1_fsrdown_mu_sel_tt_yields_v37test1_fsrdown_mu_sel")->Print()
+TH1.Print Name  = tt_yields_v37test1_fsrdown_mu_sel_tt_yields_v37test1_fsrdown_mu_sel, Entries= 148605, Total sum= 148605
+tt_yields_v37test1_isrup_mu_sel->Get("tt_yields_v37test1_isrup_mu_sel_tt_yields_v37test1_isrup_mu_sel")->Print()
+ Name  = tt_yields_v37test1_isrup_mu_sel_tt_yields_v37test1_isrup_mu_sel, Entries= 46676, Total sum= 46676
+tt_yields_v37test1_isrdown_mu_sel->Get("tt_yields_v37test1_isrdown_mu_sel_tt_yields_v37test1_isrdown_mu_sel")->Print()
+TH1.Print Name  = tt_yields_v37test1_isrdown_mu_sel_tt_yields_v37test1_isrdown_mu_sel, Entries= 121649, Total sum= 121649
+
+mu_sel = [62270 95965 148605 46676 121649]
+
+coarsely compare stats with v25:
+
+[olek@fermi04 proc]$ find  gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/ -name "*root" | wc -l
+77
+[olek@fermi04 proc]$ find gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/ -name "*root" | wc -l
+243
+[olek@fermi04 proc]$ find gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/ -name "*root" | wc -l
+224
+[olek@fermi04 proc]$ find gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/ -name "*root" | wc -l
+222
+
+
+[olek@fermi04 proc]$ find gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8/ -name "*root" | wc -l
+277
+[olek@fermi04 proc]$ find gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/ -name "*root" | wc -l
+265
+[olek@fermi04 proc]$ find gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8/ -name "*root" | wc -l
+277
+[olek@fermi04 proc]$ find gstore_outdirs/v25/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/ -name "*root" | wc -l
+322
+
+correct numbers for fsrup and isrup:
+
+fsrup_factor = 322. / 265.
+isrup_factor = 243. /  77.
+
+el_sel = [39493 62113*fsrup_factor 96223  30082*isrup_factor 78255]
+mu_sel = [62270 95965*fsrup_factor 148605 46676*isrup_factor 121649]
+
+julia> el_sel
+ 39493  75473  96223  94934  78255
+
+julia> mu_sel
+ 62270  116607  148605  147302  121649
+
+sqrt(el_sel) ./ el_sel
+sqrt(mu_sel) ./ mu_sel
+
+ 0.00503199  0.00364002  0.00322374  0.00324555  0.00357474
+ 0.00400738  0.00292846  0.00259408  0.00260553  0.00286712
+
+
+In the final selection (before splitting into event categories) for electron-tau channel approximate numbers are:
+ 39493 (nominal),  75473 (FSR Up),  96223 (FSR Down),  94934 (ISR Up),  78255 (ISR Down).
+For muon-tau:
+ 62270 (nominal),  116607 (FSR Up),  148605 (FSR Down),  147302 (ISR Up),  121649 (ISR Down).
+Approximate statistical uncertainty for each number of events, calculated as sqrt(number of events)/number of events, is:
+in electron-tau 5% (nominal), 3.6 (FSR Up),  3.2 (FSR Down),  3.2 (ISR Up), 3.6 (ISR Down),
+in muon-tau 4% (nominal), 2.9 (FSR Up),  2.6 (FSR Down),  2.6 (ISR Up), 2.9 (ISR Down).
+
+scale factors per weight?
+
+
+
 # final plots
 
 ## the stat unc in the yields table
