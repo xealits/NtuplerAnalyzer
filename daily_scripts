@@ -1,3 +1,119 @@
+# finally the presel in v37
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_presel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+-- data problems in mu_presel, many jobs crashed (the issue with recording mu trg in pass_elmu)
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_presel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+-- also too few data??
+
+resub
+
+now jobs are approximately:
+[olek@fermi04 proc]$ ls -l jobsums/distrs/v37_test5_bunch2/all/Data13TeV_SingleElectron2016B_03Feb2017_ver2/tt_presel_cands/Data13TeV_SingleElectron2016B_03Feb2017_ver2_10.root
+-rw-r-----+ 1 olek t3cms 30402 Mar 25 16:05 jobsums/distrs/v37_test5_bunch2/all/Data13TeV_SingleElectron2016B_03Feb2017_ver2/tt_presel_cands/Data13TeV_SingleElectron2016B_03Feb2017_ver2_10.root
+
+[olek@fermi04 proc]$ ls -l jobsums/distrs/v37_test5_bunch2/all/Data13TeV_SingleElectron2016B_03Feb2017_ver2/tt_presel_lj_el/Data13TeV_SingleElectron2016B_03Feb2017_ver2_10.root
+-rw-r-----+ 1 olek t3cms 17176 Mar 28 19:05 jobsums/distrs/v37_test5_bunch2/all/Data13TeV_SingleElectron2016B_03Feb2017_ver2/tt_presel_lj_el/Data13TeV_SingleElectron2016B_03Feb2017_ver2_10.root
+
+[olek@fermi04 proc]$ ls -l jobsums/distrs/v37_test5_bunch2/all/Data13TeV_SingleElectron2016B_03Feb2017_ver2/tt_presel_lj_mu/Data13TeV_SingleElectron2016B_03Feb2017_ver2_10.root
+-rw-r-----+ 1 olek t3cms 16705 Mar 28 19:05 jobsums/distrs/v37_test5_bunch2/all/Data13TeV_SingleElectron2016B_03Feb2017_ver2/tt_presel_lj_mu/Data13TeV_SingleElectron2016B_03Feb2017_ver2_10.root
+
+make multihadd2_distrs
+
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleElectron2016B_03Feb2017_ver2
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleElectron2016C_03Feb2017_v1
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleElectron2016D_03Feb2017_v1
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleElectron2016E_03Feb2017_v1
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleElectron2016F_03Feb2017_v1
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleElectron2016G_03Feb2017_v1
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleElectron2016H_03Feb2017_ver2
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleElectron2016H_03Feb2017_ver3
+
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleMuon2016B_03Feb2017_ver2
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleMuon2016C_03Feb2017_v1
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleMuon2016D_03Feb2017_v1
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleMuon2016E_03Feb2017_v1
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleMuon2016F_03Feb2017_v1
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleMuon2016G_03Feb2017_v1
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleMuon2016H_03Feb2017_ver2
+make multihadd2_distrs nt=v37 proc=test5 distrs=bunch2 dtag=Data13TeV_SingleMuon2016H_03Feb2017_ver3
+
+ok like this:
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_presel --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_presel --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+-- so, what's up with the lumi?
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_presel_lj --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_presel_lj --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_presel_ljout --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_presel_ljout --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_preselCand --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_preselCand --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_preselCand --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd 1.05
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_preselCand --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd 1.05
+
+-- in cand data is 15% lower
+   in lj    it is 10% lower
+   in ljout it is 10% higher
+
+and very small wjets?
+
+damn
+
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_presel --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_presel --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+-- same
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_presel_lj --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_presel_lj --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_presel_ljout --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_presel_ljout --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_preselCand --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_preselCand --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_preselCand --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd 1.05
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_preselCand --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd 1.05
+
+-- about same
+
+lj parameters were not saved
+
+check yields:
+
+root [3] mu_presel->Get("tt_lj/NOMINAL/mu_presel_tt_lj_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = mu_presel_tt_lj_NOMINAL_lep_pt, Entries= 3615738, Total sum= 48.7381
+Root > mu_presel_lj->Get("tt_lj/NOMINAL/mu_presel_lj_tt_lj_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = mu_presel_lj_tt_lj_NOMINAL_lep_pt, Entries= 1921419, Total sum= 25.9259
+root [6] mu_presel_ljout->Get("tt_lj/NOMINAL/mu_presel_ljout_tt_lj_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = mu_presel_ljout_tt_lj_NOMINAL_lep_pt, Entries= 1694319, Total sum= 22.8122
+root [7] mu_preselCand->Get("tt_lj/NOMINAL/mu_preselCand_tt_lj_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = mu_preselCand_tt_lj_NOMINAL_lep_pt, Entries= 1449257, Total sum= 19.5827
+
+so, candidates are about half of initial stuff..
+
+TODO probably b for lj is taken from tau-cleaned b... -- check it's correct
+TODO add lj params to presel
+TODO submit controls and final selection
+
+make std_changroups nt=v37 proc=test5 distrs=bunch2 changroup=wjets,wjets_ss,dy_dileptons,tt_dileptons,fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout,tt_leptau,tt_leptau_lj,tt_leptau_ljout,tt_leptau_Vloose,tt_leptau_Vloose_lj,tt_leptau_Vloose_ljout
+
+make submit_batch_plots
+split -l 1500 batch_jobs/submit batch_jobs/submit.
+
+
+
+
 # new comments from Enrique
 
 why FSR and ISR are only rate and not shape?
