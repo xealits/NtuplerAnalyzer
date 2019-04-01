@@ -112,6 +112,168 @@ make submit_batch_plots
 split -l 1500 batch_jobs/submit batch_jobs/submit.
 
 
+## the control regions in v37
+
+### presel
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/1/SingleMuon.root     -p -r -o plots/v37_test5_bunch2/  -c mu_presel --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/1/SingleElectron.root -p -r -o plots/v37_test5_bunch2/  -c el_presel --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+-- so, what's up with the lumi?
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/1/SingleMuon.root     -p -r -o plots/v37_test5_bunch2/  -c mu_presel_lj --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/1/SingleElectron.root -p -r -o plots/v37_test5_bunch2/  -c el_presel_lj --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/1/SingleMuon.root     -p -r -o plots/v37_test5_bunch2/  -c mu_presel_ljout --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/1/SingleElectron.root -p -r -o plots/v37_test5_bunch2/  -c el_presel_ljout --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/1/SingleMuon.root     -p -r -o plots/v37_test5_bunch2/  -c mu_preselCand --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/1/SingleElectron.root -p -r -o plots/v37_test5_bunch2/  -c el_preselCand --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd-factor 1.5
+
+-- no presel channels in the data of the 3rd plotting
+   same distrs here
+
+
+### tt_elmu
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets_2.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd 1.05
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets_2.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d lep_pt --lumi 33000 --overwrite --wjets 0.8 --qcd 1.05
+
+-- tt_elmu is missing, even though distrs have this directory
+
+make multihadd2_distrs proc=test5 size=50 max_procs=12
+
+mv distrs/v37_test5_bunch2/all/MC2016_Summer16_TTJets_powheg ./
+
+rm distrs/v37_test5_bunch2/all/*/all_chans.root.*
+
+make multihadd2_distrs_all_dtags proc=test5 distrs=bunch2 max_procs=12
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d lep_pt --lumi 23100 --overwrite --wjets 0.8
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_wNjets_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d lep_pt --lumi 23100 --overwrite --wjets 0.8
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d lep_pt --lumi 23800 --overwrite --wjets 0.8
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d lep_pt --lumi 23800 --overwrite --wjets 0.8
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d lep_pt --lumi 23800 --overwrite --wjets 0.8 --systematic TOPPTUp
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d lep_pt --lumi 23800 --overwrite --wjets 0.8 --systematic TOPPTUp
+
+CHECK tt_elmu -- no effect from TOP PT and strange deviation at lo pT in ele channel
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d Mt_lep_met_f --lumi 23800 --overwrite --wjets 0.8
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d Mt_lep_met_f --lumi 23800 --overwrite --wjets 0.8
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d Mt_lep_met_f --lumi 23800 --overwrite --wjets 0.8 --systematic TOPPTUp
+
+CHECK tt_elmu -- again no effect, and the slight difference at high mT might be due to it.
+
+
+
+### wjets
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c wjets_mu --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 1.0 --qcd-factor 2.
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c wjets_el --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 1.0 --qcd-factor 2.
+
+- more or less ok
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c wjets_mu --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 1.0 --qcd-factor 2.
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c wjets_el --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 1.0 --qcd-factor 2.
+
+-- poor shape agreement
+better:
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c wjets_mu --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c wjets_el --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c wjets_mu --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --cumulative-fractions
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c wjets_el --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --cumulative-fractions
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c wjets_mu --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c wjets_el --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+CHECK wjets -- the data trend goes down at large mT, instead of up?
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c wjets_mu --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c wjets_el --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+
+
+### dy mumu, elel
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c dy_mumu --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c dy_elel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c dy_elel --data-nick data_other -d lep_pt --lumi 32220 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c dy_mumu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c dy_elel --data-nick data_other -d lep_eta --lumi 32220 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c dy_mumu --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c dy_elel --data-nick data_other -d met_c --lumi 32220 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- el has 90% of data (32220 lumi)
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c dy_mumu --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c dy_elel --data-nick data_other -d Mt_lep_met_c --lumi 32220 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+CHECK dy mumu, elel -- clear trend data down at large met and mT (was not there before), small but significant disagreement in eta...
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c dy_mumu --data-nick data_other -d dilep_mass_dy --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c dy_elel --data-nick data_other -d dilep_mass_dy --lumi 32220 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- usual shift
+
+
+### main selection
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c mu_sel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c el_sel --data-nick data_other -d lep_pt --lumi 32220 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+CHECK main selection -- normal amount of data and way too much MC
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c mu_sel --data-nick data_other -d lep_pt --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c el_sel --data-nick data_other -d lep_pt --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- ok, except couple MC QCD events
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c mu_selVloose --data-nick data_other -d lep_pt --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c el_selVloose --data-nick data_other -d lep_pt --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- also ok, and lack of QCD at low pT?
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c mu_selVloose --data-nick data_other -d lep_pt --lumi 25800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c el_selVloose --data-nick data_other -d lep_pt --lumi 25800 --overwrite --wjets 0.92 --qcd 1.05
+
+-- ok (and poor shape of WJets from amcatnlo)
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c mu_sel --data-nick data_other -d lep_eta --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c el_sel --data-nick data_other -d lep_eta --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c mu_sel --data-nick data_other -d met_c --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c el_sel --data-nick data_other -d met_c --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c mu_sel --data-nick data_other -d phi_met_lep --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c el_sel --data-nick data_other -d phi_met_lep --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c mu_sel --data-nick data_other -d cos_phi_met_lep --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c el_sel --data-nick data_other -d cos_phi_met_lep --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c mu_sel --data-nick data_other -d Mt_lep_met_c --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c el_sel --data-nick data_other -d Mt_lep_met_c --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- no phi and cos! -- added to std def now
+   kind of the same mT
+CHECK main selection  trend in met, data falls from low to high met
+
+split lj:
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c mu_sel_lj    --data-nick data_other -d lep_pt --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 0.0001
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c el_sel_lj    --data-nick data_other -d lep_pt --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 0.0001
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c mu_sel_ljout --data-nick data_other -d lep_pt --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 0.0001
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c el_sel_ljout --data-nick data_other -d lep_pt --lumi 25800 --overwrite --wjets 0.92 --qcd-factor 0.0001
+
+-- both ok, need normal QCD in ljout
+
 
 
 # new comments from Enrique
