@@ -4516,7 +4516,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
           control_hs['weight_bSF']    .Fill(weight_bSF)
           #control_hs['weight_top_pt'] .Fill(weight_top_pt) # done above
 
-          if pass_mu or pass_elmu or pass_mumu:
+          if pass_mu or pass_mumu: # or pass_elmu
             # bcdef_weight_trk, bcdef_weight_id, bcdef_weight_iso, gh_weight_trk, gh_weight_id, gh_weight_iso
             #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
             #mu_trg_sf = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())

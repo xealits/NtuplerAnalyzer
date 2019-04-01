@@ -7,6 +7,14 @@ make sub_proc nt=v34 proc=t1 node=1
 # "unclustering" does not mean anything here, it is just anti-jes propagation
 python genjobs.py v37 test5 --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags data_mu,data_el,wjets_amcatnlo,std_qcd,dy_std,dy_ext --options no_prop_lepjets
 python genjobs.py v37 test5 --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags std_mc --without-dtags wjets_amcatnlo,std_qcd,dy_std,dy_ext --options no_prop_lepjets
+python genjobs.py v37 test5 --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags MC2016_Summer16_TTJets_powheg  --options no_prop_lepjets
+
+python genjobs.py v37 test5 --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags std_mc --without-dtags wjets_amcatnlo,std_qcd,dy_std,dy_ext,MC2016_Summer16_TTJets_powheg --options no_prop_lepjets
+
+also missing jobs in:
+
+python genjobs.py v37 test5 --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --options no_prop_lepjets --dtags MC2016_Summer16_SingleT_tW_5FS_powheg,MC2016_Summer16_SingleTbar_tW_5FS_powheg,MC2016_Summer16_W1Jets_madgraph,MC2016_Summer16_W2Jets_madgraph,MC2016_Summer16_W2Jets_madgraph_ext1,MC2016_Summer16_W3Jets_madgraph,MC2016_Summer16_W3Jets_madgraph_ext1,MC2016_Summer16_W4Jets_madgraph,MC2016_Summer16_W4Jets_madgraph_ext1,MC2016_Summer16_W4Jets_madgraph_ext2,MC2016_Summer16_WJets_madgraph,MC2016_Summer16_WJets_madgraph_ext2_v1,MC2016_Summer16_WWTo2L2Nu_powheg,MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin,MC2016_Summer16_ZZTo2L2Nu_powheg,MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin,MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg
+
 
 # with different met for data --- no difference
 python genjobs.py v37 test2 --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags data_mu,data_el
@@ -36,6 +44,14 @@ make sumup_weights
 
 # presel and the new weights procedure
 python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --distrs bunch2 --chan-groups tt_presel_cands,tt_presel_lj_mu,tt_presel_lj_el
+
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --distrs bunch2 --chan-groups tt_presel_cands,tt_presel_lj_mu,tt_presel_lj_el --dtags MC2016_Summer16_TTJets_powheg
+
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --distrs bunch2 --chan-groups tt_presel_cands,tt_presel_lj_mu,tt_presel_lj_el --dtags Data13TeV_SingleElectron2016B_03Feb2017_ver2,Data13TeV_SingleElectron2016C_03Feb2017_v1,Data13TeV_SingleElectron2016D_03Feb2017_v1,Data13TeV_SingleElectron2016E_03Feb2017_v1,Data13TeV_SingleElectron2016F_03Feb2017_v1,Data13TeV_SingleElectron2016G_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver2,Data13TeV_SingleElectron2016H_03Feb2017_ver3,Data13TeV_SingleMuon2016B_03Feb2017_ver2,Data13TeV_SingleMuon2016C_03Feb2017_v1,Data13TeV_SingleMuon2016D_03Feb2017_v1,Data13TeV_SingleMuon2016E_03Feb2017_v1,Data13TeV_SingleMuon2016F_03Feb2017_v1,Data13TeV_SingleMuon2016G_03Feb2017_v1,Data13TeV_SingleMuon2016H_03Feb2017_ver2,Data13TeV_SingleMuon2016H_03Feb2017_ver3
+
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --distrs bunch2 --chan-groups wjets,wjets_ss,dy_dileptons,tt_dileptons
+
+
 
 
 # v36 test (without presel and alliso)

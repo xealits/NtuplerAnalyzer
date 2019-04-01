@@ -7,6 +7,9 @@ clear_gstore_failed:
 	    gfal-rm -r "srm://srm01.ncg.ingrid.pt:8444/srm/managerv2?SFN=/cmst3/store/user/otoldaie/$$f" ; \
 	done
 
+check_job_error_not_found:
+	cat `wc -l job_*.e*[0-9] | grep '^   12 ' | sed 's/^   12 //'` | grep ' does not exist'
+
 submit_batch_plots: batch_jobs=batch_jobs
 submit_batch_plots:
 	ls ${batch_jobs}/ | sed -e 's,^\(.*\)$$,qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/'${batch_jobs}'/\1",' | grep -v submit > ${batch_jobs}/submit
@@ -25,7 +28,7 @@ sumup_weights:
 std_changroups: nt=v37
 std_changroups: proc=test5
 std_changroups: distrs=bunch1
-std_changroups: sumup_weights
+std_changroups:
 	# groups:
 	# control
 	# presel

@@ -99,8 +99,8 @@ multihadd2_distrs: nt=v37
 multihadd2_distrs: proc=test1
 multihadd2_distrs: distrs=bunch2
 multihadd2_distrs: dtag=MC2016_Summer16_TTJets_powheg
-multihadd2_distrs: size=10
-multihadd2_distrs: max_procs=4
+multihadd2_distrs: size=30
+multihadd2_distrs: max_procs=10
 multihadd2_distrs:
 	python multihadd2.py -i ${size} distrs/${nt}_${proc}_${distrs}/all/${dtag}/all_chans.root `find distrs/${nt}_${proc}_${distrs}/all/${dtag}/ -name "*root"` > temp.multihadd2_coms
 	cat temp.multihadd2_coms | xargs -P ${max_procs} -d "\n" -I COMM sh -c "COMM || true"
