@@ -57,6 +57,10 @@ all_std_channels = {
 'dy_elel':  ('({selection_stage}== 112 || {selection_stage}== 113 || {selection_stage}== 115)', 'selection_stage_dy_mumu'),
 
 'tt_elmu':  ('({selection_stage}== 205)', 'selection_stage_em'),
+'tt_alliso_presel_el'    :  ('({selection_stage}== 513)', 'selection_stage_tt_alliso'),
+'tt_alliso_presel_el_ss' :  ('({selection_stage}== 512)', 'selection_stage_tt_alliso'),
+'tt_alliso_presel_mu'    :  ('({selection_stage}== 503)', 'selection_stage_tt_alliso'),
+'tt_alliso_presel_mu_ss' :  ('({selection_stage}== 502)', 'selection_stage_tt_alliso'),
 }
 
 
@@ -681,6 +685,10 @@ distr_defs = {
     'nbjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_bjets},                        ('histo-range',  [3,0.0,3.0])),
     'nrjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_jets - ev.event_jets_n_bjets}, ('histo-range',  [6,0.0,6.0])),
     'najets':        ({'NOMINAL': lambda ev: ev.event_jets_n_jets},                         ('histo-range',  [10,0.0,10.0])),
+    'relIso_el':     ({'NOMINAL': lambda ev: ev.event_leptons_alliso_reliso[0] if len(ev.event_leptons_alliso_reliso) > 0 else -111.},  ('custom-range', [0, 0.059, 0.1, 0.175, 0.3, 0.5])),
+    'relIso_el_ext': ({'NOMINAL': lambda ev: ev.event_leptons_alliso_reliso[0] if len(ev.event_leptons_alliso_reliso) > 0 else -111.},  ('custom-range', [0, 0.059, 0.1, 0.175, 0.3, 0.5, 2., 4.])),
+    'relIso_mu':     ({'NOMINAL': lambda ev: ev.event_leptons_alliso_reliso[0] if len(ev.event_leptons_alliso_reliso) > 0 else -111.},  ('custom-range', [0, 0.15, 0.25, 0.5, 1., 2., 4.])),
+    'relIso_mu_ext': ({'NOMINAL': lambda ev: ev.event_leptons_alliso_reliso[0] if len(ev.event_leptons_alliso_reliso) > 0 else -111.},  ('custom-range', [0, 0.15, 0.25, 0.5, 1., 2., 4., 8., 16.])),
     'yield':         ({'NOMINAL': lambda ev: 1},     ('histo-range',  [3,0.0,3.0])),
 }
 
@@ -794,6 +802,10 @@ std_channels_ev_loop = {
 'wjets_el_ss' : (lambda sel_stage, ev: (sel_stage== 16), {'NOMINAL': lambda ev: ev.selection_stage_wjets}),
 
 'tt_elmu':  (lambda sel_stage, ev: (sel_stage> 200 and sel_stage < 210), {'NOMINAL': lambda ev: ev.selection_stage_em}),
+'tt_alliso_presel_el'    :  (lambda sel_stage, ev: sel_stage==513, {'NOMINAL': lambda ev: ev.selection_stage_tt_alliso}),
+'tt_alliso_presel_el_ss' :  (lambda sel_stage, ev: sel_stage==512, {'NOMINAL': lambda ev: ev.selection_stage_tt_alliso}),
+'tt_alliso_presel_mu'    :  (lambda sel_stage, ev: sel_stage==503, {'NOMINAL': lambda ev: ev.selection_stage_tt_alliso}),
+'tt_alliso_presel_mu_ss' :  (lambda sel_stage, ev: sel_stage==502, {'NOMINAL': lambda ev: ev.selection_stage_tt_alliso}),
 }
 # calculation of standard systematic weights
 
@@ -822,6 +834,7 @@ distrs_mt       = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f'}
 distrs_mt_calc  = {'lep_pt', 'met_c', 'phi_met_lep', 'cos_phi_met_lep'}
 distrs_leptonic = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta', 'met_c'}
 distrs_lep      = {'Mt_lep_met_c', 'lep_pt', 'lep_eta', 'met_c'}
+distrs_relIso   = {'relIso_mu', 'relIso_mu_ext', 'relIso_el', 'relIso_el_ext'}
 distrs_dy       = {'met_c',          'Mt_lep_met_c', 'Mt_lep_met_f', 'dilep_mass', 'dilep_mass_dy', 'lep_pt', 'lep_eta'}
 distrs_wjets    = {'met_c', 'met_f', 'met_init_f', 'Mt_lep_met_c', 'Mt_lep_met_f', 'Mt_lep_met_init_f', 'dilep_mass',                  'lep_pt', 'lep_eta', 'phi_met_lep', 'cos_phi_met_lep'}
 
@@ -837,6 +850,7 @@ full_sys = ['nom', 'common', 'obj', 'tt_weights', "tt_hard", 'tt_pdf']
 presel_sys = ['NOMINAL', 'TOPPTDown', 'TOPPTUp', 'PUUp', 'PUDown']
 
 channels_distrs = {
+'tt_alliso_presel'    : (['tt_alliso_presel_el', 'tt_alliso_presel_el_ss', 'tt_alliso_presel_mu', 'tt_alliso_presel_mu_ss', ], sorted(distrs_lep.union(distrs_relIso)), main_sys),
 'tt_dileptons'    : (['tt_elmu'], sorted(distrs_leptonic), main_sys),
 'tt_leptauSV'     : (['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), ['nom']),
 

@@ -1,3 +1,61 @@
+# the data-driven QCD shape in OS and SS
+
+python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleMuon.root -o plots/ --lumi 34800 --osss-pl -c ctr_mu_wjet -p    -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "relative Isolation of muon" --bin-norm --no-label-osss
+
+-- some noticeable difference... strange -- the should match perfectly?
+
+python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleMuon.root -o plots/ --lumi 34800           -c ctr_mu_wjet -p -r -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "relative Isolation of muon" --bin-norm --qcd 1.05
+
+-- indeed off at large mT??
+
+python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleMuon.root -o plots/ --lumi 34800           -c ctr_mu_wjet -p -r -d Mt_lep_met_f --wjets 0.65 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "m_{T}" --bin-norm --qcd 1.1 --overwrite
+
+
+also are there negative bins?
+
+python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleMuon.root -o plots/ --lumi 34800 --osss-pl -c ctr_mu_wjet -p    -d Mt_lep_met_f --wjets 0.7 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "m_{T}" --bin-norm --no-label-osss
+
+python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleMuon.root -o plots/ --lumi 34800 --osss-pl -c ctr_mu_wjet -p -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,60000 --nulify-qcd-bins 1.
+
+-- some definite shape trend from low to high mT
+
+python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleElectron.root -o plots/ --lumi 31300 --osss-pl -c ctr_el_wjet -p -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05                --title "" --title-x "M_{T}(e, MET) [GeV]" --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,60000 --nulify-qcd-bins 1.
+
+-- same trend
+
+use new data for wjets (the wjet distributions were ok there)
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -o plots/  -c wjets_mu --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 0.92 --osss-pl --title "" --title-x "M_{T}(e, MET) [GeV]" --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,60000 --nulify-qcd-bins 0.
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -o plots/  -c wjets_el --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 0.92 --osss-pl --title "" --title-x "M_{T}(e, MET) [GeV]" --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,60000 --nulify-qcd-bins 0.
+
+-- same trend.
+
+
+
+## presel
+
+only ctr_old_el_presel_alliso ctr_old_mu_presel_alliso
+in ../sw-dir/jobsums/mc_v27p1.root
+
+python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleMuon.root      -o plots/ --lumi 34800 --osss-pl -c ctr_old_mu_presel_alliso -p -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,6000 --nulify-qcd-bins 1.
+
+python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleElectron.root  -o plots/ --lumi 31300 --osss-pl -c ctr_old_el_presel_alliso -p -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05                    --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,6000 --nulify-qcd-bins 1.
+
+
+## final files
+
+plots/..,sw-dir,jobsums,mc_v27p1_..,lstore_outdirs,merge-sets,v27,p1,SingleElectron_Mt_lep_met_f_ctr_el_wjet_NOMINAL_osss-parts.png
+plots/..,sw-dir,jobsums,mc_v27p1_..,lstore_outdirs,merge-sets,v27,p1,SingleElectron_Mt_lep_met_f_ctr_old_el_presel_alliso_NOMINAL_osss-parts.png
+plots/..,sw-dir,jobsums,mc_v27p1_..,lstore_outdirs,merge-sets,v27,p1,SingleMuon_Mt_lep_met_f_ctr_mu_wjet_NOMINAL_osss-parts.png
+plots/..,sw-dir,jobsums,mc_v27p1_..,lstore_outdirs,merge-sets,v27,p1,SingleMuon_Mt_lep_met_f_ctr_old_mu_presel_alliso_NOMINAL_osss-parts.png
+
+mv plots/..,sw-dir,jobsums,mc_v27p1_..,lstore_outdirs,merge-sets,v27,p1,SingleElectron_Mt_lep_met_f_ctr_el_wjet_NOMINAL_osss-parts.png                plots/mt_shapes_os_ss_el_wjets_datadriven.png
+mv plots/..,sw-dir,jobsums,mc_v27p1_..,lstore_outdirs,merge-sets,v27,p1,SingleElectron_Mt_lep_met_f_ctr_old_el_presel_alliso_NOMINAL_osss-parts.png   plots/mt_shapes_os_ss_el_presel_datadriven.png
+mv plots/..,sw-dir,jobsums,mc_v27p1_..,lstore_outdirs,merge-sets,v27,p1,SingleMuon_Mt_lep_met_f_ctr_mu_wjet_NOMINAL_osss-parts.png                    plots/mt_shapes_os_ss_mu_wjets_datadriven.png
+mv plots/..,sw-dir,jobsums,mc_v27p1_..,lstore_outdirs,merge-sets,v27,p1,SingleMuon_Mt_lep_met_f_ctr_old_mu_presel_alliso_NOMINAL_osss-parts.png       plots/mt_shapes_os_ss_mu_presel_datadriven.png
+
+
+
 # finally the presel in v37
 
 python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_presel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 1.5

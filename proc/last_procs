@@ -51,6 +51,8 @@ python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --
 
 python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --distrs bunch2 --chan-groups wjets,wjets_ss,dy_dileptons,tt_dileptons
 
+# all iso for figure 6 with data-driven qcd estimation
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --distrs bunch3 --chan-groups tt_alliso_presel
 
 
 

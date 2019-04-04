@@ -48,7 +48,11 @@ parser.add_argument("--qcd",   type=float, default=0., help="get QCD from corres
 parser.add_argument("--qcd-factor",   type=float, default=1., help="factor for MC QCD")
 parser.add_argument("--osss",     action='store_true', help="plot the ratio in OS/SS of data-other bkcg")
 parser.add_argument("--osss-mc",  action='store_true', help="plot the ratio in OS/SS of MC QCD")
+parser.add_argument("--osss-pl",  action='store_true', help="plot the data-other bkcg in the OS and SS selections")
+parser.add_argument("--no-label-osss",  action='store_true', help="no anti-iso label")
 parser.add_argument("--vert-lines", type=str, help="add vertical lines to the plot at 'x1[,x2]' positions")
+
+parser.add_argument("--nulify-qcd-bins", type=float, help="nulify the negative bins of data - other MC subtraction")
 
 parser.add_argument("--wjets", type=float, default=0., help="scale factor for wjets (from the control region)")
 parser.add_argument("--factor-dy", type=float, help="scale factor for dy (from the control region)")
@@ -174,7 +178,7 @@ if not args.no_data:
     else:
         histos_data_distrs.append((data_distr_name, [(fdata.Get(channel + '/' + data_nick + '/NOMINAL/' + '_'.join([channel, data_nick, 'NOMINAL', data_distr_name])), data_nick, channel) for channel in channels]))
 
-    if args.qcd > 0. or args.osss or args.osss_mc:
+    if args.qcd > 0. or args.osss or args.osss_mc or args.osss_pl:
         if args.draw_overflows:
             histos_data_distrs_ss.append((data_distr_name, [(DrawOverflow(fdata.Get(channel + '_ss' + '/' + data_nick + '/NOMINAL/' + '_'.join([channel + '_ss', data_nick, 'NOMINAL', data_distr_name])), args.draw_overflows), data_nick, channel) for channel in channels]))
         else:
@@ -574,7 +578,7 @@ def get_histos_with_data_qcd(sys_name):
         return qcd_hist
 
 
-    if args.qcd > 0. or args.osss or args.osss_mc:
+    if args.qcd > 0. or args.osss or args.osss_mc or args.osss_pl:
         # get all the same distributions for _ss channel
         used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, sys_name, distr_name)) for distr_name in distr_names]
         #used_histos_per_distr_ss = [(distr_name, get_histos(f, [c + '_ss' for c in channels], args.shape, 'NOMINAL', distr_name)) for distr_name in distr_names]
@@ -747,7 +751,7 @@ if args.merge_procs:
     used_histos_per_distr = merged_histos
 
 hs_sum2 = hs_sums2[0]
-if args.qcd > 0. or args.osss or args.osss_mc:
+if args.qcd > 0. or args.osss or args.osss_mc or args.osss_pl:
     hs_sum_noqcd    = hs_sums_noqcd[0]
     #hs_sum_noqcd_ss = hs_sums2_ss[0]
     #hs_sums2_ss.append((distr, [(hs_sum2, "mc_sum", channel)]))
@@ -1049,7 +1053,7 @@ elif args.form_shapes:
     fname = '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name))
     cst.SaveAs(out_dir + fname + '_shapes_%d-channels_%s-processes%s.png' % (len(channels), '-'.join(args.processes.split(',')), data_driv_qcd))
 
-elif args.osss or args.osss_mc:
+elif args.osss or args.osss_mc or args.osss_pl:
     from ROOT import gStyle, gROOT, TCanvas, TPad
     gROOT.SetBatch()
     gStyle.SetOptStat(0)
@@ -1061,7 +1065,7 @@ elif args.osss or args.osss_mc:
     # histos_data_per_distr and histos_data_per_distr_ss
     #histos_data_distrs = [(distr_name, [(histo, 'data', channel)]]
 
-    if args.osss:
+    if args.osss or args.osss_pl:
         histo_diff_os = histos_data_per_distr   [0][1][0][0] - hs_sum_noqcd
         histo_diff_ss = histos_data_per_distr_ss[0][1][0][0] - hs_sum_noqcd_ss
     elif args.osss_mc:
@@ -1070,7 +1074,21 @@ elif args.osss or args.osss_mc:
         histo_diff_os = [h for h, nick, _ in used_histos_per_distr   [0][1] if nick == 'qcd'][0]
         histo_diff_ss = [h for h, nick, _ in used_histos_per_distr_ss[0][1] if nick == 'qcd'][0]
 
-    histo_diff_os.Divide(histo_diff_ss)
+    # nulify negative bins
+    if args.nulify_qcd_bins:
+        for histo in (histo_diff_os, histo_diff_ss):
+          for bini in range(histo.GetSize()):
+            if histo.GetBinContent(bini) < 0.:
+                #print histo.GetBinContent(bini)
+                histo.SetBinContent(bini, args.nulify_qcd_bins)
+    # for some reason the plot still looks like there are negative bins
+
+    #for histo in (histo_diff_os, histo_diff_ss):
+    #  for bini in range(histo.GetSize()):
+    #        print histo.GetBinContent(bini)
+
+    if not args.osss_pl:
+        histo_diff_os.Divide(histo_diff_ss)
 
     pad1 = TPad("pad1","This is pad1", 0., 0.,  1., 1.)
     pad1.Draw()
@@ -1085,16 +1103,35 @@ elif args.osss or args.osss_mc:
     title_x = args.title_x if args.title_x else args.distr_name
     title_y = args.title_y if args.title_y else "OS/SS"
 
-    min_y, max_y = 0., 1.
+    min_y, max_y = 0., max(histo_diff_os.GetMaximum(), histo_diff_ss.GetMaximum())
     if args.y_range:
         min_y, max_y = [float(x) for x in args.y_range.split(',')]
         histo_diff_os.SetMaximum(max_y)
         histo_diff_os.SetMinimum(min_y)
 
+    # tune the typography: font sizes, title offsets etc
+    histo_diff_os.GetXaxis().SetTitleFont(63)
+    histo_diff_os.GetXaxis().SetTitleSize(20)
+    histo_diff_os.GetYaxis().SetTitleFont(63)
+    histo_diff_os.GetYaxis().SetTitleSize(20)
+    histo_diff_os.GetYaxis().SetTitleOffset(1.4)
+
+    # set titles and draw
     histo_diff_os.SetXTitle(title_x)
     histo_diff_os.SetYTitle(title_y)
     histo_diff_os.SetTitle(title_plot)
     histo_diff_os.Draw()
+
+    if args.osss_pl:
+        histo_diff_ss.SetLineColor(kRed)
+        histo_diff_ss.Draw("same")
+
+        # add the legend
+        leg = TLegend(0.6, 0.7, 0.9, 0.89)
+        leg.SetBorderSize(0)
+        leg.AddEntry(histo_diff_os, "opposite sign", "l")
+        leg.AddEntry(histo_diff_ss, "same sign", "l")
+        leg.Draw("same")
 
     if args.vert_lines:
         x_positions = [float(x) for x in args.vert_lines.split(',')]
@@ -1120,13 +1157,26 @@ elif args.osss or args.osss_mc:
     left_title .Draw("same")
     right_title.Draw("same")
 
-    label = TPaveText(0.5, 0.2, 0.8, 0.3, "brNDC")
-    label.AddText("anti-iso region")
-    label.SetTextFont(132)
-    label.SetFillColor(0)
-    label.Draw("same")
+    if not args.no_label_osss:
+        label = TPaveText(0.5, 0.2, 0.8, 0.3, "brNDC")
+        label.AddText("anti-iso region")
+        label.SetTextFont(132)
+        label.SetFillColor(0)
+        label.Draw("same")
 
-    cst.SaveAs(out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name)) + ('_osss-factor' if args.osss else '_osss-mc-factor') + '.png')
+    outname = out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name))
+    if args.osss:
+        outname += '_osss-factor'
+    elif args.osss_mc:
+        outname += '_osss-mc-factor'
+    elif args.osss_pl:
+        outname += '_osss-parts'
+
+    if args.logy:
+        pad1.SetLogy()
+        outname += '_logy'
+
+    cst.SaveAs(outname + '.png')
 
 else:
     '''
