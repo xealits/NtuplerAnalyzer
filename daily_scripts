@@ -3070,8 +3070,330 @@ surpisingly close
 and Up is the smaller one
 -- yeah, these factors will reduce the variation!
 
+## the ratio of the variations for quick fix in the fit
+
+              "FragUp":             0.958852, # / 1.001123,
+            "FragDown":             1.02936,  # / 0.999304,
+         "SemilepBRUp":             1.002650, # / 1.008565,
+       "SemilepBRDown":             1.035812, # / 0.987050,
+          "PetersonUp":             0.990578, # / 1.000032,
+
+              "FragUp":             0.958852 / 1.001123 = 0.9577764170836152 = 0.958
+            "FragDown":             1.02936  / 0.999304 = 1.030076933545748  = 1.030
+         "SemilepBRUp":             1.002650 / 1.008565 = 0.9941352317401457 = 0.994
+       "SemilepBRDown":             1.035812 / 0.987050 = 1.0494017526974317 = 1.049
+          "PetersonUp":             0.990578 / 1.000032 = 0.9905463025183193 = 0.991
+
+refit impacts from the almost-old files:
+
+cp ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms.txt ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_bFrag.txt
+cp ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms.txt ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_bFrag.txt
+
+Frag            shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -
+SemilepBR       shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -
+Peterson        shape          1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -                  1.0    1.0   1.0   1.0   1.0        -        -     -     -        -     -        -     -        -
+
+Frag            shape          1.030/0.958    1.030/0.958   1.030/0.958   1.030/0.958   1.030/0.958        -        -     -     -        -     -        -     -        -                  1.030/0.958    1.030/0.958   1.030/0.958   1.030/0.958   1.030/0.958        -        -     -     -        -     -        -     -        -
+SemilepBR       shape          1.049/0.994    1.049/0.994   1.049/0.994   1.049/0.994   1.049/0.994        -        -     -     -        -     -        -     -        -                  1.049/0.994    1.049/0.994   1.049/0.994   1.049/0.994   1.049/0.994        -        -     -     -        -     -        -     -        -
+Peterson        shape          0.991    0.991   0.991   0.991   0.991        -        -     -     -        -     -        -     -        -                  0.991    0.991   0.991   0.991   0.991        -        -     -     -        -     -        -     -        -
+
+-- nope..
+RuntimeError: Error reading line 22 of file ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_bFrag.txt: Asymmetric errors are allowed only for Log-normals
+
+so, 1 SF must fix both variations...
+now: FragUp reduces the yield and FragDown rises it
+     therefore, these 3-6% must reduce the overall variation
+     3-6% = 4.5% -- 0.955 of the initial variation
+
+Frag            shape          0.955    0.955   0.955   0.955   0.955        -        -     -     -        -     -        -     -        -                  0.955    0.955   0.955   0.955   0.955        -        -     -     -        -     -        -     -        -
+
+by the same method for the others
+
+PetersonUp reduces
+-- ok
+
+SemilepBR does not matter
+
+../scripts/text2workspace.py ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_bFrag.txt
+../scripts/text2workspace.py ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_bFrag.txt
+
+make impacts nn=el_bFrag workspace=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_bFrag.root   &
+make impacts nn=mu_bFrag workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_bFrag.root   &
+
+python new_impact_table.py --merge-pdf latest_impacts_el_bFrag.json latest_impacts_mu_bFrag.json
+
+          b fragmentation  &  2.6 &  2.6 \\
+
+was 2.7 and 2.6
+
+combineCards.py mu=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_bFrag.txt el=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_bFrag.txt > ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_bFrag.txt
+
+../scripts/text2workspace.py ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_bFrag.txt
+
+make impacts nn=both_bFrag workspace=ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_bFrag.root   &
+
+
+-- yep, the correction must be calculated differently
+
+test 0.5 Frag in ele
+Frag            shape          0.5    0.5   0.5   0.5   0.5        -        -     -     -        -     -        -     -        -                  0.5    0.5   0.5   0.5   0.5        -        -     -     -        -     -        -     -        -
+
+overall b frag goes to
+2.3
+
+
+
+## correct correction
+
+instead of just SF ratio:
+
+corrected variation = (int.up/int.nom*SF ratio - 1) / (int.up/int.nom - 1)
+
+for b Frag and Peterson
+
+root -l ttxsec/HISTOSELS_v25v25redo_PUnormFix.root
+
+((TH1D*) el_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->Integral()
+((TH1D*) el_sel_lj->Get("sums_FragUp/mc_sum1_FragUp"))->Integral()
+((TH1D*) el_sel_lj->Get("sums_FragDown/mc_sum1_FragDown"))->Integral()
+((TH1D*) el_sel_lj->Get("sums_PetersonUp/mc_sum1_PetersonUp"))->Integral()
+
+((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->Integral()
+((TH1D*) el_sel_ljout->Get("sums_FragUp/mc_sum1_FragUp"))->Integral()
+((TH1D*) el_sel_ljout->Get("sums_FragDown/mc_sum1_FragDown"))->Integral()
+((TH1D*) el_sel_ljout->Get("sums_PetersonUp/mc_sum1_PetersonUp"))->Integral()
+
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->Integral()
+((TH1D*) mu_sel_lj->Get("sums_FragUp/mc_sum1_FragUp"))->Integral()
+((TH1D*) mu_sel_lj->Get("sums_FragDown/mc_sum1_FragDown"))->Integral()
+((TH1D*) mu_sel_lj->Get("sums_PetersonUp/mc_sum1_PetersonUp"))->Integral()
+
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->Integral()
+((TH1D*) mu_sel_ljout->Get("sums_FragUp/mc_sum1_FragUp"))->Integral()
+((TH1D*) mu_sel_ljout->Get("sums_FragDown/mc_sum1_FragDown"))->Integral()
+((TH1D*) mu_sel_ljout->Get("sums_PetersonUp/mc_sum1_PetersonUp"))->Integral()
+
+6383.36
+6246.32
+6497.12
+6270.42
+
+7980.71
+7828.99
+8098.31
+7868.96
+
+10805.6
+10581.9
+10995.5
+10607.8
+
+13376.8
+13175.3
+13535.9
+13194.9
+
+julia> 6497.12 / 6383.36
+1.0178213354722279
+
+julia> 6246.32 / 6383.36
+0.9785316823741729
+
+julia> 6270.42 / 6383.36
+0.982307123521155
+
+
+
+julia> 7828.99/7980.71
+0.9809891601123208
+
+julia> 8098.31/7980.71
+1.0147355310492425
+
+julia> 7868.96/7980.71
+0.9859974864391765
+
+
+
+ratio_bFrag = 0.955
+
+ratio_bFrag = 0.97
+ratio_Peterson = 0.991
+
+cor_ratio(sf, int_var, int_nom) = (sf*(int_var/int_nom) - 1)/(int_var/int_nom - 1)
+
+cor_ratio(0.97, 6246.32, 6383.36)
+cor_ratio(0.97, 6497.12, 6383.36)
+
+cor_ratio(0.97, 7828.99, 7980.71)
+cor_ratio(0.97, 8098.31, 7980.71)
+
+julia> cor_ratio(0.97, 6246.32, 6383.36)
+2.3674080560420334
+
+julia> cor_ratio(0.97, 6497.12, 6383.36)
+-0.7133755274261541
+
+julia> cor_ratio(0.97, 7828.99, 7980.71)
+2.548047060374377
+
+julia> cor_ratio(0.97, 8098.31, 7980.71)
+-1.0658954081632657
+
+precise SF for
+up
+down
+              "FragUp":             0.958852 / 1.001123 = 0.9577764170836152 = 0.958
+            "FragDown":             1.02936  / 0.999304 = 1.030076933545748  = 1.030
+
+-- I divide the yield by it, it must be reversed for the yield
+              "FragUp":             1.001123 / 0.958852 = 1.0440850099911143 = 1.044
+            "FragDown":             0.999304 / 1.02936  = 0.9708012745783787 = 0.971
+
+cor_ratio(1.044, 6246.32, 6383.36)
+cor_ratio(0.971, 6497.12, 6383.36)
+
+cor_ratio(1.044, 7828.99, 7980.71)
+cor_ratio(0.971, 8098.31, 7980.71)
+
+julia> cor_ratio(1.044, 6246.32, 6383.36)
+-1.0055318155283184
+
+julia> cor_ratio(0.971, 6497.12, 6383.36)
+-0.6562630098452819
+
+julia> cor_ratio(1.044, 7828.99, 7980.71)
+-1.2704690218824148
+
+julia> cor_ratio(0.971, 8098.31, 7980.71)
+-0.9970322278911566
+
+so.. the variations should go exactly 1sigma the other way?
+
+julia> 6246.32 * 1.044
+6521.15808
+
+julia> 6521.15808 / 6383.36
+1.0215870763986366
+
+julia> 6246.32 / 6383.36
+0.9785316823741729
+
+
+also, only TT MC had to be summed?
+
+-- let's account for other 20% MC like this:
+
+mc_cor_SF(mc_perc, SF) = mc_perc + (1-mc_perc) * SF
+
+mc_cor_SF(0.2, 1.044)
+mc_cor_SF(0.2, 0.971)
+
+1.0352000000000001
+0.9768000000000001
+
+cor_ratio(1.035, 6246.32, 6383.36)
+cor_ratio(0.977, 6497.12, 6383.36)
+
+cor_ratio(1.035, 7828.99, 7980.71)
+cor_ratio(0.977, 8098.31, 7980.71)
+
+julia> cor_ratio(1.035, 6246.32, 6383.36)
+-0.5953093987156977
+julia> cor_ratio(0.977, 6497.12, 6383.36)
+-0.31358790436005474
+
+julia> cor_ratio(1.035, 7828.99, 7980.71)
+-0.8060549037701036
+julia> cor_ratio(0.977, 8098.31, 7980.71)
+-0.583853146258502
+
+-- different percentages of tt
+
+julia> mean([-0.5953093987156977 -0.31358790436005474 -0.8060549037701036 -0.583853146258502])
+-0.5747013382760895
+
+the sign does not matter (1 correction for both Up and Down)
+
+
+same for Peterson variation
+
+          "PetersonUp":             0.990578 / 1.000032 = 0.9905463025183193 = 0.991
+          "PetersonUp":             1.000032 / 0.990578 = 1.0095439228410081 = 1.0095
+
+mc_cor_SF(0.2, 1.01)
+1.008
+
+mc_cor_SF(0.2, 1.0095)
+1.0076
+
+6270.42
+7868.96
+
+cor_ratio(1.008, 6270.42, 6383.36)
+cor_ratio(1.008, 7868.96, 7980.71)
+
+0.555840623339827
+0.4366740044742675
+
+and in muons
+
+cor_ratio(1.008, 10607.8, 10805.6)
+cor_ratio(1.008, 13194.9, 13376.8)
+
+0.5709686552072842
+0.4196855415063183
+
+
+frag and peterson are redocued to 0.5:
+
+  final   state radiation  &  2.4 &  1.6 \\
+          b fragmentation  &  1.5 &  1.5 \\
+
+also reduce semilep to 0.01:
+
+  final   state radiation  &  2.3 &  1.6 \\
+          b fragmentation  &  1.5 &  1.3 \\
+
+with both:
+
+python new_impact_table.py --merge-pdf latest_impacts_el_bFrag.json latest_impacts_mu_bFrag.json latest_impacts_both_bFrag.json
+
+$\tauh$ jet identification  &  5.0 &  4.3 &  4.3 \\
+       pileup uncertainty  &  2.9 &  2.5 &  2.7 \\
+        top quark $p_{T}$  &  2.9 &  2.2 &  2.3 \\
+$\tauh$ misidentification background  &  2.4 &  2.1 &  2.0 \\
+        QCD normalization  &  0.2 &  1.3 &  1.6 \\
+     b-tagging efficiency  &  1.6 &  1.3 &  1.3 \\
+     W+jets normalization  &  0.4 &  1.1 &  1.1 \\
+       muon ID efficiency  &  0.7 &  0.7 \\
+         DY normalization  &  0.3 &  0.4 &  0.6 \\
+electron trigger efficiency  &  2.6 &  0.5 \\
+ Single Top normalization  &  0.6 &  0.5 &  0.4 \\
+   electron ID efficiency  &  1.9 &  0.3 \\
+  muon trigger efficiency  &  0.4 &  0.3 \\
+     $\tauh$ Energy Scale  &  0.2 &  0.3 &  0.2 \\
+    jet energy resolution  &  0.2 &  0.1 &  0.1 \\
+         jet energy scale  &  0.3 &  0.2 &  0.0 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+  final   state radiation  &  2.3 &  1.6 &  1.8 \\
+          b fragmentation  &  1.5 &  1.3 &  1.5 \\
+  initial state radiation  &  1.8 &  1.3 &  1.1 \\
+ ME Renormalization scale  &  0.8 &  1.2 &  0.7 \\
+ME combined scale variation  &  0.5 &  1.1 &  0.7 \\
+   ME-PS matching (hdamp)  &  0.2 &  0.7 &  0.7 \\
+underlying event (Pythia tune)  &  0.6 &  0.5 &  0.6 \\
+   ME Factorization scale  &  0.3 &  0.2 &  0.1 \\
+semi-leptonic b-hadron BRs  &  0.0 &  0.0 &  0.0 \\
+                      PDF  &  1.5 &  1.3 &  1.4 \\
+            MC statistics  &  2.4 &  1.7 &  1.8 \\
+
+
+
 ## other sys weights
 
+checked above?
 
 
 # testing missing jobs on gstore or lstore
