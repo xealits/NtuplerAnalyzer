@@ -14,25 +14,27 @@ all_known_sorted_processes = [
     'dy_tautau', 'dy_other',
     'wjets', 'wjets_other', 'wjets_taul', 'wjets_tauh',
     'dibosons',
-    'qcd']
+    'dibosons_other',
+    'qcd', 'qcd_other']
 
 # tt_taulj
 # wjets_taul
 # wjets_tauh
 
-processes_mu = ['dy_tautau', 'dy_other',  'wjets_other', 'wjets_taul', 'wjets_tauh',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'tt_taulj', 'qcd']
+processes_mu = ['dy_tautau', 'dy_other',  'wjets_other', 'wjets_taul', 'wjets_tauh',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons',  'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau', 'tt_taulj', 'qcd', 'qcd_other']
 #processes_mu = set(['dy_tautau', 'dy_other',  'wjets_other',     's_top_mutau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_mutau'])
-processes_mu_id = {'qcd': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets_other': 11,  'wjets_taul': 10,  'wjets_tauh': 9,     's_top_mutau': 8,   's_top_other': 7, 's_top_lj': 6,    'dibosons': 5,     'tt_other': 4, 'tt_taultauh': 3, 'tt_taulj': 2,  'tt_lj': 1,  'tt_mutau':0}
+processes_mu_id = {'qcd': 14, 'qcd_other': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets_other': 11,  'wjets_taul': 10,  'wjets_tauh': 9,     's_top_mutau': 8,   's_top_other': 7, 's_top_lj': 6,    'dibosons': 5,    'dibosons_other': 5,     'tt_other': 4, 'tt_taultauh': 3, 'tt_taulj': 2,  'tt_lj': 1,  'tt_mutau':0}
 
-processes_el = ['dy_tautau', 'dy_other',  'wjets_other', 'wjets_taul', 'wjets_tauh',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau', 'tt_taulj', 'qcd']
+processes_el = ['dy_tautau', 'dy_other',  'wjets_other', 'wjets_taul', 'wjets_tauh',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons',  'dibosons_other', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau', 'tt_taulj', 'qcd', 'qcd_other']
 #processes_el = set(['dy_tautau', 'dy_other',  'wjets_other',     's_top_eltau',   's_top_other', 's_top_lj',    'dibosons', 'tt_taultauh',  'tt_lj',     'tt_other',  'tt_eltau'])
-processes_el_id = {'qcd': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets_other': 11,  'wjets_taul': 10,  'wjets_tauh': 9,     's_top_eltau': 8,   's_top_other': 7, 's_top_lj': 6,    'dibosons': 5,     'tt_other': 4, 'tt_taultauh': 3, 'tt_taulj': 2,  'tt_lj': 1,  'tt_eltau':0}
+processes_el_id = {'qcd': 14, 'qcd_other': 14, 'dy_tautau': 13, 'dy_other': 12,  'wjets_other': 11,  'wjets_taul': 10,  'wjets_tauh': 9,     's_top_eltau': 8,   's_top_other': 7, 's_top_lj': 6,    'dibosons': 5,    'dibosons_other': 5,     'tt_other': 4, 'tt_taultauh': 3, 'tt_taulj': 2,  'tt_lj': 1,  'tt_eltau':0}
 
-processes_id = {'qcd': 18, 'dy_tautau': 17, 'dy_other': 16,
+processes_id = {'qcd': 18, 'qcd_other': 18, 'dy_tautau': 17, 'dy_other': 16,
    'wjets': 15, 'wjets_other': 15,  'wjets_taul': 14,  'wjets_tauh': 13,
    's_top_eltau': 12, 's_top_mutau': 11, 's_top_elmu': 10,
    's_top_other': 9, 's_top_lj': 8,
    'dibosons': 7,
+   'dibosons_other': 7,
    'tt_other': 6, 'tt_taultauh': 5, 'tt_taulj': 4,  'tt_lj': 3,
    'tt_ltaul': 2, 'tt_taueltaumu': 1,
    'tt_eltau': 0, 'tt_mutau':0, 'tt_elmu':0}

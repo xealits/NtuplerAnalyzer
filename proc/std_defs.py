@@ -785,10 +785,19 @@ std_channels_ev_loop = {
 'el_presel':          (lambda sel_stage, ev: (sel_stage > 10 and sel_stage < 20), main_presel_stages),
 'el_presel_lj':       (lambda sel_stage, ev: (sel_stage > 10 and sel_stage < 20) and ev.event_jets_lj_var <= 60., main_presel_stages),
 'el_presel_ljout':    (lambda sel_stage, ev: (sel_stage > 10 and sel_stage < 20) and ev.event_jets_lj_var  > 60., main_presel_stages),
+
 'mu_preselCand':      (lambda sel_stage, ev: (sel_stage==  9), main_presel_stages),
 'mu_preselCand_ss':   (lambda sel_stage, ev: (sel_stage==  8), main_presel_stages),
 'el_preselCand':      (lambda sel_stage, ev: (sel_stage== 19), main_presel_stages),
 'el_preselCand_ss':   (lambda sel_stage, ev: (sel_stage== 18), main_presel_stages),
+'mu_preselCand_lj':      (lambda sel_stage, ev: (sel_stage==  9 and ev.event_jets_lj_var <= 60.), main_presel_stages),
+'mu_preselCand_lj_ss':   (lambda sel_stage, ev: (sel_stage==  8 and ev.event_jets_lj_var <= 60.), main_presel_stages),
+'el_preselCand_lj':      (lambda sel_stage, ev: (sel_stage== 19 and ev.event_jets_lj_var <= 60.), main_presel_stages),
+'el_preselCand_lj_ss':   (lambda sel_stage, ev: (sel_stage== 18 and ev.event_jets_lj_var <= 60.), main_presel_stages),
+'mu_preselCand_ljout':      (lambda sel_stage, ev: (sel_stage==  9 and ev.event_jets_lj_var  > 60.), main_presel_stages),
+'mu_preselCand_ljout_ss':   (lambda sel_stage, ev: (sel_stage==  8 and ev.event_jets_lj_var  > 60.), main_presel_stages),
+'el_preselCand_ljout':      (lambda sel_stage, ev: (sel_stage== 19 and ev.event_jets_lj_var  > 60.), main_presel_stages),
+'el_preselCand_ljout_ss':   (lambda sel_stage, ev: (sel_stage== 18 and ev.event_jets_lj_var  > 60.), main_presel_stages),
 
 # additional channels
 'dy_mutau': (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
@@ -851,7 +860,7 @@ presel_sys = ['NOMINAL', 'TOPPTDown', 'TOPPTUp', 'PUUp', 'PUDown']
 
 channels_distrs = {
 'tt_alliso_presel'    : (['tt_alliso_presel_el', 'tt_alliso_presel_el_ss', 'tt_alliso_presel_mu', 'tt_alliso_presel_mu_ss', ], sorted(distrs_lep.union(distrs_relIso)), main_sys),
-'tt_dileptons'    : (['tt_elmu'], sorted(distrs_leptonic), main_sys),
+'tt_dileptons'    : (['tt_elmu'], sorted(distrs_leptonic), main_sys + ['TOPPTUp', 'TOPPTDown']),
 'tt_leptauSV'     : (['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), ['nom']),
 
 'fit_tt_leptau'       : (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'],       sorted(distrs_mt), full_sys),
@@ -878,7 +887,9 @@ channels_distrs = {
 'tt_leptau_Tight_lj'    : (['el_selTight_lj',    'el_selTight_lj_ss',    'mu_selTight_lj',    'mu_selTight_lj_ss'],     sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), main_sys),
 'tt_leptau_Tight_ljout' : (['el_selTight_ljout', 'el_selTight_ljout_ss', 'mu_selTight_ljout', 'mu_selTight_ljout_ss'],  sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), main_sys),
 
-'tt_presel_cands' : (['el_preselCand', 'el_preselCand_ss', 'mu_preselCand', 'mu_preselCand_ss',], sorted(distrs_tauonic_std.union(distrs_leptonic, distrs_on_jets) - distrs_mt_fit), presel_sys),
+'tt_presel_cands'       : (['el_preselCand', 'el_preselCand_ss', 'mu_preselCand', 'mu_preselCand_ss',], sorted(distrs_tauonic_std.union(distrs_leptonic, distrs_on_jets) - distrs_mt_fit), presel_sys),
+'tt_presel_cands_lj'    : (['el_preselCand_lj', 'el_preselCand_lj_ss', 'mu_preselCand_lj', 'mu_preselCand_lj_ss',], sorted(distrs_tauonic_std.union(distrs_leptonic, distrs_on_jets) - distrs_mt_fit), presel_sys),
+'tt_presel_cands_ljout' : (['el_preselCand_ljout', 'el_preselCand_ljout_ss', 'mu_preselCand_ljout', 'mu_preselCand_ljout_ss',], sorted(distrs_tauonic_std.union(distrs_leptonic, distrs_on_jets) - distrs_mt_fit), presel_sys),
 'tt_presel_lj_mu' : (['mu_presel',    'mu_presel_lj',    'mu_presel_ljout',], sorted(distrs_on_jets.union(distrs_lep)), presel_sys),
 'tt_presel_lj_el' : (['el_presel',    'el_presel_lj',    'el_presel_ljout',], sorted(distrs_on_jets.union(distrs_lep)), presel_sys),
 

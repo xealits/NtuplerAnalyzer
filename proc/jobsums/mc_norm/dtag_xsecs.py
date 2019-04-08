@@ -237,7 +237,7 @@ dtag_xsecs = {
 "MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg": 136.02, #70.69/2},
 }
 
-usual_gen_lumi_weights = {
+usual_gen_lumi_weights_1 = {
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo" : 92667256.031132,
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph" : 147827597.073751,
 
@@ -283,5 +283,38 @@ usual_gen_lumi_weights = {
 "MC2016_Summer16_SingleTbar_tW_5FS_powheg" : 7060819.557982,
 
 "MC2016_Summer16_TTJets_powheg" : 75829144.704647,
+}
+
+usual_gen_lumi_weights = {
+"MC2016_Summer16_DYJetsToLL_10to50_amcatnlo" : 92667256.031132,
+"MC2016_Summer16_DYJetsToLL_50toInf_madgraph" : 147827597.073751,
+"MC2016_Summer16_QCD_HT-100-200" : 80668282.010224,
+"MC2016_Summer16_QCD_HT-1000-1500" : 4831794.914995,
+"MC2016_Summer16_QCD_HT-1500-2000" : 4025637.189128,
+"MC2016_Summer16_QCD_HT-200-300" : 18982179.906991,
+"MC2016_Summer16_QCD_HT-2000-Inf" : 2019120.954068,
+"MC2016_Summer16_QCD_HT-300-500" : 17273854.173847,
+"MC2016_Summer16_QCD_HT-500-700" : 19192242.333873,
+"MC2016_Summer16_QCD_HT-700-1000" : 15846448.822448,
+"MC2016_Summer16_SingleT_tW_5FS_powheg" : 7079946.591460,
+"MC2016_Summer16_SingleTbar_tW_5FS_powheg" : 7060819.557982, 
+"MC2016_Summer16_TTJets_powheg" : 78189291.372787,
+"MC2016_Summer16_W1Jets_madgraph" : 42268723.655958, 
+"MC2016_Summer16_W2Jets_madgraph" : 58623419.131360,
+"MC2016_Summer16_W3Jets_madgraph" : 57773140.789413,
+"MC2016_Summer16_W4Jets_madgraph" : 30412479.957944,
+"MC2016_Summer16_WJets_amcatnlo" : 151108470.560272,
+"MC2016_Summer16_WJets_madgraph" : 85737026.803850,
+"MC2016_Summer16_WWTo2L2Nu_powheg" : 2026759.028423,
+"MC2016_Summer16_WWToLNuQQ_powheg" : 2026281.926199,
+"MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin" : 14254071.531880,
+"MC2016_Summer16_WZTo1L3Nu_amcatnlo_madspin" : 955200.742387,
+"MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin" : 16101693.833498,
+"MC2016_Summer16_WZTo3LNu_powheg" : 2020951.120024,
+"MC2016_Summer16_ZZTo2L2Nu_powheg" : 8965538.308207,
+"MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin" : 9822865.311869,
+"MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo" : 637697.524850,
+"MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg" : 39844542.965987,
+"MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg" : 68953757.295413,
 }
 
