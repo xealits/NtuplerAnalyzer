@@ -1,3 +1,433 @@
+# check the yields of new selections
+
+data with all channels:
+hadd SingleMuon_all.root SingleMuon.root 1/SingleMuon.root
+hadd SingleElectron_all.root SingleElectron.root 1/SingleElectron.root
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_presel       --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_preselCand   --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_presel_lj    --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_presel_ljout --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c wjets_mu --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c dy_mumu --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c tt_elmu --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_sel       --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd 1.05
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_sel_lj    --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd 1.05
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c mu_sel_ljout --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd 1.05
+
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_presel       --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_preselCand   --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_presel_lj    --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_presel_ljout --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c wjets_el --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c dy_elel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_sel       --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd 1.05
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_sel_lj    --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd 1.05
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c el_sel_ljout --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd 1.05
+
+
+
+hadd histosels/v37_test5_bunch2_mc_wjets_amcatnlo/HISTOSEL.root histosels/v37_test5_bunch2_mc_wjets_amcatnlo/distrs/*root
+
+python numbers_for_datacard.py histosels/v37_test5_bunch2_mc_wjets_amcatnlo/HISTOSEL.root --data-nick data_other -d lep_pt -c el_presel,el_presel_lj,el_presel_ljout,el_preselCand,el_sel,el_sel_lj,el_sel_ljout -y --sqrt-unc
+python numbers_for_datacard.py histosels/v37_test5_bunch2_mc_wjets_amcatnlo/HISTOSEL.root --data-nick data_other -d lep_pt -c mu_presel,mu_presel_lj,mu_presel_ljout,mu_preselCand,mu_sel,mu_sel_lj,mu_sel_ljout -y --sqrt-unc
+
+python numbers_for_datacard.py histosels/v37_test5_bunch2_mc_wjets_amcatnlo/HISTOSEL.root --data-nick data_other -d lep_pt -c el_preselCand,el_sel,el_sel_lj,el_sel_ljout -y --sqrt-unc
+python numbers_for_datacard.py histosels/v37_test5_bunch2_mc_wjets_amcatnlo/HISTOSEL.root --data-nick data_other -d lep_pt -c mu_preselCand,mu_sel,mu_sel_lj,mu_sel_ljout -y --sqrt-unc
+
+python numbers_for_datacard.py histosels/v37_test5_bunch2_mc_wjets_amcatnlo/HISTOSEL.root --data-nick data_other -d lep_pt -c wjets_mu,wjets_el,dy_mumu,dy_elel,tt_elmu -y --sqrt-unc
+
+
+
+separate:
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron_all.root     -o histosels/v37_test5_bunch2_mc_wjets_amcatnlo/  -c tt_elmu --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 2.0
+
+## results
+
+                                 process   el_presel   el_presel_lj   el_presel_ljout   el_preselCand   el_sel   el_sel_lj   el_sel_ljout
+                                tt_eltau   $ 82333 \pm    212 $   $ 29441 \pm    127 $   $ 52892 \pm    170 $   $ 42367 \pm    152 $   $ 12156 \pm     79 $   $  4785 \pm     50 $   $  7371 \pm     61 $
+                             tt_taultauh   $  4662 \pm     50 $   $  1622 \pm     30 $   $  3040 \pm     40 $   $  2459 \pm     36 $   $   702 \pm     19 $   $   271 \pm     12 $   $   431 \pm     15 $
+                                   tt_lj   $1151752 \pm    791 $   $614933 \pm    578 $   $536819 \pm    540 $   $464148 \pm    503 $   $  5661 \pm     55 $   $  3420 \pm     42 $   $  2242 \pm     34 $
+                                tt_taulj   $ 63754 \pm    184 $   $ 34307 \pm    135 $   $ 29447 \pm    125 $   $ 26101 \pm    118 $   $   305 \pm     13 $   $   186 \pm     10 $   $   119 \pm      8 $
+                                tt_other   $100376 \pm    234 $   $ 33211 \pm    135 $   $ 67165 \pm    191 $   $ 30797 \pm    130 $   $   248 \pm     12 $   $    93 \pm      7 $   $   156 \pm      9 $
+                             s_top_eltau   $   482 \pm     11 $   $   170 \pm      6 $   $   312 \pm      8 $   $  1622 \pm     19 $   $   561 \pm     11 $   $   201 \pm      6 $   $   361 \pm      9 $
+                             s_top_other   $  1511 \pm     17 $   $   579 \pm     11 $   $   932 \pm     13 $   $  3242 \pm     26 $   $    67 \pm      4 $   $    28 \pm      2 $   $    39 \pm      3 $
+                                s_top_lj   $ 16351 \pm     52 $   $  6437 \pm     35 $   $  9914 \pm     39 $   $ 36653 \pm     88 $   $   412 \pm      9 $   $   197 \pm      6 $   $   215 \pm      6 $
+                               dy_tautau   $   467 \pm     44 $   $   152 \pm     26 $   $   315 \pm     38 $   $  1822 \pm     61 $   $   342 \pm     24 $   $   122 \pm     15 $   $   220 \pm     18 $
+                                dy_other   $  6018 \pm    260 $   $  2195 \pm    145 $   $  3823 \pm    215 $   $  9845 \pm    185 $   $   105 \pm     14 $   $    29 \pm      7 $   $    75 \pm     12 $
+                             wjets_other   $ 36173 \pm   1116 $   $ 10932 \pm    599 $   $ 25240 \pm    942 $   $ 42417 \pm   1195 $   $   219 \pm     60 $   $    58 \pm     31 $   $   161 \pm     58 $
+                              wjets_taul   $  2144 \pm    261 $   $   603 \pm     86 $   $  1541 \pm    226 $   $  2610 \pm    277 $   $    36 \pm     20 $   $    11 \pm     11 $   $    25 \pm     23 $
+                              wjets_tauh   $   -21 \pm     35 $   $   -12 \pm     12 $   $    -9 \pm     33 $   $    18 \pm     36 $   $     0 \pm      0 $   $     0 \pm      0 $   $     0 \pm      0 $
+aaa!
+                                mc_resum   1466000.903   734569.140   731431.763   664101.758   20813.163   9399.068   11414.095
+                                   total   $1670632 \pm  38496 $   $808720 \pm  24825 $   $861912 \pm  30046 $   $741976 \pm  23915 $   $ 20933 \pm    156 $   $  9444 \pm     97 $   $ 11538 \pm    126 $
+                                    data   $1427371 \pm   1206 $   $638531 \pm    805 $   $788840 \pm    898 $   $535968 \pm    740 $   $ 15198 \pm    124 $   $  6702 \pm     82 $   $  8496 \pm     93 $
+
+
+
+                                 process   el_preselCand   el_sel   el_sel_lj   el_sel_ljout
+                                tt_eltau   $ 42367 \pm    152 $   $ 12156 \pm     79 $   $  4785 \pm     50 $   $  7371 \pm     61 $
+                             tt_taultauh   $  2459 \pm     36 $   $   702 \pm     19 $   $   271 \pm     12 $   $   431 \pm     15 $
+                                   tt_lj   $464148 \pm    503 $   $  5661 \pm     55 $   $  3420 \pm     42 $   $  2242 \pm     34 $
+                                tt_taulj   $ 26101 \pm    118 $   $   305 \pm     13 $   $   186 \pm     10 $   $   119 \pm      8 $
+                                tt_other   $ 30797 \pm    130 $   $   248 \pm     12 $   $    93 \pm      7 $   $   156 \pm      9 $
+                             s_top_eltau   $  1622 \pm     19 $   $   561 \pm     11 $   $   201 \pm      6 $   $   361 \pm      9 $
+                             s_top_other   $  3242 \pm     26 $   $    67 \pm      4 $   $    28 \pm      2 $   $    39 \pm      3 $
+                                s_top_lj   $ 36653 \pm     88 $   $   412 \pm      9 $   $   197 \pm      6 $   $   215 \pm      6 $
+                               dy_tautau   $  1822 \pm     61 $   $   342 \pm     24 $   $   122 \pm     15 $   $   220 \pm     18 $
+                                dy_other   $  9845 \pm    185 $   $   105 \pm     14 $   $    29 \pm      7 $   $    75 \pm     12 $
+                             wjets_other   $ 42417 \pm   1195 $   $   219 \pm     60 $   $    58 \pm     31 $   $   161 \pm     58 $
+                              wjets_taul   $  2610 \pm    277 $   $    36 \pm     20 $   $    11 \pm     11 $   $    25 \pm     23 $
+                              wjets_tauh   $    18 \pm     36 $   $     0 \pm      0 $   $     0 \pm      0 $   $     0 \pm      0 $
+                          dibosons_other   $  3158 \pm     36 $   $    84 \pm      6 $   $    26 \pm      3 $   $    58 \pm      5 $
+                               qcd_other   $ 74717 \pm  23876 $
+aaa!
+                                mc_resum   741976.059   20896.761   9424.668   11472.094
+                                   total   $741976 \pm  23915 $   $ 20933 \pm    156 $   $  9444 \pm     97 $   $ 11538 \pm    126 $
+                                    data   $535968 \pm    740 $   $ 15198 \pm    124 $   $  6702 \pm     82 $   $  8496 \pm     93 $
+
+AN v8:
+31.3
+    el_presel   el_sel     lj    ljout
+mc   (k)  600       14    6.3      7.8
+data (k)  595       14    6.1      7.9
+
+* 35.8/31.3
+
+686.262  16.0128  7.20575  8.92141
+680.543  16.0128  6.977  9.03578
+
+-- not enough data, but maybe new lumisections are the poorly reconstructed runs
+
+mu 35.8
+    presel   sel     lj   ljout
+mc     998  24     10.7    13.2
+data   987  23.8   10.2    13.5
+
+
+                                 process   mu_presel   mu_presel_lj   mu_presel_ljout   mu_preselCand   mu_sel   mu_sel_lj   mu_sel_ljout
+                                tt_mutau   $123421 \pm    256 $   $ 43769 \pm    153 $   $ 79653 \pm    205 $   $ 63749 \pm    184 $   $ 18731 \pm     97 $   $  7386 \pm     61 $   $ 11345 \pm     75 $
+                             tt_taultauh   $  7955 \pm     65 $   $  2810 \pm     39 $   $  5145 \pm     52 $   $  4166 \pm     47 $   $  1197 \pm     24 $   $   466 \pm     15 $   $   732 \pm     19 $
+                                   tt_lj   $1720937 \pm    953 $   $915442 \pm    695 $   $805495 \pm    652 $   $691463 \pm    605 $   $  8859 \pm     68 $   $  5312 \pm     53 $   $  3546 \pm     43 $
+                                tt_taulj   $109814 \pm    240 $   $ 59046 \pm    176 $   $ 50767 \pm    163 $   $ 44609 \pm    153 $   $   566 \pm     17 $   $   341 \pm     13 $   $   226 \pm     11 $
+                                tt_other   $152014 \pm    284 $   $ 50233 \pm    163 $   $101781 \pm    232 $   $ 46385 \pm    157 $   $   405 \pm     15 $   $   150 \pm      9 $   $   255 \pm     12 $
+                             s_top_mutau   $   719 \pm     13 $   $   243 \pm      7 $   $   476 \pm     10 $   $  2330 \pm     23 $   $   815 \pm     13 $   $   279 \pm      8 $   $   536 \pm     11 $
+                             s_top_other   $  2422 \pm     21 $   $   939 \pm     13 $   $  1482 \pm     16 $   $  5242 \pm     33 $   $   119 \pm      5 $   $    47 \pm      3 $   $    72 \pm      4 $
+                                s_top_lj   $ 24433 \pm     62 $   $  9514 \pm     42 $   $ 14918 \pm     46 $   $ 54436 \pm    105 $   $   624 \pm     11 $   $   278 \pm      8 $   $   346 \pm      8 $
+                               dy_tautau   $   852 \pm    nan $   $   264 \pm    nan $   $   588 \pm    nan $   $  3117 \pm    nan $   $   659 \pm     33 $   $   212 \pm     19 $   $   447 \pm     28 $
+                                dy_other   $  6147 \pm    293 $   $  2132 \pm    168 $   $  4015 \pm    240 $   $  8431 \pm    196 $   $    32 \pm     14 $   $    11 \pm      9 $   $    21 \pm     10 $
+                             wjets_other   $ 37637 \pm   1135 $   $ 11598 \pm    621 $   $ 26040 \pm    950 $   $ 63747 \pm   1465 $   $   594 \pm     86 $   $   172 \pm     47 $   $   422 \pm     75 $
+                              wjets_taul   $  2237 \pm    290 $   $   402 \pm    159 $   $  1835 \pm    243 $   $  3815 \pm    384 $   $    50 \pm     29 $   $    25 \pm     17 $   $    25 \pm     23 $
+                              wjets_tauh   $     0 \pm      0 $   $     0 \pm      0 $   $     0 \pm      0 $   $    13 \pm     12 $   $     0 \pm      0 $   $     0 \pm      0 $   $     0 \pm      0 $
+aaa!
+                                mc_resum   2188586.949   1096391.135   1092195.814   991502.457   32651.670   14677.332   17974.338
+                                   total   $2547211 \pm  57529 $   $1226218 \pm  37951 $   $1320993 \pm  43236 $   $1064444 \pm  14623 $   $ 32830 \pm    193 $   $ 14757 \pm    124 $   $ 18114 \pm    151 $
+                                    data   $2248861 \pm   1508 $   $1009647 \pm   1010 $   $1239214 \pm   1120 $   $839131 \pm    922 $   $ 23833 \pm    155 $   $ 10248 \pm    102 $   $ 13585 \pm    117 $
+
+
+                                 process   mu_preselCand   mu_sel   mu_sel_lj   mu_sel_ljout
+                                tt_mutau   $ 63749 \pm    184 $   $ 18731 \pm     97 $   $  7386 \pm     61 $   $ 11345 \pm     75 $
+                             tt_taultauh   $  4166 \pm     47 $   $  1197 \pm     24 $   $   466 \pm     15 $   $   732 \pm     19 $
+                                   tt_lj   $691463 \pm    605 $   $  8859 \pm     68 $   $  5312 \pm     53 $   $  3546 \pm     43 $
+                                tt_taulj   $ 44609 \pm    153 $   $   566 \pm     17 $   $   341 \pm     13 $   $   226 \pm     11 $
+                                tt_other   $ 46385 \pm    157 $   $   405 \pm     15 $   $   150 \pm      9 $   $   255 \pm     12 $
+                             s_top_mutau   $  2330 \pm     23 $   $   815 \pm     13 $   $   279 \pm      8 $   $   536 \pm     11 $
+                             s_top_other   $  5242 \pm     33 $   $   119 \pm      5 $   $    47 \pm      3 $   $    72 \pm      4 $
+                                s_top_lj   $ 54436 \pm    105 $   $   624 \pm     11 $   $   278 \pm      8 $   $   346 \pm      8 $
+                               dy_tautau   $  3117 \pm    nan $   $   659 \pm     33 $   $   212 \pm     19 $   $   447 \pm     28 $
+                                dy_other   $  8431 \pm    196 $   $    32 \pm     14 $   $    11 \pm      9 $   $    21 \pm     10 $
+                             wjets_other   $ 63747 \pm   1465 $   $   594 \pm     86 $   $   172 \pm     47 $   $   422 \pm     75 $
+                              wjets_taul   $  3815 \pm    384 $   $    50 \pm     29 $   $    25 \pm     17 $   $    25 \pm     23 $
+                              wjets_tauh   $    13 \pm     12 $   $     0 \pm      0 $   $     0 \pm      0 $   $     0 \pm      0 $
+                          dibosons_other   $  4420 \pm     43 $   $   135 \pm      7 $   $    39 \pm      4 $   $    96 \pm      6 $
+                               qcd_other   $ 68521 \pm  14527 $
+aaa!
+                                mc_resum   1064443.523   32787.163   14716.550   18070.614
+                                   total   $1064444 \pm  14623 $   $ 32830 \pm    193 $   $ 14757 \pm    124 $   $ 18114 \pm    151 $
+                                    data   $839131 \pm    922 $   $ 23833 \pm    155 $   $ 10248 \pm    102 $   $ 13585 \pm    117 $
+
+-- in data sel is slightly larger than it was:
+
+987469    23801   10251  13550
+
+and that's with a couple jobs still missing!
+
+CLUE
+but preselCand is just smaller by 100k -- maybe it's propper b-tau cross-cleaning?
+
+in MC
+less wjets and DY (and QCD),
+(el) more tt (+42-50%), single top (+19-21%) and      dibosons (+5%)
+(mu) more tt (+25-32%), single-top (+5-9%)   and less dibosons (-10%)
+-- and el got the +14% of 35.8 / 31.3
+
+CHECK b SF correctness, tt lumi weight (~=0.33?)
+
+                                 process   wjets_mu   wjets_el   dy_mumu   dy_elel   tt_elmu
+                                tt_mutau   $ 32865 \pm    138 $   $     2 \pm      1 $   $   123 \pm      8 $   $     0 \pm      0 $   $    66 \pm      6 $
+                             tt_taultauh   $  2146 \pm     35 $   $  1276 \pm     27 $   $     8 \pm      2 $   $     7 \pm      2 $   $    10 \pm      2 $
+                                   tt_lj   $273005 \pm    398 $   $184328 \pm    332 $   $  1027 \pm     23 $   $   188 \pm     10 $   $   994 \pm     22 $
+                                tt_taulj   $ 18474 \pm    103 $   $ 10705 \pm     79 $   $    61 \pm      6 $   $     8 \pm      2 $   $    37 \pm      4 $
+                                tt_other   $ 22457 \pm    114 $   $ 36734 \pm    148 $   $149492 \pm    286 $   $ 81592 \pm    215 $   $208288 \pm    330 $
+                             s_top_mutau   $  3642 \pm     29 $   $     0 \pm      0 $   $     6 \pm      1 $   $     0 \pm      0 $   $     5 \pm      1 $
+                             s_top_other   $  5845 \pm     34 $   $  5921 \pm     36 $   $ 12024 \pm     52 $   $  6723 \pm     40 $   $ 17346 \pm     61 $
+                                s_top_lj   $ 63195 \pm    109 $   $ 41229 \pm     90 $   $   224 \pm      6 $   $    43 \pm      3 $   $   201 \pm      6 $
+                               dy_tautau   $289075 \pm    713 $   $119330 \pm    469 $   $  8874 \pm    119 $   $  3873 \pm     79 $   $ 13515 \pm    141 $
+                                dy_other   $412425 \pm   1369 $   $406981 \pm   1229 $   $16906251 \pm   5079 $   $7573968 \pm   3435 $   $   652 \pm     35 $
+                             wjets_other   $5961189 \pm  12723 $   $3565878 \pm  10000 $   $   351 \pm     78 $   $   612 \pm     89 $   $   897 \pm    nan $
+                              wjets_taul   $327104 \pm   3018 $   $169609 \pm   2196 $   $     5 \pm     17 $   $    55 \pm     30 $   $    27 \pm     32 $
+                              wjets_tauh   $   370 \pm     68 $   $  1625 \pm    nan $   $     0 \pm      0 $   $    12 \pm     12 $   $     0 \pm      0 $
+aaa!
+                                mc_resum   7411791.245   4543618.076   17078445.451   7667081.674   242036.155
+                                   total   $9089374 \pm 162035 $   $5885178 \pm 139627 $   $17140356 \pm   5287 $   $7785019 \pm  46011 $   $280975 \pm    423 $
+                                    data   $10346582 \pm   3226 $   $6962027 \pm   2655 $   $17405226 \pm   4175 $   $7077899 \pm   2664 $   $183623 \pm    431 $
+
+was:
+          dy_mumu   wjets_mu   tt_elmu
+mc   (k)     7597      10065       177
+data (k)     8016      10185       179
+
+in data
+-- much more DY dilep         maybe the HLT match was done only against leading lepton? check the HLT matching fractions
+   more tt_elmu by 2.8%       (35.8/31.3 = 1,144)
+   wjets_mu are 1.6% larger
+
+CLUE
+also now I do not have a default tau candidate
+only the b candidate is required or required to not be there
+-- and needs a propper SF?
+
+## tt lumi weight
+
+now:
+
+root [4] el_presel->Get("tt_lj/NOMINAL/el_presel_tt_lj_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = el_presel_tt_lj_NOMINAL_lep_pt, Entries= 2357670, Total sum= 32.6184
+root [5] 32.6184 * 35800
+(double) 1.16774e+06
+root [6] 1.16774e+06 / 2357670
+(double) 0.495294
+
+el_presel->Get("tt_eltau/NOMINAL/el_presel_tt_eltau_NOMINAL_lep_pt")->Print()
+
+root [7] el_presel->Get("tt_eltau/NOMINAL/el_presel_tt_eltau_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = el_presel_tt_eltau_NOMINAL_lep_pt, Entries= 168181, Total sum= 2.33172
+root [8] 
+root [8] 2.33172 * 35800
+(double) 83475.6
+root [9] 2.33172 * 35800 / 168181
+(double) 0.496344
+
+
+mu_presel->Get("tt_mutau/NOMINAL/mu_presel_tt_mutau_NOMINAL_lep_pt")->Print()
+mu_presel->Get("tt_lj/NOMINAL/mu_presel_tt_lj_NOMINAL_lep_pt")->Print()
+
+root [10] mu_presel->Get("tt_mutau/NOMINAL/mu_presel_tt_mutau_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = mu_presel_tt_mutau_NOMINAL_lep_pt, Entries= 259007, Total sum= 3.49537
+root [11] 3.49537 * 35800 / 259007
+(double) 0.483131
+
+root [12] mu_presel->Get("tt_lj/NOMINAL/mu_presel_tt_lj_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = mu_presel_tt_lj_NOMINAL_lep_pt, Entries= 3615738, Total sum= 48.7381
+root [13] 48.7381 * 35800 / 3615738
+(double) 0.482564
+
+mu_preselCand->Get("tt_lj/NOMINAL/mu_preselCand_tt_lj_NOMINAL_lep_pt")->Print()
+
+mu_sel->Get("tt_mutau/NOMINAL/mu_sel_tt_mutau_NOMINAL_lep_pt")->Print()
+mu_sel->Get("tt_lj/NOMINAL/mu_sel_tt_lj_NOMINAL_lep_pt")->Print()
+
+root [14] mu_preselCand->Get("tt_lj/NOMINAL/mu_preselCand_tt_lj_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = mu_preselCand_tt_lj_NOMINAL_lep_pt, Entries= 1449257, Total sum= 19.5827
+root [15] 19.5827*35800 / 1449257
+(double) 0.483738
+
+root [16] mu_sel->Get("tt_mutau/NOMINAL/mu_sel_tt_mutau_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = mu_sel_tt_mutau_NOMINAL_lep_pt, Entries= 41061, Total sum= 0.558402
+root [17] 0.558402 * 35800 / 41061
+(double) 0.486856
+
+root [18] mu_sel->Get("tt_lj/NOMINAL/mu_sel_tt_lj_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = mu_sel_tt_lj_NOMINAL_lep_pt, Entries= 18529, Total sum= 0.250886
+root [19] 0.250886 * 35800 / 18529
+(double) 0.484738
+
+root [3] tt_elmu->Get("tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = tt_elmu_tt_other_NOMINAL_lep_pt, Entries= 440051, Total sum= 5.89885
+root [4] 5.89885*35800 / 440051.
+(double) 0.479896
+root [5] 5.89885/ 440051.
+(double) 1.34049e-05
+
+and in old files?
+
+../sw-dir/jobsums/mc_v27p1.root
+
+root [6] ctr_mu_tt_em->Get("tt_elmu/NOMINAL/ctr_mu_tt_em_tt_elmu_NOMINAL_lep_pt")->Print()
+TH1.Print Name  = ctr_mu_tt_em_tt_elmu_NOMINAL_lep_pt, Entries= 363837, Total sum= 3.47039
+root [7] 3.47039*35800 / 363837
+(double) 0.341471
+root [1] 3.47039/ 363837
+(double) 9.53831e-06
+
+
+the weight counters
+
+root -l ../lstore_outdirs/merge-sets/v27/p1/MC2016_Summer16_TTJets_powheg.root
+
+root [4] weight_counter->GetBinContent(1+1)
+(Double_t) 7.81893e+07
+root [5] weight_counter->GetBinContent(1+2)
+(Double_t) 7.81893e+07
+root [6] weight_counter->GetBinContent(1+3)
+(Double_t) 7.81893e+07
+root [7] weight_counter->GetBinContent(1+4)
+(Double_t) 0.00000
+root [8] weight_counter->GetBinContent(1+5)
+(Double_t) 0.00000
+
+root -l mc_norm/v37_test5_bunch2/MC2016_Summer16_TTJets_powheg.root
+
+root [2] 
+root [2] weight_counter->GetBinContent(1+1)
+(Double_t) 5.49872e+07
+root [3] weight_counter->GetBinContent(1+2)
+(Double_t) 5.49872e+07
+root [4] weight_counter->GetBinContent(1+3)
+(Double_t) 5.49872e+07
+root [5] weight_counter->GetBinContent(1+4)
+(Double_t) 0.00000
+root [6] weight_counter->GetBinContent(1+5)
+
+ls lstore_outdirs/v27/p1/MC2016_Summer16_TTJets_powheg/MC*root | wc -l
+99
+[olek@fermi05 proc]$ ls lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg/MC*root | wc -l
+99
+
+root -l lstore_outdirs/v27/p1/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_7.root
+root [1] weight_counter->GetBinContent(1+1)
+(Double_t) 821334.
+
+lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_7.root as _file0...
+root [1] weight_counter->GetBinContent(1+1)
+(Double_t) 821334.
+
+[olek@fermi05 proc]$ root -l jobsums/distrs/v37_test5_bunch2/all/MC2016_Summer16_TTJets_powheg/weights/the_sums.root 
+root [0] 
+root [2] weight_counter->GetBinContent(1+1)
+(Double_t) 5.49872e+07
+
+[olek@fermi05 proc]$ python check_gen_lumi_weights.py lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_*.root
+"MC2016_Summer16_TTJets_powheg" : 78189291.372787,
+
+aha
+
+python sumup_weights.py test_w_tt_v37_test5.root lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_*.root
+root -l test_w_tt_v37_test5.root
+weight_counter->GetBinContent(1+1)
+7.81893e+07
+
+ok, let's redo weights
+make sumup_weights nt=v37 proc=test5 distrs=bunch2
+root -l jobsums/distrs/v37_test5_bunch2/all/MC2016_Summer16_TTJets_powheg/weights/the_sums.root 
+weight_counter->GetBinContent(1+1)
+
+root [1] weight_counter->GetBinContent(1+1)
+(Double_t) 7.81893e+07
+
+aha!
+
+rehadd everything for these damn weights?
+-- no, run with usual weights
+
+python check_gen_lumi_weights.py lstore_outdirs/v37/test5/MC*/MC*.root
+
+"MC2016_Summer16_DYJetsToLL_10to50_amcatnlo" : 92667256.031132,
+"MC2016_Summer16_DYJetsToLL_50toInf_madgraph" : 147827597.073751,
+"MC2016_Summer16_QCD_HT-100-200" : 80668282.010224,
+"MC2016_Summer16_QCD_HT-1000-1500" : 4831794.914995,
+"MC2016_Summer16_QCD_HT-1500-2000" : 4025637.189128,
+"MC2016_Summer16_QCD_HT-200-300" : 18982179.906991,
+"MC2016_Summer16_QCD_HT-2000-Inf" : 2019120.954068,
+"MC2016_Summer16_QCD_HT-300-500" : 17273854.173847,
+"MC2016_Summer16_QCD_HT-500-700" : 19192242.333873,
+"MC2016_Summer16_QCD_HT-700-1000" : 15846448.822448,
+"MC2016_Summer16_SingleT_tW_5FS_powheg" : 7079946.591460,
+"MC2016_Summer16_SingleTbar_tW_5FS_powheg" : 7060819.557982,
+"MC2016_Summer16_TTJets_powheg" : 78189291.372787,
+"MC2016_Summer16_W1Jets_madgraph" : 42268723.655958,
+"MC2016_Summer16_W2Jets_madgraph" : 58623419.131360,
+"MC2016_Summer16_W3Jets_madgraph" : 57773140.789413,
+"MC2016_Summer16_W4Jets_madgraph" : 30412479.957944,
+"MC2016_Summer16_WJets_amcatnlo" : 151108470.560272,
+"MC2016_Summer16_WJets_madgraph" : 85737026.803850,
+"MC2016_Summer16_WWTo2L2Nu_powheg" : 2026759.028423,
+"MC2016_Summer16_WWToLNuQQ_powheg" : 2026281.926199,
+"MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin" : 14254071.531880,
+"MC2016_Summer16_WZTo1L3Nu_amcatnlo_madspin" : 955200.742387,
+"MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin" : 16101693.833498,
+"MC2016_Summer16_WZTo3LNu_powheg" : 2020951.120024,
+"MC2016_Summer16_ZZTo2L2Nu_powheg" : 8965538.308207,
+"MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin" : 9822865.311869,
+"MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo" : 637697.524850,
+"MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg" : 39844542.965987,
+"MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg" : 68953757.295413,
+
+
+hadd v37_test5_bunch2_mc_4_amcatnlo.root v37_test5_bunch2/MC*root v37_test5_bunch2/wjets_amcatnlo/MC2016_Summer16_WJets_amcatnlo.root 
+hadd v37_test5_bunch2_mc_4_wNjets.root   v37_test5_bunch2/MC*root v37_test5_bunch2/wjets_wNjets/MC2016_Summer16_*.root
+
+make test_controls_v37_test5_issue1 mc=distrs/v37_test5_bunch2_mc_4_amcatnlo.root data_dir=distrs/v37_test5_bunch2/ tests=tests2
+
+## the corrected weights, v37_test5_bunch2_mc_tests2
+
+data-mc agreement
+
+dy:
+mumu -- ok                 Mt shape is ok too (data 1% above MC)
+elel -- data at 0.90-0.95  Mt shape disagreement at large mT
+
+wjets -- both ok, maybe need larger factor for wjets and MC QCD
+
+tt_elmu:
+CHECK: no effect from TOPPT
+SingleMuon -- data at 0.90-0.95 of MC
+SingleElectron agreement -- ok:
+INFO:root:197779.0
+INFO:root:mc sum     =   193056.431785   193056.431785
+both -- the same shape disagreement down for particular bins (probably mostly the same events in MC and Data)
+        Data peaks more at 70GeV
+        also some outlier bin at 200GeV
+
+presel
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- in both Data 20-30% less than MC
+   with not clear MC QCD
+   but at large values of Mt_c clearly not enough tt: 10% in el and 20% in mu (and looks like the signal is too large, lj is too small)
+   and different proportions in lj, ljout: 10-20% in lj, 40-50% in ljout
+
+preselCand -- perfect with data-driven QCD
+   needs more MC QCD, but there is not enough data
+
+TODO: add preselCand_lj ljout
+
+main selection
+-- good agreement without Vloose shapes
+   both el_sel and mu_sel have the same dip at 200GeV mT --- CHECK same as elmu, but in opposite direction: in elmu there is more data than MC, in lep-tau the opposite
+
+
+
 # the data-driven QCD shape in OS and SS
 
 python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleMuon.root -o plots/ --lumi 34800 --osss-pl -c ctr_mu_wjet -p    -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "relative Isolation of muon" --bin-norm --no-label-osss
@@ -216,7 +646,7 @@ python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37
 python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d lep_pt --lumi 23800 --overwrite --wjets 0.8 --systematic TOPPTUp
 python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d lep_pt --lumi 23800 --overwrite --wjets 0.8 --systematic TOPPTUp
 
-CHECK tt_elmu -- no effect from TOP PT and strange deviation at lo pT in ele channel
+CHECK tt_elmu -- no effect from TOP PT and strange deviation at low pT in ele channel
 
 python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d Mt_lep_met_f --lumi 23800 --overwrite --wjets 0.8
 python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c tt_elmu --data-nick data_other -d Mt_lep_met_f --lumi 23800 --overwrite --wjets 0.8
