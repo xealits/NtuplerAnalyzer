@@ -123,6 +123,7 @@ python numbers_for_datacard.py histosel-roots/v25p3_yields/histosel_v25p3_yields
     )
 
 parser.add_argument("data_file",    help="full Data+MC file name")
+parser.add_argument("--file-data",  help="(optional) separate file for Data")
 parser.add_argument("-c", "--channels",  type=str, help="if given then get the numbers from here, enter multiple channels with 'mu_presel,mu_sel'")
 parser.add_argument("-d", "--distr",    type=str, default='Mt_lep_met', help="fitted distribution")
 parser.add_argument("-s", "--sys",    type=str, default='NOMINAL', help="systematic shift to consider")
@@ -133,6 +134,8 @@ parser.add_argument("--no-sums",   action = "store_false", default=True, help="d
 #parser.add_argument("-y", "--event-yields", type=str, default='text', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-y", "--event-yields", action='store_true', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-r", "--ratios",       action='store_true', help="output ratios to data")
+
+parser.add_argument("--data-nick",    type=str, default='data', help="the nickname of the data (data_other)")
 
 parser.add_argument("--skip-procs",    type=str, default='', help="skip these processes")
 
@@ -191,7 +194,6 @@ elif args.channels:
     channels = args.channels.split(',')
 
 logging.debug("data file " + args.data_file)
-
 fdata = TFile(args.data_file)
 
 sys_name   = args.sys
@@ -307,9 +309,14 @@ for channel in channels:
        #proc_yields[-1][1].append((process, histo.Integral()))
        proc_yields.setdefault(process, {})[channel] = range_integral(histo)
 
-    histo_name = '_'.join([channel, 'data', 'NOMINAL', distr_name])
-    full_path = '%s/%s/%s/%s' % (channel, 'data', 'NOMINAL', histo_name)
-    data_histo = fdata.Get(full_path)
+    # get the data histogram
+    if args.file_data:
+        file_with_data = TFile(args.file_data)
+    else:
+        file_with_data = fdata
+    histo_name = '_'.join([channel, args.data_nick, 'NOMINAL', distr_name])
+    full_path = '%s/%s/%s/%s' % (channel, args.data_nick, 'NOMINAL', histo_name)
+    data_histo = file_with_data.Get(full_path)
 
     logging.debug(full_path)
     data_yields[channel] = range_integral(data_histo)
@@ -330,7 +337,7 @@ for channel in channels:
 
 
 proc_s = '%40s'
-item_s = '%10'
+item_s = '%6'
 
 def string_yield(integral):
     if integral is None:
