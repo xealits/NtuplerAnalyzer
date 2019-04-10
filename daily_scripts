@@ -1,3 +1,274 @@
+# number of events in the systematic datasets VS the nominal dataset
+
+check the NT with full datasets processed:
+v25
+v34
+v37
+
+find gstore_outdirs/v25/ -name "*fsrup*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v34/ -name "*fsrup*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v37/ -name "*fsrup*root" | grep -v "failed" | wc -l
+
+find gstore_outdirs/v25/ -name "*fsrdown*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v34/ -name "*fsrdown*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v37/ -name "*fsrdown*root" | grep -v "failed" | wc -l
+
+find gstore_outdirs/v25/ -name "*isrup*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v34/ -name "*isrup*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v37/ -name "*isrup*root" | grep -v "failed" | wc -l
+
+find gstore_outdirs/v25/ -name "*isrdown*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v34/ -name "*isrdown*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v37/ -name "*isrdown*root" | grep -v "failed" | wc -l
+
+find gstore_outdirs/v25/ -name "*CUETP8M2T4up*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v34/ -name "*CUETP8M2T4up*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v37/ -name "*CUETP8M2T4up*root" | grep -v "failed" | wc -l
+
+find gstore_outdirs/v25/ -name "*CUETP8M2T4down*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v34/ -name "*CUETP8M2T4down*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v37/ -name "*CUETP8M2T4down*root" | grep -v "failed" | wc -l
+
+find gstore_outdirs/v25/ -name "*hdampUP*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v34/ -name "*hdampUP*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v37/ -name "*hdampUP*root" | grep -v "failed" | wc -l
+
+find gstore_outdirs/v25/ -name "*hdampDOWN*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v34/ -name "*hdampDOWN*root" | grep -v "failed" | wc -l
+find gstore_outdirs/v37/ -name "*hdampDOWN*root" | grep -v "failed" | wc -l
+
+265
+263
+265
+
+277
+276
+277
+
+243
+240
+77
+
+222
+223
+224
+
+97
+97
+97
+
+118
+117
+117
+
+
+118
+118
+118
+
+121
+119
+120
+
+v25 is the best
+
+265
+277
+243
+222
+97
+118
+118
+121
+
+
+r4?
+
+find lstore_outdirs/v25/r4 -name "*fsrup*root"    | grep -v "failed" | wc -l
+find lstore_outdirs/v25/r4 -name "*fsrdown*root"  | grep -v "failed" | wc -l
+find lstore_outdirs/v25/r4 -name "*isrup*root"    | grep -v "failed" | wc -l
+find lstore_outdirs/v25/r4 -name "*isrdown*root"  | grep -v "failed" | wc -l
+find lstore_outdirs/v25/r4 -name "*CUETP8M2T4up*root"   | grep -v "failed" | wc -l
+find lstore_outdirs/v25/r4 -name "*CUETP8M2T4down*root" | grep -v "failed" | wc -l
+find lstore_outdirs/v25/r4 -name "*hdampUP*root"        | grep -v "failed" | wc -l
+find lstore_outdirs/v25/r4 -name "*hdampDOWN*root"      | grep -v "failed" | wc -l
+
+265
+277
+243
+222
+97
+118
+118
+121
+
+-- all
+
+the script!
+
+python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v25/r4/MC2016_Summer16_TTJets_powheg_hdampDOWN_ext1/MC2016_Summer16_TTJets_powheg_hdampDOWN_ext1_3.root
+python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v25/r4/MC2016_Summer16_TTJets_powheg*/*root
+
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4up" : 58953660.000000,
+"MC2016_Summer16_TTJets_powheg_fsrup" : 123164168.000000,
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4down" : 58338240.000000,
+"MC2016_Summer16_TTJets_powheg_fsrdown" : 155435656.000000,
+"MC2016_Summer16_TTJets_powheg_isrdown" : 148524168.000000,
+"MC2016_Summer16_TTJets_powheg_isrup" : 156469815.000000,
+"MC2016_Summer16_TTJets_powheg_hdampUP" : 58858606.000000,
+"MC2016_Summer16_TTJets_powheg_hdampDOWN" : 58010008.000000,
+
+whole lot of
+
+the missing histo in the file: events_counter lstore_outdirs/v25/r4/MC2016_Summer16_TTJets_powheg_fsrup_ext1/MC2016_Summer16_TTJets_powheg_fsrup_ext1_25.root
+in fsrup
+
+-- empty files
+   and it's all ext1 files
+
+[olek@fermi05 proc]$ find lstore_outdirs/v25/ -name MC2016_Summer16_TTJets_powheg_fsrup_ext1 -type d
+lstore_outdirs/v25/r4/MC2016_Summer16_TTJets_powheg_fsrup_ext1
+lstore_outdirs/v25/pCheckNomFSR/MC2016_Summer16_TTJets_powheg_fsrup_ext1
+lstore_outdirs/v25/resub1/MC2016_Summer16_TTJets_powheg_fsrup_ext1
+
+not empty in
+lstore_outdirs/v25/resub1/MC2016_Summer16_TTJets_powheg_fsrup_ext1
+
+python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v25/resub1/MC2016_Summer16_TTJets_powheg_fsrup_ext1/*root
+
+"MC2016_Summer16_TTJets_powheg_fsrup" : 29453411.000000,
+
+also
+
+python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v25/resub1/MC2016_Summer16_TTJets_powheg*/*root
+
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4up" : 58953660.000000,
+"MC2016_Summer16_TTJets_powheg_fsrup" : 152617579.000000,
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4down" : 58338240.000000,
+"MC2016_Summer16_TTJets_powheg_fsrdown" : 154998386.000000,
+"MC2016_Summer16_TTJets_powheg_isrdown" : 147886033.000000,
+"MC2016_Summer16_TTJets_powheg_isrup" : 156469815.000000,
+"MC2016_Summer16_TTJets_powheg_hdampUP" : 58858606.000000,
+"MC2016_Summer16_TTJets_powheg_hdampDOWN" : 58010008.000000,
+
+ls lstore_outdirs/v25/r4/MC2016_Summer16_TTJets_powheg_fsrup*/*root | wc -l
+265
+ls lstore_outdirs/v25/resub1/MC2016_Summer16_TTJets_powheg_fsrup*/*root | wc -l
+265
+
+
+and nominal:
+python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg*/*root
+"MC2016_Summer16_TTJets_powheg" : 77081156.000000,
+
+python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v26/resub1/MC2016_Summer16_TTJets_powheg/*root
+python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v26/r4/MC2016_Summer16_TTJets_powheg/*root
+
+[olek@fermi05 proc]$ python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v26/resub1/MC2016_Summer16_TTJets_powheg/*root
+"MC2016_Summer16_TTJets_powheg" : 77081156.000000,
+
+[olek@fermi05 proc]$ python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v26/r4/MC2016_Summer16_TTJets_powheg/*root
+"MC2016_Summer16_TTJets_powheg" : 77081156.000000,
+
+so, for the report:
+
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4up" : 58953660.000000,
+"MC2016_Summer16_TTJets_powheg_fsrup" : 123164168.000000,
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4down" : 58338240.000000,
+"MC2016_Summer16_TTJets_powheg_fsrdown" : 155435656.000000,
+"MC2016_Summer16_TTJets_powheg_isrdown" : 148524168.000000,
+"MC2016_Summer16_TTJets_powheg_isrup" : 156469815.000000,
+"MC2016_Summer16_TTJets_powheg_hdampUP" : 58858606.000000,
+"MC2016_Summer16_TTJets_powheg_hdampDOWN" : 58010008.000000,
+
+"MC2016_Summer16_TTJets_powheg_fsrup" : 152617579.000000,
+
+"MC2016_Summer16_TTJets_powheg" : 77081156.000000,
+
+
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4up"   : 58 953 660.000000,
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4down" : 58 338 240.000000,
+"MC2016_Summer16_TTJets_powheg_fsrup"   : 152 617 579.000000,
+"MC2016_Summer16_TTJets_powheg_fsrdown" : 155 435 656.000000,
+"MC2016_Summer16_TTJets_powheg_isrdown" : 148 524 168.000000,
+"MC2016_Summer16_TTJets_powheg_isrup"   : 156 469 815.000000,
+"MC2016_Summer16_TTJets_powheg_hdampUP" : 58 858 606.000000,
+"MC2016_Summer16_TTJets_powheg_hdampDOWN" : 58 010 008.000000,
+"MC2016_Summer16_TTJets_powheg" : 77 081 156.000000,
+
+
+
+
+# couple plots for poster phd open days
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -o plots/v37_test5_bunch2_mc_tests2/  -c mu_sel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --no-data-plot --title "" --title-x "lepton p_{T} [GeV]" --y-range 0,3000
+
+
+
+# v37 test5 issues, round2
+
+the remaining issues
+
+## dy trends at high met
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c dy_mumu --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c dy_elel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- normalization is good in mumu, data -10% in elel
+   the trend is not as bad as it was, the data rises above MC at 50-100GeV then falls below MC after 140-150GeV
+
+CLUE
+the trend could be due to wrong recoil corrections, Z mass-pt corrections or lepton SFs
+the normalization in elel is strange, maybe the el weights are not properly applied?
+
+## wjets
+
+## shape at tt elmu
+
+checked: no effect from TOPPT --- the systematic was not applied for elmu
+
+SingleMuon -- data at 0.90-0.95 of MC
+SingleElectron agreement -- ok:
+INFO:root:197779.0
+INFO:root:mc sum     =   193056.431785   193056.431785
+
+both -- the same shape disagreement down for particular bins (probably mostly the same events in MC and Data)
+        Data peaks more at 70GeV
+        also some outlier bin at 200GeV
+
+check where it comes from: lep_pt, lep_eta, met_pt or phi
+
+I don't have phi in tt_elmu -- added it in std_def
+
+## normalization at presel
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- in both Data 20-30% less than MC
+   with not clear MC QCD
+   but at large values of Mt_c clearly not enough tt: 10% in el and 20% in mu (and looks like the signal is too large, lj is too small)
+   and different proportions in lj, ljout: 10-20% in lj, 40-50% in ljout
+
+## preselCand
+
+perfect with data-driven QCD
+needs more MC QCD, but there is not enough data
+
+implemented: add preselCand_lj ljout in std_defs
+
+## main selection
+
+good agreement without Vloose shapes
+both el_sel and mu_sel have the same dip at 200GeV mT --- CHECK same as elmu, but in opposite direction: in elmu there is more data than MC, in lep-tau the opposite
+
+
+
+
+
+
 # check the yields of new selections
 
 data with all channels:
@@ -396,11 +667,12 @@ elel -- data at 0.90-0.95  Mt shape disagreement at large mT
 wjets -- both ok, maybe need larger factor for wjets and MC QCD
 
 tt_elmu:
-CHECK: no effect from TOPPT
+checked: no effect from TOPPT --- the systematic was not applied for elmu
 SingleMuon -- data at 0.90-0.95 of MC
 SingleElectron agreement -- ok:
 INFO:root:197779.0
 INFO:root:mc sum     =   193056.431785   193056.431785
+CHECK
 both -- the same shape disagreement down for particular bins (probably mostly the same events in MC and Data)
         Data peaks more at 70GeV
         also some outlier bin at 200GeV
@@ -420,7 +692,7 @@ python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5
 preselCand -- perfect with data-driven QCD
    needs more MC QCD, but there is not enough data
 
-TODO: add preselCand_lj ljout
+implemented: add preselCand_lj ljout in std_defs
 
 main selection
 -- good agreement without Vloose shapes
