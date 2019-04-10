@@ -860,7 +860,7 @@ presel_sys = ['NOMINAL', 'TOPPTDown', 'TOPPTUp', 'PUUp', 'PUDown']
 
 channels_distrs = {
 'tt_alliso_presel'    : (['tt_alliso_presel_el', 'tt_alliso_presel_el_ss', 'tt_alliso_presel_mu', 'tt_alliso_presel_mu_ss', ], sorted(distrs_lep.union(distrs_relIso)), main_sys),
-'tt_dileptons'    : (['tt_elmu'], sorted(distrs_leptonic), main_sys + ['TOPPTUp', 'TOPPTDown']),
+'tt_dileptons'    : (['tt_elmu'], sorted(distrs_leptonic + ['phi_met_lep']), main_sys + ['TOPPTUp', 'TOPPTDown']),
 'tt_leptauSV'     : (['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), ['nom']),
 
 'fit_tt_leptau'       : (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'],       sorted(distrs_mt), full_sys),

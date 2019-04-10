@@ -1,7 +1,7 @@
 import argparse
 import logging
 from os.path import isfile
-from jobsums.mc_norm.dtag_xsecs import usual_gen_lumi_weights
+from jobsums.mc_norm.dtag_xsecs import usual_gen_lumi_weights, gen_lumi_weights_tt_sys
 
 
 parser = argparse.ArgumentParser(
@@ -10,6 +10,8 @@ parser = argparse.ArgumentParser(
     epilog = """Example:\npython check_gen_lumi_weights.py lstore_outdirs/v37/test1/MC2016_Summer16_DYJetsToLL_50toInf_madgraph*/*root"""
     )
 
+parser.add_argument('--counter-histo', type=str, default='weight_counter', help='the name of the counter histo, can have / for nesting')
+parser.add_argument('--counter-bin',   type=int, default=2,                help='the bin number to sum up in the histos')
 parser.add_argument('inp_files', nargs='+', help='files to check')
 
 args = parser.parse_args()
@@ -28,7 +30,8 @@ args = parser.parse_args()
 
 def match_dtag(fname):
     matched_dtag = None
-    for dtag in usual_gen_lumi_weights.keys():
+    # first match the tt systematics to not mix them with the nominal tt
+    for dtag in gen_lumi_weights_tt_sys.keys() + usual_gen_lumi_weights.keys():
         if dtag in fname:
             matched_dtag = dtag
             break
@@ -37,8 +40,11 @@ def match_dtag(fname):
 def get_count(fname):
     from ROOT import TFile
     tfile = TFile(fname)
-    weight_histo = tfile.Get('weight_counter')
-    gen_lumi_weight = weight_histo.GetBinContent(2)
+    weight_histo = tfile.Get(args.counter_histo)
+    if not weight_histo:
+        print "the missing histo in the file:", args.counter_histo, fname
+        return 0
+    gen_lumi_weight = weight_histo.GetBinContent(args.counter_bin)
     return gen_lumi_weight
 
 dtag_counts = {}

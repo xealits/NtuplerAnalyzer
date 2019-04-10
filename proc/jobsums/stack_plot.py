@@ -40,7 +40,8 @@ parser.add_argument("--merge-procs", type=str,   help="merge some procs with the
 
 parser.add_argument("--sort-dy",   action='store_true', help="sort DY up")
 
-parser.add_argument("--no-data",   action='store_true', help="don't draw data")
+parser.add_argument("--no-data",      action='store_true', help="don't get data")
+parser.add_argument("--no-data-plot", action='store_true', help="don't draw data")
 
 parser.add_argument("--bin-norm",  action='store_true', help="normalize per bin width")
 
@@ -825,7 +826,7 @@ else:
     leg = TLegend(0.7 - shift, 0.45, 0.89 - shift, 0.9)
 
 # data is first in the legend
-if not args.fake_rate and not args.skip_legend and not args.no_data:
+if not args.fake_rate and not args.skip_legend and not (args.no_data or args.no_data_plot):
     histos_data_sum.SetMarkerStyle(21)
     leg.AddEntry(histos_data_sum, "data", "e1 p")
 
@@ -1261,7 +1262,7 @@ else:
         ratio_max = 1. + args.ratio_range
         ratio_min = 1. - args.ratio_range
         # calculate ratios
-        if not args.no_data:
+        if not (args.no_data or args.no_data_plot):
             histo_data_relative = histos_data_sum.Clone()
             histo_data_relative.SetName("rel_data")
             histo_data_relative.SetStats(False)
@@ -1313,7 +1314,7 @@ else:
             #histo_data_relative.GetYaxis().SetLabelOffset(0.01)
             hs_sum1_relative   .SetXTitle(title_x)
             hs_sum1_relative   .GetXaxis().SetTitleOffset(4.) # place the title not overlapping with labels...
-            if not args.no_data:
+            if not (args.no_data or args.no_data_plot):
                 histo_data_relative.SetXTitle(title_x)
                 histo_data_relative.GetXaxis().SetTitleOffset(4.)
 
@@ -1322,7 +1323,7 @@ else:
         hs_sum1_relative   .SetYTitle("Data/MC")
 
         hs_sum1_relative.Draw("e2")
-        if not args.no_data:
+        if not (args.no_data or args.no_data_plot):
             histo_data_relative.SetYTitle("Data/MC")
             histo_data_relative.GetYaxis().SetTitleOffset(1.4)
             histo_data_relative.Draw("e p same")
@@ -1330,10 +1331,10 @@ else:
     if args.plot:
         pad1.cd()
 
-        max_y = hs_sum2.GetMaximum() if args.no_data else max([h.GetMaximum() for h in (hs_sum2, histos_data_sum)])
+        max_y = hs_sum2.GetMaximum() if (args.no_data or args.no_data_plot) else max([h.GetMaximum() for h in (hs_sum2, histos_data_sum)])
         if args.y_max:
             max_y = args.y_max
-        min_y = hs_sum2.GetMinimum() if args.no_data else max([h.GetMinimum() for h in (hs_sum2, histos_data_sum)])
+        min_y = hs_sum2.GetMinimum() if (args.no_data or args.no_data_plot) else max([h.GetMinimum() for h in (hs_sum2, histos_data_sum)])
 
         if args.y_range:
             min_y, max_y = [float(x) for x in args.y_range.split(',')]
@@ -1342,7 +1343,7 @@ else:
             #hs_sum2.GetYaxis().SetRange(min_y, max_y)
             #hs_sum2.GetYaxis().SetRangeUser(min_y, max_y)
             hs_sum2         .SetAxisRange(min_y, max_y, "Y")
-            if not args.no_data:
+            if not (args.no_data or args.no_data_plot):
                 #histos_data_sum.GetYaxis().SetRange(min_y, max_y)
                 #histos_data_sum.GetYaxis().SetRangeUser(min_y, max_y)
                 histos_data_sum.SetMaximum(max_y)
@@ -1353,36 +1354,36 @@ else:
         if args.ratio:
             hs_sum2.GetXaxis().SetLabelOffset(999)
             hs_sum2.GetXaxis().SetLabelSize(0)
-            if not args.no_data:
+            if not (args.no_data or args.no_data_plot):
                 histos_data_sum.GetXaxis().SetLabelOffset(999)
                 histos_data_sum.GetXaxis().SetLabelSize(0)
             #hs.GetXaxis().SetLabelOffset(999)
             #hs.GetXaxis().SetLabelSize(0)
         else:
-            if not args.no_data:
+            if not (args.no_data or args.no_data_plot):
                 histos_data_sum.SetXTitle(title_x)
             #hs            .SetXTitle(title_x)
             hs_sum2        .SetXTitle(title_x)
 
-        if not args.no_data:
+        if not (args.no_data or args.no_data_plot):
             histos_data_sum.SetMaximum(max_y * 1.1)
         if args.logy: # and args.fake_rate:
             logging.info("setting histos logy") # some bug 
             hs_sum2        .SetMaximum(max_y * 10.)
             hs_sum2        .SetMinimum(min_y / 10.)
-            if not args.no_data:
+            if not (args.no_data or args.no_data_plot):
                 histos_data_sum.SetMaximum(max_y * 10.)
                 histos_data_sum.SetMinimum(min_y / 10.)
         else: # if not args.logy:
             hs_sum2   .SetMinimum(0)
-            if not args.no_data:
+            if not (args.no_data or args.no_data_plot):
                 histos_data_sum.SetMinimum(0)
 
         #hs.GetYaxis().SetTitleFont(63)
         #hs.GetYaxis().SetTitleSize(20)
         hs_sum2.GetYaxis().SetTitleFont(63)
         hs_sum2.GetYaxis().SetTitleSize(20)
-        if not args.no_data:
+        if not (args.no_data or args.no_data_plot):
             histos_data_sum.GetYaxis().SetTitleFont(63)
             histos_data_sum.GetYaxis().SetTitleSize(20)
 
@@ -1399,7 +1400,7 @@ else:
         hs_sum2.GetXaxis().SetLabelFont(63)
         hs_sum2.GetYaxis().SetLabelSize(14)
         hs_sum2.GetXaxis().SetLabelSize(14)
-        if not args.no_data:
+        if not (args.no_data or args.no_data_plot):
             histos_data_sum.GetYaxis().SetLabelFont(63)
             histos_data_sum.GetXaxis().SetLabelFont(63)
             histos_data_sum.GetYaxis().SetLabelSize(14)
@@ -1414,7 +1415,7 @@ else:
         #hs             .SetTitle(title_plot)
         hs_sum2        .SetTitle(title_plot)
 
-        if not args.no_data:
+        if not (args.no_data or args.no_data_plot):
             histos_data_sum.GetYaxis().SetTitleOffset(1.5)
             histos_data_sum.SetYTitle(title_y)
             histos_data_sum.SetTitle(title_plot)
@@ -1422,11 +1423,11 @@ else:
         if args.y_range:
             min_y, max_y = [float(x) for x in args.y_range.split(',')]
             hs_sum2         .SetAxisRange(min_y, max_y, "Y")
-            if not args.no_data:
+            if not (args.no_data or args.no_data_plot):
                 histos_data_sum .SetAxisRange(min_y, max_y, "Y")
 
         # damn root's inability to adjust maxima and all these workarounds...
-        if not args.no_data:
+        if not (args.no_data or args.no_data_plot):
             histos_data_sum.Draw("e1 p")
             if not args.fake_rate:
                 hs.Draw("same")
@@ -1494,12 +1495,15 @@ else:
 
     if args.exp_legend:
         #left_title = TPaveText(0.05, 0.9, 0.4, 0.94, "brNDC")
-        left_title = TPaveText(0.12, 0.8, 0.2, 0.88, "brNDC")
+        left_title = TPaveText(0.12, 0.8, 0.35, 0.88, "brNDC")
     else:
         #left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
-        left_title = TPaveText(0.12, 0.8, 0.2, 0.88, "brNDC")
+        left_title = TPaveText(0.12, 0.8, 0.35, 0.88, "brNDC")
 
-    left_title.AddText("CMS")
+    if args.no_data or args.no_data_plot:
+        left_title.AddText("CMS simulation")
+    else:
+        left_title.AddText("CMS")
     left_title.SetTextFont(1)
     left_title.SetFillColor(0)
 
@@ -1535,7 +1539,7 @@ else:
     else:
         stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
         shape_chan = ('_x_' + args.shape) if args.shape else ''
-        filename = out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ('_noQCD' if args.skip_QCD else '') + ('_nodata' if args.no_data else '') + args.output_suffix + ".png"
+        filename = out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ('_noQCD' if args.skip_QCD else '') + ('_nodata' if args.no_data else '') + ('_nodataplot' if args.no_data_plot else '') + args.output_suffix + ".png"
 
     if isfile(filename) and not args.overwrite:
         print filename, "exists, nothing written"

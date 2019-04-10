@@ -285,6 +285,43 @@ usual_gen_lumi_weights_1 = {
 "MC2016_Summer16_TTJets_powheg" : 75829144.704647,
 }
 
+gen_lumi_weights_tt_sys = {
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down': 0.,
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up': 0.,
+'MC2016_Summer16_TTJets_powheg_fsrdown': 0.,
+'MC2016_Summer16_TTJets_powheg_fsrup': 0.,
+'MC2016_Summer16_TTJets_powheg_hdampDOWN': 0.,
+'MC2016_Summer16_TTJets_powheg_hdampUP': 0.,
+'MC2016_Summer16_TTJets_powheg_isrdown': 0.,
+'MC2016_Summer16_TTJets_powheg_isrup': 0.,
+}
+
+#'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down': 0.,
+#'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down_ext1': 0.,
+#'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up': 0.,
+#'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up_ext1': 0.,
+#'MC2016_Summer16_TTJets_powheg_fsrdown': 0.,
+#'MC2016_Summer16_TTJets_powheg_fsrdown_ext1': 0.,
+#'MC2016_Summer16_TTJets_powheg_fsrdown_ext2': 0.,
+#
+#'MC2016_Summer16_TTJets_powheg_fsrup': 0.,
+#'MC2016_Summer16_TTJets_powheg_fsrup_ext1': 0.,
+#'MC2016_Summer16_TTJets_powheg_fsrup_ext2': 0.,
+#'MC2016_Summer16_TTJets_powheg_hdampDOWN': 0.,
+#'MC2016_Summer16_TTJets_powheg_hdampDOWN_ext1': 0.,
+#'MC2016_Summer16_TTJets_powheg_hdampUP': 0.,
+#'MC2016_Summer16_TTJets_powheg_hdampUP_ext1': 0.,
+#
+#'MC2016_Summer16_TTJets_powheg_isrdown': 0.,
+#'MC2016_Summer16_TTJets_powheg_isrdown_ext1': 0.,
+#'MC2016_Summer16_TTJets_powheg_isrdown_ext2': 0.,
+#'MC2016_Summer16_TTJets_powheg_isrup': 0.,
+#'MC2016_Summer16_TTJets_powheg_isrup_ext2': 0.,
+
+
+
+
+
 usual_gen_lumi_weights = {
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo" : 92667256.031132,
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph" : 147827597.073751,
