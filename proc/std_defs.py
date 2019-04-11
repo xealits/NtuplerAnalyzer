@@ -682,7 +682,7 @@ distr_defs = {
     'tau_eta':       ({'NOMINAL': lambda ev: ev.event_taus[0].eta()   if len(ev.event_taus) > 0   else -111.},    ('histo-range',  [26,-2.6,2.6])),
     'bjet_pt':       ({'NOMINAL': lambda ev: ev.event_jets_b[0].pt()  if len(ev.event_jets_b) > 0 else -111.},  ('histo-range',  [20,0,300])),
     'bjet_eta':      ({'NOMINAL': lambda ev: ev.event_jets_b[0].eta() if len(ev.event_jets_b) > 0 else -111.}, ('histo-range',  [26,-2.6,2.6])),
-    'nbjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_bjets},                        ('histo-range',  [3,0.0,3.0])),
+    'nbjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_bjets},                        ('histo-range',  [5,0.0,5.0])),
     'nrjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_jets - ev.event_jets_n_bjets}, ('histo-range',  [6,0.0,6.0])),
     'najets':        ({'NOMINAL': lambda ev: ev.event_jets_n_jets},                         ('histo-range',  [10,0.0,10.0])),
     'relIso_el':     ({'NOMINAL': lambda ev: ev.event_leptons_alliso_reliso[0] if len(ev.event_leptons_alliso_reliso) > 0 else -111.},  ('custom-range', [0, 0.059, 0.1, 0.175, 0.3, 0.5])),

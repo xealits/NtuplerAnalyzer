@@ -365,6 +365,10 @@ test_controls_v37_test5_issue1:
 	python stack_plot.py ${mc} ${data_dir}/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_${tests}/  -c el_preselCand   --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 1.5
 	python stack_plot.py ${mc} ${data_dir}/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_${tests}/  -c mu_preselCand   --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd 1.05
 	python stack_plot.py ${mc} ${data_dir}/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_${tests}/  -c el_preselCand   --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.8 --qcd 1.05
+	python stack_plot.py ${mc} ${data_dir}/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_${tests}/  -c mu_preselCand   --data-nick data_other -d Mt_lep_met_c2 --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 1.5
+	python stack_plot.py ${mc} ${data_dir}/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_${tests}/  -c el_preselCand   --data-nick data_other -d Mt_lep_met_c2 --lumi 35800 --overwrite --wjets 0.8 --qcd-factor 1.5
+	python stack_plot.py ${mc} ${data_dir}/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_${tests}/  -c mu_preselCand   --data-nick data_other -d Mt_lep_met_c2 --lumi 35800 --overwrite --wjets 0.8 --qcd 1.05
+	python stack_plot.py ${mc} ${data_dir}/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_${tests}/  -c el_preselCand   --data-nick data_other -d Mt_lep_met_c2 --lumi 35800 --overwrite --wjets 0.8 --qcd 1.05
 	# sel
 	python stack_plot.py ${mc} ${data_dir}/SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_${tests}/  -c mu_sel       --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
 	python stack_plot.py ${mc} ${data_dir}/SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_${tests}/  -c el_sel       --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05

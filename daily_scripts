@@ -247,6 +247,7 @@ python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5
 
 the remaining issues
 
+
 ## dy trends at high met
 
 python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c dy_mumu --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
@@ -259,7 +260,13 @@ CLUE
 the trend could be due to wrong recoil corrections, Z mass-pt corrections or lepton SFs
 the normalization in elel is strange, maybe the el weights are not properly applied?
 
+CHECK how the lepton SF-s are calculated, trigger and reco --- is it the exclusive formula or just the SF of leading lepton?
+-- exactly so.
+   TODO: implement the exclusive function for the trigger, the reco is per-particle.
+
+
 ## wjets
+
 
 ## shape at tt elmu
 
@@ -276,7 +283,204 @@ both -- the same shape disagreement down for particular bins (probably mostly th
 
 check where it comes from: lep_pt, lep_eta, met_pt or phi
 
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- slight trend in pT, data>MC at low values
+   some deviations in eta (center is close, sides vary, may be due to pT)
+   trend in met, data>MC at low values
+
+in SingleMuon the normalization is 0.95 off:
+35800 * 0.95 = 34010.0
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d lep_pt  --lumi 34010.0 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 34010.0 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d met_c   --lumi 34010.0 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- strange variation at low pT, data<MC at the smallest bins, then rises and falls
+   weird variations in eta, wrong separate bins
+   the trend in met is smaller than in Electron case, similar to lep pT
+
 I don't have phi in tt_elmu -- added it in std_def
+
+Check the pass_elmu events are not in PASSES -- YES, they are not there, only elmu_el.
+
+[So, it seems that:
+SingleMuon normalization is due to no muon HLT SF or whatever (and the electron HLT SF is too small??)
+the electron deviations can be due to wrong lepton SF-s for the channel?]
+
+### Check the effect of weights on the shapes in TT.
+
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210)" --histo-range 100,0.,200. --output test_tt_elmu_lep_pt_init.root --histo-name tt_elmu_lep_pt_init lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight"      --histo-range 100,0.,200. --output test_tt_elmu_lep_pt_weight.root --histo-name tt_elmu_lep_pt_weight lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_init" --histo-range 100,0.,200. --output test_tt_elmu_lep_pt_weight_init.root --histo-name tt_elmu_lep_pt_weight_init lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_PU"   --histo-range 100,0.,200. --output test_tt_elmu_lep_pt_PU.root  --histo-name tt_elmu_lep_pt_PU lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg/*root        &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_LEP"  --histo-range 100,0.,200. --output test_tt_elmu_lep_pt_LEP.root --histo-name tt_elmu_lep_pt_LEP lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg/*root       &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_bSF"  --histo-range 100,0.,200. --output test_tt_elmu_lep_pt_bSF.root --histo-name tt_elmu_lep_pt_bSF lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg/*root       &
+
+new batch:
+
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_bSF"  --histo-range 100,0.,200. --output test_tt_elmu_lep_pt_bSF.root --histo-name tt_elmu_lep_pt_bSF lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg/*root       &
+
+hadd test_tt_elmu_lep_pt.root test_tt_elmu_lep_pt_*.root
+
+normalize them first
+
+tt_elmu_lep_pt_init->Scale(1./tt_elmu_lep_pt_init->Integral())
+
+tt_elmu_lep_pt_weight      ->Scale(1./tt_elmu_lep_pt_weight      ->Integral())
+tt_elmu_lep_pt_weight_init ->Scale(1./tt_elmu_lep_pt_weight_init ->Integral())
+tt_elmu_lep_pt_PU          ->Scale(1./tt_elmu_lep_pt_PU          ->Integral())
+tt_elmu_lep_pt_LEP         ->Scale(1./tt_elmu_lep_pt_LEP         ->Integral())
+tt_elmu_lep_pt_bSF         ->Scale(1./tt_elmu_lep_pt_bSF         ->Integral())
+
+tt_elmu_lep_pt_weight      ->Divide(tt_elmu_lep_pt_init)
+tt_elmu_lep_pt_weight_init ->Divide(tt_elmu_lep_pt_init)
+tt_elmu_lep_pt_PU          ->Divide(tt_elmu_lep_pt_init)
+tt_elmu_lep_pt_LEP         ->Divide(tt_elmu_lep_pt_init)
+tt_elmu_lep_pt_bSF         ->Divide(tt_elmu_lep_pt_init)
+
+
+l = TLine(20, 1, 200, 1)
+
+tt_elmu_lep_pt_weight      ->Draw()
+tt_elmu_lep_pt_weight      ->Draw() ; l.Draw("same") ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/shape_effect_on_lep_pt_from_weight.png")
+tt_elmu_lep_pt_weight_init ->Draw() ; l.Draw("same") ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/shape_effect_on_lep_pt_from_weight_init.png")
+tt_elmu_lep_pt_PU          ->Draw() ; l.Draw("same") ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/shape_effect_on_lep_pt_from_PU.png")
+tt_elmu_lep_pt_LEP         ->Draw() ; l.Draw("same") ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/shape_effect_on_lep_pt_from_LEP.png")
+tt_elmu_lep_pt_bSF         ->Draw() ; l.Draw("same") ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/shape_effect_on_lep_pt_from_bSF.png")
+
+-- weight_init = weight_LEP
+   bSF and PU have no shape effect
+   PU introduces fluctuations
+   it seems all of the trend in the final weight comes from the LEP weight and it is a small trend (1% max difference)
+
+the value and uncertainty of the ele trigger SF for eta 2.1 and pT 30.1:
+(0.8545982188646293, 0.02278517998528972)
+
+-- it must have significant trend
+
+sadly lep_pt is the leading lepton, not electron or muon
+hard to track the effect of ele trigger on this lepton
+
+let's check the validity of lep SF-s
+
+python module_leptons.py gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root
+
+python module_leptons.py --ele-trig-sfs foobar baz
+
+-3.1 61.1 (0.9391737191937336, 0.03101668747740288)
+-2.5 25.1 (0.3182096440770343, 0.01675800726039388)
+-2.5 35.1 (0.9870918044555792, 0.024854905029802938)
+-2.1 25.1 (0.3182096440770343, 0.01675800726039388)
+-2.1 30.1 (0.931876824646139, 0.026106390447890433)
+2.1 30.1 (0.8545982188646293, 0.02278517998528972)
+2.1 31.1 (0.8545982188646293, 0.02278517998528972)
+2.1 32.1 (0.9036779514758191, 0.023731428655587417)
+2.1 35.1 (0.939636748350896, 0.02335939860380816)
+2.1 40.1 (0.9634999131371064, 0.025688183696168234)
+2.1 61.1 (0.9621277522412025, 0.028876244205443238)
+2.1 100.1 (0.9476371244059494, 0.027980091928502163)
+2.4 15.1 (0.23403082992002794, 0.01074516165424302)
+2.4 31.1 (0.8545982188646293, 0.02278517998528972)
+2.5 32.1 (0.0, 0.0)
+3.1 40.1 (0.9634999131371064, 0.025688183696168234)
+
+-- weird
+
+electron_effs_dirname = "${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/analysis/electron-effs"
+
+electron_effs_tracking_all_file  = TFile(electron_effs_dirname + "/2016_Sept23_ElectronReconstructionSF_egammaEffi.txt_EGM2D.root")
+electron_effs_tracking_all_histo = electron_effs_tracking_all_file.Get("EGamma_SF2D")
+logging.info("Y tracking (reconstruction)")
+
+electron_effs_id_all_file  = TFile(electron_effs_dirname + "/2016_Sept23_ElectronID_TightCutBased_egammaEffi.txt_EGM2D.root")
+electron_effs_id_all_histo = electron_effs_id_all_file.Get("EGamma_SF2D")
+logging.info("Y id")
+
+electron_effs_trg_all_file  = TFile(electron_effs_dirname + "/2016_03Feb_TriggerSF_Run2016All_v1.root")
+electron_effs_trg_all_histo = electron_effs_trg_all_file.Get("Ele27_WPTight_Gsf")
+
+root -l ../analysis/electron-effs//2016_03Feb_TriggerSF_Run2016All_v1.root
+Ele27_WPTight_Gsf->Draw("colz")
+
+-- eta is on Y, pT is on X (might be reverted by ROOT later on anyway!)
+   looks like:
+   eta is both + and -, 2.5 max
+   pT is from 25 to 200
+
+check:
+ele trg SF histo X max 200.0
+ele trg SF histo X min 25.0
+ele trg SF histo Y max 2.5
+
+root [3] Ele27_WPTight_Gsf->FindBin(32.1, 2.5)
+(Int_t) 487
+root [4] Ele27_WPTight_Gsf->GetBinContent(487)
+(Double_t) 0.00000
+
+idiotic root cannot find neither bin's center nor X or Y of the bin in 2D histogram.......
+
+root [5] Ele27_WPTight_Gsf->FindBin(32.1, 2.4)
+(Int_t) 464
+root [6] Ele27_WPTight_Gsf->GetBinContent(464)
+(Double_t) 0.903678
+
+root [7] Ele27_WPTight_Gsf->FindBin(32.1, 2.499999)
+(Int_t) 464
+
+root [8] Ele27_WPTight_Gsf->FindBin(25.1, -2.5)
+(Int_t) 24
+root [9] Ele27_WPTight_Gsf->GetBinContent(24)
+(Double_t) 0.318210
+
+root [11] Ele27_WPTight_Gsf->FindBin(25.1, -2.45)
+(Int_t) 24
+
+
+ok, with <= and >=:
+
+python module_leptons.py --ele-trig-sfs foobar baz
+-3.1 61.1 (0.9391737191937336, 0.03101668747740288)
+-2.5 25.1 (0.3182096440770343, 0.01675800726039388)
+-2.5 35.1 (0.9870918044555792, 0.024854905029802938)
+-2.1 25.1 (0.3182096440770343, 0.01675800726039388)
+-2.1 30.1 (0.931876824646139, 0.026106390447890433)
+2.1 30.1 (0.8545982188646293, 0.02278517998528972)
+2.1 31.1 (0.8545982188646293, 0.02278517998528972)
+2.1 32.1 (0.9036779514758191, 0.023731428655587417)
+2.1 35.1 (0.939636748350896, 0.02335939860380816)
+2.1 40.1 (0.9634999131371064, 0.025688183696168234)
+2.1 61.1 (0.9621277522412025, 0.028876244205443238)
+2.1 100.1 (0.9476371244059494, 0.027980091928502163)
+2.4 15.1 (0.23403082992002794, 0.01074516165424302)
+2.4 31.1 (0.8545982188646293, 0.02278517998528972)
+2.5 32.1 (0.9036779514758191, 0.023731428655587417)
+3.1 40.1 (0.9634999131371064, 0.025688183696168234)
+
+-- still, at 30 GeV 2.1 eta has 0.85
+
+like this:
+
+-2.5 30.1 (0.931876824646139, 0.026106390447890433)
+-2.4 30.1 (0.931876824646139, 0.026106390447890433)
+-2.1 30.1 (0.931876824646139, 0.026106390447890433)
+-1.1 30.1 (0.9618506052509189, 0.022658433572678757)
+-0.1 30.1 (0.8669059088953605, 0.02201838722232047)
+0.1 30.1 (0.8602315645085271, 0.021130975907428885)
+1.1 30.1 (0.8546475205348963, 0.02197919296415359)
+2.1 30.1 (0.8545982188646293, 0.02278517998528972)
+2.4 30.1 (0.8545982188646293, 0.02278517998528972)
+2.5 30.1 (0.8545982188646293, 0.02278517998528972)
+
+-- should be noticeable in eta too!
+
+
+### pass_elmu_el has no gap in electron eta
+
+can it be the cause of anything?
+
 
 ## normalization at presel
 
@@ -285,10 +489,320 @@ python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5
 python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
 python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
 
--- in both Data 20-30% less than MC
+-- in both Data 20-30% larger than MC, at large lep pT too
    with not clear MC QCD
-   but at large values of Mt_c clearly not enough tt: 10% in el and 20% in mu (and looks like the signal is too large, lj is too small)
+ ! but at large values of Mt_c clearly not enough tt: 10% in el and 20% in mu (and looks like the signal is too large, lj is too small)
    and different proportions in lj, ljout: 10-20% in lj, 40-50% in ljout
+
+Small amount of QCD at large lep pT, MET and mT -- but still the same factor of disagreement.
+Especially in the case of MET: most of the range of large MET values if ttbar->lepton+jets and the same disagreement.
+Therefore it is not due to lack of QCD...
+
+If preselCand is ok, then the whole difference is due to events which have no tau candidates.
+
+
+### Are there really so many of presel events with no tau candidates
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel     --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_preselCand --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+INFO:root:2248861.0
+INFO:root:mc sum     =  2007311.595863  2007311.595863
+
+INFO:root:839131.0
+INFO:root:mc sum     =   827958.280560   827958.280560
+
+2.25 VS 0.84
+
+count in data
+
+python sumup_ttree_draw.py "2" --ttree ttree_out --cond-com "selection_stage_presel > 1 && selection_stage_presel < 10" --histo-range 5,0.,5. --output test_presel_events_all.root --histo-name presel_events_all lstore_outdirs/v37/test5/Data13TeV_SingleMuon2016*/*root &
+python sumup_ttree_draw.py "2" --ttree ttree_out --cond-com "selection_stage_presel == 5" --histo-range 5,0.,5. --output test_presel_events_5.root --histo-name presel_events_5 lstore_outdirs/v37/test5/Data13TeV_SingleMuon2016*/*root  &
+python sumup_ttree_draw.py "2" --ttree ttree_out --cond-com "selection_stage_presel == 6" --histo-range 5,0.,5. --output test_presel_events_6.root --histo-name presel_events_6 lstore_outdirs/v37/test5/Data13TeV_SingleMuon2016*/*root  &
+python sumup_ttree_draw.py "2" --ttree ttree_out --cond-com "selection_stage_presel == 7" --histo-range 5,0.,5. --output test_presel_events_7.root --histo-name presel_events_7 lstore_outdirs/v37/test5/Data13TeV_SingleMuon2016*/*root  &
+python sumup_ttree_draw.py "2" --ttree ttree_out --cond-com "selection_stage_presel == 8" --histo-range 5,0.,5. --output test_presel_events_8.root --histo-name presel_events_8 lstore_outdirs/v37/test5/Data13TeV_SingleMuon2016*/*root  &
+python sumup_ttree_draw.py "2" --ttree ttree_out --cond-com "selection_stage_presel == 9" --histo-range 5,0.,5. --output test_presel_events_9.root --histo-name presel_events_9 lstore_outdirs/v37/test5/Data13TeV_SingleMuon2016*/*root  &
+
+hadd test_presel_events.root test_presel_events_*.root
+
+presel_events_all->Integral()
+presel_events_5 ->Integral()
+presel_events_6 ->Integral()
+presel_events_7 ->Integral()
+presel_events_8 ->Integral()
+presel_events_9 ->Integral()
+
+(Double_t) 2.27412e+06
+root [3] presel_events_5 ->Integral()
+(Double_t) 739643.
+root [4] presel_events_6 ->Integral()
+(Double_t) 4452.00
+root [5] presel_events_7 ->Integral()
+(Double_t) 5325.00
+root [6] presel_events_8 ->Integral()
+(Double_t) 674141.
+root [7] presel_events_9 ->Integral()
+(Double_t) 850556.
+
+indeed a third has no tau candidates
+
+
+
+### kinematics of the selection: leptons and jets
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d bjet_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d bjet_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d bjet_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d bjet_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- no particular gaps or trends..
+
+I do not have the other jets...
+
+
+### not enough MC at large mT
+
+build fractions
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --cumulative-fractions
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --cumulative-fractions
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --cumulative-fractions
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --cumulative-fractions
+
+-- strangely at large mT, tt->lj fraction is smaller than tt->ltau and tt->other???
+
+fractions with cands:
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_preselCand --data-nick data_other -d Mt_lep_met_c2 --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --cumulative-fractions
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_preselCand --data-nick data_other -d Mt_lep_met_c2 --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --cumulative-fractions
+
+-- same or larger amount of "other" ttbar processes
+
+and the original shapes were not in the test (!):
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_preselCand --data-nick data_other -d Mt_lep_met_c2 --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_preselCand --data-nick data_other -d Mt_lep_met_c2 --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_preselCand --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_preselCand --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- could be better, but actually within MC stat uncertainty, very unreliable MC QCD
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_preselCand --data-nick data_other -d Mt_lep_met_c2 --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_preselCand --data-nick data_other -d Mt_lep_met_c2 --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+
+-- perfect, but the QCD shape is questionable
+
+I had an old set of presel plots with very good stats, without this strange MC QCD.
+Was it just ext QCD sets?
+
+
+build njets and nbjets
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d nbjets --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d nbjets --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d nrjets --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d nrjets --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+some events have 0 b jets (tau-clean), some have 0-1 rjets
+overall 10% more data, shape is not conclusive
+
+
+
+build met in presel (maybe the old cut 40GeV fixes everything?)
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- no, at high and low met the same factor of disagreement
+
+check fractions
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_presel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --cumulative-fractions
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_presel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --cumulative-fractions
+
+-- !!! practically no QCD and ttbar->ljets at large values !!!
+
+really small amount of W+jets..
+
+mu_preselCand has slightly less W+jets than ctr_old_mu_presel v25v26pR4 and 100/120 less events overall
+
+
+#### check the tt processes at mT > 200 at presel
+
+'mu_presel':          (lambda sel_stage, ev: (sel_stage >  1 and sel_stage < 10), main_presel_stages),
+
+python sumup_ttree_draw.py "gen_proc_id" --ttree ttree_out --cond-com "selection_stage_presel > 1 && selection_stage_presel < 10 && event_met_lep_mt >  200" --histo-range 50,0.,50. --output test_tt_procs_mu_presel_mT_large.root --histo-name tt_procs_mu_presel_mT_large lstore_outdirs/v37/test5/MC2016_Summer16_TT*/*root &
+python sumup_ttree_draw.py "gen_proc_id" --ttree ttree_out --cond-com "selection_stage_presel > 1 && selection_stage_presel < 10 && event_met_lep_mt <= 200" --histo-range 50,0.,50. --output test_tt_procs_mu_presel_mT_small.root --histo-name tt_procs_mu_presel_mT_small lstore_outdirs/v37/test5/MC2016_Summer16_TT*/*root &
+
+hadd test_tt_procs_mu_presel.root test_tt_procs_mu_presel_mT_*.root
+
+root [3] tt_procs_mu_presel_mT_large->GetBinContent(1+0)
+(Double_t) 6110.00
+root [4] tt_procs_mu_presel_mT_large->GetBinContent(1+1)
+(Double_t) 41.0000
+root [5] tt_procs_mu_presel_mT_large->GetBinContent(1+2)
+(Double_t) 2501.00
+root [6] tt_procs_mu_presel_mT_large->GetBinContent(1+3)
+(Double_t) 6397.00
+
+6110.00   genproc_tt_other = ttbar -> jets?
+6397.00   elmu
+
+-- but ttbar->jets should have absolutely small MET, why does it have large mT?
+
+check if veto leptons work?
+
+python sumup_ttree_draw.py "no_iso_veto_leps" --histo-range 5,0.,5. --output test_tt_ntuples_no_iso_veto_leps.root --histo-name tt_ntuples_no_iso_veto_leps gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root
+
+it works, 897681. VS 1.63435e+07 events do not pass
+
+
+### not enough MC QCD?
+
+ls lstore_outdirs/v37/test5/
+
+MC2016_Summer16_QCD_HT-100-200
+MC2016_Summer16_QCD_HT-1000-1500
+MC2016_Summer16_QCD_HT-1500-2000
+MC2016_Summer16_QCD_HT-200-300
+MC2016_Summer16_QCD_HT-2000-Inf
+MC2016_Summer16_QCD_HT-300-500
+MC2016_Summer16_QCD_HT-500-700
+MC2016_Summer16_QCD_HT-700-1000
+
+foreach dt (`cat testfile `)
+ls lstore_outdirs/v37/test5/$dt/*root | wc -l
+end
+
+foreach dt (`cat testfile `)
+ls lstore_outdirs/v25/resub4/$dt/*root | wc -l
+end
+
+73
+9
+8
+18
+4
+20
+21
+19
+
+73
+9
+8
+18
+4
+20
+21
+19
+
+lstore_outdirs/v35/pQCDtest/ has QCD ext?
+
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-100-200         
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-1000-1500       
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-1000-1500_ext1  
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-1500-2000       
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-1500-2000_ext1  
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-200-300         
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-200-300_ext1    
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-2000-Inf        
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-2000-Inf_ext1
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-300-500
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-300-500_ext1
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-50-100
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-500-700
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-500-700_ext1
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-700-1000
+lstore_outdirs/v35/pQCDtest/MC2016_Summer16_QCD_HT-700-1000_ext1
+
+ok, and weights?
+
+root -l jobsums/mc_norm/v37_test5_bunch2/MC2016_Summer16_QCD_HT-100-200.root
+
+python check_gen_lumi_weights.py jobsums/mc_norm/v37_test5_bunch2/MC2016_Summer16_QCD_HT-*
+
+"MC2016_Summer16_QCD_HT-1500-2000" : 4025637.189128,
+"MC2016_Summer16_QCD_HT-100-200"   : 80668282.010224,
+"MC2016_Summer16_QCD_HT-200-300"   : 18982179.906991,
+"MC2016_Summer16_QCD_HT-700-1000"  : 15846448.822448,
+"MC2016_Summer16_QCD_HT-2000-Inf"  : 2019120.954068,
+"MC2016_Summer16_QCD_HT-500-700"   : 19192242.333873,
+"MC2016_Summer16_QCD_HT-1000-1500" : 4831794.914995,
+"MC2016_Summer16_QCD_HT-300-500"   : 17273854.173847,
+
+python check_gen_lumi_weights.py lstore_outdirs/v37/test5/MC2016_Summer16_QCD_HT-*/*root
+
+"MC2016_Summer16_QCD_HT-1500-2000" : 4025637.189128,
+"MC2016_Summer16_QCD_HT-100-200"   : 80668282.010224,
+"MC2016_Summer16_QCD_HT-200-300"   : 18982179.906991,
+"MC2016_Summer16_QCD_HT-700-1000"  : 15846448.822448,
+"MC2016_Summer16_QCD_HT-2000-Inf"  : 2019120.954068,
+"MC2016_Summer16_QCD_HT-500-700"   : 19192242.333873,
+"MC2016_Summer16_QCD_HT-1000-1500" : 4831794.914995,
+"MC2016_Summer16_QCD_HT-300-500"   : 17273854.173847,
+
+
+### drastic issues with b SFs? (QCD is light flavoured and must be weighted up)
+
+check if weights work
+
+python sumup_ttree_draw.py --debug "event_weight" --ttree ttree_out --histo-range 100,0.,2. --output test_ev_weights_$weight.root --histo-name ev_weight_$weight lstore_outdirs/v37/test5/MC2016_Summer16_QCD_HT-*/*root
+
+foreach weight ( event_weight event_weight_init event_weight_PU event_weight_PU_el event_weight_PU_mu event_weight_th event_weight_bSF event_weight_bSFUp event_weight_bSFDown event_weight_bSF_JERUp event_weight_bSF_JERDown event_weight_bSF_JESUp event_weight_bSF_JESDown event_weight_toppt event_weight_LEPall event_weight_LEP event_weight_LEPmuIDUp event_weight_LEPmuIDDown event_weight_LEPmuTRGUp event_weight_LEPmuTRGDown event_weight_LEPelIDUp event_weight_LEPelIDDown event_weight_LEPelTRGUp event_weight_LEPelTRGDown event_weight_PUUp event_weight_PUDown event_weight_PUUp_el event_weight_PUDown_el event_weight_PUUp_mu event_weight_PUDown_mu)
+echo "$weight"
+python sumup_ttree_draw.py "$weight" --ttree ttree_out --histo-range 100,0.,2. --output test_ev_weights_$weight.root --histo-name ev_weight_$weight lstore_outdirs/v37/test5/MC2016_Summer16_QCD_HT-*/*root
+end
+
+for ttbar:
+
+foreach weight ( event_weight event_weight_init event_weight_PU event_weight_PU_el event_weight_PU_mu event_weight_th event_weight_bSF event_weight_bSFUp event_weight_bSFDown event_weight_bSF_JERUp event_weight_bSF_JERDown event_weight_bSF_JESUp event_weight_bSF_JESDown event_weight_toppt event_weight_LEPall event_weight_LEP event_weight_LEPmuIDUp event_weight_LEPmuIDDown event_weight_LEPmuTRGUp event_weight_LEPmuTRGDown event_weight_LEPelIDUp event_weight_LEPelIDDown event_weight_LEPelTRGUp event_weight_LEPelTRGDown event_weight_PUUp event_weight_PUDown event_weight_PUUp_el event_weight_PUDown_el event_weight_PUUp_mu event_weight_PUDown_mu)
+echo "$weight"
+python sumup_ttree_draw.py "$weight" --ttree ttree_out --histo-range 100,0.,2. --output test_ev_weights_$weight.root --histo-name ev_weight_$weight lstore_outdirs/v37/test5/MC2016_Summer16_TT*/*root
+end
+
+hadd test_ev_weights.root test_ev_weights_*root
+
+ev_weight_event_weight->Draw()              ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight.png")
+ev_weight_event_weight_LEP->Draw()          ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_LEP.png")
+ev_weight_event_weight_LEPall->Draw()       ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_LEPall.png")
+ev_weight_event_weight_LEPelIDDown->Draw()  ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_LEPelIDDown.png")
+ev_weight_event_weight_LEPelIDUp->Draw()    ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_LEPelIDUp.png")
+ev_weight_event_weight_LEPelTRGDown->Draw() ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_LEPelTRGDown.png")
+ev_weight_event_weight_LEPelTRGUp->Draw()   ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_LEPelTRGUp.png")
+ev_weight_event_weight_LEPmuIDDown->Draw()  ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_LEPmuIDDown.png")
+ev_weight_event_weight_LEPmuIDUp->Draw()    ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_LEPmuIDUp.png")
+ev_weight_event_weight_LEPmuTRGDown->Draw() ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_LEPmuTRGDown.png")
+ev_weight_event_weight_LEPmuTRGUp->Draw()   ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_LEPmuTRGUp.png")
+ev_weight_event_weight_PU->Draw()           ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_PU.png")
+ev_weight_event_weight_PUDown->Draw()       ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_PUDown.png")
+ev_weight_event_weight_PUDown_el->Draw()    ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_PUDown_el.png")
+ev_weight_event_weight_PUDown_mu->Draw()    ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_PUDown_mu.png")
+ev_weight_event_weight_PUUp->Draw()         ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_PUUp.png")
+ev_weight_event_weight_PUUp_el->Draw()      ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_PUUp_el.png")
+ev_weight_event_weight_PUUp_mu->Draw()      ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_PUUp_mu.png")
+ev_weight_event_weight_PU_el->Draw()        ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_PU_el.png")
+ev_weight_event_weight_PU_mu->Draw()        ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_PU_mu.png")
+ev_weight_event_weight_bSF->Draw()          ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_bSF.png")
+ev_weight_event_weight_bSFDown->Draw()      ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_bSFDown.png")
+ev_weight_event_weight_bSFUp->Draw()        ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_bSFUp.png")
+ev_weight_event_weight_bSF_JERDown->Draw()  ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_bSF_JERDown.png")
+ev_weight_event_weight_bSF_JERUp->Draw()    ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_bSF_JERUp.png")
+ev_weight_event_weight_bSF_JESDown->Draw()  ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_bSF_JESDown.png")
+ev_weight_event_weight_bSF_JESUp->Draw()    ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_bSF_JESUp.png")
+ev_weight_event_weight_init->Draw()         ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_init.png")
+ev_weight_event_weight_th->Draw()           ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_th.png")
+ev_weight_event_weight_toppt->Draw()        ; c1->SaveAs("studies/v37_tes5_issues_test_event_weights/ev_weight_event_weight_toppt.png")
+
+all work
+
 
 ## preselCand
 
@@ -296,6 +810,7 @@ perfect with data-driven QCD
 needs more MC QCD, but there is not enough data
 
 implemented: add preselCand_lj ljout in std_defs
+
 
 ## main selection
 
