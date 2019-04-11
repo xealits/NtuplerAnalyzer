@@ -406,16 +406,16 @@ def lepton_electron_trigger_SF(eta, pt):
     #double pt = el.pt();
     # here X axis is pt, Y axis is eta (from -2.5 to 2.5)
     # TODO: actually need to check the ROOT thing here -- does max bin actually fall within the hist range?
-    if   pt > electron_effs_trg_all_histo_max_x:
+    if   pt >= electron_effs_trg_all_histo_max_x:
         bin_x = electron_effs_trg_all_histo_max_x - 1
-    elif pt < electron_effs_trg_all_histo_min_x:
+    elif pt <= electron_effs_trg_all_histo_min_x:
         bin_x = electron_effs_trg_all_histo_min_x + 0.01
     else:
         bin_x = pt
 
-    if eta > electron_effs_trg_all_histo_max_y:
+    if eta >= electron_effs_trg_all_histo_max_y:
         bin_y = electron_effs_trg_all_histo_max_y - 0.01
-    elif eta < - electron_effs_trg_all_histo_max_y:
+    elif eta <= - electron_effs_trg_all_histo_max_y:
         bin_y = - electron_effs_trg_all_histo_max_y + 0.01
     else:
         bin_y = eta
@@ -428,16 +428,16 @@ def lepton_electron_trigger_SF(eta, pt):
 
 if __name__ == '__main__':
     from os.path import isfile, basename
-
-    print lepton_electron_trigger_SF(2.1, 30.1)
+    from sys import exit
 
     parser = argparse.ArgumentParser(
         formatter_class = argparse.RawDescriptionHelpFormatter,
-        description = "sumup TTree Draw",
+        description = "tests of lepton SFs",
         epilog = """Example:\npython module_leptons.py electron_trig_sf.root gstore_outdirs/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_*.root"""
         )
 
     parser.add_argument("output_file", type=str, default="output.root", help="filename for output")
+    parser.add_argument("--ele-trig-sfs",  action='store_true', help="just print ele trig SF for typical values")
     parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
     parser.add_argument('input_files', nargs='+', help="""the files to sum up, passed by shell, as:
     /gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_*.root""")
@@ -449,6 +449,21 @@ if __name__ == '__main__':
         logging.basicConfig(level=logging.DEBUG)
     else:
         logging.basicConfig(level=logging.INFO)
+
+    if args.ele_trig_sfs:
+        print "ele trg SF histo X max", electron_effs_trg_all_histo_max_x
+        print "ele trg SF histo X min", electron_effs_trg_all_histo_min_x
+        print "ele trg SF histo Y max", electron_effs_trg_all_histo_max_y
+
+        ele_kino_points_pt_trend = [(2.1, 30.1), (2.1, 31.1), (2.1, 32.1), (2.1, 35.1), (2.1, 40.1), (2.1, 61.1), (2.1, 100.1)]
+        ele_kino_points_pt_lower = [(-2.1, 25.1), (2.4, 15.1), (-2.5, 25.1)]
+        ele_kino_points_pt_other = [(-2.1, 30.1), (2.4, 31.1), (2.5, 32.1), (-2.5, 35.1), (3.1, 40.1), (-3.1, 61.1)]
+        kino_points = ele_kino_points_pt_trend + ele_kino_points_pt_lower + ele_kino_points_pt_other
+
+        ele_kino_points_pt_low   = [(-2.5, 30.1), (-2.4, 30.1), (-2.1, 30.1), (-1.1, 30.1), (-0.1, 30.1), (0.1, 30.1), (1.1, 30.1), (2.1, 30.1), (2.4, 30.1), (2.5, 30.1)]
+        for eta, pt in sorted(kino_points) + sorted(ele_kino_points_pt_low, key=lambda el: el[1]):
+            print eta, pt, lepton_electron_trigger_SF(eta, pt)
+        exit(0)
 
     trig_sf = TH1D("el_trig_sf", "", 100, 0., 2.)
 
