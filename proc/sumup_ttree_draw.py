@@ -494,7 +494,10 @@ def draw_and_save(ttree, def_tuple, draw_command, condition_string, test):
     if def_tuple not in output_histos:
         out_histo = histo.Clone()
         #out_histo.SetName('_'.join(*def_tuple, distr_name))
-        out_histo.SetName('_'.join([str(i) for i in def_tuple] + [str(distr_name)]))
+        if len(def_tuple) > 1:
+            out_histo.SetName('_'.join([str(i) for i in def_tuple] + [str(distr_name)]))
+        else:
+            out_histo.SetName(str(distr_name))
 
         out_histo.SetDirectory(0)
         out_histo.Sumw2()
@@ -512,6 +515,10 @@ for filename in input_files:
 
     tfile = TFile(filename)
     ttree = tfile.Get(args.ttree)
+    if ttree.GetEntries() < 1:
+        print "the ttree in the file has no entries:", args.ttree, filename
+        continue
+
     if temp_output_histo:
         temp_output_histo.SetDirectory(tfile)
         # in ROOT the TTree.Draw command "sees" only histograms in current working directory
@@ -747,7 +754,7 @@ for path_tuple, histo in output_histos.items():
     if histo_path and fout.Get(histo_path):
         logging.debug('found  ' + histo_path)
         out_dir = fout.Get(histo_path)
-    else:
+    elif len(path_tuple) > 1: # path tuple of 1 element is just the name of the histo
         logging.debug('making ' + histo_path)
         # iteratively create each directory fout -> part0 -> part1 -> ...
         # somehow root did not work for creating them in 1 go
@@ -757,6 +764,8 @@ for path_tuple, histo in output_histos.items():
             nested_dir = out_dir.Get(directory) if out_dir.Get(directory) else out_dir.mkdir(directory)
             nested_dir.cd()
             out_dir = nested_dir
+    else:
+        out_dir = fout
 
     histo.SetDirectory(out_dir)
     histo.Write()
