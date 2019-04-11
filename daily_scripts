@@ -1,3 +1,35 @@
+# NEXT UPDATE
+
+golden json electron channel
+the b and jec reweighting in fsr, isr etc tt syst datasets
+the ME weights for the acceptance -- no 3 separate parameters, use the largest variation only (the prescription of these systematics for the counting experiment)
+
+
+
+# RATIO PLANS
+
+test2 -- repeat the MC test with Anup in 2016 and 2017 MC
+
+to implement: SS selection for suppression of tau fakes from b jets
+
+big studies:
+1) using the lepton+tau HLT in ttbar and DY lepton+tau selections
+   for lower pT cut on lepton and tau, more DY and ttbar events, possibly enough statistics in 2016+2017?
+2) the Dalitz parameters to suppress the tau fakes from c-jets?
+   (where to get enough events, true taus and c fakes with large SV significance?)
+3) possibility to use the difference in MET of ttbar-> lepton+tau VS lepton+jets with c-jet tau fakes?
+
+smaller studies:
+1) optimizations of the selection
+   2 loose b-tags instead of 1 medium?
+   DY mass for DY->lepton+tau to suppress the W+jets?
+
+issues: 10% of W+jets in DY->lepton+tau selection
+        the tau fakes from c-jets of W->qq in ttbar
+
+
+
+
 # number of events in the systematic datasets VS the nominal dataset
 
 check the NT with full datasets processed:
@@ -186,16 +218,22 @@ so, for the report:
 "MC2016_Summer16_TTJets_powheg" : 77081156.000000,
 
 
-"MC2016_Summer16_TTJets_powheg_CUETP8M2T4up"   : 58 953 660.000000,
-"MC2016_Summer16_TTJets_powheg_CUETP8M2T4down" : 58 338 240.000000,
-"MC2016_Summer16_TTJets_powheg_fsrup"   : 152 617 579.000000,
 "MC2016_Summer16_TTJets_powheg_fsrdown" : 155 435 656.000000,
+"MC2016_Summer16_TTJets_powheg_fsrup"   : 152 617 579.000000,
 "MC2016_Summer16_TTJets_powheg_isrdown" : 148 524 168.000000,
 "MC2016_Summer16_TTJets_powheg_isrup"   : 156 469 815.000000,
-"MC2016_Summer16_TTJets_powheg_hdampUP" : 58 858 606.000000,
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4down" : 58 338 240.000000,
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4up"   : 58 953 660.000000,
 "MC2016_Summer16_TTJets_powheg_hdampDOWN" : 58 010 008.000000,
+"MC2016_Summer16_TTJets_powheg_hdampUP" : 58 858 606.000000,
 "MC2016_Summer16_TTJets_powheg" : 77 081 156.000000,
 
+also:
+
+$ das_client --limit 0 --query="summary dataset=/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM"
+[{"file_size":3403800067777,"nblocks":54,"nevents":77081156,"nfiles":982,"nlumis":481156,"num_block":54,"num_event":77081156,"num_file":982,"num_lumi":481156}]
+
+%BLUE% >> The datasets are in the Table 2 of the analysis note under the name "tt modeling systematics": /TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV*/MINIAODSIM etc -- including the extra datasets (ext1, ext2 etc). The number of events is stored for the control of normalization to the luminosity: FSR Down has 155.4 10^6 events and Up is 152.6 Mevents, ISR Down 148.5 Mevents and Up 156.4 M, the underlying event (Tune variation, /TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8/*/*) Down 58.3 Mevents and Up 58.9 Mevents, ME-PS matching (hdamp parameter, /TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8/*) Down 58 Mevents and Up 58.8 Mevents. The nominal dataset has 77.1 Mevents (/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM).
 
 
 
