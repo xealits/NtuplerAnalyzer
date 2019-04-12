@@ -4,6 +4,72 @@ golden json electron channel
 the b and jec reweighting in fsr, isr etc tt syst datasets
 the ME weights for the acceptance -- no 3 separate parameters, use the largest variation only (the prescription of these systematics for the counting experiment)
 
+les enquetes!
+
+
+## [The corrections to JEC and bSF of systematics](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopSystematics#Correction_factors_for_special_m)
+
+bSF is clear:
+
+> B-tagging efficiencies are measured from data.
+> Uncertainties in the modeling of the parton shower are propagated to the uncertainties of these measurements.
+> Usually, b-tagging corrections are provided in form of scale factors
+> where the measured efficiency is divided by the efficiency taken from a MC based on the standard Pythia8 parton shower.
+> As shown in the figure below these efficiencies depend on the parton shower model and its parameters.
+> For a consistent usage of the various MCs the efficiencies should be calculated separately
+> and the provided scale factors should be corrected by a factor ε{standard Pythia8}/ε{variation}.
+
+So, how were the bSF effeciencies measured?
+Jets of separate flavours (hadronFlavour? the one used for bSF) fill up the pT-eta 2D histogram.
+The other set of per-flavour histograms is filled with b-tagged jets. Divide and get the efficiency.
+I do have everything needed in the jets.
+Was there a script?
+Or just Draw with [] loops?
+
+
+JEC is not so much, but they say:
+
+> These MC specific correction factors are small for most of the alternative simulations.
+> However, for the modified FSR shower scales and the Herwig++ sample they are not negligible
+> compared to the overall effect typically observed for the variations.
+
+It seems the difference is in the scale: the PS variations change <pT reco>/<pT gen> distribution.
+Then we need: this correction scale factor (to measure it ourself?),
+re-applying the JES with the correction applied.
+
+In AN2017_003_v8 (TOP-17-002):
+
+> As shown in Fig. 27 the b-tagging efficiency and the jet energy scale depend on some of these
+> variations. The b-tagging efficiency and the jet energy scale are measured in the data and
+> correction factors with respect to the default PYTHIA 8 simulation are used to correct all simu-
+> lations. We have to take into account that the correction factors should be different for various
+> simulations. Therefore, corrected b-tagging scale factors and jet energy scales based on the
+> observed differences, shown in Fig. 27, are determined.
+
+-- how are they determined and is the result available?
+
+If I measure myself I need gen jet matching and gen jet momentum.
+
+In the ntupler:
+
+			// gen jet info only for MC
+			//NT_jet_matched_genjet_p4.push_back(gen_jet_p4);
+			NT_genjet_matched  .push_back( genjet_matched );
+			NT_genjet_pt       .push_back( genjet_pt      );
+			NT_genjet_dR       .push_back( genjet_dR      );
+			NT_genjet_i        .push_back( genjet_i       );
+
+-- daaammmmmmmmmnnn, why p4 is not saved?
+But! The pT is enough for the energy scale!
+
+And these are the gen jets from the token:
+
+	genJets_ = consumes<vector<reco::GenJet>>(edm::InputTag("slimmedGenJets"));
+
+
+
+
+
 
 
 # RATIO PLANS
