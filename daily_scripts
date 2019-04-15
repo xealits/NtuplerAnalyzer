@@ -102,6 +102,10 @@ python btaggin_efficiency_count.py test_beff_histos.root --test --histo-prefix f
 
 time python btaggin_efficiency_count.py test_beff_histos.root gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root
 
+[1]    Done                          python btaggin_efficiency_count.py test_beff_histos.root gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root
+15433.814u 1148.100s 4:52:38.75 94.4%	0+0k 130858488+88io 1741pf+0w
+
+
 btag_udsg_hadronFlavour_candidates_tagged ->Print()
 btag_udsg_hadronFlavour_candidates ->Print()
 btag_c_hadronFlavour_candidates_tagged ->Print()
@@ -113,9 +117,9 @@ btag_udsg_hadronFlavour_candidates_tagged ->Divide(btag_udsg_hadronFlavour_candi
 btag_c_hadronFlavour_candidates_tagged ->Divide(btag_c_hadronFlavour_candidates)
 btag_b_hadronFlavour_candidates_tagged ->Divide(btag_b_hadronFlavour_candidates)
 
-btag_udsg_hadronFlavour_candidates_tagged ->Draw("col")
-btag_c_hadronFlavour_candidates_tagged    ->Draw("col")
-btag_b_hadronFlavour_candidates_tagged    ->Draw("col")
+btag_udsg_hadronFlavour_candidates_tagged ->Draw("colz")
+btag_c_hadronFlavour_candidates_tagged    ->Draw("colz")
+btag_b_hadronFlavour_candidates_tagged    ->Draw("colz")
 
 
 ## Measure JES deviations
@@ -398,7 +402,7 @@ CHECK how the lepton SF-s are calculated, trigger and reco --- is it the exclusi
 ## wjets
 
 
-## shape at tt elmu
+## shape at tt_elmu
 
 checked: no effect from TOPPT --- the systematic was not applied for elmu
 
@@ -1425,6 +1429,67 @@ in ../sw-dir/jobsums/mc_v27p1.root
 python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleMuon.root      -o plots/ --lumi 34800 --osss-pl -c ctr_old_mu_presel_alliso -p -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,6000 --nulify-qcd-bins 1.
 
 python stack_plot.py ../sw-dir/jobsums/mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleElectron.root  -o plots/ --lumi 31300 --osss-pl -c ctr_old_el_presel_alliso -p -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05                    --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,6000 --nulify-qcd-bins 1.
+
+
+## compare to MC shapes
+
+for el-tau
+
+save the data-driven shapes
+
+python stack_plot.py mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleElectron.root  -o plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/ --lumi 31300 --osss-pl -c ctr_old_el_presel_alliso -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05                    --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,6000 --nulify-qcd-bins 1.
+
+root -l plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven//mc_v27p1_HISTOSEL_Mt_lep_met_f_ctr_old_el_presel_alliso_NOMINAL.root
+ctr_old_el_presel_alliso->Get("qcd/NOMINAL/ctr_old_el_presel_alliso_qcd_NOMINAL_Mt_lep_met_f")->Draw()
+
+-- it saved the mc qcd
+
+
+AND ----------------
+after correction:
+
+mc:
+python stack_plot.py mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleElectron.root  -o plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/ --lumi 31300           -c ctr_old_el_presel_alliso -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05                    --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,6000 --nulify-qcd-bins 1.
+python stack_plot.py mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleElectron.root  -o plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/ --lumi 31300           -c ctr_old_el_presel_alliso_ss -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05                    --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,6000 --nulify-qcd-bins 1.
+
+data-driven:
+python stack_plot.py mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleElectron.root  -o plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/ --lumi 31300 --osss-pl -c ctr_old_el_presel_alliso -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05                    --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,6000 --nulify-qcd-bins 1.
+
+
+root -l plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/mc_v27p1_..,lstore_outdirs,merge-sets,v27,p1,SingleElectron_Mt_lep_met_f_ctr_old_el_presel_alliso_NOMINAL_osss-parts.root
+
+compare shapes:
+
+python get_shapes.py --formula "qcd_mc : qcd_data " --y-range 0,0.45 --no-std-path -e --title "electron-tau OS preselection" --x-title "m_{T} [GeV]" -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj qcd_mc:plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven//mc_v27p1_HISTOSEL_Mt_lep_met_f_ctr_old_el_presel_alliso_NOMINAL.root:ctr_old_el_presel_alliso/qcd/NOMINAL/ctr_old_el_presel_alliso_qcd_NOMINAL_Mt_lep_met_f qcd_data:plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/mc_v27p1_..,lstore_outdirs,merge-sets,v27,p1,SingleElectron_Mt_lep_met_f_ctr_old_el_presel_alliso_NOMINAL_osss-parts.root:qcd_os
+python get_shapes.py --formula "qcd_mc : qcd_data " --y-range 0,0.45 --no-std-path -e --title "electron-tau SS preselection" --x-title "m_{T} [GeV]" -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj qcd_mc:plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven//mc_v27p1_HISTOSEL_Mt_lep_met_f_ctr_old_el_presel_alliso_ss_NOMINAL.root:ctr_old_el_presel_alliso_ss/qcd/NOMINAL/ctr_old_el_presel_alliso_ss_qcd_NOMINAL_Mt_lep_met_f  qcd_data:plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/mc_v27p1_..,lstore_outdirs,merge-sets,v27,p1,SingleElectron_Mt_lep_met_f_ctr_old_el_presel_alliso_NOMINAL_osss-parts.root:qcd_ss
+
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_qcd_mc,qcd_data_formula.png ../studies/qcd-mc-cross-check//compare_v27p1_ctr_old_el_presel_alliso_Mt_lep_met_f_qcd_mc,qcd_data_formula_el_presel_OS.png
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_qcd_mc,qcd_data_formula.png ../studies/qcd-mc-cross-check//compare_v27p1_ctr_old_el_presel_alliso_Mt_lep_met_f_qcd_mc,qcd_data_formula_el_presel_SS.png
+
+
+wjets:
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -o plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/  -c wjets_el      --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 0.92           --title "" --title-x "M_{T}(e, MET) [GeV]" --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,60000 --nulify-qcd-bins 0. --overwrite
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -o plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/  -c wjets_el_ss   --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 0.92           --title "" --title-x "M_{T}(e, MET) [GeV]" --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,60000 --nulify-qcd-bins 0. --overwrite
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -o plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/  -c wjets_el      --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 0.92 --osss-pl --title "" --title-x "M_{T}(e, MET) [GeV]" --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,60000 --nulify-qcd-bins 0. --nulify-qcd-bins 0.
+
+plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven//distrs,v37_test5_bunch2_mc_wjets_amcatnlo_3_HISTOSEL_Mt_lep_met_f_wjets_el_NOMINAL.root
+plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven//distrs,v37_test5_bunch2_mc_wjets_amcatnlo_3_HISTOSEL_Mt_lep_met_f_wjets_el_ss_NOMINAL.root
+plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/distrs,v37_test5_bunch2_mc_wjets_amcatnlo_3_distrs,v37_test5_bunch2,SingleElectron_Mt_lep_met_f_wjets_el_NOMINAL_osss-parts.root
+
+python get_shapes.py --formula "qcd_mc : qcd_data " --y-range 0,0.45 --no-std-path -e --title "electron-tau OS W+jets control" --x-title "m_{T} [GeV]"  qcd_mc:plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven//distrs,v37_test5_bunch2_mc_wjets_amcatnlo_3_HISTOSEL_Mt_lep_met_f_wjets_el_NOMINAL.root:wjets_el/qcd_other/NOMINAL/wjets_el_qcd_other_NOMINAL_Mt_lep_met_f qcd_data:plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/distrs,v37_test5_bunch2_mc_wjets_amcatnlo_3_distrs,v37_test5_bunch2,SingleElectron_Mt_lep_met_f_wjets_el_NOMINAL_osss-parts.root:qcd_os
+
+python get_shapes.py --formula "qcd_mc : qcd_data " --y-range 0,0.45 --no-std-path -e --title "electron-tau SS W+jets control" --x-title "m_{T} [GeV]"  qcd_mc:plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven//distrs,v37_test5_bunch2_mc_wjets_amcatnlo_3_HISTOSEL_Mt_lep_met_f_wjets_el_ss_NOMINAL.root:wjets_el_ss/qcd_other/NOMINAL/wjets_el_ss_qcd_other_NOMINAL_Mt_lep_met_f qcd_data:plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/distrs,v37_test5_bunch2_mc_wjets_amcatnlo_3_distrs,v37_test5_bunch2,SingleElectron_Mt_lep_met_f_wjets_el_NOMINAL_osss-parts.root:qcd_ss
+
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_qcd_mc,qcd_data_formula.png  ../studies/qcd-mc-cross-check//compare_v37test5_Mt_lep_met_f_qcd_mc,qcd_data_formula_el_wjets_OS.png
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_f_qcd_mc,qcd_data_formula.png  ../studies/qcd-mc-cross-check//compare_v37test5_Mt_lep_met_f_qcd_mc,qcd_data_formula_el_wjets_SS.png
+
+
+
+also muon-tau
+
+python stack_plot.py mc_v27p1.root ../lstore_outdirs/merge-sets/v27/p1/SingleMuon.root      -o plots/an-v8-paper-v3_qcd-shapes_mc-and-data-driven/ --lumi 34800 --osss-pl -c ctr_old_mu_presel_alliso -d Mt_lep_met_f --wjets 0.8 --factor-dy 1.05 --lumi-label 35800 --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[events/1GeV]" --bin-norm --no-label-osss --y-range 0,6000 --nulify-qcd-bins 1.
+
 
 
 ## final files
