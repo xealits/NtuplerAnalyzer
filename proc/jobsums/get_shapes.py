@@ -22,6 +22,7 @@ parser.add_argument('--norm-formulas',  action='store_true', help="normalize the
 parser.add_argument("--y-range",     type=str,      help="set Y range as `ymin,ymax`")
 parser.add_argument("--x-title",     type=str,      help="title of X axis")
 parser.add_argument("--y-title",     type=str,      help="title of Y axis")
+parser.add_argument("--title",       type=str,      help="title of the pad")
 parser.add_argument('--left-title',  action='store_true', help="add the left label title")
 
 parser.add_argument("--outname",     type=str,      help="set the output filename")
@@ -163,6 +164,8 @@ if not args.formula:
                 h.SetXTitle(args.x_title)
             if args.y_title:
                 h.SetYTitle(args.y_title)
+            if args.title:
+                h.SetTitle(args.title)
             h.Draw()
         else:
             h.Draw("same")
@@ -272,6 +275,8 @@ else:
                 histo.SetXTitle(args.x_title)
             if args.y_title:
                 histo.SetYTitle(args.y_title)
+            if args.title:
+                histo.SetTitle(args.title)
             histo.GetYaxis().SetLabelFont(63)
             histo.GetXaxis().SetLabelFont(63)
             histo.GetYaxis().SetLabelSize(14)

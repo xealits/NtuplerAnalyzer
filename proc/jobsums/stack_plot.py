@@ -1,7 +1,7 @@
 import argparse
 import logging
 from os.path import isfile
-from math import sqrt
+from math import sqrt, isnan
 from sys import exit
 
 logging.basicConfig(level=logging.DEBUG)
@@ -890,7 +890,7 @@ if not args.no_data:
     histos_data[0][0].GetYaxis().SetLabelSize(14) # labels will be 14 pixels
 
 
-if not args.plot and not args.ratio:
+if not args.plot and not args.ratio and not args.osss_pl:
     '''
     For given channel, systematic and distribution
     save the selected distributions, a THStack of them,
@@ -916,7 +916,7 @@ if not args.plot and not args.ratio:
     if args.rename_systematic:
         sys_name = args.rename_systematic
 
-    filename = out_dir + args.mc_file.split('.root')[0] + '_HISTOSEL_%s_%s_%s%s.root' % (distr_name, channel, sys_name, options)
+    filename = out_dir + args.mc_file.split('.root')[0].replace('/', ',') + '_HISTOSEL_%s_%s_%s%s.root' % (distr_name, channel, sys_name, options)
     logging.info('saving root %s' % filename)
 
     if isfile(filename):
@@ -1060,6 +1060,19 @@ elif args.osss or args.osss_mc or args.osss_pl:
     gStyle.SetOptStat(0)
     cst = TCanvas("cst","stacked hists",10,10,700,700)
 
+    # prepare output target
+    outname = out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name))
+    if args.osss:
+        outname += '_osss-factor'
+    elif args.osss_mc:
+        outname += '_osss-mc-factor'
+    elif args.osss_pl:
+        outname += '_osss-parts'
+
+    if args.logy:
+        pad1.SetLogy()
+        outname += '_logy'
+
     # the no-qcd MC sum is in
     # hs_sum_noqcd and hs_sum_noqcd_ss
     # the data is in
@@ -1076,17 +1089,37 @@ elif args.osss or args.osss_mc or args.osss_pl:
         histo_diff_ss = [h for h, nick, _ in used_histos_per_distr_ss[0][1] if nick == 'qcd'][0]
 
     # nulify negative bins
-    if args.nulify_qcd_bins:
+    if args.nulify_qcd_bins is not None:
         for histo in (histo_diff_os, histo_diff_ss):
           for bini in range(histo.GetSize()):
             if histo.GetBinContent(bini) < 0.:
                 #print histo.GetBinContent(bini)
                 histo.SetBinContent(bini, args.nulify_qcd_bins)
+            if isnan(histo.GetBinError(bini)):
+                #print histo.GetBinContent(bini)
+                histo.SetBinError(bini, sqrt(abs(histo.GetBinContent(bini))))
     # for some reason the plot still looks like there are negative bins
+
+    # QCD shape is obtained, either MC or Data
 
     #for histo in (histo_diff_os, histo_diff_ss):
     #  for bini in range(histo.GetSize()):
     #        print histo.GetBinContent(bini)
+
+    if not args.plot and not args.ratio:
+        # save the distribution and exit
+        fout = TFile(outname + '.root', 'RECREATE')
+        fout.cd()
+
+        histo_diff_os.SetName("qcd_os")
+        histo_diff_ss.SetName("qcd_ss")
+
+        histo_diff_os.Write()
+        histo_diff_ss.Write()
+
+        fout.Write()
+        fout.Close()
+        exit(0)
 
     if not args.osss_pl:
         histo_diff_os.Divide(histo_diff_ss)
@@ -1164,18 +1197,6 @@ elif args.osss or args.osss_mc or args.osss_pl:
         label.SetTextFont(132)
         label.SetFillColor(0)
         label.Draw("same")
-
-    outname = out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_name, channel, sys_name))
-    if args.osss:
-        outname += '_osss-factor'
-    elif args.osss_mc:
-        outname += '_osss-mc-factor'
-    elif args.osss_pl:
-        outname += '_osss-parts'
-
-    if args.logy:
-        pad1.SetLogy()
-        outname += '_logy'
 
     cst.SaveAs(outname + '.png')
 
