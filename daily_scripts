@@ -6,6 +6,11 @@ the ME weights for the acceptance -- no 3 separate parameters, use the largest v
 
 les enquetes!
 
+DY->tautau control region
+
+the muon tracking SF does not have the stat uncertainty -- TGRaph won't give it out easily and it is small, hence it is set to zero now
+
+
 
 ## [The corrections to JEC and bSF of systematics](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopSystematics#Correction_factors_for_special_m)
 
@@ -62,9 +67,19 @@ In the ntupler:
 -- daaammmmmmmmmnnn, why p4 is not saved?
 But! The pT is enough for the energy scale!
 
+compare these vectors with jet_initial_p4
+
+root -l gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_1.root
+
+ntupler->Get("reduced_ttree")->Draw("jet_initial_p4[0].pt():genjet_pt[0]")
+
+looks ok, strong correlation
+
 And these are the gen jets from the token:
 
 	genJets_ = consumes<vector<reco::GenJet>>(edm::InputTag("slimmedGenJets"));
+
+No flavours in JES? Yes, it's per b and light flavours. (No c?)
 
 So, measure and compare the deviation of bSF efficiency and JES of systematics from the nominal MC.
 
@@ -135,6 +150,95 @@ and per eta?
 per flavour?
 
 count number jets without gen jets
+
+simply get this:
+
++            if ev.genjet_matched[i]:
++                pt_gen  = ev.genjet_pt[i]
++                pt_reco = p4.pt()
++
++                if abs(p4.eta()) < :
++                    # barrel
++                    histos["jes_cor_2d_gen_reco_barrel"].Fill(pt_gen, pt_reco)
++                    histos["jes_cor_1d_gen_reco_barrel"].Fill(pt_gen, pt_reco/pt_gen)
++                else:
++                    # endcap
++                    histos["jes_cor_2d_gen_reco_endcap"].Fill(pt_gen, pt_reco)
++                    histos["jes_cor_1d_gen_reco_endcap"].Fill(pt_gen, pt_reco/pt_gen)
+
+
+time python btaggin_efficiency_count.py test_beff_histos.root gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_1.root
+
+217.753u 14.342s 3:59.74 96.8%	0+0k 1701456+96io 1736pf+0w
+
+ls gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/ | grep 'MC.*root' | xargs --max-procs=10 --delimiter='\n' -I FILE echo FILE.root
+
+ls gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/ | grep 'MC.*root' | xargs --max-procs=10 --delimiter='\n' -I FILE time python btaggin_efficiency_count.py test_beff_histos_FILE.root gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/FILE
+
+hadd test_beff_histos_MC2016_Summer16_TTJets_powheg.root test_beff_histos_MC2016_Summer16_TTJets_powheg_*root
+
+jes_cor_1d_gen_reco_endcap_b->Divide(jes_cor_1d_gen_reco_endcap_b_unit)
+
+gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8
+gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8
+gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8
+gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8
+gstore_outdirs/v37/TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8
+gstore_outdirs/v37/TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8
+gstore_outdirs/v37/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8
+gstore_outdirs/v37/TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8
+
+test:
+
+foreach dset (gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8)
+foreach subset (`ls $dset`)
+ls $dset/$subset/*/*/ | grep 'MC.*root' | xargs --max-procs=10 --delimiter='\n' -I FILE echo test_beff_histos_${subset}_FILE
+end
+end
+
+or:
+
+foreach dset (gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8)
+ls $dset/*/*/*/ | grep 'MC.*root' | xargs --max-procs=10 --delimiter='\n' -I FILE echo test_beff_histos__FILE
+end
+
+another test:
+
+foreach dset (gstore_outdirs/v37/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8 gstore_outdirs/v37/TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8)
+find $dset -name 'MC*root' | xargs --max-procs=10 --delimiter='\n' -I FILE echo test_beff_histos_`basename FILE` FILE
+end
+
+or even:
+
+ls gstore_outdirs/v37/TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_hdampUP_ext1/190211_115206/0000/MC2016_Summer16_TTJets_powheg_hdampUP_ext1_58.root | xargs --max-procs=10 --delimiter='\n' -I FILE echo test_beff_histos_`basename FILE` FILE
+
+ls gstore_outdirs/v37/TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_hdampUP_ext1/190211_115206/0000/MC2016_Summer16_TTJets_powheg_hdampUP_ext1_58.root | xargs --max-procs=10 --delimiter='\n' -I FILE sh -c 'echo test_beff_histos_`basename FILE` FILE'
+
+run:
+
+foreach dset (gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8 gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8 gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8 gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8 gstore_outdirs/v37/TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8 gstore_outdirs/v37/TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8 gstore_outdirs/v37/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8 gstore_outdirs/v37/TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8)
+
+foreach dset (gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8 gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8)
+foreach dset (gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8 gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8)
+foreach dset (gstore_outdirs/v37/TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8 gstore_outdirs/v37/TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8)
+foreach dset (gstore_outdirs/v37/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8 gstore_outdirs/v37/TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8)
+find $dset -name 'MC*root' | xargs --max-procs=10 --delimiter='\n' -I FILE sh -c 'time python btaggin_efficiency_count.py test_beff_histos_`basename FILE` FILE'
+end
+
+hadd test_beff_histos_MC2016_Summer16_TTJets_powheg_hdampDOWN.root test_beff_histos_MC2016_Summer16_TTJets_powheg_hdampDOWN_*.root &
+hadd test_beff_histos_MC2016_Summer16_TTJets_powheg_hdampUP.root   test_beff_histos_MC2016_Summer16_TTJets_powheg_hdampUP_*.root   &
+
+rm test_beff_histos_MC2016_Summer16_TTJets_powheg_hdampDOWN_*.root  test_beff_histos_MC2016_Summer16_TTJets_powheg_hdampUP_*.root
+mv test_beff_histos_MC2016_Summer16_TTJets_powheg_hdampDOWN.root test_beff_histos_MC2016_Summer16_TTJets_powheg_hdampUP.root studies/jes_bSF_corrections/
+
+
+hadd test_beff_histos_MC2016_Summer16_TTJets_powheg_fsrdown.root test_beff_histos_MC2016_Summer16_TTJets_powheg_fsrdown_*.root  &
+hadd test_beff_histos_MC2016_Summer16_TTJets_powheg_fsrup.root   test_beff_histos_MC2016_Summer16_TTJets_powheg_fsrup_*.root    &
+
+mv test_beff_histos_MC2016_Summer16_TTJets_powheg_fsrdown.root test_beff_histos_MC2016_Summer16_TTJets_powheg_fsrup.root studies/jes_bSF_corrections/
+
+rm test_beff_histos_MC2016_Summer16_TTJets_powheg_fsrdown_*.root test_beff_histos_MC2016_Summer16_TTJets_powheg_fsrup_*.root
+
 
 
 
@@ -432,7 +536,7 @@ python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5
 python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 34010.0 --overwrite --wjets 0.92 --qcd-factor 2.5
 python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d met_c   --lumi 34010.0 --overwrite --wjets 0.92 --qcd-factor 2.5
 
--- strange variation at low pT, data<MC at the smallest bins, then rises and falls
+-- strange variation at low pT, data < MC at the smallest bins, then rises and falls
    weird variations in eta, wrong separate bins
    the trend in met is smaller than in Electron case, similar to lep pT
 
@@ -443,6 +547,14 @@ Check the pass_elmu events are not in PASSES -- YES, they are not there, only el
 [So, it seems that:
 SingleMuon normalization is due to no muon HLT SF or whatever (and the electron HLT SF is too small??)
 the electron deviations can be due to wrong lepton SF-s for the channel?]
+
+The selection requires only leptons. And the deviation looks like an issue with lepton SFs.
+But lepton SFs seem to be correctly calculated. Is something false or is there an unexpected effect?
+
+Maybe just increase pT cuts to 30GeV as it was before?
+(The low pT cut is needed for the ratio.)
+
+
 
 ### Check the effect of weights on the shapes in TT.
 
@@ -614,6 +726,155 @@ like this:
 ### pass_elmu_el has no gap in electron eta
 
 can it be the cause of anything?
+
+it's not electron eta, it's the leading lepton!
+
+
+### are the electron and muon reconstruction really independent?
+
+Yes, it is a logical AND, both of them must pass the ID. And only the electron must pass the electron HLT.
+(The probability for muon to pass the electron HLT is negligible.)
+
+
+### THE ASYMETRIC ELE TRIGGER SF
+
+                el_trg_sf, el_trg_unc  = lepton_electron_trigger_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
+
+-- but the histo is noticeably assymetric!!
+
+1. check other histos, add to tests
+2. separate el and mu in elmu channel
+
+check lep eta in single-lepton channels: tau-electron, tau-muon
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_sel --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c el_sel --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- ele eta seems ok,
+   maybe somewhat more data at -2.5 eta than MC (which is as expected from the SF : the SF is larger at negative eta)
+   the shape seems worse at positive values..
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_sel --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c mu_sel --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- mu eta looks ok, the shape and normalization is the same at negative and positive values
+
+proceed as:
+add the printout test of lep SFs
+correct abs eta
+
+electron id (reco and id) at |eta| >= 2.5
+-3.1 61.1 0.0 +- 0.0 0.0 +- 0.0
+-2.5 25.1 1.31760430336 +- 0.0182387273858 0.88245934248 +- 0.0101198259436
+2.5 32.1 0.0 +- 0.0 0.0 +- 0.0
+3.1 40.1 0.0 +- 0.0 0.0 +- 0.0
+
+ -- there is a mistake, it does not check the eta
+there is a comment:
+    # TODO: check this eta doesn't need defaults for overflow values (in principle our cuts on eta are smaller than these SF histos)
+-- indeed, but let's check anyway
+
+ok, now there are:
+-3.1 61.1 1.31760430336 +- 0.0182387273858 0.940397322178 +- 0.00700136278822
+-2.5 25.1 1.31760430336 +- 0.0182387273858 0.88245934248 +- 0.0101198259436
+-2.5 35.1 1.31760430336 +- 0.0182387273858 0.918840587139 +- 0.00903908258991
+
+norice, eta range:
+-2.5 30.1 1.31760430336 +- 0.0182387273858 0.88245934248 +- 0.0101198259436
+-2.4 30.1 1.02462530136 +- 0.00815834887034 0.88245934248 +- 0.0101198259436
+-2.1 30.1 1.00727653503 +- 0.00420281345299 0.88245934248 +- 0.0101198259436
+-1.1 30.1 0.985655725002 +- 0.00506368027448 0.972039461136 +- 0.013293087796
+-0.1 30.1 0.980432569981 +- 0.00530156031977 0.952998399734 +- 0.0150816442813
+0.1 30.1 0.984552025795 +- 0.00530156031977 0.981996715069 +- 0.0150816442813
+1.1 30.1 0.987742602825 +- 0.00506368027448 0.975206613541 +- 0.013293087796
+2.1 30.1 0.99794024229 +- 0.00420281345299 0.863321781158 +- 0.0101198259436
+2.4 30.1 0.970518887043 +- 0.0110667218714 0.863321781158 +- 0.0101198259436
+2.5 30.1 0.906666696072 +- 0.0182387273858 0.863321781158 +- 0.0101198259436
+
+multiple issues with muons
+
+muon trigger:
+
+2.1 61.1 0.943909108639 +- 0.00430392554133 0.962784349918 +- 0.00424436726426
+2.1 100.1 0.943909108639 +- 0.00430392554133 0.962784349918 +- 0.00424436726426
+2.4 15.1 0.0 +- 0.002 0.0 +- 0.002
+2.4 31.1 0.0 +- 0.002 0.0 +- 0.002
+2.5 32.1 0.941213190556 +- 0.00241833622395 0.948634445667 +- 0.00245238681745
+
+-2.5 30.1 0.978400230408 +- 0.00202590423906 0.991047501564 +- 0.00202767096067
+-2.4 30.1 0.978400230408 +- 0.00202590423906 0.991047501564 +- 0.00202767096067
+-2.1 30.1 0.978400230408 +- 0.00202590423906 0.991047501564 +- 0.00202767096067
+-1.1 30.1 0.978400230408 +- 0.00202590423906 0.991047501564 +- 0.00202767096067
+-0.1 30.1 0.978400230408 +- 0.00202590423906 0.991047501564 +- 0.00202767096067
+0.1 30.1 0.978400230408 +- 0.00202590423906 0.991047501564 +- 0.00202767096067
+1.1 30.1 0.961095392704 +- 0.00207871487016 0.971895813942 +- 0.00208252931936
+2.1 30.1 0.941213190556 +- 0.00241833622395 0.948634445667 +- 0.00245238681745
+2.4 30.1 0.0 +- 0.002 0.0 +- 0.002
+2.5 30.1 0.941213190556 +- 0.00241833622395 0.948634445667 +- 0.00245238681745
+
+-- why 2.4 eta = 0 but 2.5 is ok? probably 2.4 is exactly the maximum in the histo
+printout max min
+muon effs trg BCDEF (assume the same for GH) 26.0 500.0 0.0 2.4
+
+notice the absolute value of eta -- negative = 0 here
+
+check the histos
+
+root -l ../analysis/muon-effs//2016_23Sep_tracking_more_BCDEF_fits.root
+root -l ../analysis/muon-effs//2016_23Sep_MuonID_EfficienciesAndSF_BCDEF.root
+root -l ../analysis/muon-effs//2016_23Sep_MuonISO_EfficienciesAndSF_BCDEF.root
+root -l ../analysis/muon-effs//2016_23Sep_SingleMuonTrigger_EfficienciesAndSF_RunBtoF.root
+
+ratio_eff_aeta_dr030e030_corr->Draw()
+MC_NUM_TightID_DEN_genTracks_PAR_pt_eta->Get("pt_abseta_ratio")->Draw("colz")
+TightISO_TightID_pt_eta->Get("pt_abseta_ratio")->Draw("colz")
+IsoMu24_OR_IsoTkMu24_PtEtaBins->Get("pt_abseta_ratio")->Draw("colz")
+
+-- all eta are positive
+added the abs in SF calculation
+
+no errors in muon tracking:
+
+2.5 30.1 0.96134655248 +- 0.0 0.919699340197 +- 0.0 0.956952119799 +- 0.00509115908882 0.959166377241 +- 0.00540090145917 0.989746861096 +- 0.00211486143671 1.00819018779 +- 0.00211627165029
+
+muon tracking vtx 10
+-3.1 61.1 0.923208363711 +- 0.0 0.801800855428 +- 0.0
+-2.5 25.1 0.960788514388 +- 0.0 0.919155572246 +- 0.0
+
+-- yeah, the error is set to zero
+TGraph does not give out the error?
+
+because this:
+
+        trk_gen_unc_bcdef = muon_effs_tracking_BCDEF_graph.GetErrorY(abs_eta)
+    TypeError: double TGraphAsymmErrors::GetErrorY(int bin) =>
+        could not convert argument 1
+
+-- leave it 0, check for update
+
+### implement the exclusive trigger SFs
+
+the only queation is how to deal with the uncertainty
+
+let's construct differentials
+
+from this
+
+    mu_trg_sf_b = 1. - (1. - mu_trg_sf_b1)*(1. - mu_trg_sf_b2)
+
+differencials
+
+    = d(mu_trg_sf_b1)(1 - mu_trg_sf_b2) + d(mu_trg_sf_b2)(1 - mu_trg_sf_b1)
+
+mumu DONE
+elel DONE
+
+tests... do run... and finish
+
+so, stage2 and then only the dilepton channels to reproduce
+
+
+
 
 
 ## normalization at presel
