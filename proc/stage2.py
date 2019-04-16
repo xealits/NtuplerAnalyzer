@@ -477,7 +477,7 @@ pileup_ratio_down_ele = array('d', [
 
 
 
-from module_leptons import lepton_muon_SF, lepton_muon_trigger_SF, lepton_electron_SF, lepton_electron_trigger_SF
+from module_leptons import lepton_muon_SF, lepton_muon_trigger_SF, lepton_electron_SF, lepton_electron_trigger_SF, dilepton_or_sfs, dilepton_and_sfs
 
 if with_bSF:
     from support_btagging_sf import calc_btag_sf_weight, bEff_histo_b, bEff_histo_c, bEff_histo_udsg
@@ -2704,11 +2704,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             weight_lepall = 1.
 
             if isMC and pass_mu_all:
-                #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt()) # old
+                #mu_sfs = lepton_muon_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt()) # old
                 # 0, 1, 2 -- trk
                 # 3, 4    -- id, iso
-                mu_sfs_b, mu_sfs_h = lepton_muon_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt(), ev.nvtx, ev.nvtx_gen)
-                (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt())
+                mu_sfs_b, mu_sfs_h = lepton_muon_SF(ev.lep_alliso_p4[0].eta(), ev.lep_alliso_p4[0].pt(), ev.nvtx, ev.nvtx_gen)
+                (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(ev.lep_alliso_p4[0].eta(), ev.lep_alliso_p4[0].pt())
                 # bcdef gh eras
                 # with gen_nvtx for tracking eff
                 mu_b_trk, _ = mu_sfs_b[0:2] # unc in mu_sfs_b[1]
@@ -2719,12 +2719,12 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                                    ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
 
-            if isMC and (pass_mu or pass_mumu or pass_mumu_ss):
-                #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt()) # old
+            if isMC and pass_mu:
+                #mu_sfs = lepton_muon_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt()) # old
                 # 0, 1, 2 -- trk
                 # 3, 4    -- id, iso
-                mu_sfs_b, mu_sfs_h = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt(), ev.nvtx, ev.nvtx_gen) # running tracking SF on reco nvtx and output on nvtx_gen for control
-                (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
+                mu_sfs_b, mu_sfs_h = lepton_muon_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt(), ev.nvtx, ev.nvtx_gen) # running tracking SF on reco nvtx and output on nvtx_gen for control
+                (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt())
                 # bcdef gh eras
                 #weight *= ratio_bcdef * mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[1] * mu_sfs_b[2] * mu_sfs_b[3] + ratio_gh * mu_trg_sf[1] * mu_sfs_h[0] * mu_sfs_h[1] * mu_sfs_h[2] * mu_sfs_h[3]
                 # with gen_nvtx for tracking eff
@@ -2743,14 +2743,56 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 weight_lep = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
                                 ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
+            if isMC and (pass_mumu or pass_mumu_ss):
+                # our single-muon HLT demands an OR operation on the 2 muons
+                #(mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt())
+                (mu_trg_sf_b1, trg_b_unc1), (mu_trg_sf_h1, trg_h_unc1) = lepton_muon_trigger_SF(ev.lep_alliso_p4[0].eta(), ev.lep_alliso_p4[0].pt())
+                (mu_trg_sf_b2, trg_b_unc2), (mu_trg_sf_h2, trg_h_unc2) = lepton_muon_trigger_SF(ev.lep_alliso_p4[1].eta(), ev.lep_alliso_p4[1].pt())
+                mu_trg_sf_b, trg_b_unc = dilepton_or_sfs(mu_trg_sf_b1, trg_b_unc1, mu_trg_sf_b2, trg_b_unc2)
+                mu_trg_sf_h, trg_h_unc = dilepton_or_sfs(mu_trg_sf_h1, trg_h_unc1, mu_trg_sf_h2, trg_h_unc2)
+
+                #mu_sfs = lepton_muon_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt()) # old
+                # 0, 1, 2 -- trk
+                # 3, 4    -- id, iso
+                mu_sfs_b1, mu_sfs_h1 = lepton_muon_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt(), ev.nvtx, ev.nvtx_gen) # running tracking SF on reco nvtx and output on nvtx_gen for control
+                mu_sfs_b2, mu_sfs_h2 = lepton_muon_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt(), ev.nvtx, ev.nvtx_gen)
+                # the ID SFs are an AND operation on both muons
+
+                # bcdef gh eras
+                #weight *= ratio_bcdef * mu_trg_sf[0] * mu_sfs_b[0] * mu_sfs_b[1] * mu_sfs_b[2] * mu_sfs_b[3] + ratio_gh * mu_trg_sf[1] * mu_sfs_h[0] * mu_sfs_h[1] * mu_sfs_h[2] * mu_sfs_h[3]
+                # with gen_nvtx for tracking eff
+                mu_b_trk, mu_b_trk_u = dilepton_and_sfs(mu_sfs_b1[0], mu_sfs_b1[1], mu_sfs_b2[0], mu_sfs_b2[1])
+                mu_h_trk, mu_h_trk_u = dilepton_and_sfs(mu_sfs_h1[0], mu_sfs_h1[1], mu_sfs_h2[0], mu_sfs_h2[1])
+
+                mu_id_b,  mu_id_b_unc  = dilepton_and_sfs(mu_sfs_b1[3][0], mu_sfs_b1[3][1], mu_sfs_b2[3][0], mu_sfs_b2[3][1])
+                mu_iso_b, mu_iso_b_unc = dilepton_and_sfs(mu_sfs_b1[4][0], mu_sfs_b1[4][1], mu_sfs_b2[4][0], mu_sfs_b2[4][1])
+
+                mu_id_h,  mu_id_h_unc  = dilepton_and_sfs(mu_sfs_h1[3][0], mu_sfs_h1[3][1], mu_sfs_h2[3][0], mu_sfs_h2[3][1])
+                mu_iso_h, mu_iso_h_unc = dilepton_and_sfs(mu_sfs_h1[4][0], mu_sfs_h1[4][1], mu_sfs_h2[4][0], mu_sfs_h2[4][1])
+
+                weight_lepMU_id_Up   = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_id_b + mu_id_b_unc) * (mu_iso_b + mu_iso_b_unc) + \
+                                           ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_id_h + mu_id_h_unc) * (mu_iso_h + mu_iso_h_unc))
+                weight_lepMU_id_Down = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_id_b - mu_id_b_unc) * (mu_iso_b - mu_iso_b_unc) + \
+                                           ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_id_h - mu_id_h_unc) * (mu_iso_h - mu_iso_h_unc))
+
+                weight_lepMU_trg_Up   = (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_id_b * mu_iso_b + \
+                                            ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_id_h * mu_iso_h)
+                weight_lepMU_trg_Down = (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_id_b * mu_iso_b + \
+                                            ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_id_h * mu_iso_h)
+
+                # test how much lepton SFs affect
+                weight_lep = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_id_b * mu_iso_b + \
+                                ratio_gh * mu_trg_sf_h * mu_h_trk * mu_id_h * mu_iso_h
+
+
             # for now let's just use 1 elmu and it is electron-triggered one
             if False and isMC and pass_elmu:
                 # find which lepton is mu and which is el
                 mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
-                mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
-                (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt())
-                el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
-                #el_trg_sf              = lepton_electron_trigger_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
+                mu_sfs_b, mu_sfs_h     = lepton_muon_SF(ev.lep_p4[mu_n].eta(), ev.lep_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
+                (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(ev.lep_p4[mu_n].eta(), ev.lep_p4[mu_n].pt())
+                el_sfs_reco, el_sfs_id = lepton_electron_SF(ev.lep_p4[el_n].eta(), ev.lep_p4[el_n].pt())
+                #el_trg_sf              = lepton_electron_trigger_SF(ev.lep_p4[el_n].eta(), ev.lep_p4[el_n].pt())
 
                 #weight_lep_Up   *= weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 #weight_lep_Down *= weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
@@ -2780,10 +2822,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             if isMC and pass_elmu_el:
                 # find which lepton is mu and which is el
                 mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
-                mu_sfs_b, mu_sfs_h     = lepton_muon_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
-                #(mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(abs(ev.lep_p4[mu_n].eta()), ev.lep_p4[mu_n].pt())
-                el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
-                el_trg_sf, el_trg_unc  = lepton_electron_trigger_SF(abs(ev.lep_p4[el_n].eta()), ev.lep_p4[el_n].pt())
+                mu_sfs_b, mu_sfs_h     = lepton_muon_SF(ev.lep_p4[mu_n].eta(), ev.lep_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
+                #(mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(ev.lep_p4[mu_n].eta(), ev.lep_p4[mu_n].pt())
+                el_sfs_reco, el_sfs_id = lepton_electron_SF(ev.lep_p4[el_n].eta(), ev.lep_p4[el_n].pt())
+                el_trg_sf, el_trg_unc  = lepton_electron_trigger_SF(ev.lep_p4[el_n].eta(), ev.lep_p4[el_n].pt())
+                # TODO !!!!!!!!!!!!!!!!!!!!!!!!! ELE TRIGGER IS ASYMETRIC IN ETA! CHECK ID TOO!
 
                 #weight_lep_Up   *= weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 #weight_lep_Down *= weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
@@ -2792,14 +2835,15 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 mu_b_trk, mu_b_trk_u = mu_sfs_b[0:2] # unc in mu_sfs_b[1]
                 mu_h_trk, mu_h_trk_u = mu_sfs_h[0:2] # unc in mu_sfs_h[1]
 
-                weight_lep_el = el_sfs_reco[0] * el_sfs_id[0] * el_trg_sf
+                weight_lep_el = el_sfs_reco[0] * el_sfs_id[0]
 
                 #weight_lep_mu = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
                 #                ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
                 weight_lep_mu = ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
                                 ratio_gh    * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
-                weight_lep = weight_lep_el * weight_lep_mu
+                # the overall weight
+                weight_lep = weight_lep_el * weight_lep_mu * el_trg_sf
 
                 '''
                 weight_lepMU_id_Up    = weight_lep_el * \
@@ -2835,17 +2879,17 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
 
             if isMC and pass_el_all:
-                el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt())
-                el_trg_sf, el_trg_unc = lepton_electron_trigger_SF(abs(ev.lep_alliso_p4[0].eta()), ev.lep_alliso_p4[0].pt())
+                el_sfs_reco, el_sfs_id = lepton_electron_SF(ev.lep_alliso_p4[0].eta(), ev.lep_alliso_p4[0].pt())
+                el_trg_sf, el_trg_unc = lepton_electron_trigger_SF(ev.lep_alliso_p4[0].eta(), ev.lep_alliso_p4[0].pt())
                 # on 0 position is the value, on 1 is uncertainty
 
                 # test how much leptons SFs affect
                 weight_lepall = el_trg_sf * el_sfs_reco[0] * el_sfs_id[0]
 
 
-            if isMC and (pass_el or pass_elel):
-                el_sfs_reco, el_sfs_id = lepton_electron_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
-                el_trg_sf, el_trg_unc = lepton_electron_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
+            if isMC and pass_el:
+                el_sfs_reco, el_sfs_id = lepton_electron_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt())
+                el_trg_sf, el_trg_unc = lepton_electron_trigger_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt())
                 # on 0 position is the value, on 1 is uncertainty
                 weight_lepEL_id_Up   = el_trg_sf * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 weight_lepEL_id_Down = el_trg_sf * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
@@ -2855,6 +2899,28 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
                 # test how much leptons SFs affect
                 weight_lep = el_trg_sf * el_sfs_reco[0] * el_sfs_id[0]
+
+
+            if isMC and pass_elel:
+                el_sfs_reco1, el_sfs_id1 = lepton_electron_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt())
+                el_sfs_reco2, el_sfs_id2 = lepton_electron_SF(ev.lep_p4[1].eta(), ev.lep_p4[1].pt())
+                el_reco, el_reco_unc = dilepton_and_sfs(el_sfs_reco1[0], el_sfs_reco1[1], el_sfs_reco2[0], el_sfs_reco2[1])
+                el_id,   el_id_unc   = dilepton_and_sfs(el_sfs_id1[0], el_sfs_id1[1], el_sfs_id2[0], el_sfs_id2[1])
+
+                el_trg_sf1, el_trg_unc2 = lepton_electron_trigger_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt())
+                el_trg_sf2, el_trg_unc2 = lepton_electron_trigger_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt())
+                el_trg_sf, el_trg_unc = dilepton_or_sfs(el_trg_sf1, el_trg_unc2, el_trg_sf2, el_trg_unc2)
+
+                # on 0 position is the value, on 1 is uncertainty
+                weight_lepEL_id_Up   = el_trg_sf * (el_reco + el_reco_unc) * (el_id + el_id_unc)
+                weight_lepEL_id_Down = el_trg_sf * (el_reco - el_reco_unc) * (el_id - el_id_unc)
+
+                weight_lepEL_trg_Up   = (el_trg_sf + el_trg_unc) * el_reco * el_id
+                weight_lepEL_trg_Down = (el_trg_sf - el_trg_unc) * el_reco * el_id
+
+                # test how much leptons SFs affect
+                weight_lep = el_trg_sf * el_reco * el_id
+
 
             weight *= weight_lep if weight_lep > 0.0001 else 0.
 
@@ -4518,8 +4584,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
           if pass_mu or pass_mumu: # or pass_elmu
             # bcdef_weight_trk, bcdef_weight_id, bcdef_weight_iso, gh_weight_trk, gh_weight_id, gh_weight_iso
-            #mu_sfs = lepton_muon_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
-            #mu_trg_sf = lepton_muon_trigger_SF(abs(ev.lep_p4[0].eta()), ev.lep_p4[0].pt())
+            #mu_sfs = lepton_muon_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt())
+            #mu_trg_sf = lepton_muon_trigger_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt())
 
             control_hs['weight_mu_trk_bcdef']        .Fill(mu_sfs_b[0])
             control_hs['weight_mu_trk_bcdef_vtx_gen'].Fill(mu_sfs_b[1])

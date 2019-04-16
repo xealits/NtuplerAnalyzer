@@ -81,6 +81,32 @@ histo(TH2D, "btag_c_hadronFlavour_candidates_tagged"    , "", n_bin_pt,  root_bi
 histo(TH2D, "btag_udsg_hadronFlavour_candidates"        , "", n_bin_pt,  root_bin_pt, n_bin_eta, root_bin_eta)
 histo(TH2D, "btag_udsg_hadronFlavour_candidates_tagged" , "", n_bin_pt,  root_bin_pt, n_bin_eta, root_bin_eta)
 
+
+histo(TH2D, "jes_cor_2d_gen_reco_barrel_b" , "", n_bin_pt,  root_bin_pt, n_bin_pt, root_bin_pt)
+histo(TH2D, "jes_cor_2d_gen_reco_endcap_b" , "", n_bin_pt,  root_bin_pt, n_bin_pt, root_bin_pt)
+
+histo(TH2D, "jes_cor_2d_gen_reco_barrel_c" , "", n_bin_pt,  root_bin_pt, n_bin_pt, root_bin_pt)
+histo(TH2D, "jes_cor_2d_gen_reco_endcap_c" , "", n_bin_pt,  root_bin_pt, n_bin_pt, root_bin_pt)
+
+histo(TH2D, "jes_cor_2d_gen_reco_barrel_udsg" , "", n_bin_pt,  root_bin_pt, n_bin_pt, root_bin_pt)
+histo(TH2D, "jes_cor_2d_gen_reco_endcap_udsg" , "", n_bin_pt,  root_bin_pt, n_bin_pt, root_bin_pt)
+
+histo(TH1D, "jes_cor_1d_gen_reco_barrel_b" , "", n_bin_pt,  root_bin_pt)
+histo(TH1D, "jes_cor_1d_gen_reco_endcap_b" , "", n_bin_pt,  root_bin_pt)
+histo(TH1D, "jes_cor_1d_gen_reco_barrel_b_unit" , "", n_bin_pt,  root_bin_pt)
+histo(TH1D, "jes_cor_1d_gen_reco_endcap_b_unit" , "", n_bin_pt,  root_bin_pt)
+
+histo(TH1D, "jes_cor_1d_gen_reco_barrel_c" , "", n_bin_pt,  root_bin_pt)
+histo(TH1D, "jes_cor_1d_gen_reco_endcap_c" , "", n_bin_pt,  root_bin_pt)
+histo(TH1D, "jes_cor_1d_gen_reco_barrel_c_unit" , "", n_bin_pt,  root_bin_pt)
+histo(TH1D, "jes_cor_1d_gen_reco_endcap_c_unit" , "", n_bin_pt,  root_bin_pt)
+
+histo(TH1D, "jes_cor_1d_gen_reco_barrel_udsg" , "", n_bin_pt,  root_bin_pt)
+histo(TH1D, "jes_cor_1d_gen_reco_endcap_udsg" , "", n_bin_pt,  root_bin_pt)
+histo(TH1D, "jes_cor_1d_gen_reco_barrel_udsg_unit" , "", n_bin_pt,  root_bin_pt)
+histo(TH1D, "jes_cor_1d_gen_reco_endcap_udsg_unit" , "", n_bin_pt,  root_bin_pt)
+
+
 # loop over all events in all files
 # counting the non-lep matched jets
 # per their hadron flavour
@@ -133,6 +159,41 @@ for filename in args.input_files:
             else:
                 histos['btag_udsg_hadronFlavour_candidates']     .Fill(p4.pt(), p4.eta())
                 if b_tagged: histos['btag_udsg_hadronFlavour_candidates_tagged'] .Fill(p4.pt(), p4.eta())
+
+            # gen-match info for JES corrections
+            if ev.genjet_matched[i]:
+                pt_gen  = ev.genjet_pt[i]
+                pt_reco = p4.pt()
+
+                if abs(p4.eta()) < 1.5:
+                    # barrel
+                    if HF == 5:
+                        histos["jes_cor_2d_gen_reco_barrel_b"].Fill(pt_gen, pt_reco)
+                        histos["jes_cor_1d_gen_reco_barrel_b"].Fill(pt_gen, pt_reco/pt_gen)
+                        histos["jes_cor_1d_gen_reco_barrel_b_unit"].Fill(pt_gen)
+                    elif HF == 4:
+                        histos["jes_cor_2d_gen_reco_barrel_c"].Fill(pt_gen, pt_reco)
+                        histos["jes_cor_1d_gen_reco_barrel_c"].Fill(pt_gen, pt_reco/pt_gen)
+                        histos["jes_cor_1d_gen_reco_barrel_c_unit"].Fill(pt_gen)
+                    else:
+                        histos["jes_cor_2d_gen_reco_barrel_udsg"].Fill(pt_gen, pt_reco)
+                        histos["jes_cor_1d_gen_reco_barrel_udsg"].Fill(pt_gen, pt_reco/pt_gen)
+                        histos["jes_cor_1d_gen_reco_barrel_udsg_unit"].Fill(pt_gen)
+
+                else:
+                    # endcap
+                    if HF == 5:
+                        histos["jes_cor_2d_gen_reco_endcap_b"].Fill(pt_gen, pt_reco)
+                        histos["jes_cor_1d_gen_reco_endcap_b"].Fill(pt_gen, pt_reco/pt_gen)
+                        histos["jes_cor_1d_gen_reco_endcap_b_unit"].Fill(pt_gen)
+                    elif HF == 4:
+                        histos["jes_cor_2d_gen_reco_endcap_c"].Fill(pt_gen, pt_reco)
+                        histos["jes_cor_1d_gen_reco_endcap_c"].Fill(pt_gen, pt_reco/pt_gen)
+                        histos["jes_cor_1d_gen_reco_endcap_c_unit"].Fill(pt_gen)
+                    else:
+                        histos["jes_cor_2d_gen_reco_endcap_udsg"].Fill(pt_gen, pt_reco)
+                        histos["jes_cor_1d_gen_reco_endcap_udsg"].Fill(pt_gen, pt_reco/pt_gen)
+                        histos["jes_cor_1d_gen_reco_endcap_udsg_unit"].Fill(pt_gen)
 
     tfile.Close()
 

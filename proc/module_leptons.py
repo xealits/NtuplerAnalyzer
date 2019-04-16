@@ -41,6 +41,19 @@ muon_unc_sys_id  = 0.005
 muon_unc_sys_iso = 0.002
 muon_unc_sys_trg = 0.002
 
+"""
+tests:
+
+root -l ../analysis/muon-effs//2016_23Sep_tracking_more_BCDEF_fits.root
+root -l ../analysis/muon-effs//2016_23Sep_MuonID_EfficienciesAndSF_BCDEF.root
+root -l ../analysis/muon-effs//2016_23Sep_MuonISO_EfficienciesAndSF_BCDEF.root
+root -l ../analysis/muon-effs//2016_23Sep_SingleMuonTrigger_EfficienciesAndSF_RunBtoF.root
+
+ratio_eff_aeta_dr030e030_corr->Draw()                                                                                                                            
+MC_NUM_TightID_DEN_genTracks_PAR_pt_eta->Get("pt_abseta_ratio")->Draw("colz")
+TightISO_TightID_pt_eta->Get("pt_abseta_ratio")->Draw("colz")
+IsoMu24_OR_IsoTkMu24_PtEtaBins->Get("pt_abseta_ratio")->Draw("colz")
+"""
 
 muon_effs_dirname = "${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/analysis/muon-effs/"
 gSystem.ExpandPathName(muon_effs_dirname    )
@@ -97,25 +110,29 @@ print 'H', muon_effs_trg_GH_histo.GetBinContent(muon_effs_trg_GH_histo.FindBin(2
 
 print type(muon_effs_trg_BCDEF_file)
 
-muon_effs_id_BCDEF_histo_max_x = muon_effs_id_BCDEF_histo.GetXaxis().GetXmax()
+muon_effs_id_BCDEF_histo_max_x  = muon_effs_id_BCDEF_histo.GetXaxis().GetXmax()
 muon_effs_iso_BCDEF_histo_max_x = muon_effs_iso_BCDEF_histo.GetXaxis().GetXmax()
-muon_effs_id_BCDEF_histo_min_x = muon_effs_id_BCDEF_histo.GetXaxis().GetXmin()
+muon_effs_id_BCDEF_histo_min_x  = muon_effs_id_BCDEF_histo.GetXaxis().GetXmin()
 muon_effs_iso_BCDEF_histo_min_x = muon_effs_iso_BCDEF_histo.GetXaxis().GetXmin()
 
-muon_effs_id_BCDEF_histo_max_y = muon_effs_id_BCDEF_histo.GetYaxis().GetXmax()
+muon_effs_id_BCDEF_histo_max_y  = muon_effs_id_BCDEF_histo.GetYaxis().GetXmax()
 muon_effs_iso_BCDEF_histo_max_y = muon_effs_iso_BCDEF_histo.GetYaxis().GetXmax()
+muon_effs_id_BCDEF_histo_min_y  = muon_effs_id_BCDEF_histo.GetYaxis().GetXmin()
+muon_effs_iso_BCDEF_histo_min_y = muon_effs_iso_BCDEF_histo.GetYaxis().GetXmin()
 
-print muon_effs_id_BCDEF_histo_max_x, muon_effs_id_BCDEF_histo_max_y, muon_effs_iso_BCDEF_histo_max_x, muon_effs_iso_BCDEF_histo_max_y
+print "muon eff ID ISO BCDEF", muon_effs_id_BCDEF_histo_min_x, muon_effs_id_BCDEF_histo_max_x, muon_effs_id_BCDEF_histo_min_y, muon_effs_id_BCDEF_histo_max_y, muon_effs_iso_BCDEF_histo_min_x, muon_effs_iso_BCDEF_histo_max_x, muon_effs_iso_BCDEF_histo_min_y, muon_effs_iso_BCDEF_histo_max_y
 
-muon_effs_id_GH_histo_max_x = muon_effs_id_GH_histo.GetXaxis().GetXmax()
+muon_effs_id_GH_histo_max_x  = muon_effs_id_GH_histo.GetXaxis().GetXmax()
 muon_effs_iso_GH_histo_max_x = muon_effs_iso_GH_histo.GetXaxis().GetXmax()
-muon_effs_id_GH_histo_min_x = muon_effs_id_GH_histo.GetXaxis().GetXmin()
+muon_effs_id_GH_histo_min_x  = muon_effs_id_GH_histo.GetXaxis().GetXmin()
 muon_effs_iso_GH_histo_min_x = muon_effs_iso_GH_histo.GetXaxis().GetXmin()
 
-muon_effs_id_GH_histo_max_y = muon_effs_id_GH_histo.GetYaxis().GetXmax()
+muon_effs_id_GH_histo_max_y  = muon_effs_id_GH_histo.GetYaxis().GetXmax()
 muon_effs_iso_GH_histo_max_y = muon_effs_iso_GH_histo.GetYaxis().GetXmax()
+muon_effs_id_GH_histo_min_y  = muon_effs_id_GH_histo.GetYaxis().GetXmin()
+muon_effs_iso_GH_histo_min_y = muon_effs_iso_GH_histo.GetYaxis().GetXmin()
 
-print muon_effs_id_GH_histo_max_x, muon_effs_id_GH_histo_max_y, muon_effs_iso_GH_histo_max_x, muon_effs_iso_GH_histo_max_y
+print "muon eff ID ISO GH", muon_effs_id_GH_histo_min_x, muon_effs_id_GH_histo_max_x, muon_effs_id_GH_histo_min_y, muon_effs_id_GH_histo_max_y, muon_effs_iso_GH_histo_min_x, muon_effs_iso_GH_histo_max_x, muon_effs_iso_GH_histo_min_y, muon_effs_iso_GH_histo_max_y
 
 h_weight_mu_trk_bcdef_pt = TH1D("weight_mu_trk_bcdef_pt", "", 50, 0, 200)
 h_weight_mu_idd_bcdef_pt = TH1D("weight_mu_idd_bcdef_pt", "", 50, 0, 200)
@@ -130,7 +147,8 @@ h_weight_mu_trg_bcdef_eta = TH1D("weight_mu_trg_bcdef_eta", "", 50, 0, 3)
 #
 #h_weight_mu_idd_bcdef_nbins = TH2D("weight_mu_idd_bcdef_nbins", "", 100, 0, muon_effs_id_BCDEF_histo.GetSize(), 100, 0, muon_effs_id_BCDEF_histo.GetSize())
 
-def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction, SingleMuon_data_gh_fraction):
+def lepton_muon_SF(eta, pt, vtx, vtx_gen): #SingleMuon_data_bcdef_fraction, SingleMuon_data_gh_fraction):
+    abs_eta = abs(eta)
     #weight *= 0.98; // average mu trig SF
     #weight *= 0.97; // average mu ID
     weight_muon_sfs = 1
@@ -145,14 +163,11 @@ def lepton_muon_SF(abs_eta, pt, vtx, vtx_gen): #, SingleMuon_data_bcdef_fraction
     #double abs_eta = abs(lep0_eta);
     #double pt = lep0_pt;
 
-    # for control (TODO: remove this later)
-    #double bcdef_weight_trk, bcdef_weight_id, bcdef_weight_iso,
-    #        gh_weight_trk, gh_weight_id, gh_weight_iso;
-
     # hopefully tracking won't overflow in eta range:
     bcdef_weight_trk     = muon_effs_tracking_BCDEF_graph.Eval(abs_eta)
     bcdef_weight_trk_vtx = muon_effs_tracking_BCDEF_graph_vtx.Eval(vtx)
     bcdef_weight_trk_vtx_gen = muon_effs_tracking_BCDEF_graph_vtx.Eval(vtx_gen)
+
     # uncertainty (statistical from the SF study?)
     trk_gen_unc_bcdef = 0. # muon_effs_tracking_BCDEF_graph.GetErrorY(abs_eta)
     #trk_gen_unc_bcdef = sqrt(trk_gen_unc_bcdef**2 + muon_effs_tracking_BCDEF_graph_vtx.GetErrorY(vtx_gen)**2)
@@ -264,27 +279,28 @@ muon_effs_trg_BCDEF_histo_max_y = muon_effs_trg_BCDEF_histo.GetYaxis().GetXmax()
 muon_effs_trg_BCDEF_histo_min_x = muon_effs_trg_BCDEF_histo.GetXaxis().GetXmin()
 muon_effs_trg_BCDEF_histo_min_y = muon_effs_trg_BCDEF_histo.GetYaxis().GetXmin()
 
-print muon_effs_trg_BCDEF_histo_max_x, muon_effs_trg_BCDEF_histo_max_y
+print 'muon effs trg BCDEF (assume the same for GH)', muon_effs_trg_BCDEF_histo_min_x, muon_effs_trg_BCDEF_histo_max_x, muon_effs_trg_BCDEF_histo_min_y, muon_effs_trg_BCDEF_histo_max_y
 
 # MUON Trigger
 #double lepton_muon_trigger_SF ()
-def lepton_muon_trigger_SF(abs_eta, pt): #, double SingleMuon_data_bcdef_fraction, double SingleMuon_data_gh_fraction)
+def lepton_muon_trigger_SF(eta, pt): #, double SingleMuon_data_bcdef_fraction, double SingleMuon_data_gh_fraction)
+    abs_eta = abs(eta)
     no_mu_trig = 1;
     #double mu_trig_weight = 1;
     # calculate it the inverse-probbility way
     #double abs_eta = abs(NT_lep_eta_0);
     #double pt = NT_lep_pt_0;
-    if   pt < muon_effs_trg_BCDEF_histo_min_x:
-      bin_x = muon_effs_trg_BCDEF_histo_min_x + 0.01
-    elif pt > muon_effs_trg_BCDEF_histo_max_x:
-      bin_x = muon_effs_trg_BCDEF_histo_max_x - 0.01
+    if   pt <= muon_effs_trg_BCDEF_histo_min_x:
+      bin_x  = muon_effs_trg_BCDEF_histo_min_x + 0.01
+    elif pt >= muon_effs_trg_BCDEF_histo_max_x:
+      bin_x  = muon_effs_trg_BCDEF_histo_max_x - 0.01
     else:
       bin_x = pt
 
-    if   abs_eta < muon_effs_trg_BCDEF_histo_min_y:
-           bin_y = muon_effs_trg_BCDEF_histo_min_y + 0.01
-    elif abs_eta > muon_effs_trg_BCDEF_histo_max_y:
-           bin_y = muon_effs_trg_BCDEF_histo_max_y - 0.01
+    if   abs_eta <= muon_effs_trg_BCDEF_histo_min_y:
+           bin_y  = muon_effs_trg_BCDEF_histo_min_y + 0.01
+    elif abs_eta >= muon_effs_trg_BCDEF_histo_max_y:
+           bin_y  = muon_effs_trg_BCDEF_histo_max_y - 0.01
     else:
            bin_y = abs_eta
     #no_mu_trig *= SingleMuon_data_bcdef_fraction * (1 - muon_effs_trg_BCDEF_histo->GetBinContent( muon_effs_trg_BCDEF_histo->FindBin(bin_x, bin_y) )) +
@@ -308,7 +324,30 @@ def lepton_muon_trigger_SF(abs_eta, pt): #, double SingleMuon_data_bcdef_fractio
     return (muon_effs_trg_BCDEF_histo.GetBinContent(trg_bin_b), bcdef_trg_unc), (muon_effs_trg_GH_histo.GetBinContent(trg_bin_h), gh_trg_unc)
 
 
+def dilepton_or_sfs(eff1, unc1, eff2, unc2):
+    """dilepton_sfs(eff1, unc1, eff2, unc2)
 
+    use for the case of OR selection on 2 leptons,
+    like single-muon HLT on 2 muons:
+    """
+
+    eff = 1. - (1. - eff1) * (1. - eff2)
+    unc = unc1*(1. - eff2) + unc2*(1. - eff1)
+    # differencials for the uncertainties
+    # d(mu_trg_sf_b1)(1 - mu_trg_sf_b2) + d(mu_trg_sf_b2)(1 - mu_trg_sf_b1)
+
+    return eff, unc
+
+def dilepton_and_sfs(eff1, unc1, eff2, unc2):
+    """dilepton_and_sfs(eff1, unc1, eff2, unc2)
+
+    the SFs for an AND of 2 identical leptons, like the IDs in mumu or elel
+    """
+
+    eff = eff1*eff2
+    unc = unc1*eff2 + eff1*unc2
+
+    return eff, unc
 
 
 '''
@@ -369,11 +408,14 @@ def lepton_electron_SF(eta, pt):
     # here X axis is eta, Y axis is pt
     # X is from -2.5 to 2.5 -- our eta is up to 2.4 (2.5 in wide ntuples), should be ok
     #double bin_x = (pt < electron_effs_tracking_all_histo->GetXaxis()->GetXmax()      ? pt : muon_effs_id_BCDEF_histo->GetXaxis()->GetXmax() - 1);
-    bin_x = eta; # TODO: check this eta doesn't need defaults for overflow values (in principle our cuts on eta are smaller than these SF histos)
-    if   pt > electron_effs_tracking_all_histo_max_y:
-      bin_y = electron_effs_tracking_all_histo_max_y - 0.01
-    elif pt < electron_effs_tracking_all_histo_min_y:
-      bin_y = electron_effs_tracking_all_histo_min_y + 0.01
+    if   eta >=  2.5: bin_x =  2.499
+    elif eta <= -2.5: bin_x = -2.499
+    else: bin_x = eta
+
+    if   pt >= electron_effs_tracking_all_histo_max_y:
+      bin_y  = electron_effs_tracking_all_histo_max_y - 0.01
+    elif pt <= electron_effs_tracking_all_histo_min_y:
+      bin_y  = electron_effs_tracking_all_histo_min_y + 0.01
     else:
       bin_y = pt
     reco_bin = electron_effs_tracking_all_histo.FindBin(bin_x, bin_y)
@@ -437,7 +479,7 @@ if __name__ == '__main__':
         )
 
     parser.add_argument("output_file", type=str, default="output.root", help="filename for output")
-    parser.add_argument("--ele-trig-sfs",  action='store_true', help="just print ele trig SF for typical values")
+    parser.add_argument("--test-sfs",  action='store_true', help="just print ele trig SF for typical values")
     parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
     parser.add_argument('input_files', nargs='+', help="""the files to sum up, passed by shell, as:
     /gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_*.root""")
@@ -450,7 +492,7 @@ if __name__ == '__main__':
     else:
         logging.basicConfig(level=logging.INFO)
 
-    if args.ele_trig_sfs:
+    if args.test_sfs:
         print "ele trg SF histo X max", electron_effs_trg_all_histo_max_x
         print "ele trg SF histo X min", electron_effs_trg_all_histo_min_x
         print "ele trg SF histo Y max", electron_effs_trg_all_histo_max_y
@@ -461,8 +503,37 @@ if __name__ == '__main__':
         kino_points = ele_kino_points_pt_trend + ele_kino_points_pt_lower + ele_kino_points_pt_other
 
         ele_kino_points_pt_low   = [(-2.5, 30.1), (-2.4, 30.1), (-2.1, 30.1), (-1.1, 30.1), (-0.1, 30.1), (0.1, 30.1), (1.1, 30.1), (2.1, 30.1), (2.4, 30.1), (2.5, 30.1)]
+
+        print "electron ID"
+        for eta, pt in sorted(kino_points) + sorted(ele_kino_points_pt_low, key=lambda el: el[1]):
+            el_sfs_reco, el_sfs_id = lepton_electron_SF(eta, pt)
+            print eta, pt, el_sfs_reco[0], '+-', el_sfs_reco[1], el_sfs_id[0], '+-', el_sfs_id[1]
+
+        print "electron trigger"
         for eta, pt in sorted(kino_points) + sorted(ele_kino_points_pt_low, key=lambda el: el[1]):
             print eta, pt, lepton_electron_trigger_SF(eta, pt)
+
+        print "muon tracking vtx 10"
+        for eta, pt in sorted(kino_points) + sorted(ele_kino_points_pt_low, key=lambda el: el[1]):
+            mu_sfs_b, mu_sfs_h = lepton_muon_SF(eta, pt, 10, 10)
+            mu_b_trk, mu_b_trk_u = mu_sfs_b[0:2]
+            mu_h_trk, mu_h_trk_u = mu_sfs_h[0:2]
+
+            print eta, pt, mu_b_trk, '+-', mu_b_trk_u, mu_h_trk, '+-', mu_h_trk_u
+
+        print "muon ID"
+        for eta, pt in sorted(kino_points) + sorted(ele_kino_points_pt_low, key=lambda el: el[1]):
+            mu_sfs_b, mu_sfs_h = lepton_muon_SF(eta, pt, 1, 1)
+            mu_b_trk, mu_b_trk_u = mu_sfs_b[0:2]
+            mu_h_trk, mu_h_trk_u = mu_sfs_h[0:2]
+
+            print eta, pt, mu_sfs_b[3][0], '+-', mu_sfs_b[3][1], mu_sfs_h[3][0], '+-', mu_sfs_h[3][1], mu_sfs_b[4][0], '+-', mu_sfs_b[4][1], mu_sfs_h[4][0], '+-', mu_sfs_h[4][1]
+
+        print "muon trigger"
+        for eta, pt in sorted(kino_points) + sorted(ele_kino_points_pt_low, key=lambda el: el[1]):
+            (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(eta, pt)
+            print eta, pt, mu_trg_sf_b, '+-', trg_b_unc, mu_trg_sf_h, '+-', trg_h_unc
+
         exit(0)
 
     trig_sf = TH1D("el_trig_sf", "", 100, 0., 2.)

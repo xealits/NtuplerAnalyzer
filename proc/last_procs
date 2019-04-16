@@ -1,3 +1,9 @@
+# corrected lep IDs for dileptons
+python genjobs.py v37 test6 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags MC2016_Summer16_TTJets_powheg
+python genjobs.py v37 test6 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags data_mu,data_el,wjets_amcatnlo,std_qcd,dy_std,dy_ext
+
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test6 --distrs bunch3 --chan-groups dy_dileptons,tt_dileptons
+
 # the question on ISR gen lep pt-s in the acceptance
 python genjobs.py v34 t1 --acceptance-study channels_nom_sys_both_sel_main --dtags MC2016_Summer16_TTJets_powheg,updowns,updowns_extra --scheme 5,5,2,12,12
 make sub_proc nt=v34 proc=t1 node=1
