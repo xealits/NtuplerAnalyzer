@@ -123,7 +123,7 @@ for dtag, systs in requested_dtags:
       chans, distrs, allowed_systs = channels_distrs[chan_group]
       allowed_systs = extend_full_sys_list(allowed_systs)
       if args.only_nominal:
-          allowed_systs = ['nom']
+          allowed_systs = ['NOMINAL']
 
       # prepare pre-definitions, only systematics are missing
       #template_def = '{ch}/std/{{systs}}/{d}'.format(ch=','.join(chans), d=','.join(distrs))

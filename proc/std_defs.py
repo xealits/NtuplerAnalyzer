@@ -894,7 +894,7 @@ channels_distrs = {
 'tt_presel_lj_el' : (['el_presel',    'el_presel_lj',    'el_presel_ljout',], sorted(distrs_on_jets.union(distrs_lep)), presel_sys),
 
 'dy_dileptons'    : (['dy_mumu',  'dy_elel'],   sorted(distrs_dy     ), main_sys),
-'dy_leptau'       : (['dy_mutau', 'dy_eltau'],  sorted(distrs_tauonic_std.union(distrs_leptonic)), main_sys),
+'dy_leptau'       : (['dy_mutau', 'dy_eltau'],  sorted(distrs_tauonic_std.union(distrs_leptonic).union(distrs_on_jets).union(distrs_mt_calc)), main_sys),
 'wjets'           : (['wjets_mu', 'wjets_el'],  sorted(distrs_wjets  ), main_sys),
 'wjets_ss'        : (['wjets_mu_ss', 'wjets_el_ss'],  sorted(distrs_wjets  ), main_sys),
 

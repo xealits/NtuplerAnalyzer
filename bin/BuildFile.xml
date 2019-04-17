@@ -1,0 +1,39 @@
+<use name="DataFormats/Common"/>                                                                                                      
+<use name="FWCore/Utilities"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/FWLite"/>
+<use name="DataFormats/FWLite"/>
+<use name="PhysicsTools/FWLite"/>
+
+<use name="PhysicsTools/UtilAlgos"/>
+<use name="PhysicsTools/Utilities"/>
+
+<use name="roottmva"/>
+<use name="roofit"/>
+<use name="rootrflx"/>
+<use name="fastjet"/>
+<use name="roostats"/>
+
+<environment>
+<!--
+     <use name="lhapdf"/>
+<use name="roottmva"/>
+<use name="roofit"/>
+<use name="roostats"/>
+<use name="PhysicsTools/FWLite"/>
+<use name="UserCode/llvv_fwk"/>
+<use name="TauAnalysis/SVfitStandalone"/>
+<use name="RecoJets/JetProducers"/>
+<use name="HiggsAnalysis/CombinedLimit"/>
+<use name="RecoEgamma/ElectronIdentification"/>
+<use name="EgammaAnalysis/ElectronTools"/>
+-->
+
+  <bin name="jet_masurements"              file="jet_masurements.cc"></bin>
+
+</environment>
+
+<flags CXXFLAGS="-g -Wno-sign-compare -Wno-unused-variable -Wno-unused-but-set-variable  -Os"/>                                                                                                                                                                                
+
+

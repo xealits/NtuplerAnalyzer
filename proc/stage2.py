@@ -240,8 +240,10 @@ def passes_dy_tautau_selection_stages(passed_triggers, leps, N_jets, taus, proc_
     pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
 
     # muon and OS tau and no b
-    pass_dy_objects_mu = pass_mu and len(leps[0]) == 1 and len(taus) > 0 and leps[4][0] * taus[0][2] < 0 and N_jets[0] == 0
-    pass_dy_objects_el = pass_el and len(leps[0]) == 1 and len(taus) > 0 and leps[4][0] * taus[0][2] < 0 and N_jets[0] == 0
+    pass_dy_objects_mu = pass_mu and len(leps[0]) == 1 and len(taus) > 0 and N_jets[0] == 0
+    pass_dy_objects_el = pass_el and len(leps[0]) == 1 and len(taus) > 0 and N_jets[0] == 0
+    opposite_sign = (pass_dy_objects_mu or pass_dy_objects_el) and leps[4][0] * taus[0][2] < 0
+
     pass_dy_mass = False
     if pass_dy_objects_mu or pass_dy_objects_el:
         nom_tau = taus[0][0]*taus[0][1][0]
@@ -249,14 +251,25 @@ def passes_dy_tautau_selection_stages(passed_triggers, leps, N_jets, taus, proc_
         pair_mass = pair.mass()
         pass_dy_mass = 75. < pair_mass < 105.
 
-    if   pass_dy_objects_mu and pass_dy_mass:
+    if   pass_dy_objects_mu and opposite_sign and pass_dy_mass:
         channel_stage = 103
-    elif pass_dy_objects_mu:
+    elif pass_dy_objects_mu and opposite_sign:
         channel_stage = 102
-    elif pass_dy_objects_el and pass_dy_mass:
+
+    elif pass_dy_objects_mu and pass_dy_mass:
+        channel_stage = 203
+    elif pass_dy_objects_mu:
+        channel_stage = 202
+
+    elif pass_dy_objects_el and opposite_sign and pass_dy_mass:
         channel_stage = 113
-    elif pass_dy_objects_el:
+    elif pass_dy_objects_el and opposite_sign:
         channel_stage = 112
+
+    elif pass_dy_objects_el and pass_dy_mass:
+        channel_stage = 213
+    elif pass_dy_objects_el:
+        channel_stage = 212
 
     return channel_stage
 
@@ -4082,6 +4095,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         elif len(lep_p4)>0 and len(sel_taus)>0:
             # nominal TES SF
             event_dilep_mass[0] = (lep_p4[0] + sel_taus[0][0] * sel_taus[0][1][0]).mass()
+        else:
+            event_dilep_mass[0] = -111.
 
         # calc the top mass from the met+l+b
         if REQUIRE_MLB:
