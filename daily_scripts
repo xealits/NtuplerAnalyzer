@@ -11,6 +11,37 @@ DY->tautau control region
 the muon tracking SF does not have the stat uncertainty -- TGRaph won't give it out easily and it is small, hence it is set to zero now
 
 
+## check the DY tautau in v37 test5
+
+There is no Same Sign! -- added
+
+python stack_plot.py distrs/v37_test5_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4/SingleMuon.root     -p -r -o plots/v37_test5_bunch4_dy_tautau/  -c dy_mutau --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 3.0 --title-x "lepton p_{T} [GeV]"
+python stack_plot.py distrs/v37_test5_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4/SingleMuon.root     -p -r -o plots/v37_test5_bunch4_dy_tautau/  -c dy_mutau --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 3.0
+
+python stack_plot.py distrs/v37_test5_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4/SingleMuon.root     -p -r -o plots/v37_test5_bunch4_dy_tautau/  -c dy_mutau --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 3.0
+python stack_plot.py distrs/v37_test5_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4/SingleMuon.root     -p -r -o plots/v37_test5_bunch4_dy_tautau/  -c dy_mutau --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 3.0
+
+-- 20% lack of MC, but at Mt > 100 and met > 100 it looks ok? maybe just QCD? try factor 3.0
+and forgot the Mt < 40 cut
+
+python stack_plot.py distrs/v37_test5_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4/SingleElectron.root     -p -r -o plots/v37_test5_bunch4_dy_tautau/  -c dy_eltau --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 3.0 --title-x "lepton p_{T} [GeV]"
+python stack_plot.py distrs/v37_test5_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4/SingleElectron.root     -p -r -o plots/v37_test5_bunch4_dy_tautau/  -c dy_eltau --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 3.0
+
+python stack_plot.py distrs/v37_test5_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4/SingleElectron.root     -p -r -o plots/v37_test5_bunch4_dy_tautau/  -c dy_eltau --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 3.0
+python stack_plot.py distrs/v37_test5_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4/SingleElectron.root     -p -r -o plots/v37_test5_bunch4_dy_tautau/  -c dy_eltau --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 3.0
+
+
+also:
+
+python stack_plot.py distrs/v37_test5_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4/SingleMuon.root     -p -r -o plots/v37_test5_bunch4_dy_tautau/  -c dy_mutau --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 3.0
+python stack_plot.py distrs/v37_test5_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4/SingleMuon.root     -p -r -o plots/v37_test5_bunch4_dy_tautau/  -c dy_mutau --data-nick data_other -d nbjets --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 3.0
+python stack_plot.py distrs/v37_test5_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4/SingleMuon.root     -p -r -o plots/v37_test5_bunch4_dy_tautau/  -c dy_mutau --data-nick data_other -d nrjets --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 3.0
+
+-- the nbjets is only 1 bin (0 bjets), there data > mc only by ~7%, within stats of MC:
+INFO:root:617771.0
+INFO:root:mc sum     =   599573.939341   599573.939341
+
+
 
 ## [The corrections to JEC and bSF of systematics](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopSystematics#Correction_factors_for_special_m)
 
@@ -240,6 +271,132 @@ mv test_beff_histos_MC2016_Summer16_TTJets_powheg_fsrdown.root test_beff_histos_
 rm test_beff_histos_MC2016_Summer16_TTJets_powheg_fsrdown_*.root test_beff_histos_MC2016_Summer16_TTJets_powheg_fsrup_*.root
 
 
+hadd test_beff_histos_MC2016_Summer16_TTJets_powheg_isrdown.root test_beff_histos_MC2016_Summer16_TTJets_powheg_isrdown_*.root  &
+hadd test_beff_histos_MC2016_Summer16_TTJets_powheg_isrup.root   test_beff_histos_MC2016_Summer16_TTJets_powheg_isrup_*.root    &
+
+mv test_beff_histos_MC2016_Summer16_TTJets_powheg_isrdown.root test_beff_histos_MC2016_Summer16_TTJets_powheg_isrup.root studies/jes_bSF_corrections/
+
+rm test_beff_histos_MC2016_Summer16_TTJets_powheg_isrdown_*.root test_beff_histos_MC2016_Summer16_TTJets_powheg_isrup_*.root
+
+TODO: what if write it in C?
+
+/lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements --test test_out.root ../proc/gstore_outdirs/v37/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_hdampDOWN/190219_120358/0000/MC2016_Summer16_TTJets_powheg_hdampDOWN_1.root
+
+/lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements --test test_out.root ../proc/gstore_outdirs/v37/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_hdampDOWN/190219_120358/0000/MC2016_Summer16_TTJets_powheg_hdampDOWN_1.root ../proc/gstore_outdirs/v37/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_hdampDOWN/190219_120358/0000/MC2016_Summer16_TTJets_powheg_hdampDOWN_2.root
+
+/lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements --test test_out.root ../proc/gstore_outdirs/v37/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_hdampDOWN/190219_120358/0000/MC2016_Summer16_TTJets_powheg_hdampDOWN_*.root
+
+time /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements --test test_out.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8/*/*/*/*root | tee foobar
+
+277 files input
+in the foobar log: 277
+
+
+
+time /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements test_out.root ../proc/gstore_outdirs/v37/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_hdampDOWN/190219_120358/0000/MC2016_Summer16_TTJets_powheg_hdampDOWN_*.root | tee foobar
+
+time /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements test_out.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8/*/*/*/*root | tee foobar
+
+
+## measure the speeds
+
+typical pyROOT on isr files
+
+real	6m3.875s
+user	5m27.263s
+sys	0m19.490s
+INFO:root:import ROOT
+INFO:root:done
+
+real	5m43.379s
+user	5m5.888s
+sys	0m18.817s
+
+real	5m12.508s
+user	4m38.707s
+sys	0m16.042s
+
+real	5m22.283s
+user	4m49.909s
+sys	0m16.517s
+
+real	5m6.626s
+user	4m33.581s
+sys	0m17.715s
+
+real	4m19.697s
+user	3m49.273s
+sys	0m14.258s
+
+
+real	4m51.699s
+user	4m20.832s
+sys	0m17.181s
+
+real	4m14.564s
+user	3m48.106s
+sys	0m15.090s
+
+real	4m31.144s
+user	4m2.686s
+sys	0m15.536s
+
+time /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements --test test_out_C_10events.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_isrdown/190219_114901/0000/MC2016_Summer16_TTJets_powheg_isrdown_18.root
+time /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements --test--verbose test_out_C_10events.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_isrdown/190219_114901/0000/MC2016_Summer16_TTJets_powheg_isrdown_18.root
+
+time /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements --test test_out_C_10events.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_isrdown/190219_114901/0000/MC2016_Summer16_TTJets_powheg_isrdown_18.root
+1.617u 0.523s 0:03.14 67.8%	0+0k 594080+64io 2447pf+0w
+
+time /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements test_out_C.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_isrdown/190219_114901/0000/MC2016_Summer16_TTJets_powheg_isrdown_18.root
+20.580u 1.162s 0:36.77 59.1%	0+0k 1885552+80io 2447pf+0w
+
+time python ../proc/btaggin_efficiency_count.py test_out_beff_py.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_isrdown/190219_114901/0000/MC2016_Summer16_TTJets_powheg_isrdown_18.root
+
+206.051u 14.380s 3:29.08 105.4%	0+0k 387232+112io 1741pf+0w
+
+1 order of magnitude...
+
+
+# using the jet_masurements.cc
+
+foreach dset (gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8 gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8)
+foreach dset (gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8 gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8)
+foreach dset (gstore_outdirs/v37/TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8 gstore_outdirs/v37/TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8)
+foreach dset (gstore_outdirs/v37/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8 gstore_outdirs/v37/TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8)
+
+TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8
+TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8
+TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8
+TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8
+TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8
+TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8
+TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8
+TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8
+
+foreach dset ( TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8 TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8 TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8 TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8 TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8 TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8 TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8 TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8 )
+time /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements test_jet_masurements_${dset}.root ../proc/gstore_outdirs/v37/${dset}/*/*/*/*.root &
+end
+
+[8]    Done                          /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements test_jet_masurements_TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8.root ../proc/gstore_outdirs/v37/TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8/*/*/*/*.root
+1845.504u 77.807s 1:10:38.51 45.3%	0+0k 101595952+72io 2241pf+0w
+[7]    Done                          /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements test_jet_masurements_TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8.root ../proc/gstore_outdirs/v37/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8/*/*/*/*.root
+1794.571u 75.075s 1:07:33.86 46.1%	0+0k 96841048+72io 1848pf+0w
+[6]    Done                          /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements test_jet_masurements_TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8/*/*/*/*.root
+1784.362u 76.541s 1:09:49.31 44.4%	0+0k 101121408+72io 1399pf+0w
+[5]    Done                          /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements test_jet_masurements_TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4down_13TeV-powheg-pythia8/*/*/*/*.root
+1747.131u 72.459s 1:07:19.08 45.0%	0+0k 98997608+72io 2212pf+0w
+[4]    Done                          /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements test_jet_masurements_TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrup-pythia8/*/*/*/*.root
+1819.277u 77.242s 1:10:13.53 45.0%	0+0k 101635288+72io 1693pf+0w
+
+1h instead of 10h
+
+[3]    Done                          /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements test_jet_masurements_TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-isrdown-pythia8/*/*/*/*.root
+4106.031u 158.889s 2:24:57.03 49.0%	0+0k 255492400+72io 2028pf+0w
+
+[2]    Done                          /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements test_jet_masurements_TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/*/*/*/*.root
+4500.598u 157.777s 2:31:24.24 51.2%	0+0k 254054272+72io 1554pf+0w
+[1]  + Done                          /lstore/cms/olek/CMSSW_8_0_26_patch1/bin/slc6_amd64_gcc530/jet_masurements test_jet_masurements_TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8.root ../proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8/*/*/*/*.root
+4216.008u 165.812s 2:29:54.97 48.7%	0+0k 271558520+72io 1706pf+0w
 
 
 
