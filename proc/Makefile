@@ -409,6 +409,11 @@ jobmaking2: job_dir=./
 jobmaking2:
 	find ${inp_dir} -name "*.root" -exec sh -c 'sed "s,${template_name},${inp_dir}/{}," ${template_file} > ${job_dir}/`basename {}`.job' \;
 
+run_jobs_script: jobs_script=
+run_jobs_script: max_procs=12
+run_jobs_script:
+	cat ${jobs_script} | xargs --delimiter='\n' --max-procs=${max_procs} -I COMMAND sh -c "COMMAND"
+
 run_script_jobs: job_dir=
 run_script_jobs: max_procs=12
 run_script_jobs:

@@ -682,6 +682,12 @@ distr_defs = {
     'tau_eta':       ({'NOMINAL': lambda ev: ev.event_taus[0].eta()   if len(ev.event_taus) > 0   else -111.},    ('histo-range',  [26,-2.6,2.6])),
     'bjet_pt':       ({'NOMINAL': lambda ev: ev.event_jets_b[0].pt()  if len(ev.event_jets_b) > 0 else -111.},  ('histo-range',  [20,0,300])),
     'bjet_eta':      ({'NOMINAL': lambda ev: ev.event_jets_b[0].eta() if len(ev.event_jets_b) > 0 else -111.}, ('histo-range',  [26,-2.6,2.6])),
+    'rjet_lead_pt':  ({'NOMINAL': lambda ev: ev.event_jets_r[0].pt()  if len(ev.event_jets_r) > 0 else -111.},  ('histo-range',  [20,0,300])),
+    'rjet_lead_eta': ({'NOMINAL': lambda ev: ev.event_jets_r[0].eta() if len(ev.event_jets_r) > 0 else -111.}, ('histo-range',  [26,-2.6,2.6])),
+    # TODO: implement saving all jets pT into 1 histo
+    #'rjet_all_pt':   ({'NOMINAL': lambda ev: ev.event_jets_b[0].pt()  if len(ev.event_jets_b) > 0 else -111.},  ('histo-range',  [20,0,300])),
+    #'rjet_all_eta':  ({'NOMINAL': lambda ev: ev.event_jets_b[0].eta() if len(ev.event_jets_b) > 0 else -111.}, ('histo-range',  [26,-2.6,2.6])),
+
     'nbjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_bjets},                        ('histo-range',  [5,0.0,5.0])),
     'nrjets':        ({'NOMINAL': lambda ev: ev.event_jets_n_jets - ev.event_jets_n_bjets}, ('histo-range',  [6,0.0,6.0])),
     'najets':        ({'NOMINAL': lambda ev: ev.event_jets_n_jets},                         ('histo-range',  [10,0.0,10.0])),
@@ -692,7 +698,7 @@ distr_defs = {
     'yield':         ({'NOMINAL': lambda ev: 1},     ('histo-range',  [3,0.0,3.0])),
 }
 
-# TODO: implement multi-dim histos?
+# CHECK: implement multi-dim histos?
 
 def make_histo(name, histo_range):
     import ctypes
@@ -800,8 +806,9 @@ std_channels_ev_loop = {
 'el_preselCand_ljout_ss':   (lambda sel_stage, ev: (sel_stage== 18 and ev.event_jets_lj_var  > 60.), main_presel_stages),
 
 # additional channels
-'dy_mutau': (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
-'dy_eltau': (lambda sel_stage, ev: (sel_stage== 112 or sel_stage== 113), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
+# TODO: made the met_lep_mt variation with sys objects
+'dy_mutau': (lambda sel_stage, ev: ((sel_stage== 102 or sel_stage== 103) and ev.event_met_lep_mt < 40.), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
+'dy_eltau': (lambda sel_stage, ev: ((sel_stage== 112 or sel_stage== 113) and ev.event_met_lep_mt < 40.), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
 'dy_mumu':  (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103 or sel_stage== 105), {'NOMINAL': lambda ev: ev.selection_stage_dy_mumu}),
 'dy_elel':  (lambda sel_stage, ev: (sel_stage== 112 or sel_stage== 113 or sel_stage== 115), {'NOMINAL': lambda ev: ev.selection_stage_dy_mumu}),
 
@@ -847,7 +854,7 @@ distrs_relIso   = {'relIso_mu', 'relIso_mu_ext', 'relIso_el', 'relIso_el_ext'}
 distrs_dy       = {'met_c',          'Mt_lep_met_c', 'Mt_lep_met_f', 'dilep_mass', 'dilep_mass_dy', 'lep_pt', 'lep_eta'}
 distrs_wjets    = {'met_c', 'met_f', 'met_init_f', 'Mt_lep_met_c', 'Mt_lep_met_f', 'Mt_lep_met_init_f', 'dilep_mass',                  'lep_pt', 'lep_eta', 'phi_met_lep', 'cos_phi_met_lep'}
 
-distrs_on_jets = {'nbjets', 'nrjets', 'bjet_pt', 'bjet_eta'}
+distrs_on_jets = {'nbjets', 'nrjets', 'bjet_pt', 'bjet_eta', 'rjet_lead_pt', 'rjet_lead_eta'}
 
 distrs_tauonic_std  = {'tau_pt', 'tau_eta', 'tau_sv_sign'}
 #distrs_tauonic_nomt  = distrs_tauonic_std - {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f'}

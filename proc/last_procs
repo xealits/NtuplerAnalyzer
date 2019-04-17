@@ -1,9 +1,17 @@
 # corrected lep IDs for dileptons
-python genjobs.py v37 test6 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags MC2016_Summer16_TTJets_powheg
 python genjobs.py v37 test6 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags std_mc,wjets_amcatnlo,std_qcd,dy_std,dy_ext
+
+python genjobs.py v37 test6 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags MC2016_Summer16_TTJets_powheg
+python genjobs.py v37 test6 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags std_mc,wjets_amcatnlo,std_qcd,dy_std,dy_ext --without-dtags MC2016_Summer16_TTJets_powheg
 
 python genjobs.py v37 test6 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags std_mc
 python genjobs.py v37 test6 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags wjets_amcatnlo,std_qcd,dy_std,dy_ext
+
+process online
+grep "^python" queue_dir/v37/test6/jobs_dir/job_* > queue_dir/v37/test6/all_jobs1
+sed -i 's/queue[^:]*://' queue_dir/v37/test6/all_jobs_both
+
+make run_jobs_script jobs_script=queue_dir/v37/test6/all_jobs_both
 
 python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test6 --distrs bunch3 --chan-groups dy_dileptons,tt_dileptons
 
