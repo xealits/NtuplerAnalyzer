@@ -18,6 +18,10 @@ parser.add_argument('--only-nominal', action='store_true', help="only nominal sy
 parser.add_argument('--job-dir', type=str, default='batch_jobs/', help='set a custom directory for job files')
 parser.add_argument('--chan-groups', type=str, help='set the channel groups for jobs')
 
+parser.add_argument('--chans', type=str, help='set the channels to select')
+parser.add_argument('--sys',   type=str, help='set the systematics to run on')
+parser.add_argument('--distributions', type=str, help='set the distributions to produce')
+
 parser.add_argument('--nt',     type=str, default='v37',    help='NT of the run')
 parser.add_argument('--proc',   type=str, default='test1',  help='proc')
 parser.add_argument('--distrs', type=str, default='bunch2', help='distrs bunch')
@@ -99,6 +103,8 @@ for dtag, systs in requested_dtags:
 
   # unpack the nicknamed systematics
   systs = extend_full_sys_list(systs)
+  if args.sys:
+      systs = args.sys.split(',')
 
   # create output directory for the whole dtag
   out_dtag = template_out_dir.format(nt=nt, proc=proc, distrs_run=distrs_run, dtag=dtag) # + '/' + chan_group
@@ -124,6 +130,14 @@ for dtag, systs in requested_dtags:
       allowed_systs = extend_full_sys_list(allowed_systs)
       if args.only_nominal:
           allowed_systs = ['NOMINAL']
+      elif args.sys:
+          allowed_systs = args.sys.split(',')
+
+      if args.distributions:
+          distrs = args.distributions.split(',')
+
+      if args.chans:
+          chans = args.chans.split(',')
 
       # prepare pre-definitions, only systematics are missing
       #template_def = '{ch}/std/{{systs}}/{d}'.format(ch=','.join(chans), d=','.join(distrs))

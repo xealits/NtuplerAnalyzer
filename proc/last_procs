@@ -1,3 +1,11 @@
+# the correctly averaged per-epoch PU and muon LEP SFs
+python genjobs.py v37 test7 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue_online --dtags MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_TTJets_powheg
+
+make run_script_jobs job_dir=queue_dir/v37/test7/jobs_dir/
+
+python genjobs.py v37 test7 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags std_mc,wjets_amcatnlo,std_qcd,dy_std,dy_ext
+
+
 # corrected lep IDs for dileptons
 python genjobs.py v37 test6 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags std_mc,wjets_amcatnlo,std_qcd,dy_std,dy_ext
 
@@ -13,7 +21,14 @@ sed -i 's/queue[^:]*://' queue_dir/v37/test6/all_jobs_both
 
 make run_jobs_script jobs_script=queue_dir/v37/test6/all_jobs_both
 
-python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test6 --distrs bunch3 --chan-groups dy_dileptons,tt_dileptons
+python loop_selections.py --no-queue --options " --wjets-nup-cut " --nt v37 --proc test6 --distrs bunch3 --chan-groups dy_dileptons,tt_dileptons
+cat batch_jobs/*.root > batch_jobs/all_jobs
+
+split -l 1512 batch_jobs/all_jobs batch_jobs/all_jobs.
+make run_jobs_script jobs_script=batch_jobs/all_jobs.aa
+make run_jobs_script jobs_script=batch_jobs/all_jobs.ab
+
+
 
 # the question on ISR gen lep pt-s in the acceptance
 python genjobs.py v34 t1 --acceptance-study channels_nom_sys_both_sel_main --dtags MC2016_Summer16_TTJets_powheg,updowns,updowns_extra --scheme 5,5,2,12,12
@@ -73,6 +88,14 @@ python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --
 
 # dy_tautau (dy_mutau dy_eltau) DY tau tau in test5
 python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --distrs bunch4 --chan-groups dy_leptau --no-queue --only-nominal
+# resubmit (with mT < 40 and dy_mutau_3j with >2 jets requirement)
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --distrs bunch5 --chan-groups dy_leptau --no-queue --only-nominal
+# test the application of event weights
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test5 --distrs bunchT1 --chan-groups dy_leptau --no-queue --job-dir temp/jobs/ --dtags MC2016_Summer16_DYJetsToLL_50toInf_madgraph --chans dy_elel --distributions lep_pt,lep_eta,Mt_lep_met_c --sys NOMINAL,INITIAL
+make run_script_jobs job_dir=temp/jobs/ max_procs=10
+
+hadd MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root all/MC2016_Summer16_DYJetsToLL_50toInf_madgraph/dy_leptau/*root
+
 
 # test run batch
 make run_script_jobs job_dir=temp/jobs/

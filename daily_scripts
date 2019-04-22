@@ -7,8 +7,584 @@ the ME weights for the acceptance -- no 3 separate parameters, use the largest v
 les enquetes!
 
 DY->tautau control region
+-- not any DY tautau control region! Yuta asks for special, signal-like DY control region, with 3 jets!
 
 the muon tracking SF does not have the stat uncertainty -- TGRaph won't give it out easily and it is small, hence it is set to zero now
+
+POSSIBLE PROBLEM: if there are 2 distinct data-taking periods and the SFs are averaged between them,
+                  then all SFs must be averaged together, not separately:
+                  E * SF_common * (r1 * SF1(A) * SF1(B) + r2 * SF2(A) * SF2(B))
+                  -- it definitely appears in muon channel
+
+meanwhile, let's try rising pT cut for dilepton control channels
+
+
+## correct pile-up averaging for muon channel?
+
+need PU per BCDEF and GH
+and average it together with lep SF
+
+now the easiest way to get PU per BCDEF and GH is to re-use ele PU
+
+now:
+lumi_bcdef = 19252.03
+lumi_gh    = 16290.02
+
+sum 35542.05
+
+correct ratio in the reduced lumicert?
+
+at tag v17 was:
+lumi_bcdef=20263.3, lumi_gh=16518.588
+at v25
+lumi_bcdef=20263.3, lumi_gh=16518.588
+sum 36781.888
+
+from logs.brilcalc
+old ele
+>>> 2765.338 + 941.616 + 1124.295 + 8243.992 + 4105.836 + 8081.105 +6076.177
+31338.359
+
+new ele on golden json and with HLT Ele prescale ON
+>>> 2765.338 + 941.616 + 1124.295 + 8243.992 + 4597.535 + 9581.599 + 8605.690
+35860.065
+
+reduced and golden json:
+
+#Summary:                                                                                                |#Summary:                                                                                                
++--------------------------+-------+------+-------+-------------------+------------------+               |+--------------------------+-------+------+-------+-------------------+------------------+               
+| hltpath                  | nfill | nrun | ncms  | totdelivered(/pb) | totrecorded(/pb) |               || hltpath                  | nfill | nrun | ncms  | totdelivered(/pb) | totrecorded(/pb) |               
++--------------------------+-------+------+-------+-------------------+------------------+               |+--------------------------+-------+------+-------+-------------------+------------------+               
+| HLT_Ele27_WPTight_Gsf_v1 | 23    | 66   | 29602 | 2882.641          | 2765.338         |               || HLT_Ele27_WPTight_Gsf_v1 | 23    | 66   | 29602 | 2882.641          | 2765.338         |               
+| HLT_Ele27_WPTight_Gsf_v2 | 4     | 12   | 7544  | 984.327           | 941.616          |               || HLT_Ele27_WPTight_Gsf_v2 | 4     | 12   | 7544  | 984.327           | 941.616          |               
+| HLT_Ele27_WPTight_Gsf_v3 | 4     | 16   | 8541  | 1170.568          | 1124.295         |               || HLT_Ele27_WPTight_Gsf_v3 | 4     | 16   | 8541  | 1170.568          | 1124.295         |               
+| HLT_Ele27_WPTight_Gsf_v4 | 24    | 85   | 56875 | 8578.297          | 8243.992         |               || HLT_Ele27_WPTight_Gsf_v4 | 24    | 85   | 56875 | 8578.297          | 8243.992         |               
+| HLT_Ele27_WPTight_Gsf_v5 | 17    | 34   | 25797 | 4303.758          | 4105.836         |               || HLT_Ele27_WPTight_Gsf_v5 | 17    | 36   | 27940 | 4827.341          | 4597.535         |               
+| HLT_Ele27_WPTight_Gsf_v6 | 38    | 73   | 48010 | 8420.180          | 8081.105         |               || HLT_Ele27_WPTight_Gsf_v6 | 41    | 92   | 54253 | 9994.950          | 9581.599         |               
+| HLT_Ele27_WPTight_Gsf_v7 | 28    | 61   | 37468 | 6296.719          | 6076.177         |               || HLT_Ele27_WPTight_Gsf_v7 | 32    | 86   | 47447 | 8938.448          | 8605.690         |               
++--------------------------+-------+------+-------+-------------------+------------------+               |+--------------------------+-------+------+-------+-------------------+------------------+               
+
+so, are all reduced lumis in GH only?
+
+run dataset=/SingleMuon/Run2016G-03Feb2017-v1/MINIAOD
+results
+279116
+...
+278...
+
+85 records
+
+run dataset=/SingleMuon/Run2016G-03Feb2017-v1/MINIAOD | sort
+280385
+280384
+...
+278820
+
+85 records
+
+das_client --limit 0 --query="run dataset=/SingleMuon/Run2016G-03Feb2017-v1/MINIAOD" | sort
+
+-- same
+
+
+278820 is in first 1/5-1/4 of v6
+280385 -- final of v6
+
+
+reduced lumicert:
+
+| 278273:5169 | 08/05/16 17:37:20 | 36   | HLT_Ele27_WPTight_Gsf_v6 | 7.126          | 5.812         |
+| 278274:5169 | 08/05/16 17:55:42 | 84   | HLT_Ele27_WPTight_Gsf_v6 | 19.178         | 17.874        |
+| 278288:5170 | 08/05/16 21:13:56 | 8    | HLT_Ele27_WPTight_Gsf_v6 | 1.962          | 1.423         |
+| 278289:5170 | 08/05/16 21:18:02 | 51   | HLT_Ele27_WPTight_Gsf_v6 | 11.128         | 9.375         |
+| 278290:5170 | 08/05/16 21:42:34 | 11   | HLT_Ele27_WPTight_Gsf_v6 | 2.592          | 2.401         |
+| 278308:5173 | 08/06/16 13:00:39 | 1740 | HLT_Ele27_WPTight_Gsf_v6 | 327.130        | 311.520       |
+| 278310:5173 | 08/07/16 00:47:36 | 708  | HLT_Ele27_WPTight_Gsf_v6 | 91.365         | 88.449        |
+| 278315:5179 | 08/07/16 10:56:52 | 693  | HLT_Ele27_WPTight_Gsf_v6 | 148.584        | 136.489       |
+| 278345:5181 | 08/08/16 00:13:39 | 746  | HLT_Ele27_WPTight_Gsf_v6 | 162.146        | 149.017       |
+| 278346:5181 | 08/08/16 05:08:15 | 117  | HLT_Ele27_WPTight_Gsf_v6 | 22.089         | 21.027        |
+| 278349:5181 | 08/08/16 06:27:06 | 613  | HLT_Ele27_WPTight_Gsf_v6 | 98.871         | 94.508        |
+| 278366:5181 | 08/08/16 10:36:47 | 453  | HLT_Ele27_WPTight_Gsf_v6 | 61.575         | 59.405        |
+| 278406:5183 | 08/08/16 17:53:55 | 1499 | HLT_Ele27_WPTight_Gsf_v6 | 287.841        | 273.574       |
+| 278509:5187 | 08/09/16 18:29:15 | 1376 | HLT_Ele27_WPTight_Gsf_v6 | 271.371        | 251.730       |
+| 278770:5197 | 08/13/16 07:09:56 | 726  | HLT_Ele27_WPTight_Gsf_v6 | 159.448        | 152.705       |
+| 278803:5198 | 08/13/16 15:52:03 | 215  | HLT_Ele27_WPTight_Gsf_v6 | 50.726         | 46.868        |
+| 278804:5198 | 08/13/16 17:20:06 | 4    | HLT_Ele27_WPTight_Gsf_v6 | 0.905          | 0.742         |
+| 278805:5198 | 08/13/16 17:23:57 | 274  | HLT_Ele27_WPTight_Gsf_v6 | 58.724         | 55.069        |
+| 278808:5198 | 08/13/16 19:25:19 | 1791 | HLT_Ele27_WPTight_Gsf_v6 | 279.557        | 269.144       |
+
+| 278820:5199 | 08/14/16 11:02:48 | 1431 | HLT_Ele27_WPTight_Gsf_v6 | 275.614        | 264.830       |
+
+golden json:
+
+| 278273:5169 | 08/05/16 17:37:20 | 36   | HLT_Ele27_WPTight_Gsf_v6 | 7.126          | 5.812         |
+| 278274:5169 | 08/05/16 17:55:42 | 84   | HLT_Ele27_WPTight_Gsf_v6 | 19.178         | 17.874        |
+| 278288:5170 | 08/05/16 21:11:12 | 15   | HLT_Ele27_WPTight_Gsf_v6 | 3.702          | 2.846         |
+| 278289:5170 | 08/05/16 21:18:02 | 51   | HLT_Ele27_WPTight_Gsf_v6 | 11.128         | 9.375         |
+| 278290:5170 | 08/05/16 21:42:34 | 11   | HLT_Ele27_WPTight_Gsf_v6 | 2.592          | 2.401         |
+| 278308:5173 | 08/06/16 13:00:39 | 1740 | HLT_Ele27_WPTight_Gsf_v6 | 327.130        | 311.520       |
+| 278310:5173 | 08/07/16 00:47:36 | 708  | HLT_Ele27_WPTight_Gsf_v6 | 91.365         | 88.449        |
+| 278315:5179 | 08/07/16 10:56:52 | 693  | HLT_Ele27_WPTight_Gsf_v6 | 148.584        | 136.489       |
+| 278345:5181 | 08/08/16 00:13:39 | 746  | HLT_Ele27_WPTight_Gsf_v6 | 162.146        | 149.017       |
+| 278346:5181 | 08/08/16 05:08:15 | 117  | HLT_Ele27_WPTight_Gsf_v6 | 22.089         | 21.027        |
+| 278349:5181 | 08/08/16 06:27:06 | 613  | HLT_Ele27_WPTight_Gsf_v6 | 98.871         | 94.508        |
+| 278366:5181 | 08/08/16 10:36:47 | 453  | HLT_Ele27_WPTight_Gsf_v6 | 61.575         | 59.405        |
+| 278406:5183 | 08/08/16 17:15:50 | 1597 | HLT_Ele27_WPTight_Gsf_v6 | 311.334        | 295.446       |
+| 278509:5187 | 08/09/16 18:29:15 | 1467 | HLT_Ele27_WPTight_Gsf_v6 | 293.117        | 271.956       |
+| 278769:5197 | 08/13/16 06:38:56 | 30   | HLT_Ele27_WPTight_Gsf_v6 | 7.722          | 7.136         |
+| 278770:5197 | 08/13/16 06:54:00 | 767  | HLT_Ele27_WPTight_Gsf_v6 | 169.739        | 162.629       |
+| 278801:5198 | 08/13/16 14:43:37 | 38   | HLT_Ele27_WPTight_Gsf_v6 | 10.014         | 7.722         |
+| 278802:5198 | 08/13/16 15:01:05 | 17   | HLT_Ele27_WPTight_Gsf_v6 | 3.995          | 1.693         |
+| 278803:5198 | 08/13/16 15:10:53 | 318  | HLT_Ele27_WPTight_Gsf_v6 | 76.633         | 70.852        |
+| 278804:5198 | 08/13/16 17:20:06 | 4    | HLT_Ele27_WPTight_Gsf_v6 | 0.905          | 0.742         |
+| 278805:5198 | 08/13/16 17:23:57 | 274  | HLT_Ele27_WPTight_Gsf_v6 | 58.724         | 55.069        |
+| 278808:5198 | 08/13/16 19:25:19 | 1791 | HLT_Ele27_WPTight_Gsf_v6 | 279.557        | 269.144       |
+
+| 278820:5199 | 08/14/16 11:00:51 | 1517 | HLT_Ele27_WPTight_Gsf_v6 | 296.801        | 285.103       |
+
+the overlapping block:
+
+sum([ 5.812   17.874  1.423   9.375   2.401   311.520 88.449  136.489 149.017 21.027  94.508  59.405  273.574 251.730 152.705 46.868  0.742   55.069  269.144 ])
+sum([ 5.812   17.874  2.846   9.375   2.401   311.520 88.449  136.489 149.017 21.027  94.508  59.405  295.446 271.956 7.136   162.629 7.722   1.693   70.852  0.742   55.069  269.144 ])
+
+1947.1319999999998
+2041.1119999999999
+
+reduced:
+
+sum( [2765.338 941.616  1124.295 8243.992 4105.836 + 1947.1319999999998])
+19128.209
+sum( [8081.105 - 1947.1319999999998 6076.177 ])
+12210.15
+
+
+golden:
+
+sum( [2765.338  941.616   1124.295  8243.992  4597.535  + 2041.1119999999999])
+19713.888
+sum( [9581.599  - 2041.1119999999999 8605.690  ])
+16146.177
+
+now, assuming correct pu ele and golden json pu
+
+pu ele    = (pu B * 19128.209 + pu H * 12210.15)  / (19128.209 + 12210.15)
+pu golden = (pu B * 19713.888 + pu H * 16146.177) / (19713.888 + 16146.177)
+
+ele_B = 19128.209 / (19128.209 + 12210.15)
+ele_H = 12210.15  / (19128.209 + 12210.15)
+gld_B = 19713.888 / (19713.888 + 16146.177)
+gld_H = 16146.177 / (19713.888 + 16146.177)
+
+
+pu ele    = pu B * ele_B + pu H * ele_H
+pu golden = pu B * gld_B + pu H * gld_H
+
+pu ele    / ele_B = pu B + pu H * ele_H / ele_B
+pu golden / gld_B = pu B + pu H * gld_H / gld_B
+
+pu ele    / ele_B - pu golden / gld_B = pu H * (ele_H / ele_B - gld_H / gld_B)
+pu H = (pu ele    / ele_B - pu golden / gld_B) / (ele_H / ele_B - gld_H / gld_B)
+
+
+pu ele    / ele_H = pu B * ele_B / ele_H + pu H
+pu golden / gld_H = pu B * gld_B / gld_H + pu H
+
+pu ele    / ele_H - pu golden / gld_H = pu B * (ele_B / ele_H - gld_B / gld_H)
+pu B = (pu ele    / ele_H - pu golden / gld_H) / (ele_B / ele_H - gld_B / gld_H)
+
+
+HOW TO NORMALIZE THE NEW PU?
+
+save the ratio PU
+ratio_bcdef * weight_pu_bcdef + ratio_gh * weight_pu_gh
+and compare later with golden json pu
+
+
+### Check application in DY mumu
+
+root -l MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1_37.root
+root -l MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1_37_2.root
+
+ttree_out->Draw("event_weight>>h(100,0.6,1.4)",  "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+
+
+c1->SaveAs("v37_test7_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1_37_event_weight_dy_mumu.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1_37_event_weight_dy_mumu.png")
+
+-- definitely different
+   in test7
+   main peak at 0.9 is smaller,
+   the positive values of 1.2 have more events
+
+
+
+## v37 test5 issues, round3, for update, the fixed dilepton and electron SFs
+
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c dy_mumu --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c dy_elel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c dy_mumu --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c dy_elel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c dy_mumu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c dy_elel --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c dy_mumu --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c dy_elel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- same trend in mumu (was exclusive trigger SF applied there?), and worse normalization: not enough MC
+   practically no trend in elel, just at the largest met (blame on recoils or Z pt-mass? is Z pt-mass applied?)
+
+tt elmu
+
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c tt_elmu --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c tt_elmu --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c tt_elmu --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c tt_elmu --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- no difference?
+
+compare to plots/v37_test5_bunch2_mc_tests2/
+
+eog plots/v37_test6_bunch3_mc_1_amcatnlo/*SingleElectron*tt_elmu* &
+eog plots/v37_test5_bunch2_mc_tests2/*SingleElectron*tt_elmu*     &
+
+-- they seem exactly the same
+
+eog plots/v37_test6_bunch3_mc_1_amcatnlo/*SingleMuon*tt_elmu* &
+
+-- also no good (maybe better trends though)
+
+also:
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --systematic TOPPTUp
+
+eog plots/v37_test6_bunch3_mc_1_amcatnlo//distrs,distrs_v37_test6_bunch3_mc_1_amcatnlo_distrs,v37_test5_bunch2,,SingleElectron_Mt_lep_met_c_tt_elmu_*_stack_ratio.png
+
+-- yeap, slight improvement at edges
+   per-bin variations are not fixed
+
+
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root        -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python get_shapes.py --formula "old : now " --y-range 0,0.45 --no-std-path -e --x-title "m_{T} [GeV]" -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:plots/v37_test5_bunch2_mc_tests2//distrs,v37_test5_bunch2_mc_4_amcatnlo_HISTOSEL_Mt_lep_met_c_tt_elmu_NOMINAL.root:tt_elmu/sums_NOMINAL/mc_sum1_NOMINAL now:plots/v37_test6_bunch3_mc_1_amcatnlo//distrs,distrs_v37_test6_bunch3_mc_1_amcatnlo_HISTOSEL_Mt_lep_met_c_tt_elmu_NOMINAL.root:tt_elmu/sums_NOMINAL/mc_sum1_NOMINAL
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula.png plots/v37_test6_bunch3_mc_1_amcatnlo/compare_mc_sum_in_old_v37_test5_bunch2_mc_tests2_new_v37_test6_bunch3_mc_1_amcatnlo.png
+
+python get_shapes.py --formula "old / now " --y-range 0,2.0 --no-std-path -e --x-title "m_{T} [GeV]" -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:plots/v37_test5_bunch2_mc_tests2//distrs,v37_test5_bunch2_mc_4_amcatnlo_HISTOSEL_Mt_lep_met_c_tt_elmu_NOMINAL.root:tt_elmu/sums_NOMINAL/mc_sum1_NOMINAL now:plots/v37_test6_bunch3_mc_1_amcatnlo//distrs,distrs_v37_test6_bunch3_mc_1_amcatnlo_HISTOSEL_Mt_lep_met_c_tt_elmu_NOMINAL.root:tt_elmu/sums_NOMINAL/mc_sum1_NOMINAL
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula.png plots/v37_test6_bunch3_mc_1_amcatnlo/compare_mc_sum_in_old_v37_test5_bunch2_mc_tests2_new_v37_test6_bunch3_mc_1_amcatnlo_ratio.png
+
+-- identical, why?
+
+is event weight applied? -- yes, for NOMINAL it is 
+systs2_weights_nominal = {
+'NOMINAL': lambda ev: ev.event_weight,
+}
+
+0) D submit preliminary both DY controls for Yuta (no data-driven QCD): mT < 40 and the control with 3 jets (event_jets_n_jets) as in signal
+   stack plots
+1) D check the application procedure: add a systematic INITIAL with no weights (run on 1 distr in 1 mumu DY channel in NOMINAL)
+   -- certainly they are different
+      is it due to lep weight or no?
+2) D reconstruct event_weight from the separate weights
+3) D compare in test5 and test6:
+            event_weight_LEP[0]     = weight_lep if weight_lep > 0.0001 else 0.
+4) R and compare nominal weight 'NOMINAL': lambda ev: ev.event_weight,
+
+
+root -l lstore_outdirs/v37/test5/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_1.root
+root -l lstore_outdirs/v37/test6/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_1.root
+
+root -l lstore_outdirs/v37/test5/MC2016_Summer16_DYJetsToLL_50toInf_madgraph/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1.root 
+root -l lstore_outdirs/v37/test6/MC2016_Summer16_DYJetsToLL_50toInf_madgraph/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1.root 
+
+ttree_out->Draw("event_weight_LEP>>h(100,0.6,1.1)")
+ttree_out->Draw("event_weight_LEP>>h(100,0.6,1.1)", "selection_stage_em > 200 && selection_stage_em < 210")
+ttree_out->Draw("event_leptons[0].pt()>>h(100,0,150)", "selection_stage_em > 200 && selection_stage_em < 210")
+
+c1->SaveAs("v37_test5_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEP.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEP.png")
+
+c1->SaveAs("v37_test5_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEP_tt_elmu.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEP_tt_elmu.png")
+
+c1->SaveAs("v37_test5_MC2016_Summer16_TTJets_powheg_1_event_weight_LEP_tt_elmu.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_TTJets_powheg_1_event_weight_LEP_tt_elmu.png")
+
+eog v37_test5_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEP.png v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEP.png
+eog v37_test5_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEP_tt_elmu.png v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEP_tt_elmu.png
+eog v37_test5_MC2016_Summer16_TTJets_powheg_1_event_weight_LEP_tt_elmu.png v37_test6_MC2016_Summer16_TTJets_powheg_1_event_weight_LEP_tt_elmu.png
+
+--completely different
+
+confirm the files are the same
+
+c1->SaveAs("v37_test5_MC2016_Summer16_TTJets_powheg_1_event_leptons_pt_tt_elmu.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_TTJets_powheg_1_event_leptons_pt_tt_elmu.png")
+
+-- identical
+
+the nominal weight:
+
+ttree_out->Draw("event_weight>>h(100,0.2,1.4)", "selection_stage_em > 200 && selection_stage_em < 210")
+
+c1->SaveAs("v37_test5_MC2016_Summer16_TTJets_powheg_1_event_weight_tt_elmu.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_TTJets_powheg_1_event_weight_tt_elmu.png")
+
+-- slightly different, even the mean is different: 0.9357 test6 - 0.9419 test5
+So, stage2 did produce different lep weights and probably the difference in the event weight is due to them.
+DONE: reconstruct the event weight - then compare the weight without lep between test5 and test6.
+      indeed, only leptonic weight is different between test5 and test6
+But get_shapes of MC sums shows the same distributions in 5 and 6?
+TODO: check get_shape on lep_eta for dy_elel (must be noticeable)
+TODO: check 1 file completely, from stage2 to plots, the distr and the weight applied, with and without lep.
+
+Does sumup_loop do all of it?
+Can weights cancel out in dilepton case (one lep is low pT another one is high)?
+-- the median has checnged, it must be noticeable
+
+
+### confirm the issue in tt_elmu lep weight
+
+DONE: in tt_elmu lep weight is different between test5 and test6 but final shapes are the same?
+      no, the final shapes are sub-percent different,
+      but the effect seems to small?
+
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c tt_elmu --data-nick data_other -d lep_pt   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root        -o plots/v37_test5_bunch2_mc_tests2/      -c tt_elmu --data-nick data_other -d lep_pt   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c tt_elmu --data-nick data_other -d lep_eta   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root        -o plots/v37_test5_bunch2_mc_tests2/      -c tt_elmu --data-nick data_other -d lep_eta   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python get_shapes.py --formula "old : now " --y-range 0,0.2 --no-std-path -e --x-title "m_{T} [GeV]" -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:plots/v37_test5_bunch2_mc_tests2//distrs,v37_test5_bunch2_mc_4_amcatnlo_HISTOSEL_lep_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_lep_pt now:plots/v37_test6_bunch3_mc_1_amcatnlo//distrs,distrs_v37_test6_bunch3_mc_1_amcatnlo_HISTOSEL_lep_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_lep_pt
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula.png ./compare_v37_test5_test6_tt_elmu_tt_other_NOMINAL_lep_pt_now,old_formula.png
+
+python get_shapes.py --formula "old / now " --y-range 0,2.0 --no-std-path -e --x-title "m_{T} [GeV]" -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:plots/v37_test5_bunch2_mc_tests2//distrs,v37_test5_bunch2_mc_4_amcatnlo_HISTOSEL_lep_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_lep_pt now:plots/v37_test6_bunch3_mc_1_amcatnlo//distrs,distrs_v37_test6_bunch3_mc_1_amcatnlo_HISTOSEL_lep_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_lep_pt
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula.png ./compare_v37_test5_test6_tt_elmu_tt_other_NOMINAL_lep_pt_now,old_formula_ratio.png
+
+python get_shapes.py --formula "old : now " --y-range 0,0.1 --no-std-path -e --x-title "m_{T} [GeV]" -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:plots/v37_test5_bunch2_mc_tests2//distrs,v37_test5_bunch2_mc_4_amcatnlo_HISTOSEL_lep_eta_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_lep_eta now:plots/v37_test6_bunch3_mc_1_amcatnlo//distrs,distrs_v37_test6_bunch3_mc_1_amcatnlo_HISTOSEL_lep_eta_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_lep_eta
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula.png ./compare_v37_test5_test6_tt_elmu_tt_other_NOMINAL_lep_eta_now,old_formula.png
+
+python get_shapes.py --formula "old / now : now / now " --y-range 0.95,1.05 --no-std-path -e --x-title "m_{T} [GeV]" -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:plots/v37_test5_bunch2_mc_tests2//distrs,v37_test5_bunch2_mc_4_amcatnlo_HISTOSEL_lep_eta_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_lep_eta now:plots/v37_test6_bunch3_mc_1_amcatnlo//distrs,distrs_v37_test6_bunch3_mc_1_amcatnlo_HISTOSEL_lep_eta_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_lep_eta
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula.png ./compare_v37_test5_test6_tt_elmu_tt_other_NOMINAL_lep_eta_now,old_formula_ratio.png
+
+-- barely sub-percent difference, mostly at eta > 2, not at negative eta
+
+So, apprently, the final shapes are different by a very small factor, mostly at the lep eta>2 edge...
+
+TODO: the overal weight difference ~ mean of lep weight?
+TODO: what was the main correction?
+
+
+
+
+### reconstruct event weight
+
+ttree_out->Draw("event_weight:event_weight_bSF*event_weight_init*event_weight_th*event_weight_PU", "selection_stage_em > 200 && selection_stage_em < 210")
+
+-- perfect correlation
+
+ttree_out->Draw("event_weight_LEP:event_weight_init", "selection_stage_em > 200 && selection_stage_em < 210")
+
+-- perfect correlation
+
+compare non-lep weight in test5 and test6:
+
+ttree_out->Draw("event_weight_bSF*event_weight_th*event_weight_PU>>h(100,0.6,1.4)", "selection_stage_em > 200 && selection_stage_em < 210")
+
+c1->SaveAs("v37_test5_MC2016_Summer16_TTJets_powheg_1_event_weight_NON_LEP_tt_elmu.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_TTJets_powheg_1_event_weight_NON_LEP_tt_elmu.png")
+
+-- identical
+
+
+
+
+### check the differences in lep weight, DY dileps
+
+what changed
+
+in mumu:
+    ID is product of both muons (must reduce the MC yield)
+    TRG is exclusive formula (must increase the MC yield)
+
+in elel:
+    the SF calculation is corrected (asymetry in eta!)
+    same as in mumu
+    ID is product (less MC)
+    TRG is exclusive formula (more MC)
+
+
+for DY elel
+
+root -l lstore_outdirs/v37/test5/MC2016_Summer16_DYJetsToLL_50toInf_madgraph/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1.root 
+root -l lstore_outdirs/v37/test6/MC2016_Summer16_DYJetsToLL_50toInf_madgraph/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1.root 
+
+ttree_out->Draw("event_weight_bSF*event_weight_th*event_weight_PU>>h(100,0.6,1.4)", "(selection_stage_dy_mumu == 112 || selection_stage_dy_mumu == 113 || selection_stage_dy_mumu == 115)")
+
+c1->SaveAs("v37_test5_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_NON_LEP_dy_elel.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_NON_LEP_dy_elel.png")
+
+-- identical
+
+ttree_out->Draw("event_weight_LEP>>h(100,0.6,1.4)", "(selection_stage_dy_mumu == 112 || selection_stage_dy_mumu == 113 || selection_stage_dy_mumu == 115)")
+
+c1->SaveAs("v37_test5_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEP_dy_elel.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEP_dy_elel.png")
+
+-- completely different, the distr is a sharp peak, at 0.94 in test5 and 0.9 in test6
+
+compare in mumu -- shows the effect of the exclusive trigger SF
+
+ttree_out->Draw("event_weight_bSF*event_weight_th*event_weight_PU>>h(100,0.6,1.4)", "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+
+c1->SaveAs("v37_test5_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_NON_LEP_dy_mumu.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_NON_LEP_dy_mumu.png")
+
+-- identical, absolutely no difference
+
+#### PROBLEM: exclusive trigger SF (test6) shows no difference with old SF (test5) in DY mumu?
+
+also, trigger SF must be applied only to the HLT matched leptons
+-- compare the mu TRG, via the muTRGUp
+
+ttree_out->Draw("event_weight_LEPmuTRGUp*event_weight_LEP>>h(100,0.6,1.1)", "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+
+c1->SaveAs("v37_test5_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEPmuTRGUp_dy_mumu.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEPmuTRGUp_dy_mumu.png")
+
+-- completely different, mean goes from (test5) 0.922 to (test6) 0.8761
+
+PROBLEM: why trigger SF becomes smaller after exclusive formula?
+         -- confirm properly, with nominal MU and EL TRG weights
+in test6 with TRG SF and mu0TRG SF:
+
+root -l temp//MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1_37.root
+
+ttree_out->Draw("event_weight_LEPmuTRG/event_weight_LEPmu0TRG>>h(100,0.6,1.1)", "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+
+ttree_out->Draw("event_weight_LEPmuTRG>>h(100,0.6,1.1)",  "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+ttree_out->Draw("event_weight_LEPmu0TRG>>h(100,0.6,1.1)", "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+
+-- must be larger 1 (always when mu0TRG < 1.)
+   indeed it is, muTRG is very = 1
+   the mu0TRG is very binned...
+   and both are very close to 1, no 0.92
+   CHECK TRG Up
+   COMPARE to a test6 file?
+
+ttree_out->Draw("event_weight_LEPmuTRGctrl>>h(100,0.6,1.1)", "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+0.8759
+ttree_out->Draw("event_weight_LEPmu0TRGUp>>h(100,0.6,1.1)",  "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+0.9219
+
+-- and does look similar to the previous tests (ctrl = Up * weight_LEP, as expected)
+why Up is smooth, nominal is close to 1
+
+beacause Up includes the *ID SF!!!!
+
+ttree_out->Draw("event_weight_LEPmuID>>h(100,0.6,1.1)",  "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+ttree_out->Draw("event_weight_LEPmu0ID>>h(100,0.6,1.1)", "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+
+-- mu0 ID == 1 -- it is off!
+   mu  ID distr practically = trgUp distr
+
+-- explanation why TRG Up is smaller in test6 -- it includes ID, ID is smaller because it's a product of ID SFs
+
+so, mu TRG is pointless because it is so close to 1.
+
+>>> 1. - (1. - 0.94)*(1 - 0.94)
+0.9964
+
+
+check the mu ID
+
+ttree_out->Draw("event_weight_LEPmuIDUp*event_weight_LEP>>h(100,0.6,1.1)", "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+
+c1->SaveAs("v37_test5_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEPmuIDUp_dy_mumu.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEPmuIDUp_dy_mumu.png")
+
+-- different, from (test5) 0.9272 to (test6) 0.8895
+   the smaller value is reasonable, since it's an AND of SFs
+
+
+so, after all the confusion with TRGUp, which includes ID which changed too, TRG must become close to 1.
+what was it before? it was calculated for leading lepton -- also close to 1.?
+
+
+ttree_out->Draw("event_weight_LEPmu0TRG>>h(100,0.6,1.1)", "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+mean at 0.9847
+ttree_out->Draw("event_weight_LEPmuTRG>>h(100,0.6,1.1)",  "(selection_stage_dy_mumu == 102 || selection_stage_dy_mumu == 103 || selection_stage_dy_mumu == 105)")
+mean at 0.9997
+
++1.5%?
+
+So, basically, I was hoping that the problem in DY is easier to solve and it also fixes tt_elmu.
+But it seems, as before,
+1) everything is applied correctly in DY,
+2) the issues are to be blamed on recoils or Z mass-pt thing,
+3) the issues in DY are not that big,
+   only met shows some trend, lep_pt and mT are mostly flat,
+   also mumu normalization is off -- not enough MC (not sure why).
+
+
+
+#### check the final shapes:
+
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c dy_mumu --data-nick data_other -d lep_pt   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root        -o plots/v37_test5_bunch2_mc_tests2/      -c dy_mumu --data-nick data_other -d lep_pt   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root -o plots/v37_test6_bunch3_mc_1_amcatnlo/  -c dy_mumu --data-nick data_other -d lep_eta   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root        -o plots/v37_test5_bunch2_mc_tests2/      -c dy_mumu --data-nick data_other -d lep_eta   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python get_shapes.py --formula "old : now " --y-range 0,0.5 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:plots/v37_test5_bunch2_mc_tests2//distrs,v37_test5_bunch2_mc_4_amcatnlo_HISTOSEL_lep_pt_dy_mumu_NOMINAL.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_lep_pt now:plots/v37_test6_bunch3_mc_1_amcatnlo//distrs,distrs_v37_test6_bunch3_mc_1_amcatnlo_HISTOSEL_lep_pt_dy_mumu_NOMINAL.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_lep_pt
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula.png ./compare_v37_test5_test6_dy_mumu_dy_other_NOMINAL_lep_pt_now,old_formula.png
+
+python get_shapes.py --formula "old / now : now / now " --y-range 0.9,1.1 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:plots/v37_test5_bunch2_mc_tests2//distrs,v37_test5_bunch2_mc_4_amcatnlo_HISTOSEL_lep_pt_dy_mumu_NOMINAL.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_lep_pt now:plots/v37_test6_bunch3_mc_1_amcatnlo//distrs,distrs_v37_test6_bunch3_mc_1_amcatnlo_HISTOSEL_lep_pt_dy_mumu_NOMINAL.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_lep_pt
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula.png ./compare_v37_test5_test6_dy_mumu_dy_other_NOMINAL_lep_pt_now,old_formula_ratio.png
+
+-- weird step in the shape, about 0.5% magnitude, at 50-60GeV
+
+python get_shapes.py --no-norm --formula "old : now " --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:plots/v37_test5_bunch2_mc_tests2//distrs,v37_test5_bunch2_mc_4_amcatnlo_HISTOSEL_lep_pt_dy_mumu_NOMINAL.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_lep_pt now:plots/v37_test6_bunch3_mc_1_amcatnlo//distrs,distrs_v37_test6_bunch3_mc_1_amcatnlo_HISTOSEL_lep_pt_dy_mumu_NOMINAL.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_lep_pt
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula_nonorm.png ./compare_v37_test5_test6_dy_mumu_dy_other_NOMINAL_lep_pt_now,old_formula_no_norm.png
+
+-- noticeable normalization difference
+
+python get_shapes.py --formula "old : now " --y-range 0,0.1 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:plots/v37_test5_bunch2_mc_tests2//distrs,v37_test5_bunch2_mc_4_amcatnlo_HISTOSEL_lep_eta_dy_mumu_NOMINAL.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_lep_eta now:plots/v37_test6_bunch3_mc_1_amcatnlo//distrs,distrs_v37_test6_bunch3_mc_1_amcatnlo_HISTOSEL_lep_eta_dy_mumu_NOMINAL.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_lep_eta
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula.png ./compare_v37_test5_test6_dy_mumu_dy_other_NOMINAL_lep_eta_now,old_formula.png
+
+python get_shapes.py --formula "now / old : old / old " --y-range 0.9,1.1 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:plots/v37_test5_bunch2_mc_tests2//distrs,v37_test5_bunch2_mc_4_amcatnlo_HISTOSEL_lep_eta_dy_mumu_NOMINAL.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_lep_eta now:plots/v37_test6_bunch3_mc_1_amcatnlo//distrs,distrs_v37_test6_bunch3_mc_1_amcatnlo_HISTOSEL_lep_eta_dy_mumu_NOMINAL.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_lep_eta
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula.png ./compare_v37_test5_test6_dy_mumu_dy_other_NOMINAL_lep_eta_now,old_formula_ratio.png
+
+-- steps at the transition to endcaps,
+   now there are more events in barel and less in endcaps (with some werid step at |eta| = 2)
+
+
+
+
+DONE: what changed in elel, el ID or TRG? -- both are signicantly different
+      -- no NOMINAL LEP weights
+DONE: implement separate el and mu NOMINAL LEP weights!
+
+compare by Up Down LEPs:
+
+ttree_out->Draw("event_weight_LEPelIDUp*event_weight_LEP>>h(100,0.6,1.4)", "(selection_stage_dy_mumu == 112 || selection_stage_dy_mumu == 113 || selection_stage_dy_mumu == 115)")
+
+ttree_out->Draw("event_weight_LEPelTRGUp*event_weight_LEP>>h(100,0.6,1.4)", "(selection_stage_dy_mumu == 112 || selection_stage_dy_mumu == 113 || selection_stage_dy_mumu == 115)")
+
+c1->SaveAs("v37_test5_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEPelIDUp_dy_elel.png")
+c1->SaveAs("v37_test5_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEPelTRGUp_dy_elel.png")
+
+c1->SaveAs("v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEPelIDUp_dy_elel.png")
+c1->SaveAs("v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1_event_weight_LEPelTRGUp_dy_elel.png")
+
+-- both are significantly different, TRG a bit more so
+
+
 
 
 ## check the DY tautau in v37 test5
@@ -681,6 +1257,7 @@ check where it comes from: lep_pt, lep_eta, met_pt or phi
 python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
 python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
 python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
 
 -- slight trend in pT, data>MC at low values
    some deviations in eta (center is close, sides vary, may be due to pT)

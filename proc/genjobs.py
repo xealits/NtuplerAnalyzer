@@ -401,7 +401,7 @@ if args.acceptance_study:
 
 elif args.submit == 'online':
     job_template = "python channel_distrs_full_loop.py " + add_options + " -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ {chans} -i {job_file}   || true"
-elif args.submit == 'queue':
+elif 'queue' in args.submit:
     job_template = "python channel_distrs_full_loop.py " + add_options + " -l logss " + args.processing_dir + "/{vntupler}/{vproc}/{dtag}/ {chans} -i {job_file}"
 else:
     raise ValueError('unknown type of jobs submition "%s"' % args.submit)
@@ -488,10 +488,13 @@ if not isdir(proc_queues_dir):
     makedirs(proc_queues_dir)
 
 # if the jobs is queue make just 1 directory "queue" with all the jobs to submit
-if args.submit == 'queue':
+if 'queue' in args.submit:
     # TODO append the shell template to the job
     # operation: in `proc/` run `source queue_dir/v40/u4test/jobs_dir/job_1`
-    job_template = """#!/bin/sh
+    if 'queue_online' == args.submit:
+        job_template = """{{job}}\n"""
+    else:
+        job_template = """#!/bin/sh
 pwd
 export X509_USER_PROXY={X509_USER_PROXY}
 export SCRAM_ARCH={SCRAM_ARCH}
@@ -525,7 +528,7 @@ cd UserCode/NtuplerAnalyzer/proc/
     # write all the job files
     job_filenames = []
     for i, a_job in enumerate(job_commands):
-        job_name = '/job_%d' % i
+        job_name = '/job_%05d' % i
         job_filename = jobs_dir + job_name
         job_filenames.append(job_filename)
         with open(job_filename, 'w') as f:

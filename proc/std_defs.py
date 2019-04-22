@@ -69,11 +69,11 @@ systs_weights_nominal = {
 }
 
 systs_weights_common = {
-'PUUp'   : "event_weight*event_weight_PUUp/event_weight_PU"    ,
-'PUDown' : "event_weight*event_weight_PUDown/event_weight_PU"    ,
 'bSFUp'  : "event_weight*event_weight_bSFUp/event_weight_bSF"  ,
 'bSFDown': "event_weight*event_weight_bSFDown/event_weight_bSF",
 
+'PUUp'        : "event_weight*event_weight_PUUp"    ,
+'PUDown'      : "event_weight*event_weight_PUDown"  ,
 'LEPelIDUp'   : "event_weight*event_weight_LEPelIDUp"   ,
 'LEPelIDDown' : "event_weight*event_weight_LEPelIDDown" ,
 'LEPelTRGUp'  : "event_weight*event_weight_LEPelTRGUp"  ,
@@ -312,6 +312,10 @@ systs_weights_all.update(systs_weights_tt_updowns)
 
 # systs2 with event functions
 
+systs2_weights_initial = {
+'INITIAL': lambda ev: 1.,
+}
+
 systs2_weights_nominal = {
 'NOMINAL': lambda ev: ev.event_weight,
 }
@@ -534,6 +538,7 @@ systs2_weights_all = {}
 for s_d in named_systs2_weights_all.values():
     systs2_weights_all.update(s_d)
 systs2_weights_all.update(systs_weights_tt_updowns)
+systs2_weights_all.update(systs2_weights_initial)
 
 
 # ----- event-function weights
@@ -677,6 +682,10 @@ distr_defs = {
     'lep_pt_f':      ({'NOMINAL': lambda ev: ev.event_leptons[0].pt()},  ('histo-range',  [20,0,150])),
     'lep_pt':        ({'NOMINAL': lambda ev: ev.event_leptons[0].pt()},  ('histo-range',  [40,0,200])),
     'lep_eta':       ({'NOMINAL': lambda ev: ev.event_leptons[0].eta()}, ('histo-range',  [26,-2.6,2.6])),
+    'elmu_el_pt':    ({'NOMINAL': lambda ev: ev.event_leptons[0].pt()  if abs(ev.event_leptons_ids[0]) == 11 else (ev.event_leptons[1].pt()  if len(ev.event_leptons_ids)>1 else -111.)},  ('histo-range',  [40,0,200])),
+    'elmu_el_eta':   ({'NOMINAL': lambda ev: ev.event_leptons[0].eta() if abs(ev.event_leptons_ids[0]) == 11 else (ev.event_leptons[1].eta() if len(ev.event_leptons_ids)>1 else -111.)}, ('histo-range',  [26,-2.6,2.6])),
+    'elmu_mu_pt':    ({'NOMINAL': lambda ev: ev.event_leptons[0].pt()  if abs(ev.event_leptons_ids[0]) == 13 else (ev.event_leptons[1].pt()  if len(ev.event_leptons_ids)>1 else -111.)},  ('histo-range',  [40,0,200])),
+    'elmu_mu_eta':   ({'NOMINAL': lambda ev: ev.event_leptons[0].eta() if abs(ev.event_leptons_ids[0]) == 13 else (ev.event_leptons[1].eta() if len(ev.event_leptons_ids)>1 else -111.)}, ('histo-range',  [26,-2.6,2.6])),
     'tau_sv_sign':   ({'NOMINAL': lambda ev: ev.event_taus_sv_sign[0] if len(ev.event_taus_sv_sign) > 0 else -111.},  ('histo-range',  [42,-1,20])),
     'tau_pt':        ({'NOMINAL': lambda ev: ev.event_taus[0].pt()    if len(ev.event_taus) > 0   else -111.},    ('histo-range',  [20,0,100])),
     'tau_eta':       ({'NOMINAL': lambda ev: ev.event_taus[0].eta()   if len(ev.event_taus) > 0   else -111.},    ('histo-range',  [26,-2.6,2.6])),
@@ -809,6 +818,9 @@ std_channels_ev_loop = {
 # TODO: made the met_lep_mt variation with sys objects
 'dy_mutau': (lambda sel_stage, ev: ((sel_stage== 102 or sel_stage== 103) and ev.event_met_lep_mt < 40.), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
 'dy_eltau': (lambda sel_stage, ev: ((sel_stage== 112 or sel_stage== 113) and ev.event_met_lep_mt < 40.), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
+'dy_mutau_3j': (lambda sel_stage, ev: ((sel_stage== 102 or sel_stage== 103) and ev.event_met_lep_mt < 40. and ev.event_jets_n_jets > 2), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
+'dy_eltau_3j': (lambda sel_stage, ev: ((sel_stage== 112 or sel_stage== 113) and ev.event_met_lep_mt < 40. and ev.event_jets_n_jets > 2), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
+
 'dy_mumu':  (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103 or sel_stage== 105), {'NOMINAL': lambda ev: ev.selection_stage_dy_mumu}),
 'dy_elel':  (lambda sel_stage, ev: (sel_stage== 112 or sel_stage== 113 or sel_stage== 115), {'NOMINAL': lambda ev: ev.selection_stage_dy_mumu}),
 
@@ -867,7 +879,7 @@ presel_sys = ['NOMINAL', 'TOPPTDown', 'TOPPTUp', 'PUUp', 'PUDown']
 
 channels_distrs = {
 'tt_alliso_presel'    : (['tt_alliso_presel_el', 'tt_alliso_presel_el_ss', 'tt_alliso_presel_mu', 'tt_alliso_presel_mu_ss', ], sorted(distrs_lep.union(distrs_relIso)), main_sys),
-'tt_dileptons'    : (['tt_elmu'], sorted(distrs_leptonic.union({'phi_met_lep'})), main_sys + ['TOPPTUp', 'TOPPTDown']),
+'tt_dileptons'    : (['tt_elmu'], sorted(distrs_leptonic.union({'phi_met_lep'}).unoin({'elmu_el_pt', 'elmu_el_eta', 'elmu_mu_pt', 'elmu_mu_eta'})), main_sys + ['TOPPTUp', 'TOPPTDown']),
 'tt_leptauSV'     : (['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), ['nom']),
 
 'fit_tt_leptau'       : (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'],       sorted(distrs_mt), full_sys),
@@ -901,7 +913,7 @@ channels_distrs = {
 'tt_presel_lj_el' : (['el_presel',    'el_presel_lj',    'el_presel_ljout',], sorted(distrs_on_jets.union(distrs_lep)), presel_sys),
 
 'dy_dileptons'    : (['dy_mumu',  'dy_elel'],   sorted(distrs_dy     ), main_sys),
-'dy_leptau'       : (['dy_mutau', 'dy_eltau'],  sorted(distrs_tauonic_std.union(distrs_leptonic).union(distrs_on_jets).union(distrs_mt_calc)), main_sys),
+'dy_leptau'       : (['dy_mutau', 'dy_eltau', 'dy_mutau_3j', 'dy_eltau_3j'],  sorted(distrs_tauonic_std.union(distrs_leptonic).union(distrs_on_jets).union(distrs_mt_calc)), main_sys),
 'wjets'           : (['wjets_mu', 'wjets_el'],  sorted(distrs_wjets  ), main_sys),
 'wjets_ss'        : (['wjets_mu_ss', 'wjets_el_ss'],  sorted(distrs_wjets  ), main_sys),
 
