@@ -690,28 +690,58 @@ setenv QCD_FACTOR "--qcd-factor 3.0"
 setenv QCD_FACTOR "--qcd-factor 0.0"
 setenv QCD_FACTOR "--qcd-factor 0.0 --skip-QCD"
 
-python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR --title-x "lepton p_{T} [GeV]"
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR --title-x "lepton p_{T} [GeV]" --rebin 5 --infinite-bin-errors 5.
 python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
 
 python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
 python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
 
-python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR --rebin 5 --infinite-bin-errors 5. --ratio-range 1.
 python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d nbjets --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
 python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d nrjets --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
 
 with 3 jets
 
-python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR --title-x "lepton p_{T} [GeV]"
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR --title-x "lepton p_{T} [GeV]" --rebin 5 --infinite-bin-errors 5.
 python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
 
 python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
 python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
 
-python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR --rebin 5 --infinite-bin-errors 5. --ratio-range 1.
 python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d nbjets --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
 python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d nrjets --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
 
+
+dy_eltau
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR --title-x "lepton p_{T} [GeV]"
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau --data-nick data_other -d met_c        --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau --data-nick data_other -d nbjets     --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau --data-nick data_other -d nrjets     --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau_3j --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR --title-x "lepton p_{T} [GeV]"
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau_3j --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau_3j --data-nick data_other -d met_c        --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau_3j --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau_3j --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau_3j --data-nick data_other -d nbjets     --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau_3j --data-nick data_other -d nrjets     --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+
+-- similar but worse than dy_mutau? (due to less stats?)
+   tau 30 GeV cuts a lot of events!
+
+rebin:
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR    --ratio-range 1. --rebin 5 --infinite-bin-errors 5.
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau_3j --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR --ratio-range 1. --rebin 5 --infinite-bin-errors 5.
 
 
 
