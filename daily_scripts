@@ -51,7 +51,6 @@ new ele on golden json and with HLT Ele prescale ON
 
 reduced and golden json:
 
-#Summary:                                                                                                |#Summary:                                                                                                
 +--------------------------+-------+------+-------+-------------------+------------------+               |+--------------------------+-------+------+-------+-------------------+------------------+               
 | hltpath                  | nfill | nrun | ncms  | totdelivered(/pb) | totrecorded(/pb) |               || hltpath                  | nfill | nrun | ncms  | totdelivered(/pb) | totrecorded(/pb) |               
 +--------------------------+-------+------+-------+-------------------+------------------+               |+--------------------------+-------+------+-------+-------------------+------------------+               
@@ -216,6 +215,74 @@ c1->SaveAs("v37_test6_MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1_37_eve
    main peak at 0.9 is smaller,
    the positive values of 1.2 have more events
 
+distrs/v37_test7_bunchDILEP3/all/MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root
+
+python get_shapes.py --formula "now / old" --y-range 0,2.0 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_met_c now:distrs/v37_test7_bunchDILEP3/all/MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_met_c
+
+mv compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula.png compare_v37_test6_bunch3_test7_bunchDILEP3_dy_mumu_met_c.png
+
+
+
+try hybrid
+
+hadd v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root v37_test6_bunch3/dy_hybrid/MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root v37_test6_bunch3/MC2016_Summer16_*root v37_test6_bunch3/wjets_amcatnlo/MC2016_Summer16_WJets_amcatnlo.root
+
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3/  -c dy_mumu --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3/  -c dy_elel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- now mumu trend is slightly in oppostie direction (incorrect PU BCDEF and GH?)
+   elel is slightly wrongly normalized (PU re-normalization?)
+
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3/  -c dy_mumu --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3/  -c dy_elel --data-nick data_other -d lep_pt --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3/  -c dy_mumu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3/  -c dy_elel --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- elel has too much MC in endcaps
+   mumu   not enough MC in barrel? (or too much in endcaps and normalization is wrong)
+
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3/  -c dy_mumu --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3/  -c dy_elel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- elel kind of ok, bad at large mT
+   mumu lack of Data at 100-150 (like in W+jets selection)
+
+is elel the same as before or something broke?
+
+
+
+### Check application in TT tt_elmu
+
+distrs/v37_test7_bunchDILEP3/all/MC2016_Summer16_TTJets_powheg.root
+
+python get_shapes.py --formula "now / old" --y-range 0,2.0 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj old:distrs/distrs_v37_test6_bunch3_mc_1_amcatnlo.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_met_c now:distrs/v37_test7_bunchDILEP3/all/MC2016_Summer16_TTJets_powheg.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_met_c
+
+-- slight correction
+
+mv compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_now,old_formula.png compare_v37_test6_bunch3_test7_bunchDILEP3_tt_elmu_met_c.png
+
+hadd v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root v37_test6_bunch3/dy_hybrid/MC2016_Summer16_DYJetsToLL_50toInf_madgraph.root v37_test6_bunch3/MC2016_Summer16_*root v37_test6_bunch3/wjets_amcatnlo/MC2016_Summer16_WJets_amcatnlo.root v37_test6_bunch3/tt_hybrid/MC2016_Summer16_TTJets_powheg.root
+
+
+comparing with distrs/v37_test5_bunch2//SingleElectron.root
+-- horrible normalization
+INFO:root:197779.0
+INFO:root:mc sum     =   165290.055221   165290.055221
+
+and strange trends
+
+-- same crap in SingleMuon
+
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
 
 
 ## v37 test5 issues, round3, for update, the fixed dilepton and electron SFs
@@ -616,6 +683,35 @@ python stack_plot.py distrs/v37_test5_bunch4_mc_1_amcatnlo.root distrs/v37_test5
 -- the nbjets is only 1 bin (0 bjets), there data > mc only by ~7%, within stats of MC:
 INFO:root:617771.0
 INFO:root:mc sum     =   599573.939341   599573.939341
+
+### the test5 bunch5 with mT < 40 and selection with 3 jets
+
+setenv QCD_FACTOR "--qcd-factor 3.0"
+setenv QCD_FACTOR "--qcd-factor 0.0"
+setenv QCD_FACTOR "--qcd-factor 0.0 --skip-QCD"
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR --title-x "lepton p_{T} [GeV]"
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d nbjets --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau --data-nick data_other -d nrjets --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+
+with 3 jets
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR --title-x "lepton p_{T} [GeV]"
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d nbjets --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleMuon.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_mutau_3j --data-nick data_other -d nrjets --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR
+
 
 
 
