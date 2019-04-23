@@ -821,6 +821,11 @@ std_channels_ev_loop = {
 'dy_mutau_3j': (lambda sel_stage, ev: ((sel_stage== 102 or sel_stage== 103) and ev.event_met_lep_mt < 40. and ev.event_jets_n_jets > 2), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
 'dy_eltau_3j': (lambda sel_stage, ev: ((sel_stage== 112 or sel_stage== 113) and ev.event_met_lep_mt < 40. and ev.event_jets_n_jets > 2), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
 
+'dy_mutau_ss':    (lambda sel_stage, ev: ((sel_stage== 202 or sel_stage== 203) and ev.event_met_lep_mt < 40.), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
+'dy_eltau_ss':    (lambda sel_stage, ev: ((sel_stage== 212 or sel_stage== 213) and ev.event_met_lep_mt < 40.), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
+'dy_mutau_3j_ss': (lambda sel_stage, ev: ((sel_stage== 202 or sel_stage== 203) and ev.event_met_lep_mt < 40. and ev.event_jets_n_jets > 2), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
+'dy_eltau_3j_ss': (lambda sel_stage, ev: ((sel_stage== 212 or sel_stage== 213) and ev.event_met_lep_mt < 40. and ev.event_jets_n_jets > 2), {'NOMINAL': lambda ev: ev.selection_stage_dy}),
+
 'dy_mumu':  (lambda sel_stage, ev: (sel_stage== 102 or sel_stage== 103 or sel_stage== 105), {'NOMINAL': lambda ev: ev.selection_stage_dy_mumu}),
 'dy_elel':  (lambda sel_stage, ev: (sel_stage== 112 or sel_stage== 113 or sel_stage== 115), {'NOMINAL': lambda ev: ev.selection_stage_dy_mumu}),
 
@@ -914,6 +919,7 @@ channels_distrs = {
 
 'dy_dileptons'    : (['dy_mumu',  'dy_elel'],   sorted(distrs_dy     ), main_sys),
 'dy_leptau'       : (['dy_mutau', 'dy_eltau', 'dy_mutau_3j', 'dy_eltau_3j'],  sorted(distrs_tauonic_std.union(distrs_leptonic).union(distrs_on_jets).union(distrs_mt_calc)), main_sys),
+'dy_leptau_ss'    : (['dy_mutau_ss', 'dy_eltau_ss', 'dy_mutau_3j_ss', 'dy_eltau_3j_ss'],  sorted(distrs_tauonic_std.union(distrs_leptonic).union(distrs_on_jets).union(distrs_mt_calc)), main_sys),
 'wjets'           : (['wjets_mu', 'wjets_el'],  sorted(distrs_wjets  ), main_sys),
 'wjets_ss'        : (['wjets_mu_ss', 'wjets_el_ss'],  sorted(distrs_wjets  ), main_sys),
 

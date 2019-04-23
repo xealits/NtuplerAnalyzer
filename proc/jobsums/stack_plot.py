@@ -27,6 +27,9 @@ parser.add_argument("-o", "--output-directory", type=str, default='', help="opti
 
 parser.add_argument("--uncertainty-systematic",  type=str, help="add systematic variations to the hs sum uncertainty")
 
+parser.add_argument("--rebin", type=int, help="rebin the histograms")
+parser.add_argument("--infinite-bin-errors", type=float, help="if MC bins get infinite errors (like after rebining) use the sqrt(content)*by this factor (choose from the most relevant MC)")
+
 parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
 
 parser.add_argument("--lumi", type=float, help="use to skip the final normalizing step")
@@ -194,9 +197,13 @@ if not args.no_data:
 
 
 # normalize data distrs to different bin width:
-if not args.no_data and args.bin_norm:
+# or rebin
+if not args.no_data and (args.bin_norm or args.rebin):
   for _, distrs in histos_data_per_distr + histos_data_per_distr_ss:
       for histo, _, _ in distrs:
+        if args.rebin:
+            histo.Rebin(args.rebin)
+        if args.bin_norm:
           for bini in range(histo.GetSize()):
               content = histo.GetBinContent(bini)
               error   = histo.GetBinError(bini)
@@ -333,7 +340,7 @@ syst_factors_updowns = {
 
 data_nicks = ('data', 'data_other')
 
-def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=False):
+def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=args.skip_QCD):
     """get_histos(infile)
 
     the file contains usual structure
@@ -353,7 +360,7 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
         #for process in sorted_pkeys:
         for process in processes_keys:
            nick = process.GetName()
-           if skip_QCD and nick == 'qcd':
+           if skip_QCD and 'qcd' in nick:
                continue
            if processes_requirement and nick not in processes_requirement:
                continue
@@ -404,6 +411,10 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=F
                    histo.Scale(h_init.Integral() / h_shape.Integral())
            else:
                histo = h_init
+
+           # rebin if asked
+           if args.rebin:
+               histo.Rebin(args.rebin)
 
            # the fast normalization
            if args.lumi:
@@ -874,8 +885,20 @@ hs, leg =  hs_legs_per_distr[0][1]
 used_histos = used_histos_per_distr[0][1]
 #histos_data_per_distr[0][0][0].Print()
 
-logging.info("data       = %15f"    % 0. if args.no_data else histos_data_sum.Integral())
+logging.info("data       = %15f %15f" % (0. if args.no_data else histos_data_sum.Integral(), sum(histos_data_sum.GetBinError(bini) for bini in range(histos_data_sum.GetSize()))))
 logging.info("mc sum     = %15f %15f" % (hs_sum1.Integral(), hs_sum2.Integral()))
+
+logging.info("mc sum unc = %15f %15f" % (sum(hs_sum1.GetBinError(bini) for bini in range(hs_sum1.GetSize())), sum(hs_sum2.GetBinError(bini) for bini in range(hs_sum2.GetSize()))))
+
+if args.infinite_bin_errors:
+  for bini in range(hs_sum2.GetSize()):
+    if isnan(hs_sum2.GetBinError(bini)):
+        content = hs_sum2.GetBinContent(bini)
+        if content < 0:
+            hs_sum2.SetBinContent(bini, 0)
+            hs_sum2.SetBinError(bini, 0)
+        else:
+            hs_sum2.SetBinError(bini, 3*sqrt(hs_sum2.GetBinContent(bini)))
 
 logging.info("mc sum unc = %15f %15f" % (sum(hs_sum1.GetBinError(bini) for bini in range(hs_sum1.GetSize())), sum(hs_sum2.GetBinError(bini) for bini in range(hs_sum2.GetSize()))))
 
