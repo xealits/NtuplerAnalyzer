@@ -2511,6 +2511,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         weight_pu = 1.
         weight_pu_el = 1.
         weight_pu_mu = 1.
+        weight_pu_bcdef = 1.
+        weight_pu_gh    = 1.
         #weights_th = namedtuple('th_weights', 'AlphaSUp AlphaSDown FragUp FragDown')
         #weights_th = (1., 1., 1., 1.)
         weights_gen_weight_alphas = (1., 1.)

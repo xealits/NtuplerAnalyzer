@@ -324,8 +324,8 @@ gen_lumi_weights_tt_sys = {
 
 usual_gen_lumi_weights = {
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo" : 92667256.031132,
+#"MC2016_Summer16_DYJetsToLL_50toInf_madgraph" :  49823670.706457, # without ext
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph" : 147827597.073751, # with ext
-"MC2016_Summer16_DYJetsToLL_50toInf_madgraph" :  49823670.706457, # without ext
 "MC2016_Summer16_QCD_HT-100-200" : 80668282.010224,
 "MC2016_Summer16_QCD_HT-1000-1500" : 4831794.914995,
 "MC2016_Summer16_QCD_HT-1500-2000" : 4025637.189128,

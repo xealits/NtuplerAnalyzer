@@ -8,6 +8,7 @@ les enquetes!
 
 DY->tautau control region
 -- not any DY tautau control region! Yuta asks for special, signal-like DY control region, with 3 jets!
+   use 20GeV taus?
 
 the muon tracking SF does not have the stat uncertainty -- TGRaph won't give it out easily and it is small, hence it is set to zero now
 
@@ -17,6 +18,317 @@ POSSIBLE PROBLEM: if there are 2 distinct data-taking periods and the SFs are av
                   -- it definitely appears in muon channel
 
 meanwhile, let's try rising pT cut for dilepton control channels
+
+
+
+## FINISHING:
+
+the full fit in v37
+
+DY with Same Sign and data-driven QCD
+
+
+
+## v37 issues, round4, still dileptons
+
+eta in DY elel
+1) was it always there?
+   YES, in test5, test6
+   also dy_mumu has a bit more MC in eta endcaps, the deviation is smaller than in elel
+2) can it be due to Z mass?
+   why so sharp transition between barrel and endcaps then?
+
+weird trend in DY mumu met
+1) and mT is worse than before? (test5, test6 are flat, now there is a bend at 100-150, like in w+jets)
+
+get correct BCDEF and GH PU
+
+allso split the b tagging SF per BCDEF and GH?
+
+deviation in elmu
+1) TOPPT?
+2) due to the deviation at large met?
+3) which is due to the remaining MC processes at small lep pT?
+
+
+### dy_elel eta, edcaps and dy_mumu too
+
+why still MC>Data in endcaps?
+
+all lep SFs are applied?
+HLT is OR, which makes it == 1. -- maybe check the HLT match?
+
+
+
+
+### compare eta in different data epochs
+
+python get_shapes.py --formula "B:C:D:E:F:G:H:H2" --y-range 0,0.1 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj B:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016B_03Feb2017_ver2.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta C:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016C_03Feb2017_v1.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta D:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016D_03Feb2017_v1.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta E:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016E_03Feb2017_v1.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta F:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016F_03Feb2017_v1.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta G:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016G_03Feb2017_v1.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta H:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016H_03Feb2017_ver2.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta H2:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016H_03Feb2017_ver3.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta
+
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_C,B,E,D,G,F,H2,H_formula.png compare_v37_test5_bunch2_SingleElectron_lep_eta_per_epoch_C,B,E,D,G,F,H2,H.png
+
+-- indeed in endcaps, the lowest eta bin of endcap (1.5) is the same in all epochs
+   indeed G and H is worse and B is better from it to eta 2.4 
+
+B:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016B_03Feb2017_ver2.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta
+C:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016C_03Feb2017_v1.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta
+D:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016D_03Feb2017_v1.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta
+E:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016E_03Feb2017_v1.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta
+F:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016F_03Feb2017_v1.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta
+G:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016G_03Feb2017_v1.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta
+H:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016H_03Feb2017_ver2.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta
+H2:distrs/v37_test5_bunch2/Data13TeV_SingleElectron2016H_03Feb2017_ver3.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_lep_eta
+
+muons
+
+python get_shapes.py --formula "B:C:D:E:F:G:H:H2" --y-range 0,0.1 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj B:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016B_03Feb2017_ver2.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta C:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016C_03Feb2017_v1.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta D:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016D_03Feb2017_v1.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta E:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016E_03Feb2017_v1.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta F:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016F_03Feb2017_v1.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta G:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016G_03Feb2017_v1.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta H:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta H2:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016H_03Feb2017_ver3.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta
+
+mv ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_C,B,E,D,G,F,H2,H_formula.png compare_v37_test5_bunch2_SingleMuon_lep_eta_per_epoch_C,B,E,D,G,F,H2,H.png
+
+-- practically all the same
+
+B:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016B_03Feb2017_ver2.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta
+C:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016C_03Feb2017_v1.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta
+D:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016D_03Feb2017_v1.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta
+E:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016E_03Feb2017_v1.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta
+F:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016F_03Feb2017_v1.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta
+G:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016G_03Feb2017_v1.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta
+H:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta
+H2:distrs/v37_test5_bunch2/Data13TeV_SingleMuon2016H_03Feb2017_ver3.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_lep_eta
+
+
+
+#### are two leptons od DY correlated in eta and pT?
+
+ttree_out->Draw("event_leptons[0].eta()>>h(50,-2.5,2.5)", "(selection_stage_dy_mumu == 112 || selection_stage_dy_mumu == 113 || selection_stage_dy_mumu == 115) * event_weight_LEPelTRG")
+
+root -l gstore_outdirs/v37/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v37_MC2016_Summer16_DYJetsToLL_50toInf_madgraph/190206_141133/0000/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1.root
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].eta()", "leps_ID == -11*11")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].eta()", "leps_ID == -11*11 && abs(lep_p4[1].eta()) < 1.")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].eta()", "leps_ID == -11*11 && abs(lep_p4[1].eta()) > 1.")
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].eta():lep_p4[1].eta()", "leps_ID == -11*11")
+
+-- noticeably correlated
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].pt()>>h(50,20,150)", "leps_ID == -11*11")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].pt()>>h(50,20,150)", "leps_ID == -11*11 && abs(lep_p4[1].eta()) < 1.")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].pt()>>h(50,20,150)", "leps_ID == -11*11 && abs(lep_p4[1].eta()) > 1.")
+
+-- practically the same pT distribution
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].pt():lep_p4[1].pt()>>h(50,20,150,50,20,150)", "leps_ID == -11*11")
+
+lep 0 is the leading lepton, hard to tell what the pattern means
+
+
+but the probability to reconstruct and trigger one lepton is the same?
+does it change with the correlation to the second lepton in the event?
+
+just try single lepton trigger on leading lepton only?
+
+
+#### check effects from the lep SFs
+
+the lep_eta in dy_elel has about Data = 0.9*MC in endcaps and perfect match in the barrel
+>>> sqrt(0.9)
+0.9486832980505138
+-- 1 SF of difference
+
+
+
+root -l lstore_outdirs/v37/test7/MC2016_Summer16_DYJetsToLL_50toInf_madgraph/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1.root
+
+ttree_out->Draw("event_leptons[0].eta()>>h(50,-2.5,2.5)", "(selection_stage_dy_mumu == 112 || selection_stage_dy_mumu == 113 || selection_stage_dy_mumu == 115) * event_weight_LEPelTRG")
+
+
+in elel eta:
+el ID  SF -- practically flat at 0.9
+el TRG SF -- flat == 1.0 (as expected for OR HLT)
+
+
+
+
+
+
+check again the input values for ID effs
+
+python module_leptons.py --test-sfs foo bar
+
+and 2D plots:
+
+ele HLT: does have somewhat smaller eff in endcaps
+
+ele reco: completely parallel in pT, almost flat in eta -- looks like 1D eta stretched over pT, and practically no variation in eta, checked the MC and Data histos separately -- they do look like this
+
+ele ID: strange look the only reduction at endcaps is at low pT, at 10-30GeV when my cut is 30GeV, overall 1+-0.05, endcaps and pT>100 have 1.05 SF
+
+-- hence the flatness of the ele SFs...
+
+
+
+
+
+try to redivide Data/MC effs
+
+ele ID:
+EGamma_SF2D->Draw("colz")
+EGamma_EffData2D->Divide(EGamma_EffMC2D)
+EGamma_EffData2D->Draw("colz")
+
+-- looks different,
+
+EGamma_EffData2D->Divide(EGamma_EffMC2D)
+EGamma_EffData2D->GetZaxis()->SetRangeUser(0.9,1.1)
+EGamma_SF2D->GetZaxis()->SetRangeUser(0.9,1.1)
+
+EGamma_EffData2D->Draw("colz")
+
+EGamma_SF2D->Draw("colz")
+
+-- the same in ele reco
+   very similar ID except certain bins at pT>150
+
+compare numbers with the pdf with the TH2D from EGamma
+
+EGamma_SF2D->GetZaxis()->SetRangeUser(0.8,1.2)
+EGamma_SF2D->Draw("colz text")
+c1->SetLogy()
+
+-- same numbers!
+
+the ID SF differs by 4-7% between barrel and endcap at 30GeV
+                 and 1-3% at 100GeV
+
+but the reco SF is somewhat reversed: negative etas have larger SF in endcap
+it is also skewed: negative etas' SF > positive
+
+
+
+
+
+how SFs are different for Moriond17 and legacy rereco?
+-- legacy rereco is weird, SF are positive in endcaps
+
+
+
+the trigger SF might fix this...
+
+
+
+check the usual number of HLT matched leptons
+
+muons
+
+root -l gstore_outdirs/v37/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v37_MC2016_Summer16_DYJetsToLL_50toInf_madgraph/190206_141133/0000/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1.root
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_matched_HLT[0] || lep_matched_HLT[1]", "leps_ID == -13*13")
+(Long64_t) 139986
+-- all events pass
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("(lep_matched_HLT[0] && ! lep_matched_HLT[1]) || (lep_matched_HLT[1] && ! lep_matched_HLT[0])", "leps_ID == -13*13")
+(Long64_t) 139986
+
+mean 0.13
+
+20322 / 139986 = 0.14517166002314516
+
+-- non negligible
+but can it constitute the whole of the difference?
+
+
+
+electrons
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_matched_HLT[0] || lep_matched_HLT[1]", "leps_ID == -11*11")
+56125
+-- all pass
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("(lep_matched_HLT[0] && ! lep_matched_HLT[1]) || (lep_matched_HLT[1] && ! lep_matched_HLT[0])", "leps_ID == -11*11")
+56125
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("(lep_matched_HLT[0] && ! lep_matched_HLT[1]) || (lep_matched_HLT[1] && ! lep_matched_HLT[0])", "leps_ID == -11*11 && HLT_el")
+56122
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("(lep_matched_HLT[0] && ! lep_matched_HLT[1]) || (lep_matched_HLT[1] && ! lep_matched_HLT[0])", "leps_ID == -11*11 && ((lep_matched_HLT[0] && ! lep_matched_HLT[1]) || (lep_matched_HLT[1] && ! lep_matched_HLT[0]))")
+3270
+
+3270 / 56125 = 0.05826280623608018
+
+-- negligible?
+
+
+
+how to do HLT SF if lep does not match HLT?
+In principle, no change is needed:
+the not matched leptons are the not triggered ones,
+the SF corrects how many ID muons do trigger HLT.
+
+
+
+
+
+is the difference in trigger from leading lepton HLT to the OR of HLTs is reasonable?
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_matched_HLT[0]", "leps_ID == -11*11")
+56125
+
+0.9813
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_matched_HLT[0]", "leps_ID == -11*11 && HLT_el")
+56122
+
+>>> 56122. / 56125
+0.9999465478841871
+
+-- indeed the efficiency is very close to 1
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_matched_HLT[0]", "leps_ID == -11*11 && HLT_el && lep_matched_HLT[0]")
+55075
+
+efficiency 0.98
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_matched_HLT[0]", "leps_ID == -11*11 && HLT_el && lep_matched_HLT[1]")
+53899
+
+efficiency 0.96
+
+
+>>> trig_or(0.98, 0.96)
+0.9992
+
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3/  -c dy_elel --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+
+
+
+can in principle Z pT do it?
+
+check z mass-pt re-weighting histo -- it is crap,
+the main weights are at around 100-1000 of GeV of bot pT and mass.
+
+in gen level the mass is strictly around the peak at 90,
+pT is at < 100GeV
+
+try shifting the Z mass manually? can it affect pt and eta of the final states?
+
+python get_shapes.py --formula "data:mc" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj mc:distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_dilep_mass data:distrs/v37_test5_bunch2//SingleMuon.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_dilep_mass
+
+
+python get_shapes.py --formula "data/mc" --y-range 0.7,1.3 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj mc:distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root:dy_mumu/dy_other/NOMINAL/dy_mumu_dy_other_NOMINAL_dilep_mass data:distrs/v37_test5_bunch2//SingleMuon.root:dy_mumu/data_other/NOMINAL/dy_mumu_data_other_NOMINAL_dilep_mass
+
+
+python get_shapes.py --formula "data/mc" --y-range 0.7,1.3 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj mc:distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root:dy_elel/dy_other/NOMINAL/dy_elel_dy_other_NOMINAL_dilep_mass data:distrs/v37_test5_bunch2//SingleElectron.root:dy_elel/data_other/NOMINAL/dy_elel_data_other_NOMINAL_dilep_mass
+
+
+
+
+
+Also, tt_elmu looks with SingleElectron Data looks ok.
+-- the ele HLT is fine?
+
+
 
 
 ## correct pile-up averaging for muon channel?
@@ -278,6 +590,9 @@ python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_te
 python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
 python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
 python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d Mt_lep_met_f   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
 
 python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
 python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
@@ -1361,8 +1676,17 @@ CHECK how the lepton SF-s are calculated, trigger and reco --- is it the exclusi
 -- exactly so.
    TODO: implement the exclusive function for the trigger, the reco is per-particle.
 
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c dy_elel --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- strange trend
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_4_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test5_bunch2_mc_tests2/  -c dy_mumu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- also trend, a bit more MC in endcaps...
+
 
 ## wjets
+
 
 
 ## shape at tt_elmu

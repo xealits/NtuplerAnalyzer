@@ -369,7 +369,25 @@ def dilepton_and_sfs(eff1, unc1, eff2, unc2):
  -- and more logic!
 
  the trig eff for dilepton case is: apply negative of it for both leptons
+
+root -l ../analysis/electron-effs//2016_Sept23_ElectronReconstructionSF_egammaEffi.txt_EGM2D.root
+root -l ../analysis/electron-effs//2016_Sept23_ElectronID_TightCutBased_egammaEffi.txt_EGM2D.root
+root -l ../analysis/electron-effs//2016_03Feb_TriggerSF_Run2016All_v1.root
+
+EGamma_EffData2D->GetZaxis()->SetRangeUser(0.9,1.1)
+EGamma_SF2D->GetZaxis()->SetRangeUser(0.9,1.1)
+Ele27_WPTight_Gsf->GetZaxis()->SetRangeUser(0.8,1.2)
+
+EGamma_SF2D->Draw("colz")
+EGamma_SF2D->Draw("colz")
+Ele27_WPTight_Gsf->Draw("colz")
+
+gStyle->SetPaintTextFormat("4.2f")
+
+EGamma_SF2D->Draw("colz text")
+Ele27_WPTight_Gsf->Draw("colz text")
 '''
+
 logging.info("unpacking electron eff SFs")
 
 electron_effs_dirname = "${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/analysis/electron-effs"
@@ -504,10 +522,12 @@ if __name__ == '__main__':
 
         ele_kino_points_pt_low   = [(-2.5, 30.1), (-2.4, 30.1), (-2.1, 30.1), (-1.1, 30.1), (-0.1, 30.1), (0.1, 30.1), (1.1, 30.1), (2.1, 30.1), (2.4, 30.1), (2.5, 30.1)]
 
+        ele_kino_points_pt_high  = [(-2.5, 89.), (-2.4, 89.), (-2.1, 89.), (-1.1, 89.), (-0.1, 89.), (0.1, 89.), (1.1, 89.), (2.1, 89.), (2.4, 89.), (2.5, 89.)]
+
         print "electron ID"
-        for eta, pt in sorted(kino_points) + sorted(ele_kino_points_pt_low, key=lambda el: el[1]):
+        for eta, pt in sorted(kino_points) + sorted(ele_kino_points_pt_low, key=lambda el: el[1]) + sorted(ele_kino_points_pt_high):
             el_sfs_reco, el_sfs_id = lepton_electron_SF(eta, pt)
-            print eta, pt, el_sfs_reco[0], '+-', el_sfs_reco[1], el_sfs_id[0], '+-', el_sfs_id[1]
+            print "%5.1f" % eta, "%5.1f" % pt, "%8.3f" % el_sfs_reco[0], '+-', "%4.3f" % el_sfs_reco[1], "%8.3f" % el_sfs_id[0], '+-', "%4.3f" % el_sfs_id[1]
 
         print "electron trigger"
         for eta, pt in sorted(kino_points) + sorted(ele_kino_points_pt_low, key=lambda el: el[1]):
