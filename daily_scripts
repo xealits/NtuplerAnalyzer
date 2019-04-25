@@ -1422,6 +1422,24 @@ python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5
 python stack_plot.py distrs/v37_test5_bunch5_mc_1_amcatnlo.root distrs/v37_test5_bunch5/SingleElectron.root     -p -r -o plots/v37_test5_bunch5_dy_tautau/  -c dy_eltau_3j --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 $QCD_FACTOR --ratio-range 1. --rebin 5 --infinite-bin-errors 5.
 
 
+### dy_tautau dy_mutau dy_eltau with data-driven QCD
+
+distrs/v37_test6_bunch4_mc_1_amcatnlo.root
+distrs/v37_test5_bunch4DYtautau/SingleMuon.root
+
+python stack_plot.py distrs/v37_test6_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4DYtautau/SingleElectron.root     -p -r -o plots/v37_test6_bunch4_bunch4DYtautau_dy_tautau/  -c dy_eltau    --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 0.01 --ratio-range 1.
+python stack_plot.py distrs/v37_test6_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4DYtautau/SingleElectron.root     -p -r -o plots/v37_test6_bunch4_bunch4DYtautau_dy_tautau/  -c dy_eltau_ss    --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 0.01 --ratio-range 1.
+
+python stack_plot.py distrs/v37_test6_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4DYtautau/SingleElectron.root     -p -r -o plots/v37_test6_bunch4_bunch4DYtautau_dy_tautau/  -c dy_eltau    --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --ratio-range 1.
+python stack_plot.py distrs/v37_test6_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4DYtautau/SingleElectron.root     -p -r -o plots/v37_test6_bunch4_bunch4DYtautau_dy_tautau/  -c dy_eltau    --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --ratio-range 1. --rebin 5 --infinite-bin-errors 5.
+
+
+todo:
+
+python stack_plot.py distrs/v37_test6_bunch4_mc_1_amcatnlo.root distrs/v37_test5_bunch4DYtautau/SingleElectron.root     -p -r -o plots/v37_test6_bunch4_bunch4DYtautau_dy_tautau/  -c dy_eltau_3j --data-nick data_other -d dilep_mass --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --ratio-range 1. --rebin 5 --infinite-bin-errors 5.
+
+
+
 
 ## [The corrections to JEC and bSF of systematics](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopSystematics#Correction_factors_for_special_m)
 
