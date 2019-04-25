@@ -27,7 +27,8 @@ parser.add_argument('--proc',   type=str, default='test1',  help='proc')
 parser.add_argument('--distrs', type=str, default='bunch2', help='distrs bunch')
 
 parser.add_argument('--options', type=str, default='', help='options of the sumup_loop.py script')
-parser.add_argument('--dtags',   type=str, help='set which dtags to process')
+parser.add_argument('--dtags',         type=str, help='set which dtags to process')
+parser.add_argument('--without-dtags', type=str, help='exclude these dtags from processing')
 
 args = parser.parse_args()
 
@@ -68,15 +69,19 @@ template_command = "time python sumup_loop.py {options} {out_file} {inp_file} {d
 from std_defs import sample_info, channels_distrs, extend_full_sys_list
 
 # construct [(dtag, sys)]
-requested_dtags = []
+requested_dtags = {}
 for nickname, (dtags, systs) in sample_info.items():
     if nickname == 'tt_syst': continue
     #s = ','.join(systs)
     s = systs
     if args.dtags:
-        requested_dtags.extend([(dtag, s) for dtag in dtags if dtag in args.dtags])
+        requested_dtags.update({dtag: s for dtag in dtags if dtag in args.dtags})
     else:
-        requested_dtags.extend([(dtag, s) for dtag in dtags])
+        requested_dtags.update({dtag: s for dtag in dtags})
+
+if args.without_dtags:
+    for dtag in args.without_dtags.split(','):
+        requested_dtags.pop(dtag)
 
 logging.debug(requested_dtags)
 
@@ -98,7 +103,7 @@ if args.chan_groups:
     now_chan_groups = args.chan_groups.split(',')
 
 # find files of each dtag, construct the job command
-for dtag, systs in requested_dtags:
+for dtag, systs in requested_dtags.items():
   logging.debug('%s %s' % (dtag, repr(systs)))
 
   # unpack the nicknamed systematics

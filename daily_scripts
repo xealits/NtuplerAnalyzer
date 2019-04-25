@@ -27,28 +27,255 @@ the full fit in v37
 
 DY with Same Sign and data-driven QCD
 
+tt_elmu with all MC and Data
 
 
-## v37 issues, round4, still dileptons
 
-eta in DY elel
+## v37 issues, round4 with dileptons
+
+**eta in DY elel**
 1) was it always there?
    YES, in test5, test6
    also dy_mumu has a bit more MC in eta endcaps, the deviation is smaller than in elel
 2) can it be due to Z mass?
    why so sharp transition between barrel and endcaps then?
 
-weird trend in DY mumu met
+   yeah, Z mass has noticeable effect, larger Z mass produces less events in endcaps,
+   but comparing to data we need to make the opposite re-weighting:
+   shift MC to smaller Z masses, which will make even more endcap events in MC,
+   and the second-order effect from lep SFs remains second order:
+   the eta distrs with lep SF corrections are close to the original ones in small and large Z mass
+
+   + can there be an opposite effect:
+     less large Z mass means less events in barrel, which flattens the eta distribution?
+
+3) b SF weight is included?
+   yeap, but it does not matter
+
+**weird trend in DY mumu met**
 1) and mT is worse than before? (test5, test6 are flat, now there is a bend at 100-150, like in w+jets)
 
-get correct BCDEF and GH PU
+**get correct BCDEF and GH PU**
 
-allso split the b tagging SF per BCDEF and GH?
+**allso split the b tagging SF per BCDEF and GH?**
 
-deviation in elmu
+
+**deviation in elmu**:
+strange kink in lep pT (seen well in separated el and mu pT),
+slight bin-by-bin deviation in lep eta, dip at eta = -0.3
+deviation in met and small deviation on edges of mT
 1) TOPPT?
+   -- does correct things well, especially in mT, but not completely
 2) due to the deviation at large met?
+   -- might be a problem in met propagation?
+      but why the slight deviation in leading lepton eta and in lep pT?
+   -- might be just correlation with lepton pT
+      + check separate electron and muon kinametics in test7
+        yeap, they show the deviations better
+      + run tests on TT with met variations -- how it propagates to mT?
+       (won't solve eta and pT though)
+        check MC cumulative fractions to confirm the largest met is from TT
 3) which is due to the remaining MC processes at small lep pT?
+   -- looks like not much changed with full MC
+   + check in fixed remaining files, including single-top s channel and dibosons
+     yeap, with all files correctly processed the problems are clearly seen
+     in the separated electron and muon pTs
+4) produce tight TT elmu to get rid of DY, single-top and dibosons?
+5) implement muon-trigger elmu as the old one?
+6) check the effect of bSF weight
+   -- negligible
+
+So, again something is wrong with lepton SFs?
+Incorrect average of BCDEF and GH for PU and muon ID?
++ compare to separate epochs data
+
+
+
+### correct PU per epochs
+
+added the comparison of nominals in NtuplerAnalyser/studies/pilep-per-epoch
+
+indeed the calculated PU are weird
+
+also included the Golden Json separated into BCDEF and GH
+
+-- to produce the Up Down variations on lxplus
+
+
+
+### bSF weight in tt_elmu
+
+root -l lstore_outdirs/v37/test7/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_1.root
+
+ttree_out->Draw("event_weight:event_weight_bSF*event_weight_init*event_weight_th*event_weight_PU", "selection_stage_em > 200 && selection_stage_em < 210")
+
+ttree_out->Draw("event_met.pt()>>h(100,0,300)", "(selection_stage_em > 200 && selection_stage_em < 210)")
+
+h_ = (TH1D*) ttree_out->GetHistogram()
+h_met = (TH1D*) h_->Clone()
+h_met->SetName("h_met")
+h_met->SetDirectory(0)
+
+
+ttree_out->Draw("event_met.pt()>>h(100,0,300)", "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_bSF")
+
+h_ = (TH1D*) ttree_out->GetHistogram()
+h_met_bSF = (TH1D*) h_->Clone()
+h_met_bSF->SetName("h_met_bSF")
+h_met_bSF->SetDirectory(0)
+
+h_met_bSF->SetLineColor(kRed)
+
+h_met_bSF->Draw()
+h_met->Draw("same")
+
+h_met->Divide(h_met_bSF)
+
+h_met->Draw()
+
+-- within stat uncertainty, under 1 percent deviations, no tren visible
+
+
+
+### no bSF weight in DY elel
+
+root -l lstore_outdirs/v37/test7/MC2016_Summer16_DYJetsToLL_50toInf_madgraph/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1.root
+
+ttree_out->Draw("event_leptons[0].eta()>>h(50,-2.5,2.5)", "(selection_stage_dy_mumu == 112 || selection_stage_dy_mumu == 113 || selection_stage_dy_mumu == 115) * event_weight")
+
+h_ = (TH1D*) ttree_out->GetHistogram()
+
+h_ev_weight = (TH1D*) h_->Clone()
+h_ev_weight->SetName("h_ev_weight")
+h_ev_weight->SetDirectory(0)
+
+ttree_out->Draw("event_leptons[0].eta()>>h(50,-2.5,2.5)", "(selection_stage_dy_mumu == 112 || selection_stage_dy_mumu == 113 || selection_stage_dy_mumu == 115) * event_weight_init")
+
+h_ = (TH1D*) ttree_out->GetHistogram()
+
+h_ev_init = (TH1D*) h_->Clone()
+h_ev_init->SetName("h_ev_init")
+h_ev_init->SetDirectory(0)
+
+h_ev_init->SetLineColor(kRed)
+
+h_ev_weight-> Draw()
+h_ev_init->   Draw("same")
+
+-- the same distributions
+
+
+### check effect of Z mass
+
+root -l gstore_outdirs/v37/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v37_MC2016_Summer16_DYJetsToLL_50toInf_madgraph/190206_141133/0000/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_1.root
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].eta()>>h(50,-2.5,2.5)", "leps_ID == -11*11 && HLT_el")
+
+check where the Z peak:
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("genMass>>h(50,80,100)", "leps_ID == -11*11 && HLT_el")
+
+at 90.47
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].eta()>>h(50,-2.5,2.5)", "leps_ID == -11*11 && abs(lep_p4[0].eta()) < 2.4 && HLT_el && genMass < 90.")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_p4[0].eta()>>h(50,-2.5,2.5)", "leps_ID == -11*11 && abs(lep_p4[0].eta()) < 2.4 && HLT_el && genMass > 90.")
+
+hard to say
+
+correlations with eta and pT of leading lepton
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("genMass:lep_p4[0].eta()>>h(25,-2.5,2.5,25,80,100)", "leps_ID == -11*11 && abs(lep_p4[0].eta()) < 2.4 && HLT_el")
+
+-- does not look like correlation, but maximum should be closer to 91?
+
+try full DY MC
+
+python sumup_ttree_draw.py "lep_p4[0].eta()" --cond-com "leps_ID == -11*11 && abs(lep_p4[0].eta()) < 2.4 && HLT_el && genMass < 90." --histo-range 50,-2.5,2.5 --output test_dy_elel_lep0_eta_ZmassLess90.root --histo-name test_dy_elel_lep0_eta_ZmassLess90 gstore_outdirs/v37/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v37_MC2016_Summer16_DYJetsToLL_50toInf_madgraph/190206_141133/0000/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_*.root &
+python sumup_ttree_draw.py "lep_p4[0].eta()" --cond-com "leps_ID == -11*11 && abs(lep_p4[0].eta()) < 2.4 && HLT_el && genMass > 90." --histo-range 50,-2.5,2.5 --output test_dy_elel_lep0_eta_ZmassMore90.root --histo-name test_dy_elel_lep0_eta_ZmassMore90 gstore_outdirs/v37/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v37_MC2016_Summer16_DYJetsToLL_50toInf_madgraph/190206_141133/0000/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_*.root &
+
+hadd  test_dy_elel_lep0_eta_Zmass.root test_dy_elel_lep0_eta_ZmassLess90.root test_dy_elel_lep0_eta_ZmassMore90.root
+
+test_dy_elel_lep0_eta_ZmassMore90->Scale(1./test_dy_elel_lep0_eta_ZmassMore90->Integral())
+test_dy_elel_lep0_eta_ZmassLess90->Scale(1./test_dy_elel_lep0_eta_ZmassLess90->Integral())
+
+test_dy_elel_lep0_eta_ZmassMore90->SetLineColor(kRed)
+
+test_dy_elel_lep0_eta_ZmassLess90->Draw()
+test_dy_elel_lep0_eta_ZmassMore90->Draw("same")
+
+-- the same, variations within the stat uncertainties
+
+
+
+correlation with pT
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("genMass:lep_p4[0].pt()>>h(25,20,100,25,80,100)", "leps_ID == -11*11 && abs(lep_p4[0].eta()) < 2.4 && HLT_el")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("genMass:lep_p4[1].pt()>>h(25,20,100,25,80,100)", "leps_ID == -11*11 && abs(lep_p4[0].eta()) < 2.4 && HLT_el")
+
+-- definitely slight correlation
+
+same in muons:
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("genMass:lep_p4[0].pt()>>h(25,20,100,25,80,100)", "leps_ID == -13*13 && abs(lep_p4[0].eta()) < 2.4 && HLT_mu")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("genMass:lep_p4[1].pt()>>h(25,20,100,25,80,100)", "leps_ID == -13*13 && abs(lep_p4[0].eta()) < 2.4 && HLT_mu")
+
+same stuff
+
+
+
+try to reproduce the effect of lep SFs for different Z masses?
+lep SFs are in stage2, Z mass is in ntuples...
+
+use reco Z mass?
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("genMass:sqrt((lep_p4[0].T() + lep_p4[1].T())*(lep_p4[0].T() + lep_p4[1].T()) - ((lep_p4[0].Z() + lep_p4[1].Z())*(lep_p4[0].Z() + lep_p4[1].Z()) + (lep_p4[0].Y() + lep_p4[1].Y())*(lep_p4[0].Y() + lep_p4[1].Y()) + (lep_p4[0].X() + lep_p4[1].X())*(lep_p4[0].X() + lep_p4[1].X())))>>h(25,80,100,25,80,100)", "leps_ID == -13*13 && abs(lep_p4[0].eta()) < 2.4 && HLT_mu")
+
+-- correlation ok
+
+
+sqrt((event_leptons[0].T() + event_leptons[1].T())*(event_leptons[0].T() + event_leptons[1].T()) - ((event_leptons[0].Z() + event_leptons[1].Z())*(event_leptons[0].Z() + event_leptons[1].Z()) + (event_leptons[0].Y() + event_leptons[1].Y())*(event_leptons[0].Y() + event_leptons[1].Y()) + (event_leptons[0].X() + event_leptons[1].X())*(event_leptons[0].X() + event_leptons[1].X())))
+
+python sumup_ttree_draw.py "event_leptons[0].eta()" --ttree ttree_out --cond-com "((selection_stage_dy_mumu == 112 || selection_stage_dy_mumu == 113 || selection_stage_dy_mumu == 115) && sqrt((event_leptons[0].T() + event_leptons[1].T())*(event_leptons[0].T() + event_leptons[1].T()) - ((event_leptons[0].Z() + event_leptons[1].Z())*(event_leptons[0].Z() + event_leptons[1].Z()) + (event_leptons[0].Y() + event_leptons[1].Y())*(event_leptons[0].Y() + event_leptons[1].Y()) + (event_leptons[0].X() + event_leptons[1].X())*(event_leptons[0].X() + event_leptons[1].X()))) < 90.) * event_weight" --histo-range 50,-2.5,2.5 --output test_dy_elel_lep0_eta_ZmassLess90_weight.root --histo-name test_dy_elel_lep0_eta_ZmassLess90_weight lstore_outdirs/v37/test7/MC2016_Summer16_DYJetsToLL_50toInf_madgraph/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_*.root &
+python sumup_ttree_draw.py "event_leptons[0].eta()" --ttree ttree_out --cond-com "((selection_stage_dy_mumu == 112 || selection_stage_dy_mumu == 113 || selection_stage_dy_mumu == 115) && sqrt((event_leptons[0].T() + event_leptons[1].T())*(event_leptons[0].T() + event_leptons[1].T()) - ((event_leptons[0].Z() + event_leptons[1].Z())*(event_leptons[0].Z() + event_leptons[1].Z()) + (event_leptons[0].Y() + event_leptons[1].Y())*(event_leptons[0].Y() + event_leptons[1].Y()) + (event_leptons[0].X() + event_leptons[1].X())*(event_leptons[0].X() + event_leptons[1].X()))) > 90.) * event_weight" --histo-range 50,-2.5,2.5 --output test_dy_elel_lep0_eta_ZmassMore90_weight.root --histo-name test_dy_elel_lep0_eta_ZmassMore90_weight lstore_outdirs/v37/test7/MC2016_Summer16_DYJetsToLL_50toInf_madgraph/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_*.root &
+
+python sumup_ttree_draw.py "event_leptons[0].eta()" --ttree ttree_out --cond-com "((selection_stage_dy_mumu == 112 || selection_stage_dy_mumu == 113 || selection_stage_dy_mumu == 115) && sqrt((event_leptons[0].T() + event_leptons[1].T())*(event_leptons[0].T() + event_leptons[1].T()) - ((event_leptons[0].Z() + event_leptons[1].Z())*(event_leptons[0].Z() + event_leptons[1].Z()) + (event_leptons[0].Y() + event_leptons[1].Y())*(event_leptons[0].Y() + event_leptons[1].Y()) + (event_leptons[0].X() + event_leptons[1].X())*(event_leptons[0].X() + event_leptons[1].X()))) < 90.)" --histo-range 50,-2.5,2.5 --output test_dy_elel_lep0_eta_ZmassLess90_NOweight.root --histo-name test_dy_elel_lep0_eta_ZmassLess90_NOweight lstore_outdirs/v37/test7/MC2016_Summer16_DYJetsToLL_50toInf_madgraph/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_*.root &
+python sumup_ttree_draw.py "event_leptons[0].eta()" --ttree ttree_out --cond-com "((selection_stage_dy_mumu == 112 || selection_stage_dy_mumu == 113 || selection_stage_dy_mumu == 115) && sqrt((event_leptons[0].T() + event_leptons[1].T())*(event_leptons[0].T() + event_leptons[1].T()) - ((event_leptons[0].Z() + event_leptons[1].Z())*(event_leptons[0].Z() + event_leptons[1].Z()) + (event_leptons[0].Y() + event_leptons[1].Y())*(event_leptons[0].Y() + event_leptons[1].Y()) + (event_leptons[0].X() + event_leptons[1].X())*(event_leptons[0].X() + event_leptons[1].X()))) > 90.)" --histo-range 50,-2.5,2.5 --output test_dy_elel_lep0_eta_ZmassMore90_NOweight.root --histo-name test_dy_elel_lep0_eta_ZmassMore90_NOweight lstore_outdirs/v37/test7/MC2016_Summer16_DYJetsToLL_50toInf_madgraph/MC2016_Summer16_DYJetsToLL_50toInf_madgraph_*.root &
+
+hadd test_dy_elel_lep0_eta_Zmass_weighted.root test_dy_elel_lep0_eta_ZmassLess90_weight.root test_dy_elel_lep0_eta_ZmassMore90_weight.root test_dy_elel_lep0_eta_ZmassLess90_NOweight.root test_dy_elel_lep0_eta_ZmassMore90_NOweight.root
+
+test_dy_elel_lep0_eta_ZmassMore90_weight->Scale(1./test_dy_elel_lep0_eta_ZmassMore90_weight->Integral())
+test_dy_elel_lep0_eta_ZmassLess90_weight->Scale(1./test_dy_elel_lep0_eta_ZmassLess90_weight->Integral())
+
+test_dy_elel_lep0_eta_ZmassMore90_NOweight->Scale(1./test_dy_elel_lep0_eta_ZmassMore90_NOweight->Integral())
+test_dy_elel_lep0_eta_ZmassLess90_NOweight->Scale(1./test_dy_elel_lep0_eta_ZmassLess90_NOweight->Integral())
+
+test_dy_elel_lep0_eta_ZmassMore90_weight->SetLineColor(kRed)
+
+test_dy_elel_lep0_eta_ZmassLess90_NOweight->SetLineColor(kGreen)
+test_dy_elel_lep0_eta_ZmassMore90_NOweight->SetLineColor(kYellow)
+
+test_dy_elel_lep0_eta_ZmassLess90_weight->Draw()
+test_dy_elel_lep0_eta_ZmassMore90_weight->Draw("same")
+test_dy_elel_lep0_eta_ZmassLess90_NOweight->Draw("same")
+test_dy_elel_lep0_eta_ZmassMore90_NOweight->Draw("same")
+
+-- red (>90GeV) is smaller in endcaps
+   and the no-weight distrs are close to the weighted
+
+test_dy_elel_lep0_eta_ZmassLess90_weight->Divide(test_dy_elel_lep0_eta_ZmassMore90_weight)
+
+test_dy_elel_lep0_eta_ZmassLess90_weight->Draw()
+
+by 10-20% and more
+
+python stack_plot.py distrs/v37_test5_bunch2_mc_wjets_amcatnlo_3.root distrs/v37_test5_bunch2/SingleElectron.root -p -r  -o plots/v37_test5_bunch2/  -c dy_elel --data-nick data_other -d dilep_mass_dy --lumi 32220 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_from_v37_test7_bunchDILEP3/  -c dy_elel --data-nick data_other -d dilep_mass_dy --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- but here Data has smaller Z mass, not larger
+
+
+
 
 
 ### dy_elel eta, edcaps and dy_mumu too
@@ -598,6 +825,142 @@ python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_te
 python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
 python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
 python stack_plot.py distrs/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test6_bunch3_mc_1_amcatnlo_dy_and_tt_from_v37_test7_bunchDILEP3/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+
+full MC
+
+hadd v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu.root v37_test7_bunchDILEP3/MC*root v37_test7_bunchDILEP3/wjets_amcatnlo/MC2016_Summer16_WJets_amcatnlo.root
+
+hadd v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root v37_test7_bunchDILEP3/MC*root v37_test7_bunchDILEP3/wjets_amcatnlo/MC2016_Summer16_WJets_amcatnlo.root
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --sys TOPPTUp
+
+-- normalization is off,
+   many not closed files in test7
+-- with full files the low pT is somewhat off? MC < Data
+
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --sys TOPPTUp
+
+-- very small deviations,
+   trend on order 5% is visible: kink at 90-100GeV,
+   Data>MC at low pT and reverse after that,
+   TOPPT only tilts the whole kink together
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --sys TOPPTUp
+
+-- same kink up to 60-80GeV, TOPPT fixes the tail of large pT completely
+
+
+
+the kink can be fixed with DY normalization?
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --sys TOPPTUp --factor-dy 1.5
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --sys TOPPTUp --factor-dy 1.5
+
+-- still something wrong at lowest bins elmu_mu
+   and very wrong in elmu_el
+   the kink bends backwards, at 30-40GeV Data < MC
+
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --sys TOPPTUp
+
+-- off at edge eta bins and some in the middle
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --sys TOPPTUp
+
+-- practically flat, that dip at eta=-0.3 is here,
+   Data +5% in the eta -2.4 bin
+
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --sys TOPPTUp
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --sys TOPPTUp
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --sys TOPPTUp
+
+-- TOPPTUp in mT  flattens well, but does not fix the last bin
+           in met almost fixes the tail, but does not fix the small met bins
+           same in other distrs: almost fixes everything
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d Mt_lep_met_f   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d nbjets   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d nrjets   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleMuon.root     -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+-- worse? some strange trend in mT SingleElectron again, but less than in test5
+
+
+
+#### issues in electron and muon pT
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+per epoch Data
+
+hadd SingleElectron_BCDEF.root Data13TeV_SingleElectron2016[BCDEF]*.root &
+hadd SingleElectron_GH.root    Data13TeV_SingleElectron2016[GH]*.root    &
+
+hadd SingleMuon_BCDEF.root Data13TeV_SingleMuon2016[BCDEF]*.root &
+hadd SingleMuon_GH.root    Data13TeV_SingleMuon2016[GH]*.root    &
+
+the lumi split:
+
+sum( [2765.338  941.616   1124.295  8243.992  4597.535  + 2041.1119999999999])
+19713.888
+sum( [9581.599  - 2041.1119999999999 8605.690  ])
+16146.177
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron_BCDEF.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 19714 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron_BCDEF.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 19714 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+INFO:root:data       =    87836.000000     1489.241144
+INFO:root:mc sum     =    88004.512012    88004.512012
+
+yeah, the kink is there,
+strangely in muons it looks like a step 30-50, 50-75
+
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron_GH.root    -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 16146 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron_GH.root    -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 16146 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+INFO:root:data       =    74358.000000     1370.513755
+INFO:root:mc sum     =    72076.739928    72076.739928
+
+yeah the kink is visible, more than in previous epoch?
+
+eog plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu//d*BCDEF*elmu_el_pt* plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu//d*GH*elmu_el_pt*
+
+eog plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu//d*BCDEF*elmu_mu_pt* plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu//d*GH*elmu_mu_pt*
+
+-- more visible in muons, kind of the same in electrons,
+   the curve of the kink is a bit different
+
+
+check correlation of electron and muon pT
+
+root -l lstore_outdirs/v37/test7/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_1.root
+
+ttree_out->Draw("event_leptons[0].pt():event_leptons[1].pt()>>h(50,20,150,50,20,150)", "selection_stage_em > 200 && selection_stage_em < 210")
+
+-- no visible correlation
+
+
+so, is it something with muon ID and PU averaging?
+
 
 
 ## v37 test5 issues, round3, for update, the fixed dilepton and electron SFs
