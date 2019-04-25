@@ -1,0 +1,24 @@
+{
+  "proc":[
+
+    { 
+      "tag":"data",
+      "isdata":true,
+      "color":1,
+      "fill":0,
+      "comment":"real split 17",        
+       "data":[        
+
+        { "dtag":"Data13TeV_SingleMuon2016B_PromptRecoV2", "split_NoUse_TestingAutomaticOne":50, "xsec":1.0, "br":[ 1.0 ],
+          "dset":"/SingleElectron/Run2016B-PromptReco-v2/MINIAOD",
+          "lumiMask":"/afs/cern.ch/user/o/otoldaie/work/private/project/CMSSW_7_6_3/src/UserCode/llvv_fwk/data/json/Cert_13TeV_16Dec2015ReReco_Collisions15_25ns_JSON_v2.txt" }
+
+      ]             
+    }
+
+  ]
+}
+
+
+
+

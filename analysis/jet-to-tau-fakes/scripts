@@ -1,0 +1,38 @@
+test5.2_taufakes_jetHT <- read.csv( "taufakerates_jetHT.csv", header=T)
+test5.2_taufakes_singlemu <- read.csv( "taufakerates_singlemu.csv", header=T)
+
+test5.2_taufakes_jetHT.perX <- ddply(test5.2_taufakes_jetHT, .(x), function(df) {data.frame(wj=sum(df$w_jets_bin), wt=sum(df$w_tau_jets_bin), qj=sum(df$q_jets_bin), qt=sum(df$q_tau_jets_bin))} )
+test5.2_taufakes_jetHT.perY <- ddply(test5.2_taufakes_jetHT, .(y), function(df) {data.frame(wj=sum(df$w_jets_bin), wt=sum(df$w_tau_jets_bin), qj=sum(df$q_jets_bin), qt=sum(df$q_tau_jets_bin))} )
+test5.2_taufakes_jetHT.perZ <- ddply(test5.2_taufakes_jetHT, .(z), function(df) {data.frame(wj=sum(df$w_jets_bin), wt=sum(df$w_tau_jets_bin), qj=sum(df$q_jets_bin), qt=sum(df$q_tau_jets_bin))} )
+
+test5.2_taufakes_singlemu.perX <- ddply(test5.2_taufakes_singlemu, .(x), function(df) {data.frame(wj=sum(df$w_jets_bin), wt=sum(df$w_tau_jets_bin), qj=sum(df$q_jets_bin), qt=sum(df$q_tau_jets_bin))} )
+test5.2_taufakes_singlemu.perY <- ddply(test5.2_taufakes_singlemu, .(y), function(df) {data.frame(wj=sum(df$w_jets_bin), wt=sum(df$w_tau_jets_bin), qj=sum(df$q_jets_bin), qt=sum(df$q_tau_jets_bin))} )
+test5.2_taufakes_singlemu.perZ <- ddply(test5.2_taufakes_singlemu, .(z), function(df) {data.frame(wj=sum(df$w_jets_bin), wt=sum(df$w_tau_jets_bin), qj=sum(df$q_jets_bin), qt=sum(df$q_tau_jets_bin))} )
+
+
+
+
+
+ggplot( test5.2_taufakes_jetHT.perX, aes(x, wj/max(wj))) + geom_point(size=2) + geom_point( mapping=aes(x, wt/max(wj)), pch=15, size=2 )  + geom_point( mapping=aes(x, qj/max(qj)), color="red") + geom_point( mapping=aes(x, qt/max(qj)), pch=15, color="red") + annotate("text", x=0, y=0.75, label="black -- wjets, red -- qcd\nnormalization factors:\nqcd: max(qcd jets) = 242595\nwjets: max(wjets jets) = 9738") + scale_y_log10()
+ggsave( "test5.2_taufakes-in-jetHT_perX-pT_all-jets-and-fake-taus_normalized-qcd-n-wjets.png", width=6, height=6 )
+
+ggplot( test5.2_taufakes_jetHT.perY, aes(y, wj/max(wj))) + geom_point(size=2) + geom_point( mapping=aes(y, wt/max(wj)), pch=15, size=2 )  + geom_point( mapping=aes(y, qj/max(qj)), color="red") + geom_point( mapping=aes(y, qt/max(qj)), pch=15, color="red") + annotate("text", x=2, y=0.5, label="black -- wjets, red -- qcd\nnormalization factors:\nqcd: max(qcd jets) = 242595\nwjets: max(wjets jets) = 9738") + scale_y_log10() + coord_cartesian(xlim=c(-4,4), ylim=c(0.001, 1.2))
+ggsave( "test5.2_taufakes-in-jetHT_perY-eta_all-jets-and-fake-taus_normalized-qcd-n-wjets.png", width=6, height=6 )
+
+ggplot( test5.2_taufakes_jetHT.perZ, aes(z, wj/max(wj))) + geom_point() + geom_point( mapping=aes(z, wt/max(wj)), pch=15 )  + geom_point( mapping=aes(z, qj/max(qj)), color="red") + geom_point( mapping=aes(z, qt/max(qj)), pch=15, color="red") + annotate("text", x=0, y=0.75, label="black -- wjets, red -- qcd\nnormalization factors:\nqcd: max(qcd jets) = 242595\nwjets: max(wjets jets) = 9738") + scale_y_log10()
+ggsave( "test5.2_taufakes-in-jetHT_perZ-radius_all-jets-and-fake-taus_normalized-qcd-n-wjets.png", width=6, height=6 )
+
+
+
+
+ggplot( test5.2_taufakes_singlemu.perX, aes(x, wj/max(wj))) + geom_point(size=2) + geom_point( mapping=aes(x, wt/max(wj)), pch=15, size=2 )  + geom_point( mapping=aes(x, qj/max(qj)), color="red") + geom_point( mapping=aes(x, qt/max(qj)), pch=15, color="red") + annotate("text", x=2, y=0.5, label="black -- wjets, red -- qcd\nnormalization factors:\nqcd: max(qcd jets) = 242595\nwjets: max(wjets jets) = 9738") + scale_y_log10()
+ggsave( "test5.2_taufakes-in-singleMu_perX-pT_all-jets-and-fake-taus_normalized-qcd-n-wjets.png", width=6, height=6 )
+
+ggplot( test5.2_taufakes_singlemu.perY, aes(y, wj/max(wj))) + geom_point(size=2) + geom_point( mapping=aes(y, wt/max(wj)), pch=15, size=2 )  + geom_point( mapping=aes(y, qj/max(qj)), color="red") + geom_point( mapping=aes(y, qt/max(qj)), pch=15, color="red") + annotate("text", x=2, y=0.5, label="black -- wjets, red -- qcd\nnormalization factors:\nqcd: max(qcd jets) = 242595\nwjets: max(wjets jets) = 9738") + scale_y_log10() + coord_cartesian(xlim=c(-4,4), ylim=c(0.001, 1.2))
+ggsave( "test5.2_taufakes-in-singleMu_perY-eta_all-jets-and-fake-taus_normalized-qcd-n-wjets.png", width=6, height=6 )
+
+ggplot( test5.2_taufakes_singlemu.perZ, aes(z, wj/max(wj))) + geom_point(size=2) + geom_point( mapping=aes(z, wt/max(wj)), pch=15, size=2 )  + geom_point( mapping=aes(z, qj/max(qj)), color="red") + geom_point( mapping=aes(z, qt/max(qj)), pch=15, color="red") + annotate("text", x=0, y=0.5, label="black -- wjets, red -- qcd\nnormalization factors:\nqcd: max(qcd jets) = 242595\nwjets: max(wjets jets) = 9738") + scale_y_log10() 
+ggsave( "test5.2_taufakes-in-singleMu_perZ-radius_all-jets-and-fake-taus_normalized-qcd-n-wjets.png", width=6, height=6 )
+
+
+
