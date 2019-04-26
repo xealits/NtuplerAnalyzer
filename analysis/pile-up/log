@@ -41,3 +41,27 @@ compare pile-ups for ele json and the golden
 
 pileupCalc.py -i ../Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt  --calcMode true --minBiasXsec 69200 --maxPileupBin 100 --numPileupBins 100  MyDataPileupHistogram_minbias-69-2_22-1-2018_GoldenCert.root
 
+
+
+per run epoch
+
+pileupCalc.py -i ../../Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON_BCDEF.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt  --calcMode true --minBiasXsec 69200 --maxPileupBin 100 --numPileupBins 100  MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_BCDEF.root &
+pileupCalc.py -i ../../Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON_BCDEF.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt  --calcMode true --minBiasXsec 66017 --maxPileupBin 100 --numPileupBins 100  MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_BCDEF_Down_66-017.root   &
+pileupCalc.py -i ../../Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON_BCDEF.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt  --calcMode true --minBiasXsec 72383 --maxPileupBin 100 --numPileupBins 100  MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_BCDEF_Up_72-383.root     &
+
+
+pileupCalc.py -i ../../Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON_GH.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt  --calcMode true --minBiasXsec 69200 --maxPileupBin 100 --numPileupBins 100  MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_GH.root   &
+pileupCalc.py -i ../../Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON_GH.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt  --calcMode true --minBiasXsec 66017 --maxPileupBin 100 --numPileupBins 100  MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_GH_Down_66-017.root   &
+pileupCalc.py -i ../../Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON_GH.txt --inputLumiJSON /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt  --calcMode true --minBiasXsec 72383 --maxPileupBin 100 --numPileupBins 100  MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_GH_Up_72-383.root   &
+
+
+dump_pileup_histo.py
+
+python ../../dump_pileup_histo.py MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_BCDEF.root              > MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_BCDEF.csv
+python ../../dump_pileup_histo.py MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_BCDEF_Down_66-017.root  > MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_BCDEF_Down_66-017.csv
+python ../../dump_pileup_histo.py MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_BCDEF_Up_72-383.root    > MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_BCDEF_Up_72-383.csv
+
+python ../../dump_pileup_histo.py MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_GH.root             > MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_GH.csv
+python ../../dump_pileup_histo.py MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_GH_Down_66-017.root > MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_GH_Down_66-017.csv
+python ../../dump_pileup_histo.py MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_GH_Up_72-383.root   > MyDataPileupHistogram_minbias-69-2_26-4-2019_GoldenCert_GH_Up_72-383.csv
+
