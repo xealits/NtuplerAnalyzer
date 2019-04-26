@@ -56,9 +56,9 @@ tt_elmu with all MC and Data
 1) and mT is worse than before? (test5, test6 are flat, now there is a bend at 100-150, like in w+jets)
 
 **get correct BCDEF and GH PU**
+-- got them, the result is the same as in test5 before the averaging of PU with muon SFs......
 
 **allso split the b tagging SF per BCDEF and GH?**
-
 
 **deviation in elmu**:
 strange kink in lep pT (seen well in separated el and mu pT),
@@ -80,14 +80,17 @@ deviation in met and small deviation on edges of mT
    + check in fixed remaining files, including single-top s channel and dibosons
      yeap, with all files correctly processed the problems are clearly seen
      in the separated electron and muon pTs
-4) produce tight TT elmu to get rid of DY, single-top and dibosons?
-5) implement muon-trigger elmu as the old one?
-6) check the effect of bSF weight
+5) check the effect of bSF weight
    -- negligible
+or)
+    1) produce tight TT elmu to get rid of DY, single-top and dibosons?
+    2) implement muon-trigger elmu as the old one?
 
 So, again something is wrong with lepton SFs?
 Incorrect average of BCDEF and GH for PU and muon ID?
 + compare to separate epochs data
+  -- more visible in muons, kind of the same in electrons,
+     the curve of the kink is a bit different
 
 
 
@@ -100,6 +103,234 @@ indeed the calculated PU are weird
 also included the Golden Json separated into BCDEF and GH
 
 -- to produce the Up Down variations on lxplus
+
+
+#### result in tt_elmu
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --sys TOPPTUp
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --sys TOPPTUp
+
+compare with old:
+plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/
+
+elmu_el_pt no difference
+elmu_mu_pt no difference, only normalization
+
+
+how do eta look like:
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_eta --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_eta --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test5_bunchDILEP3,,SingleElectron_elmu_el_eta_tt_elmu_NOMINAL_stack_ratio.png    plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/distrs,v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu_distrs,v37_test5_bunchDILEP3,,SingleElectron_elmu_el_eta_tt_elmu_NOMINAL_stack_ratio.png
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test5_bunchDILEP3,,SingleElectron_elmu_mu_eta_tt_elmu_NOMINAL_stack_ratio.png    plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/distrs,v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu_distrs,v37_test5_bunchDILEP3,,SingleElectron_elmu_mu_eta_tt_elmu_NOMINAL_stack_ratio.png
+
+-- same deviations, plus a bit of normalization issue
+
+So, what is it?
+
+Check no weight histos:
+
+v37_test8_bunchDILEP3_INITIAL_mc_1_amcatnlo.root
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3_INITIAL_mc_1_amcatnlo.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --sys INITIAL --normalize
+python stack_plot.py distrs/v37_test8_bunchDILEP3_INITIAL_mc_1_amcatnlo.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --sys INITIAL --normalize
+
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_INITIAL_mc_1_amcatnlo_distrs,v37_test5_bunchDILEP3,,SingleElectron_elmu_el_pt_tt_elmu_INITIAL_stack_ratio_normalize.png plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test5_bunchDILEP3,,SingleElectron_elmu_el_pt_tt_elmu_NOMINAL_stack_ratio.png
+
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_INITIAL_mc_1_amcatnlo_distrs,v37_test5_bunchDILEP3,,SingleElectron_elmu_mu_pt_tt_elmu_INITIAL_stack_ratio_normalize.png plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test5_bunchDILEP3,,SingleElectron_elmu_mu_pt_tt_elmu_NOMINAL_stack_ratio.png
+
+looks like weights make it worse
+
+without normalization to data you see the Data-MC difference is smaller at low pT
+and the SFs are larger there -- hence the stronger bend after the weights
+
+redo Data in test6 to be sure about the pT cut
+
+or:
+
+root -l lstore_outdirs/v37/test5/Data13TeV_SingleMuon2016G_03Feb2017_v1/Data13TeV_SingleMuon2016G_03Feb2017_v1_1.root
+
+ttree_out->Draw("event_leptons[0].pt()>>h(100,0,50)", "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_bSF")
+ttree_out->Draw("event_leptons[1].pt()>>h(100,0,50)", "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_bSF")
+
+-- clearly 26GeV cut in lep0 and 30GeV in lep1!
+
+root -l lstore_outdirs/v37/test6/Data13TeV_SingleMuon2016G_03Feb2017_v1/Data13TeV_SingleMuon2016G_03Feb2017_v1_1.root
+
+-- both 32GeV
+
+run full script
+
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210)" --histo-range 100,0,50 --output test_tt_elmu_Data_test5_lep_pt_edge.root --histo-name test_tt_elmu_Data_test5_lep_pt_edge lstore_outdirs/v37/test5/Data13TeV_SingleEle*/Data13TeV*.root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210)" --histo-range 100,0,50 --output test_tt_elmu_Data_test6_lep_pt_edge.root --histo-name test_tt_elmu_Data_test6_lep_pt_edge lstore_outdirs/v37/test6/Data13TeV_SingleEle*/Data13TeV*.root &
+
+root -l test_tt_elmu_Data_test5_lep_pt_edge.root
+root -l test_tt_elmu_Data_test6_lep_pt_edge.root
+
+test_tt_elmu_Data_test5_lep_pt_edge->Draw("hist")
+test_tt_elmu_Data_test5_lep_pt_edge->Print()
+test_tt_elmu_Data_test6_lep_pt_edge->Draw("hist")
+test_tt_elmu_Data_test6_lep_pt_edge->Print()
+
+-- test5 at 26, Entries= 200051, Total sum= 97561
+   test6 at 32, Entries= 164236, Total sum= 64657
+
+rm `cat batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_104.root batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_30.root batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_36.root batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_43.root batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_46.root batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_52.root batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_66.root batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_69.root batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_77.root batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_80.root batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_81.root | sed '/^time.*tt_dilep/ s,.*\(jobsums.*Data[^.]*.root\).*,\1, p' -n`
+
+grep -l Data13TeV_SingleMuon2016B_03Feb2017_ver2_104 queue_dir/v37/test6/jobs_dir/job_*
+grep -l Data13TeV_SingleMuon2016B_03Feb2017_ver2_30  queue_dir/v37/test6/jobs_dir/job_*
+grep -l Data13TeV_SingleMuon2016B_03Feb2017_ver2_36  queue_dir/v37/test6/jobs_dir/job_*
+grep -l Data13TeV_SingleMuon2016B_03Feb2017_ver2_43  queue_dir/v37/test6/jobs_dir/job_*
+grep -l Data13TeV_SingleMuon2016B_03Feb2017_ver2_46  queue_dir/v37/test6/jobs_dir/job_*
+grep -l Data13TeV_SingleMuon2016B_03Feb2017_ver2_52  queue_dir/v37/test6/jobs_dir/job_*
+grep -l Data13TeV_SingleMuon2016B_03Feb2017_ver2_66  queue_dir/v37/test6/jobs_dir/job_*
+grep -l Data13TeV_SingleMuon2016B_03Feb2017_ver2_69  queue_dir/v37/test6/jobs_dir/job_*
+grep -l Data13TeV_SingleMuon2016B_03Feb2017_ver2_77  queue_dir/v37/test6/jobs_dir/job_*
+grep -l Data13TeV_SingleMuon2016B_03Feb2017_ver2_80  queue_dir/v37/test6/jobs_dir/job_*
+grep -l Data13TeV_SingleMuon2016B_03Feb2017_ver2_81  queue_dir/v37/test6/jobs_dir/job_*
+
+grep queue_dir/v37/test6/jobs_dir/job_00813 queue_dir/v37/test6/jobs_dir/submit
+grep queue_dir/v37/test6/jobs_dir/job_00817 queue_dir/v37/test6/jobs_dir/submit
+grep queue_dir/v37/test6/jobs_dir/job_00816 queue_dir/v37/test6/jobs_dir/submit
+grep queue_dir/v37/test6/jobs_dir/job_00814 queue_dir/v37/test6/jobs_dir/submit
+grep queue_dir/v37/test6/jobs_dir/job_00810 queue_dir/v37/test6/jobs_dir/submit
+grep queue_dir/v37/test6/jobs_dir/job_00820 queue_dir/v37/test6/jobs_dir/submit
+grep queue_dir/v37/test6/jobs_dir/job_00818 queue_dir/v37/test6/jobs_dir/submit
+grep queue_dir/v37/test6/jobs_dir/job_00811 queue_dir/v37/test6/jobs_dir/submit
+grep queue_dir/v37/test6/jobs_dir/job_00819 queue_dir/v37/test6/jobs_dir/submit
+grep queue_dir/v37/test6/jobs_dir/job_00812 queue_dir/v37/test6/jobs_dir/submit
+grep queue_dir/v37/test6/jobs_dir/job_00815 queue_dir/v37/test6/jobs_dir/submit
+
+qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/v37/test6/jobs_dir/job_00813' 
+qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/v37/test6/jobs_dir/job_00817' 
+qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/v37/test6/jobs_dir/job_00816' 
+qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/v37/test6/jobs_dir/job_00814' 
+qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/v37/test6/jobs_dir/job_00810' 
+qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/v37/test6/jobs_dir/job_00820' 
+qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/v37/test6/jobs_dir/job_00818' 
+qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/v37/test6/jobs_dir/job_00811' 
+qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/v37/test6/jobs_dir/job_00819' 
+qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/v37/test6/jobs_dir/job_00812' 
+qsub -l h_vmem=1G '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/v37/test6/jobs_dir/job_00815' 
+
+
+grep Data13TeV_SingleMuon2016B_03Feb2017_ver2_104 batch_jobs/submit
+grep Data13TeV_SingleMuon2016B_03Feb2017_ver2_30  batch_jobs/submit
+grep Data13TeV_SingleMuon2016B_03Feb2017_ver2_36  batch_jobs/submit
+grep Data13TeV_SingleMuon2016B_03Feb2017_ver2_43  batch_jobs/submit
+grep Data13TeV_SingleMuon2016B_03Feb2017_ver2_46  batch_jobs/submit
+grep Data13TeV_SingleMuon2016B_03Feb2017_ver2_52  batch_jobs/submit
+grep Data13TeV_SingleMuon2016B_03Feb2017_ver2_66  batch_jobs/submit
+grep Data13TeV_SingleMuon2016B_03Feb2017_ver2_69  batch_jobs/submit
+grep Data13TeV_SingleMuon2016B_03Feb2017_ver2_77  batch_jobs/submit
+grep Data13TeV_SingleMuon2016B_03Feb2017_ver2_80  batch_jobs/submit
+grep Data13TeV_SingleMuon2016B_03Feb2017_ver2_81  batch_jobs/submit
+
+qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_104.root"
+qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_30.root"
+qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_36.root"
+qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_43.root"
+qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_46.root"
+qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_52.root"
+qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_66.root"
+qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_69.root"
+qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_77.root"
+qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_80.root"
+qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_81.root"
+
+
+find jobsums/distrs/v37_test6_bunchDILEP3/all/ -name Data13TeV_SingleMuon2016B_03Feb2017_ver2_104.root -delete
+find jobsums/distrs/v37_test6_bunchDILEP3/all/ -name Data13TeV_SingleMuon2016B_03Feb2017_ver2_30.root  -delete
+find jobsums/distrs/v37_test6_bunchDILEP3/all/ -name Data13TeV_SingleMuon2016B_03Feb2017_ver2_36.root  -delete
+find jobsums/distrs/v37_test6_bunchDILEP3/all/ -name Data13TeV_SingleMuon2016B_03Feb2017_ver2_43.root  -delete
+find jobsums/distrs/v37_test6_bunchDILEP3/all/ -name Data13TeV_SingleMuon2016B_03Feb2017_ver2_46.root  -delete
+find jobsums/distrs/v37_test6_bunchDILEP3/all/ -name Data13TeV_SingleMuon2016B_03Feb2017_ver2_52.root  -delete
+find jobsums/distrs/v37_test6_bunchDILEP3/all/ -name Data13TeV_SingleMuon2016B_03Feb2017_ver2_66.root  -delete
+find jobsums/distrs/v37_test6_bunchDILEP3/all/ -name Data13TeV_SingleMuon2016B_03Feb2017_ver2_69.root  -delete
+find jobsums/distrs/v37_test6_bunchDILEP3/all/ -name Data13TeV_SingleMuon2016B_03Feb2017_ver2_77.root  -delete
+find jobsums/distrs/v37_test6_bunchDILEP3/all/ -name Data13TeV_SingleMuon2016B_03Feb2017_ver2_80.root  -delete
+find jobsums/distrs/v37_test6_bunchDILEP3/all/ -name Data13TeV_SingleMuon2016B_03Feb2017_ver2_81.root  -delete
+
+wc -l j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_81.root.e42214 j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_69.root.e42211 j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_80.root.e42213 j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_77.root.e42212 j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_52.root.e42209 j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_66.root.e42210 j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_46.root.e42208 j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_43.root.e42207 j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_36.root.e42206 j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_30.root.e42205 j_Data13TeV_SingleMuon2016B_03Feb2017_ver2_104.root.e42204
+
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test6_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test6_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test5_bunchDILEP3,,SingleElectron_elmu_el_pt_tt_elmu_NOMINAL_stack_ratio.png plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test6_bunchDILEP3,,SingleElectron_elmu_el_pt_tt_elmu_NOMINAL_stack_ratio.png
+
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test5_bunchDILEP3,,SingleElectron_elmu_mu_pt_tt_elmu_NOMINAL_stack_ratio.png plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test6_bunchDILEP3,,SingleElectron_elmu_mu_pt_tt_elmu_NOMINAL_stack_ratio.png
+
+-- no difference????????
+   6GeV muon and 2GeV electron
+   the tests showed them different in test5 and test6
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test6_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_eta --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test6_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_eta --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+test the same distr with sumut draw script:
+
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210)" --histo-range 40,0,200 --output test_tt_elmu_Data_test5_lep_pt.root --histo-name test_tt_elmu_Data_test5_lep_pt lstore_outdirs/v37/test5/Data13TeV_SingleEle*/Data13TeV*.root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210)" --histo-range 40,0,200 --output test_tt_elmu_Data_test6_lep_pt.root --histo-name test_tt_elmu_Data_test6_lep_pt lstore_outdirs/v37/test6/Data13TeV_SingleEle*/Data13TeV*.root &
+
+
+root -l test_tt_elmu_Data_test5_lep_pt.root
+test_tt_elmu_Data_test5_lep_pt->Draw("hist")
+test_tt_elmu_Data_test5_lep_pt->Print()
+
+root -l test_tt_elmu_Data_test6_lep_pt.root
+test_tt_elmu_Data_test6_lep_pt->Draw("hist")
+test_tt_elmu_Data_test6_lep_pt->Print()
+
+-- (test5 at 26, Entries= 200051, Total sum= 97561)
+    now Entries= 200051, Total sum= 197990
+   (test6 at 32, Entries= 164236, Total sum= 64657)
+    now Entries= 164236, Total sum= 162194
+
+hadd test_tt_elmu_Data_test_5_6_lep_pt.root test_tt_elmu_Data_test5_lep_pt.root test_tt_elmu_Data_test6_lep_pt.root
+
+root -l test_tt_elmu_Data_test_5_6_lep_pt.root
+
+test_tt_elmu_Data_test6_lep_pt->SetLineColor(kRed)
+
+test_tt_elmu_Data_test5_lep_pt->Draw("hist")
+test_tt_elmu_Data_test6_lep_pt->Draw("hist same")
+
+-- different by a whole bin
+   the reproduced test5 is not from test5 then?
+
+compare these to the processed in the loop
+
+python jobsums/get_shapes.py --formula "test5_loop:test5_scr" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj test5_loop:jobsums/distrs/v37_test5_bunchDILEP3/SingleElectron.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_lep_pt test5_scr:test_tt_elmu_Data_test_5_6_lep_pt.root:test_tt_elmu_Data_test5_lep_pt
+
+-- different distrs
+
+python jobsums/get_shapes.py --formula "test6_loop:test6_scr" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj test6_loop:jobsums/distrs/v37_test6_bunchDILEP3/SingleElectron.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_lep_pt test6_scr:test_tt_elmu_Data_test_5_6_lep_pt.root:test_tt_elmu_Data_test6_lep_pt
+
+-- perfect match
+
+python jobsums/get_shapes.py --formula "test5_loop:test5_scr:test6_loop:test6_scr" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj test5_loop:jobsums/distrs/v37_test5_bunchDILEP3/SingleElectron.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_lep_pt test5_scr:test_tt_elmu_Data_test_5_6_lep_pt.root:test_tt_elmu_Data_test5_lep_pt test6_loop:jobsums/distrs/v37_test6_bunchDILEP3/SingleElectron.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_lep_pt test6_scr:test_tt_elmu_Data_test_5_6_lep_pt.root:test_tt_elmu_Data_test6_lep_pt
+
+python jobsums/get_shapes.py --formula "test5_loop:test5_scr:0.95 test6_loop:1.05 test6_scr" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj test5_loop:jobsums/distrs/v37_test5_bunchDILEP3/SingleElectron.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_lep_pt test5_scr:test_tt_elmu_Data_test_5_6_lep_pt.root:test_tt_elmu_Data_test5_lep_pt test6_loop:jobsums/distrs/v37_test6_bunchDILEP3/SingleElectron.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_lep_pt test6_scr:test_tt_elmu_Data_test_5_6_lep_pt.root:test_tt_elmu_Data_test6_lep_pt
+
+-- yeap, only test5 sumup script is different from the rest
+
+So, what on Earth is this kink?????????
+
+
+
+
+
+#### dy dileptons
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo/  -c dy_elel --data-nick data_other -d met_c  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test5_bunch2//SingleMuon.root     -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo/  -c dy_mumu --data-nick data_other -d met_c  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+-- back to original kink in mumu, similar but smaller bend in elel
 
 
 
@@ -910,7 +1141,9 @@ python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root dis
 python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
 python stack_plot.py distrs/v37_test7_bunchDILEP3_mc_2_amcatnlo_tt_elmu.root distrs/v37_test5_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test7_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
 
-per epoch Data
+
+
+##### per epoch Data
 
 hadd SingleElectron_BCDEF.root Data13TeV_SingleElectron2016[BCDEF]*.root &
 hadd SingleElectron_GH.root    Data13TeV_SingleElectron2016[GH]*.root    &

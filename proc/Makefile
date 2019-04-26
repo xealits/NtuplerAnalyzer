@@ -14,6 +14,13 @@ submit_batch_plots: batch_jobs=batch_jobs
 submit_batch_plots:
 	ls ${batch_jobs}/ | sed -e 's,^\(.*\)$$,qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/'${batch_jobs}'/\1",' | grep -v submit > ${batch_jobs}/submit
 
+find_missing_jobs: nt=v37
+find_missing_jobs: proc=test8
+find_missing_jobs:
+	cat queue_dir/${nt}/${proc}/jobs_dir/job_* | sed -n '/[^/]*\.root/ s,^.*/\([^/][^/]*\.root\).*,\1, p' | sort > job_files
+	find lstore_outdirs/v37/test8/ -name "*root" -exec basename '{}' \; 2> /dev/null | sort > job_files_produced
+	diff job_files job_files_produced | tee job_files_missing
+
 sumup_weights: nt=v37
 sumup_weights: proc=test5
 sumup_weights: distrs=bunch1

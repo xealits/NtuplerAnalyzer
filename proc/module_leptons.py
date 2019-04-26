@@ -529,6 +529,11 @@ if __name__ == '__main__':
             el_sfs_reco, el_sfs_id = lepton_electron_SF(eta, pt)
             print "%5.1f" % eta, "%5.1f" % pt, "%8.3f" % el_sfs_reco[0], '+-', "%4.3f" % el_sfs_reco[1], "%8.3f" % el_sfs_id[0], '+-', "%4.3f" % el_sfs_id[1]
 
+        print "electron ID reverted input"
+        for eta, pt in sorted(kino_points) + sorted(ele_kino_points_pt_low, key=lambda el: el[1]) + sorted(ele_kino_points_pt_high):
+            el_sfs_reco, el_sfs_id = lepton_electron_SF(pt, eta)
+            print "%5.1f" % eta, "%5.1f" % pt, "%8.3f" % el_sfs_reco[0], '+-', "%4.3f" % el_sfs_reco[1], "%8.3f" % el_sfs_id[0], '+-', "%4.3f" % el_sfs_id[1]
+
         print "electron trigger"
         for eta, pt in sorted(kino_points) + sorted(ele_kino_points_pt_low, key=lambda el: el[1]):
             print eta, pt, lepton_electron_trigger_SF(eta, pt)
