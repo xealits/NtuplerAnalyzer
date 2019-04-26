@@ -38,7 +38,8 @@ REQUIRE_MLB = False
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all):
     #return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all or pass_mumu
-    return pass_mu or pass_el or pass_elmu_el or pass_mumu or pass_elel
+    return pass_elmu
+    #return pass_mu or pass_el or pass_elmu_el or pass_mumu or pass_elel
 
 
 def passes_wjets_control_selection(passed_triggers, leps, N_jets, taus, proc_met):
@@ -67,8 +68,9 @@ def passes_wjets_control_selection(passed_triggers, leps, N_jets, taus, proc_met
 def passes_elmu_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
     channel_stage = 0
     pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
+    main_tt_elmu_trig = pass_elmu
 
-    pass_elmu_leps = pass_elmu_el and len(leps[4]) == 2 and leps[4][0] * leps[4][1] == -11*13
+    pass_elmu_leps = main_tt_elmu_trig and len(leps[4]) == 2 and leps[4][0] * leps[4][1] == -11*13
     pass_elmu_leps_jets = pass_elmu_leps and N_jets[1] > 1
     pass_elmu_leps_jets_bjet = pass_elmu_leps_jets and N_jets[0] > 0
 
@@ -78,7 +80,7 @@ def passes_elmu_selection_stages(passed_triggers, leps, N_jets, taus, proc_met):
         channel_stage = 204
     elif pass_elmu_leps:
         channel_stage = 203
-    elif pass_elmu_el:
+    elif main_tt_elmu_trig:
         channel_stage = 202
 
     return channel_stage
@@ -3004,7 +3006,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
 
             # for now let's just use 1 elmu and it is electron-triggered one
-            if False and isMC and pass_elmu:
+            if isMC and pass_elmu:
                 # find which lepton is mu and which is el
                 mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
                 mu_sfs_b, mu_sfs_h     = lepton_muon_SF(ev.lep_p4[mu_n].eta(), ev.lep_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
@@ -3070,7 +3072,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 weight_lep_pu_elTRGDown = weight_lep_pu
 
 
-            if isMC and pass_elmu_el:
+            if False and isMC and pass_elmu_el:
                 # find which lepton is mu and which is el
                 mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
                 mu_sfs_b, mu_sfs_h     = lepton_muon_SF(ev.lep_p4[mu_n].eta(), ev.lep_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
