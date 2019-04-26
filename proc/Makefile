@@ -10,8 +10,8 @@ clear_gstore_failed:
 check_job_error_not_found:
 	cat `wc -l job_*.e*[0-9] | grep '^   12 ' | sed 's/^   12 //'` | grep ' does not exist'
 
-submit_batch_plots: batch_jobs=batch_jobs
-submit_batch_plots:
+batch_plots: batch_jobs=batch_jobs
+batch_plots:
 	ls ${batch_jobs}/ | sed -e 's,^\(.*\)$$,qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/'${batch_jobs}'/\1",' | grep -v submit > ${batch_jobs}/submit
 
 find_missing_jobs: nt=v37

@@ -1,8 +1,12 @@
-# the tt_elmu_mu
+# test11 DY Z mass correction
+
+# test10 the tt_elmu_mu
 python genjobs.py v37 test10 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags std_mc,std_data
 
-# testing the gen nvtx for lep SFs
+# test9 testing the gen nvtx for lep SFs
+# --- not much of a difference
 python genjobs.py v37 test9 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags MC2016_Summer16_TTJets_powheg
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test9 --distrs bunchDILEP3 --chan-groups tt_dileptons
 
 # correct per-epoch PU
 python genjobs.py v37 test8 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags std_mc,wjets_amcatnlo,std_qcd,dy_std,dy_ext

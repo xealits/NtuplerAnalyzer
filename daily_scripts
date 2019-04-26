@@ -473,9 +473,30 @@ python stack_plot.py distrs/v37_test8_bunchDILEP3tight_mc_1_amcatnlo.root distrs
 INFO:root:data       =    77143.000000     1437.506418
 INFO:root:mc sum     =    75482.014048    75482.014048
 
-.... can it all be due to weird DY mass problem?
+.... can it all be due to that weird DY mass problem alone?
 
 test11 -- DY mass correction?
+
+
+the test9:
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_2_amcatnlo_tt_from_test9.root distrs/v37_test6_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --normalize
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_2_amcatnlo_tt_from_test9.root distrs/v37_test6_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --normalize
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_2_amcatnlo_tt_from_test9.root distrs/v37_test6_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_2_amcatnlo_tt_from_test9.root distrs/v37_test6_bunchDILEP3//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_2_amcatnlo_tt_from_test9_distrs,v37_test6_bunchDILEP3,,SingleElectron_elmu_el_pt_tt_elmu_NOMINAL_stack_ratio_normalize.png
+plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_2_amcatnlo_tt_from_test9_distrs,v37_test6_bunchDILEP3,,SingleElectron_elmu_mu_pt_tt_elmu_NOMINAL_stack_ratio_normalize.png
+
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_2_amcatnlo_tt_from_test9_distrs,v37_test6_bunchDILEP3,,SingleElectron_elmu_el_pt_tt_elmu_NOMINAL_stack_ratio_normalize.png plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test6_bunchDILEP3,,SingleElectron_elmu_el_pt_tt_elmu_NOMINAL_stack_ratio.png
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_2_amcatnlo_tt_from_test9_distrs,v37_test6_bunchDILEP3,,SingleElectron_elmu_mu_pt_tt_elmu_NOMINAL_stack_ratio_normalize.png plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test6_bunchDILEP3,,SingleElectron_elmu_mu_pt_tt_elmu_NOMINAL_stack_ratio.png
+
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_2_amcatnlo_tt_from_test9_distrs,v37_test6_bunchDILEP3,,SingleElectron_elmu_el_pt_tt_elmu_NOMINAL_stack_ratio.png plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test6_bunchDILEP3,,SingleElectron_elmu_el_pt_tt_elmu_NOMINAL_stack_ratio.png &
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_2_amcatnlo_tt_from_test9_distrs,v37_test6_bunchDILEP3,,SingleElectron_elmu_mu_pt_tt_elmu_NOMINAL_stack_ratio.png plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test6_bunchDILEP3,,SingleElectron_elmu_mu_pt_tt_elmu_NOMINAL_stack_ratio.png
+
+-- as expected not much difference, only bin-by-bin fluctuations
+
 
 
 #### dy dileptons

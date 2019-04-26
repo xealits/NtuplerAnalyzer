@@ -337,6 +337,8 @@ usual_gen_lumi_weights = {
 "MC2016_Summer16_SingleT_tW_5FS_powheg" : 7079946.591460,
 "MC2016_Summer16_SingleTbar_tW_5FS_powheg" : 7060819.557982, 
 "MC2016_Summer16_TTJets_powheg" : 78189291.372787,
+"MC2016_Summer16_TTJets_powheg" : 51888536.120941, # test9, 66 jobs
+
 "MC2016_Summer16_W1Jets_madgraph" : 42268723.655958, 
 "MC2016_Summer16_W2Jets_madgraph" : 58623419.131360,
 "MC2016_Summer16_W3Jets_madgraph" : 57773140.789413,
