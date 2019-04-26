@@ -49,7 +49,14 @@ root -l ../analysis/muon-effs//2016_23Sep_MuonID_EfficienciesAndSF_BCDEF.root
 root -l ../analysis/muon-effs//2016_23Sep_MuonISO_EfficienciesAndSF_BCDEF.root
 root -l ../analysis/muon-effs//2016_23Sep_SingleMuonTrigger_EfficienciesAndSF_RunBtoF.root
 
-ratio_eff_aeta_dr030e030_corr->Draw()                                                                                                                            
+root -l ../analysis/muon-effs//2016_23Sep_tracking_more_GH_fits.root
+root -l ../analysis/muon-effs//2016_23Sep_MuonID_EfficienciesAndSF_GH.root
+root -l ../analysis/muon-effs//2016_23Sep_MuonISO_EfficienciesAndSF_GH.root
+root -l ../analysis/muon-effs//2016_23Sep_SingleMuonTrigger_EfficienciesAndSF_Period4.root
+
+ratio_eff_aeta_dr030e030_corr->Draw()
+ratio_eff_vtx_dr030e030_corr->Draw()
+
 MC_NUM_TightID_DEN_genTracks_PAR_pt_eta->Get("pt_abseta_ratio")->Draw("colz")
 TightISO_TightID_pt_eta->Get("pt_abseta_ratio")->Draw("colz")
 IsoMu24_OR_IsoTkMu24_PtEtaBins->Get("pt_abseta_ratio")->Draw("colz")
@@ -193,7 +200,8 @@ def lepton_muon_SF(eta, pt, vtx, vtx_gen): #SingleMuon_data_bcdef_fraction, Sing
     #h_weight_mu_idd_bcdef_eta.Fill(bin_y)
 
     # and add vtx ID SF
-    bcdef_weight_id     *= muon_effs_id_vtx_BCDEF_histo.GetBinContent (muon_effs_id_vtx_BCDEF_histo.FindBin(vtx))
+    #bcdef_weight_id     *= muon_effs_id_vtx_BCDEF_histo.GetBinContent (muon_effs_id_vtx_BCDEF_histo.FindBin(vtx))
+    bcdef_weight_id     *= muon_effs_id_vtx_BCDEF_histo.GetBinContent (muon_effs_id_vtx_BCDEF_histo.FindBin(vtx_gen))
 
     # these too:
     if   pt < muon_effs_iso_BCDEF_histo_min_x:
@@ -217,7 +225,8 @@ def lepton_muon_SF(eta, pt, vtx, vtx_gen): #SingleMuon_data_bcdef_fraction, Sing
     #bcdef_weight_iso = muon_effs_iso_BCDEF_histo->GetBinContent (muon_effs_iso_BCDEF_histo->FindBin(bin_x, bin_y));
 
     # and vtx
-    bcdef_weight_iso     *= muon_effs_iso_vtx_BCDEF_histo.GetBinContent (muon_effs_iso_vtx_BCDEF_histo.FindBin(vtx))
+    #bcdef_weight_iso     *= muon_effs_iso_vtx_BCDEF_histo.GetBinContent (muon_effs_iso_vtx_BCDEF_histo.FindBin(vtx))
+    bcdef_weight_iso     *= muon_effs_iso_vtx_BCDEF_histo.GetBinContent (muon_effs_iso_vtx_BCDEF_histo.FindBin(vtx_gen))
 
     #fill_1d(string("weight_muon_effs_BCDEF_trk"),  200, 0., 1.1,   bcdef_weight_trk, 1);
     #fill_1d(string("weight_muon_effs_BCDEF_id"),   200, 0., 1.1,   bcdef_weight_id,  1);
@@ -248,7 +257,8 @@ def lepton_muon_SF(eta, pt, vtx, vtx_gen): #SingleMuon_data_bcdef_fraction, Sing
     #h_weight_mu_idd_gh_pt .Fill(bin_x)
     #h_weight_mu_idd_gh_eta.Fill(bin_y)
 
-    gh_weight_id     *= muon_effs_id_vtx_GH_histo.GetBinContent (muon_effs_id_vtx_GH_histo.FindBin(vtx))
+    #gh_weight_id     *= muon_effs_id_vtx_GH_histo.GetBinContent (muon_effs_id_vtx_GH_histo.FindBin(vtx))
+    gh_weight_id     *= muon_effs_id_vtx_GH_histo.GetBinContent (muon_effs_id_vtx_GH_histo.FindBin(vtx_gen))
 
     # these too:
     if   pt < muon_effs_iso_GH_histo_min_x:
@@ -267,7 +277,8 @@ def lepton_muon_SF(eta, pt, vtx, vtx_gen): #SingleMuon_data_bcdef_fraction, Sing
     #h_weight_mu_iso_gh_pt .Fill(bin_x)
     #h_weight_mu_iso_gh_eta.Fill(bin_y)
 
-    gh_weight_iso     *= muon_effs_iso_vtx_GH_histo.GetBinContent (muon_effs_iso_vtx_GH_histo.FindBin(vtx))
+    #gh_weight_iso     *= muon_effs_iso_vtx_GH_histo.GetBinContent (muon_effs_iso_vtx_GH_histo.FindBin(vtx))
+    gh_weight_iso     *= muon_effs_iso_vtx_GH_histo.GetBinContent (muon_effs_iso_vtx_GH_histo.FindBin(vtx_gen))
 
     # for tracking 0 and 1 are used now
     return (bcdef_weight_trk * bcdef_weight_trk_vtx_gen, trk_gen_unc_bcdef, bcdef_weight_trk_vtx, (bcdef_weight_id, bcdef_weight_id_unc), (bcdef_weight_iso, bcdef_weight_iso_unc)), \

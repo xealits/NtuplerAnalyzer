@@ -835,6 +835,8 @@ std_channels_ev_loop = {
 'wjets_el_ss' : (lambda sel_stage, ev: (sel_stage== 16), {'NOMINAL': lambda ev: ev.selection_stage_wjets}),
 
 'tt_elmu':  (lambda sel_stage, ev: (sel_stage> 200 and sel_stage < 210 and ev.event_leptons[0].pt() > 32. and ev.event_leptons[1].pt() > 32.), {'NOMINAL': lambda ev: ev.selection_stage_em}),
+'tt_elmu_tight':  (lambda sel_stage, ev: (sel_stage == 205 and ev.event_leptons[0].pt() > 32. and ev.event_leptons[1].pt() > 32.), {'NOMINAL': lambda ev: ev.selection_stage_em}),
+
 'tt_alliso_presel_el'    :  (lambda sel_stage, ev: sel_stage==513, {'NOMINAL': lambda ev: ev.selection_stage_tt_alliso}),
 'tt_alliso_presel_el_ss' :  (lambda sel_stage, ev: sel_stage==512, {'NOMINAL': lambda ev: ev.selection_stage_tt_alliso}),
 'tt_alliso_presel_mu'    :  (lambda sel_stage, ev: sel_stage==503, {'NOMINAL': lambda ev: ev.selection_stage_tt_alliso}),
@@ -885,6 +887,8 @@ presel_sys = ['NOMINAL', 'TOPPTDown', 'TOPPTUp', 'PUUp', 'PUDown']
 channels_distrs = {
 'tt_alliso_presel'    : (['tt_alliso_presel_el', 'tt_alliso_presel_el_ss', 'tt_alliso_presel_mu', 'tt_alliso_presel_mu_ss', ], sorted(distrs_lep.union(distrs_relIso)), main_sys),
 'tt_dileptons'    : (['tt_elmu'], sorted(distrs_leptonic.union({'phi_met_lep'}).union({'elmu_el_pt', 'elmu_el_eta', 'elmu_mu_pt', 'elmu_mu_eta'})), main_sys + ['TOPPTUp', 'TOPPTDown']),
+'tt_dileptons_tight'    : (['tt_elmu_tight'], sorted(distrs_leptonic.union({'phi_met_lep'}).union({'elmu_el_pt', 'elmu_el_eta', 'elmu_mu_pt', 'elmu_mu_eta'})), main_sys + ['TOPPTUp', 'TOPPTDown']),
+
 'tt_leptauSV'     : (['el_selSV', 'el_selSVVloose', 'el_selSV_ss', 'el_selSVVloose_ss', 'mu_selSV', 'mu_selSVVloose', 'mu_selSV_ss', 'mu_selSVVloose_ss'], sorted(distrs_tauonic_std.union(distrs_leptonic) - distrs_mt_fit), ['nom']),
 
 'fit_tt_leptau'       : (['el_sel',       'el_sel_ss',       'mu_sel',       'mu_sel_ss'],       sorted(distrs_mt), full_sys),

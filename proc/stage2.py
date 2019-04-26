@@ -2950,8 +2950,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             if isMC and (pass_mumu or pass_mumu_ss):
                 # our single-muon HLT demands an OR operation on the 2 muons
                 #(mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt())
-                (mu_trg_sf_b1, trg_b_unc1), (mu_trg_sf_h1, trg_h_unc1) = lepton_muon_trigger_SF(ev.lep_alliso_p4[0].eta(), ev.lep_alliso_p4[0].pt())
-                (mu_trg_sf_b2, trg_b_unc2), (mu_trg_sf_h2, trg_h_unc2) = lepton_muon_trigger_SF(ev.lep_alliso_p4[1].eta(), ev.lep_alliso_p4[1].pt())
+                (mu_trg_sf_b1, trg_b_unc1), (mu_trg_sf_h1, trg_h_unc1) = lepton_muon_trigger_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt())
+                (mu_trg_sf_b2, trg_b_unc2), (mu_trg_sf_h2, trg_h_unc2) = lepton_muon_trigger_SF(ev.lep_p4[1].eta(), ev.lep_p4[1].pt())
                 mu_trg_sf_b, trg_b_unc = dilepton_or_sfs(mu_trg_sf_b1, trg_b_unc1, mu_trg_sf_b2, trg_b_unc2)
                 mu_trg_sf_h, trg_h_unc = dilepton_or_sfs(mu_trg_sf_h1, trg_h_unc1, mu_trg_sf_h2, trg_h_unc2)
 
@@ -3008,9 +3008,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 # find which lepton is mu and which is el
                 mu_n, el_n = (0, 1) if abs(ev.lep_id[0]) == 13 else (1, 0)
                 mu_sfs_b, mu_sfs_h     = lepton_muon_SF(ev.lep_p4[mu_n].eta(), ev.lep_p4[mu_n].pt(), ev.nvtx, ev.nvtx_gen)
-                (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(ev.lep_p4[mu_n].eta(), ev.lep_p4[mu_n].pt())
+                #(mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(ev.lep_p4[mu_n].eta(), ev.lep_p4[mu_n].pt())
                 el_sfs_reco, el_sfs_id = lepton_electron_SF(ev.lep_p4[el_n].eta(), ev.lep_p4[el_n].pt())
-                #el_trg_sf              = lepton_electron_trigger_SF(ev.lep_p4[el_n].eta(), ev.lep_p4[el_n].pt())
+                #el_trg_sf, el_trg_unc  = lepton_electron_trigger_SF(ev.lep_p4[el_n].eta(), ev.lep_p4[el_n].pt())
+
+                (mu_trg_sf_b, trg_b_unc), (mu_trg_sf_h, trg_h_unc) = lepton_muon_trigger_SF(ev.lep_p4[mu_n].eta(), ev.lep_p4[0].pt())
 
                 #weight_lep_Up   *= weight * (el_trg_sf[0] + el_trg_sf[1]) * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
                 #weight_lep_Down *= weight * (el_trg_sf[0] - el_trg_sf[1]) * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
@@ -3019,23 +3021,54 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 mu_b_trk, mu_b_trk_u = mu_sfs_b[0:2] # unc in mu_sfs_b[1]
                 mu_h_trk, mu_h_trk_u = mu_sfs_h[0:2] # unc in mu_sfs_h[1]
 
-                weight_lepMU_id_Up   = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
-                                         ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]))
-                weight_lepMU_id_Down = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
-                                         ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]))
+                weight_lep_el = el_sfs_reco[0] * el_sfs_id[0]
 
-                weight_lepMU_id_Up   *= (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
-                weight_lepMU_id_Down *= (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+                #weight_lep_mu = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                #                ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                weight_lep_mu = ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * mu_trg_sf_b * weight_pu_bcdef + \
+                                ratio_gh    * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * mu_trg_sf_h * weight_pu_gh
 
-                weight_lepMU_trg_Up   = (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                                          ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0])
-                weight_lepMU_trg_Down = (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                                          ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0])
+                weight_lep_mu_PUUp = ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * mu_trg_sf_b * weight_pu_bcdef_up + \
+                                     ratio_gh    * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * mu_trg_sf_h * weight_pu_gh_up
 
-                weight_lep = el_sfs_reco[0] * el_sfs_id[0]
+                weight_lep_mu_PUDown = ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * mu_trg_sf_b * weight_pu_bcdef_dn + \
+                                       ratio_gh    * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * mu_trg_sf_h * weight_pu_gh_dn
 
-                weight_lep *= ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
-                              ratio_gh    * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                weight_lep_pu_muTRGUp   = ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * (mu_trg_sf_b + trg_b_unc) * weight_pu_bcdef + \
+                                          ratio_gh    * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * (mu_trg_sf_h + trg_h_unc) * weight_pu_gh
+
+                weight_lep_pu_muTRGDown = ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * (mu_trg_sf_b - trg_b_unc) * weight_pu_bcdef + \
+                                          ratio_gh    * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * (mu_trg_sf_h - trg_h_unc) * weight_pu_gh
+
+                weight_lep_pu_muTRGUp   = weight_lep_pu
+                weight_lep_pu_muTRGDown = weight_lep_pu
+
+                # controls
+                #weight_lep_EL_trg = el_trg_sf
+                weight_lep_EL_id  = weight_lep_el
+                weight_lep_B_MU_id  = mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0]
+                weight_lep_H_MU_id  = mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                # no muon trigger here
+
+                # the overall weight and systematic
+                weight_lep_pu = weight_lep_el * weight_lep_mu
+
+                weight_lep_pu_PUUp   = weight_lep_el * weight_lep_mu_PUUp
+                weight_lep_pu_PUDown = weight_lep_el * weight_lep_mu_PUDown
+
+                weight_lep_pu_muIDUp    = weight_lep_el * \
+                                         (ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) * weight_pu_bcdef + \
+                                             ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]) * weight_pu_gh   )
+                weight_lep_pu_muIDDown  = weight_lep_el * \
+                                         (ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) * weight_pu_bcdef + \
+                                             ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]) * weight_pu_gh   )
+
+                weight_lep_pu_elIDUp    = weight_lep_mu * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
+                weight_lep_pu_elIDDown  = weight_lep_mu * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+
+                weight_lep_pu_elTRGUp   = weight_lep_pu
+                weight_lep_pu_elTRGDown = weight_lep_pu
+
 
             if isMC and pass_elmu_el:
                 # find which lepton is mu and which is el
@@ -4898,7 +4931,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
 
 #def main(input_dir, dtag, outdir, range_min, range_max):
-def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19252.03, lumi_gh=16290.02):
+def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19714., lumi_gh=16146.):
     '''main(input_filename, outdir, range_min, range_max, lumi_bcdef=19252.03, lumi_gh=16290.02)
 
     lumi defaults are from _full_ golden json for muon

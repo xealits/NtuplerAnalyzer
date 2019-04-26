@@ -322,7 +322,160 @@ python jobsums/get_shapes.py --formula "test5_loop:test5_scr:0.95 test6_loop:1.0
 So, what on Earth is this kink?????????
 
 
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test6_bunchDILEP3//SingleMuon.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test6_bunchDILEP3//SingleMuon.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
 
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test6_bunchDILEP3,,SingleMuon_elmu_el_pt_tt_elmu_NOMINAL_stack_ratio.png plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3_mc_1_amcatnlo_distrs,v37_test6_bunchDILEP3,,SingleMuon_elmu_mu_pt_tt_elmu_NOMINAL_stack_ratio.png
+
+-- kind of same kinks
+
+
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210)"                      --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt.root       --histo-name test_tt_elmu_TT_test5_lep_pt        lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight"       --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_nom.root   --histo-name test_tt_elmu_TT_test5_lep_pt_nom    lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_init"  --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_init.root  --histo-name test_tt_elmu_TT_test5_lep_pt_init   lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_PU"    --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_PU.root    --histo-name test_tt_elmu_TT_test5_lep_pt_PU     lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_PU_el" --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_PU_el.root --histo-name test_tt_elmu_TT_test5_lep_pt_PU_el  lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_PU_mu" --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_PU_mu.root --histo-name test_tt_elmu_TT_test5_lep_pt_PU_mu  lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_PU_bcdef" --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_PU_bcdef.root --histo-name test_tt_elmu_TT_test5_lep_pt_PU_bcdef  lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_PU_gh"    --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_PU_gh.root    --histo-name test_tt_elmu_TT_test5_lep_pt_PU_gh  lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_bSF"    --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_bSF.root    --histo-name test_tt_elmu_TT_test5_lep_pt_bSF  lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_th"    --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_th.root    --histo-name test_tt_elmu_TT_test5_lep_pt_th  lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+
+
+
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_LEPelTRG"    --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_elTRG.root   --histo-name test_tt_elmu_TT_test5_lep_pt_elTRG  lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_LEPelID"     --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_elID.root    --histo-name test_tt_elmu_TT_test5_lep_pt_elID   lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_LEPmuBTRG"    --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_muBTRG.root   --histo-name test_tt_elmu_TT_test5_lep_pt_muBTRG  lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_LEPmuBID"     --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_muBID.root    --histo-name test_tt_elmu_TT_test5_lep_pt_muBID   lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_LEPmuHTRG"    --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_muHTRG.root   --histo-name test_tt_elmu_TT_test5_lep_pt_muHTRG  lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+python sumup_ttree_draw.py "event_leptons[0].pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210) * event_weight_LEPmuHID"     --histo-range 40,0,200 --output test_tt_elmu_TT_test5_lep_pt_muHID.root    --histo-name test_tt_elmu_TT_test5_lep_pt_muHID   lstore_outdirs/v37/test8/MC2016_Summer16_TTJets_powheg/MC*root &
+
+
+
+hadd test_tt_elmu_TT_test5_all.root test_tt_elmu_TT_test5_lep_pt*.root
+
+root -l test_tt_elmu_TT_test5_all.root
+
+test_tt_elmu_TT_test5_lep_pt        
+
+test_tt_elmu_TT_test5_lep_pt_nom       ->Divide(test_tt_elmu_TT_test5_lep_pt)
+test_tt_elmu_TT_test5_lep_pt_init      ->Divide(test_tt_elmu_TT_test5_lep_pt)
+test_tt_elmu_TT_test5_lep_pt_PU        ->Divide(test_tt_elmu_TT_test5_lep_pt)
+test_tt_elmu_TT_test5_lep_pt_PU_el     ->Divide(test_tt_elmu_TT_test5_lep_pt)
+test_tt_elmu_TT_test5_lep_pt_PU_mu     ->Divide(test_tt_elmu_TT_test5_lep_pt)
+test_tt_elmu_TT_test5_lep_pt_PU_bcdef  ->Divide(test_tt_elmu_TT_test5_lep_pt)
+test_tt_elmu_TT_test5_lep_pt_PU_gh     ->Divide(test_tt_elmu_TT_test5_lep_pt)
+test_tt_elmu_TT_test5_lep_pt_bSF       ->Divide(test_tt_elmu_TT_test5_lep_pt)
+test_tt_elmu_TT_test5_lep_pt_th        ->Divide(test_tt_elmu_TT_test5_lep_pt)
+
+test_tt_elmu_TT_test5_lep_pt_elTRG       ->Divide(test_tt_elmu_TT_test5_lep_pt)
+test_tt_elmu_TT_test5_lep_pt_elID        ->Divide(test_tt_elmu_TT_test5_lep_pt)
+
+test_tt_elmu_TT_test5_lep_pt_muBTRG       ->Divide(test_tt_elmu_TT_test5_lep_pt)
+test_tt_elmu_TT_test5_lep_pt_muBID        ->Divide(test_tt_elmu_TT_test5_lep_pt)
+test_tt_elmu_TT_test5_lep_pt_muHTRG       ->Divide(test_tt_elmu_TT_test5_lep_pt)
+test_tt_elmu_TT_test5_lep_pt_muHID        ->Divide(test_tt_elmu_TT_test5_lep_pt)
+
+test_tt_elmu_TT_test5_lep_pt_nom       ->Draw()
+test_tt_elmu_TT_test5_lep_pt_init      ->Draw()
+test_tt_elmu_TT_test5_lep_pt_PU        ->Draw()
+test_tt_elmu_TT_test5_lep_pt_PU_el     ->Draw()
+test_tt_elmu_TT_test5_lep_pt_PU_mu     ->Draw()
+test_tt_elmu_TT_test5_lep_pt_PU_bcdef  ->Draw()
+test_tt_elmu_TT_test5_lep_pt_PU_gh     ->Draw("same")
+test_tt_elmu_TT_test5_lep_pt_bSF       ->Draw()
+test_tt_elmu_TT_test5_lep_pt_th        ->Draw()
+
+most of effect is from lep in init weight
+
+test_tt_elmu_TT_test5_lep_pt_nom       ->SetLineColor(kRed)
+test_tt_elmu_TT_test5_lep_pt_nom       ->Draw()
+
+test_tt_elmu_TT_test5_lep_pt_elTRG       ->Draw("same")
+test_tt_elmu_TT_test5_lep_pt_elID        ->Draw("same")
+
+test_tt_elmu_TT_test5_lep_pt_muBTRG      ->Draw("same")
+test_tt_elmu_TT_test5_lep_pt_muBID       ->Draw("same")
+test_tt_elmu_TT_test5_lep_pt_muHTRG      ->Draw("same")
+test_tt_elmu_TT_test5_lep_pt_muHID       ->Draw("same")
+
+most effect is from mu B ID
+muon trig = 1
+el trig is flat at 0.98
+el ID linearly tilts smoothly to small pT from 0.97 to 0.96
+mu H ID jumps irregularly around 0.96, and there is a jump down at 60GeV in 2 bins
+mu B ID has the jump down at 60GeV, from 0.92 at high pT to 0.91 at low
+
+
+root -l ../analysis/muon-effs//2016_23Sep_MuonID_EfficienciesAndSF_BCDEF.root
+MC_NUM_TightID_DEN_genTracks_PAR_pt_eta->Get("pt_abseta_ratio")->Draw("colz")
+
+-- has the jump at 60GeV in eta < 1.
+   the pT distr also has this weird jump
+   the 2D histo is symetric in eta, the 1D eta is not!
+
+MC_NUM_TightID_DEN_genTracks_PAR_vtx   -> Get("tag_nVertices_ratio")->Draw()
+TightISO_TightID_vtx -> Get("tag_nVertices_ratio")->Draw()
+
+for ID and ISO I use the reco vtx...
+
+
+
+
+muon reco (tracking) uses number of vertices
+check the reco VS gen nvtx
+
+root -l gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_1.root
+
+ntupler->Get("reduced_ttree")->Draw("nvtx")
+ntupler->Get("reduced_ttree")->Draw("nvtx_gen")
+
+-- average = 20 and 24
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("nvtx_gen", "", "same")
+
+
+
+compare the tt_elmu pT kinks per data epoch
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test5_bunchDILEP3//SingleElectron_BCDEF.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --normalize
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test5_bunchDILEP3//SingleElectron_GH.root    -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --normalize
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test5_bunchDILEP3//SingleElectron_BCDEF.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --normalize
+python stack_plot.py distrs/v37_test8_bunchDILEP3_mc_1_amcatnlo.root distrs/v37_test5_bunchDILEP3//SingleElectron_GH.root    -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --normalize
+
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/*_BCDEF_*
+eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/*_GH_*
+
+-- it looks like el pT is somewhat worse in B and mu pT is worse in H
+   and mu pT is better than el in both epochs
+daaaammmmmmmmmmmmmmmmnnnn
+
+anyway I have to try gen nvtx for this.........
+test9
+and
+test10 is elmu_mu?
+
+
+test8 tight tt_elmu
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3tight_mc_1_amcatnlo.root distrs/v37_test6_bunchDILEP3tight//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu_tight --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --normalize
+python stack_plot.py distrs/v37_test8_bunchDILEP3tight_mc_1_amcatnlo.root distrs/v37_test6_bunchDILEP3tight//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu_tight --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5 --normalize
+
+-- 1-2% deviations, close to stat uncertainty, not perfect, but practically no kink
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3tight_mc_1_amcatnlo.root distrs/v37_test6_bunchDILEP3tight//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu_tight --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test8_bunchDILEP3tight_mc_1_amcatnlo.root distrs/v37_test6_bunchDILEP3tight//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu_tight --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+INFO:root:data       =    77143.000000     1437.506418
+INFO:root:mc sum     =    75482.014048    75482.014048
+
+.... can it all be due to weird DY mass problem?
+
+test11 -- DY mass correction?
 
 
 #### dy dileptons
