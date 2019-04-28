@@ -123,6 +123,17 @@ dtags_std_mc_min_no_wjets_noqcd = [
 "MC2016_Summer16_TTJets_powheg",
 ]
 
+dtags_mc_dibosons = [
+"MC2016_Summer16_WWTo2L2Nu_powheg",
+"MC2016_Summer16_WWToLNuQQ_powheg",
+"MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin",
+"MC2016_Summer16_WZTo1L3Nu_amcatnlo_madspin",
+"MC2016_Summer16_WZTo2L2Q_amcatnlo_madspin",
+"MC2016_Summer16_WZTo3LNu_powheg",
+"MC2016_Summer16_ZZTo2L2Nu_powheg",
+"MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin",
+]
+
 dtags_std_mc_qcd = [
 "MC2016_Summer16_QCD_HT-100-200",
 "MC2016_Summer16_QCD_HT-1000-1500",
@@ -347,6 +358,7 @@ dtag_groups = {'std': dtags_std, 'std_amcatnlo': dtags_std_amcatnlo,
     'updowns': dtags_updowns, 'updowns_extra': dtags_updowns_extra,
     'updowns_allfsr': dtags_updowns_all_fsr,
     'singletop': dtags_singletop_mc,
+    'dibosons':  dtags_mc_dibosons,
     'wjets': dtags_wjets,
     'wjets_amcatnlo': dtags_wjets_amcatnlo,
     'data_mu_aug': dtags_data_mu_aug,
