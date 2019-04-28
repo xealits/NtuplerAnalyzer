@@ -84,13 +84,127 @@ deviation in met and small deviation on edges of mT
    -- negligible
 or)
     1) produce tight TT elmu to get rid of DY, single-top and dibosons?
+	   -- better, but even this is not perfect
     2) implement muon-trigger elmu as the old one?
+	   -- as bad
+    3) try to find how the very old and good elmu and mumu were produced with those .C scripts?
+	   v12.7_dilep/QuickNtupleDistr_test_elmu_MTlep.png
+	   the problem is:
+	       what can there be except PU and lepton SFs?
+	       No cuts on N jets are made,
+		   b SF is applied, but I checked it is negligible and flat in mT
 
 So, again something is wrong with lepton SFs?
 Incorrect average of BCDEF and GH for PU and muon ID?
 + compare to separate epochs data
   -- more visible in muons, kind of the same in electrons,
      the curve of the kink is a bit different
+
+
+
+### finding the old files
+
+perfect elmu:
+
+	   v12.7_dilep/QuickNtupleDistr_test_elmu_MTlep.png
+
+made with test/ntuple_distr.cc
+
+some production is still in:
+
+~/work/private/16/CMSSW_8_0_25/src/UserCode/ttbar-leptons-80X
+
+last_jobs:ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT f f f 19094 16079 "MTlep" "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(25,0,250)" INVESTIGATION-test_elmu_Mt-lep-met " Mt " " Events " outdir/v12.7_dilep/merged-sets `cat v12.7_dilep_dtags`
+
+/eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets
+/eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums/QuickNtupleDistr_test_elmu_MTlep.png
+
+-- the file
+
+the arguments should mean this:
+
+const char usage_string[256] = " [--verbose] [--normalize] sig global_scale withZPtMass tau_ID_SF with_b_SF with_lep_SF with_lep_trig_SF with_PU_weight SYS_shift set_logy unstack writeRootFile lumi_bcdef lumi_gh distr distr_cond range out_name distr_name Y_name dir dtags";
+
+-- so, b, both lepton SFs and PU are ON
+
+and dxy, dz are checked
+
+
+in the script:
+
+        // lepton SF
+        if (with_lep_SF)
+            {
+            TString lepton_SF_call("");
+            if (sig == TString("mu") || sig == TString("elmu") || sig == TString("tt"))
+                {
+                lepton_SF_call.Form("(lepton_muon_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), %f, %f))*", lumi_bcdef/lumi, lumi_gh/lumi);
+                }
+            else // assume single-electron as only alternative
+                {
+                lepton_SF_call.Form("(lepton_electron_SF(lep_p4[0].eta(), lep_p4[0].pt()))*");
+                }
+            weight_cond += lepton_SF_call;
+            }
+
+        if (with_lep_trig_SF)                                                                                                                                      
+            {
+            TString lepton_trig_SF_call("");
+            if (sig == TString("mu") || sig == TString("elmu") || sig == TString("tt"))
+                {
+                lepton_trig_SF_call.Form("(lepton_muon_trigger_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), %f, %f))*", lumi_bcdef/lumi, lumi_gh/lumi);
+                }
+            else
+                {
+                lepton_trig_SF_call.Form("(lepton_electron_trigger_SF(lep_p4[0].eta(), lep_p4[0].pt()))*");
+                }
+            weight_cond += lepton_trig_SF_call;
+            }
+
+-- primitiv stuff
+
+
+
+#### check dxy, dz
+
+root -l gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_1.root
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_dxy[0]", "leps_ID==-11*13")
+5543
+
+std dev 0.0033
+but might be non-gaussian
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_dz[0]", "leps_ID==-11*13 && lep_dxy[0] < 0.01 && lep_dz[0] < 0.02")
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_dxy[0]", "leps_ID==-11*13 && lep_dxy[0] < 0.01 && lep_dz[0] < 0.02")
+5419
+
+0.9776294425401407
+
+-- smaller than the problem?
+
+dxy and dz are not abs now!
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_dxy[0]", "leps_ID==-11*13 && abs(lep_dxy[0]) < 0.01 && abs(lep_dz[0]) < 0.02")
+5337
+
+0.9628360093812015
+sqrt(5543.) / 5543.
+0.013431594151495127
+
+the limits for muons:
+dxy, dz = 0.01 and 0.02 (0.2 and 0.5 actually)
+and electrons:
+barrel -
+ 		passStdImpactParameter = dxy < 0.05 && dz < 0.1;
+endcap -
+ 		passStdImpactParameter = dxy < 0.1 && dz < 0.2;
+
+-- and for electrons they are applied at selection in ntuples!
+
+test11 with the old impacts on muon in elmu
+
 
 
 
@@ -475,7 +589,7 @@ INFO:root:mc sum     =    75482.014048    75482.014048
 
 .... can it all be due to that weird DY mass problem alone?
 
-test11 -- DY mass correction?
+test11 -> test12 -- DY mass correction?
 
 
 the test9:
@@ -497,6 +611,58 @@ eog plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILE
 
 -- as expected not much difference, only bin-by-bin fluctuations
 
+
+
+test10 mu HLT elmu
+
+python stack_plot.py distrs/v37_test10_bunchDILEP3_mc_1_wNjets.root distrs/v37_test10_bunchDILEP3//SingleElectron.root -p -r -o plots/v37_test10_bunchDILEP3_mc_1_wNjets_tt_elmu/ -c tt_elmu --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+INFO:root:data       =   155730.000000     1190.925277
+INFO:root:mc sum     =   162470.530911   162470.530911
+
+python stack_plot.py distrs/v37_test10_bunchDILEP3_mc_1_wNjets.root distrs/v37_test10_bunchDILEP3//SingleMuon.root     -p -r -o plots/v37_test10_bunchDILEP3_mc_1_wNjets_tt_elmu/ -c tt_elmu --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+INFO:root:data       =   167476.000000     1233.920597
+INFO:root:mc sum     =   162470.530911   162470.530911
+
+worse than before or just the 0.2 ratio range?
+
+
+
+pt-s:
+
+python stack_plot.py distrs/v37_test10_bunchDILEP3_mc_1_wNjets.root distrs/v37_test10_bunchDILEP3//SingleMuon.root     -p -r -o plots/v37_test10_bunchDILEP3_mc_1_wNjets_tt_elmu/ -c tt_elmu --data-nick data_other -d elmu_mu_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test10_bunchDILEP3_mc_1_wNjets.root distrs/v37_test10_bunchDILEP3//SingleMuon.root     -p -r -o plots/v37_test10_bunchDILEP3_mc_1_wNjets_tt_elmu/ -c tt_elmu --data-nick data_other -d elmu_el_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+eog plots/v37_test10_bunchDILEP3_mc_1_wNjets_tt_elmu//distrs,v37_test10_bunchDILEP3_mc_1_wNjets_distrs,v37_test10_bunchDILEP3,,SingleMuon_elmu_mu_pt_tt_elmu_NOMINAL_stack_ratio.png plots/v37_test10_bunchDILEP3_mc_1_wNjets_tt_elmu//distrs,v37_test10_bunchDILEP3_mc_1_wNjets_distrs,v37_test10_bunchDILEP3,,SingleMuon_elmu_el_pt_tt_elmu_NOMINAL_stack_ratio.png
+
+-- same stuff
+
+tight selection:
+
+python stack_plot.py distrs/v37_test10_bunchDILEP3_mc_1_wNjets.root distrs/v37_test10_bunchDILEP3//SingleMuon.root     -p -r -o plots/v37_test10_bunchDILEP3_mc_1_wNjets_tt_elmu/ -c tt_elmu_tight --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+INFO:root:data       =    79384.000000      851.239346
+INFO:root:mc sum     =    77289.634927    77289.634927
+
+-- bad shape, though better than simple selection
+
+old one:
+
+python stack_plot.py distrs/v37_test8_bunchDILEP3tight_mc_1_amcatnlo.root distrs/v37_test6_bunchDILEP3tight//SingleElectron.root -p -r  -o plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu/  -c tt_elmu_tight --data-nick data_other -d Mt_lep_met_c  --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+eog plots/v37_test10_bunchDILEP3_mc_1_wNjets_tt_elmu//distrs,v37_test10_bunchDILEP3_mc_1_wNjets_distrs,v37_test10_bunchDILEP3,,SingleMuon_Mt_lep_met_c_tt_elmu_tight_NOMINAL_stack_ratio.png plots/v37_test8_bunchDILEP3_mc1_amcatnlo_tt_elmu//distrs,v37_test8_bunchDILEP3tight_mc_1_amcatnlo_distrs,v37_test6_bunchDILEP3tight,,SingleElectron_Mt_lep_met_c_tt_elmu_tight_NOMINAL_stack_ratio.png
+
+-- as bad
+
+1) if tight is bad, it is not normalization of dibosons or single top
+2) also DY normalization does not help pT in simple elmu
+3) and reduction of DY mass will worsen the pT too
+4) strange thing is the pT without any weights: it has more MC at high lepton pT than Data
+   -- lep SFs don't fix this, they could pull down a large range of low pT and flatten the Data-MC,
+      but they just bend the very tip of the distr down at low pT and make the kink
+
+python stack_plot.py distrs/v37_test10_bunchDILEP3_mc_1_wNjets.root distrs/v37_test10_bunchDILEP3//SingleMuon.root     -p -r -o plots/v37_test10_bunchDILEP3_mc_1_wNjets_tt_elmu/ -c tt_elmu_tight --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+-- same linear trend
 
 
 #### dy dileptons
