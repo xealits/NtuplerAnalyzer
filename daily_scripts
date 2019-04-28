@@ -93,6 +93,7 @@ or)
 	       what can there be except PU and lepton SFs?
 	       No cuts on N jets are made,
 		   b SF is applied, but I checked it is negligible and flat in mT
+	   --- found
 
 So, again something is wrong with lepton SFs?
 Incorrect average of BCDEF and GH for PU and muon ID?
@@ -663,6 +664,52 @@ eog plots/v37_test10_bunchDILEP3_mc_1_wNjets_tt_elmu//distrs,v37_test10_bunchDIL
 python stack_plot.py distrs/v37_test10_bunchDILEP3_mc_1_wNjets.root distrs/v37_test10_bunchDILEP3//SingleMuon.root     -p -r -o plots/v37_test10_bunchDILEP3_mc_1_wNjets_tt_elmu/ -c tt_elmu_tight --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
 
 -- same linear trend
+
+
+#### test11
+
+python stack_plot.py distrs/v37_test11_bunchDILEP3_mc_1_limited.root distrs/v37_test11_bunchDILEP3//SingleMuon.root     -p -r -o plots/v37_test11_bunchDILEP3_mc_1_limited/ -c tt_elmu --data-nick data_other -d Mt_lep_met_f --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test11_bunchDILEP3_mc_1_limited.root distrs/v37_test11_bunchDILEP3//SingleMuon.root     -p -r -o plots/v37_test11_bunchDILEP3_mc_1_limited/ -c tt_elmu --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+INFO:root:data       =   161067.000000     1211.056630
+INFO:root:mc sum     =   156082.885530   156082.885530
+
+eog plots/v37_test10_bunchDILEP3_mc_1_wNjets_tt_elmu/distrs,v37_test10_bunchDILEP3_mc_1_wNjets_distrs,v37_test10_bunchDILEP3,,SingleMuon_Mt_lep_met_c_tt_elmu_NOMINAL_stack_ratio.png plots/v37_test11_bunchDILEP3_mc_1_limited//distrs,v37_test11_bunchDILEP3_mc_1_limited_distrs,v37_test11_bunchDILEP3,,SingleMuon_Mt_lep_met_c_tt_elmu_NOMINAL_stack_ratio.png
+
+--- very minor difference
+
+pt-s:
+
+python stack_plot.py distrs/v37_test11_bunchDILEP3_mc_1_limited.root distrs/v37_test11_bunchDILEP3//SingleMuon.root     -p -r -o plots/v37_test11_bunchDILEP3_mc_1_limited/ -c tt_elmu --data-nick data_other -d elmu_mu_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test11_bunchDILEP3_mc_1_limited.root distrs/v37_test11_bunchDILEP3//SingleMuon.root     -p -r -o plots/v37_test11_bunchDILEP3_mc_1_limited/ -c tt_elmu --data-nick data_other -d elmu_el_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.2 --qcd-factor 2.5
+
+-- mu pT is linear, and el pT has kind of less of a kink
+
+comparing to v12.7 DY used to be larger, maybe dibosons peaked more
+the overall amount of events seems quite different
+
+
+#### comparison to the old v12.7 results
+
+questions:
+
+1) how MT was calculated from ntuples in v12.7?
+2) reproduce old plots with old code
+2) save separate old shapes, compare with new ones with get_shapes
+3) run sumup draw script on v37 ntuples -- compare to loop selection plots
+4) reproduce old selection and weights in draw script
+5) compare old and new TT and Data ntuples
+
+debugging space
+ntuples - code - plots
+
+debugging order:
+
+1) reproduce old plots from old ntuples with old code
+2) run old code on new ntuples
+3) run new code (sumup draw) on new ntuples
+
 
 
 #### dy dileptons
