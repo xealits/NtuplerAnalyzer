@@ -2348,7 +2348,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         # do relIso on 1/8 = 0.125, and "all iso" for QCD anti-iso factor
 
         # I'll make the iso distribution and get the factor over whole range
-        pass_mu_id = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.no_iso_veto_leps
+        pass_mu_id = abs(ev.leps_ID) == 13 and ev.HLT_mu and ev.lep_matched_HLT[0] and ev.no_iso_veto_leps and abs(ev.lep_dxy[0]) < 0.01 and abs(ev.lep_dz[0]) < 0.02
         pass_el_id = abs(ev.leps_ID) == 11 and ev.HLT_el and ev.lep_matched_HLT[0] and ev.no_iso_veto_leps
 
         if abs(ev.leps_ID) == 13:    control_counters.Fill(1)
@@ -2420,7 +2420,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         # for now I'm just trying to get rid of el-mu mix in MC
         #pass_elmu = ev.leps_ID == -11*13 and ev.HLT_mu and not ev.HLT_el and ev.no_iso_veto_leps and \
         pass_elmu_id = ev.leps_ID == -11*13 and ev.HLT_mu and ev.no_iso_veto_leps and \
-            (ev.lep_matched_HLT[0] if abs(ev.lep_id[0]) == 13 else ev.lep_matched_HLT[1]) and \
+            ((ev.lep_matched_HLT[0] and abs(ev.lep_dxy[0]) < 0.01 and abs(ev.lep_dz[0]) < 0.02) if abs(ev.lep_id[0]) == 13 else (ev.lep_matched_HLT[1] and abs(ev.lep_dxy[1]) < 0.01 and abs(ev.lep_dz[1]) < 0.02)) and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
             (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
 
@@ -2443,7 +2443,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         pass_mumu = ev.leps_ID == -13*13 and ev.HLT_mu and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
-            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
+            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4) and \
+            abs(ev.lep_dxy[0]) < 0.01 and abs(ev.lep_dz[0]) < 0.02 and \
+            abs(ev.lep_dxy[1]) < 0.01 and abs(ev.lep_dz[1]) < 0.02
 
         pass_elel = ev.leps_ID == -11*11 and ev.HLT_el and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
@@ -2451,7 +2453,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         pass_mumu_ss = ev.leps_ID == 13*13 and ev.HLT_mu and (ev.lep_matched_HLT[0] or ev.lep_matched_HLT[1]) and ev.no_iso_veto_leps and \
             (ev.lep_p4[0].pt() > 30 and abs(ev.lep_p4[0].eta()) < 2.4) and \
-            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4)
+            (ev.lep_p4[1].pt() > 30 and abs(ev.lep_p4[1].eta()) < 2.4) and \
+            abs(ev.lep_dxy[0]) < 0.01 and abs(ev.lep_dz[0]) < 0.02 and \
+            abs(ev.lep_dxy[1]) < 0.01 and abs(ev.lep_dz[1]) < 0.02
 
         if pass_elmu:    control_counters.Fill(21)
         if pass_mumu:    control_counters.Fill(22)
