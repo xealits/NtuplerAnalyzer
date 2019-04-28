@@ -21,6 +21,11 @@ find_missing_jobs:
 	find lstore_outdirs/v37/test8/ -name "*root" -exec basename '{}' \; 2> /dev/null | sort > job_files_produced
 	diff job_files job_files_produced | tee job_files_missing
 
+find_failed_jobs: nt=v37
+find_failed_jobs: proc=test8
+find_failed_jobs:
+	wc -l job_*.e* | grep " 12 " > jobs_failed
+
 sumup_weights: nt=v37
 sumup_weights: proc=test5
 sumup_weights: distrs=bunch1
