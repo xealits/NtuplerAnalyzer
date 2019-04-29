@@ -25,3 +25,8 @@ status:
 	done
 
 
+find_failed_jobs: nt=v37
+find_failed_jobs: proc=test8
+find_failed_jobs:
+	wc -l job_*.e* | grep " 12 " > jobs_failed
+

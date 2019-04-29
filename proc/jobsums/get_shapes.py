@@ -213,9 +213,11 @@ else:
             # construct the histo of the subform
             factor, nick = nick_pairs[0]
             histo = histos[nick].Clone()
-            histo.SetName("formula_%d_%d" % (form_i, sum_i))
+            formula_name = "formula_%d_%d" % (form_i, sum_i)
+            histo.SetName(formula_name)
             histo.SetDirectory(0)
             histo.Scale(factor)
+            logging.debug("%15s %15s %10.1f" % (formula_name, nick, histo.Integral()))
 
             # add up all the histos in the subform
             for factor, nick in nick_pairs[1:]:
@@ -223,6 +225,7 @@ else:
                 h = histos[nick].Clone()
                 h.Scale(factor)
                 histo.Add(h)
+                logging.debug("%15s %15s %10.1f" % (formula_name, nick, histo.Integral()))
 
             # normalize the linear sum
             if args.norm_formulas:
