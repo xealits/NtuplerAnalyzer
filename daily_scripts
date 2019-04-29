@@ -704,12 +704,354 @@ questions:
 debugging space
 ntuples - code - plots
 
-debugging order:
+debugging binary-search-plan:
 
-1) reproduce old plots from old ntuples with old code
-2) run old code on new ntuples
-3) run new code (sumup draw) on new ntuples
+1) Y reproduce old plots from old ntuples with old code
+   Y and check how MTlep is calculated
+2) Y get the old shapes and compare with the new ones -- problem in TT MC, it passes less and peaks less
+3) run sumup draw on TT with old selection to check the yield and shape with comparison to stage2
+4) run old code on new ntuples -- check if the difference is in the ntuples
+5) run new code (sumup draw) on old ntuples with the old .C weights -- must reproduce the old procedure in the new SW
+6) run new code (sumup draw) on new ntuples?
 
+
+##### reproduce old plots from old ntuples with old code
+
+ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT f f f 19094 16079 "MTlep" "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(25,0,250)" INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets `cat v12.7_dilep_dtags`
+
+/eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets
+
+perfect match
+the output is written to
+/eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums
+
+-- moved the original plots to
+/eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/original_jobsums
+
+strangely it contains only 1 Data dataset...
+Data13TeV_SingleMuon2016H_03Feb2017_ver2.root
+
+-- MC is normalized to Data
+   it explains the normalization difference with v37 elmu tests
+   v12.7 SingleMuonH integral
+   36508 summing data-stack 3650.8 creating data histo
+
+for data the drawing command is:
+
+command: transverse_mass(lep_p4[0].pt(), met_corrected.pt(), lep_p4[0].phi(), met_corrected.phi())>>h(25,0,250)	HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02
+
+for TT
+transverse_mass(lep_p4[0].pt(), met_corrected.pt(), lep_p4[0].phi(), met_corrected.phi())	(pu_weight(nvtx_gen, 0))*0.986*(lepton_muon_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), 0.542860, 0.457140))*(lepton_muon_trigger_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), 0.542860, 0.457140))*(ttbar_pT_SF(gen_t_pt, gen_tb_pt))*	HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02
+
+
+the MTlep calculation
+
+test/pu_weight.C:
+
+double transverse_mass(LorentzVector v1, LorentzVector v2)
+    {
+    return sqrt(2*v1.pt()*v2.pt()*(1 - cos(v1.phi() - v2.phi())));
+    }
+
+it turns out there is already an option for writing root file: the T right before lumi-s
+
+ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT f f T 19094 16079 "MTlep" "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(25,0,250)" INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets `cat v12.7_dilep_dtags`
+
+root -l /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root
+root [3] _file0->Get("tt_{em}")->Print()
+TH1.Print Name  = tt_{em}, Entries= 365755, Total sum= 2533.74
+
+scp "otoldaie@lxplus.cern.ch:/eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root" debugging_v37tests_w_comparison_to_v12.7_dilep/
+
+debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root
+
+python get_shapes.py --formula "tt_v37test11:tt_v12_7" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_v37test11:distrs/v37_test11_bunchDILEP3_mc_1_limited.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_Mt_lep_met_f "tt_v12_7:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:tt_{em}"
+
+-- different binning
+correct to the new one:
+    'Mt_lep_met_f':  (systs_objects_mt_variation,  ('histo-range',  [20,0,250])),
+(used to be 25 bins)
+
+ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT f f T 19094 16079 "MTlep" "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(20,0,250)" INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets `cat v12.7_dilep_dtags`
+
+python get_shapes.py --formula "tt_v37test11:tt_v12_7" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_v37test11:distrs/v37_test11_bunchDILEP3_mc_1_limited.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_Mt_lep_met_f "tt_v12_7:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:tt_{em}"
+
+-- slightly different, v12 peaks better
+   add all tt in v12?
+
+python get_shapes.py --formula "tt_v37test11:tt_v12_7:tt_v127other" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_v37test11:distrs/v37_test11_bunchDILEP3_mc_1_limited.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_Mt_lep_met_f "tt_v12_7:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:tt_{em}" "tt_v127other:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:tt_{other}"
+
+-- yeap, tt_{other} has lower mT and will smear the peak
+
+python get_shapes.py --debug --no-norm --norm-formulas --formula "tt_v37test11:tt_v12_7 + tt_v127other" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_v37test11:distrs/v37_test11_bunchDILEP3_mc_1_limited.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_Mt_lep_met_f "tt_v12_7:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:tt_{em}" "tt_v127other:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:tt_{other}"
+
+-- still v12 peaks slightly better
+
+integrals of both:
+
+root -l debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root
+root [3] _file0->Get("tt_{em}")->Print()
+TH1.Print Name  = tt_{em}, Entries= 365750, Total sum= 2027
+root [4] _file0->Get("tt_{other}")->Print()
+TH1.Print Name  = tt_{other}, Entries= 43043, Total sum= 234.567
+
+365750 + 43043 = 408793
+
+root -l distrs/v37_test11_bunchDILEP3/MC2016_Summer16_TTJets_powheg.root
+tt_elmu->Get("tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_tt_other_NOMINAL_Mt_lep_met_f, Entries= 372824, Total sum= 328574
+tt_elmu->Get("tt_mutau/NOMINAL/tt_elmu_tt_mutau_NOMINAL_Mt_lep_met_f")->Print()
+tt_elmu->Get("tt_lj/NOMINAL/tt_elmu_tt_lj_NOMINAL_Mt_lep_met_f")->Print()
+tt_elmu->Get("tt_taultauh/NOMINAL/tt_elmu_tt_taultauh_NOMINAL_Mt_lep_met_f")->Print()
+tt_elmu->Get("tt_taulj/NOMINAL/tt_elmu_tt_taulj_NOMINAL_Mt_lep_met_f")->Print()
+
+TH1.Print Name  = tt_elmu_tt_mutau_NOMINAL_Mt_lep_met_f, Entries= 248, Total sum= 203.8
+root [9] tt_elmu->Get("tt_lj/NOMINAL/tt_elmu_tt_lj_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_tt_lj_NOMINAL_Mt_lep_met_f, Entries= 645, Total sum= 548.322
+root [10] tt_elmu->Get("tt_taultauh/NOMINAL/tt_elmu_tt_taultauh_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_tt_taultauh_NOMINAL_Mt_lep_met_f, Entries= 17, Total sum= 14.7115
+root [11] tt_elmu->Get("tt_taulj/NOMINAL/tt_elmu_tt_taulj_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_tt_taulj_NOMINAL_Mt_lep_met_f, Entries= 28, Total sum= 23.415
+
+-- less TT passes now in v37 tests
+
+now Data H and all Data
+
+v12.7 data:
+
+root -l debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root
+root [2] h->Print()
+TH1.Print Name  = h, Entries= 37061, Total sum= 2920.64
+
+root -l distrs/v37_test11_bunchDILEP3/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root
+root [4] tt_elmu->Get("data_other/NOMINAL/tt_elmu_data_other_NOMINAL_Mt_lep_met_f")->Print()
+TH1.Print Name  = tt_elmu_data_other_NOMINAL_Mt_lep_met_f, Entries= 39245, Total sum= 38710
+
+-- close, but more Data passes in v37
+
+shapes
+
+python get_shapes.py --debug --no-norm --norm-formulas --formula "data_v37test11_H:data_v12_7:data_v37test11_all" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj data_v12_7:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:h data_v37test11_all:distrs/v37_test11_bunchDILEP3/SingleMuon.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_Mt_lep_met_f data_v37test11_H:distrs/v37_test11_bunchDILEP3/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_Mt_lep_met_f
+
+-- all within stats, H now differs from the old in some bins, bu all Data now matches the old H in those bins..
+
+Conclusions:
+1) the yields are different in v37 and v12:
+   more data passes in v37, but less TT MC than in v12
+   less TT can be due to 32GeV pT cut
+   why more Data?
+   -- from events_counter v12 shows less processed events,
+      but the difference with TT persists: instead of 20% data is by 3% larger in v37 and TT is larger by 1.5%
+2) shapes of TT are different -- v12 peaks more
+3) data shapes are the same
+   again, why the same when the pT cut is 32GeV instead of 30GeV?
+   draw with 32GeV looks different from v37test11
+
+
+
+##### sumup draw with old selection on new ntuples -- does it reproduce stage2 yields, shapes?
+
+met_corrected VS met_init
+
+no weights
+
+v12 items:
+
+    return sqrt(2*v1.pt()*v2.pt()*(1 - cos(v1.phi() - v2.phi())));
+
+ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT f f T 19094 16079 "MTlep" "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(25,0,250)" INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets `cat v12.7_dilep_dtags`
+
+MT now:
+
+sqrt(2*lep_p4[0].pt()*met_corrected.pt()*(1 - cos(lep_p4[0].phi() - met_corrected.phi())))
+
+selection:
+"HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02"
+
+and command:
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_corrected.pt()*(1 - cos(lep_p4[0].phi() - met_corrected.phi())))" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_tt_elmu_Mt.root --histo-name test_v37_v12_tt_elmu_Mt gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root &
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_corrected.pt()*(1 - cos(lep_p4[0].phi() - met_corrected.phi())))" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_data_tt_elmu_Mt.root --histo-name test_v37_v12_data_tt_elmu_Mt gstore_outdirs/v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMuon2016H_03Feb2017_ver2/190205_175811/0000/*root &
+
+yields:
+
+[olek@fermi05 proc]$ root -l test_v37_v12_tt_elmu_Mt.root
+root [1] test_v37_v12_tt_elmu_Mt->Print()
+TH1.Print Name  = test_v37_v12_tt_elmu_Mt, Entries= 413695, Total sum= 406623
+
+VS old
+408793
+
+1.012
+
+[olek@fermi05 proc]$ root -l test_v37_v12_data_tt_elmu_Mt.root
+root [1] test_v37_v12_data_tt_elmu_Mt->Print()
+TH1.Print Name  = test_v37_v12_data_tt_elmu_Mt, Entries= 44765, Total sum= 44124
+
+VS old
+37061
+1.2078735058417205
+
+it's like an effect from golden json..?
+check counters in Data files -- were all jobs processed in v12.7?
+
+v12
+
+root -l /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root
+
+root [5] ((TH1D*) ntupler->Get("events_counter"))->GetBinContent(1)
+(Double_t) 1.41775e+08
+root [6] ((TH1D*) ntupler->Get("events_counter"))->GetBinContent(2)
+(Double_t) 1.41775e+08
+root [7] ((TH1D*) ntupler->Get("events_counter"))->GetBinContent(3)
+(Double_t) 9.48301e+07
+root [8] ((TH1D*) ntupler->Get("events_counter"))->GetBinContent(4)
+(Double_t) 7.30986e+07
+root [9] ((TH1D*) ntupler->Get("events_counter"))->GetBinContent(5)
+(Double_t) 4.58659e+06
+
+v37
+
+time python sumup_weights.py --overwrite --debug temp/test_weight_v37_Data_SingleMuon_H_ver2_events_counter.root -t ntupler/events_counter gstore_outdirs/v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMuon2016H_03Feb2017_ver2/190205_175811/0000/*root
+
+root [4] events_counter->GetBinContent(1)
+(Double_t) 1.66591e+08
+root [5] events_counter->GetBinContent(2)
+(Double_t) 0.00000
+root [6] events_counter->GetBinContent(3)
+(Double_t) 1.66591e+08
+root [7] events_counter->GetBinContent(4)
+(Double_t) 0.00000
+root [8] events_counter->GetBinContent(5)
+(Double_t) 0.00000
+root [9] events_counter->GetBinContent(6)
+(Double_t) 121612.
+
+root [10] 1.66591e+08 / 1.41775e+08
+(double) 1.17504
+
+-- still 3% more data and only 1.5% more MC
+
+
+
+shapes:
+
+1) Y met_corrected VS met_init in Data and TT now --- no difference in Data, very small difference in TT
+2) Y draw with 30GeV cut TT and Data VS v12       --- does it reproduce v12?        -- yes, it seems so, bothe data and tt
+3) Y draw with 32GeV cut TT and Data              --- does it reproduce v37test11?  -- no, seems like there is a deviation in data and in tt!!
+                                                                                       but in both data and tt test11 deviates in similar way: towards smaller mT
+4) Y draw with 32GeV cut VS 30 GeV cut            --- data changes shape, tt does not, only yield changes
+
+python get_shapes.py --no-norm --norm-formulas --formula "tt_v37test11:tt_v12_7 + tt_v127other:tt_v37draw" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_v37test11:distrs/v37_test11_bunchDILEP3_mc_1_limited.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_Mt_lep_met_f "tt_v12_7:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:tt_{em}" "tt_v127other:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:tt_{other}" tt_v37draw:../test_v37_v12_tt_elmu_Mt.root:test_v37_v12_tt_elmu_Mt
+
+-- in tt with minor differences the draw is very close to the v12.7 distr (can be due weights)
+   but test11 diverges from them
+
+python get_shapes.py --no-norm --norm-formulas --formula "data_v37test11_H:data_v12_7:data_v37test11draw" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj data_v12_7:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:h data_v37test11_H:distrs/v37_test11_bunchDILEP3/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_Mt_lep_met_f data_v37test11draw:../test_v37_v12_data_tt_elmu_Mt.root:test_v37_v12_data_tt_elmu_Mt
+
+-- in data draw is very close to v12.7
+
+
+draw Data with 32GeV, compare to test11
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_corrected.pt()*(1 - cos(lep_p4[0].phi() - met_corrected.phi())))" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>32 && lep_p4[1].pt()>32 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_data_tt_elmu_Mt_32GeVpT.root --histo-name test_v37_v12_data_tt_elmu_Mt_32GeVpT gstore_outdirs/v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMuon2016H_03Feb2017_ver2/190205_175811/0000/*root &
+
+data_v12_7:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:h
+data_v37test11_H:distrs/v37_test11_bunchDILEP3/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_Mt_lep_met_f
+data_v37test11draw:../test_v37_v12_data_tt_elmu_Mt.root:test_v37_v12_data_tt_elmu_Mt
+data_v37test11draw32GeV:../test_v37_v12_data_tt_elmu_Mt_32GeVpT.root:test_v37_v12_data_tt_elmu_Mt_32GeVpT
+
+python get_shapes.py --no-norm --norm-formulas --formula "data_v37test11_H:data_v12_7:data_v37test11draw:data_v37test11draw32GeV" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj data_v12_7:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:h data_v37test11_H:distrs/v37_test11_bunchDILEP3/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_Mt_lep_met_f data_v37test11draw:../test_v37_v12_data_tt_elmu_Mt.root:test_v37_v12_data_tt_elmu_Mt data_v37test11draw32GeV:../test_v37_v12_data_tt_elmu_Mt_32GeVpT.root:test_v37_v12_data_tt_elmu_Mt_32GeVpT
+
+-- the deviations are small, but it seems draw32GeV is further from v37test11_H file than the draw with 30GeV..?
+
+TT draw 32GeV VS test11
+
+python get_shapes.py --no-norm --norm-formulas --formula "tt_v37test11:tt_v12_7 + tt_v127other:tt_v37draw" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj
+tt_v37test11:distrs/v37_test11_bunchDILEP3_mc_1_limited.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_Mt_lep_met_f
+"tt_v12_7:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:tt_{em}"
+"tt_v127other:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:tt_{other}"
+tt_v37draw:../test_v37_v12_tt_elmu_Mt.root:test_v37_v12_tt_elmu_Mt
+
+python get_shapes.py --no-norm --norm-formulas --formula "tt_v37test11:tt_met_cor_d32g:tt_met_ini_d32g" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_met_cor_d30g:../test_v37_v12_tt_elmu_Mt_30GeVpT.root:test_v37_v12_tt_elmu_Mt_30GeVpT tt_met_cor_d32g:../test_v37_v12_tt_elmu_Mt_32GeVpT.root:test_v37_v12_tt_elmu_Mt_32GeVpT tt_met_ini_d30g:../test_v37_v12_tt_elmu_Mt_30GeVpT_met_init.root:test_v37_v12_tt_elmu_Mt_30GeVpT_met_init tt_met_ini_d32g:../test_v37_v12_tt_elmu_Mt_32GeVpT_met_init.root:test_v37_v12_tt_elmu_Mt_32GeVpT_met_init tt_v37test11:distrs/v37_test11_bunchDILEP3_mc_1_limited.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_Mt_lep_met_f
+
+-- test11 diverges!
+
+
+
+I used met_init.. Does it change anything?
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_init.pt()*(1 - cos(lep_p4[0].phi() - met_init.phi())))" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>32 && lep_p4[1].pt()>32 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_data_tt_elmu_Mt_met_init_32GeVpT.root --histo-name test_v37_v12_data_tt_elmu_Mt_met_init_32GeVpT gstore_outdirs/v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMuon2016H_03Feb2017_ver2/190205_175811/0000/*root &
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_init.pt()*(1 - cos(lep_p4[0].phi() - met_init.phi())))" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_data_tt_elmu_Mt_met_init_30GeVpT.root --histo-name test_v37_v12_data_tt_elmu_Mt_met_init_30GeVpT gstore_outdirs/v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMuon2016H_03Feb2017_ver2/190205_175811/0000/*root &
+
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_init.pt()*(1 - cos(lep_p4[0].phi() - met_init.phi())))" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_tt_elmu_Mt_met_init_30GeV.root --histo-name test_v37_v12_tt_elmu_Mt_met_init_30GeV gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root &
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_init.pt()*(1 - cos(lep_p4[0].phi() - met_init.phi())))" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>32 && lep_p4[1].pt()>32 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_tt_elmu_Mt_met_init_32GeV.root --histo-name test_v37_v12_tt_elmu_Mt_met_init_32GeV gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root &
+
+no veto:
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_init.pt()*(1 - cos(lep_p4[0].phi() - met_init.phi())))" --cond-com "HLT_mu && no_iso_veto_leps && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_tt_elmu_Mt_met_init_30GeV_no_veto.root --histo-name test_v37_v12_tt_elmu_Mt_met_init_30GeV_no_veto gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root &
+
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_init.pt()*(1 - cos(lep_p4[0].phi() - met_init.phi())))" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>32 && lep_p4[1].pt()>32 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_tt_elmu_Mt_met_init_32GeV.root --histo-name test_v37_v12_tt_elmu_Mt_met_init_32GeV gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root &
+
+python get_shapes.py --no-norm --norm-formulas --formula "data_v37test11_H:data_v12_7:data_v37test11draw:data_v37test11draw32GeV" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj
+data_v12_7:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_Mt-lep-met_TOP_PT.root:h
+data_v37test11_H:distrs/v37_test11_bunchDILEP3/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_Mt_lep_met_f
+data_v37test11draw:../test_v37_v12_data_tt_elmu_Mt.root:test_v37_v12_data_tt_elmu_Mt
+data_v37test11draw32GeV:../test_v37_v12_data_tt_elmu_Mt_32GeVpT.root:test_v37_v12_data_tt_elmu_Mt_32GeVpT
+
+python get_shapes.py --no-norm --norm-formulas --formula "data_v37test11draw:data_v37test11draw32GeV:0.99 data_met_init_d30g:0.99 data_met_init_d32g" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj data_v37test11draw:../test_v37_v12_data_tt_elmu_Mt.root:test_v37_v12_data_tt_elmu_Mt data_v37test11draw32GeV:../test_v37_v12_data_tt_elmu_Mt_32GeVpT.root:test_v37_v12_data_tt_elmu_Mt_32GeVpT data_met_init_d30g:../test_v37_v12_data_tt_elmu_Mt_met_init_30GeVpT.root:test_v37_v12_data_tt_elmu_Mt_met_init_30GeVpT data_met_init_d32g:../test_v37_v12_data_tt_elmu_Mt_met_init_32GeVpT.root:test_v37_v12_data_tt_elmu_Mt_met_init_32GeVpT
+
+-- 30GeV has slightly lower mT
+
+python get_shapes.py --no-norm --formula "data_v37test11draw:data_v37test11draw32GeV:0.99 data_met_init_d30g:0.99 data_met_init_d32g" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj data_v37test11draw:../test_v37_v12_data_tt_elmu_Mt.root:test_v37_v12_data_tt_elmu_Mt data_v37test11draw32GeV:../test_v37_v12_data_tt_elmu_Mt_32GeVpT.root:test_v37_v12_data_tt_elmu_Mt_32GeVpT data_met_init_d30g:../test_v37_v12_data_tt_elmu_Mt_met_init_30GeVpT.root:test_v37_v12_data_tt_elmu_Mt_met_init_30GeVpT data_met_init_d32g:../test_v37_v12_data_tt_elmu_Mt_met_init_32GeVpT.root:test_v37_v12_data_tt_elmu_Mt_met_init_32GeVpT
+
+-- init and corrected are identical
+
+
+in tt:
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_corrected.pt()*(1 - cos(lep_p4[0].phi() - met_corrected.phi())))" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_tt_elmu_Mt_30GeVpT.root --histo-name test_v37_v12_tt_elmu_Mt_30GeVpT gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root &
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_corrected.pt()*(1 - cos(lep_p4[0].phi() - met_corrected.phi())))" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>32 && lep_p4[1].pt()>32 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_tt_elmu_Mt_32GeVpT.root --histo-name test_v37_v12_tt_elmu_Mt_32GeVpT gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root &
+
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_init.pt()*(1 - cos(lep_p4[0].phi() - met_init.phi())))" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_tt_elmu_Mt_30GeVpT_met_init.root --histo-name test_v37_v12_tt_elmu_Mt_30GeVpT_met_init gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root &
+
+python sumup_ttree_draw.py "sqrt(2*lep_p4[0].pt()*met_init.pt()*(1 - cos(lep_p4[0].phi() - met_init.phi())))" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>32 && lep_p4[1].pt()>32 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 20,0.,250 --output test_v37_v12_tt_elmu_Mt_32GeVpT_met_init.root --histo-name test_v37_v12_tt_elmu_Mt_32GeVpT_met_init gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root &
+
+
+python get_shapes.py --no-norm --norm-formulas --formula "tt_met_cor_d30g:tt_met_cor_d32g:0.99 tt_met_ini_d30g:0.99 tt_met_ini_d32g" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_met_cor_d30g:../test_v37_v12_tt_elmu_Mt_30GeVpT.root:test_v37_v12_tt_elmu_Mt_30GeVpT tt_met_cor_d32g:../test_v37_v12_tt_elmu_Mt_32GeVpT.root:test_v37_v12_tt_elmu_Mt_32GeVpT tt_met_ini_d30g:../test_v37_v12_tt_elmu_Mt_30GeVpT_met_init.root:test_v37_v12_tt_elmu_Mt_30GeVpT_met_init tt_met_ini_d32g:../test_v37_v12_tt_elmu_Mt_32GeVpT_met_init.root:test_v37_v12_tt_elmu_Mt_32GeVpT_met_init
+
+python get_shapes.py --no-norm --norm-formulas --formula "tt_met_cor_d30g:tt_met_cor_d32g:tt_met_ini_d30g:tt_met_ini_d32g" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_met_cor_d30g:../test_v37_v12_tt_elmu_Mt_30GeVpT.root:test_v37_v12_tt_elmu_Mt_30GeVpT tt_met_cor_d32g:../test_v37_v12_tt_elmu_Mt_32GeVpT.root:test_v37_v12_tt_elmu_Mt_32GeVpT tt_met_ini_d30g:../test_v37_v12_tt_elmu_Mt_30GeVpT_met_init.root:test_v37_v12_tt_elmu_Mt_30GeVpT_met_init tt_met_ini_d32g:../test_v37_v12_tt_elmu_Mt_32GeVpT_met_init.root:test_v37_v12_tt_elmu_Mt_32GeVpT_met_init
+
+python get_shapes.py --no-norm --formula "tt_met_cor_d30g:tt_met_cor_d32g:tt_met_ini_d30g:tt_met_ini_d32g" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_met_cor_d30g:../test_v37_v12_tt_elmu_Mt_30GeVpT.root:test_v37_v12_tt_elmu_Mt_30GeVpT tt_met_cor_d32g:../test_v37_v12_tt_elmu_Mt_32GeVpT.root:test_v37_v12_tt_elmu_Mt_32GeVpT tt_met_ini_d30g:../test_v37_v12_tt_elmu_Mt_30GeVpT_met_init.root:test_v37_v12_tt_elmu_Mt_30GeVpT_met_init tt_met_ini_d32g:../test_v37_v12_tt_elmu_Mt_32GeVpT_met_init.root:test_v37_v12_tt_elmu_Mt_32GeVpT_met_init
+
+-- very slight difference between cor and init
+   no noticeable shape difference in 30 and 32 GeV cuts!
+
+
+
+
+
+##### run old code on new ntuples -- check if the difference is in the ntuples
+
+compiled in
+/misc/exper-cms/cmssw/users/olek/CMSSW_8_0_26_patch1/src/UserCode/ttbar-leptons-80X/test
+
+hadd ntuples?
+
+63G	gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8
+
+1.3T	total
+
+correct to run on lists of files
+treating them as a given dtag
+then hadd the outputs?
 
 
 #### dy dileptons
