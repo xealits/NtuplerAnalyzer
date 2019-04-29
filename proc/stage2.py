@@ -11,6 +11,8 @@ from random import random as u_random
 from gen_proc_defs import *
 import math
 
+import pdb
+
 OLD_MINIAOD_JETS = False
 DO_W_STITCHING = False
 ALL_JETS = False
@@ -2281,6 +2283,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 record distr-s for each
         '''
 
+        if ev.indexevents == 154396695:
+            pdb.set_trace()
+
         #if iev > 10000: break
         control_counters.Fill(0)
 
@@ -2478,12 +2483,12 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         passed_triggers = (pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all)
         event_passes = PASSES_FUNC(*passed_triggers)
 
-        if pass_elmu or pass_elmu_el or pass_mumu or pass_elel:
-            # check dR of leptons
-            tlep0_p4 = TLorentzVector(ev.lep_p4[0].X(), ev.lep_p4[0].Y(), ev.lep_p4[0].Z(), ev.lep_p4[0].T())
-            tlep1_p4 = TLorentzVector(ev.lep_p4[1].X(), ev.lep_p4[1].Y(), ev.lep_p4[1].Z(), ev.lep_p4[1].T())
-            if not tlep0_p4.DeltaR(tlep1_p4) > 0.3:
-                continue
+        #if pass_elmu or pass_elmu_el or pass_mumu or pass_elel:
+        #    # check dR of leptons
+        #    tlep0_p4 = TLorentzVector(ev.lep_p4[0].X(), ev.lep_p4[0].Y(), ev.lep_p4[0].Z(), ev.lep_p4[0].T())
+        #    tlep1_p4 = TLorentzVector(ev.lep_p4[1].X(), ev.lep_p4[1].Y(), ev.lep_p4[1].Z(), ev.lep_p4[1].T())
+        #    if not tlep0_p4.DeltaR(tlep1_p4) > 0.3:
+        #        continue
 
         if not event_passes: continue
         control_counters.Fill(51)
