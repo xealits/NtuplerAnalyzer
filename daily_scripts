@@ -2154,6 +2154,251 @@ but the shape does not work for some reason
 
 
 
+##### sumup draw VS stage2 mT calculation
+
+confirm they are really different
+
+root -l gstore_outdirs/v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMuon2016H_03Feb2017_ver2/190205_175811/0000/Data13TeV_SingleMuon2016H_03Feb2017_ver2_2.root
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("indexevents:sqrt(2*lep_p4[0].pt()*met_corrected.pt()*(1 - cos(lep_p4[0].phi() - met_corrected.phi())))", "no_iso_veto_leps && pass_basic_METfilters && METfilterbadChCand && METfilterbadPFMuon && HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0] && abs(lep_dxy[0]) <0.01 && abs(lep_dz[0])<0.02) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1] && abs(lep_dxy[1]) <0.01 && abs(lep_dz[1])<0.02)) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4")
+.q
+
+root -l lstore_outdirs/v37/test12/Data13TeV_SingleMuon2016H_03Feb2017_ver2/Data13TeV_SingleMuon2016H_03Feb2017_ver2_2.root
+ttree_out->Scan("indexevents:event_met_lep_mt", "selection_stage_em > 200 && selection_stage_em < 210")
+.q
+
+************************************
+*    Row   * indexeven * sqrt(2*le *
+************************************
+*      619 * 573252531 * 33.133809 *
+*     1075 * 168613661 * 62.346427 *
+*     1617 * 540929843 * 80.560987 *
+*     2148 * 542768740 * 56.150252 *
+*     2239 * 541907518 * 131.48998 *
+*     2887 * 706316614 * 63.189824 *
+
+************************************
+*    Row   * indexeven * event_met *
+************************************
+*        0 * 573252531 * 36.672164 *
+*        1 * 168613661 * 61.980712 *
+*        2 * 540929843 * 81.129409 *
+*        3 * 542768740 * 56.369651 *
+*        4 * 541907518 * 132.19923 *
+*        5 * 706316614 * 61.342762 *
+
+aha!
+
+1) recalculate with the formula in stage2
+
+sqrt(2*event_leptons[0].pt()*event_met.pt()*(1 - cos(event_leptons[0].phi() - event_met.phi())))
+
+root -l lstore_outdirs/v37/test12/Data13TeV_SingleMuon2016H_03Feb2017_ver2/Data13TeV_SingleMuon2016H_03Feb2017_ver2_2.root
+ttree_out->Scan("indexevents:event_met_lep_mt:sqrt(2*event_leptons[0].pt()*event_met.pt()*(1 - cos(event_leptons[0].phi() - event_met.phi())))", "selection_stage_em > 200 && selection_stage_em < 210")
+
+*    Row   * indexeven * event_met * sqrt(2*ev *
+************************************************
+*        0 * 573252531 * 36.672164 * 36.672165 *
+*        1 * 168613661 * 61.980712 * 61.980713 *
+*        2 * 540929843 * 81.129409 * 81.129407 *
+*        3 * 542768740 * 56.369651 * 56.369652 *
+*        4 * 541907518 * 132.19923 * 132.19923 *
+*        5 * 706316614 * 61.342762 * 61.342760 *
+
+-- ok
+
+2) compare the parameters of mT
+
+root -l gstore_outdirs/v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMuon2016H_03Feb2017_ver2/190205_175811/0000/Data13TeV_SingleMuon2016H_03Feb2017_ver2_2.root
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("indexevents:lep_p4[0].pt():met_corrected.pt():lep_p4[0].phi():met_corrected.phi()", "no_iso_veto_leps && pass_basic_METfilters && METfilterbadChCand && METfilterbadPFMuon && HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0] && abs(lep_dxy[0]) <0.01 && abs(lep_dz[0])<0.02) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1] && abs(lep_dxy[1]) <0.01 && abs(lep_dz[1])<0.02)) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4")
+
+root -l lstore_outdirs/v37/test12/Data13TeV_SingleMuon2016H_03Feb2017_ver2/Data13TeV_SingleMuon2016H_03Feb2017_ver2_2.root
+ttree_out->Scan("indexevents:event_leptons[0].pt():event_met.pt():event_leptons[0].phi():event_met.phi()", "selection_stage_em > 200 && selection_stage_em < 210")
+
+*    Row   * indexeven * lep_p4[0] * met_corre * lep_p4[0] * met_corre *
+************************************************************************
+*      619 * 573252531 * 105.02864 * 61.278871 * 2.7719678 * -3.095212 *
+*     1075 * 168613661 * 37.258724 * 58.412322 * 1.0833890 * -0.380221 *
+*     1617 * 540929843 * 38.791694 * 99.997258 * -2.766596 * 2.1099775 *
+*     2148 * 542768740 * 35.598461 * 60.212456 * 1.0383691 *  2.341433 *
+*     2239 * 541907518 * 88.542724 * 48.823328 * 2.1606855 * -0.958420 *
+*     2887 * 706316614 * 116.11275 * 32.271781 * -0.752298 * -1.836970 *
+
+
+*    Row   * indexeven * event_lep * event_met * event_lep * event_met *
+************************************************************************
+*        0 * 573252531 * 105.02864 * 56.443907 * 2.7719678 * -3.030303 *
+*        1 * 168613661 * 37.258724 * 58.486072 * 1.0833890 * -0.368588 *
+*        2 * 540929843 * 38.791694 * 101.46744 * -2.766596 * 2.1104295 *
+*        3 * 542768740 * 35.598461 * 58.731686 * 1.0383691 * 2.3666976 *
+*        4 * 541907518 * 88.542724 * 49.443032 * 2.1606855 * -1.069896 *
+*        5 * 706316614 * 116.11275 * 33.774188 * -0.752298 * -1.775973 *
+
+-- met is different, both pT and phi!
+
+3) compare met with all the init mets
+
+    event_met_init  = LorentzVector_Class(0., 0., 0., 0.)
+    event_met_init2 = LorentzVector_Class(0., 0., 0., 0.)
+
+ntuple mets:
+
+root -l gstore_outdirs/v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMuon2016H_03Feb2017_ver2/190205_175811/0000/Data13TeV_SingleMuon2016H_03Feb2017_ver2_2.root
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("indexevents:met_corrected.pt():met_corrected.phi():met_init.pt():met_init.phi()", "no_iso_veto_leps && pass_basic_METfilters && METfilterbadChCand && METfilterbadPFMuon && HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0] && abs(lep_dxy[0]) <0.01 && abs(lep_dz[0])<0.02) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1] && abs(lep_dxy[1]) <0.01 && abs(lep_dz[1])<0.02)) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4")
+
+*    Row   * indexeven * met_corre * met_corre * met_init. * met_init. *
+************************************************************************
+*      619 * 573252531 * 61.278871 * -3.095212 * 61.278873 * -3.095212 *
+*     1075 * 168613661 * 58.412322 * -0.380221 * 58.412323 * -0.380221 *
+*     1617 * 540929843 * 99.997258 * 2.1099775 * 99.997261 * 2.1099774 *
+*     2148 * 542768740 * 60.212456 *  2.341433 * 60.212459 * 2.3414330 *
+*     2239 * 541907518 * 48.823328 * -0.958420 * 48.823326 * -0.958420 *
+*     2887 * 706316614 * 32.271781 * -1.836970 * 32.271781 * -1.836970 *
+
+-- identical
+
+stage2 mets:
+
+root -l lstore_outdirs/v37/test12/Data13TeV_SingleMuon2016H_03Feb2017_ver2/Data13TeV_SingleMuon2016H_03Feb2017_ver2_2.root
+ttree_out->Scan("indexevents:event_met.pt():event_met.phi():event_met_init.pt():event_met_init.phi():event_met_init2.pt():event_met_init2.phi()", "selection_stage_em > 200 && selection_stage_em < 210")
+
+*    Row   * indexeven * event_met * event_met * event_met * event_met * event_met * event_met *
+************************************************************************************************
+*        0 * 573252531 * 56.443907 * -3.030303 * 61.278873 * -3.095212 * 61.278873 * -3.095212 *
+*        1 * 168613661 * 58.486072 * -0.368588 * 58.412323 * -0.380221 * 58.412323 * -0.380221 *
+*        2 * 540929843 * 101.46744 * 2.1104295 * 99.997261 * 2.1099774 * 99.997261 * 2.1099774 *
+*        3 * 542768740 * 58.731686 * 2.3666976 * 60.212459 * 2.3414330 * 60.212459 * 2.3414330 *
+*        4 * 541907518 * 49.443032 * -1.069896 * 48.823326 * -0.958420 * 48.823326 * -0.958420 *
+*        5 * 706316614 * 33.774188 * -1.775973 * 32.271781 * -1.836970 * 32.271781 * -1.836970 *
+
+-- the init mets are ok
+
+root -l lstore_outdirs/v37/test12/Data13TeV_SingleMuon2016H_03Feb2017_ver2/Data13TeV_SingleMuon2016H_03Feb2017_ver2_2.root
+ttree_out->Scan("indexevents:event_met_lep_mt:sqrt(2*event_leptons[0].pt()*event_met.pt()*(1 - cos(event_leptons[0].phi() - event_met.phi()))):sqrt(2*event_leptons[0].pt()*event_met_init.pt()*(1 - cos(event_leptons[0].phi() - event_met_init.phi())))", "selection_stage_em > 200 && selection_stage_em < 210")
+
+*    Row   * indexeven * event_met * sqrt(2*ev * sqrt(2*ev *
+************************************************************
+*        0 * 573252531 * 36.672164 * 36.672165 * 33.133809 *
+*        1 * 168613661 * 61.980712 * 61.980713 * 62.346427 *
+*        2 * 540929843 * 81.129409 * 81.129407 * 80.560989 *
+*        3 * 542768740 * 56.369651 * 56.369652 * 56.150255 *
+*        4 * 541907518 * 132.19923 * 132.19923 * 131.48998 *
+*        5 * 706316614 * 61.342762 * 61.342760 * 63.189829 *
+
+VS ntuple mT:
+
+************************************
+*    Row   * indexeven * sqrt(2*le *
+************************************
+*      619 * 573252531 * 33.133809 *
+*     1075 * 168613661 * 62.346427 *
+*     1617 * 540929843 * 80.560987 *
+*     2148 * 542768740 * 56.150252 *
+*     2239 * 541907518 * 131.48998 *
+*     2887 * 706316614 * 63.189824 *
+
+4) launch loop selection with these mets: test11 (it has all MC) bunchDILEP3recalc
+
+5) disassemble the met propagation?
+   why is it in Data?
+
+for data:
+
+taus are propagated, but TES factor = 1 for Data
+
+            if PROP_TAU and tau_pt > TAUS_PT_CUT:
+                proc_met         -= p4 * (TES_factor - 1.)
+
+same for lep-matched and regular jets
+
+also
+
+                  if PROP_LEPJET_UNCLUSTER:
+                    # return jes_cor to met
+                    # in both data and MC
+                    jes_uncorFactor = ev.jet_uncorrected_jecFactor[i]
+                    if jet_pt > JETS_PT_CUT:
+                        proc_met -= p4 * (jes_uncorFactor - 1.)
+
+-- what is this factor for data?
+
+-- confirm the factors == 1 for data
+   and remove the procedures with if isMC
+
+in file Data13TeV_SingleMuon2016H_03Feb2017_ver2_61.root
+python channel_distrs_full_loop.py --do-W-stitching --metmuegclean false --options no_prop_lepjets -l logss temp/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMuon2016H_03Feb2017_ver2/190205_175811/0000/Data13TeV_SingleMuon2016H_03Feb2017_ver2_61.root
+
+break stage2:2571
+b stage2:3324
+b stage2:3765
+b stage2:3781
+b stage2:3797
+b stage2:3811
+
+c
+
+p ev.indexevents
+580363142L
+
+(Pdb) met_x
+30.07923225935527
+(Pdb) met_y
+-61.59484003049502
+
+proc_met.pt()
+proc_met.phi()
+68.54695129394531
+-1.1165200471878052
+p TES_factor
+1.0
+:w
+
+proc_met.pt()
+proc_met.phi()
+68.54695129394531
+-1.1165200471878052
+
+then jets
+
+PROP_LEPJET_UNCLUSTER passes
+
+jes_uncorFactor
+0.8821249604225159
+
+then
+
+3793 	                if not match_lep:
+3794 	
+3795 	                  # correct the met from all not lep-matched jets
+3796 	                  if PROP_JETS:
+3797B->	                      if jet_pt > JETS_PT_CUT:
+3798 	                          proc_met -= p4 * (en_factor - 1.)
+
+en_factor
+1.0
+
+proc_met.pt()
+proc_met.phi()
+80.81556388460609
+-1.0500094890349883
+
+then commented out?
+
+3811B->	                  if jet_pt > JETS_PT_CUT:
+3812 	                      #proc_met -= p4 * (en_factor - 1.)
+3813 	                      weight_bSF     *= jet_weight_bSF_nom
+
+and the same
+jes_uncorFactor
+0.9932722449302673
+
+until 3900
+
+2571B->	        proc_met         = LorentzVector('ROOT::Math::PxPyPzE4D<double>')(met_x, met_y, 0., 0.)
+ev.indexevents
+579336885L
+
+ok, so what is PROP_LEPJET_UNCLUSTER and should it be there?
+
 
 
 ##### reproduce v12 in v37 with sumup_ttree_draw?
