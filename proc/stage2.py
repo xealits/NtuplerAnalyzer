@@ -2264,6 +2264,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     #if not range_max or range_max > tree.GetEntries():
         #range_mas = tree.GetEntries()
 
+    pdb.set_trace()
+
     profile = cProfile.Profile()
     profile.enable()
     #for iev in range(range_min, range_max): # root sucks
@@ -2282,9 +2284,6 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 find (gen) subprocess <------! different subprocess def-s for diff channels
                 record distr-s for each
         '''
-
-        if ev.indexevents == 154396695:
-            pdb.set_trace()
 
         #if iev > 10000: break
         control_counters.Fill(0)

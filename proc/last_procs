@@ -4,6 +4,12 @@ python genjobs.py --queue-dir temp/jobs/ v37 test12 --options no_prop_lepjets --
 
 python loop_selections.py --no-queue --options " --wjets-nup-cut " --nt v37 --proc test12 --distrs bunchDILEP3 --sys NOMINAL --chan-groups tt_dileptons --dtags MC2016_Summer16_TTJets_powheg,Data13TeV_SingleMuon2016H_03Feb2017_ver2
 
+# recalculate mT from the init met
+# in test11 -- it has all MC
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test11 --distrs bunchDILEP3recalc --sys NOMINAL --chan-groups tt_dileptons --dtags MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_TTJets_powheg,Data13TeV_SingleMuon2016H_03Feb2017_ver2
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test11 --distrs bunchDILEP3recalc --sys NOMINAL --chan-groups dy_dileptons --dtags MC2016_Summer16_DYJetsToLL_50toInf_madgraph,MC2016_Summer16_TTJets_powheg,Data13TeV_SingleMuon2016H_03Feb2017_ver2
+# the queue runs, so just all:
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test11 --distrs bunchDILEP3recalc --sys NOMINAL --chan-groups tt_dileptons,dy_dileptons
 
 # test11 with impacts on muon
 python genjobs.py v37 test11 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags MC2016_Summer16_TTJets_powheg,singletop,dibosons,std_data
