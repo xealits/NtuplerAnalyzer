@@ -488,8 +488,9 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=a
                        th_factor *= syst_factors_updowns_mu.get(fixed_sys_name, 1.)
 
                final_factor = args.lumi * tauIDSF_factor * pu_factor * th_factor
-               logging.info("final factor %20s %20f   %5f %5f %5f     %20f" % (nick, args.lumi, tauIDSF_factor, pu_factor, th_factor, final_factor))
+               init_integral = histo.Integral()
                histo.Scale(final_factor)
+               logging.info("final factor %20s %20f   %5f %5f %5f     %20f = %10.2f / %10f" % (nick, args.lumi, tauIDSF_factor, pu_factor, th_factor, final_factor, histo.Integral(), init_integral))
 
            # wjets normalization
            if args.wjets > 0 and 'wjets' in nick:

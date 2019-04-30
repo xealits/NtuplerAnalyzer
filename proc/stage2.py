@@ -11,7 +11,7 @@ from random import random as u_random
 from gen_proc_defs import *
 import math
 
-import pdb
+#import pdb
 
 OLD_MINIAOD_JETS = False
 DO_W_STITCHING = False
@@ -2264,7 +2264,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     #if not range_max or range_max > tree.GetEntries():
         #range_mas = tree.GetEntries()
 
-    pdb.set_trace()
+    #pdb.set_trace()
 
     profile = cProfile.Profile()
     profile.enable()

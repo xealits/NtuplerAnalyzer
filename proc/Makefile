@@ -1,5 +1,6 @@
+qwatch: n=10
 qwatch:
-	watch -n 10 'qstat | grep " r     " | wc -l ; qstat | wc -l'
+	watch -n ${n} 'qstat | grep " r     " | wc -l ; qstat | wc -l'
 
 clear_gstore_failed: nt=v37
 clear_gstore_failed:
@@ -25,6 +26,12 @@ find_failed_jobs: nt=v37
 find_failed_jobs: proc=test8
 find_failed_jobs:
 	wc -l job_*.e* | grep " 12 " > jobs_failed
+
+find_failed_plots: nt=v37
+find_failed_plots: proc=test8
+find_failed_plots:
+	wc -l j_*.e* | sort | grep -v "^[ ][ ]*8 \|^[ ][ ]*[0-9][0-9]* total" > failed_plots
+	sed -i -e 's,\.e[0-9][0-9]*$$,",' -e 's,^[ ][ ]*[0-9][0-9]*[ ][ ]*,qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/,' failed_plots
 
 sumup_weights: nt=v37
 sumup_weights: proc=test5

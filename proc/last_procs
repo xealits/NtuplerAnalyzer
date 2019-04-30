@@ -11,6 +11,14 @@ python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test11 -
 # the queue runs, so just all:
 python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test11 --distrs bunchDILEP3recalc --sys NOMINAL --chan-groups tt_dileptons,dy_dileptons
 
+python loop_selections.py --no-queue --options " --wjets-nup-cut " --nt v37 --proc test11 --distrs bunchDILEP3recalc --sys NOMINAL --chan-groups tt_dileptons,dy_dileptons --without-dtags MC2016_Summer16_TTJets_powheg,Data13TeV_SingleElectron2016B_03Feb2017_ver2,Data13TeV_SingleElectron2016C_03Feb2017_v1,Data13TeV_SingleElectron2016D_03Feb2017_v1,Data13TeV_SingleElectron2016E_03Feb2017_v1,Data13TeV_SingleElectron2016F_03Feb2017_v1,Data13TeV_SingleElectron2016G_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver2,Data13TeV_SingleElectron2016H_03Feb2017_ver3,Data13TeV_SingleMuon2016B_03Feb2017_ver2,Data13TeV_SingleMuon2016C_03Feb2017_v1,Data13TeV_SingleMuon2016D_03Feb2017_v1,Data13TeV_SingleMuon2016E_03Feb2017_v1,Data13TeV_SingleMuon2016F_03Feb2017_v1,Data13TeV_SingleMuon2016G_03Feb2017_v1,Data13TeV_SingleMuon2016H_03Feb2017_ver2,Data13TeV_SingleMuon2016H_03Feb2017_ver3
+
+# finally, the rest of data for v37_test11_bunchDILEP3recalc_mc_2_limited
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test11 --distrs bunchDILEP3recalc --sys NOMINAL --chan-groups tt_dileptons,dy_dileptons --dtags Data13TeV_SingleElectron2016B_03Feb2017_ver2,Data13TeV_SingleElectron2016C_03Feb2017_v1,Data13TeV_SingleElectron2016D_03Feb2017_v1,Data13TeV_SingleElectron2016E_03Feb2017_v1,Data13TeV_SingleElectron2016F_03Feb2017_v1,Data13TeV_SingleElectron2016G_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver2,Data13TeV_SingleElectron2016H_03Feb2017_ver3,Data13TeV_SingleMuon2016B_03Feb2017_ver2,Data13TeV_SingleMuon2016C_03Feb2017_v1,Data13TeV_SingleMuon2016D_03Feb2017_v1,Data13TeV_SingleMuon2016E_03Feb2017_v1,Data13TeV_SingleMuon2016F_03Feb2017_v1,Data13TeV_SingleMuon2016G_03Feb2017_v1,Data13TeV_SingleMuon2016H_03Feb2017_ver2,Data13TeV_SingleMuon2016H_03Feb2017_ver3
+# and repeat MuonH for sync
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test11 --distrs bunchDILEP3recalc --sys NOMINAL --chan-groups tt_dileptons,dy_dileptons --dtags Data13TeV_SingleMuon2016H_03Feb2017_ver2
+
+
 # test11 with impacts on muon
 python genjobs.py v37 test11 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags MC2016_Summer16_TTJets_powheg,singletop,dibosons,std_data
 python genjobs.py v37 test11 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --dtags MC2016_Summer16_DYJetsToLL_50toInf_madgraph --queue-dir queue2_dir/

@@ -861,8 +861,8 @@ std_channels_ev_loop = {
 'wjets_el'    : (lambda sel_stage, ev: (sel_stage== 17), {'NOMINAL': lambda ev: ev.selection_stage_wjets}),
 'wjets_el_ss' : (lambda sel_stage, ev: (sel_stage== 16), {'NOMINAL': lambda ev: ev.selection_stage_wjets}),
 
-'tt_elmu':  (lambda sel_stage, ev: (sel_stage> 200 and sel_stage < 210 and ev.event_leptons[0].pt() > 32. and ev.event_leptons[1].pt() > 32.), {'NOMINAL': lambda ev: ev.selection_stage_em}),
-'tt_elmu_tight':  (lambda sel_stage, ev: (sel_stage == 205 and ev.event_leptons[0].pt() > 32. and ev.event_leptons[1].pt() > 32.), {'NOMINAL': lambda ev: ev.selection_stage_em}),
+'tt_elmu':        (lambda sel_stage, ev: (sel_stage> 200 and sel_stage < 210 and ev.event_leptons[0].pt() > 30. and ev.event_leptons[1].pt() > 30.), {'NOMINAL': lambda ev: ev.selection_stage_em}),
+'tt_elmu_tight':  (lambda sel_stage, ev: (sel_stage == 205 and ev.event_leptons[0].pt() > 30. and ev.event_leptons[1].pt() > 30.), {'NOMINAL': lambda ev: ev.selection_stage_em}),
 
 'tt_alliso_presel_el'    :  (lambda sel_stage, ev: sel_stage==513, {'NOMINAL': lambda ev: ev.selection_stage_tt_alliso}),
 'tt_alliso_presel_el_ss' :  (lambda sel_stage, ev: sel_stage==512, {'NOMINAL': lambda ev: ev.selection_stage_tt_alliso}),
