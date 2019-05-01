@@ -3007,6 +3007,22 @@ eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_data_v12_lep0_eta,sta
 
 -- shows v37 has slightly more electrons in high eta and less muons in high eta
 
+TODO: if in v12 data has _more_ electrons/muons in endcaps (surplus of some events)
+      v12 data must have some events, which are not present in v37
+      --- find them by indexevents
+          if not found, then the v12 data has _less_ events in barrel (lack of events)
+
+what's with pT:
+
+python get_shapes.py --no-norm --norm-formulas --formula "stage2_elmu_mu_pt/data_v12_lep0_pt" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj stage2_elmu_mu_pt:distrs/v37_test11_bunchDILEP3recalc/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_elmu_mu_pt data_v12_lep0_pt:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:data
+python get_shapes.py --no-norm --norm-formulas --formula "stage2_elmu_el_pt/data_v12_lep1_pt" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj stage2_elmu_el_pt:distrs/v37_test11_bunchDILEP3recalc/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_elmu_el_pt data_v12_lep1_pt:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:data
+
+eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_data_v12_lep0_pt,stage2_elmu_mu_pt_formula_nonorm.png ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_stage2_elmu_el_pt,data_v12_lep1_pt_formula_nonorm.png
+
+--- 2% less muons in lowest pT in v37 stage2, but it is within stats,
+    all the rest is around 1, fluctuations within stats
+    no kink or step at 30-60 GeV
+
 
 python get_shapes.py --no-norm --norm-formulas --formula "stage2_elmu_mu_eta:tt_other_v12_lep0_eta+tt_em_v12_lep0_eta" --y-range 0,0.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj stage2_elmu_mu_eta:distrs/v37_test11_bunchDILEP3recalc/MC2016_Summer16_TTJets_powheg.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_mu_eta "tt_em_v12_lep0_eta:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_eta_TOP_PT.root:tt_{em}" "tt_other_v12_lep0_eta:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_eta_TOP_PT.root:tt_{other}"
 python get_shapes.py --no-norm --norm-formulas --formula "stage2_elmu_el_eta:tt_other_v12_lep1_eta+tt_em_v12_lep1_eta" --y-range 0,0.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj stage2_elmu_el_eta:distrs/v37_test11_bunchDILEP3recalc/MC2016_Summer16_TTJets_powheg.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_el_eta "tt_em_v12_lep1_eta:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_eta_TOP_PT.root:tt_{em}" "tt_other_v12_lep1_eta:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_eta_TOP_PT.root:tt_{other}"
@@ -3085,7 +3101,7 @@ this is sick
 
 
 
-##### insane ranges in ntuple_distr
+##### insane ranges in ntuple_distr - happens when conditional parameter (?:) is ploted
 
 ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT f f T 19094 16079 "(abs(lep_id[0]) == 13 ? lep_p4[0].eta() : lep_p4[1].eta())" "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(26,-2.6,2.6)" INVESTIGATION-v37tests-v12.7-test_elmu_mu_eta " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets `cat cat v12.7_dilep_dtags`
 
@@ -3106,25 +3122,54 @@ ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT f f T 19094 16079 "lep_p4[0]
 
 
 
+##### deviation in data eta distrs: indexevents of v12 and v37 data events -- any v12 events missing in v37?
+
+root -l /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root
+
+tree->SetScanField(0);
+root [1] .> tree.log
+tree->Scan("*");
+.>
+
+
+((TTree*) ntupler->Get("reduced_ttree"))->SetScanField(0);
+
+.> v12_7_dilep_merged_sets_Data13TeV_SingleMuon2016H_03Feb2017_ver2.indexevents
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("indexevents", "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02 && pass_basic_METfilters");
+.> v12_7_dilep_merged_sets_Data13TeV_SingleMuon2016H_03Feb2017_ver2.indexevents
+
+and py script for per-job ntuples?
+
+
+
+
 
 ##### pT trends, in v12 and now
 
-reproduce:
+reproduce with ratio range 0.2:
 
-python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/SingleMuon.root -p -r  -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/  -c tt_elmu --data-nick data_other -d elmu_mu_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.5
-python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/SingleMuon.root -p -r  -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/  -c tt_elmu --data-nick data_other -d elmu_el_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.5
+python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/SingleMuon.root -p -r  -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/  -c tt_elmu --data-nick data_other -d elmu_mu_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.2
+python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/SingleMuon.root -p -r  -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/  -c tt_elmu --data-nick data_other -d elmu_el_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.2
 
 eog plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_distrs,v37_test11_bunchDILEP3recalc,SingleMuon_elmu_mu_pt_tt_elmu_NOMINAL_stack_ratio.png plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_distrs,v37_test11_bunchDILEP3recalc,SingleMuon_elmu_el_pt_tt_elmu_NOMINAL_stack_ratio.png
 
 VS
-eog /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_eta_TOP_PT.png /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_eta_TOP_PT.png /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.png /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.png
 
--- no pT trends
+ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT f f T 19094 16079 "lep_p4[0].pt()"  "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(40,0,200)"    INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt  " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets `cat v12.7_dilep_dtags` &
+ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT f f T 19094 16079 "lep_p4[1].pt()"  "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(40,0,200)"    INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt  " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets `cat v12.7_dilep_dtags` &
 
-check DY norm to the old one -- no, now DY has larger xsec!
+scp "otoldaie@lxplus.cern.ch:/eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums/*.png" debugging_v37tests_w_comparison_to_v12.7_dilep/
+
+eog debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.png debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.png
+
+-- no pT trends in v12, clear trend in v37, it looks like a MC contribution (like tt_{other} of v12) is missing
+   the MC processes seem the same
+   can be due to too much data in low pT
+
+also check DY norm to the old one -- no, now DY has larger xsec!
+or rearrange processes order to see better?
 --- but it does look smaller now...
-    did I check norm-s in mT, it look ok there?
-
+    I checked norm-s in mT, it was ok there..?
 
 
 
@@ -3135,14 +3180,523 @@ python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root di
 
 shape pT in data
 
-python get_shapes.py --no-norm --norm-formulas --formula "stage2_elmu_mu_pt/data_v12_lep0_pt" --y-range 0,2. --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj stage2_elmu_mu_pt:distrs/v37_test11_bunchDILEP3recalc/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_elmu_mu_pt data_v12_lep0_pt:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:data
-python get_shapes.py --no-norm --norm-formulas --formula "stage2_elmu_el_pt/data_v12_lep1_pt" --y-range 0,2. --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj stage2_elmu_el_pt:distrs/v37_test11_bunchDILEP3recalc/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_elmu_el_pt data_v12_lep1_pt:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:data
+python get_shapes.py --no-norm --norm-formulas --formula "stage2_elmu_mu_pt/data_v12_lep0_pt" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj stage2_elmu_mu_pt:distrs/v37_test11_bunchDILEP3recalc/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_elmu_mu_pt data_v12_lep0_pt:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:data
+python get_shapes.py --no-norm --norm-formulas --formula "stage2_elmu_el_pt/data_v12_lep1_pt" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj stage2_elmu_el_pt:distrs/v37_test11_bunchDILEP3recalc/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root:tt_elmu/data_other/NOMINAL/tt_elmu_data_other_NOMINAL_elmu_el_pt data_v12_lep1_pt:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:data
 
 eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_data_v12_lep0_pt,stage2_elmu_mu_pt_formula_nonorm.png ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_stage2_elmu_el_pt,data_v12_lep1_pt_formula_nonorm.png
 
--- yeah, around 1, maybe v37 stage2 has less low pT muons and more large values, which agrees with less muons in high eta
+-- yeah, around 1
+   maybe v37 stage2 has less low pT muons and more large values (which agrees with less muons in high eta)
+   but it happens only in lowest pT bin (or two) and less than 5% deviation
+   definitely no step 30-60GeV of 5% deviation
 
 
+So:
+1) data looks ok
+2) DY of v37 looks smaller than in v12, even though I checked the fraction of DY before?
+
+
+
+
+
+##### check the MC process fractions again
+
+in 37:
+
+python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/SingleMuon.root -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/  -c tt_elmu --data-nick data_other -d elmu_mu_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.2
+python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/SingleMuon.root -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/  -c tt_elmu --data-nick data_other -d elmu_el_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.2
+
+root -l plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root
+root -l plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_el_pt_tt_elmu_NOMINAL.root
+
+root [11] tt_elmu->Get("sums_NOMINAL/mc_sum2_NOMINAL")->Print()
+TH1.Print Name  = mc_sum2_NOMINAL, Entries= 585274, Total sum= 171988
+
+tt_elmu->Get("dy_other/NOMINAL/tt_elmu_dy_other_NOMINAL_elmu_mu_pt")->Print()
+tt_elmu->Get("dy_tautau/NOMINAL/tt_elmu_dy_tautau_NOMINAL_elmu_mu_pt")->Print()
+tt_elmu->Get("tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_mu_pt")->Print()
+tt_elmu->Get("dibosons_other/NOMINAL/tt_elmu_dibosons_other_NOMINAL_elmu_mu_pt")->Print()
+tt_elmu->Get("s_top_other/NOMINAL/tt_elmu_s_top_other_NOMINAL_elmu_mu_pt")->Print()
+
+TH1.Print Name  = tt_elmu_dy_other_NOMINAL_elmu_mu_pt, Entries= 166, Total sum= 756.019
+TH1.Print Name  = tt_elmu_dy_tautau_NOMINAL_elmu_mu_pt, Entries= 1895, Total sum= 8979.21
+TH1.Print Name  = tt_elmu_tt_other_NOMINAL_elmu_mu_pt, Entries= 403533, Total sum= 133912
+TH1.Print Name  = tt_elmu_dibosons_other_NOMINAL_elmu_mu_pt, Entries= 92578, Total sum= 14723.6
+TH1.Print Name  = tt_elmu_s_top_other_NOMINAL_elmu_mu_pt, Entries= 85242, Total sum= 13206.6
+
+
+((TH1D*) tt_elmu->Get("dy_other/NOMINAL/tt_elmu_dy_other_NOMINAL_elmu_mu_pt"))->Integral() + ((TH1D*) tt_elmu->Get("dy_tautau/NOMINAL/tt_elmu_dy_tautau_NOMINAL_elmu_mu_pt"))->Integral() + ((TH1D*) tt_elmu->Get("tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_mu_pt"))->Integral() + ((TH1D*) tt_elmu->Get("dibosons_other/NOMINAL/tt_elmu_dibosons_other_NOMINAL_elmu_mu_pt"))->Integral() + ((TH1D*) tt_elmu->Get("s_top_other/NOMINAL/tt_elmu_s_top_other_NOMINAL_elmu_mu_pt"))->Integral()
+
+(double) 171577.
+       dy_tautau tt     dibosons  s_top_other
+v37 = [ 8979.21  133912 14723.6   13206.6 ]
+v37 ./ 171988
+ 0.0522084  0.778612  0.0856083  0.0767879
+
+v12
+
+root -l /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root
+
+((TH1D*) _file0->Get("h_0"))->Integral()
+7319.00
+
+((TH1D*) _file0->Get("dyjets"))->Integral()
+((TH1D*) _file0->Get("tt_{em}"))->Integral() + ((TH1D*) _file0->Get("tt_{other}"))->Integral()
+((TH1D*) _file0->Get("dibosons"))->Integral()
+((TH1D*) _file0->Get("single top"))->Integral()
+
+v12 = [ 403.938 5675.99 624.430 564.482 ]
+v12 / 7319.00
+ 0.0551903  0.775514  0.0853163  0.0771256
+
+-- very small deviations, in 3rd digit
+   dy v37 / v12 = 0.0522084 / 0.0551903 = 0.94597
+   -- opposite to the cross-section change: 6225.42, #5765.4,
+      6225.42 / 5765.4 = 1.0798
+      more than 10% of DY deviation
+      why?
+
+how many these pass in v12:
+MC2016_Summer16_DYJetsToLL_10to50_amcatnlo.root
+
+root -l /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/MC2016_Summer16_DYJetsToLL_10to50_amcatnlo.root
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("5", "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02")
+3
+
+but lets' just increase DY by 10% -- how pT shape changes?
+
+python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/SingleMuon.root -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/  -c tt_elmu --data-nick data_other -d elmu_mu_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.2 --factor-dy 1.1 -p -r
+python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/SingleMuon.root -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/  -c tt_elmu --data-nick data_other -d elmu_el_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.2 --factor-dy 1.1 -p -r
+
+eog plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_distrs,v37_test11_bunchDILEP3recalc,SingleMuon_elmu_mu_pt_tt_elmu_NOMINAL_stack_ratio.png plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_distrs,v37_test11_bunchDILEP3recalc,SingleMuon_elmu_el_pt_tt_elmu_NOMINAL_stack_ratio.png
+
+-- the step is not fixed, just the smallest pT bin bends to data-mc agreement
+
+what if even more:
+
+python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/SingleMuon.root -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/  -c tt_elmu --data-nick data_other -d elmu_mu_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.2 --factor-dy 1.3 -p -r
+python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/SingleMuon.root -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/  -c tt_elmu --data-nick data_other -d elmu_el_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.2 --factor-dy 1.3 -p -r
+
+-- now it's a clear bent, 30-40 is ok agreement, 40-60 5% more data, than back to agreement and less data than MC
+
+So:
+1) it cannot be only due to DY normalization
+2) neither to the yields of other processes -- they all are close to v12
+2) and data shape v12-v37 seems to agree well
+-- it's due shapes in some other MC processes?
+
+
+
+##### comparison of v12-v37 shapes of all MC processes - seems like source of pT kinks in v37
+
+first, compare v12-v37 MC sum shapes -- if data agrees, than this must disagree
+
+v37 mc sum:
+root -l plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_el_pt_tt_elmu_NOMINAL.root
+
+root [11] tt_elmu->Get("sums_NOMINAL/mc_sum2_NOMINAL")->Print()
+TH1.Print Name  = mc_sum2_NOMINAL, Entries= 585274, Total sum= 171988
+
+also there is:
+mc_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_1_limited_HISTOSEL_Mt_lep_met_f_tt_elmu_NOMINAL.root:tt_elmu/sums_NOMINAL/mc_sum1_NOMINAL
+
+
+files:
+
+mc_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_el_pt_tt_elmu_NOMINAL.root:tt_elmu/sums_NOMINAL/mc_sum1_NOMINAL
+mc_v12:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:h_0
+
+
+python get_shapes.py --no-norm --norm-formulas --formula "mc_v37:mc_v12_lep0_pt" --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj mc_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/sums_NOMINAL/mc_sum1_NOMINAL mc_v12_lep0_pt:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:h_0
+
+python get_shapes.py --no-norm --norm-formulas --formula "mc_v37/mc_v12_lep0_pt" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj mc_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/sums_NOMINAL/mc_sum1_NOMINAL mc_v12_lep0_pt:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:h_0
+
+eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_mc_v12_lep0_pt,mc_v37_formula_nonorm.png
+
+-- clear linear trend from 0.98 at 30GeV to 1.08 at 200GeV
+
+check the el:
+
+python get_shapes.py --no-norm --norm-formulas --formula "mc_v37/mc_v12_lep1_pt" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj mc_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_el_pt_tt_elmu_NOMINAL.root:tt_elmu/sums_NOMINAL/mc_sum1_NOMINAL mc_v12_lep1_pt:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:h_0
+
+eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_mc_v12_lep1_pt,mc_v37_formula_nonorm.png
+
+-- the same clear trend + a distinct 4% step up at around 85GeV
+
+
+which process is this?
+
+
+tt
+
+tt_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_mu_pt
+"tt_v12_mu_pT_em:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:tt_{em}"
+"tt_v12_mu_pT_other:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:tt_{other}"
+
+python get_shapes.py --no-norm --norm-formulas --formula "tt_v37/tt_v12_mu_pT_em +tt_v12_mu_pT_other" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_mu_pt "tt_v12_mu_pT_em:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:tt_{em}" "tt_v12_mu_pT_other:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:tt_{other}"
+
+python get_shapes.py --no-norm --norm-formulas --formula "tt_v37/tt_v12_el_pT_em +tt_v12_el_pT_other" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_el_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_el_pt "tt_v12_el_pT_em:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:tt_{em}" "tt_v12_el_pT_other:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:tt_{other}"
+
+eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_tt_v12_mu_pT_other,tt_v12_mu_pT_em,tt_v37_formula_nonorm.png
+eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_tt_v12_el_pT_other,tt_v12_el_pT_em,tt_v37_formula_nonorm.png
+
+-- very clear linear trend from 0.98 to 1.10
+   with the step in el pT
+
+
+
+single top
+
+stop_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/s_top_other/NOMINAL/tt_elmu_s_top_other_NOMINAL_elmu_mu_pt
+"stop_v12_mu_pT:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:single top"
+
+python get_shapes.py --no-norm --norm-formulas --formula "stop_v37/stop_v12_mu_pT" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj stop_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/s_top_other/NOMINAL/tt_elmu_s_top_other_NOMINAL_elmu_mu_pt "stop_v12_mu_pT:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:single top"
+python get_shapes.py --no-norm --norm-formulas --formula "stop_v37/stop_v12_el_pT" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj stop_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_el_pt_tt_elmu_NOMINAL.root:tt_elmu/s_top_other/NOMINAL/tt_elmu_s_top_other_NOMINAL_elmu_el_pt "stop_v12_el_pT:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:single top"
+
+eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_stop_v12_mu_pT,stop_v37_formula_nonorm.png ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_stop_v37,stop_v12_el_pT_formula_nonorm.png
+
+-- very slight trend, about from 0.99 to 1.01
+   but with clear step in el pT
+
+
+
+dibosons
+
+dibosons_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/dibosons_other/NOMINAL/tt_elmu_dibosons_other_NOMINAL_elmu_mu_pt
+dibosons_v12_mu_pT:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:dibosons
+
+python get_shapes.py --no-norm --norm-formulas --formula "dibosons_v37/dibosons_v12_mu_pT" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj dibosons_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/dibosons_other/NOMINAL/tt_elmu_dibosons_other_NOMINAL_elmu_mu_pt dibosons_v12_mu_pT:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:dibosons
+python get_shapes.py --no-norm --norm-formulas --formula "dibosons_v37/dibosons_v12_el_pT" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj dibosons_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_el_pt_tt_elmu_NOMINAL.root:tt_elmu/dibosons_other/NOMINAL/tt_elmu_dibosons_other_NOMINAL_elmu_el_pt dibosons_v12_el_pT:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:dibosons
+
+eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_dibosons_v37,dibosons_v12_mu_pT_formula_nonorm.png ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_dibosons_v37,dibosons_v12_el_pT_formula_nonorm.png
+
+-- same very slight trend and the step in el pT
+
+
+
+dy
+
+dy_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/dy_tautau/NOMINAL/tt_elmu_dy_tautau_NOMINAL_elmu_mu_pt
+"dy_v12_mu_pT:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:dyjets"
+
+python get_shapes.py --no-norm --norm-formulas --formula "dy_v37/dy_v12_mu_pT" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj dy_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/dy_tautau/NOMINAL/tt_elmu_dy_tautau_NOMINAL_elmu_mu_pt dy_v12_mu_pT:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:dyjets
+python get_shapes.py --no-norm --norm-formulas --formula "dy_v37/dy_v12_el_pT" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj dy_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_el_pt_tt_elmu_NOMINAL.root:tt_elmu/dy_tautau/NOMINAL/tt_elmu_dy_tautau_NOMINAL_elmu_el_pt dy_v12_el_pT:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:dyjets
+
+eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_dy_v37,dy_v12_mu_pT_formula_nonorm.png ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_dy_v37,dy_v12_el_pT_formula_nonorm.png
+
+-- very large fluctuation, nothing is visible
+
+
+
+
+##### DY yields in v37: 10% less than expected - due to double ID SFs? - not the largest effect now, not solving it
+
+
+
+
+##### v12-v37 MC processes pT: linear trend and the step in el pT
+
+in TT it's the clearest:
+
+python get_shapes.py --no-norm --norm-formulas --formula "tt_v37/tt_v12_mu_pT_em +tt_v12_mu_pT_other" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_mu_pt "tt_v12_mu_pT_em:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:tt_{em}" "tt_v12_mu_pT_other:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:tt_{other}"
+
+python get_shapes.py --no-norm --norm-formulas --formula "tt_v37/tt_v12_el_pT_em +tt_v12_el_pT_other" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_el_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_el_pt "tt_v12_el_pT_em:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:tt_{em}" "tt_v12_el_pT_other:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:tt_{other}"
+
+eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_tt_v12_mu_pT_other,tt_v12_mu_pT_em,tt_v37_formula_nonorm.png ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_tt_v12_el_pT_other,tt_v12_el_pT_em,tt_v37_formula_nonorm.png
+
+the step must be easier to find? (el SFs, which are not applied in v12)
+the trend might be due to double-SFs in v37 (v12 applies only the muon SF, no electron SF)
+should I check non-weighted distrs first?
+for tests would be nice to reproduce weights in sumup_ttree_draw.py script... -- link the code to ROOT system and use in Draw
+
+let's make weight-less distrs with draw
+then implement the weights for draw and run tests on the weights
+
+
+draw:
+
+python sumup_ttree_draw.py "lep_p4[0].pt()" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 40,0.,200 --output testv37v12_pTtrends_TT_mu_pt.root --histo-name mu_pt gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_*.root
+
+python sumup_ttree_draw.py "lep_p4[1].pt()" --cond-com "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" --histo-range 40,0.,200 --output testv37v12_pTtrends_TT_el_pt.root --histo-name el_pt gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_*.root
+
+
+
+python jobsums/get_shapes.py --no-norm --norm-formulas --formula "tt_v37_dr_wless/tt_v12_mu_pT_em +tt_v12_mu_pT_other" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj  "tt_v12_mu_pT_em:jobsums/debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:tt_{em}" "tt_v12_mu_pT_other:jobsums/debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:tt_{other}" tt_v37_dr_wless:testv37v12_pTtrends_TT_mu_pt.root:mu_pt
+
+python jobsums/get_shapes.py --no-norm --norm-formulas --formula "tt_v37_dr_wless/tt_v12_el_pT_em +tt_v12_el_pT_other" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj  "tt_v12_el_pT_em:jobsums/debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:tt_{em}" "tt_v12_el_pT_other:jobsums/debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:tt_{other}" tt_v37_dr_wless:testv37v12_pTtrends_TT_el_pt.root:el_pt
+
+eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_tt_v12_el_pT_other,tt_v12_el_pT_em,tt_v37_dr_wless_formula_nonorm.png ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_tt_v37_dr_wless,tt_v12_mu_pT_other,tt_v12_mu_pT_em_formula_nonorm.png
+
+-- both have the linear trend 0.98 - 1.10 with slight variation and no step
+
+
+also compare to the stage2 output -- to see the effect of weights there
+
+python get_shapes.py --no-norm --norm-formulas --formula "tt_v37/tt_v12_mu_pT_em +tt_v12_mu_pT_other" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_mu_pt "tt_v12_mu_pT_em:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:tt_{em}" "tt_v12_mu_pT_other:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root:tt_{other}"
+
+python get_shapes.py --no-norm --norm-formulas --formula "tt_v37/tt_v12_el_pT_em +tt_v12_el_pT_other" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj tt_v37:plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_el_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_el_pt "tt_v12_el_pT_em:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:tt_{em}" "tt_v12_el_pT_other:debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root:tt_{other}"
+
+
+python jobsums/get_shapes.py --no-norm --norm-formulas --formula "tt_v37_mu/tt_v37_dr_wless" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj  tt_v37_mu:jobsums/plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_mu_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_mu_pt tt_v37_dr_wless:testv37v12_pTtrends_TT_mu_pt.root:mu_pt
+
+python jobsums/get_shapes.py --no-norm --norm-formulas --formula "tt_v37_el/tt_v37_dr_wless" --y-range 0.8,1.2 --no-std-path -e -c ctr_old_mu_sel_lj -d Mt_lep_met_f -p tt_lj  tt_v37_el:jobsums/plots/v37_test11_bunchDILEP3recalc_mc_1_limited//distrs,v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd_HISTOSEL_elmu_el_pt_tt_elmu_NOMINAL.root:tt_elmu/tt_other/NOMINAL/tt_elmu_tt_other_NOMINAL_elmu_el_pt tt_v37_dr_wless:testv37v12_pTtrends_TT_el_pt.root:el_pt
+
+eog ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_tt_v37_dr_wless,tt_v37_mu_formula_nonorm.png ./compare_ctr_old_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f_tt_v37_dr_wless,tt_v37_el_formula_nonorm.png
+
+-- close to 1, clearly seen step in el and slight turn from the SFs
+   1) draw reproduces the stage2 correctly
+   2) and even wighout weights it shows the same deviation from v12
+
+
+
+So:
+1) the trend appears before weights
+2) the draw weightless is ok for fixing the linear trend
+3) the step is probably to one of the electron SFs (was it the trigger?)
+
+
+How do you catch this?
+In TT:
+1) number of processed jobs was the same or really close
+2) overall number of passing events was really close
+3) then indexevents should show the events which differ
+
+
+
+Check 1) and 2):
+
+root -l testv37v12_pTtrends_TT_el_pt.root
+el_pt->Print()
+TH1.Print Name  = el_pt, Entries= 413695, Total sum= 408213
+.q
+
+root -l jobsums/debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep1_pt_TOP_PT.root
+((TH1D*) _file0->Get("tt_{em}"))->Print()
+((TH1D*) _file0->Get("tt_{other}"))->Print()
+((TH1D*) _file0->Get("tt_{em}"))->Integral() + ((TH1D*) _file0->Get("tt_{other}"))->Integral()
+((TH1D*) _file0->Get("tt_{em}"))->GetEntries() + ((TH1D*) _file0->Get("tt_{other}"))->GetEntries()
+
+TH1.Print Name  = tt_{em}, Entries= 365770, Total sum= 5082.48
+TH1.Print Name  = tt_{other}, Entries= 43063, Total sum= 593.393
+
+(double) 5675.87
+(double) 408833.
+
+julia> 413695 / 408833.
+1.011892386377812
+
+-- does not seem like enough events
+
+are lep_pt the same?
+
+root -l gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_1.root
+
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("indexevents:lep_p4[0].pt()", "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02")
+
+*    Row   * indexeven * lep_p4[0] *
+************************************
+*       38 *    315755 * 33.079643 *
+*       92 *    315997 * 90.502739 *
+*      194 *   3113568 * 32.927860 *
+*      271 *   3113890 * 71.510147 *
+*      273 *   3113904 * 61.967418 *
+*      358 *  24691657 * 94.471923 *
+*      537 *  24692420 * 34.975883 *
+*      547 *  36804373 * 53.525840 *
+*      712 *  36805096 * 162.30715 *
+*      762 *  47247118 * 61.515632 *
+*      764 *  47247124 * 47.857421 *
+
+
+root -l /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/MC2016_Summer16_TTJets_powheg.root
+
+*    Row   * indexeven * lep_p4[0] *
+************************************
+*        2 *    315755 * 33.079643 *
+*        6 *    315997 * 90.502739 *
+*       11 *   3113568 * 32.927860 *
+*       12 *   3113890 * 71.510147 *
+*       13 *   3113904 * 61.967418 *
+*       16 *  24691657 * 94.471923 *
+*       24 *  24692420 * 34.975883 *
+*       25 *  36804373 * 53.525840 *
+*       32 *  36805096 * 162.30715 *
+*       34 *  47247118 * 61.515632 *
+*       35 *  47247124 * 47.857421 *
+
+-- identical
+   so, also draw gets the same pT-s according to Scan?
+
+
+csv output of all events
+
+((TTree*) ntupler->Get("reduced_ttree"))->SetScanField(0);
+.> v12_7_dilep_merged_sets_TT.indexevents
+((TTree*) ntupler->Get("reduced_ttree"))->Scan("indexevents:lep_p4[0].pt()", "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02");
+
+
+-- how to run this on all TT jobs in v37?
+
+with 
+https://root.cern.ch/root/roottalk/roottalk07/0418.html
+((TTreePlayer*)(T->GetPlayer()))->SetScanRedirect(true);
+((TTreePlayer*)(T->GetPlayer()))->SetScanFileName("toto.txt"); 
+
+root -l -q 'scan_dump.C("gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_1.root", "test_tt")'
+
+ls gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/ | grep "\.root" | xargs -I INFILE ls gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/INFILE
+
+ls gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/ | grep "\.root" | xargs --max-procs=12 -I INFILE root -l -q 'scan_dump.C("gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/INFILE", "studies/pt-trends-in-v37-v12/test_INFILE")'
+
+cd studies/pt-trends-in-v37-v12/
+
+cat test*root > all_MC2016_Summer16_TTJets_powheg
+
+% g/[*][*][*]*/d
+% g/Row/d
+% s,^[*][ ]*[0-9][0-9]*[ ]*[*],,
+
+
+wc -l all_MC2016_Summer16_TTJets_powheg
+413696 all_MC2016_Summer16_TTJets_powheg
+
+-- exactly 413695
+   + 1 header line
+
+
+
+same in v12
+
+sort v12_7_dilep_merged_sets_TT.indexevents > v12_7_dilep_merged_sets_TT.indexevents_sorted
+
+$ wc -l v12_7_dilep_merged_sets_TT.indexevents_sorted                                                                                                                                                                                                                         
+408754 v12_7_dilep_merged_sets_TT.indexevents_sorted
+
+-- why less than 408833.?
+
+
+
+sort all_MC2016_Summer16_TTJets_powheg > all_MC2016_Summer16_TTJets_powheg_sorted
+
+scp "otoldaie@lxplus.cern.ch:~/work/private/16/CMSSW_8_0_25/src/UserCode/ttbar-leptons-80X/v12_7_dilep_merged_sets_TT.indexevents_sorted" ./
+
+wc -l all_MC2016_Summer16_TTJets_powheg_sorted v12_7_dilep_merged_sets_TT.indexevents_sorted
+  413696 all_MC2016_Summer16_TTJets_powheg_sorted
+  408754 v12_7_dilep_merged_sets_TT.indexevents_sorted
+  822450 total
+
+join all_MC2016_Summer16_TTJets_powheg_sorted v12_7_dilep_merged_sets_TT.indexevents_sorted > v37_v12_indexevents_lep0_pt_joined
+
+
+diff all_MC2016_Summer16_TTJets_powheg_sorted v12_7_dilep_merged_sets_TT.indexevents_sorted | wc -l
+13619
+
+diff all_MC2016_Summer16_TTJets_powheg_sorted v12_7_dilep_merged_sets_TT.indexevents_sorted > v37_v12_indexevents_lep0_pt_diff
+
+11d10
+<     3284  45.610252
+45d43
+<     9721  49.604503
+81a80
+>    16565  30.505113
+
+grep " 16565 " all_MC2016_Summer16_TTJets_powheg_sorted v12_7_dilep_merged_sets_TT.indexevents_sorted
+v12_7_dilep_merged_sets_TT.indexevents_sorted:   16565  30.505113
+
+grep " 3284 " all_MC2016_Summer16_TTJets_powheg_sorted v12_7_dilep_merged_sets_TT.indexevents_sorted
+all_MC2016_Summer16_TTJets_powheg_sorted:    3284  45.610252
+
+diff all_MC2016_Summer16_TTJets_powheg_sorted v12_7_dilep_merged_sets_TT.indexevents_sorted | grep "^>" > v37_v12_indexevents_lep0_pt_diff_from_v12
+diff all_MC2016_Summer16_TTJets_powheg_sorted v12_7_dilep_merged_sets_TT.indexevents_sorted | grep "^<" > v37_v12_indexevents_lep0_pt_diff_from_v37
+
+wc -l v37_v12_indexevents_lep0_pt_diff_from_v12 v37_v12_indexevents_lep0_pt_diff_from_v37
+
+  1095 v37_v12_indexevents_lep0_pt_diff_from_v12
+  6037 v37_v12_indexevents_lep0_pt_diff_from_v37
+  7132 total
+
+
+build pT histo of these
+
+v12 <- read.csv("v37_v12_indexevents_lep0_pt_diff_from_v12", header=T)
+v37 <- read.csv("v37_v12_indexevents_lep0_pt_diff_from_v37", header=T)
+
+library(ggplot2)
+
+ggplot(v37, aes(lep0_pt, y=..count../sum(..count..))) + geom_histogram(binwidth=200/40, alpha=0.5) + geom_histogram(data=v12, binwidth=200/40, alpha=0.5) + scale_x_continuous(breaks=seq(0,200,by=10), limits=c(0,200))
+ggsave("overlayed_distrs.png")
+
+-- identical distrs
+
+compare with the distr of overlapping events
+
+comm -1 -2 all_MC2016_Summer16_TTJets_powheg_sorted v12_7_dilep_merged_sets_TT.indexevents_sorted > v37_v12_indexevents_lep0_pt_comm
+
+wc -l v37_v12_indexevents_lep0_pt_comm
+407659 v37_v12_indexevents_lep0_pt_comm
+
+comm <- read.csv("v37_v12_indexevents_lep0_pt_comm", header=T)
+
+ggplot(v37, aes(lep0_pt, y=..count../sum(..count..))) + geom_histogram(binwidth=200/40, alpha=0.5) + geom_histogram(data=v12, binwidth=200/40, alpha=0.5) + geom_histogram(data=comm, binwidth=200/40, alpha=0.5, fill="white", color="red") + scale_x_continuous(breaks=seq(0,200,by=10), limits=c(0,200))
+
+ggsave("overlayed_distrs.png")
+
+-- no difference in tails or anywhere else
+
+compare with full v37 and v12 to see the effect of these on top of the common events
+
+all_v37 <- read.csv("all_MC2016_Summer16_TTJets_powheg_sorted.csv", header=T)
+all_v12 <- read.csv("v12_7_dilep_merged_sets_TT.indexevents_sorted.csv", header=T)
+
+
+ggplot(all_v37, aes(lep0_pt, y=..count../sum(..count..))) + geom_histogram(binwidth=200/40, alpha=0.5) + geom_histogram(data=all_v12, binwidth=200/40, alpha=0.5) + geom_histogram(data=comm, binwidth=200/40, alpha=0.5, fill="white", color="red") + scale_x_continuous(breaks=seq(0,200,by=10), limits=c(0,200))
+
+-- identical, no noticeable deviation in any distr
+
+but still lets make histos and find the ratio between normalized bin contents
+
+using this:
+
+> bins <- seq(0, 100, 5) # Change this to whatever range your data encopasses
+> h1 <- hist(data1, bins, plot=0)
+> h2 <- hist(data2, bins, plot=0)
+> 
+> ratio <- h1$counts/h2$counts
+> # Remove NaNs and Infs due to 0 counts
+> ratio[is.na(ratio)] <- 0
+> ratio[is.inf(ratio)] <- 0
+> barplot(ratio)
+
+bins <- seq(0, 200, by=200/40) # Change this to whatever range your data encopasses
+h_v37  <- hist(all_v37[all_v37$lep0_pt<200, "lep0_pt"], bins, plot=0)
+h_v12  <- hist(all_v12[all_v12$lep0_pt<200, "lep0_pt"], bins, plot=0)
+h_comm <- hist(comm[comm$lep0_pt<200, "lep0_pt"], bins, plot=0)
+
+ratio_v37 <- h_v37$counts/h_comm$counts
+ratio_v12 <- h_v12$counts/h_comm$counts
+
+> ratio_v37
+ [1]      NaN      NaN      NaN      NaN      NaN      NaN 1.015547 1.015043
+ [9] 1.014899 1.013825 1.015625 1.015435 1.015645 1.015452 1.013526 1.014905
+[17] 1.013041 1.013727 1.014795 1.013431 1.017631 1.015345 1.015731 1.017924
+[25] 1.016080 1.012370 1.013589 1.012710 1.010441 1.013169 1.011346 1.008465
+[33] 1.013387 1.012763 1.011785 1.012276 1.014891 1.019512 1.009655 1.020218
+> ratio_v12
+ [1]      NaN      NaN      NaN      NaN      NaN      NaN 1.002850 1.002378
+ [9] 1.002702 1.002587 1.002870 1.002383 1.002621 1.002830 1.002589 1.003251
+[17] 1.002594 1.002180 1.003257 1.003223 1.002856 1.001421 1.002153 1.002801
+[25] 1.002608 1.003216 1.002659 1.004466 1.002320 1.001317 1.002579 1.002822
+[33] 1.006024 1.002252 1.002525 1.001889 1.005727 1.001220 1.002759 1.004666
+
+yeah
+
+So:
+there is a paradox,
+the distrs of csv show v12 and v37 pT identical,
+but draw on v37 with the same condition as for Scan
+is different from draw on v12.
+How can this be?
 
 
 
