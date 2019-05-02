@@ -3693,10 +3693,664 @@ yeah
 
 So:
 there is a paradox,
-the distrs of csv show v12 and v37 pT identical,
-but draw on v37 with the same condition as for Scan
-is different from draw on v12.
+the distrs of (unweighted) csv show v12 and v37 pT identical,
+but (unweighted) pyroot draw on v37 with the same condition as for Scan
+is different from ntuple_distr draw on v12 and has a clear linear trend in pT,
+and it is correctly different from weighted stage2 distr due to lep SFs.
+So it cannot be due to different weights.
 How can this be?
+
+
+
+bin contents, unweighted from scans in v12 and v37:
+
+h_v37$counts
+ [1]     0     0     0     0     0     0 43111 41834 38691 35272 31850 28552
+[13] 25189 21884 19182 16546 14449 12554 10906  9432  8196  7146  6134  5452
+[25]  4676  4092  3431  2948  2613  2308  1961  1787  1514  1349  1202  1072
+[37]   886   836   732   656
+h_v12$counts
+ [1]     0     0     0     0     0     0 42572 41312 38226 34881 31450 28185
+[13] 24866 21612 18975 16356 14300 12411 10782  9337  8077  7048  6052  5371
+[25]  4614  4055  3394  2924  2592  2281  1944  1777  1503  1335  1191  1061
+[37]   878   821   727   646
+
+and normalized:
+
+h_v37$counts / sum(h_v37$counts)
+h_v12$counts / sum(h_v12$counts)
+
+ [1] 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+ [7] 0.105549612 0.102423104 0.094728028 0.086357215 0.077979057 0.069904491
+[13] 0.061670784 0.053579080 0.046963713 0.040509937 0.035375805 0.030736235
+[19] 0.026701400 0.023092574 0.020066447 0.017495709 0.015018007 0.013348252
+[25] 0.011448354 0.010018534 0.008400193 0.007217653 0.006397465 0.005650727
+[31] 0.004801160 0.004375151 0.003706760 0.003302786 0.002942883 0.002624601
+[37] 0.002169213 0.002046797 0.001792172 0.001606099
+
+ [1] 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+ [7] 0.105492175 0.102369931 0.094722913 0.086434101 0.077932183 0.069841608
+[13] 0.061617223 0.053553906 0.047019497 0.040529691 0.035434983 0.030754096
+[19] 0.026717482 0.023136814 0.020014570 0.017464738 0.014996680 0.013309181
+[25] 0.011433357 0.010048172 0.008410233 0.007245587 0.006422900 0.005652251
+[31] 0.004817175 0.004403354 0.003724390 0.003308091 0.002951263 0.002629127
+[37] 0.002175658 0.002034414 0.001801485 0.001600769
+
+
+bin contents in the weighted ntuple_distr v12:
+
+root -l jobsums/debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root
+histo_tt = (TH1D*) ((TH1D*) _file0->Get("tt_{em}"))->Clone()
+histo_tt->SetDirectory(0)
+histo_tt->SetName("histo_tt")
+histo_tt->Add(((TH1D*) _file0->Get("tt_{other}")))
+histo_tt->Integral()
+histo_tt->Scale(1./histo_tt->Integral())
+
+histo_tt->GetBinContent(7)
+histo_tt->GetBinContent(8)
+histo_tt->GetBinContent(9)
+histo_tt->GetBinContent(10)
+histo_tt->GetBinContent(11)
+histo_tt->GetBinContent(12)
+histo_tt->GetBinContent(13)
+histo_tt->GetBinContent(14)
+histo_tt->GetBinContent(15)
+histo_tt->GetBinContent(16)
+histo_tt->GetBinContent(17)
+histo_tt->GetBinContent(18)
+histo_tt->GetBinContent(19)
+histo_tt->GetBinContent(20)
+histo_tt->GetBinContent(21)
+histo_tt->GetBinContent(22)
+histo_tt->GetBinContent(23)
+histo_tt->GetBinContent(24)
+histo_tt->GetBinContent(25)
+histo_tt->GetBinContent(26)
+histo_tt->GetBinContent(27)
+histo_tt->GetBinContent(28)
+histo_tt->GetBinContent(29)
+histo_tt->GetBinContent(30)
+histo_tt->GetBinContent(31)
+histo_tt->GetBinContent(32)
+histo_tt->GetBinContent(33)
+histo_tt->GetBinContent(34)
+histo_tt->GetBinContent(35)
+histo_tt->GetBinContent(36)
+histo_tt->GetBinContent(37)
+histo_tt->GetBinContent(38)
+histo_tt->GetBinContent(39)
+histo_tt->GetBinContent(40)
+histo_tt->GetBinContent(41)
+
+(Double_t) 0.106499
+(Double_t) 0.103186
+(Double_t) 0.0957874
+(Double_t) 0.0872869
+(Double_t) 0.0784083
+(Double_t) 0.0702013
+(Double_t) 0.0620859
+(Double_t) 0.0538281
+(Double_t) 0.0470736
+(Double_t) 0.0405356
+(Double_t) 0.0353368
+(Double_t) 0.0306798
+(Double_t) 0.0264750
+(Double_t) 0.0228466
+(Double_t) 0.0197603
+(Double_t) 0.0171302
+(Double_t) 0.0146929
+(Double_t) 0.0130353
+(Double_t) 0.0110829
+(Double_t) 0.00970563
+(Double_t) 0.00809741
+(Double_t) 0.00694844
+(Double_t) 0.00614620
+(Double_t) 0.00543156
+(Double_t) 0.00456424
+(Double_t) 0.00420458
+(Double_t) 0.00353653
+(Double_t) 0.00310934
+(Double_t) 0.00276420
+(Double_t) 0.00248583
+(Double_t) 0.00203942
+(Double_t) 0.00187106
+(Double_t) 0.00170067
+(Double_t) 0.00146357
+(Double_t) 0.0116355
+
+
+
+unweighted draw over all v37 ntuples:
+
+mu_pt
+root -l testv37v12_pTtrends_TT_mu_pt.root
+
+mu_pt->Integral()
+408443.
+-- integral is close to v12???
+mu_pt->GetEntries()
+413695.
+
+-- ok
+
+mu_pt->Scale(1./mu_pt->Integral())
+
+mu_pt->GetBinContent(7)
+mu_pt->GetBinContent(8)
+mu_pt->GetBinContent(9)
+mu_pt->GetBinContent(10)
+mu_pt->GetBinContent(11)
+mu_pt->GetBinContent(12)
+mu_pt->GetBinContent(13)
+mu_pt->GetBinContent(14)
+mu_pt->GetBinContent(15)
+mu_pt->GetBinContent(16)
+mu_pt->GetBinContent(17)
+mu_pt->GetBinContent(18)
+mu_pt->GetBinContent(19)
+mu_pt->GetBinContent(20)
+mu_pt->GetBinContent(21)
+mu_pt->GetBinContent(22)
+mu_pt->GetBinContent(23)
+mu_pt->GetBinContent(24)
+mu_pt->GetBinContent(25)
+mu_pt->GetBinContent(26)
+mu_pt->GetBinContent(27)
+mu_pt->GetBinContent(28)
+mu_pt->GetBinContent(29)
+mu_pt->GetBinContent(30)
+mu_pt->GetBinContent(31)
+mu_pt->GetBinContent(32)
+mu_pt->GetBinContent(33)
+mu_pt->GetBinContent(34)
+mu_pt->GetBinContent(35)
+mu_pt->GetBinContent(36)
+mu_pt->GetBinContent(37)
+mu_pt->GetBinContent(38)
+mu_pt->GetBinContent(39)
+mu_pt->GetBinContent(40)
+mu_pt->GetBinContent(41)
+
+(Double_t) 0.105550
+(Double_t) 0.102423
+(Double_t) 0.0947280
+(Double_t) 0.0863548
+(Double_t) 0.0779815
+(Double_t) 0.0699045
+(Double_t) 0.0616708
+(Double_t) 0.0535791
+(Double_t) 0.0469637
+(Double_t) 0.0405099
+(Double_t) 0.0353758
+(Double_t) 0.0307362
+(Double_t) 0.0267014
+(Double_t) 0.0230926
+(Double_t) 0.0200664
+(Double_t) 0.0174957
+(Double_t) 0.0150180
+(Double_t) 0.0133483
+(Double_t) 0.0114484
+(Double_t) 0.0100185
+(Double_t) 0.00840019
+(Double_t) 0.00721765
+(Double_t) 0.00639747
+(Double_t) 0.00565073
+(Double_t) 0.00480116
+(Double_t) 0.00437515
+(Double_t) 0.00370676
+(Double_t) 0.00330279
+(Double_t) 0.00294288
+(Double_t) 0.00262460
+(Double_t) 0.00216921
+(Double_t) 0.00204680
+(Double_t) 0.00179217
+(Double_t) 0.00160610
+(Double_t) 0.0128586
+
+
+
+ v37           v12
+ 0.105550      0.106499
+ 0.102423      0.103186
+ 0.0947280     0.0957874
+ 0.0863548     0.0872869
+ 0.0779815     0.0784083
+ 0.0699045     0.0702013
+ 0.0616708     0.0620859
+ 0.0535791     0.0538281
+ 0.0469637     0.0470736
+ 0.0405099     0.0405356
+ 0.0353758     0.0353368
+ 0.0307362     0.0306798
+ 0.0267014     0.0264750
+ 0.0230926     0.0228466
+ 0.0200664     0.0197603
+ 0.0174957     0.0171302
+ 0.0150180     0.0146929
+ 0.0133483     0.0130353
+ 0.0114484     0.0110829
+ 0.0100185     0.00970563
+ 0.00840019    0.00809741
+ 0.00721765    0.00694844
+ 0.00639747    0.00614620
+ 0.00565073    0.00543156
+ 0.00480116    0.00456424
+ 0.00437515    0.00420458
+ 0.00370676    0.00353653
+ 0.00330279    0.00310934
+ 0.00294288    0.00276420
+ 0.00262460    0.00248583
+ 0.00216921    0.00203942
+ 0.00204680    0.00187106
+ 0.00179217    0.00170067
+ 0.00160610    0.00146357
+ 0.0128586     0.0116355
+
+
+let's see the ratio
+
+v37 = [ 0.105550 0.102423 0.0947280 0.0863548 0.0779815 0.0699045 0.0616708 0.0535791 0.0469637 0.0405099 0.0353758 0.0307362 0.0267014 0.0230926 0.0200664 0.0174957 0.0150180 0.0133483 0.0114484 0.0100185 0.00840019 0.00721765 0.00639747 0.00565073 0.00480116 0.00437515 0.00370676 0.00330279 0.00294288 0.00262460 0.00216921 0.00204680 0.00179217 0.00160610 0.0128586 ]
+
+v12 = [ 0.106499 0.103186 0.0957874 0.0872869 0.0784083 0.0702013 0.0620859 0.0538281 0.0470736 0.0405356 0.0353368 0.0306798 0.0264750 0.0228466 0.0197603 0.0171302 0.0146929 0.0130353 0.0110829 0.00970563 0.00809741 0.00694844 0.00614620 0.00543156 0.00456424 0.00420458 0.00353653 0.00310934 0.00276420 0.00248583 0.00203942 0.00187106 0.00170067 0.00146357 0.0116355 ]
+
+v37 ./ v12
+
+function myshowall(io, x, limit = false)
+  println(io, summary(x), ":")
+  Base.print_matrix(IOContext(io, :limit => limit), x)
+end
+
+myshowall(stdout, (v37 ./ v12)', false)
+34×1 LinearAlgebra.Adjoint{Float64,Array{Float64,2}}:
+ 0.9910891182076828
+ 0.9926055860291125
+ 0.9889400902415142
+ 0.9893214216566288
+ 0.9945566987168449
+ 0.9957721580654489
+ 0.993314101913639
+ 0.9953741633087551
+ 0.9976653580775636
+ 0.9993659894019086
+ 1.0011036653007628
+ 1.0018383431443492
+ 1.0085514636449482
+ 1.0107674664939204
+ 1.0154906555062424
+ 1.0213365868466215
+ 1.0221263331268844
+ 1.024011722016371
+ 1.0329787330030948
+ 1.0322359290432461
+ 1.037392203185957
+ 1.0387439482819165
+ 1.0408821710975886
+ 1.040351206651496
+ 1.0519078751336477
+ 1.0405676666872792
+ 1.048134753557866
+ 1.0622157756951636
+ 1.0646407640546993
+ 1.0558244127715892
+ 1.0636406429278913
+ 1.0939253685076908
+ 1.0538023249660429
+ 1.09738516094208
+ 1.1051179579734434
+
+-- the linear trend
+
+
+and to the scan values:
+
+without scaling:
+
+root -l testv37v12_pTtrends_TT_mu_pt.root
+
+ 43111.0
+ 41834.0
+ 38691.0
+ 35271.0
+ 28552.0
+ 25189.0
+ 21884.0
+ 19182.0
+ 16546.0
+ 14449.0
+ 12554.0
+ 10906.0
+ 9432.00
+ 8196.00
+ 7146.00
+ 6134.00
+ 5452.00
+ 4676.00
+ 4092.00
+ 3431.00
+ 2948.00
+ 2613.00
+ 2308.00
+ 1961.00
+ 1787.00
+ 1514.00
+ 1349.00
+ 1202.00
+ 1072.00
+ 886.000
+ 836.000
+ 732.000
+ 656.000
+ 5252.00
+
+-- exactly the v37 scan numbers:
+
+h_v37$counts
+ [1]     0     0     0     0     0     0 43111 41834 38691 35272 31850 28552
+[13] 25189 21884 19182 16546 14449 12554 10906  9432  8196  7146  6134  5452
+[25]  4676  4092  3431  2948  2613  2308  1961  1787  1514  1349  1202  1072
+[37]   886   836   732   656
+h_v12$counts
+ [1]     0     0     0     0     0     0 42572 41312 38226 34881 31450 28185
+[13] 24866 21612 18975 16356 14300 12411 10782  9337  8077  7048  6052  5371
+[25]  4614  4055  3394  2924  2592  2281  1944  1777  1503  1335  1191  1061
+[37]   878   821   727   646
+
+-- without the last bin
+
+h_v37_counts = [ 43111 41834 38691 35272 31850 28552 25189 21884 19182 16546 14449 12554 10906  9432  8196  7146  6134  5452 4676  4092  3431  2948  2613  2308  1961  1787  1514  1349  1202  1072 886   836   732   656 5252 ]
+
+
+So:
+1) the scan of v12 or v37 + R hist give exactly the same bin contents as the sumup Draw of v37,
+2) and they all (unweighted scans and unweighted sumup draw of v37) disagree with v12
+   -- in a linear trend they have more high pT muons than v12.
+(Also the weights of stage2 are negligible for this trend and behave ordinarily around the unweighted distr.)
+So, v12 must weight distributions somehow in unexpected way?
+
+
+
+
+##### weights of v12
+
+the scan dump of v12 shows lep0_pt distribution identical to
+v37 scan dump, draw py script (and stage2, considering weights)
+-- they all have more high pT muons than v12, the difference makes a linear trend
+   is it caused in ntuple_distr, by what and how?
+   can TOPPT be so large? -- no, the trend was in all MC processes
+
+time ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT f f T 19094 16079 "lep_p4[0].pt()"  "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(40,0,200)"    INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights1  " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets Data13TeV_SingleMuon2016H_03Feb2017_ver2 MC2016_Summer16_TTJets_powheg
+
+Draw lep_p4[0].pt()>>h_0(40,0,200), (pu_weight(nvtx_gen, 0))*0.986*(lepton_muon_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), 0.542860, 0.457140))*(lepton_muon_trigger_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), 0.542860, 0.457140))*(ttbar_pT_SF(gen_t_pt, gen_tb_pt))* (HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02 && abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13*11)
+
+
+
+root -l /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights1_TOP_PT.root
+
+histo_tt = (TH1D*) ((TH1D*) _file0->Get("tt_{em}"))->Clone()
+histo_tt->SetDirectory(0)
+histo_tt->SetName("histo_tt")
+histo_tt->Add(((TH1D*) _file0->Get("tt_{other}")))
+histo_tt->Integral()
+
+histo_tt->Scale(1./histo_tt->Integral())
+
+histo_tt->GetBinContent(7)
+histo_tt->GetBinContent(8)
+histo_tt->GetBinContent(9)
+histo_tt->GetBinContent(10)
+histo_tt->GetBinContent(11)
+histo_tt->GetBinContent(12)
+histo_tt->GetBinContent(13)
+histo_tt->GetBinContent(14)
+histo_tt->GetBinContent(15)
+histo_tt->GetBinContent(16)
+histo_tt->GetBinContent(17)
+histo_tt->GetBinContent(18)
+histo_tt->GetBinContent(19)
+histo_tt->GetBinContent(20)
+histo_tt->GetBinContent(21)
+histo_tt->GetBinContent(22)
+histo_tt->GetBinContent(23)
+histo_tt->GetBinContent(24)
+histo_tt->GetBinContent(25)
+histo_tt->GetBinContent(26)
+histo_tt->GetBinContent(27)
+histo_tt->GetBinContent(28)
+histo_tt->GetBinContent(29)
+histo_tt->GetBinContent(30)
+histo_tt->GetBinContent(31)
+histo_tt->GetBinContent(32)
+histo_tt->GetBinContent(33)
+histo_tt->GetBinContent(34)
+histo_tt->GetBinContent(35)
+histo_tt->GetBinContent(36)
+histo_tt->GetBinContent(37)
+histo_tt->GetBinContent(38)
+histo_tt->GetBinContent(39)
+histo_tt->GetBinContent(40)
+histo_tt->GetBinContent(41)
+
+(Double_t) 0.106499
+(Double_t) 0.103186
+(Double_t) 0.0957874
+(Double_t) 0.0872869
+(Double_t) 0.0784083
+(Double_t) 0.0702013
+(Double_t) 0.0620859
+(Double_t) 0.0538281
+(Double_t) 0.0470736
+(Double_t) 0.0405356
+(Double_t) 0.0353368
+(Double_t) 0.0306798
+(Double_t) 0.0264750
+(Double_t) 0.0228466
+(Double_t) 0.0197603
+(Double_t) 0.0171302
+(Double_t) 0.0146929
+(Double_t) 0.0130353
+(Double_t) 0.0110829
+(Double_t) 0.00970563
+(Double_t) 0.00809741
+(Double_t) 0.00694844
+(Double_t) 0.00614620
+(Double_t) 0.00543156
+(Double_t) 0.00456424
+(Double_t) 0.00420458
+(Double_t) 0.00353653
+(Double_t) 0.00310934
+(Double_t) 0.00276420
+(Double_t) 0.00248583
+(Double_t) 0.00203942
+(Double_t) 0.00187106
+(Double_t) 0.00170067
+(Double_t) 0.00146357
+(Double_t) 0.0116355
+
+7319.00
+
+
+and compare to old:
+
+root -l jobsums/debugging_v37tests_w_comparison_to_v12.7_dilep/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_TOP_PT.root
+
+5675.99
+
+-- all MC is normalized to data!
+
+(Double_t) 0.106499           0.106499
+(Double_t) 0.103186           0.103186
+(Double_t) 0.0957874          0.0957874
+(Double_t) 0.0872869          0.0872869
+(Double_t) 0.0784083          0.0784083
+(Double_t) 0.0702013          0.0702013
+(Double_t) 0.0620859          0.0620859
+(Double_t) 0.0538281          0.0538281
+(Double_t) 0.0470736          0.0470736
+(Double_t) 0.0405356          0.0405356
+(Double_t) 0.0353368          0.0353368
+(Double_t) 0.0306798          0.0306798
+(Double_t) 0.0264750          0.0264750
+(Double_t) 0.0228466          0.0228466
+(Double_t) 0.0197603          0.0197603
+(Double_t) 0.0171302          0.0171302
+(Double_t) 0.0146929          0.0146929
+(Double_t) 0.0130353          0.0130353
+(Double_t) 0.0110829          0.0110829
+(Double_t) 0.00970563         0.00970563
+(Double_t) 0.00809741         0.00809741
+(Double_t) 0.00694844         0.00694844
+(Double_t) 0.00614620         0.00614620
+(Double_t) 0.00543156         0.00543156
+(Double_t) 0.00456424         0.00456424
+(Double_t) 0.00420458         0.00420458
+(Double_t) 0.00353653         0.00353653
+(Double_t) 0.00310934         0.00310934
+(Double_t) 0.00276420         0.00276420
+(Double_t) 0.00248583         0.00248583
+(Double_t) 0.00203942         0.00203942
+(Double_t) 0.00187106         0.00187106
+(Double_t) 0.00170067         0.00170067
+(Double_t) 0.00146357         0.00146357
+(Double_t) 0.0116355          0.0116355
+
+-- identical
+
+now the weights
+
+root -l /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights2_TOP_PT.root
+
+histo_tt = (TH1D*) ((TH1D*) _file0->Get("noweight_tt_{em}"))->Clone()
+histo_tt->SetDirectory(0)
+histo_tt->SetName("histo_tt")
+histo_tt->Add(((TH1D*) _file0->Get("noweight_tt_{other}")))
+histo_tt->Integral()
+
+403556.
+
+histo_tt->Scale(1./histo_tt->Integral())
+            noweights     weights3     weight4      weight5      weight6
+0.106499    0.105492      0.105492     0.105492     0.104963     0.105245
+0.103186    0.102370      0.102370     0.102370     0.101835     0.101985
+0.0957874   0.0947229     0.0947229    0.0947229    0.0947302    0.0947166
+0.0872869   0.0864316     0.0864316    0.0864316    0.0864273    0.0864419
+0.0784083   0.0779347     0.0779347    0.0779347    0.0777174    0.0777296
+0.0702013   0.0698416     0.0698416    0.0698416    0.0696637    0.0697377
+0.0620859   0.0616172     0.0616172    0.0616172    0.0618533    0.0617841
+0.0538281   0.0535539     0.0535539    0.0535539    0.0537661    0.0536926
+0.0470736   0.0470195     0.0470195    0.0470195    0.0472001    0.0470825
+0.0405356   0.0405297     0.0405297    0.0405297    0.0406882    0.0406505
+0.0353368   0.0354350     0.0354350    0.0354350    0.0355780    0.0355369
+0.0306798   0.0307541     0.0307541    0.0307541    0.0308818    0.0309313
+0.0264750   0.0267175     0.0267175    0.0267175    0.0268240    0.0267890
+0.0228466   0.0231368     0.0231368    0.0231368    0.0232217    0.0231765
+0.0197603   0.0200146     0.0200146    0.0200146    0.0201027    0.0201104
+0.0171302   0.0174647     0.0174647    0.0174647    0.0175364    0.0174752
+0.0146929   0.0149967     0.0149967    0.0149967    0.0150601    0.0150342
+0.0130353   0.0133092     0.0133092    0.0133092    0.0133646    0.0133676
+0.0110829   0.0114334     0.0114334    0.0114334    0.0114267    0.0114163
+0.00970563  0.0100482     0.0100482    0.0100482    0.0100377    0.0100242
+0.00809741  0.00841023    0.00841023   0.00841023   0.00840318   0.00839178
+0.00694844  0.00724559    0.00724559   0.00724559   0.00724177   0.00721747
+0.00614620  0.00642290    0.00642290   0.00642290   0.00641692   0.00640605
+0.00543156  0.00565225    0.00565225   0.00565225   0.00564795   0.00567819
+0.00456424  0.00481718    0.00481718   0.00481718   0.00481180   0.00477787
+0.00420458  0.00440335    0.00440335   0.00440335   0.00439687   0.00442427
+0.00353653  0.00372439    0.00372439   0.00372439   0.00372155   0.00372712
+0.00310934  0.00330809    0.00330809   0.00330809   0.00330396   0.00328682
+0.00276420  0.00295126    0.00295126   0.00295126   0.00294620   0.00293216
+0.00248583  0.00262913    0.00262913   0.00262913   0.00262491   0.00264067
+0.00203942  0.00217566    0.00217566   0.00217566   0.00217376   0.00218156
+0.00187106  0.00203441    0.00203441   0.00203441   0.00202844   0.00200797
+0.00170067  0.00180148    0.00180148   0.00180148   0.00180369   0.00182251
+0.00146357  0.00160077    0.00160077   0.00160077   0.00160050   0.00157903
+0.0116355   0.0128780     0.0128780    0.0128780    0.0128435    0.0128639
+
+-- no weights are closer to v37 stuff
+   other weights don't change things
+   the only remaining part is TOPPT...
+
+sig global_scale withZPtMass tau_ID_SF with_b_SF with_lep_SF with_lep_trig_SF with_PU_weight SYS_shift
+
+time ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT f f T 19094 16079 "lep_p4[0].pt()"  "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(40,0,200)"    INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights2  " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets Data13TeV_SingleMuon2016H_03Feb2017_ver2 MC2016_Summer16_TTJets_powheg
+
+time ntuple_distr --verbose elmu 1.0 f -1 f f f f NOMINAL   f f T 19094 16079 "lep_p4[0].pt()"  "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(40,0,200)"    INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights3  " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets Data13TeV_SingleMuon2016H_03Feb2017_ver2 MC2016_Summer16_TTJets_powheg
+
+Draw lep_p4[0].pt()>>h_1(40,0,200),  (HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02 && abs(gen_t_w_decay_id * gen_tb_w_decay_id) != 13*11)
+
+-- no weights
+
+
+time ntuple_distr --verbose elmu 1.0 T -1 T f f f NOMINAL   f f T 19094 16079 "lep_p4[0].pt()"  "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(40,0,200)"    INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights4  " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets Data13TeV_SingleMuon2016H_03Feb2017_ver2 MC2016_Summer16_TTJets_powheg &
+
+time ntuple_distr --verbose elmu 1.0 T -1 T T T f NOMINAL   f f T 19094 16079 "lep_p4[0].pt()"  "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(40,0,200)"    INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights5  " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets Data13TeV_SingleMuon2016H_03Feb2017_ver2 MC2016_Summer16_TTJets_powheg &
+
+time ntuple_distr --verbose elmu 1.0 T -1 T T T T NOMINAL   f f T 19094 16079 "lep_p4[0].pt()"  "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(40,0,200)"    INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights6  " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets Data13TeV_SingleMuon2016H_03Feb2017_ver2 MC2016_Summer16_TTJets_powheg &
+
+in the weights6 one:
+
+Draw lep_p4[0].pt()>>h_0(40,0,200), (pu_weight(nvtx_gen, 0))*0.986*(lepton_muon_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), 0.542860, 0.457140))*(lepton_muon_trigger_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), 0.542860, 0.457140))* (HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02 && abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13*11)
+
+confirm:
+
+time ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT   f f T 19094 16079 "lep_p4[0].pt()"  "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(40,0,200)"    INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights7  " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets Data13TeV_SingleMuon2016H_03Feb2017_ver2 MC2016_Summer16_TTJets_powheg
+
+Draw lep_p4[0].pt()>>h_0(40,0,200), (pu_weight(nvtx_gen, 0))*0.986*(lepton_muon_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), 0.542860, 0.457140))*(lepton_muon_trigger_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), 0.542860, 0.457140))*(ttbar_pT_SF(gen_t_pt, gen_tb_pt))* (HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02 && abs(gen_t_w_decay_id * gen_tb_w_decay_id) == 13*11)
+
+
+and watch weights in all MC -- is there TOPPT in other processes?:
+
+time ntuple_distr --verbose elmu 1.0 T -1 T T T T TOP_PT   f f T 19094 16079 "lep_p4[0].pt()"  "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(40,0,200)"    INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights_all7  " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets `cat v12.7_dilep_dtags`
+
+processing MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin.root
+data DY WJets 000
+got ttree, 2894 drawing:
+lep_p4[0].pt()	(pu_weight(nvtx_gen, 0))*0.986*(aMCatNLO_weight > 0? 1 : -1)*(lepton_muon_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), 0.542860, 0.457140))*(lepton_muon_trigger_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), 0.542860, 0.457140))*	HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02
+Draw lep_p4[0].pt()>>h_0(40,0,200), (pu_weight(nvtx_gen, 0))*0.986*(aMCatNLO_weight > 0? 1 : -1)*(lepton_muon_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), 0.542860, 0.457140))*(lepton_muon_trigger_SF(abs(lep_p4[0].eta()), lep_p4[0].pt(), 0.542860, 0.457140))* (HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02)
+
+ttbar_pT_SF appears only in tt
+check aMCatNLO_weight in stage2 -- DY10, scahnnel and dibosons have it
+
+So it seems:
+0) data H in v37 and v12 is the same
+1) MC process fractions are also the same
+2) the issue is in mc sum shape
+   and the trend shows in all processes
+3) in TT TOPPT is responsible for the linear trend
+4) but what's with the other MC?
+
+
+time ntuple_distr --verbose elmu 1.0 T -1 T T T T NOMINAL   f f T 19094 16079 "lep_p4[0].pt()"  "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(40,0,200)"    INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights_all7  " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets `cat v12.7_dilep_dtags`
+
+eog /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets/jobsums/QuickNtupleDistr_INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights6_NOMINAL.png
+
+--  not bad
+
+python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/ -c tt_elmu --data-nick data_other -d elmu_mu_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.2 --normalize -p -r
+
+-- actually aside of minor fluctuations it's very similar to v12
+
+python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/Data13TeV_SingleMuon2016H_03Feb2017_ver2.root -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/ -c tt_elmu --data-nick data_other -d elmu_el_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.2 --normalize -p -r
+
+-- also not bad, no jump at 85GeV
+
+python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root distrs/v37_test11_bunchDILEP3recalc/SingleMuon.root -o plots/v37_test11_bunchDILEP3recalc_mc_1_limited/ -c tt_elmu --data-nick data_other -d elmu_el_pt --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --ratio-range 0.2 --normalize -p -r
+
+-- here, yes, like in mu_pt, clearer trend, after 100GeV
+   step in 80-120GeV
+
+So:
+How bad are the remaining deviations? (Probably DY dileptons are worst now..)
+Is it just the difference between full Data and H?
+What's with pT trends in non-TT processes?
+-- these trends are very very small (single top is most visible?), they can be an after-effect of the step in electrons.
+What's with the step in el pT now, which el SF causes it?
+What's with crazy etas?
+-- there is a distinct difference v12-v37 at high etas and incoherent bin-by-bin jumps.
+   The high etas can be due to el SFs used in v37 and not in v12.
+   The bin-by-bin could be due to 2D histos, when 1D are asymmetric.
+
+
 
 
 
