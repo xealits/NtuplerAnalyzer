@@ -33,7 +33,7 @@ SV_SIGN_CUT = 2.5
 METMuEGClean = True # the met for data
 PROP_TAU     = True
 PROP_LEPJET  = False
-PROP_LEPJET_UNCLUSTER = True
+PROP_LEPJET_UNCLUSTER = False
 PROP_JETS    = True
 
 REQUIRE_MLB = False
@@ -3321,7 +3321,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 taus_main.append((p4, (TES_factor, TES_factor_up, TES_factor_dn), tau_pdgID, i, tau_ID, jetmatched))
 
             # all taus to met?
-            if PROP_TAU and tau_pt > TAUS_PT_CUT:
+            if isMC and PROP_TAU and tau_pt > TAUS_PT_CUT:
                 proc_met         -= p4 * (TES_factor - 1.)
                 proc_met_JERUp   -= p4 * (TES_factor - 1.)
                 proc_met_JERDown -= p4 * (TES_factor - 1.)
@@ -3761,7 +3761,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 # correct the met from lep-matched jet
                 if match_lep:
 
-                  if PROP_LEPJET:
+                  if isMC and PROP_LEPJET:
                     if jet_pt > JETS_PT_CUT:
                         proc_met -= p4 * (en_factor - 1.)
                     if jet_pt_JERUp > JETS_PT_CUT:
@@ -3774,7 +3774,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                         proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
                     # these were broken! the nominal jer factor was not applied, but now it is.
 
-                  if PROP_LEPJET_UNCLUSTER:
+                  if isMC and PROP_LEPJET_UNCLUSTER:
                     # return jes_cor to met
                     # in both data and MC
                     jes_uncorFactor = ev.jet_uncorrected_jecFactor[i]
@@ -3793,7 +3793,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 if not match_lep:
 
                   # correct the met from all not lep-matched jets
-                  if PROP_JETS:
+                  if isMC and PROP_JETS:
                       if jet_pt > JETS_PT_CUT:
                           proc_met -= p4 * (en_factor - 1.)
                       if jet_pt_JERUp > JETS_PT_CUT:
