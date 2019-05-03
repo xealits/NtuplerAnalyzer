@@ -325,8 +325,8 @@ gen_lumi_weights_tt_sys = {
 usual_gen_lumi_weights = {
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo" : 92667256.031132,
 #"MC2016_Summer16_DYJetsToLL_50toInf_madgraph" :  49823670.706457, # without ext
+#"MC2016_Summer16_DYJetsToLL_50toInf_madgraph" :  42971580.460955,
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph" : 147827597.073751, # with ext
-"MC2016_Summer16_DYJetsToLL_50toInf_madgraph" :  42971580.460955,
 
 "MC2016_Summer16_QCD_HT-100-200" : 80668282.010224,
 "MC2016_Summer16_QCD_HT-1000-1500" : 4831794.914995,
@@ -338,7 +338,7 @@ usual_gen_lumi_weights = {
 "MC2016_Summer16_QCD_HT-700-1000" : 15846448.822448,
 "MC2016_Summer16_SingleT_tW_5FS_powheg" : 7079946.591460,
 "MC2016_Summer16_SingleTbar_tW_5FS_powheg" : 7060819.557982, 
-"MC2016_Summer16_TTJets_powheg" : 51888536.120941, # test9, 66 jobs
+#"MC2016_Summer16_TTJets_powheg" : 51888536.120941, # test9, 66 jobs
 "MC2016_Summer16_TTJets_powheg" : 78189291.372787,
 
 "MC2016_Summer16_W1Jets_madgraph" : 42268723.655958, 
@@ -358,6 +358,9 @@ usual_gen_lumi_weights = {
 "MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo" : 637697.524850,
 "MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg" : 39844542.965987,
 "MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg" : 68953757.295413,
+}
+
+'''
 
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph" : 42971580.460955,
 "MC2016_Summer16_SingleT_tW_5FS_powheg" : 7079946.591460,
@@ -374,9 +377,7 @@ usual_gen_lumi_weights = {
 "MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo" : 637697.524850,
 "MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg" : 39844542.965987,
 "MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg" : 68953757.295413,
-}
 
-'''
 "MC2016_Summer16_DYJetsToLL_10to50_amcatnlo" : 73702469.692238,
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph" : 91620385.111679,
 "MC2016_Summer16_QCD_HT-100-200" : 1988270.707689,

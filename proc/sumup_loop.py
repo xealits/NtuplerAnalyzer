@@ -108,7 +108,10 @@ fout = TFile(args.out_file, "RECREATE")
 fout.Write()
 output_dirs = []
 
-for definition in args.loop_definitions:
+# parse the task, and create the histos for output
+# marked the procedure for performance profiling
+def parse_and_create_histos():
+  for definition in args.loop_definitions:
     # chan/proc/sys/distr
     dchan, dproc, dsys, ddistr = definition.split('/')
     # each is a coma-separated def
@@ -203,6 +206,8 @@ for definition in args.loop_definitions:
                 out_histo.SetDirectory(sys_dir)
                 histos[(chan, proc, sys, distr)] = out_histo
 
+parse_and_create_histos()
+
 # ----------------
 
 logging.debug(args.inp_file)
@@ -212,9 +217,15 @@ ttree = tfile.Get(args.ttree)
 logging.debug('TTree %s' % args.ttree)
 logging.debug('with %d entries' % ttree.GetEntries())
 
+# separated the procedure for profilimng performance
+def record(histos, def_tuple, param, weight):
+    histos[def_tuple].Fill(param, weight)
+
 weight_counter = None
 
-for iev, ev in enumerate(ttree):
+# marked the procedure for profiling
+def loop_ttree():
+  for iev, ev in enumerate(ttree):
     if args.test and iev > args.test:
         logging.debug('breaking the event loop for test')
         break
@@ -273,7 +284,8 @@ for iev, ev in enumerate(ttree):
                     param = distr_func.get(sname, distr_func['NOMINAL'])(ev)
 
                 # record along the way
-                histos[(chan_name, event_chan_proc, sname, dname)].Fill(param, weight)
+                #histos[(chan_name, event_chan_proc, sname, dname)].Fill(param, weight)
+                record(histos, (chan_name, event_chan_proc, sname, dname), param, weight)
                 # 3 loops deep calculation
 
     if args.per_weight or args.save_weight:
@@ -288,6 +300,8 @@ for iev, ev in enumerate(ttree):
             weight_counter.SetName("sumup_weight_counter")
         else:
             weight_counter.Add(wcounter)
+
+loop_ttree()
 
 logging.debug('finished the event loop')
 
@@ -376,4 +390,3 @@ if args.time:
     work_time = str(datetime.now() - start_time)
     print "output written, time elapsed %s" % work_time
 
-_

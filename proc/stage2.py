@@ -40,8 +40,8 @@ REQUIRE_MLB = False
 
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all):
     #return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all or pass_mumu
-    return pass_elmu
-    #return pass_mu or pass_el or pass_elmu_el or pass_mumu or pass_elel
+    #return pass_elmu
+    return pass_mu or pass_el or pass_elmu_el or pass_mumu or pass_elel
 
 
 def passes_wjets_control_selection(passed_triggers, leps, N_jets, taus, proc_met):

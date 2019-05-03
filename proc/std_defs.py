@@ -669,28 +669,28 @@ systs_objects_met_variation = {
 'TESDown'  : lambda ev: ev.event_met_TESDown.pt(),
 }
 
-# test11 bunchDILEP3recalc use init met and recalculate mT
-# event_met_init
-
-systs_objects_mt_variation = {
-'NOMINAL'  : lambda ev: ev.event_met_lep_mt_init,
-'JERUp'    : lambda ev: ev.event_met_lep_mt_init,
-'JERDown'  : lambda ev: ev.event_met_lep_mt_init,
-'JESUp'    : lambda ev: ev.event_met_lep_mt_init,
-'JESDown'  : lambda ev: ev.event_met_lep_mt_init,
-'TESUp'    : lambda ev: ev.event_met_lep_mt_init,
-'TESDown'  : lambda ev: ev.event_met_lep_mt_init,
-}
-
-systs_objects_met_variation = {
-'NOMINAL'  : lambda ev: ev.event_met_init.pt(),
-'JERUp'    : lambda ev: ev.event_met_init.pt(),
-'JERDown'  : lambda ev: ev.event_met_init.pt(),
-'JESUp'    : lambda ev: ev.event_met_init.pt(),
-'JESDown'  : lambda ev: ev.event_met_init.pt(),
-'TESUp'    : lambda ev: ev.event_met_init.pt(),
-'TESDown'  : lambda ev: ev.event_met_init.pt(),
-}
+## test11 bunchDILEP3recalc use init met and recalculate mT
+## event_met_init
+#
+#systs_objects_mt_variation = {
+#'NOMINAL'  : lambda ev: ev.event_met_lep_mt_init,
+#'JERUp'    : lambda ev: ev.event_met_lep_mt_init,
+#'JERDown'  : lambda ev: ev.event_met_lep_mt_init,
+#'JESUp'    : lambda ev: ev.event_met_lep_mt_init,
+#'JESDown'  : lambda ev: ev.event_met_lep_mt_init,
+#'TESUp'    : lambda ev: ev.event_met_lep_mt_init,
+#'TESDown'  : lambda ev: ev.event_met_lep_mt_init,
+#}
+#
+#systs_objects_met_variation = {
+#'NOMINAL'  : lambda ev: ev.event_met_init.pt(),
+#'JERUp'    : lambda ev: ev.event_met_init.pt(),
+#'JERDown'  : lambda ev: ev.event_met_init.pt(),
+#'JESUp'    : lambda ev: ev.event_met_init.pt(),
+#'JESDown'  : lambda ev: ev.event_met_init.pt(),
+#'TESUp'    : lambda ev: ev.event_met_init.pt(),
+#'TESDown'  : lambda ev: ev.event_met_init.pt(),
+#}
 
 from ROOT import TMath
 

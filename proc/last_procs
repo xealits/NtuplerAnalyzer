@@ -1,6 +1,13 @@
 # test13, full run with corrected met propagation -- no propagation to Data
 python genjobs.py v37 test13 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue        --dtags std_mc,std_data
 
+# plot dileps and full fit
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test13 --distrs bunchDILEP1   --chan-groups dy_dileptons,tt_dileptons
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test13 --distrs bunchFULLFIT1 --chan-groups fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test13 --distrs bunchFULLFIT1 --chan-groups yields_el_presel,yields_el_sel,yields_mu_presel,yields_mu_sel,yields_control_wjets,yields_control_dyjets,yields_control_tt_em
+
+
+
 # test12 without dR check in dileptons -- for sync of stage2 and sumup_draw.py script in Data
 python genjobs.py v37 test12 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue        --dtags MC2016_Summer16_TTJets_powheg,Data13TeV_SingleMuon2016H_03Feb2017_ver2
 python genjobs.py --queue-dir temp/jobs/ v37 test12 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue_online --dtags MC2016_Summer16_TTJets_powheg,Data13TeV_SingleMuon2016H_03Feb2017_ver2

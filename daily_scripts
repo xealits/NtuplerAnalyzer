@@ -211,6 +211,115 @@ and parameters on MCM?
 
 
 
+## after v37 issues, full fit
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c mu_sel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c mu_sel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c mu_sel_lj --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_lj --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c mu_sel_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c mu_sel_lj    -x mu_selVloose_lj     --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_lj    -x el_selVloose_lj     --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c mu_sel_ljout -x mu_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+
+-- overall similar as before, mu lacks in normalization, the pre-last bin lack data in both channels now
+   check new PU normalization
+
+
+### new PU normalization
+
+
+## after v37 issues, selection and preselection
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c mu_sel --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c mu_sel --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c mu_sel --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel --data-nick data_other -d lep_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel --data-nick data_other -d lep_eta --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel --data-nick data_other -d met_c   --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+
+
+
+
+
+## after v37 issues, wjets
+
+
+
+
+
+
+## after v37 issues, dilepton control plots
+
+tt_elmu:
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c tt_elmu --data-nick data_other -d elmu_el_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --sys TOPPTUp
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c tt_elmu --data-nick data_other -d elmu_mu_pt  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5 --sys TOPPTUp
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c tt_elmu --data-nick data_other -d elmu_el_eta  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c tt_elmu --data-nick data_other -d elmu_mu_eta  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c tt_elmu --data-nick data_other -d Mt_lep_met_c  --lumi 35800 --overwrite --wjets 0.92 --bin-norm --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c tt_elmu --data-nick data_other -d Mt_lep_met_c  --lumi 35800 --overwrite --wjets 0.92 --bin-norm --qcd-factor 2.5 --sys TOPPTUp
+
+eog plots/v37_test13_bunchDILEP1_mc_2_wNjets//dist*elmu_??_pt*
+eog plots/v37_test13_bunchDILEP1_mc_2_wNjets//dist*elmu_??_eta*
+eog plots/v37_test13_bunchDILEP1_mc_2_wNjets//dist*Mt_lep_met*
+
+-- Mt ok!
+   eta -- same bin-by-bin strangeness
+   pT  -- same slight kink in el and even slighter in mu
+          due to BCDEF or just that SF jump at 85GeV?
+
+
+dy_mumu
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c dy_mumu --data-nick data_other -d Mt_lep_met_c  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c dy_mumu --data-nick data_other -d lep_pt   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c dy_mumu --data-nick data_other -d lep_eta  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c dy_mumu --data-nick data_other -d met_c    --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c dy_mumu --data-nick data_other -d dilep_mass_dy    --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleElectron.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c dy_elel --data-nick data_other -d Mt_lep_met_c  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 0.001
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleElectron.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c dy_elel --data-nick data_other -d lep_pt   --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 0.001
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleElectron.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c dy_elel --data-nick data_other -d lep_eta  --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 0.001
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleElectron.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c dy_elel --data-nick data_other -d met_c    --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 0.001
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_2_wNjets.root distrs/v37_test13_bunchDILEP1/SingleElectron.root -p -r -o plots/v37_test13_bunchDILEP1_mc_2_wNjets/ -c dy_elel --data-nick data_other -d dilep_mass_dy    --lumi 35800 --overwrite --wjets 0.92 --qcd-factor 0.001
+
+eog plots/v37_test13_bunchDILEP1_mc_2_wNjets//dist*_dy_*
+
+-- Mt is ok, but same issues as before:
+   the deviations in lep eta endcaps, more so in elel
+   the bend in mumu met_c
+   the difference in normalizations: mumu not enough MC, elel too much MC
+   -- maybe Madgraph has wrong Z branching ratios? or PU normalizations are so different?
+
+normalizations
+
+elel:
+
+INFO:root:data       =  6387979.000000    15430.844912
+INFO:root:mc sum     =  6672197.586828  6672197.586828
+
+mumu:
+
+INFO:root:data       = 14649695.000000    22946.804093
+INFO:root:mc sum     = 13831187.875497 13831187.875497
+
+
+
+
 
 ## v37 issues, round4 with dileptons
 
@@ -4311,13 +4420,6 @@ Draw lep_p4[0].pt()>>h_0(40,0,200), (pu_weight(nvtx_gen, 0))*0.986*(aMCatNLO_wei
 ttbar_pT_SF appears only in tt
 check aMCatNLO_weight in stage2 -- DY10, scahnnel and dibosons have it
 
-So it seems:
-0) data H in v37 and v12 is the same
-1) MC process fractions are also the same
-2) the issue is in mc sum shape
-   and the trend shows in all processes
-3) in TT TOPPT is responsible for the linear trend
-4) but what's with the other MC?
 
 
 time ntuple_distr --verbose elmu 1.0 T -1 T T T T NOMINAL   f f T 19094 16079 "lep_p4[0].pt()"  "HLT_mu && leps_ID == -11*13 && ((abs(lep_id[0]) == 13 && lep_matched_HLT[0]) || (abs(lep_id[1]) == 13 && lep_matched_HLT[1])) && lep_p4[0].pt()>30 && lep_p4[1].pt()>30 && abs(lep_p4[0].eta()) < 2.4 && abs(lep_p4[1].eta()) < 2.4 && lep_dxy[0] <0.01 && lep_dz[0]<0.02" "(40,0,200)"    INVESTIGATION-v37tests-v12.7-test_elmu_lep0_pt_investigation_of_weights_all7  " Mt " " Events " /eos/user/o/otoldaie/ttbar-leptons-80X_data/v12.7_dilep_merged-sets `cat v12.7_dilep_dtags`
@@ -4339,6 +4441,18 @@ python stack_plot.py distrs/v37_test11_bunchDILEP3recalc_mc_3_nowjetsqcd.root di
 -- here, yes, like in mu_pt, clearer trend, after 100GeV
    step in 80-120GeV
 
+
+
+##### the end of tt_elmu investigation with comparison to v12, v37test13 tag
+
+So it seems:
+0) data H in v37 and v12 is the same
+1) MC process fractions are also the same
+2) the issue is in mc sum shape
+   and the trend shows in all processes
+3) in TT TOPPT is responsible for the linear trend
+4) but what's with the other MC?
+
 So:
 How bad are the remaining deviations? (Probably DY dileptons are worst now..)
 Is it just the difference between full Data and H?
@@ -4349,6 +4463,44 @@ What's with crazy etas?
 -- there is a distinct difference v12-v37 at high etas and incoherent bin-by-bin jumps.
    The high etas can be due to el SFs used in v37 and not in v12.
    The bin-by-bin could be due to 2D histos, when 1D are asymmetric.
+
+
+
+hadd v37_test13_bunchDILEP1_mc_1_wNjets.root v37_test13_bunchDILEP1/MC*root v37_test13_bunchDILEP1/wjets_wNjets/MC*root
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleElectron.root -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c dy_elel --data-nick data_other -d met_c        --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleElectron.root -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c dy_elel --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleElectron.root -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c dy_elel --data-nick data_other -d lep_pt       --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleElectron.root -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c dy_elel --data-nick data_other -d lep_eta      --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root     -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c dy_mumu --data-nick data_other -d met_c        --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root     -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c dy_mumu --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root     -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c dy_mumu --data-nick data_other -d lept_pt      --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root     -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c dy_mumu --data-nick data_other -d lept_eta     --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5
+
+-- forgot to revert the PASSES function....
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root     -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c tt_elmu --data-nick data_other -d met_c        --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root     -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c tt_elmu --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root     -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c tt_elmu --data-nick data_other -d lep_pt       --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root     -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c tt_elmu --data-nick data_other -d lep_eta      --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root     -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c tt_elmu --data-nick data_other -d met_c        --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --sys TOPPTUp
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc_1_wNjets.root distrs/v37_test13_bunchDILEP1/SingleMuon.root     -p -r  -o plots/v37_test13_bunchDILEP1_mc_1_wNjets/  -c tt_elmu --data-nick data_other -d met_c        --lumi 35800 --overwrite --wjets 0.92 --ratio-range 0.5 --qcd-factor 2.5 --sys TOPPTUp --factor-dy 1.1
+
+norm:
+INFO:root:data       =   158580.000000     1895.744849
+INFO:root:mc sum     =   151772.933178   151772.933178
+
+eog plots/v37_test13_bunchDILEP1_mc_1_wNjets/*png
+
+with norm, larger DY (10-30% return to original xsec) and TOPPT looks ok
+but the slight pT kink and eta bin-by-bin weirdness are indeed there
+-- the trend is most visible in low met_c:
+   high met agrees after TOPPTUp
+   but low met does not, event DY factor 1.3 does not fix it, it bends the very low bins and the peak is still about 5% off the horizontal line from the rest
+   this should be due to the BCDEF data not handled too well
 
 
 
