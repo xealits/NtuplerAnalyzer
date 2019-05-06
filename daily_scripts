@@ -30,6 +30,369 @@ DY with Same Sign and data-driven QCD
 tt_elmu with all MC and Data
 
 
+### full fit, check PU norm and launch histosel
+
+saved:
+
+        event_weight_PU[0]    = weight_pu
+        event_weight_PU_per_epoch[0]    = ratio_bcdef*weight_pu_bcdef + ratio_gh*weight_pu_gh
+
+-- should be correct, right?
+
+event_weight_PU_per_epoch[0]
+
+el_sel and mu_sel, with Vloose, in TT:
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17)*event_weight_PU"                          --histo-range 5,0,5 --output v37_test13_PU_norm_el_sel_event_weight_PU_tt.root       --histo-name tt_el_sel_event_weight_PU       lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17 || selection_stage == 15)*event_weight_PU" --histo-range 5,0,5 --output v37_test13_PU_norm_el_selVloose_event_weight_PU_tt.root --histo-name tt_el_selVloose_event_weight_PU lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)*event_weight_PU"                         --histo-range 5,0,5 --output v37_test13_PU_norm_mu_sel_event_weight_PU_tt.root       --histo-name tt_mu_sel_event_weight_PU       lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight_PU" --histo-range 5,0,5 --output v37_test13_PU_norm_mu_selVloose_event_weight_PU_tt.root --histo-name tt_mu_selVloose_event_weight_PU lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+
+new weights:
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17)*event_weight_PU_per_epoch"                          --histo-range 5,0,5 --output v37_test13_PU_norm_el_sel_event_weight_PU_per_epoch_tt.root       --histo-name tt_el_sel_event_weight_PU_per_epoch       lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17 || selection_stage == 15)*event_weight_PU_per_epoch" --histo-range 5,0,5 --output v37_test13_PU_norm_el_selVloose_event_weight_PU_per_epoch_tt.root --histo-name tt_el_selVloose_event_weight_PU_per_epoch lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)*event_weight_PU_per_epoch"                         --histo-range 5,0,5 --output v37_test13_PU_norm_mu_sel_event_weight_PU_per_epoch_tt.root       --histo-name tt_mu_sel_event_weight_PU_per_epoch       lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight_PU_per_epoch" --histo-range 5,0,5 --output v37_test13_PU_norm_mu_selVloose_event_weight_PU_per_epoch_tt.root --histo-name tt_mu_selVloose_event_weight_PU_per_epoch lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+
+in SingleTop:
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17)*event_weight_PU"                          --histo-range 5,0,5 --output v37_test13_PU_norm_el_sel_event_weight_PU_singletop.root       --histo-name singletop_el_sel_event_weight_PU       lstore_outdirs/v37/test13/MC2016_Summer16_SingleT*/*root     &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17 || selection_stage == 15)*event_weight_PU" --histo-range 5,0,5 --output v37_test13_PU_norm_el_selVloose_event_weight_PU_singletop.root --histo-name singletop_el_selVloose_event_weight_PU lstore_outdirs/v37/test13/MC2016_Summer16_SingleT*/*root     &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)*event_weight_PU"                         --histo-range 5,0,5 --output v37_test13_PU_norm_mu_sel_event_weight_PU_singletop.root       --histo-name singletop_mu_sel_event_weight_PU       lstore_outdirs/v37/test13/MC2016_Summer16_SingleT*/*root     &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight_PU" --histo-range 5,0,5 --output v37_test13_PU_norm_mu_selVloose_event_weight_PU_singletop.root --histo-name singletop_mu_selVloose_event_weight_PU lstore_outdirs/v37/test13/MC2016_Summer16_SingleT*/*root     &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17)*event_weight_PU_per_epoch"                          --histo-range 5,0,5 --output v37_test13_PU_norm_el_sel_event_weight_PU_per_epoch_singletop.root       --histo-name singletop_el_sel_event_weight_PU_per_epoch       lstore_outdirs/v37/test13/MC2016_Summer16_SingleT*/*root     &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17 || selection_stage == 15)*event_weight_PU_per_epoch" --histo-range 5,0,5 --output v37_test13_PU_norm_el_selVloose_event_weight_PU_per_epoch_singletop.root --histo-name singletop_el_selVloose_event_weight_PU_per_epoch lstore_outdirs/v37/test13/MC2016_Summer16_SingleT*/*root     &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)*event_weight_PU_per_epoch"                         --histo-range 5,0,5 --output v37_test13_PU_norm_mu_sel_event_weight_PU_per_epoch_singletop.root       --histo-name singletop_mu_sel_event_weight_PU_per_epoch       lstore_outdirs/v37/test13/MC2016_Summer16_SingleT*/*root     &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight_PU_per_epoch" --histo-range 5,0,5 --output v37_test13_PU_norm_mu_selVloose_event_weight_PU_per_epoch_singletop.root --histo-name singletop_mu_selVloose_event_weight_PU_per_epoch lstore_outdirs/v37/test13/MC2016_Summer16_SingleT*/*root     &
+
+hadd v37_test13_PU_norm.root v37_test13_PU_norm_*root
+
+
+correction ratios to the PU norm:
+
+tt_el_sel_event_weight_PU        ->Integral() / tt_el_sel_event_weight_PU_per_epoch        ->Integral()
+tt_el_selVloose_event_weight_PU  ->Integral() / tt_el_selVloose_event_weight_PU_per_epoch  ->Integral()
+tt_mu_sel_event_weight_PU        ->Integral() / tt_mu_sel_event_weight_PU_per_epoch        ->Integral()
+tt_mu_selVloose_event_weight_PU  ->Integral() / tt_mu_selVloose_event_weight_PU_per_epoch  ->Integral()
+
+(double) 1.00005
+(double) 1.00004
+(double) 1.00004
+(double) 1.00002
+
+singletop_el_sel_event_weight_PU        ->Integral() / singletop_el_sel_event_weight_PU_per_epoch        ->Integral()
+singletop_el_selVloose_event_weight_PU  ->Integral() / singletop_el_selVloose_event_weight_PU_per_epoch  ->Integral()
+singletop_mu_sel_event_weight_PU        ->Integral() / singletop_mu_sel_event_weight_PU_per_epoch        ->Integral()
+singletop_mu_selVloose_event_weight_PU  ->Integral() / singletop_mu_selVloose_event_weight_PU_per_epoch  ->Integral()
+
+(double) 1.00005
+(double) 1.00005
+(double) 1.00005
+(double) 1.00003
+
+-- so all is cool already
+
+
+
+get wjets factor!
+
+
+
+
+the histosels
+
+mkdir histosels/v37_test13_bunch1_fullfit1/
+
+test
+
+make run_histos out=histosels/v37_test13_bunch1_fullfit1/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root data_mu=distrs/v37_test13_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test13_bunchFULLFIT1/SingleElectron.root
+
+run:
+
+make run_std_histos out=histosels/v37_test13_bunch1_fullfit1/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root data_mu=distrs/v37_test13_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test13_bunchFULLFIT1/SingleElectron.root
+
+hadd histosels/v37_test13_bunch1_fullfit1.root histosels/v37_test13_bunch1_fullfit1/*root
+
+isn't this PUUp too large?
+
+INFO:root:data       =     6690.000000      245.655645
+INFO:root:mc sum     =     7538.577809     7538.577809
+INFO:root:mc sum unc =      262.191689      262.191689
+INFO:root:mc sum unc =      262.191689      262.191689
+INFO:root:saving root histosels/v37_test13_bunch1_fullfit1//distrs,v37_test13_bunchFULLFIT1_mc_1_wNjets_HISTOSEL_Mt_lep_met_c_el_sel_lj_PUUp_data-qcd_shape-el_selVloose_lj.root
+
+datacard
+
+python numbers_for_datacard.py histosels/v37_test13_bunch1_fullfit1.root -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout --no-sums --data-nick data_other
+python numbers_for_datacard.py histosels/v37_test13_bunch1_fullfit1.root -d Mt_lep_met_c -c mu_sel_lj,mu_sel_ljout --no-sums --data-nick data_other
+
+-- no qcd_other/.../..qcd.. -- broken naming for data-driven qcd -- made temporary fix
+
+bin           el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                       
+rate          3287.703                 2409.503                 129.813                  188.205                  66.968                   15.402                   166.695                  23.573                   165.716                  0.964                    14.132                   176.062                  29.120                   121.251                  92.224                   
+el_sel_lj/data_other/NOMINAL/el_sel_lj_data_other_NOMINAL_Mt_lep_met_c
+obs 6690.000000
+INFO:root:el_sel_ljout
+bin           el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                       
+rate          5050.191                 1578.317                 83.043                   298.770                  106.052                  35.088                   181.860                  31.621                   294.199                  1.895                    12.645                   217.598                  78.582                   220.103                  399.992                  
+el_sel_ljout/data_other/NOMINAL/el_sel_ljout_data_other_NOMINAL_Mt_lep_met_c
+obs 8414.000000
+
+bin           mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          5024.145                 3672.965                 208.669                  280.097                  86.971                   22.458                   230.131                  34.987                   227.019                  0.000                    16.137                   238.209                  10.536                   192.531                  122.463                  
+mu_sel_lj/data_other/NOMINAL/mu_sel_lj_data_other_NOMINAL_Mt_lep_met_c
+obs 9831.000000
+INFO:root:mu_sel_ljout
+bin           mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          7677.854                 2442.821                 138.546                  449.153                  168.899                  55.389                   285.522                  51.646                   434.515                  0.000                    28.822                   355.412                  21.460                   388.489                  226.937                  
+mu_sel_ljout/data_other/NOMINAL/mu_sel_ljout_data_other_NOMINAL_Mt_lep_met_c
+obs 12855.000000
+
+
+
+and fitting
+
+make workspace datacard=ttxsec/datacard_v37_test13_1_el_qcdnaming
+
+make impacts workspace=ttxsec/datacard_v37_test13_1_el_qcdnaming.root nn=el_v37_test13_1_qcdnaming
+
+   r :    +1.028   -0.375/+0.116 (68%)
+
+wow
+insane PU
+
+
+
+
+
+### fixing PU Up Down
+
+old weight
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17)*event_weight_PUUp"                          --histo-range 5,0,5 --output v37_test13_PU_norm_el_sel_event_weight_PUUp_tt.root       --histo-name tt_el_sel_event_weight_PUUp       lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17 || selection_stage == 15)*event_weight_PUUp" --histo-range 5,0,5 --output v37_test13_PU_norm_el_selVloose_event_weight_PUUp_tt.root --histo-name tt_el_selVloose_event_weight_PUUp lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)*event_weight_PUUp"                         --histo-range 5,0,5 --output v37_test13_PU_norm_mu_sel_event_weight_PUUp_tt.root       --histo-name tt_mu_sel_event_weight_PUUp       lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight_PUUp" --histo-range 5,0,5 --output v37_test13_PU_norm_mu_selVloose_event_weight_PUUp_tt.root --histo-name tt_mu_selVloose_event_weight_PUUp lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17)*event_weight_PUDown"                          --histo-range 5,0,5 --output v37_test13_PU_norm_el_sel_event_weight_PUDown_tt.root       --histo-name tt_el_sel_event_weight_PUDown       lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17 || selection_stage == 15)*event_weight_PUDown" --histo-range 5,0,5 --output v37_test13_PU_norm_el_selVloose_event_weight_PUDown_tt.root --histo-name tt_el_selVloose_event_weight_PUDown lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)*event_weight_PUDown"                         --histo-range 5,0,5 --output v37_test13_PU_norm_mu_sel_event_weight_PUDown_tt.root       --histo-name tt_mu_sel_event_weight_PUDown       lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight_PUDown" --histo-range 5,0,5 --output v37_test13_PU_norm_mu_selVloose_event_weight_PUDown_tt.root --histo-name tt_mu_selVloose_event_weight_PUDown lstore_outdirs/v37/test13/MC2016_Summer16_TTJets_powheg/*root     &
+
+hadd v37_test13_PU_norm.root v37_test13_PU_norm_*root
+
+root -l v37_test13_PU_norm.root
+
+tt_el_sel_event_weight_PUUp        ->Integral() / tt_el_sel_event_weight_PU        ->Integral()
+tt_mu_sel_event_weight_PUUp        ->Integral() / tt_mu_sel_event_weight_PU        ->Integral()
+
+tt_el_sel_event_weight_PUDown      ->Integral() / tt_el_sel_event_weight_PU        ->Integral()
+tt_mu_sel_event_weight_PUDown      ->Integral() / tt_mu_sel_event_weight_PU        ->Integral()
+
+(double) 1.07082
+(double) 1.06297
+(double) 0.948327
+(double) 0.947503
+
+looks ok?
+
+yield numbers
+
+python numbers_for_datacard.py histosels/v37_test13_bunch1_fullfit1.root -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --no-sums -y --data-nick data_other
+python numbers_for_datacard.py histosels/v37_test13_bunch1_fullfit1.root -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --no-sums -y --data-nick data_other --sys PUUp
+python numbers_for_datacard.py histosels/v37_test13_bunch1_fullfit1.root -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --no-sums -y --data-nick data_other --sys PUDown
+
+mc sum and signal:
+
+>>> 7538.578 / 6887.332
+1.0945570795774038
+>>> 3601. / 3288.
+1.0951946472019465
+
+mc_sum over all channels
+
+mc_resum_nom    = [6887.332   8589.957   10367.319   12725.466]
+mc_resum_puup   = [7538.578   9211.933   11087.660   13482.983]
+mc_resum_pudown = [6471.942   8072.127    9765.201   11951.999]
+
+ 1.09456  1.07241  1.06948  1.05953
+ 0.939688  0.939717  0.941922  0.939219
+
+
+
+I saved new and old nominal PU to compare and renormalize.
+But the variations are only new... how to renormalize them?
+
+find PU yield variation in old datacard
+
+datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_bFrag.txt
+datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_bFrag.txt
+
+HISTOSELS_v25v25redo_PUnormFix.root
+
+python numbers_for_datacard.py ../../fit-stuff/HISTOSELS_v25v25redo_PUnormFix.root -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --no-sums -y
+INFO:root:import ROOT
+INFO:root:el_sel_lj
+INFO:root:el_sel_ljout
+INFO:root:mu_sel_lj
+INFO:root:mu_sel_ljout
+                                 process   el_sel_lj   el_sel_ljout   mu_sel_lj   mu_sel_ljout
+                                tt_mutau   $  5136 \pm    116 $   $  7926 \pm    144 $
+                                tt_eltau   $  3010 \pm     88 $   $  4691 \pm    111 $
+                             tt_taultauh   $   170 \pm     20 $   $   280 \pm     26 $   $   328 \pm     27 $   $   517 \pm     34 $
+                                   tt_lj   $  2215 \pm     43 $   $  1457 \pm     34 $   $  3757 \pm     57 $   $  2532 \pm     46 $
+                                tt_taulj   $   118 \pm      8 $   $    76 \pm      7 $   $   240 \pm     13 $   $   161 \pm     10 $
+                                tt_other   $    60 \pm      9 $   $   100 \pm     11 $   $   104 \pm     12 $   $   181 \pm     15 $
+                             s_top_eltau   $   152 \pm     14 $   $   274 \pm     19 $
+                             s_top_mutau   $   232 \pm     17 $   $   450 \pm     25 $
+                             s_top_other   $    21 \pm      3 $   $    31 \pm      5 $   $    40 \pm      5 $   $    61 \pm      7 $
+                                s_top_lj   $   151 \pm      8 $   $   169 \pm      8 $   $   235 \pm     10 $   $   296 \pm     11 $
+                               dy_tautau   $   103 \pm     28 $   $   190 \pm     29 $   $   200 \pm     32 $   $   424 \pm     52 $
+                                dy_other   $    34 \pm     14 $   $   103 \pm     25 $   $    22 \pm     14 $   $    62 \pm     18 $
+                             wjets_other   $   194 \pm     22 $   $   241 \pm     15 $   $   303 \pm     22 $   $   434 \pm     22 $
+                              wjets_taul   $     7 \pm      3 $   $     7 \pm      3 $   $    11 \pm      3 $   $    16 \pm      4 $
+                              wjets_tauh   $     0 \pm      0 $   $     1 \pm      1 $   $     0 \pm      0 $   $     0 \pm      0 $
+                                dibosons   $    13 \pm      4 $   $    31 \pm      6 $   $    25 \pm      5 $   $    58 \pm     10 $
+                                     qcd   $   136 \pm     57 $   $   327 \pm     68 $   $   173 \pm     42 $   $   258 \pm     53 $
+aaa!
+                                mc_resum   6383.362   7980.707   10805.584   13376.781
+                                    data   $  6190 \pm    236 $   $  7906 \pm    273 $   $ 10251 \pm    298 $   $ 13550 \pm    352 $
+
+
+python numbers_for_datacard.py ../../fit-stuff/HISTOSELS_v25v25redo_PUnormFix.root -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --no-sums -y --sys PUUp
+
+python numbers_for_datacard.py ../../fit-stuff/HISTOSELS_v25v25redo_PUnormFix.root -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --no-sums -y --sys PUUp
+INFO:root:import ROOT
+INFO:root:el_sel_lj
+INFO:root:el_sel_ljout
+INFO:root:mu_sel_lj
+INFO:root:mu_sel_ljout
+                                 process   el_sel_lj   el_sel_ljout   mu_sel_lj   mu_sel_ljout
+                                tt_mutau   $  5183 \pm    116 $   $  8006 \pm    144 $
+                                tt_eltau   $  3055 \pm     88 $   $  4748 \pm    110 $
+                             tt_taultauh   $   173 \pm     19 $   $   283 \pm     25 $   $   331 \pm     27 $   $   521 \pm     34 $
+                                   tt_lj   $  2246 \pm     43 $   $  1484 \pm     34 $   $  3809 \pm     57 $   $  2565 \pm     46 $
+                                tt_taulj   $   121 \pm      8 $   $    79 \pm      7 $   $   245 \pm     13 $   $   164 \pm     10 $
+                                tt_other   $    61 \pm      9 $   $   101 \pm     11 $   $   107 \pm     12 $   $   184 \pm     15 $
+                             s_top_eltau   $   154 \pm     14 $   $   278 \pm     19 $
+                             s_top_mutau   $   235 \pm     17 $   $   450 \pm     25 $
+                             s_top_other   $    21 \pm      3 $   $    31 \pm      5 $   $    40 \pm      5 $   $    62 \pm      7 $
+                                s_top_lj   $   152 \pm      8 $   $   171 \pm      8 $   $   238 \pm     10 $   $   300 \pm     11 $
+                               dy_tautau   $   104 \pm     28 $   $   194 \pm     29 $   $   203 \pm     33 $   $   432 \pm     53 $
+                                dy_other   $    33 \pm     13 $   $   106 \pm     25 $   $    18 \pm     12 $   $    67 \pm     19 $
+                             wjets_other   $   203 \pm     22 $   $   245 \pm     15 $   $   307 \pm     22 $   $   445 \pm     23 $
+                              wjets_taul   $     6 \pm      2 $   $     7 \pm      3 $   $    11 \pm      3 $   $    16 \pm      4 $
+                              wjets_tauh   $     1 \pm      1 $   $     1 \pm      1 $   $     1 \pm      1 $   $     0 \pm      0 $
+                                dibosons   $    13 \pm      4 $   $    32 \pm      7 $   $    26 \pm      5 $   $    59 \pm     10 $
+                                     qcd   $   114 \pm     57 $   $   314 \pm     71 $   $   136 \pm     37 $   $   224 \pm     51 $
+aaa!
+                                mc_resum   6456.150   8074.579   10888.322   13495.677
+                                    data   $  6190 \pm    236 $   $  7906 \pm    273 $   $ 10251 \pm    298 $   $ 13550 \pm    352 $
+
+
+python numbers_for_datacard.py ../../fit-stuff/HISTOSELS_v25v25redo_PUnormFix.root -d Mt_lep_met_f -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --no-sums -y --sys PUDown
+INFO:root:import ROOT
+
+
+INFO:root:el_sel_lj
+INFO:root:el_sel_ljout
+INFO:root:mu_sel_lj
+INFO:root:mu_sel_ljout
+                                 process   el_sel_lj   el_sel_ljout   mu_sel_lj   mu_sel_ljout
+                                tt_mutau   $  5072 \pm    117 $   $  7819 \pm    145 $
+                                tt_eltau   $  2955 \pm     90 $   $  4621 \pm    114 $
+                             tt_taultauh   $   167 \pm     20 $   $   277 \pm     26 $   $   324 \pm     27 $   $   512 \pm     34 $
+                                   tt_lj   $  2177 \pm     43 $   $  1428 \pm     35 $   $  3690 \pm     57 $   $  2489 \pm     46 $
+                                tt_taulj   $   114 \pm      8 $   $    74 \pm      7 $   $   233 \pm     13 $   $   158 \pm     10 $
+                                tt_other   $    58 \pm      9 $   $    99 \pm     12 $   $   101 \pm     12 $   $   177 \pm     15 $
+                             s_top_eltau   $   150 \pm     15 $   $   270 \pm     20 $
+                             s_top_mutau   $   228 \pm     17 $   $   448 \pm     25 $
+                             s_top_other   $    21 \pm      3 $   $    31 \pm      5 $   $    39 \pm      5 $   $    60 \pm      7 $
+                                s_top_lj   $   149 \pm      8 $   $   165 \pm      8 $   $   232 \pm     10 $   $   291 \pm     11 $
+                               dy_tautau   $   101 \pm     27 $   $   187 \pm     29 $   $   198 \pm     32 $   $   415 \pm     52 $
+                                dy_other   $    36 \pm     16 $   $   102 \pm     25 $   $    27 \pm     16 $   $    56 \pm     17 $
+                             wjets_other   $   185 \pm     21 $   $   237 \pm     16 $   $   299 \pm     22 $   $   423 \pm     22 $
+                              wjets_taul   $     8 \pm      3 $   $     7 \pm      3 $   $    11 \pm      3 $   $    15 \pm      4 $
+                              wjets_tauh   $     0 \pm      0 $   $     1 \pm      1 $   $     0 \pm      0 $   $     0 \pm      0 $
+                                dibosons   $    12 \pm      4 $   $    30 \pm      6 $   $    25 \pm      5 $   $    57 \pm     10 $
+                                     qcd   $   160 \pm     58 $   $   343 \pm     67 $   $   217 \pm     47 $   $   297 \pm     55 $
+aaa!
+                                mc_resum   6294.473   7871.364   10695.074   13218.491
+                                    data   $  6190 \pm    236 $   $  7906 \pm    273 $   $ 10251 \pm    298 $   $ 13550 \pm    352 $
+
+mc_resum_nom  = [ 6383.362   7980.707   10805.584   13376.781 ]
+mc_resum_puup = [ 6456.150   8074.579   10888.322   13495.677 ]
+mc_resum_pudown = [ 6294.473   7871.364   10695.074   13218.491 ]
+
+mc_resum_puup ./ mc_resum_nom
+mc_resum_pudown ./ mc_resum_nom
+
+ 1.0114  1.01176  1.00766  1.00889
+ 0.986075  0.986299  0.989773  0.988167
+
+VS:
+
+ 1.09456  1.07241  1.06948  1.05953
+ 0.939688  0.939717  0.941922  0.939219
+
+old_ratio_down ./ new_ratio_down
+ 1.04936  1.04957  1.0508  1.05212
+
+old_ratio_up ./ new_ratio_up
+ 0.924027  0.943447  0.942195  0.952207
+
+-- damn, the change in Up is not linear
+   and it affects el! damn
+   -- it affects el, because el norma is corrected for old el PU!
+
+correct by 0.95 Up and 1.05 Down
+
+
+
+
+
+
+### check the wjets factor
+
+python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc_1.root distrs/v37_test13_bunchCONTROLS1/SingleMuon.root     -p -r -o plots/v37_test13_bunchCONTROLS1_mc_1/ -c wjets_mu --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 2.5
+python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc_1.root distrs/v37_test13_bunchCONTROLS1/SingleElectron.root -p -r -o plots/v37_test13_bunchCONTROLS1_mc_1/ -c wjets_el --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 2.5
+
+-- factor 1.4 fits (?)
+   the shape is ok, same trend at high mT in both channels
+   MC QCD is ok
+
+
+
+
+
+### launch control distrs
+
+
+
+
+
+### control distrs check if to add any more
+
+
+
+
+
 ## the question on BR-s
 
 python sumup_ttree_draw.py "abs(gen_t_w_decay_id)" --cond-com "" --histo-range 1000,0.,1000 --output test_v37_tt_t_w_decay_id.root --histo-name test_v37_tt_t_w_decay_id gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root &
@@ -231,6 +594,26 @@ python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37
 
 -- overall similar as before, mu lacks in normalization, the pre-last bin lack data in both channels now
    check new PU normalization
+
+wjets 1.4 factor:
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets_wjets1.4/ -c mu_sel_lj    -x mu_selVloose_lj     --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets_wjets1.4/ -c el_sel_lj    -x el_selVloose_lj     --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets_wjets1.4/ -c mu_sel_ljout -x mu_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets_wjets1.4/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+
+mu_lj is worst normalization
+
+INFO:root:data       =     9831.000000      292.381342
+INFO:root:mc sum     =    10325.577599    10325.577599
+
+el_lj is ok:
+
+INFO:root:data       =     6690.000000      245.655645
+INFO:root:mc sum     =     6841.523967     6841.523967
+
+-- strange
+
 
 
 ### new PU normalization

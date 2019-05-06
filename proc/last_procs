@@ -4,7 +4,13 @@ python genjobs.py v37 test13 --options no_prop_lepjets --do-W-stitching --metmue
 # plot dileps and full fit
 python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test13 --distrs bunchDILEP1   --chan-groups dy_dileptons,tt_dileptons
 python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test13 --distrs bunchFULLFIT1 --chan-groups fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout
-python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test13 --distrs bunchFULLFIT1 --chan-groups yields_el_presel,yields_el_sel,yields_mu_presel,yields_mu_sel,yields_control_wjets,yields_control_dyjets,yields_control_tt_em
+# presel, sel, wjets and dy_tautau controls
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test13 --distrs bunchCONTROLS1 --chan-groups tt_leptau,tt_leptau_lj,tt_leptau_ljout,tt_leptau_Vloose,tt_leptau_Vloose_lj,tt_leptau_Vloose_ljout,tt_leptau_Tight,tt_leptau_Tight_lj,tt_leptau_Tight_ljout,tt_presel_cands,tt_presel_cands_lj,tt_presel_cands_ljout,wjets,wjets_ss,dy_leptau,dy_leptau_ss
+
+# yields
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test13 --distrs bunch1YIELDS --chan-groups yields_el_presel,yields_el_sel,yields_mu_presel,yields_mu_sel,yields_control_wjets,yields_control_dyjets,yields_control_tt_em
+
+
 
 
 

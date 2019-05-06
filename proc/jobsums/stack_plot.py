@@ -168,6 +168,7 @@ histos_data_per_distr    = []
 histos_data_per_distr_ss = []
 
 data_nick = args.data_nick
+qcd_nick = 'qcd'
 
 if not args.no_data:
   for distr_name in distr_names:
@@ -360,6 +361,10 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=a
         #for process in sorted_pkeys:
         for process in processes_keys:
            nick = process.GetName()
+           # pick up the qcd nick from MC
+           if 'qcd' in nick:
+               qcd_nick = nick
+
            if skip_QCD and 'qcd' in nick:
                continue
            if processes_requirement and nick not in processes_requirement:
@@ -441,11 +446,19 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=a
                #    pu_factor = 1. / (1.04678 if '_el_' in channel or 'el_sel' in channel else 1.022)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
                #    #pu_factor = 1. / (1.04678 if '_el_' in channel else 1.014)
                if 'PUUp' in fixed_sys_name:
-                   pu_factor = 1. / (1.00892 if '_el_' in channel or 'el_sel' in channel else 0.994846) # 0.97 # 1./ 0.9979
+                   #pu_factor = 1. / (1.00892 if '_el_' in channel or 'el_sel' in channel else 0.994846) # 0.97 # 1./ 0.9979
+                   # el PU is the same as mu, since v37 and Golden json for el
+                   pu_factor = 1. / 0.994846
+                   # extra norm correction in v37 test13 due to new PU calculation (which does not change NOMINAL norm)
+                   pu_factor *= 0.95
                elif 'PUDown' in fixed_sys_name:
-                   pu_factor = 1. / (1.05718 if '_el_' in channel or 'el_sel' in channel else 1.03657) # 1.17 # 1./ 1.485
+                   #pu_factor = 1. / (1.05718 if '_el_' in channel or 'el_sel' in channel else 1.03657) # 1.17 # 1./ 1.485
+                   pu_factor = 1. / 1.03657
+                   # extra norm correction in v37 test13
+                   pu_factor *= 1.05
                else:
-                   pu_factor = 1. / (1.03106 if '_el_' in channel or 'el_sel' in channel else 1.01388)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
+                   #pu_factor = 1. / (1.03106 if '_el_' in channel or 'el_sel' in channel else 1.01388)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
+                   pu_factor = 1. / 1.01388
                    #pu_factor = 1. / (1.04678 if '_el_' in channel else 1.014)
 
                th_factor = 1.
@@ -658,6 +671,7 @@ def get_histos_with_data_qcd(sys_name):
                 #datadriven_qcd_name = "qcd"
                 # optmu_tight_2L1M_wjets_NOMINAL_Mt_lep_met
                 # I remove _ss from channel name
+                # qcd_nick is defined from the MC qcd name or it is 'qcd'
                 datadriven_qcd_name = '%s_%s_%s_%s' % (channel[:-3], 'qcd', args.systematic, distr)
                 qcd_hist.SetName(datadriven_qcd_name)
                 qcd_hist.Scale(args.qcd)

@@ -287,20 +287,25 @@ for channel in channels:
        if args.skip_procs and process in args.skip_procs:
            continue
 
-       histo_name = '_'.join([channel, process, sys_name, distr_name])
+       # adjusting to the broken data-driven qcd naming
+       if process == 'qcd_other':
+           histo_name = '_'.join([channel, 'qcd', sys_name, distr_name])
+       else:
+           histo_name = '_'.join([channel, process, sys_name, distr_name])
 
        logging.debug(histo_name)
        histo_name = '%s/%s/%s' % (process, sys_name, histo_name)
        logging.debug(histo_name)
 
-       histo = chan.Get(histo_name)
-       if not histo:
-           logging.info('no %s' % histo_name)
+       if not chan.Get(histo_name):
+           logging.info('no %s %s' % (chan, histo_name))
            continue
+
+       histo = chan.Get(histo_name)
        logging.debug(histo.Integral())
        processes.append(process)
 
-       if process != 'data' and args.scale:
+       if 'data' not in process and args.scale:
            histo.Scale(args.scale)
 
        if 'wjet' in process and args.wjets:
