@@ -118,6 +118,8 @@ run:
 make run_std_histos out=histosels/v37_test13_bunch1_fullfit1/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root data_mu=distrs/v37_test13_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test13_bunchFULLFIT1/SingleElectron.root
 
 hadd histosels/v37_test13_bunch1_fullfit1.root histosels/v37_test13_bunch1_fullfit1/*root
+hadd histosels/v37_test13_bunch1_fullfit1_pufixed.root  histosels/v37_test13_bunch1_fullfit1/*root
+hadd histosels/v37_test13_bunch1_fullfit1_pufixed2.root histosels/v37_test13_bunch1_fullfit1/*root
 
 isn't this PUUp too large?
 
@@ -175,7 +177,65 @@ make impacts workspace=ttxsec/datacard_v37_test13_1_el_qcdnaming.root nn=el_v37_
 wow
 insane PU
 
+rescaled PU Up-Down and corrected el PU normalization for golden json:
 
+python numbers_for_datacard.py histosels/v37_test13_bunch1_fullfit1_pufixed.root -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout --no-sums --data-nick data_other
+python numbers_for_datacard.py histosels/v37_test13_bunch1_fullfit1_pufixed.root -d Mt_lep_met_c -c mu_sel_lj,mu_sel_ljout --no-sums --data-nick data_other
+
+make impacts workspace=ttxsec/datacard_v37_test13_1_el_qcdnaming.root nn=el_v37_test13_1_qcdnaming
+
+   r :    +0.984   -0.291/+0.122 (68%)
+
+-- damn....
+
+make workspace datacard=ttxsec/datacard_v37_test13_1_el_qcdnaming_normalizedPU
+make impacts  workspace=ttxsec/datacard_v37_test13_1_el_qcdnaming_normalizedPU.root nn=el_v37_test13_1_qcdnaming
+
+   r :    +0.930   -0.082/+0.101 (68%)
+
+-- very muon-like now
+
+now el TRG is first, than qcd norm, then JES, finally tau ID...
+...damn
+
+qcd norm and JES are very asymmetric
+qcd is pulled +1sigma
+JES is -0.5sigma
+
+el trig is also asymmetric, but not completely
+it is pulled -0.5sigma
+
+python new_impact_table.py --merge-pdf latest_impacts_el_v37_test13_1_qcdnaming.json
+
+electron trigger efficiency  &  5.7 \\
+        QCD normalization  &  5.0 \\
+         jet energy scale  &  5.0 \\
+$\tauh$ jet identification  &  4.6 \\
+     b-tagging efficiency  &  4.5 \\
+   electron ID efficiency  &  4.4 \\
+       pileup uncertainty  &  2.9 \\
+        top quark $p_{T}$  &  2.6 \\
+$\tauh$ misidentification background  &  1.8 \\
+ Single Top normalization  &  0.7 \\
+     W+jets normalization  &  0.7 \\
+    jet energy resolution  &  0.6 \\
+         DY normalization  &  0.4 \\
+     $\tauh$ Energy Scale  &  0.1 \\
+   Dibosons normalization  &  0.0 \\
+               Luminosity  &  0.0 \\
+          b fragmentation  &  2.1 \\
+  initial state radiation  &  1.8 \\
+  final   state radiation  &  1.5 \\
+ ME Renormalization scale  &  0.7 \\
+underlying event (Pythia tune)  &  0.6 \\
+ME combined scale variation  &  0.5 \\
+   ME Factorization scale  &  0.3 \\
+   ME-PS matching (hdamp)  &  0.2 \\
+semi-leptonic b-hadron BRs  &  0.0 \\
+                      PDF  &  1.3 \\
+            MC statistics  &  2.9 \\
+
+-- at least MC stats are not too bad
 
 
 
@@ -363,6 +423,67 @@ old_ratio_up ./ new_ratio_up
 
 correct by 0.95 Up and 1.05 Down
 
+again
+
+python numbers_for_datacard.py histosels/v37_test13_bunch1_fullfit1_pufixed.root -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --no-sums -y --data-nick data_other
+python numbers_for_datacard.py histosels/v37_test13_bunch1_fullfit1_pufixed.root -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --no-sums -y --data-nick data_other --sys PUUp
+python numbers_for_datacard.py histosels/v37_test13_bunch1_fullfit1_pufixed.root -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout,mu_sel_lj,mu_sel_ljout --no-sums -y --data-nick data_other --sys PUDown
+
+data   $  6690 \pm    246 $   $  8414 \pm    282 $   $  9831 \pm    292 $   $ 12855 \pm    343 $
+
+mc_resum_new_nom = [  6981.494   8707.329   10367.319   12725.466 ]
+mc_resum_new_pup = [  7262.964   8935.948   10581.536   12913.886 ]
+mc_resum_new_pdn = [  6836.363   8526.372   10154.236   12444.546 ]
+
+old:
+
+mc_resum_nom = [ 6383.362   7980.707   10805.584   13376.781 ]
+mc_resum_pup = [ 6456.150   8074.579   10888.322   13495.677 ]
+mc_resum_pdn = [ 6294.473   7871.364   10695.074   13218.491 ]
+
+mc_resum_new_pup ./ mc_resum_new_nom
+mc_resum_new_pdn ./ mc_resum_new_nom
+
+mc_resum_pup ./ mc_resum_nom
+mc_resum_pdn ./ mc_resum_nom
+
+ 1.04032  1.02626  1.02066  1.01481
+ 0.979212  0.979218  0.979447  0.977925
+
+ 1.0114  1.01176  1.00766  1.00889
+ 0.986075  0.986299  0.989773  0.988167
+
+so, does this matter??
+
+why so different effect in lj and ljout?
+used to be no effect at all
+
+(mc_resum_pup ./ mc_resum_nom) ./ (mc_resum_new_pup ./ mc_resum_new_nom)
+(mc_resum_pdn ./ mc_resum_nom) ./ (mc_resum_new_pdn ./ mc_resum_new_nom)
+
+ 0.972207  0.985877  0.987258  0.994168
+ 1.00701   1.00723   1.01054   1.01047
+
+-- hardcoded these normalizations
+
+meanwhile try including them in datacard?
+
+(mc_resum_pup ./ mc_resum_nom - ones(4)') ./ (mc_resum_new_pup ./ mc_resum_new_nom - ones(4)')
+(mc_resum_pdn ./ mc_resum_nom - ones(4)') ./ (mc_resum_new_pdn ./ mc_resum_new_nom - ones(4)')
+
+ 0.282831  0.447989  0.370569  0.600292
+ 0.669864  0.659264  0.497589  0.536035
+
+for shape the deviations cannot be asymmetric
+use the lowest:
+
+el: 0.3 0.4    mu: 0.4 0.6
+
+cp ttxsec/datacard_v37_test13_1_el_qcdnaming.txt ttxsec/datacard_v37_test13_1_el_qcdnaming_normalizedPU.txt
+
+PU              shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -
+
+PU              shape          0.3    0.3   0.3   0.3   0.3        0.3      0.3   0.3   0.3      0.3   0.3      0.3   0.3      -                  0.4    0.4   0.4   0.4   0.4        0.4      0.4   0.4   0.4      0.4   0.4      0.4   0.4      -
 
 
 
@@ -377,6 +498,24 @@ python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc_1.root distrs/v37_test1
    the shape is ok, same trend at high mT in both channels
    MC QCD is ok
 
+
+### yields
+
+data driven qcd
+
+mu data channels
+
+foreach chan (mu_sel wjets_mu)
+make run_histos mc=distrs/v37_test13_bunch1YIELDS_mc_1.root data=distrs/v37_test13_bunch1YIELDS/SingleMuon.root out=histosels/v37_test13_bunch1_yields1/ wjets_norm=1.4 lumi=35800 distr=yield chan=$chan qcd_opt="--qcd 1.05"
+end
+
+el data channels
+
+foreach chan (el_sel wjets_el)
+make run_histos mc=distrs/v37_test13_bunch1YIELDS_mc_1.root data=distrs/v37_test13_bunch1YIELDS/SingleMuon.root out=histosels/v37_test13_bunch1_yields1/ wjets_norm=1.4 lumi=35800 distr=yield chan=$chan qcd_opt="--qcd 1.05"
+end
+
+-- add the remaining channels and MC QCD
 
 
 
