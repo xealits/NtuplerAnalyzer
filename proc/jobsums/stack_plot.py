@@ -451,11 +451,29 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=a
                    pu_factor = 1. / 0.994846
                    # extra norm correction in v37 test13 due to new PU calculation (which does not change NOMINAL norm)
                    pu_factor *= 0.95
+                   # damn! still deviation from old normalizations -- need to return to the old PU, calculated at ntupling
+                   if channel == 'el_sel_lj':
+                       pu_factor *= 0.972207
+                   elif channel == 'el_sel_ljout':
+                       pu_factor *= 0.985877
+                   elif channel == 'mu_sel_lj':
+                       pu_factor *= 0.987258
+                   elif channel == 'mu_sel_ljout':
+                       pu_factor *= 0.994168
                elif 'PUDown' in fixed_sys_name:
                    #pu_factor = 1. / (1.05718 if '_el_' in channel or 'el_sel' in channel else 1.03657) # 1.17 # 1./ 1.485
                    pu_factor = 1. / 1.03657
                    # extra norm correction in v37 test13
                    pu_factor *= 1.05
+                   #
+                   if channel == 'el_sel_lj':
+                       pu_factor *= 1.00701
+                   elif channel == 'el_sel_ljout':
+                       pu_factor *= 1.00723
+                   elif channel == 'mu_sel_lj':
+                       pu_factor *= 1.01054
+                   elif channel == 'mu_sel_ljout':
+                       pu_factor *= 1.01047
                else:
                    #pu_factor = 1. / (1.03106 if '_el_' in channel or 'el_sel' in channel else 1.01388)  # 1.06 # 1./ 1.02135 an 1/1.014 with weight counter..
                    pu_factor = 1. / 1.01388
