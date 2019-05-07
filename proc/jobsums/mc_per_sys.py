@@ -32,6 +32,7 @@ parser.add_argument("--outname", type=str, help="set the output filename")
 
 parser.add_argument("--ratio-range", type=float, default=0.3, help="range of ratio plot (1-range 1+range)")
 parser.add_argument("--y-max",       type=float,              help="set the maximum on Y axis")
+parser.add_argument("--y-range",     help="set the range on Y axis")
 
 
 args = parser.parse_args()
@@ -161,6 +162,13 @@ if args.y_max:
         nom_MC.SetMaximum(args.y_max)
     else:
         data.SetMaximum(args.y_max)
+
+if args.y_range:
+    y_min, y_max = (float(x) for x in args.y_range.split(','))
+    if args.no_data:
+        nom_MC.GetYaxis().SetRangeUser(y_min, y_max)
+    else:
+        data.GetYaxis().SetRangeUser(y_min, y_max)
 
 if args.title:
     if not args.no_data:

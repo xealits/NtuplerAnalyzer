@@ -321,8 +321,10 @@ systs2_weights_nominal = {
 }
 
 systs2_weights_common = {
-'PUUp'   : lambda ev: ev.event_weight*ev.event_weight_PUUp    / ev.event_weight_PU  if ev.event_weight_PU  > 0. else 0.,
-'PUDown' : lambda ev: ev.event_weight*ev.event_weight_PUDown  / ev.event_weight_PU  if ev.event_weight_PU  > 0. else 0.,
+#'PUUp'   : lambda ev: ev.event_weight*ev.event_weight_PUUp    / ev.event_weight_PU  if ev.event_weight_PU  > 0. else 0.,
+#'PUDown' : lambda ev: ev.event_weight*ev.event_weight_PUDown  / ev.event_weight_PU  if ev.event_weight_PU  > 0. else 0.,
+'PUUp'   : lambda ev: ev.event_weight*ev.event_weight_PUUp    ,
+'PUDown' : lambda ev: ev.event_weight*ev.event_weight_PUDown  ,
 'bSFUp'  : lambda ev: ev.event_weight*ev.event_weight_bSFUp   / ev.event_weight_bSF if ev.event_weight_bSF > 0. else 0.,
 'bSFDown': lambda ev: ev.event_weight*ev.event_weight_bSFDown / ev.event_weight_bSF if ev.event_weight_bSF > 0. else 0.,
 

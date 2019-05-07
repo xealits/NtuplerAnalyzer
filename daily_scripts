@@ -120,6 +120,7 @@ make run_std_histos out=histosels/v37_test13_bunch1_fullfit1/ wjets_norm=1.4 lum
 hadd histosels/v37_test13_bunch1_fullfit1.root histosels/v37_test13_bunch1_fullfit1/*root
 hadd histosels/v37_test13_bunch1_fullfit1_pufixed.root  histosels/v37_test13_bunch1_fullfit1/*root
 hadd histosels/v37_test13_bunch1_fullfit1_pufixed2.root histosels/v37_test13_bunch1_fullfit1/*root
+hadd histosels/v37_test13_bunch1_fullfit1_pufixed3.root histosels/v37_test13_bunch1_fullfit1/*root
 
 isn't this PUUp too large?
 
@@ -236,6 +237,572 @@ semi-leptonic b-hadron BRs  &  0.0 \\
             MC statistics  &  2.9 \\
 
 -- at least MC stats are not too bad
+
+probably qcd just follows the other two
+
+plot the variations
+
+and NLL
+
+make nll  workspace=ttxsec/datacard_v37_test13_1_el_qcdnaming_normalizedPU.root nn=el_v37_test13_1_qcdnaming
+
+-- smooth
+
+covariances?
+
+
+
+
+### the problematic variations: el trigger and JES
+
+muons just in case:
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c mu_sel_lj    -x mu_selVloose_lj     --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c mu_sel_ljout -x mu_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+
+electrons:
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --sys LEPelTRGUp
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --sys LEPelTRGUp
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --sys LEPelTRGDown
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --sys LEPelTRGDown
+
+-- trg down does not change anything, trg up does add more MC
+   but the variation is not that large
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --sys JESUp
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --sys JESUp
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --sys JESDown
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --sys JESDown
+
+-- same, down does not change anything, up adds more MC
+   the variation is not that large either
+
+???
+But it does explain the asymmetry in the fit.
+
+So, the question is why Down variation does not show up in the plots?
+Or is the Up variation too large and Down is just too small?
+
+
+effect of trg and jes
+
+LEPelTRG
+
+'LEPelTRGUp'  : lambda ev: ev.event_weight*ev.event_weight_LEPelTRGUp  ,
+'LEPelTRGDown': lambda ev: ev.event_weight*ev.event_weight_LEPelTRGDown,
+
+JES:
+
+'JESUp'  :  lambda ev: ev.selection_stage_JESUp  ,
+'JESUp'  :  lambda ev: ev.event_weight,
+'JESUp'    : lambda ev: ev.event_met_lep_mt_JESUp,
+
+
+the calculation of el trg down looks ok
+
+python sumup_ttree_draw.py "event_weight_LEPelTRGDown * event_weight_LEP_PU" --ttree ttree_out --cond-com "event_weight_LEP_PU > 0. && (selection_stage == 19 || selection_stage == 17 || selection_stage == 15)" --histo-range 100,0.,2. --output v37_test13_elTRGissue_el_selVloose_event_weight_LEPelTRGDown_per_event_weight_LEP_PU_tt.root --histo-name tt_el_selVloose_event_weight_LEPelTRGDown_per_event_weight_LEP_PU lstore_outdirs/v37/test13/MC2016_Summer16_TT*/*root   &
+python sumup_ttree_draw.py "event_weight_LEPelTRGUp * event_weight_LEP_PU"   --ttree ttree_out --cond-com "event_weight_LEP_PU > 0. && (selection_stage == 19 || selection_stage == 17 || selection_stage == 15)" --histo-range 100,0.,2. --output v37_test13_elTRGissue_el_selVloose_event_weight_LEPelTRGUp_per_event_weight_LEP_PU_tt.root   --histo-name tt_el_selVloose_event_weight_LEPelTRGUp_per_event_weight_LEP_PU   lstore_outdirs/v37/test13/MC2016_Summer16_TT*/*root   &
+python sumup_ttree_draw.py "event_weight_LEP_PU"                           --ttree ttree_out --cond-com "event_weight_LEP_PU > 0. && (selection_stage == 19 || selection_stage == 17 || selection_stage == 15)" --histo-range 100,0.,2. --output v37_test13_elTRGissue_el_selVloose_event_weight_LEP_PU_tt.root                                 --histo-name tt_el_selVloose_event_weight_LEP_PU                               lstore_outdirs/v37/test13/MC2016_Summer16_TT*/*root   &
+
+hadd v37_test13_elTRGissue.root v37_test13_elTRGissue_el_selVloose_event_weight_LEPelTRGDown_per_event_weight_LEP_PU_tt.root v37_test13_elTRGissue_el_selVloose_event_weight_LEPelTRGUp_per_event_weight_LEP_PU_tt.root v37_test13_elTRGissue_el_selVloose_event_weight_LEP_PU_tt.root
+
+root -l v37_test13_elTRGissue.root
+
+tt_el_selVloose_event_weight_LEP_PU->SetLineColor(kRed)
+tt_el_selVloose_event_weight_LEPelTRGUp_per_event_weight_LEP_PU->SetLineColor(kGreen)
+
+tt_el_selVloose_event_weight_LEP_PU->Draw("hist")
+tt_el_selVloose_event_weight_LEPelTRGUp_per_event_weight_LEP_PU->Draw("same hist")
+tt_el_selVloose_event_weight_LEPelTRGDown_per_event_weight_LEP_PU->Draw("same hist")
+
+tt_el_selVloose_event_weight_LEP_PU->GetMean()
+tt_el_selVloose_event_weight_LEPelTRGUp_per_event_weight_LEP_PU->GetMean()
+tt_el_selVloose_event_weight_LEPelTRGDown_per_event_weight_LEP_PU->GetMean()
+
+0.953670
+0.977181
+0.930158
+
+-- they look reasonable
+   and the Integral variation is 2.5%
+
+does QCD absorb all this Down variation?
+
+
+
+
+confirm the MC changes acordingly in signal tt:
+
+el_sel_lj->Get("tt_eltau/NOMINAL/el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c")->Print()
+el_sel_lj->Get("tt_eltau/LEPelTRGUp/el_sel_lj_tt_eltau_LEPelTRGUp_Mt_lep_met_c")->Print()
+el_sel_lj->Get("tt_eltau/LEPelTRGDown/el_sel_lj_tt_eltau_LEPelTRGDown_Mt_lep_met_c")->Print()
+
+TH1.Print Name  = el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c, Entries= 13124, Total sum= 3343.41
+TH1.Print Name  = el_sel_lj_tt_eltau_LEPelTRGUp_Mt_lep_met_c, Entries= 13124, Total sum= 3425.99
+TH1.Print Name  = el_sel_lj_tt_eltau_LEPelTRGDown_Mt_lep_met_c, Entries= 13124, Total sum= 3260.84
+
+3425.99 / 3343.41
+3260.84 / 3343.41
+
+1.0246993339135793
+0.9753036570447537
+
+-- perfect
+
+
+
+
+
+impacts with no JES and el TRG for QCD
+
+-- rehistosel with only NOMINAL QCD
+no need for all this!
+"""
+make run_std_histos out=histosels/v37_test13_bunch1_fullfit1/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root data_mu=distrs/v37_test13_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test13_bunchFULLFIT1/SingleElectron.root
+cp ttxsec/datacard_v37_test13_1_el_qcdnaming_normalizedPU.txt ttxsec/datacard_v37_test13_1_el_normalizedPU_nomQCD.txt
+make workspace datacard=ttxsec/datacard_v37_test13_1_el_normalizedPU_nomQCD
+make impacts  workspace=ttxsec/datacard_v37_test13_1_el_normalizedPU_nomQCD.root nn=el_v37_test13_1_qcdnaming_NOMQCD
+"""
+
+just block the systematics for QCD process
+
+make workspace datacard=ttxsec/datacard_v37_test13_1_el_qcdnaming_normalizedPU_qcdNOM
+make impacts  workspace=ttxsec/datacard_v37_test13_1_el_qcdnaming_normalizedPU_qcdNOM.root nn=el_v37_test13_1_qcdnaming_qcdNOM
+
+   r :    +0.914   -0.079/+0.086 (68%)
+
+-- uncertainties are much smaller, but so is the signal..?
+
+-- looks ok, but
+   PU is second largest systematic
+   tau fakes are way below and asymmetric
+
+check PU variation
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --sys PUUp
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --sys PUUp
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --sys PUDown
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05 --sys PUDown
+
+eog plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/distrs,v37_test13_bunchFULLFIT1_mc_1_wNjets_distrs,v37_test13_bunchFULLFIT1,SingleElectron_Mt_lep_met_c_el_sel_lj_NOMINAL_stack_ratio_x_el_selVloose_lj_dataqcd.png plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/distrs,v37_test13_bunchFULLFIT1_mc_1_wNjets_distrs,v37_test13_bunchFULLFIT1,SingleElectron_Mt_lep_met_c_el_sel_ljout_NOMINAL_stack_ratio_x_el_selVloose_ljout_dataqcd.png &
+eog plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/*PU* &
+
+-- PU down no effect, PU up significant effect due to data-driven qcd...
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001  --ratio-range 0.2
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001  --ratio-range 0.2
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUUp  --ratio-range 0.2
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUUp  --ratio-range 0.2
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUDown  --ratio-range 0.2
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -p -r -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUDown  --ratio-range 0.2
+
+eog plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/distrs,v37_test13_bunchFULLFIT1_mc_1_wNjets_distrs,v37_test13_bunchFULLFIT1,SingleElectron_Mt_lep_met_c_el_sel_lj_NOMINAL_stack_ratio_x_el_selVloose_lj.png plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/distrs,v37_test13_bunchFULLFIT1_mc_1_wNjets_distrs,v37_test13_bunchFULLFIT1,SingleElectron_Mt_lep_met_c_el_sel_ljout_NOMINAL_stack_ratio_x_el_selVloose_ljout.png &
+eog plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/*PU*lj.png plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/*PU*ljout.png
+
+-- anyway PUUp has larger effect, especially in signal, at large mT
+   and on its' own it does not improve the shape
+
+normalizations:
+
+el_sel_lj_NOMINAL
+INFO:root:data       =     6690.000000      245.655645
+INFO:root:mc sum     =     6843.599315     6843.599315
+
+el_sel_lj_PUUp
+INFO:root:data       =     6690.000000      245.655645
+INFO:root:mc sum     =     6983.795919     6983.795919
+
+el_sel_lj_PUDown
+INFO:root:data       =     6690.000000      245.655645
+INFO:root:mc sum     =     6709.152111     6709.152111
+
+
+el_sel_ljout_NOMINAL
+INFO:root:data       =     8414.000000      281.672210
+INFO:root:mc sum     =     8247.864327     8247.864327
+
+el_sel_ljout_PUUp
+INFO:root:data       =     8414.000000      281.672210
+INFO:root:mc sum     =     8434.038310     8434.038310
+
+el_sel_ljout_PUDown
+INFO:root:data       =     8414.000000      281.672210
+INFO:root:mc sum     =     8097.136922     8097.136922
+
+-- kind of consistent
+
+compare shapes
+
+python mc_per_sys.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root --no-data -p tt_eltau -c el_sel_lj    -d Mt_lep_met_c -s PUUp,PUDown --y-range 0.,0.03
+python mc_per_sys.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root --no-data -p tt_eltau -c el_sel_ljout -d Mt_lep_met_c -s PUUp,PUDown --y-range 0.,0.03
+
+-- looks ok
+
+python mc_per_sys.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root --no-data -p tt_lj -c el_sel_lj    -d Mt_lep_met_c -s PUUp,PUDown --y-range 0.,0.03
+python mc_per_sys.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root --no-data -p tt_lj -c el_sel_ljout -d Mt_lep_met_c -s PUUp,PUDown --y-range 0.,0.03
+
+-- also ok
+
+el_sel_lj->Get("sums_NOMINAL")
+
+compare sums:
+
+python mc_per_sys.py histosels/v37_test13_bunch1_fullfit1_pufixed2_nominalqcd.root --no-data -c el_sel_lj    -d Mt_lep_met_c -s PUUp,PUDown --y-range 0.,1600.
+python mc_per_sys.py histosels/v37_test13_bunch1_fullfit1_pufixed2_nominalqcd.root --no-data -c el_sel_ljout -d Mt_lep_met_c -s PUUp,PUDown --y-range 0.,1600.
+
+-- nom qcd VS no qcd in pu vars?
+
+mkdir plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUUp
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUUp
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUDown
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/ -c el_sel_ljout -x el_selVloose_ljout --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUDown
+
+hadd plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/pu_vars_with_no_qcd.root  plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/*root
+
+python mc_per_sys.py plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/pu_vars_with_no_qcd.root --no-data -c el_sel_lj    -d Mt_lep_met_c -s PUUp,PUDown
+python mc_per_sys.py plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/pu_vars_with_no_qcd.root --no-data -c el_sel_ljout -d Mt_lep_met_c -s PUUp,PUDown
+
+-- in one bin both variations go in the same dirrection from nominal, but otherwise ok
+   how come the visible difference then? the plots have 10% difference in bins 100-150 of lj
+   the Vloose shape?
+
+eog plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/distrs,v37_test13_bunchFULLFIT1_mc_1_wNjets_distrs,v37_test13_bunchFULLFIT1,SingleElectron_Mt_lep_met_c_el_sel_lj_NOMINAL_stack_ratio_x_el_selVloose_lj.png &
+eog plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/*PU*lj.png
+
+root -l plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/pu_vars_with_no_qcd.root
+
+el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL")->Print()
+el_sel_ljout->Get("sums_PUUp/mc_sum1_PUUp")->Print()
+el_sel_ljout->Get("sums_PUDown/mc_sum1_PUDown")->Print()
+
+TH1.Print Name  = mc_sum1_NOMINAL, Entries= 52537, Total sum= 8247.86
+TH1.Print Name  = mc_sum1_PUUp, Entries= 52537, Total sum= 8434.04
+TH1.Print Name  = mc_sum1_PUDown, Entries= 52537, Total sum= 8097.14
+
+-- all ok
+
+((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL")) ->GetBinContent(((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL")) ->FindBin(120))
+((TH1D*) el_sel_ljout->Get("sums_PUUp/mc_sum1_PUUp")      ) ->GetBinContent(((TH1D*) el_sel_ljout->Get("sums_PUUp/mc_sum1_PUUp")      ) ->FindBin(120))
+((TH1D*) el_sel_ljout->Get("sums_PUDown/mc_sum1_PUDown")  ) ->GetBinContent(((TH1D*) el_sel_ljout->Get("sums_PUDown/mc_sum1_PUDown")  ) ->FindBin(120))
+
+(Double_t) 1269.99
+(Double_t) 1325.57
+(Double_t) 1242.32
+
+-- indeed a shape difference
+
+1325.57 / 1269.99
+1.0437641241269615
+
+((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL")) ->GetBinContent(((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL")) ->FindBin(140))
+((TH1D*) el_sel_ljout->Get("sums_PUUp/mc_sum1_PUUp")      ) ->GetBinContent(((TH1D*) el_sel_ljout->Get("sums_PUUp/mc_sum1_PUUp")      ) ->FindBin(140))
+((TH1D*) el_sel_ljout->Get("sums_PUDown/mc_sum1_PUDown")  ) ->GetBinContent(((TH1D*) el_sel_ljout->Get("sums_PUDown/mc_sum1_PUDown")  ) ->FindBin(140))
+
+(Double_t) 686.530
+(Double_t) 719.250
+(Double_t) 673.606
+
+719.250 / 686.530
+1.0476599711593084
+
+-- but it is not 10%
+
+need to compare to old PU vars
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root --no-data -c el_sel_lj    -d Mt_lep_met_c -s PUUp,PUDown --y-range 0.,1600.
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root --no-data -c el_sel_ljout -d Mt_lep_met_c -s PUUp,PUDown --y-range 0.,1600.
+
+eog .//MC-systs_histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root_el_sel_lj_None_Mt_lep_met_c_PUUp,PUDown.png .//MC-systs_histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root_el_sel_ljout_None_Mt_lep_met_c_PUUp,PUDown.png
+
+-- much smaller variation overall
+   not sure which qcd is here
+
+check yields:
+
+root -l histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root
+
+el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL")->Print()
+el_sel_ljout->Get("sums_PUUp/mc_sum1_PUUp")->Print()
+el_sel_ljout->Get("sums_PUDown/mc_sum1_PUDown")->Print()
+
+el_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL")->Print()
+el_sel_lj->Get("sums_PUUp/mc_sum1_PUUp")->Print()
+el_sel_lj->Get("sums_PUDown/mc_sum1_PUDown")->Print()
+
+TH1.Print Name  = mc_sum1_NOMINAL, Entries= 55613, Total sum= 7980.71
+TH1.Print Name  = mc_sum1_PUUp, Entries= 55588, Total sum= 8074.58
+TH1.Print Name  = mc_sum1_PUDown, Entries= 55643, Total sum= 7871.36
+
+TH1.Print Name  = mc_sum1_NOMINAL, Entries= 47966, Total sum= 6383.36
+TH1.Print Name  = mc_sum1_PUUp, Entries= 47953, Total sum= 6456.15
+TH1.Print Name  = mc_sum1_PUDown, Entries= 47982, Total sum= 6294.47
+
+8074.58 / 7980.71
+7871.36 / 7980.71
+
+6456.15 / 6383.36
+6294.47 / 6383.36
+
+(double) 1.01176
+(double) 0.986298
+
+(double) 1.01140
+(double) 0.986075
+
+less than 2% deviation in norm
+
+without possible contribution of QCD:
+let's compare signal only
+
+root -l histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root
+
+el_sel_ljout->Get("tt_eltau/NOMINAL")->ls()
+
+el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_f")->Print()
+el_sel_ljout->Get("tt_eltau/PUUp/el_sel_ljout_tt_eltau_PUUp_Mt_lep_met_f")->Print()
+el_sel_ljout->Get("tt_eltau/PUDown/el_sel_ljout_tt_eltau_PUDown_Mt_lep_met_f")->Print()
+
+el_sel_lj->Get("tt_eltau/NOMINAL/el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_f")->Print()
+el_sel_lj->Get("tt_eltau/PUUp/el_sel_lj_tt_eltau_PUUp_Mt_lep_met_f")->Print()
+el_sel_lj->Get("tt_eltau/PUDown/el_sel_lj_tt_eltau_PUDown_Mt_lep_met_f")->Print()
+
+TH1.Print Name  = el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_f, Entries= 21282, Total sum= 4691.49
+TH1.Print Name  = el_sel_ljout_tt_eltau_PUUp_Mt_lep_met_f, Entries= 21282, Total sum= 4748.38
+TH1.Print Name  = el_sel_ljout_tt_eltau_PUDown_Mt_lep_met_f, Entries= 21282, Total sum= 4620.67
+
+TH1.Print Name  = el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_f, Entries= 13403, Total sum= 3009.63
+TH1.Print Name  = el_sel_lj_tt_eltau_PUUp_Mt_lep_met_f, Entries= 13403, Total sum= 3054.96
+TH1.Print Name  = el_sel_lj_tt_eltau_PUDown_Mt_lep_met_f, Entries= 13403, Total sum= 2955.45
+
+3054.96 / 3009.63
+2955.45 / 3009.63
+
+4748.38 / 4691.49
+4620.67 / 4691.49
+
+1.0150616520967692
+0.981997787103398
+
+1.0121262115021028
+0.9849045825526646
+
+
+and now:
+
+root -l histosels/v37_test13_bunch1_fullfit1_pufixed2_nominalqcd.root
+
+el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c")->Print()
+el_sel_ljout->Get("tt_eltau/PUUp/el_sel_ljout_tt_eltau_PUUp_Mt_lep_met_c")->Print()
+el_sel_ljout->Get("tt_eltau/PUDown/el_sel_ljout_tt_eltau_PUDown_Mt_lep_met_c")->Print()
+
+el_sel_lj->Get("tt_eltau/NOMINAL/el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c")->Print()
+el_sel_lj->Get("tt_eltau/PUUp/el_sel_lj_tt_eltau_PUUp_Mt_lep_met_c")->Print()
+el_sel_lj->Get("tt_eltau/PUDown/el_sel_lj_tt_eltau_PUDown_Mt_lep_met_c")->Print()
+
+TH1.Print Name  = el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c, Entries= 20649, Total sum= 5135.77
+TH1.Print Name  = el_sel_ljout_tt_eltau_PUUp_Mt_lep_met_c, Entries= 20649, Total sum= 5194.84
+TH1.Print Name  = el_sel_ljout_tt_eltau_PUDown_Mt_lep_met_c, Entries= 20649, Total sum= 5040.33
+
+TH1.Print Name  = el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c, Entries= 13124, Total sum= 3343.41
+TH1.Print Name  = el_sel_lj_tt_eltau_PUUp_Mt_lep_met_c, Entries= 13124, Total sum= 3373.04
+TH1.Print Name  = el_sel_lj_tt_eltau_PUDown_Mt_lep_met_c, Entries= 13124, Total sum= 3275.5
+
+5194.84 / 5135.77
+5040.33 / 5135.77
+
+3373.04 / 3343.41
+3275.5  / 3343.41
+
+1.011501683291892
+0.9814166132829156
+
+1.0088622095405588
+0.9796884019608724
+
+-- so it is normalized after all
+
+and the shapes:
+
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -r --no-data -c el_sel_lj    -p tt_eltau -d Mt_lep_met_f -s PUUp,PUDown --y-range 0.,800.
+python mc_per_sys.py histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root -r --no-data -c el_sel_ljout -p tt_eltau -d Mt_lep_met_f -s PUUp,PUDown --y-range 0.,800.
+
+eog .//MC-systs_histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root_el_sel_lj_tt_eltau_Mt_lep_met_f_PUUp,PUDown.png .//MC-systs_histosels/redo-v25-v26_1_PUnorm/HISTOSELS_v25v25redo_PUnormFix.root_el_sel_ljout_tt_eltau_Mt_lep_met_f_PUUp,PUDown.png
+
+python mc_per_sys.py histosels/v37_test13_bunch1_fullfit1_pufixed2_nominalqcd.root -r --no-data -c el_sel_lj    -p tt_eltau -d Mt_lep_met_c -s PUUp,PUDown --y-range 0.,800.
+python mc_per_sys.py histosels/v37_test13_bunch1_fullfit1_pufixed2_nominalqcd.root -r --no-data -c el_sel_ljout -p tt_eltau -d Mt_lep_met_c -s PUUp,PUDown --y-range 0.,800.
+
+eog .//MC-systs_histosels/v37_test13_bunch1_fullfit1_pufixed2_nominalqcd.root_el_sel_lj_tt_eltau_Mt_lep_met_c_PUUp,PUDown.png .//MC-systs_histosels/v37_test13_bunch1_fullfit1_pufixed2_nominalqcd.root_el_sel_ljout_tt_eltau_Mt_lep_met_c_PUUp,PUDown.png
+
+-- it was within stat uncertainties,
+   now PUUp is weird bin-by-bin, especially at high mT
+
+
+
+
+
+
+
+try the latest histosel? -- if any PU corrections changed?
+
+v37_test13_bunch1_fullfit1_pufixed2_nominalqcd.root
+
+make workspace datacard=ttxsec/datacard_v37_test13_bunch1_fullfit1_pufixed2_nominalqcd
+-- passed ok without changes, PU correction (at least nominal) is the same
+
+make impacts  workspace=ttxsec/datacard_v37_test13_bunch1_fullfit1_pufixed2_nominalqcd.root nn=el_v37_test13_1_qcdnaming_qcdNOM
+
+   r :    +0.920   -0.078/+0.085 (68%)
+
+-- slightly shifted? but still close to before
+   and PU is 3rd after TOPPT
+
+returned PU 1sigma to 1.0 variation
+
+   r :    +0.965   -0.277/+0.087 (68%)
+
+and magic is back
+
+PU is shifted to -0.5sigma (where it should be)
+and varied from -1 to +2
+
+
+
+
+
+if PUUp is corrected to something normal, than it should be ok
+
+
+
+what's with PUUp shape?
+
+python mc_per_sys.py plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/pu_vars_with_no_qcd.root -r --no-data -c el_sel_lj    -d Mt_lep_met_c -s PUUp,PUDown
+python mc_per_sys.py plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/pu_vars_with_no_qcd.root -r --no-data -c el_sel_ljout -d Mt_lep_met_c -s PUUp,PUDown
+
+eog .//MC-systs_plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/pu_vars_with_no_qcd.root_el_sel_lj_None_Mt_lep_met_c_PUUp,PUDown.png .//MC-systs_plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/pu_vars_with_no_qcd.root_el_sel_ljout_None_Mt_lep_met_c_PUUp,PUDown.png
+
+-- this is worse than the process in histosel
+
+python mc_per_sys.py plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/pu_vars_with_no_qcd.root -r --no-data -c el_sel_lj    -p tt_eltau -d Mt_lep_met_c -s PUUp,PUDown
+python mc_per_sys.py plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/pu_vars_with_no_qcd.root -r --no-data -c el_sel_ljout -p tt_eltau -d Mt_lep_met_c -s PUUp,PUDown
+
+eog .//MC-systs_plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/pu_vars_with_no_qcd.root_el_sel_lj_tt_eltau_Mt_lep_met_c_PUUp,PUDown.png .//MC-systs_plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue/pu_vars_with_no_qcd.root_el_sel_ljout_tt_eltau_Mt_lep_met_c_PUUp,PUDown.png
+
+-- same
+
+so, whu PUUp changes the shape so much, even in the signal process?
+
+without the shape corrections:
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/ -c el_sel_lj     --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/ -c el_sel_ljout  --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/ -c el_sel_lj     --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUUp
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/ -c el_sel_ljout  --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUUp
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/ -c el_sel_lj     --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUDown
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/ -c el_sel_ljout  --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUDown
+
+hadd plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/pu_vars_with_no_qcd_no_shape_cor.root plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor//distrs,*.root
+
+python mc_per_sys.py plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/pu_vars_with_no_qcd_no_shape_cor.root -r --no-data -c el_sel_lj    -p tt_eltau -d Mt_lep_met_c -s PUUp,PUDown
+python mc_per_sys.py plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/pu_vars_with_no_qcd_no_shape_cor.root -r --no-data -c el_sel_ljout -p tt_eltau -d Mt_lep_met_c -s PUUp,PUDown
+
+eog .//MC-systs_plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/pu_vars_with_no_qcd_no_shape_cor.root_el_sel_ljout_tt_eltau_Mt_lep_met_c_PUUp,PUDown.png .//MC-systs_plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/pu_vars_with_no_qcd_no_shape_cor.root_el_sel_lj_tt_eltau_Mt_lep_met_c_PUUp,PUDown.png
+
+-- same crap
+
+
+in Vloose
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/ -c el_selVloose_lj     --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/ -c el_selVloose_ljout  --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001
+                                                                                                                                                                                                                   Vloose
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/ -c el_selVloose_lj     --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUUp
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/ -c el_selVloose_ljout  --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUUp
+                                                                                                                                                                                                                   Vloose
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/ -c el_selVloose_lj     --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUDown
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/ -c el_selVloose_ljout  --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 1.4 --qcd-factor 0.0001 --sys PUDown
+
+python mc_per_sys.py plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/pu_vars_with_no_qcd_no_shape_cor.root -r --no-data -c el_selVloose_lj    -p tt_eltau -d Mt_lep_met_c -s PUUp,PUDown
+python mc_per_sys.py plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/pu_vars_with_no_qcd_no_shape_cor.root -r --no-data -c el_selVloose_ljout -p tt_eltau -d Mt_lep_met_c -s PUUp,PUDown
+
+eog .//MC-systs_plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/pu_vars_with_no_qcd_no_shape_cor.root_el_selVloose_lj_tt_eltau_Mt_lep_met_c_PUUp,PUDown.png .//MC-systs_plots/v37_test13_bunchFULLFIT1_mc_1_wNjets/large_pu_impact_issue_noshapecor/pu_vars_with_no_qcd_no_shape_cor.root_el_selVloose_ljout_tt_eltau_Mt_lep_met_c_PUUp,PUDown.png
+
+-- same crap, maybe slightly better then in main sel
+
+distrs of PU Up and Down:
+
+python sumup_ttree_draw.py "event_weight_PUUp   * event_weight_LEP_PU" --ttree ttree_out --cond-com "event_weight_LEP_PU > 0. && (selection_stage == 19 || selection_stage == 17 || selection_stage == 15)" --histo-range 100,0.,2. --output v37_test13_elPUUpissue_el_selVloose_event_weight_PUUp_per_LEP_PU_tt.root     --histo-name tt_el_selVloose_event_weight_PUUp    lstore_outdirs/v37/test13/MC2016_Summer16_TT*/*root   &
+python sumup_ttree_draw.py "event_weight_PUDown * event_weight_LEP_PU" --ttree ttree_out --cond-com "event_weight_LEP_PU > 0. && (selection_stage == 19 || selection_stage == 17 || selection_stage == 15)" --histo-range 100,0.,2. --output v37_test13_elPUUpissue_el_selVloose_event_weight_PUDown_per_LEP_PU_tt.root   --histo-name tt_el_selVloose_event_weight_PUDown  lstore_outdirs/v37/test13/MC2016_Summer16_TT*/*root   &
+python sumup_ttree_draw.py "event_weight_LEP_PU"                       --ttree ttree_out --cond-com "event_weight_LEP_PU > 0. && (selection_stage == 19 || selection_stage == 17 || selection_stage == 15)" --histo-range 100,0.,2. --output v37_test13_elPUUpissue_el_selVloose_event_weight_LEP_PU_tt.root              --histo-name tt_el_selVloose_event_weight_LEP_PU  lstore_outdirs/v37/test13/MC2016_Summer16_TT*/*root   &
+
+hadd v37_test13_elPUUpissue_el_selVloose.root v37_test13_elPUUpissue_el_selVloose_event_weig*root
+
+root -l v37_test13_elPUUpissue_el_selVloose.root
+
+tt_el_selVloose_event_weight_LEP_PU->SetLineColor(kRed)
+tt_el_selVloose_event_weight_PUDown->SetLineColor(kGreen)
+
+tt_el_selVloose_event_weight_LEP_PU->Draw("hist")
+tt_el_selVloose_event_weight_PUDown->Draw("hist same")
+tt_el_selVloose_event_weight_PUUp  ->Draw("hist same")
+
+PU Down looks weird
+PU Up is kind of ok
+
+tt_el_selVloose_event_weight_LEP_PU->GetMean()
+tt_el_selVloose_event_weight_PUDown->GetMean()
+tt_el_selVloose_event_weight_PUUp  ->GetMean()
+
+(Double_t) 0.953670
+(Double_t) 0.960277
+(Double_t) 0.947078
+
+wait!
+in drawing def-s:
+
+'PUUp'   : lambda ev: ev.event_weight*ev.event_weight_PUUp    / ev.event_weight_PU  if ev.event_weight_PU  > 0. else 0.,
+'PUDown' : lambda ev: ev.event_weight*ev.event_weight_PUDown  / ev.event_weight_PU  if ev.event_weight_PU  > 0. else 0.,
+
+when leptons are:
+
+'LEPelIDUp'   : lambda ev: ev.event_weight*ev.event_weight_LEPelIDUp   ,
+'LEPelIDDown' : lambda ev: ev.event_weight*ev.event_weight_LEPelIDDown ,
+
+-- rebunch
+
+
+
+
+
+### debugging the segfault in stack_plot with data-driven qcd
+
+problem:
+python stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/tests/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+
+python -m pdb stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/tests/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+
+-- crashes after The program finished and will be restarted
+
+gdb python
+run stack_plot.py distrs/v37_test13_bunchFULLFIT1_mc_1_wNjets.root distrs/v37_test13_bunchFULLFIT1/SingleElectron.root -o plots/tests/ -c el_sel_lj    -x el_selVloose_lj    --data-nick data_other -d Mt_lep_met_c --lumi 35800 --overwrite --wjets 0.92 --qcd 1.05
+
+-- stops at segfault
+
+info args
+No symbol table info available.
 
 
 
@@ -528,6 +1095,7 @@ end
 
 ### control distrs check if to add any more
 
+add nvtx?
 
 
 
