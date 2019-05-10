@@ -781,8 +781,287 @@ when leptons are:
 'LEPelIDUp'   : lambda ev: ev.event_weight*ev.event_weight_LEPelIDUp   ,
 'LEPelIDDown' : lambda ev: ev.event_weight*ev.event_weight_LEPelIDDown ,
 
--- rebunch
+-- damn!
+   rebunch
 
+check shapes
+
+python mc_per_sys.py distrs/v37_test13_bunchFULLFIT2_mc_1.root -r --no-data -c el_sel_lj    -p tt_eltau -d Mt_lep_met_c -s PUUp,PUDown
+python mc_per_sys.py distrs/v37_test13_bunchFULLFIT2_mc_1.root -r --no-data -c el_sel_ljout -p tt_eltau -d Mt_lep_met_c -s PUUp,PUDown
+
+eog .//MC-systs_distrs/v37_test13_bunchFULLFIT2_mc_1.root_el_sel_lj_tt_eltau_Mt_lep_met_c_PUUp,PUDown.png .//MC-systs_distrs/v37_test13_bunchFULLFIT2_mc_1.root_el_sel_ljout_tt_eltau_Mt_lep_met_c_PUUp,PUDown.png
+
+-- looks perfect (without the norm corrections!)
+
+make histosels with dd qcd
+corrected the list of systematics in the Makefile
+
+make run_std_histos out=histosels/v37_test13_bunchFULLFIT2/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test13_bunchFULLFIT2_mc_1.root data_mu=distrs/v37_test13_bunchFULLFIT2/SingleMuon.root data_el=distrs/v37_test13_bunchFULLFIT2/SingleElectron.root
+
+
+python numbers_for_datacard.py histosels/v37_test13_bunchFULLFIT2.root -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout --no-sums --data-nick data_other
+python numbers_for_datacard.py histosels/v37_test13_bunchFULLFIT2.root -d Mt_lep_met_c -c mu_sel_lj,mu_sel_ljout --no-sums --data-nick data_other
+
+bin           el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                       
+rate          3343.413                 2450.332                 132.013                  191.394                  68.102                   15.663                   169.520                  23.972                   168.524                  0.981                    14.372                   179.046                  29.613                   123.305                  71.244                   
+el_sel_lj/data_other/NOMINAL/el_sel_lj_data_other_NOMINAL_Mt_lep_met_c
+obs 6690.000000
+INFO:root:el_sel_ljout
+bin           el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                       
+rate          5135.765                 1605.061                 84.450                   303.832                  107.849                  35.683                   184.941                  32.157                   299.184                  1.928                    12.859                   221.285                  79.913                   223.832                  378.588                  
+el_sel_ljout/data_other/NOMINAL/el_sel_ljout_data_other_NOMINAL_Mt_lep_met_c
+obs 8414.000000
+
+bin           mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          5024.145                 3672.965                 208.669                  280.097                  86.971                   22.458                   230.131                  34.987                   227.019                  0.000                    16.137                   238.209                  10.536                   192.531                  122.463                  
+mu_sel_lj/data_other/NOMINAL/mu_sel_lj_data_other_NOMINAL_Mt_lep_met_c
+obs 9831.000000
+INFO:root:mu_sel_ljout
+bin           mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          7677.854                 2442.821                 138.546                  449.153                  168.899                  55.389                   285.522                  51.646                   434.515                  0.000                    28.822                   355.412                  21.460                   388.489                  226.937                  
+mu_sel_ljout/data_other/NOMINAL/mu_sel_ljout_data_other_NOMINAL_Mt_lep_met_c
+obs 12855.000000
+
+cp ttxsec/datacard_v37_test13_bunch1_fullfit1_pufixed2_nominalqcd.txt ttxsec/datacard_v37_test13_bunchFULLFIT2_el.txt
+make workspace datacard=ttxsec/datacard_v37_test13_bunchFULLFIT2_el
+make impacts  workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_el.root nn=el_v37_test13_2
+
+   r :    +0.941   -0.079/+0.086 (68%)
+
+-- perfect, PU third after TOPPT and tau ID
+
+make workspace datacard=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu
+make impacts  workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu.root nn=mu_v37_test13_2
+
+   r :    +0.938   -0.068/+0.076 (68%)
+
+-- ok too, PU is second, ust above TOPPT
+
+python new_impact_table.py --merge-pdf ./latest_impacts_el_v37_test13_2.json ./latest_impacts_mu_v37_test13_2.json
+
+make both elcard=ttxsec/datacard_v37_test13_bunchFULLFIT2_el mucard=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu bothcard=ttxsec/datacard_v37_test13_bunchFULLFIT2_both
+
+make workspace datacard=ttxsec/datacard_v37_test13_bunchFULLFIT2_both
+make impacts  workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_both.root nn=both_v37_test13_2
+
+   r :    +0.950   -0.070/+0.072 (68%)
+
+-- higher than both of them..
+   yep, looks ok,
+   but PU is the scond largest systematic, and it is pulled slightly up
+   fakes third and TOPPT after that
+   but PU is pulled down in separate channels, as it should be (and from the sys variation plots -- it should improve the shape well)
+
+how come PU is so large?
+
+python new_impact_table.py --merge-pdf ./latest_impacts_el_v37_test13_2.json ./latest_impacts_mu_v37_test13_2.json ./latest_impacts_both_v37_test13_2.json
+
+
+and try the full fit:
+
+make full_three_card_fit mucard=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu elcard=ttxsec/datacard_v37_test13_bunchFULLFIT2_el bothcard=ttxsec/datacard_v37_test13_bunchFULLFIT2_both muname=mu_v37_test13_2 elname=el_v37_test13_2 bothname=both_v37_test13_2
+
+
+missing shorter pulls:
+
+make pre_pulls_short workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu.root   nn=mu_v37_test13_2
+make pre_pulls_short workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_el.root   nn=el_v37_test13_2
+make pre_pulls_short workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_both.root nn=both_v37_test13_2
+
+head -n-2 ttxsec/datacard_v37_test13_bunchFULLFIT2_el.txt >  ttxsec/datacard_v37_test13_bunchFULLFIT2_el_noMCstat.txt
+head -n-2 ttxsec/datacard_v37_test13_bunchFULLFIT2_mu.txt >  ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat.txt
+make both mucard=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat elcard=ttxsec/datacard_v37_test13_bunchFULLFIT2_el_noMCstat bothcard=ttxsec/datacard_v37_test13_bunchFULLFIT2_both_noMCstat
+make workspace datacard=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat
+make workspace datacard=ttxsec/datacard_v37_test13_bunchFULLFIT2_el_noMCstat
+make workspace datacard=ttxsec/datacard_v37_test13_bunchFULLFIT2_both_noMCstat
+
+make pre_pulls_short workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat.root   nn=mu_v37_test13_bunchFULLFIT2_noMCstat
+make pre_pulls_short workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_el_noMCstat.root   nn=el_v37_test13_bunchFULLFIT2_noMCstat
+make pre_pulls_short workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_both_noMCstat.root nn=both_v37_test13_bunchFULLFIT2_noMCstat
+
+need to automate label size here:
+
+root -l pulls_of_nuisances_mu_shape.root
+gStyle->SetOptStat(0)
+nuisancs->Draw()
+
+TPaveText *pt = new TPaveText(.5, 1.5, 3.5, 2.5)
+pt->AddText("muon-tau channel")
+pt->Draw("same")
+
+nuisancs->SaveAs("postfit_mu_nuisances.png")
+
+root -l pulls_of_nuisances_both_shape.root
+gStyle->SetOptStat(0)
+nuisancs->Draw()
+
+TPaveText *pt = new TPaveText(.5, 1.5, 3.5, 2.5)
+pt->AddText("both channels")
+pt->Draw("same")
+
+nuisancs->SaveAs("postfit_both_nuisances.png")
+
+python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsElShape.root -g pulls_of_nuisances_el_shape.root -o
+root -l pulls_of_nuisances_el_shape.root
+
+TPaveText *pt = new TPaveText(.5, 1.5, 3.5, 2.5)
+pt->AddText("electron-tau channel")
+pt->Draw("same")
+
+nuisancs->SaveAs("postfit_el_nuisances.png")
+
+-- into this:
+
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_both_v37_test13_bunchFULLFIT2_noMCstat_shapeshort.root
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_mu_v37_test13_bunchFULLFIT2_noMCstat_shapeshort.root
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_el_v37_test13_bunchFULLFIT2_noMCstat_shapeshort.root
+
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_both_v37_test13_bunchFULLFIT2_shape.root --label-width 22.5
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_mu_v37_test13_bunchFULLFIT2_shape.root   --label-width 22.5
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_el_v37_test13_bunchFULLFIT2_shape.root   --label-width 22.5
+
+python ttxsec/fit-stuff/stack_postfit.py fitDiagnosticsv37_test13_bunchFULLFIT2_MuShapes.root mu_sel_lj    --mu --ratio --ratio-range 0.5 --custom-bins --y-max 150
+python ttxsec/fit-stuff/stack_postfit.py fitDiagnosticsv37_test13_bunchFULLFIT2_MuShapes.root mu_sel_ljout --mu --ratio --ratio-range 0.5 --custom-bins --y-max 150
+python ttxsec/fit-stuff/stack_postfit.py fitDiagnosticsv37_test13_bunchFULLFIT2_ElShapes.root el_sel_lj    --lumi 35.8 --ratio --custom-bins --ratio-range 0.5 --y-max 100
+python ttxsec/fit-stuff/stack_postfit.py fitDiagnosticsv37_test13_bunchFULLFIT2_ElShapes.root el_sel_ljout --lumi 35.8 --ratio --custom-bins --ratio-range 0.5 --y-max 100
+
+
+also:
+covariances and
+goodness of fit
+
+
+#### extracting and renaming all fitting plots
+
+make impacts_toys workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu.root   nn=mu_v37_test13_2
+make impacts_toys workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_el.root   nn=el_v37_test13_2
+make impacts_toys workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_both.root nn=both_v37_test13_2
+
+make fit_unc_toys workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_el.root   nn=el_v37_test13_2
+
+make plots_for_export
+
+
+
+### sys variations
+
+make plot_sys_vars histosel_file=histosels/v37_test13_bunchFULLFIT2.root outdir=plots/v37_test13_update1/sys-variations/
+
+also:
+
+make plot_sys_vars_tau_ID_misID mc=distrs/v37_test13_bunchFULLFIT2_mc.root data_mu=distrs/v37_test13_bunchFULLFIT2/SingleMuon.root data_el=distrs/v37_test13_bunchFULLFIT2/SingleElectron.root output=plots/v37_test13_update1/sys-variations/
+
+
+
+### corrections to JES in PS datasets
+
+
+gStyle->SetOptStat(0)
+
+fsrup     = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_fsrup_jes_cor_1d_gen_reco_barrel_b
+fsrdown   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_fsrdown_jes_cor_1d_gen_reco_barrel_b
+isrup     = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_isrup_jes_cor_1d_gen_reco_barrel_b
+isrdown   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_isrdown_jes_cor_1d_gen_reco_barrel_b
+hdampup   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_hdampUP_jes_cor_1d_gen_reco_barrel_b
+hdampdown = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_hdampDOWN_jes_cor_1d_gen_reco_barrel_b
+
+fsrup     = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_fsrup_jes_cor_1d_gen_reco_endcap_b
+fsrdown   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_fsrdown_jes_cor_1d_gen_reco_endcap_b
+isrup     = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_isrup_jes_cor_1d_gen_reco_endcap_b
+isrdown   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_isrdown_jes_cor_1d_gen_reco_endcap_b
+hdampup   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_hdampUP_jes_cor_1d_gen_reco_endcap_b
+hdampdown = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_hdampDOWN_jes_cor_1d_gen_reco_endcap_b
+
+fsrup     = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_fsrup_jes_cor_1d_gen_reco_barrel_c
+fsrdown   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_fsrdown_jes_cor_1d_gen_reco_barrel_c
+isrup     = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_isrup_jes_cor_1d_gen_reco_barrel_c
+isrdown   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_isrdown_jes_cor_1d_gen_reco_barrel_c
+hdampup   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_hdampUP_jes_cor_1d_gen_reco_barrel_c
+hdampdown = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_hdampDOWN_jes_cor_1d_gen_reco_barrel_c
+
+fsrup     = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_fsrup_jes_cor_1d_gen_reco_endcap_c
+fsrdown   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_fsrdown_jes_cor_1d_gen_reco_endcap_c
+isrup     = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_isrup_jes_cor_1d_gen_reco_endcap_c
+isrdown   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_isrdown_jes_cor_1d_gen_reco_endcap_c
+hdampup   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_hdampUP_jes_cor_1d_gen_reco_endcap_c
+hdampdown = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_hdampDOWN_jes_cor_1d_gen_reco_endcap_c
+
+fsrup     = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_fsrup_jes_cor_1d_gen_reco_barrel_udsg
+fsrdown   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_fsrdown_jes_cor_1d_gen_reco_barrel_udsg
+isrup     = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_isrup_jes_cor_1d_gen_reco_barrel_udsg
+isrdown   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_isrdown_jes_cor_1d_gen_reco_barrel_udsg
+hdampup   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_hdampUP_jes_cor_1d_gen_reco_barrel_udsg
+hdampdown = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_hdampDOWN_jes_cor_1d_gen_reco_barrel_udsg
+
+fsrup     = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_fsrup_jes_cor_1d_gen_reco_endcap_udsg
+fsrdown   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_fsrdown_jes_cor_1d_gen_reco_endcap_udsg
+isrup     = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_isrup_jes_cor_1d_gen_reco_endcap_udsg
+isrdown   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_isrdown_jes_cor_1d_gen_reco_endcap_udsg
+hdampup   = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_hdampUP_jes_cor_1d_gen_reco_endcap_udsg
+hdampdown = (TH1D*) correction_MC2016_Summer16_TTJets_powheg_hdampDOWN_jes_cor_1d_gen_reco_endcap_udsg
+
+
+fsrup     ->SetLineColor(kRed)
+fsrdown   ->SetLineColor(kRed+1)
+isrup     ->SetLineColor(kBlue)
+isrdown   ->SetLineColor(kBlue+1)
+hdampup   ->SetLineColor(kGreen)
+hdampdown ->SetLineColor(kGreen+1)
+
+fsrup->GetYaxis()->SetTitleFont(63)
+fsrup->GetYaxis()->SetTitleSize(20)
+fsrup->GetXaxis()->SetTitleFont(63)
+fsrup->GetXaxis()->SetTitleSize(20)
+fsrup->GetYaxis()->SetLabelSize(0.02)
+fsrup->GetXaxis()->SetLabelSize(0.02)
+
+
+gPad->SetLeftMargin(0.15);
+gPad->SetBottomMargin(0.15);
+fsrup     ->GetYaxis()->SetRangeUser(0.97, 1.03)
+fsrup     ->GetYaxis()->SetTitleOffset(3.0)
+fsrup     ->GetXaxis()->SetTitleOffset(2.0)
+fsrup     ->SetXTitle("p^{gen}_{T} [GeV]")
+fsrup     ->SetYTitle("#frac{<p^{reco NOMINAL}_{T}>/<p^{gen NOMINAL}_{T}>}{<p^{reco PS systematic}_{T}>/<p^{gen PS systematic}_{T}>}")
+
+leg = new TLegend(0.6,0.7, 0.9,0.9)
+leg->AddEntry(fsrup,   "FSR Up",   "l")
+leg->AddEntry(fsrdown, "FSR Down", "l")
+leg->AddEntry(isrup,   "ISR Up",   "l")
+leg->AddEntry(isrdown, "ISR Down", "l")
+leg->AddEntry(hdampup,   "HDAMP Up",   "l")
+leg->AddEntry(hdampdown, "HDAMP Down", "l")
+
+fsrup     ->Draw("hist")
+fsrdown   ->Draw("hist same")
+isrup     ->Draw("hist same")
+isrdown   ->Draw("hist same")
+hdampup   ->Draw("hist same")
+hdampdown ->Draw("hist same")
+
+leg->Draw("same")
+
+c1->SaveAs("JES_corrections_barrel_b.png")
+c1->SaveAs("JES_corrections_endcap_b.png")
+
+c1->SaveAs("JES_corrections_barrel_c.png")
+c1->SaveAs("JES_corrections_endcap_c.png")
+
+c1->SaveAs("JES_corrections_barrel_udsg.png")
+c1->SaveAs("JES_corrections_endcap_udsg.png")
+
+no Tune:
+
+correction_MC2016_Summer16_TTJets_powheg_isrup_jes_cor_1d_gen_reco_barrel_b
+correction_MC2016_Summer16_TTJets_powheg_isrdown_jes_cor_1d_gen_reco_barrel_b
 
 
 
@@ -1086,6 +1365,158 @@ end
 
 
 
+python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-v26_cats_hadds/SingleMuon.root     -p -r -o plots/v25v26redo_more-info --lumi 35800 -c mu_sel -x mu_selVloose -d Mt_lep_met_f --wjet 0.8 --skip-QCD --ratio-range 0.3 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --y-max 250.
+
+and getting these:
+
+                                 process & mu_preselCand & mu_sel & mu_sel_lj & mu_sel_ljout \\
+$\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$ & $  2623 \pm     68 $ & $   581 \pm     31 $ & $   193 \pm     18 $ & $   388 \pm     26 $ \\
+       $\text{DY}\rightarrow{\rm other}$ & $  8236 \pm    190 $ & $    32 \pm     14 $ & $    11 \pm      9 $ & $    21 \pm     10 $ \\
+                            $\text{QCD}$ & $ 51245 \pm   1019 $ & $   354 \pm     79 $ & $   122 \pm     56 $ & $   231 \pm     57 $ \\
+$\text{single top}\rightarrow{{\rm \ell} \tau}+X$ & $  2001 \pm     19 $ & $   691 \pm     11 $ & $   235 \pm      6 $ & $   456 \pm      9 $ \\
+$\text{single top}\rightarrow{\ell j}+X$ & $ 45690 \pm     90 $ & $   516 \pm      9 $ & $   230 \pm      6 $ & $   286 \pm      7 $ \\
+$\text{single top}\rightarrow{\rm other}$ & $  3968 \pm     26 $ & $    87 \pm      4 $ & $    35 \pm      3 $ & $    52 \pm      3 $ \\
+$\ttbar\rightarrow{\ell\tau}\nu\nu b\bar{b}$ ($\ell=e,\mu$) & $ 45855 \pm    130 $ & $ 13029 \pm     67 $ & $  5137 \pm     43 $ & $  7892 \pm     52 $ \\
+$\ttbar\rightarrow{\ell\nu jj b\bar{b}}$ & $496455 \pm    427 $ & $  6117 \pm     47 $ & $  3674 \pm     37 $ & $  2443 \pm     30 $ \\
+$\ttbar\rightarrow{\tau_{\ell}\tau_{h} \nu\nu b\bar{b} }$ & $  2628 \pm     31 $ & $   731 \pm     16 $ & $   280 \pm     10 $ & $   451 \pm     12 $ \\
+$\ttbar\rightarrow{\tau_{\ell}\nu jj b\bar{b}}$ & $ 28227 \pm    102 $ & $   347 \pm     11 $ & $   209 \pm      9 $ & $   139 \pm      7 $ \\
+          $\ttbar\rightarrow{\rm other}$ & $ 32780 \pm    110 $ & $   259 \pm     10 $ & $    88 \pm      6 $ & $   171 \pm      8 $ \\
+$\text{W+jets} \rightarrow\tau_{\ell}\nu + {\rm jets}$ & $  4771 \pm     66 $ & $    45 \pm      7 $ & $    16 \pm      4 $ & $    29 \pm      5 $ \\
+$\text{W+jets} \rightarrow\tau_{h}\nu + {\rm jets}$ & $     3 \pm      2 $ & $     0 \pm      0 $ & $     0 \pm      0 $ & $     0 \pm      0 $ \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $ 81338 \pm    318 $ & $   594 \pm     28 $ & $   238 \pm     21 $ & $   355 \pm     18 $ \\
+                       $\text{dibosons}$ & $  3254 \pm     38 $ & $    80 \pm      5 $ & $    23 \pm      2 $ & $    57 \pm      4 $ \\
+aaa!
+                                mc_resum & 809074.892 & 23462.464 & 10490.427 & 12972.037 \\
+                                   total & $809075 \pm   1191 $ & $ 23462 \pm    126 $ & $ 10490 \pm     86 $ & $ 12972 \pm     92 $ \\
+                                    data & $799953 \pm    894 $ & $ 23016 \pm    152 $ & $  9931 \pm    100 $ & $ 13085 \pm    114 $ \\
+INFO:root:import ROOT
+INFO:root:el_preselCand
+INFO:root:no sums_NOMINAL/NOMINAL/el_preselCand_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("el_preselCand") at 0x3baeeb0>
+INFO:root:el_sel
+INFO:root:no sums_NOMINAL/NOMINAL/el_sel_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("el_sel") at 0x3d929c0>
+INFO:root:el_sel_lj
+INFO:root:no sums_NOMINAL/NOMINAL/el_sel_lj_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("el_sel_lj") at 0x3defe30>
+INFO:root:el_sel_ljout
+INFO:root:no sums_NOMINAL/NOMINAL/el_sel_ljout_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("el_sel_ljout") at 0x3e0efd0>
+                                 process & el_preselCand & el_sel & el_sel_lj & el_sel_ljout \\
+$\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$ & $  1834 \pm     58 $ & $   347 \pm     25 $ & $   123 \pm     15 $ & $   224 \pm     19 $ \\
+       $\text{DY}\rightarrow{\rm other}$ & $ 10211 \pm    184 $ & $   111 \pm     14 $ & $    30 \pm      7 $ & $    82 \pm     12 $ \\
+                            $\text{QCD}$ & $ 33277 \pm    853 $ & $   447 \pm     66 $ & $    71 \pm     45 $ & $   376 \pm     49 $ \\
+$\text{single top}\rightarrow{{\rm \ell} \tau}+X$ & $  1437 \pm     16 $ & $   498 \pm      9 $ & $   178 \pm      5 $ & $   320 \pm      7 $ \\
+$\text{single top}\rightarrow{\ell j}+X$ & $ 31525 \pm     76 $ & $   355 \pm      8 $ & $   170 \pm      6 $ & $   185 \pm      5 $ \\
+$\text{single top}\rightarrow{\rm other}$ & $  2784 \pm     22 $ & $    58 \pm      3 $ & $    24 \pm      2 $ & $    34 \pm      2 $ \\
+$\ttbar\rightarrow{\ell\tau}\nu\nu b\bar{b}$ ($\ell=e,\mu$) & $ 31065 \pm    108 $ & $  8759 \pm     56 $ & $  3439 \pm     35 $ & $  5319 \pm     43 $ \\
+$\ttbar\rightarrow{\ell\nu jj b\bar{b}}$ & $339925 \pm    356 $ & $  4059 \pm     39 $ & $  2451 \pm     30 $ & $  1607 \pm     24 $ \\
+$\ttbar\rightarrow{\tau_{\ell}\tau_{h} \nu\nu b\bar{b} }$ & $  1774 \pm     26 $ & $   500 \pm     13 $ & $   192 \pm      8 $ & $   308 \pm     10 $ \\
+$\ttbar\rightarrow{\tau_{\ell}\nu jj b\bar{b}}$ & $ 18893 \pm     84 $ & $   216 \pm      9 $ & $   132 \pm      7 $ & $    84 \pm      6 $ \\
+          $\ttbar\rightarrow{\rm other}$ & $ 22620 \pm     92 $ & $   181 \pm      8 $ & $    69 \pm      5 $ & $   113 \pm      6 $ \\
+$\text{W+jets} \rightarrow\tau_{\ell}\nu + {\rm jets}$ & $  3360 \pm     62 $ & $    27 \pm      6 $ & $    14 \pm      5 $ & $    13 \pm      3 $ \\
+$\text{W+jets} \rightarrow\tau_{h}\nu + {\rm jets}$ & $    41 \pm      6 $ & $     3 \pm      2 $ & $     1 \pm      1 $ & $     2 \pm      1 $ \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $ 55568 \pm    260 $ & $   400 \pm     34 $ & $   179 \pm     31 $ & $   221 \pm     14 $ \\
+                       $\text{dibosons}$ & $  2461 \pm     33 $ & $    53 \pm      4 $ & $    16 \pm      2 $ & $    37 \pm      3 $ \\
+aaa!
+                                mc_resum & 556775.067 & 16015.297 & 7090.165 & 8925.132 \\
+                                   total & $556775 \pm    999 $ & $ 16015 \pm    107 $ & $  7090 \pm     75 $ & $  8925 \pm     77 $ \\
+                                    data & $548107 \pm    740 $ & $ 15420 \pm    124 $ & $  6787 \pm     82 $ & $  8633 \pm     93 $ \\
+INFO:root:import ROOT
+INFO:root:mu_preselCand
+INFO:root:no sums_NOMINAL/NOMINAL/mu_preselCand_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("mu_preselCand") at 0x3d70160>
+INFO:root:mu_sel
+INFO:root:no sums_NOMINAL/NOMINAL/mu_sel_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("mu_sel") at 0x3fc6b60>
+INFO:root:mu_sel_lj
+INFO:root:no sums_NOMINAL/NOMINAL/mu_sel_lj_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("mu_sel_lj") at 0x3fdb970>
+INFO:root:mu_sel_ljout
+INFO:root:no sums_NOMINAL/NOMINAL/mu_sel_ljout_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("mu_sel_ljout") at 0x3fbc160>
+                                 process & mu_preselCand & mu_sel & mu_sel_lj & mu_sel_ljout \\
+                       $\text{dibosons}$ & $  3254 \pm     38 $ & $    80 \pm      5 $ & $    23 \pm      2 $ & $    57 \pm      4 $ \\
+$\ttbar\rightarrow{\ell\nu jj b\bar{b}}$ & $496455 \pm    427 $ & $  6117 \pm     47 $ & $  3674 \pm     37 $ & $  2443 \pm     30 $ \\
+$\ttbar\rightarrow{\ell\tau}\nu\nu b\bar{b}$ ($\ell=e,\mu$) & $ 45855 \pm    130 $ & $ 13029 \pm     67 $ & $  5137 \pm     43 $ & $  7892 \pm     52 $ \\
+                     $\text{single top}$ & $ 51659 \pm     96 $ & $  1294 \pm     15 $ & $   500 \pm      9 $ & $   794 \pm     12 $ \\
+                             $\text{DY}$ & $ 10858 \pm    202 $ & $   613 \pm     34 $ & $   203 \pm     20 $ & $   410 \pm     28 $ \\
+                            $\text{QCD}$ & $ 51245 \pm   1019 $ & $   354 \pm     79 $ & $   122 \pm     56 $ & $   231 \pm     57 $ \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $ 86112 \pm    325 $ & $   639 \pm     28 $ & $   254 \pm     21 $ & $   384 \pm     19 $ \\
+          $\ttbar\rightarrow{\rm other}$ & $ 63636 \pm    153 $ & $  1337 \pm     22 $ & $   577 \pm     14 $ & $   760 \pm     16 $ \\
+aaa!
+                                mc_resum & 809074.892 & 23462.464 & 10490.427 & 12972.037 \\
+                                   total & $809075 \pm   1191 $ & $ 23462 \pm    126 $ & $ 10490 \pm     86 $ & $ 12972 \pm     92 $ \\
+                                    data & $799953 \pm    894 $ & $ 23016 \pm    152 $ & $  9931 \pm    100 $ & $ 13085 \pm    114 $ \\
+INFO:root:import ROOT
+INFO:root:el_preselCand
+INFO:root:no sums_NOMINAL/NOMINAL/el_preselCand_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("el_preselCand") at 0x4677530>
+INFO:root:el_sel
+INFO:root:no sums_NOMINAL/NOMINAL/el_sel_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("el_sel") at 0x4841f00>
+INFO:root:el_sel_lj
+INFO:root:no sums_NOMINAL/NOMINAL/el_sel_lj_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("el_sel_lj") at 0x48adc50>
+INFO:root:el_sel_ljout
+INFO:root:no sums_NOMINAL/NOMINAL/el_sel_ljout_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("el_sel_ljout") at 0x48a3370>
+                                 process & el_preselCand & el_sel & el_sel_lj & el_sel_ljout \\
+                       $\text{dibosons}$ & $  2461 \pm     33 $ & $    53 \pm      4 $ & $    16 \pm      2 $ & $    37 \pm      3 $ \\
+$\ttbar\rightarrow{\ell\nu jj b\bar{b}}$ & $339925 \pm    356 $ & $  4059 \pm     39 $ & $  2451 \pm     30 $ & $  1607 \pm     24 $ \\
+                     $\text{single top}$ & $ 35747 \pm     80 $ & $   910 \pm     12 $ & $   372 \pm      8 $ & $   538 \pm      9 $ \\
+$\ttbar\rightarrow{\ell\tau}\nu\nu b\bar{b}$ ($\ell=e,\mu$) & $ 31065 \pm    108 $ & $  8759 \pm     56 $ & $  3439 \pm     35 $ & $  5319 \pm     43 $ \\
+                             $\text{DY}$ & $ 12045 \pm    193 $ & $   459 \pm     29 $ & $   153 \pm     16 $ & $   306 \pm     23 $ \\
+                            $\text{QCD}$ & $ 33277 \pm    853 $ & $   447 \pm     66 $ & $    71 \pm     45 $ & $   376 \pm     49 $ \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $ 58969 \pm    267 $ & $   430 \pm     35 $ & $   194 \pm     32 $ & $   236 \pm     15 $ \\
+          $\ttbar\rightarrow{\rm other}$ & $ 43287 \pm    127 $ & $   898 \pm     18 $ & $   393 \pm     12 $ & $   505 \pm     13 $ \\
+aaa!
+                                mc_resum & 556775.067 & 16015.297 & 7090.165 & 8925.132 \\
+                                   total & $556775 \pm    999 $ & $ 16015 \pm    107 $ & $  7090 \pm     75 $ & $  8925 \pm     77 $ \\
+                                    data & $548107 \pm    740 $ & $ 15420 \pm    124 $ & $  6787 \pm     82 $ & $  8633 \pm     93 $ \\
+INFO:root:import ROOT
+INFO:root:dy_elel
+INFO:root:no sums_NOMINAL/NOMINAL/dy_elel_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("dy_elel") at 0x3ab2260>
+INFO:root:dy_mumu
+INFO:root:no sums_NOMINAL/NOMINAL/dy_mumu_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("dy_mumu") at 0x3d4aac0>
+                                 process & dy_elel & dy_mumu \\
+                       $\text{dibosons}$ & $ 17963 \pm     39 $ & $ 32620 \pm     51 $ \\
+                     $\text{single top}$ & $  5787 \pm     32 $ & $  9604 \pm     41 $ \\
+$\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$ & $  3765 \pm     76 $ & $  6785 \pm    101 $ \\
+                            $\text{QCD}$ & $102389 \pm  55549 $ & $ 15575 \pm   8805 $ \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $  1039 \pm    118 $ & $   437 \pm     48 $ \\
+       $\text{DY}\rightarrow{\rm other}$ & $7297917 \pm   3303 $ & $15090721 \pm   4702 $ \\
+                                $\ttbar$ & $ 57084 \pm    146 $ & $ 97463 \pm    188 $ \\
+aaa!
+                                mc_resum & 7485943.606 & 15253206.448 \\
+                                   total & $7485944 \pm  55647 $ & $15253206 \pm   9984 $ \\
+                                    data & $7095254 \pm   2664 $ & $16254370 \pm   4032 $ \\
+INFO:root:import ROOT
+INFO:root:tt_elmu
+INFO:root:no sums_NOMINAL/NOMINAL/tt_elmu_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("tt_elmu") at 0x3bda520>
+                                 process & tt_elmu \\
+                       $\text{dibosons}$ & $ 12166 \pm     49 $ \\
+          $\ttbar\rightarrow{\rm other}$ & $   161 \pm      8 $ \\
+                     $\text{single top}$ & $ 11410 \pm     44 $ \\
+$\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$ & $  5241 \pm     89 $ \\
+                            $\text{QCD}$ & $     0 \pm      0 $ \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $   538 \pm     54 $ \\
+       $\text{DY}\rightarrow{\rm other}$ & $   426 \pm     28 $ \\
+          $\ttbar\rightarrow{\rm other}$ & $112889 \pm    202 $ \\
+aaa!
+                                mc_resum & 142830.717 \\
+                                   total & $142831 \pm    239 $ \\
+                                    data & $143096 \pm    378 $ \\
+INFO:root:import ROOT
+INFO:root:wjets_el
+INFO:root:no sums_NOMINAL/NOMINAL/wjets_el_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("wjets_el") at 0x32b5460>
+INFO:root:wjets_mu
+INFO:root:no sums_NOMINAL/NOMINAL/wjets_mu_sums_NOMINAL_NOMINAL_yield in <ROOT.TDirectoryFile object ("wjets_mu") at 0x34e5820>
+                                 process & wjets_el & wjets_mu \\
+                       $\text{dibosons}$ & $ 49336 \pm    173 $ & $ 71732 \pm    210 $ \\
+                                $\ttbar$ & $165555 \pm    260 $ & $239504 \pm    310 $ \\
+$\text{W+jets} \rightarrow\tau_{h}\nu + {\rm jets}$ & $  1756 \pm    102 $ & $   254 \pm     44 $ \\
+$\text{W+jets} \rightarrow\tau_{\ell}\nu + {\rm jets}$ & $205426 \pm   1073 $ & $342420 \pm   1463 $ \\
+                     $\text{single top}$ & $ 39701 \pm     82 $ & $ 58978 \pm     99 $ \\
+                            $\text{QCD}$ & $1641522 \pm 171568 $ & $879317 \pm 127706 $ \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $4402035 \pm   5504 $ & $7162457 \pm   7376 $ \\
+                             $\text{DY}$ & $531004 \pm   1312 $ & $651180 \pm   1494 $ \\
+aaa!
+                                mc_resum & 7036335.175 & 9405841.628 \\
+                                   total & $7036335 \pm 171665 $ & $9405842 \pm 127936 $ \\
+                                    data & $7048070 \pm   2655 $ & $9461244 \pm   3076 $ \\
+
+
+-- only the dy tautau are missing
+
 
 ### launch control distrs
 
@@ -1095,7 +1526,73 @@ end
 
 ### control distrs check if to add any more
 
-add nvtx?
+add nvtx, rjets, all jets, dijet-trijet parameters, Mt tau-met
+
+files:
+
+v37_test13_bunchFULLFIT2
+v37_test13_bunchFULLFIT2_mc_1.root
+v37_test13_bunch1YIELDS
+v37_test13_bunch1YIELDS_mc_1.root
+v37_test13_bunchCONTROLS1
+v37_test13_bunchCONTROLS1_mc_1.root
+v37_test13_bunchFULLFIT1_mc_1_wNjets.root
+v37_test13_bunchFULLFIT1
+v37_test13_bunchDILEP1
+v37_test13_bunchDILEP1_mc_2_wNjets.root
+v37_test13_bunchDILEP1_mc_1_wNjets.root
+
+ln -s v37_test13_bunchCONTROLS1_mc_1.root     v37_test13_bunchCONTROLS1_mc.root
+ln -s v37_test13_bunchFULLFIT2_mc_1.root      v37_test13_bunchFULLFIT2_mc.root
+ln -s v37_test13_bunchDILEP1_mc_2_wNjets.root v37_test13_bunchDILEP1_mc.root
+
+-- no need for this step
+
+
+make plot_tt_dilep         nt=v37 proc=test13 distrs=bunchDILEP1 lumi=35800 datafile=SingleMuon       options="--overwrite --factor-dy 1.05"
+make plot_control_dy_mumu  nt=v37 proc=test13 distrs=bunchDILEP1 lumi=35800 datafile=SingleMuon       options="--overwrite --factor-dy 1.05"
+make plot_control_dy_elel  nt=v37 proc=test13 distrs=bunchDILEP1 lumi=35800 datafile=SingleElectron   options="--overwrite --factor-dy 0.98"
+
+make plot_control_dy_mutau nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 datafile=SingleMuon      options=--overwrite
+make plot_control_dy_eltau nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 datafile=SingleElectron  options=--overwrite
+
+make plot_control_wjets_mu nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 datafile=SingleMuon      options=--overwrite
+make plot_control_wjets_el nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 datafile=SingleElectron  options=--overwrite
+
+make plot_lj_1 nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 chan_tag=mu datafile=SingleMuon      options=--overwrite
+make plot_lj_1 nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 chan_tag=el datafile=SingleElectron  options=--overwrite
+
+make plot_presel_1  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 presel_lev=Cand chan_tag=mu datafile=SingleMuon     title_lep=muon     options=--overwrite
+make plot_presel_1  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 presel_lev=Cand chan_tag=el datafile=SingleElectron title_lep=electron options=--overwrite
+
+in presel dijet mass was not saved
+-- and in wjets?
+
+
+main selection:
+make plot_sel_1  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=muon
+make plot_sel_1  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=electron
+
+-- missing bjet kinematics in MC, but present in data
+
+make plot_sel_fit_1  nt=v37 proc=test13 distrs=bunchFULLFIT2 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=electron  options="--data-nick data_other --overwrite"
+make plot_sel_fit_1  nt=v37 proc=test13 distrs=bunchFULLFIT2 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=muon      options="--data-nick data_other --overwrite"
+
+
+
+the plots for AN:
+
+mkdir plots/v37_test13_update1/
+cp plots/v37_test13_bunchDILEP1/* plots/v37_test13_update1/
+cp plots/v37_test13_bunchCONTROLS1/* plots/v37_test13_update1/
+cp plots/v37_test13_bunchFULLFIT2/*png plots/v37_test13_update1/
+make --keep-going rename_for_update up=update1
+
+make --keep-going up=update1 rename_for_update_mu_sel
+make --keep-going up=update1 rename_for_update_el_sel
+
+make --keep-going up=update1 rename_for_update_dileptons
+make --keep-going up=update1 rename_for_update_wjets
 
 
 

@@ -68,16 +68,23 @@ template_command = "time python sumup_loop.py {options} {out_file} {inp_file} {d
 
 from std_defs import sample_info, channels_distrs, extend_full_sys_list
 
-# construct [(dtag, sys)]
-requested_dtags = {}
+# construct {dtag: sys}
+standard_dtags = {}
+standard_all_dtags = {}
 for nickname, (dtags, systs) in sample_info.items():
-    if nickname == 'tt_syst': continue
-    #s = ','.join(systs)
     s = systs
-    if args.dtags:
-        requested_dtags.update({dtag: s for dtag in dtags if dtag in args.dtags})
-    else:
-        requested_dtags.update({dtag: s for dtag in dtags})
+    standard_all_dtags.update({dtag: s for dtag in dtags})
+    if 'tt_syst' in nickname: continue
+    standard_dtags.update({dtag: s for dtag in dtags})
+
+
+# get the requested dtags or use the standard ones
+requested_dtags = {}
+if args.dtags:
+    user_dtags = args.dtags.split(',')
+    requested_dtags.update({dtag: standard_all_dtags[dtag] for dtag in user_dtags})
+else:
+    requested_dtags = standard_dtags
 
 if args.without_dtags:
     for dtag in args.without_dtags.split(','):

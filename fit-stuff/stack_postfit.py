@@ -129,7 +129,7 @@ prefit_dir = fdata.Get("shapes_prefit/" + args.channel)
 
 
 mc_processes_mu = [
-      "dibosons",
+      "dibosons_other",
       "dy_other",
       "dy_tautau",
       "qcd",
@@ -163,7 +163,7 @@ mc_processes_mu = [
 '''
 
 mc_processes_el = [
-      "dibosons",
+      "dibosons_other",
       "dy_other",
       "dy_tautau",
       "qcd",

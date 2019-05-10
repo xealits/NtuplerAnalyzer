@@ -539,7 +539,7 @@ named_systs2_weights_all = {'nom': systs2_weights_nominal,
 systs2_weights_all = {}
 for s_d in named_systs2_weights_all.values():
     systs2_weights_all.update(s_d)
-systs2_weights_all.update(systs_weights_tt_updowns)
+systs2_weights_all.update(systs2_weights_tt_updowns)
 systs2_weights_all.update(systs2_weights_initial)
 
 
@@ -579,7 +579,14 @@ std_dtag_systs = {
 'MC2016_Summer16_QCD_HT-700-1000',
 'MC2016_Summer16_QCD_HT-1000-1500',
 'MC2016_Summer16_QCD_HT-1500-2000',
-'MC2016_Summer16_QCD_HT-2000-Inf'], ['nom'])
+'MC2016_Summer16_QCD_HT-2000-Inf',
+'MC2016_Summer16_QCD_HT-1000-1500_ext1',
+'MC2016_Summer16_QCD_HT-1500-2000_ext1',
+'MC2016_Summer16_QCD_HT-200-300_ext1',
+'MC2016_Summer16_QCD_HT-2000-Inf_ext1',
+'MC2016_Summer16_QCD_HT-300-500_ext1',
+'MC2016_Summer16_QCD_HT-500-700_ext1',
+'MC2016_Summer16_QCD_HT-700-1000_ext1',], ['nom'])
 }
 
 
@@ -703,6 +710,7 @@ distr_defs = {
     'Mt_lep_met_init_f': ({'NOMINAL': lambda ev: ev.event_met_lep_mt_init2}, ('histo-range',  [20,0,250])),
     'met_init_f':        ({'NOMINAL': lambda ev: ev.event_met_init2.pt()},   ('histo-range',  [30,0,300])),
     'met_f':         (systs_objects_met_variation, ('histo-range',  [30,0,300])),
+    'met_f2':        (systs_objects_met_variation, ('histo-range',  [25,0,200])),
     'met_c':         (systs_objects_met_variation, ('custom-range', [0,20,40,60,80,100,120,140,200,500])),
     'cos_phi_met_lep':   ({'NOMINAL': lambda ev: TMath.Cos(ev.event_leptons[0].phi() - ev.event_met.phi())},       ('histo-range',  [21,-1.05,1.05])),
     'phi_met_lep':       ({'NOMINAL': lambda ev: ev.event_leptons[0].phi() - ev.event_met.phi()},    ('histo-range',  [21,-2*3.15,2*3.15])),
@@ -896,7 +904,7 @@ all_channels_ev_loop.update(std_channels_ev_loop)
 distrs_mt_fit   = {'Mt_lep_met_c'}
 distrs_mt       = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f'}
 distrs_mt_calc  = {'lep_pt', 'met_c', 'phi_met_lep', 'cos_phi_met_lep'}
-distrs_leptonic = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta', 'met_c'}
+distrs_leptonic = {'Mt_lep_met_c', 'Mt_lep_met_c2', 'Mt_lep_met_f', 'dilep_mass', 'lep_pt', 'lep_eta', 'met_c', 'met_f'}
 distrs_lep      = {'Mt_lep_met_c', 'lep_pt', 'lep_eta', 'met_c'}
 distrs_relIso   = {'relIso_mu', 'relIso_mu_ext', 'relIso_el', 'relIso_el_ext'}
 distrs_dy       = {'met_c',          'Mt_lep_met_c', 'Mt_lep_met_f', 'dilep_mass', 'dilep_mass_dy', 'lep_pt', 'lep_eta'}
@@ -910,8 +918,10 @@ distrs_tauonic_std  = {'tau_pt', 'tau_eta', 'tau_sv_sign'}
 
 
 main_sys = ['nom', 'common', 'obj']
-full_sys = ['nom', 'common', 'obj', 'tt_weights', "tt_hard", 'tt_pdf']
+sys_updowns = ['TuneCUETP8M2T4Down', 'TuneCUETP8M2T4Up', 'FSRDown', 'FSRUp', 'HDAMPDown', 'HDAMPUp', 'ISRDown', 'ISRUp',]
+full_sys = ['nom', 'common', 'obj', 'tt_weights', "tt_hard", 'tt_pdf'] + sys_updowns
 presel_sys = ['NOMINAL', 'TOPPTDown', 'TOPPTUp', 'PUUp', 'PUDown']
+
 
 channels_distrs = {
 'tt_alliso_presel'    : (['tt_alliso_presel_el', 'tt_alliso_presel_el_ss', 'tt_alliso_presel_mu', 'tt_alliso_presel_mu_ss', ], sorted(distrs_lep.union(distrs_relIso)), main_sys),
@@ -963,6 +973,7 @@ channels_distrs = {
 
 'yields_control_wjets'    : (['wjets_mu', 'wjets_el', 'wjets_mu_ss', 'wjets_el_ss'], sorted({'yield'}), ['NOMINAL']),
 'yields_control_dyjets'   : (['dy_mumu',  'dy_elel'], sorted({'yield'}), ['NOMINAL']),
+'yields_control_dyleptau' : (['dy_mutau', 'dy_eltau', 'dy_mutau_ss', 'dy_eltau_ss', 'dy_mutau_3j', 'dy_eltau_3j', 'dy_mutau_3j_ss', 'dy_eltau_3j_ss'], sorted({'yield'}), ['NOMINAL']),
 'yields_control_tt_em'    : (['tt_elmu',], sorted({'yield'}), ['NOMINAL']),
 }
 
@@ -991,26 +1002,60 @@ sample_info = {
 'tt'  : (['MC2016_Summer16_TTJets_powheg'],
   full_sys), # "tt_pdf1", "tt_pdf10", "tt_pdf20", "tt_pdf30", "tt_pdf40", "tt_pdf50,tt_alpha"]),
 
-'tt_syst': ([
+#'tt_syst': ([
+#'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down',
+#'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down_ext1',
+#'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up',
+#'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up_ext1',
+#'MC2016_Summer16_TTJets_powheg_fsrdown',
+#'MC2016_Summer16_TTJets_powheg_fsrdown_ext1',
+#'MC2016_Summer16_TTJets_powheg_fsrdown_ext2',
+#'MC2016_Summer16_TTJets_powheg_fsrup',
+#'MC2016_Summer16_TTJets_powheg_fsrup_ext1',
+#'MC2016_Summer16_TTJets_powheg_fsrup_ext2',
+#'MC2016_Summer16_TTJets_powheg_hdampDOWN',
+#'MC2016_Summer16_TTJets_powheg_hdampDOWN_ext1',
+#'MC2016_Summer16_TTJets_powheg_hdampUP',
+#'MC2016_Summer16_TTJets_powheg_hdampUP_ext1',
+#'MC2016_Summer16_TTJets_powheg_isrdown',
+#'MC2016_Summer16_TTJets_powheg_isrdown_ext1',
+#'MC2016_Summer16_TTJets_powheg_isrdown_ext2',
+#'MC2016_Summer16_TTJets_powheg_isrup'],
+#  ['nom']),
+
+'tt_syst_TuneDown': ([
 'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down',
-'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down_ext1',
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down_ext1',], ['TuneCUETP8M2T4Down']),
+
+'tt_syst_TuneUp': ([
 'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up',
-'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up_ext1',
+'MC2016_Summer16_TTJets_powheg_CUETP8M2T4up_ext1',], ['TuneCUETP8M2T4Up']),
+
+'tt_syst_FSRDown': ([
 'MC2016_Summer16_TTJets_powheg_fsrdown',
 'MC2016_Summer16_TTJets_powheg_fsrdown_ext1',
-'MC2016_Summer16_TTJets_powheg_fsrdown_ext2',
+'MC2016_Summer16_TTJets_powheg_fsrdown_ext2',], ['FSRDown']),
+
+'tt_syst_FSRUp': ([
 'MC2016_Summer16_TTJets_powheg_fsrup',
 'MC2016_Summer16_TTJets_powheg_fsrup_ext1',
-'MC2016_Summer16_TTJets_powheg_fsrup_ext2',
+'MC2016_Summer16_TTJets_powheg_fsrup_ext2'], ['FSRUp']),
+
+'tt_syst_HDAMPDown': ([
 'MC2016_Summer16_TTJets_powheg_hdampDOWN',
-'MC2016_Summer16_TTJets_powheg_hdampDOWN_ext1',
+'MC2016_Summer16_TTJets_powheg_hdampDOWN_ext1',], ['HDAMPDown']),
+
+'tt_syst_HDAMPUp': ([
 'MC2016_Summer16_TTJets_powheg_hdampUP',
-'MC2016_Summer16_TTJets_powheg_hdampUP_ext1',
+'MC2016_Summer16_TTJets_powheg_hdampUP_ext1',], ['HDAMPUp']),
+
+'tt_syst_ISRDown': ([
 'MC2016_Summer16_TTJets_powheg_isrdown',
 'MC2016_Summer16_TTJets_powheg_isrdown_ext1',
-'MC2016_Summer16_TTJets_powheg_isrdown_ext2',
-'MC2016_Summer16_TTJets_powheg_isrup'],
-  ['nom']),
+'MC2016_Summer16_TTJets_powheg_isrdown_ext2',], ['ISRDown']),
+
+'tt_syst_ISRUp': ([
+'MC2016_Summer16_TTJets_powheg_isrup'], ['ISRUp']),
 
 'other_mc': ([
 'MC2016_Summer16_DYJetsToLL_10to50_amcatnlo',
@@ -1047,14 +1092,22 @@ sample_info = {
 'MC2016_Summer16_tchannel_antitop_4f_leptonicDecays_powheg',
 'MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg'], main_sys),
 
-'qcd_mc': (['MC2016_Summer16_QCD_HT-100-200',
+'qcd_mc': ([
+'MC2016_Summer16_QCD_HT-100-200',
 'MC2016_Summer16_QCD_HT-200-300',
 'MC2016_Summer16_QCD_HT-300-500',
 'MC2016_Summer16_QCD_HT-500-700',
 'MC2016_Summer16_QCD_HT-700-1000',
 'MC2016_Summer16_QCD_HT-1000-1500',
 'MC2016_Summer16_QCD_HT-1500-2000',
-'MC2016_Summer16_QCD_HT-2000-Inf'], ['nom'])
+'MC2016_Summer16_QCD_HT-2000-Inf',
+'MC2016_Summer16_QCD_HT-1000-1500_ext1',
+'MC2016_Summer16_QCD_HT-1500-2000_ext1',
+'MC2016_Summer16_QCD_HT-200-300_ext1',
+'MC2016_Summer16_QCD_HT-2000-Inf_ext1',
+'MC2016_Summer16_QCD_HT-300-500_ext1',
+'MC2016_Summer16_QCD_HT-500-700_ext1',
+'MC2016_Summer16_QCD_HT-700-1000_ext1',], ['nom'])
 }
 
 

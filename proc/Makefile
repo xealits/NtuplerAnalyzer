@@ -25,7 +25,7 @@ find_missing_jobs:
 find_failed_jobs: nt=v37
 find_failed_jobs: proc=test8
 find_failed_jobs:
-	wc -l job_*.e* | grep " 12 " > jobs_failed
+	wc -l job_*.e* | grep " [0-9][0-9] " > jobs_failed
 
 find_failed_plots: correct_num=8
 find_failed_plots:

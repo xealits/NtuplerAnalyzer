@@ -58,9 +58,12 @@ t\bar{t}\rightarrow{\mu\tau}
 process_latex_strings = {
 'dy_tautau' : "$\\text{DY}\\rightarrow{\\tau_{\\ell}\\tau_{h}}+ {\\rm jets}$" ,
 'dy_other'  : "$\\text{DY}\\rightarrow{\\rm other}$"                       ,
+'dy_else'   : "$\\text{DY}\\rightarrow{\\rm other}$"                       ,
+'dy'        : "$\\text{DY}$"                       ,
 
     'wjets':           "$\\text{W+jets} \\rightarrow\\ell\\nu+ {\\rm jets}$"         ,
     'wjets_other':     "$\\text{W+jets} \\rightarrow\\ell\\nu+ {\\rm jets}$"         ,
+    'wjets_else':      "$\\text{W+jets} \\rightarrow\\ell\\nu+ {\\rm jets}$"         ,
     'wjets_taul':      "$\\text{W+jets} \\rightarrow\\tau_{\\ell}\\nu + {\\rm jets}$" ,
     'wjets_tauh':      "$\\text{W+jets} \\rightarrow\\tau_{h}\\nu + {\\rm jets}$"    ,
 
@@ -68,12 +71,17 @@ process_latex_strings = {
     's_top_eltau':   "$\\text{single top}\\rightarrow{{\\rm \\ell} \\tau}+X$" ,
     's_top_mutau':   "$\\text{single top}\\rightarrow{{\\rm \\ell} \\tau}+X$" ,
     's_top_other':   "$\\text{single top}\\rightarrow{\\rm other}$"         ,
+    's_top_else':    "$\\text{single top}\\rightarrow{\\rm other}$"         ,
     's_top_lj':      "$\\text{single top}\\rightarrow{\\ell j}+X$"          ,
+    's_top':         "$\\text{single top}$"          ,
 
     'tt_taultauh':  "$\\ttbar\\rightarrow{\\tau_{\\ell}\\tau_{h} \\nu\\nu b\\bar{b} }$",
     'tt_taulj':     "$\\ttbar\\rightarrow{\\tau_{\\ell}\\nu jj b\\bar{b}}$",
     'tt_lj':     "$\\ttbar\\rightarrow{\\ell\\nu jj b\\bar{b}}$",
     'tt_other':  "$\\ttbar\\rightarrow{\\rm other}$",
+    'tt_else':   "$\\ttbar\\rightarrow{\\rm other}$",
+    'tt':        "$\\ttbar$",
+
     'tt_mutau':  "$\\ttbar\\rightarrow{\\ell\\tau}\\nu\\nu b\\bar{b}$ ($\\ell=e,\\mu$)",
     'tt_eltau':  "$\\ttbar\\rightarrow{\\ell\\tau}\\nu\\nu b\\bar{b}$ ($\\ell=e,\\mu$)",
 
@@ -82,39 +90,16 @@ process_latex_strings = {
     'tt_taueltaumu': "$\\ttbar\\rightarrow{\\tau_{e^{\\pm}}\\tau_{\\mu^{\\mp}}}\\nu\\nu b\\bar{b}$",
 
     'dibosons':                       '$\\text{dibosons}$',
-    'qcd':                            '$\\text{QCD}$'
+    'dibosons_other':                 '$\\text{dibosons}$',
+    'qcd':                            '$\\text{QCD}$',
+    'qcd_other':                      '$\\text{QCD}$',
 }
 
-
-
-"""
-'dy_tautau' : "$\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$" ,
-'dy_other'  : "$\text{DY}\rightarrow{\rm other}$"                       ,
-
-    'wjets_other':     "$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$"         ,
-    'wjets_taul':      "$\text{W+jets} \rightarrow\tau_{\ell}\nu + {\rm jets}$" ,
-    'wjets_tauh':      "$\text{W+jets} \rightarrow\tau_{h}\nu + {\rm jets}$"    ,
-
-    's_top_eltau':   "$\text{single top}\rightarrow{{\rm \ell} \tau}+X$" ,
-    's_top_mutau':   "$\text{single top}\rightarrow{{\rm \ell} \tau}+X$" ,
-    's_top_other':   "$\text{single top}\rightarrow{\rm other}$"         ,
-    's_top_lj':      "$\text{single top}\rightarrow{\ell j}+X$"          ,
-
-    'tt_taultauh':  "$\ttbar\rightarrow{\tau_{\ell}\tau_{h} \nu\nu b\bar{b} }$",
-    'tt_taulj':     "$\ttbar\rightarrow{\tau_{\ell}\nu jj b\bar{b}}$",
-    'tt_lj':     "$\ttbar\rightarrow{\ell\nu jj b\bar{b}}$",
-    'tt_other':  "$\ttbar\rightarrow{\rm other}$",
-    'tt_mutau':  "$\ttbar\rightarrow{\ell\tau}\nu\nu b\bar{b}$ ($\ell=e,\mu$)",
-    'tt_eltau':  "$\ttbar\rightarrow{\ell\tau}\nu\nu b\bar{b}$ ($\ell=e,\mu$)",
-
-    'dibosons':                       '$\\text{dibosons}$',
-    'qcd':                            '$\\text{QCD}$'
-}
-"""
 
 
 import argparse
 from math import sqrt
+from collections import OrderedDict
 
 
 parser = argparse.ArgumentParser(
@@ -137,7 +122,7 @@ parser.add_argument("--no-sums",   action = "store_false", default=True, help="d
 parser.add_argument("-y", "--event-yields", action='store_true', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-r", "--ratios",       action='store_true', help="output ratios to data")
 
-parser.add_argument("--data-nick",    type=str, default='data', help="the nickname of the data (data_other)")
+parser.add_argument("--data-nick",    type=str, default='data_other', help="the nickname of the data (data_other)")
 
 parser.add_argument("--skip-procs",    type=str, default='', help="skip these processes")
 
@@ -205,9 +190,9 @@ logging.debug("%s %s" % (sys_name, distr_name))
 
 #if args.event_yields:
 #proc_yields = [] #[('channel', [(proc_nick, yield)...]) ...]
-proc_yields = {} # proc_nick: {channel: yield}
+proc_yields = OrderedDict() # proc_nick: {channel: yield}
 
-data_yields = {} # channel: yield
+data_yields = OrderedDict() # channel: yield
 
 def range_integral(histo):
     if args.range_max or args.range_min:
@@ -281,8 +266,8 @@ for channel in channels:
        #    continue
        logging.debug(process)
 
-       if process not in all_known_sorted_processes:
-           continue
+       #if process not in all_known_sorted_processes:
+           #continue
 
        if args.skip_procs and process in args.skip_procs:
            continue
@@ -290,18 +275,20 @@ for channel in channels:
        # adjusting to the broken data-driven qcd naming
        if process == 'qcd_other':
            histo_name = '_'.join([channel, 'qcd', sys_name, distr_name])
+           full_path = '%s/%s/%s' % (process, sys_name, histo_name)
+           if not chan.Get(full_path):
+               # try the MC qcd
+               histo_name = '_'.join([channel, 'qcd_other', sys_name, distr_name])
+               full_path = '%s/%s/%s' % (process, sys_name, histo_name)
        else:
            histo_name = '_'.join([channel, process, sys_name, distr_name])
+           full_path = '%s/%s/%s' % (process, sys_name, histo_name)
 
-       logging.debug(histo_name)
-       histo_name = '%s/%s/%s' % (process, sys_name, histo_name)
-       logging.debug(histo_name)
-
-       if not chan.Get(histo_name):
-           logging.info('no %s %s' % (chan, histo_name))
+       if not chan.Get(full_path):
+           logging.info('no %s in %s' % (full_path, chan))
            continue
 
-       histo = chan.Get(histo_name)
+       histo = chan.Get(full_path)
        logging.debug(histo.Integral())
        processes.append(process)
 
@@ -314,7 +301,9 @@ for channel in channels:
        histos.append(histo)
 
        #proc_yields[-1][1].append((process, histo.Integral()))
-       proc_yields.setdefault(process, {})[channel] = range_integral(histo)
+       if process not in proc_yields:
+           proc_yields[process] = OrderedDict()
+       proc_yields[process][channel] = range_integral(histo)
 
     # get the data histogram
     if args.file_data:
@@ -363,8 +352,9 @@ if args.event_yields:
     #for process, chan_d in proc_yields.items():
     mc_sums   = {} # channel: sum of integrals
 
-    for process in all_known_sorted_processes:
-        if process in proc_yields:
+    for process in proc_yields:
+        #if process in proc_yields:
+            if process == args.data_nick or 'sums_' in process: continue
             chan_d = proc_yields[process]
             line = proc_s % (process_latex_strings[process] if args.latex else process)
             # check the process in each requested channel
@@ -384,8 +374,8 @@ if args.event_yields:
                 mc_sums.setdefault(channel, [0, 0])
                 mc_sums[channel][0] += chan_d.get(channel, (0, 0))[0]
                 mc_sums[channel][1] += chan_d.get(channel, (0, 0))[1]
-        else:
-            continue
+        #else:
+            #continue
 
 
     print "aaa!"

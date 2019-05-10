@@ -56,6 +56,8 @@ nick_info = {
 "tt_lj":         {'color': rgb(240,59,32),     'legend': 't#bar{t}#rightarrow lj'},
 "tt_taulj":      {'color': rgb(210,29,32),     'legend': 't#bar{t}#rightarrow #tau_{l}j'},
 "tt_other":      {'color': rgb(189,0,38),      'legend': 't#bar{t}#rightarrow other'},
+"tt_else":       {'color': rgb(189,0,38),      'legend': 't#bar{t}#rightarrow other'},
+"tt":            {'color': rgb(189,0,38),      'legend': 't#bar{t}'},
 
 "qcd"       : {'color': kViolet, 'legend': 'qcd'},
 "qcd_other" : {'color': kViolet, 'legend': 'qcd'},
@@ -78,6 +80,8 @@ nick_order = {
 "tt_lj":  -8,
 "tt_taulj": -9,
 "tt_other": -11,
+"tt_else": -11,
+"tt": -11,
 
 "wjets": -20,
 "wjets_other": -20,

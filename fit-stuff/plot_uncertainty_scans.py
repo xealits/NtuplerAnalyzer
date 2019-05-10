@@ -1,8 +1,4 @@
-import ROOT
-from ROOT import TCanvas, TGraph, TLine, gStyle, gROOT, gPad, TFile, TTree, TPaveText, TLegend
-#include "TGraph.h"
-#include "TAxis.h"
-#include "TH1.h"
+import argparse, logging
 
 import ctypes
 from ctypes import c_double
@@ -22,6 +18,32 @@ ymin  = (ctypes.c_double * n)()
 ymax  = (ctypes.c_double * n)()
 ymin2 = (ctypes.c_double * n)()
 ymax2 = (ctypes.c_double * n)()
+
+
+parser = argparse.ArgumentParser(
+    formatter_class = argparse.RawDescriptionHelpFormatter,
+    description = "plot the NLL scans for the given fitting release",
+    epilog = "Example:\n    $ python plot_uncertainty_scans.py v37_test13_bunchFULLFIT2_2"
+    )
+
+parser.add_argument("fit_release",    help="the name tag of the fit")
+parser.add_argument("--debug", action="store_true", help="debug logging")
+
+args = parser.parse_args()
+
+if args.debug:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.INFO)
+
+logging.info("importing ROOT")
+import ROOT
+from ROOT import TCanvas, TGraph, TLine, gStyle, gROOT, gPad, TFile, TTree, TPaveText, TLegend
+#include "TGraph.h"
+#include "TAxis.h"
+#include "TH1.h"
+logging.info("done")
+
 
 # accept el, bu, both: 140.318  146.057  143.229
 draw_command = "2*deltaNLL:r*143.23" # visible cross section in both channels # full space "2*deltaNLL:r*831.76" # "2*deltaNLL:r"
@@ -46,16 +68,18 @@ TGraph *g2 = new TGraph(430, ttree_full->GetV2(), ttree_full->GetV1())
 #'both': ["higgsCombineExpectedBothFullUncertainty.MultiDimFit.mH120.root", "higgsCombineExpectedBothNoTau.MultiDimFit.mH120.root", "higgsCombineExpectedBothNoSys.MultiDimFit.mH120.root"],
 #}
 
+nn = args.fit_release
+
 the_files = {
-'el':   [  "higgsCombineElFullUncertaintyNoLumi.MultiDimFit.mH120.root",   "higgsCombineElNoTau.MultiDimFit.mH120.root",   "higgsCombineElNoSysWLumi.MultiDimFit.mH120.root"],
-'mu':   [  "higgsCombineMuFullUncertaintyNoLumi.MultiDimFit.mH120.root",   "higgsCombineMuNoTau.MultiDimFit.mH120.root",   "higgsCombineMuNoSysWLumi.MultiDimFit.mH120.root"],
-'both': ["higgsCombineBothFullUncertaintyNoLumi.MultiDimFit.mH120.root", "higgsCombineBothNoTau.MultiDimFit.mH120.root", "higgsCombineBothNoSysWLumi.MultiDimFit.mH120.root"],
+'el':   [  "higgsCombineel_%sFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn,   "higgsCombineel_%sNoTau.MultiDimFit.mH120.root" % nn,   "higgsCombineel_%sNoSys.MultiDimFit.mH120.root" % nn],
+'mu':   [  "higgsCombinemu_%sFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn,   "higgsCombinemu_%sNoTau.MultiDimFit.mH120.root" % nn,   "higgsCombinemu_%sNoSys.MultiDimFit.mH120.root" % nn],
+'both': ["higgsCombineboth_%sFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn, "higgsCombineboth_%sNoTau.MultiDimFit.mH120.root" % nn, "higgsCombineboth_%sNoSys.MultiDimFit.mH120.root" % nn],
 }
 
 the_files_expected = {
-'el':   [  "higgsCombineExpectedElFullUncertaintyNoLumi.MultiDimFit.mH120.root",   "higgsCombineExpectedElNoTau.MultiDimFit.mH120.root",   "higgsCombineExpectedElNoSysWLumi.MultiDimFit.mH120.root"],
-'mu':   [  "higgsCombineExpectedMuFullUncertaintyNoLumi.MultiDimFit.mH120.root",   "higgsCombineExpectedMuNoTau.MultiDimFit.mH120.root",   "higgsCombineExpectedMuNoSysWLumi.MultiDimFit.mH120.root"],
-'both': ["higgsCombineExpectedBothFullUncertaintyNoLumi.MultiDimFit.mH120.root", "higgsCombineExpectedBothNoTau.MultiDimFit.mH120.root", "higgsCombineExpectedBothNoSysWLumi.MultiDimFit.mH120.root"],
+'el':   [  "higgsCombineel_%s_ExpectedFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn,   "higgsCombineel_%s_ExpectedNoTau.MultiDimFit.mH120.root" % nn,   "higgsCombineel_%s_ExpectedNoSys.MultiDimFit.mH120.root" % nn],
+'mu':   [  "higgsCombinemu_%s_ExpectedFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn,   "higgsCombinemu_%s_ExpectedNoTau.MultiDimFit.mH120.root" % nn,   "higgsCombinemu_%s_ExpectedNoSys.MultiDimFit.mH120.root" % nn],
+'both': ["higgsCombineboth_%s_ExpectedFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn, "higgsCombineboth_%s_ExpectedNoTau.MultiDimFit.mH120.root" % nn, "higgsCombineboth_%s_ExpectedNoSys.MultiDimFit.mH120.root" % nn],
 }
 
 
@@ -229,7 +253,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    right_title = TPaveText(0.5, 0.9, 0.9, 0.95, "brNDC")
    both = True
    if report_lumi:
-       right_title.AddText("%s fb^{-1} (13 TeV)" % (31.3 if chan == 'el' else 35.8))
+       right_title.AddText("%s fb^{-1} (13 TeV)" % (35.8 if chan == 'el' else 35.8))
    elif both:
        right_title.AddText("%s fb^{-1} (13 TeV)" % '35.8')
    else:
@@ -244,7 +268,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    plotted = ''
    plotted += '_exp' if plot_expected else ''
    plotted += '_obs' if plot_data else ''
-   c1.SaveAs("uncertainty_scans_%s%s.png" % (chan, plotted))
+   c1.SaveAs("uncertainty_scans_%s_%s%s.png" % (args.fit_release, chan, plotted))
 
 plot('mu', True, True)
 plot('mu', True, False)

@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 from os import environ
+from os.path import isfile
 from array import array
 from collections import OrderedDict, namedtuple, defaultdict
 import cProfile
@@ -567,6 +568,7 @@ def calc_pu_per_runs(pu_ele, pu_gld, ele_B = 19128.209 / (19128.209 + 12210.15),
 from module_leptons import lepton_muon_SF, lepton_muon_trigger_SF, lepton_electron_SF, lepton_electron_trigger_SF, dilepton_or_sfs, dilepton_and_sfs
 
 if with_bSF:
+    import support_btagging_sf
     from support_btagging_sf import calc_btag_sf_weight, bEff_histo_b, bEff_histo_c, bEff_histo_udsg
     from support_btagging_sf import h_control_btag_eff_b, h_control_btag_eff_c, h_control_btag_eff_udsg, h_control_btag_weight_b, h_control_btag_weight_c, h_control_btag_weight_udsg, h_control_btag_weight_notag_b, h_control_btag_weight_notag_c, h_control_btag_weight_notag_udsg
 
@@ -1703,9 +1705,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     #    if systematic_name in all_systematic_objects:
     #        requested_objects.add(systematic_name)
 
-    with_JER_sys   = with_JER   = isMC and True
-    with_JES_sys   = with_JES   = isMC and True
-    with_TauES_sys = with_TauES = isMC and True
+    with_JER_sys   = with_JER   = isMC and True and not isTT_systematic
+    with_JES_sys   = with_JES   = isMC and True and not isTT_systematic
+    with_TauES_sys = with_TauES = isMC and True and not isTT_systematic
 
     with_bSF_sys = with_bSF # and ('bSFUp' in requested_systematics or 'bSFDown' in requested_systematics)
 
@@ -1722,8 +1724,98 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     #JetCutsPerSystematic = namedtuple('Jets', 'old old_alliso') # TODO add jets loose
     #TauCutsPerSystematic = namedtuple('Taus', 'lowest loose cuts old oldVloose presel_alliso presel')
 
-    #set_bSF_effs_for_dtag(dtag)
-    if with_bSF: logger.write(' '.join(str(id(h)) for h in (bEff_histo_b, bEff_histo_c, bEff_histo_udsg)) + '\n')
+    # get the corrections to JES for PS systematic datasets:
+    correction_jes_endcap_b = None
+    correction_jes_barrel_b = None
+    correction_jes_endcap_c = None
+    correction_jes_barrel_c = None
+    correction_jes_endcap_udsg = None
+    correction_jes_barrel_udsg = None
+
+    # the usual dtag
+    dtag_usual = '_'.join(dtag.split('/')[-1].split('.root')[0].split('_')[:-1])
+    if isTT_systematic:
+        logging.info("test TT sys %s" % dtag_usual)
+
+        the_jes_corrections_fname = "studies/jes_bSF_corrections/corrections_to_nominal_jes.root"
+        the_jes_corrections_file  = TFile(the_jes_corrections_fname)
+
+        # Tune Up Down might not be present
+        jes_cor_barrel_b = 'correction_' + dtag_usual + '_jes_cor_1d_gen_reco_barrel_b'
+        if the_jes_corrections_file.Get(jes_cor_barrel_b):
+            logging.info("test TT sys loading corrections to JES")
+
+            correction_jes_endcap_b    = the_jes_corrections_file.Get('correction_' + dtag_usual + '_jes_cor_1d_gen_reco_endcap_b')
+            correction_jes_barrel_b    = the_jes_corrections_file.Get('correction_' + dtag_usual + '_jes_cor_1d_gen_reco_barrel_b')
+            correction_jes_endcap_c    = the_jes_corrections_file.Get('correction_' + dtag_usual + '_jes_cor_1d_gen_reco_endcap_c')
+            correction_jes_barrel_c    = the_jes_corrections_file.Get('correction_' + dtag_usual + '_jes_cor_1d_gen_reco_barrel_c')
+            correction_jes_endcap_udsg = the_jes_corrections_file.Get('correction_' + dtag_usual + '_jes_cor_1d_gen_reco_endcap_udsg')
+            correction_jes_barrel_udsg = the_jes_corrections_file.Get('correction_' + dtag_usual + '_jes_cor_1d_gen_reco_barrel_udsg')
+
+
+    #set_bSF_effs_for_dtag_usual(dtag_usual)
+    if with_bSF:
+        logger.write(' '.join(str(id(h)) for h in (bEff_histo_b, bEff_histo_c, bEff_histo_udsg)) + '\n')
+        logging.info("test b SF weight with eff histo: %s" % bEff_histo_b.GetName())
+
+        # test the calculator
+        jet_pt  = 40.
+        jet_eta = 1.1
+        flavId = 5
+        jet_weight_bSF_nom_tagged, sf_t, eff_t     = calc_btag_sf_weight(True,  flavId, jet_pt, jet_eta)
+        jet_weight_bSF_nom_not_tagged, sf_n, eff_n = calc_btag_sf_weight(False, flavId, jet_pt, jet_eta)
+        logging.info("test b SF weight for %d: %10.6f %10.6f,  %10.6f %10.6f" % (flavId, jet_weight_bSF_nom_not_tagged, jet_weight_bSF_nom_not_tagged, sf_t, eff_t))
+        flavId = 1
+        jet_weight_bSF_nom_tagged, sf_t, eff_t     = calc_btag_sf_weight(True,  flavId, jet_pt, jet_eta)
+        jet_weight_bSF_nom_not_tagged, sf_n, eff_n = calc_btag_sf_weight(False, flavId, jet_pt, jet_eta)
+        logging.info("test b SF weight for %d: %10.6f %10.6f,  %10.6f %10.6f" % (flavId, jet_weight_bSF_nom_not_tagged, jet_weight_bSF_nom_not_tagged, sf_t, eff_t))
+
+        the_updown_bSF_efficiencies_filename = "studies/jes_bSF_corrections/%s.root" % dtag_usual
+        if isTT_systematic and isfile(the_updown_bSF_efficiencies_filename):
+            logging.info("test TT sys %s" % dtag_usual)
+
+            # change the efficiency histograms
+            the_updown_bSF_efficiencies = TFile(the_updown_bSF_efficiencies_filename)
+            # the numerator
+            bEff_histo_b_num    = the_updown_bSF_efficiencies.Get("btag_b_hadronFlavour_candidates_tagged")
+            bEff_histo_c_num    = the_updown_bSF_efficiencies.Get("btag_c_hadronFlavour_candidates_tagged")
+            bEff_histo_udsg_num = the_updown_bSF_efficiencies.Get("btag_udsg_hadronFlavour_candidates_tagged")
+            # the denominator
+            bEff_histo_b_denom    = the_updown_bSF_efficiencies.Get("btag_b_hadronFlavour_candidates")
+            bEff_histo_c_denom    = the_updown_bSF_efficiencies.Get("btag_c_hadronFlavour_candidates")
+            bEff_histo_udsg_denom = the_updown_bSF_efficiencies.Get("btag_udsg_hadronFlavour_candidates")
+
+            ## for tests, reverse
+            #bEff_histo_b_denom    = the_updown_bSF_efficiencies.Get("btag_b_hadronFlavour_candidates_tagged")
+            #bEff_histo_c_denom    = the_updown_bSF_efficiencies.Get("btag_c_hadronFlavour_candidates_tagged")
+            #bEff_histo_udsg_denom = the_updown_bSF_efficiencies.Get("btag_udsg_hadronFlavour_candidates_tagged")
+            ## the denominator
+            #bEff_histo_b_num    = the_updown_bSF_efficiencies.Get("btag_b_hadronFlavour_candidates")
+            #bEff_histo_c_num    = the_updown_bSF_efficiencies.Get("btag_c_hadronFlavour_candidates")
+            #bEff_histo_udsg_num = the_updown_bSF_efficiencies.Get("btag_udsg_hadronFlavour_candidates")
+
+            bEff_histo_b_num    .Divide(bEff_histo_b_denom   )
+            bEff_histo_c_num    .Divide(bEff_histo_c_denom   )
+            bEff_histo_udsg_num .Divide(bEff_histo_udsg_denom)
+
+            # set them in the calculator
+            support_btagging_sf.bEff_histo_b    = bEff_histo_b_num
+            support_btagging_sf.bEff_histo_c    = bEff_histo_c_num
+            support_btagging_sf.bEff_histo_udsg = bEff_histo_udsg_num
+
+            logging.info("test b SF weight with eff histo: %s" % bEff_histo_b.GetName())
+            logging.info("test b SF weight with eff histo: %s" % support_btagging_sf.bEff_histo_b.GetName())
+
+            # test the change
+            flavId = 5
+            jet_weight_bSF_nom_tagged, sf_t, eff_t     = calc_btag_sf_weight(True,  flavId, jet_pt, jet_eta)
+            jet_weight_bSF_nom_not_tagged, sf_n, eff_n = calc_btag_sf_weight(False, flavId, jet_pt, jet_eta)
+            logging.info("test TT sys %s b SF weight for %d: %10.6f %10.6f,  %10.6f %10.6f" % (dtag_usual, flavId, jet_weight_bSF_nom_not_tagged, jet_weight_bSF_nom_not_tagged, sf_t, eff_t))
+            flavId = 1
+            jet_weight_bSF_nom_tagged, sf_t, eff_t     = calc_btag_sf_weight(True,  flavId, jet_pt, jet_eta)
+            jet_weight_bSF_nom_not_tagged, sf_n, eff_n = calc_btag_sf_weight(False, flavId, jet_pt, jet_eta)
+            logging.info("test TT sys %s b SF weight for %d: %10.6f %10.6f,  %10.6f %10.6f" % (dtag_usual, flavId, jet_weight_bSF_nom_not_tagged, jet_weight_bSF_nom_not_tagged, sf_t, eff_t))
+
     #print b_alljet, b_tagged, c_alljet, c_tagged, udsg_alljet, udsg_tagged
     #global bTagging_b_jet_efficiency, bTagging_c_jet_efficiency, bTagging_udsg_jet_efficiency
     #bTagging_b_jet_efficiency = bTagging_X_jet_efficiency(b_alljet, b_tagged)
@@ -3598,7 +3690,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             jet_index = i
             #genmatch = 0
             if isMC:
-                # ALREADY APPLIED
+                # JES is ALREADY APPLIED
                 #jes_uncorFactor = ev.jet_uncorrected_jecFactor[i]
                 #en_factor *= jer_factor * jes_uncorFactor
 
@@ -3613,6 +3705,32 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 # -- let's hope it is also adequate
                 HF = ev.jet_hadronFlavour[i]
                 PF = ev.jet_partonFlavour[i]
+
+                # JES must be reapplied for TT PS systematic datasets
+                if isTT_systematic and ev.genjet_matched[i] and correction_jes_barrel_b:
+                    pt_gen  = ev.genjet_pt[i]
+                    #jes_uncorFactor = ev.jet_uncorrected_jecFactor[i]
+                    jet_abs_eta = abs(p4.eta())
+                    if HF == 5: # by hadron flavour it's a b jet
+                        if jet_abs_eta < 1.5: # barrel
+                            ps_jes_factor = correction_jes_barrel_b.GetBinContent(correction_jes_barrel_b.FindBin(pt_gen))
+                        else:                 # endcap
+                            ps_jes_factor = correction_jes_endcap_b.GetBinContent(correction_jes_endcap_b.FindBin(pt_gen))
+                    elif HF == 4:
+                        if jet_abs_eta < 1.5:
+                            ps_jes_factor = correction_jes_barrel_c.GetBinContent(correction_jes_barrel_c.FindBin(pt_gen))
+                        else:
+                            ps_jes_factor = correction_jes_endcap_c.GetBinContent(correction_jes_endcap_c.FindBin(pt_gen))
+                    else:
+                        if jet_abs_eta < 1.5:
+                            ps_jes_factor = correction_jes_barrel_udsg.GetBinContent(correction_jes_barrel_udsg.FindBin(pt_gen))
+                        else:
+                            ps_jes_factor = correction_jes_endcap_udsg.GetBinContent(correction_jes_endcap_udsg.FindBin(pt_gen))
+
+                    # in the result we apply correction to the nominal JES in MC
+                    # the correction is ratio of custom JES measured in nominal and PS TTbar MC
+                    # so all possible bias due to the custom measurement method cancels out
+                    en_factor *= ps_jes_factor
 
                 # this check is done online with dR 0.4
                 #if ev.jet_matching_gen_dR[i] < 0.3:
@@ -3713,6 +3831,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                             jet_weight_bSFUp  , _, _ = calc_btag_sf_weight(b_tagged, flavId, jet_pt, jet_eta, "up")
                             jet_weight_bSFDown, _, _ = calc_btag_sf_weight(b_tagged, flavId, jet_pt, jet_eta, "down")
 
+                    possible_jet_pts = [jet_pt]
+
                     if with_JER_sys:
                         #jer_factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
                         up, down = ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
@@ -3726,6 +3846,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                         # for consistency let's make sys jet en corrections work like the nominal
                         jet_pt_JERUp    = p4.pt() * jet_factor_JERUp  
                         jet_pt_JERDown  = p4.pt() * jet_factor_JERDown
+                        possible_jet_pts.extend([jet_pt_JERUp, jet_pt_JERDown])
 
                     if with_JES_sys:
                         #jes_shift = ev.jet_jes_correction_relShift[i]
@@ -3739,11 +3860,12 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                         # --- these are correct, jet_pt = jet * jer_factor * jes_up
                         jet_pt_JESUp    = p4.pt() * jet_factor_JESUp  
                         jet_pt_JESDown  = p4.pt() * jet_factor_JESDown
+                        possible_jet_pts.extend([jet_pt_JESUp, jet_pt_JESDown])
 
                 en_factors  = (en_factor, jet_factor_JERUp, jet_factor_JERDown, jet_factor_JESUp, jet_factor_JESDown)
                 bSF_weights = (jet_weight_bSF_nom, jet_weight_bSFUp, jet_weight_bSFDown)
 
-                pass_jet_pt_cut = any(a_pt > JETS_PT_CUT for a_pt in (jet_pt, jet_pt_JERUp, jet_pt_JERDown, jet_pt_JESUp, jet_pt_JESDown))
+                pass_jet_pt_cut = any(a_pt > JETS_PT_CUT for a_pt in possible_jet_pts)
                 if not pass_jet_pt_cut:
                     continue
 

@@ -119,3 +119,7 @@ time python sumup_loop.py --overwrite --wjets-nup-cut  temp/plots_j_Data13TeV_Si
 time python -m cProfile -s cumtime sumup_loop.py --overwrite --wjets-nup-cut  temp/plots_j_Data13TeV_SingleMuon2016H_03Feb2017_ver2_1.root lstore_outdirs/v37/test12/Data13TeV_SingleMuon2016H_03Feb2017_ver2/Data13TeV_SingleMuon2016H_03Feb2017_ver2_1.root el_sel_lj/std/NOMINAL/Mt_lep_met_c,Mt_lep_met_c2,Mt_lep_met_f el_sel_lj_ss/std/NOMINAL/Mt_lep_met_c,Mt_lep_met_c2,Mt_lep_met_f mu_sel_lj/std/NOMINAL/Mt_lep_met_c,Mt_lep_met_c2,Mt_lep_met_f mu_sel_lj_ss/std/NOMINAL/Mt_lep_met_c,Mt_lep_met_c2,Mt_lep_met_f
 
 
+time python channel_distrs_full_loop.py --do-W-stitching --metmuegclean false --options no_prop_lepjets  -l logss temp/ channels_nom_sys_muon_sel_main -i gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-fsrup-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_fsrup/190219_114651/0000/MC2016_Summer16_TTJets_powheg_fsrup_1.root
+
+time python channel_distrs_full_loop.py --do-W-stitching --metmuegclean false --options no_prop_lepjets  -l logss temp/ channels_nom_sys_muon_sel_main -i gstore_outdirs/v37/TT_TuneCUETP8M2T4up_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg_CUETP8M2T4up/190219_115940/0000/MC2016_Summer16_TTJets_powheg_CUETP8M2T4up_1.root
+

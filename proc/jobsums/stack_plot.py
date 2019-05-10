@@ -769,7 +769,7 @@ if args.uncertainty_systematic:
 #used_histos_per_distr = [(distr_name, get_histos(f, channels, args.shape, sys_name, distr_name, skip_QCD = args.skip_QCD)) for distr_name in distr_names]
 # [(distr_name, [(histo, nick, channel)])]
 if args.merge_procs:
-    procs_to_merge = {}
+    procs_to_merge = {} # proc: target proc
     new_names = {}
     for procs_bunch in [bunch.split(',') for bunch in args.merge_procs.split('.') if ',' in bunch]:
         merged_procs, target_proc = procs_bunch[:-1], procs_bunch[-1]
@@ -791,6 +791,15 @@ if args.merge_procs:
             histos_per_nick[target].Add(histos_per_nick[merged_proc])
         for merged_proc in procs_to_merge.keys():
             histos_per_nick.pop(merged_proc)
+
+        # the remaining histos are the targets or the untouched processes
+        # rename them with the new names
+        for target_nick, histo in histos_per_nick.items():
+            if target_nick not in new_names: continue
+            new_nick = new_names[target_nick]
+            old_name = histos_per_nick[target_nick].GetName()
+            new_name = old_name.replace(target_nick, new_nick)
+            histos_per_nick[target_nick].SetName(new_name)
 
         merged_histos.append((distr, [(h, new_names.get(n, n), channel) for n,h in histos_per_nick.items()]))
 
