@@ -1369,6 +1369,8 @@ python stack_plot.py distrs/distrs_redo_v25v26_mc_4.root ../quick-test/redo-v25-
 
 and getting these:
 
+run_all_yields
+
                                  process & mu_preselCand & mu_sel & mu_sel_lj & mu_sel_ljout \\
 $\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$ & $  2623 \pm     68 $ & $   581 \pm     31 $ & $   193 \pm     18 $ & $   388 \pm     26 $ \\
        $\text{DY}\rightarrow{\rm other}$ & $  8236 \pm    190 $ & $    32 \pm     14 $ & $    11 \pm      9 $ & $    21 \pm     10 $ \\
@@ -1577,6 +1579,10 @@ make plot_sel_1  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 chan_tag=el
 
 make plot_sel_fit_1  nt=v37 proc=test13 distrs=bunchFULLFIT2 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=electron  options="--data-nick data_other --overwrite"
 make plot_sel_fit_1  nt=v37 proc=test13 distrs=bunchFULLFIT2 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=muon      options="--data-nick data_other --overwrite"
+
+also plots for paper:
+make plot_sel_paper_1  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=#mu
+make plot_sel_paper_1  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=e
 
 
 

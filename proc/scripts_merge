@@ -158,16 +158,6 @@ hadd MC2016_Summer16_W3Jets_madgraph.root ../MC2016_Summer16_W3Jets_madgraph*roo
 hadd MC2016_Summer16_W4Jets_madgraph.root ../MC2016_Summer16_W4Jets_madgraph*root &
 
 
-mv MC2016_Summer16_QCD_HT-1000-1500*.root MC2016_Summer16_QCD_HT-1500-2000*.root MC2016_Summer16_QCD_HT-200-300*.root   MC2016_Summer16_QCD_HT-2000-Inf*.root  MC2016_Summer16_QCD_HT-300-500*.root   MC2016_Summer16_QCD_HT-500-700*.root   MC2016_Summer16_QCD_HT-700-1000*.root  init/
-
-hadd MC2016_Summer16_QCD_HT-1000-1500.root init/MC2016_Summer16_QCD_HT-1000-1500*.root  &
-hadd MC2016_Summer16_QCD_HT-1500-2000.root init/MC2016_Summer16_QCD_HT-1500-2000*.root  &
-hadd MC2016_Summer16_QCD_HT-200-300.root   init/MC2016_Summer16_QCD_HT-200-300*.root    &
-hadd MC2016_Summer16_QCD_HT-2000-Inf.root  init/MC2016_Summer16_QCD_HT-2000-Inf*.root   &
-hadd MC2016_Summer16_QCD_HT-300-500.root   init/MC2016_Summer16_QCD_HT-300-500*.root    &
-hadd MC2016_Summer16_QCD_HT-500-700.root   init/MC2016_Summer16_QCD_HT-500-700*.root    &
-hadd MC2016_Summer16_QCD_HT-700-1000.root  init/MC2016_Summer16_QCD_HT-700-1000*.root   &
-
 mv MC2016_Summer16_QCD_EMEnriched_Pt-120to170*.root MC2016_Summer16_QCD_EMEnriched_Pt-30to50*.root MC2016_Summer16_QCD_EMEnriched_Pt-50to80*.root MC2016_Summer16_QCD_EMEnriched_Pt-80to120*.root init/
 
 hadd MC2016_Summer16_QCD_EMEnriched_Pt-120to170.root init/MC2016_Summer16_QCD_EMEnriched_Pt-120to170*.root &
@@ -204,6 +194,19 @@ hadd merge-sets/v13-0/run_2/tt_systs/MC2016_Summer16_TTJets_powheg_ISRUp.root   
 foreach d (MC2016_Summer16_DYJetsToLL_10to50_amcatnlo MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_v1_ext1 MC2016_Summer16_DYJetsToLL_10to50_amcatnlo_v2 MC2016_Summer16_DYJetsToLL_50toInf_madgraph MC2016_Summer16_DYJetsToLL_50toInf_madgraph_ext2_v1 MC2016_Summer16_W1Jets_madgraph MC2016_Summer16_W2Jets_madgraph MC2016_Summer16_W2Jets_madgraph_ext1 MC2016_Summer16_W3Jets_madgraph MC2016_Summer16_W3Jets_madgraph_ext1 MC2016_Summer16_W4Jets_madgraph MC2016_Summer16_W4Jets_madgraph_ext1 MC2016_Summer16_W4Jets_madgraph_ext2 MC2016_Summer16_WJets_amcatnlo MC2016_Summer16_WJets_amcatnlo_ext2_v2 MC2016_Summer16_WJets_madgraph MC2016_Summer16_WJets_madgraph_ext2_v1)
 hadd merge-sets/v14/testing-pu/$d.root /lstore/cms/olek/outdirs/v14/testing-pu/$d/$d*root &
 end
+
+
+
+mv MC2016_Summer16_QCD_HT-1000-1500*.root MC2016_Summer16_QCD_HT-1500-2000*.root MC2016_Summer16_QCD_HT-200-300*.root   MC2016_Summer16_QCD_HT-2000-Inf*.root  MC2016_Summer16_QCD_HT-300-500*.root   MC2016_Summer16_QCD_HT-500-700*.root   MC2016_Summer16_QCD_HT-700-1000*.root  init/
+
+hadd MC2016_Summer16_QCD_HT-1000-1500.root init/MC2016_Summer16_QCD_HT-1000-1500*.root  &
+hadd MC2016_Summer16_QCD_HT-1500-2000.root init/MC2016_Summer16_QCD_HT-1500-2000*.root  &
+hadd MC2016_Summer16_QCD_HT-200-300.root   init/MC2016_Summer16_QCD_HT-200-300*.root    &
+hadd MC2016_Summer16_QCD_HT-2000-Inf.root  init/MC2016_Summer16_QCD_HT-2000-Inf*.root   &
+hadd MC2016_Summer16_QCD_HT-300-500.root   init/MC2016_Summer16_QCD_HT-300-500*.root    &
+hadd MC2016_Summer16_QCD_HT-500-700.root   init/MC2016_Summer16_QCD_HT-500-700*.root    &
+hadd MC2016_Summer16_QCD_HT-700-1000.root  init/MC2016_Summer16_QCD_HT-700-1000*.root   &
+
 
 
 mv MC2016_Summer16_DYJetsToLL_* MC2016_Summer16_W[234]Jets* MC2016_Summer16_WJets_madgraph* init/
