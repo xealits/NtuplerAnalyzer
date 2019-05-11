@@ -328,6 +328,7 @@ usual_gen_lumi_weights = {
 #"MC2016_Summer16_DYJetsToLL_50toInf_madgraph" :  42971580.460955,
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph" : 147827597.073751, # with ext
 
+"MC2016_Summer16_QCD_HT-50-100"  : 1.,
 "MC2016_Summer16_QCD_HT-100-200" : 80668282.010224,
 "MC2016_Summer16_QCD_HT-1000-1500" : 4831794.914995,
 "MC2016_Summer16_QCD_HT-1500-2000" : 4025637.189128,
@@ -336,10 +337,31 @@ usual_gen_lumi_weights = {
 "MC2016_Summer16_QCD_HT-300-500" : 17273854.173847,
 "MC2016_Summer16_QCD_HT-500-700" : 19192242.333873,
 "MC2016_Summer16_QCD_HT-700-1000" : 15846448.822448,
+
+# QCD with extra:
+"MC2016_Summer16_QCD_HT-50-100" : 2173208.380416,
+"MC2016_Summer16_QCD_HT-100-200" : 80668282.010224,
+"MC2016_Summer16_QCD_HT-1000-1500" : 15335398.362668,
+"MC2016_Summer16_QCD_HT-1500-2000" : 11989832.754228,
+"MC2016_Summer16_QCD_HT-200-300" : 48876675.399201,
+"MC2016_Summer16_QCD_HT-2000-Inf" : 6122311.571837,
+"MC2016_Summer16_QCD_HT-300-500" : 46520526.182334,
+"MC2016_Summer16_QCD_HT-500-700" : 55542277.643419,
+"MC2016_Summer16_QCD_HT-700-1000" : 34309213.440448,
+
 "MC2016_Summer16_SingleT_tW_5FS_powheg" : 7079946.591460,
 "MC2016_Summer16_SingleTbar_tW_5FS_powheg" : 7060819.557982, 
 #"MC2016_Summer16_TTJets_powheg" : 51888536.120941, # test9, 66 jobs
 "MC2016_Summer16_TTJets_powheg" : 78189291.372787,
+
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4down" : 41995500.404884,
+"MC2016_Summer16_TTJets_powheg_CUETP8M2T4up" : 51516630.056014,
+"MC2016_Summer16_TTJets_powheg_fsrdown" : 147557712.865285,
+"MC2016_Summer16_TTJets_powheg_fsrup" : 98612432.694895,
+"MC2016_Summer16_TTJets_powheg_hdampDOWN" : 47360696.731431,
+"MC2016_Summer16_TTJets_powheg_hdampUP" : 43178383.479820,
+"MC2016_Summer16_TTJets_powheg_isrdown" : 151926487.990319,
+"MC2016_Summer16_TTJets_powheg_isrup" : 59882395.144296,
 
 "MC2016_Summer16_W1Jets_madgraph" : 42268723.655958, 
 "MC2016_Summer16_W2Jets_madgraph" : 58623419.131360,
@@ -347,6 +369,7 @@ usual_gen_lumi_weights = {
 "MC2016_Summer16_W4Jets_madgraph" : 30412479.957944,
 "MC2016_Summer16_WJets_amcatnlo" : 151108470.560272,
 "MC2016_Summer16_WJets_madgraph" : 85737026.803850,
+
 "MC2016_Summer16_WWTo2L2Nu_powheg" : 2026759.028423,
 "MC2016_Summer16_WWToLNuQQ_powheg" : 2026281.926199,
 "MC2016_Summer16_WZTo1L1Nu2Q_amcatnlo_madspin" : 14254071.531880,
@@ -360,8 +383,8 @@ usual_gen_lumi_weights = {
 "MC2016_Summer16_tchannel_top_4f_leptonicDecays_powheg" : 68953757.295413,
 }
 
-'''
 
+'''
 "MC2016_Summer16_DYJetsToLL_50toInf_madgraph" : 42971580.460955,
 "MC2016_Summer16_SingleT_tW_5FS_powheg" : 7079946.591460,
 "MC2016_Summer16_SingleTbar_tW_5FS_powheg" : 7060819.557982,
