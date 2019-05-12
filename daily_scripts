@@ -1519,6 +1519,98 @@ aaa!
 
 -- only the dy tautau are missing
 
+make run_all_yields_dy_tautau
+
+mc qcd norm:
+
+INFO:root:data       =    13456.000000      116.000000
+INFO:root:mc sum     =    16802.591552    16802.591552
+
+-- try factor 3.
+
+python stack_plot.py distrs/v37_test13_bunch1YIELDS_mc_2.root distrs/v37_test13_bunch1YIELDS/SingleMuon.root -o histosels/v37_test13_bunch1_yields1_dy_tautau/ --data-nick data_other --lumi 35800 -d yield --wjet 1.4 -c dy_mutau    --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+
+-- no, the error was due to hadding in wjets amcatnlo
+
+finally with the usual mc qcd 2.5:
+
+                                 process & dy_mutau & dy_mutau_3j & dy_eltau & dy_eltau_3j \\
+                       $\text{dibosons}$ & $  1618 \pm     25 $ & $   421 \pm     13 $ & $  1073 \pm     21 $ & $   301 \pm     11 $ \\
+                                $\ttbar$ & $  4786 \pm     43 $ & $  3261 \pm     36 $ & $  3286 \pm     36 $ & $  2252 \pm     30 $ \\
+                     $\text{single top}$ & $  1045 \pm     13 $ & $   360 \pm      8 $ & $   686 \pm     11 $ & $   249 \pm      7 $ \\
+$\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$ & $ 72416 \pm    325 $ & $  4906 \pm     88 $ & $ 31084 \pm    220 $ & $  3136 \pm     74 $ \\
+                            $\text{QCD}$ & $ 32953 \pm    537 $ & $  2592 \pm    122 $ & $ 40777 \pm    453 $ & $  3116 \pm    115 $ \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $ 72509 \pm    705 $ & $  5344 \pm     81 $ & $ 43304 \pm    529 $ & $  3648 \pm     69 $ \\
+       $\text{DY}\rightarrow{\rm other}$ & $  9485 \pm    208 $ & $   685 \pm     38 $ & $ 13906 \pm    192 $ & $  1065 \pm     45 $ \\
+aaa!
+                                mc_resum & 194812.295 & 17569.271 & 134115.626 & 13767.060 \\
+                                   total & $194812 \pm    969 $ & $ 17569 \pm    179 $ & $134116 \pm    756 $ & $ 13767 \pm    163 $ \\
+                                    data & $197473 \pm    444 $ & $ 17721 \pm    133 $ & $132629 \pm    364 $ & $ 13456 \pm    116 $ \\
+
+
+                                 process & dy_mutau & dy_mutau_3j & dy_eltau & dy_eltau_3j \\
+                       $\text{dibosons}$ & $  1618 \pm     25 $ & $   421 \pm     13 $ & $  1073 \pm     21 $ & $   301 \pm     11 $ \\
+                                $\ttbar$ & $  4786 \pm     43 $ & $  3261 \pm     36 $ & $  3286 \pm     36 $ & $  2252 \pm     30 $ \\
+                     $\text{single top}$ & $  1045 \pm     13 $ & $   360 \pm      8 $ & $   686 \pm     11 $ & $   249 \pm      7 $ \\
+$\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$ & $ 72416 \pm    325 $ & $  4906 \pm     88 $ & $ 31084 \pm    220 $ & $  3136 \pm     74 $ \\
+                            $\text{QCD}$ & $ 16268 \pm   6989 $ & $  9188 \pm   5333 $ & $ 38411 \pm  29786 $ & $   185 \pm     90 $ \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $ 72509 \pm    705 $ & $  5344 \pm     81 $ & $ 43304 \pm    529 $ & $  3648 \pm     69 $ \\
+       $\text{DY}\rightarrow{\rm other}$ & $  9485 \pm    208 $ & $   685 \pm     38 $ & $ 13906 \pm    192 $ & $  1065 \pm     45 $ \\
+aaa!
+                                mc_resum & 178127.683 & 24165.154 & 131749.626 & 10835.602 \\
+                                   total & $178128 \pm   7035 $ & $ 24165 \pm   5335 $ & $131750 \pm  29793 $ & $ 10836 \pm    147 $ \\
+                                    data & $197473 \pm    444 $ & $ 17721 \pm    133 $ & $132629 \pm    364 $ & $ 13456 \pm    116 $ \\
+
+flip to electron,muon:
+
+python numbers_for_datacard.py histosels/v37_test13_bunch1_yields1_dy_tautau//dy_tautau_yields_data-qcd.root -y -d yield -c dy_eltau,dy_eltau_3j,dy_mutau,dy_mutau_3j --latex
+python numbers_for_datacard.py histosels/v37_test13_bunch1_yields1_dy_tautau//dy_tautau_yields_mc-qcd.root   -y -d yield -c dy_eltau,dy_eltau_3j,dy_mutau,dy_mutau_3j --latex
+
+                                 process & dy_eltau & dy_eltau_3j & dy_mutau & dy_mutau_3j \\
+                       $\text{dibosons}$ & $  1073 \pm     21 $ & $   301 \pm     11 $ & $  1618 \pm     25 $ & $   421 \pm     13 $ \\
+                                $\ttbar$ & $  3286 \pm     36 $ & $  2252 \pm     30 $ & $  4786 \pm     43 $ & $  3261 \pm     36 $ \\
+                     $\text{single top}$ & $   686 \pm     11 $ & $   249 \pm      7 $ & $  1045 \pm     13 $ & $   360 \pm      8 $ \\
+$\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$ & $ 31084 \pm    220 $ & $  3136 \pm     74 $ & $ 72416 \pm    325 $ & $  4906 \pm     88 $ \\
+                            $\text{QCD}$ & $ 40777 \pm    453 $ & $  3116 \pm    115 $ & $ 32953 \pm    537 $ & $  2592 \pm    122 $ \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $ 43304 \pm    529 $ & $  3648 \pm     69 $ & $ 72509 \pm    705 $ & $  5344 \pm     81 $ \\
+       $\text{DY}\rightarrow{\rm other}$ & $ 13906 \pm    192 $ & $  1065 \pm     45 $ & $  9485 \pm    208 $ & $   685 \pm     38 $ \\
+aaa!
+                                mc_resum & 134115.626 & 13767.060 & 194812.295 & 17569.271 \\
+                                   total & $134116 \pm    756 $ & $ 13767 \pm    163 $ & $194812 \pm    969 $ & $ 17569 \pm    179 $ \\
+                                    data & $132629 \pm    364 $ & $ 13456 \pm    116 $ & $197473 \pm    444 $ & $ 17721 \pm    133 $ \\
+
+                                 process & dy_eltau & dy_eltau_3j & dy_mutau & dy_mutau_3j \\
+                       $\text{dibosons}$ & $  1073 \pm     21 $ & $   301 \pm     11 $ & $  1618 \pm     25 $ & $   421 \pm     13 $ \\
+                                $\ttbar$ & $  3286 \pm     36 $ & $  2252 \pm     30 $ & $  4786 \pm     43 $ & $  3261 \pm     36 $ \\
+                     $\text{single top}$ & $   686 \pm     11 $ & $   249 \pm      7 $ & $  1045 \pm     13 $ & $   360 \pm      8 $ \\
+$\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$ & $ 31084 \pm    220 $ & $  3136 \pm     74 $ & $ 72416 \pm    325 $ & $  4906 \pm     88 $ \\
+                            $\text{QCD}$ & $ 38411 \pm  29786 $ & $   185 \pm     90 $ & $ 16268 \pm   6989 $ & $  9188 \pm   5333 $ \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $ 43304 \pm    529 $ & $  3648 \pm     69 $ & $ 72509 \pm    705 $ & $  5344 \pm     81 $ \\
+       $\text{DY}\rightarrow{\rm other}$ & $ 13906 \pm    192 $ & $  1065 \pm     45 $ & $  9485 \pm    208 $ & $   685 \pm     38 $ \\
+aaa!
+                                mc_resum & 131749.626 & 10835.602 & 178127.683 & 24165.154 \\
+                                   total & $131750 \pm  29793 $ & $ 10836 \pm    147 $ & $178128 \pm   7035 $ & $ 24165 \pm   5335 $ \\
+                                    data & $132629 \pm    364 $ & $ 13456 \pm    116 $ & $197473 \pm    444 $ & $ 17721 \pm    133 $ \\
+
+
+and use this:
+
+                                 process & pre-$DY\rightarrow\tau_{e}\tau_{h}$ & $DY\rightarrow\tau_{e}\tau_{h}$ &  pre-$DY\rightarrow\tau_{\mu}\tau_{h}$ & $DY\rightarrow\tau_{\mu}\tau_{h}$ \\
+
+                       $\text{dibosons}$ & $  1073 \pm     21 $ & $   301 \pm     11 $ & $  1618 \pm     25 $ & $   421 \pm     13 $ \\
+                                $\ttbar$ & $  3286 \pm     36 $ & $  2252 \pm     30 $ & $  4786 \pm     43 $ & $  3261 \pm     36 $ \\
+                     $\text{single top}$ & $   686 \pm     11 $ & $   249 \pm      7 $ & $  1045 \pm     13 $ & $   360 \pm      8 $ \\
+$\text{DY}\rightarrow{\tau_{\ell}\tau_{h}}+ {\rm jets}$ & $ 31084 \pm    220 $ & $  3136 \pm     74 $ & $ 72416 \pm    325 $ & $  4906 \pm     88 $ \\
+                            $\text{QCD}$ & $ 40777 \pm    453 $ & $  3116 \pm    115 $ & $ 32953 \pm    537 $ & $  2592 \pm    122 $ \\
+                       ($\text{QCD MC}$) & ($ 38411 \pm  29786 $) & ($   185 \pm     90 $) & ($ 16268 \pm   6989 $) & ($  9188 \pm   5333 $) \\
+$\text{W+jets} \rightarrow\ell\nu+ {\rm jets}$ & $ 43304 \pm    529 $ & $  3648 \pm     69 $ & $ 72509 \pm    705 $ & $  5344 \pm     81 $ \\
+       $\text{DY}\rightarrow{\rm other}$ & $ 13906 \pm    192 $ & $  1065 \pm     45 $ & $  9485 \pm    208 $ & $   685 \pm     38 $ \\
+
+                                   total & $134116 \pm    756 $ & $ 13767 \pm    163 $ & $194812 \pm    969 $ & $ 17569 \pm    179 $ \\
+                                    data & $132629 \pm    364 $ & $ 13456 \pm    116 $ & $197473 \pm    444 $ & $ 17721 \pm    133 $ \\
+
+
+
 
 ### launch control distrs
 

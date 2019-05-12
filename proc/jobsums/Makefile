@@ -194,7 +194,7 @@ all_yields_numbers:
 	python numbers_for_datacard.py ${out}/all.root -y -d yield -c dy_elel,dy_mumu   --latex
 	python numbers_for_datacard.py ${out}/all.root -y -d yield -c tt_elmu           --latex
 	python numbers_for_datacard.py ${out}/all.root -y -d yield -c wjets_el,wjets_mu --latex
-	python numbers_for_datacard.py ${out}/all.root -y -d yield -c dy_mutau,dy_mutau_3j,dy_eltau,dy_eltau_3j --latex
+	python numbers_for_datacard.py ${out}/all.root -y -d yield -c dy_eltau,dy_eltau_3j,dy_mutau,dy_mutau_3j --latex
 
 # chan=$chan qcd_opt="--qcd 1.05"
 run_all_yields: mc=distrs/v37_test13_bunch1YIELDS_mc_1.root
@@ -260,23 +260,23 @@ run_all_yields_dy_tautau: distr=yield
 run_all_yields_dy_tautau: lumi=35800
 run_all_yields_dy_tautau:
 	mkdir -p ${out}/full_processes/
-	# dy tautau
-	# produce with mc qcd
-	python stack_plot.py ${mc} ${data_mu} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau    --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	python stack_plot.py ${mc} ${data_mu} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau_3j --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	python stack_plot.py ${mc} ${data_el} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau    --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	python stack_plot.py ${mc} ${data_el} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau_3j --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	# produce with data-driven qcd
-	python stack_plot.py ${mc} ${data_mu} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau    --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	python stack_plot.py ${mc} ${data_mu} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau_3j --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	python stack_plot.py ${mc} ${data_el} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau    --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	python stack_plot.py ${mc} ${data_el} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau_3j --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	# hadd them separately all
-	hadd -f ${out}/dy_tautau_yields_data-qcd.root ${out}/distr*data-qcd.root
-	hadd -f ${out}/dy_tautau_yields_mc-qcd.root   ${out}/distr*NOMINAL.root
+	## dy tautau
+	## produce with mc qcd
+	#python stack_plot.py ${mc} ${data_mu} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau    --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	#python stack_plot.py ${mc} ${data_mu} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau_3j --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	#python stack_plot.py ${mc} ${data_el} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau    --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	#python stack_plot.py ${mc} ${data_el} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau_3j --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	## produce with data-driven qcd
+	#python stack_plot.py ${mc} ${data_mu} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau    --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	#python stack_plot.py ${mc} ${data_mu} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau_3j --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	#python stack_plot.py ${mc} ${data_el} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau    --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	#python stack_plot.py ${mc} ${data_el} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau_3j --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	## hadd them separately all
+	#hadd -f ${out}/dy_tautau_yields_data-qcd.root ${out}/distr*data-qcd.root
+	#hadd -f ${out}/dy_tautau_yields_mc-qcd.root   ${out}/distr*NOMINAL.root
 	# produce the tables
-	python numbers_for_datacard.py ${out}/dy_tautau_yields_data-qcd.root -y -d yield -c dy_mutau,dy_mutau_3j,dy_eltau,dy_eltau_3j --latex
-	python numbers_for_datacard.py ${out}/dy_tautau_yields_mc-qcd.root   -y -d yield -c dy_mutau,dy_mutau_3j,dy_eltau,dy_eltau_3j --latex
+	python numbers_for_datacard.py ${out}/dy_tautau_yields_data-qcd.root -y -d yield -c dy_eltau,dy_eltau_3j,dy_mutau,dy_mutau_3j --latex
+	python numbers_for_datacard.py ${out}/dy_tautau_yields_mc-qcd.root   -y -d yield -c dy_eltau,dy_eltau_3j,dy_mutau,dy_mutau_3j --latex
 
 
 # all the plotting for the AN and paper
@@ -679,19 +679,6 @@ rename_for_update_dileptons:
 	ln -s ../*Mt_lep_met_c_dy_mumu_NOMINAL*ratio.png   dy_mumu_Mt_lep_met.png
 	ln -s ../*lep_pt_dy_elel_NOMINAL*ratio.png         dy_elel_lep_pt.png
 	ln -s ../*Mt_lep_met_c_dy_elel_NOMINAL*ratio.png   dy_elel_Mt_lep_met.png
-	# dy_tautau
-	ln -s ../*lep_pt_dy_eltau_NOMINAL*.png       dy_eltau_lep_pt.png
-	ln -s ../*lep_eta_dy_eltau_NOMINAL*.png      dy_eltau_lep_eta.png
-	ln -s ../*Mt_lep_met_c_dy_eltau_NOMINAL*.png dy_eltau_lep_eta.png
-	ln -s ../*lep_pt_dy_eltau_3j_NOMINAL*.png       dy_eltau_3j_lep_pt.png
-	ln -s ../*lep_eta_dy_eltau_3j_NOMINAL*.png      dy_eltau_3j_lep_eta.png
-	ln -s ../*Mt_lep_met_c_dy_eltau_3j_NOMINAL*.png dy_eltau_3j_lep_eta.png
-	ln -s ../*lep_pt_dy_mutau_NOMINAL*.png       dy_mutau_lep_pt.png
-	ln -s ../*lep_eta_dy_mutau_NOMINAL*.png      dy_mutau_lep_eta.png
-	ln -s ../*Mt_lep_met_c_dy_mutau_NOMINAL*.png dy_mutau_lep_eta.png
-	ln -s ../*lep_pt_dy_mutau_3j_NOMINAL*.png       dy_mutau_3j_lep_pt.png
-	ln -s ../*lep_eta_dy_mutau_3j_NOMINAL*.png      dy_mutau_3j_lep_eta.png
-	ln -s ../*Mt_lep_met_c_dy_mutau_3j_NOMINAL*.png dy_mutau_3j_lep_eta.png
 	# tt_elmu
 	ln -s ../*Mt_lep_met_c_tt_elmu_NOMINAL*ratio.png elmu_Mt_lep_met.png
 	ln -s ../*Muon_met_c_tt_elmu_NOMINAL*ratio.png        elmu_met.png
@@ -700,11 +687,36 @@ rename_for_update_dileptons:
 	ln -s ../*Muon_met_c_tt_elmu_TOPPTUp*ratio.png        elmu_met_TOPPTUp.png
 	ln -s ../*lep_pt_tt_elmu_TOPPTUp*ratio.png       elmu_lep_pt_TOPPTUp.png
 
+.ONESHELL:
+rename_for_update_dy_tautau: nt=v37
+rename_for_update_dy_tautau: proc=test13
+rename_for_update_dy_tautau: up=update1
+rename_for_update_dy_tautau:
+	mkdir -p plots/${nt}_${proc}_${up}/renames/
+	cd plots/${nt}_${proc}_${up}/renames/
+	# dy_tautau
+	ln -s ../*lep_pt_dy_eltau_NOMINAL*.png       dy_eltau_lep_pt.png
+	ln -s ../*lep_eta_dy_eltau_NOMINAL*.png      dy_eltau_lep_eta.png
+	ln -s ../*Mt_lep_met_c_dy_eltau_NOMINAL*.png dy_eltau_Mt_lep_met.png
+	ln -s ../*lep_pt_dy_eltau_NOMINAL*.png       dy_eltau_tau_pt.png
+	ln -s ../*lep_pt_dy_eltau_3j_NOMINAL*.png       dy_eltau_3j_lep_pt.png
+	ln -s ../*lep_eta_dy_eltau_3j_NOMINAL*.png      dy_eltau_3j_lep_eta.png
+	ln -s ../*Mt_lep_met_c_dy_eltau_3j_NOMINAL*.png dy_eltau_3j_Mt_lep_met.png
+	ln -s ../*lep_pt_dy_eltau_3j_NOMINAL*.png       dy_eltau_3j_tau_pt.png
+	ln -s ../*lep_pt_dy_mutau_NOMINAL*.png       dy_mutau_lep_pt.png
+	ln -s ../*lep_eta_dy_mutau_NOMINAL*.png      dy_mutau_lep_eta.png
+	ln -s ../*Mt_lep_met_c_dy_mutau_NOMINAL*.png dy_mutau_lep_Mt_lep_met.png
+	ln -s ../*lep_pt_dy_mutau_NOMINAL*.png       dy_mutau_tau_pt.png
+	ln -s ../*lep_pt_dy_mutau_3j_NOMINAL*.png       dy_mutau_3j_lep_pt.png
+	ln -s ../*lep_eta_dy_mutau_3j_NOMINAL*.png      dy_mutau_3j_lep_eta.png
+	ln -s ../*Mt_lep_met_c_dy_mutau_3j_NOMINAL*.png dy_mutau_3j_Mt_lep_met.png
+	ln -s ../*lep_pt_dy_mutau_3j_NOMINAL*.png       dy_mutau_3j_tau_pt.png
+
 
 rename_for_update: nt=v37
 rename_for_update: proc=test13
 rename_for_update: up=update1
-rename_for_update: rename_for_update_mu_presel rename_for_update_el_presel rename_for_update_wjets rename_for_update_dileptons rename_for_update_el_sel rename_for_update_mu_sel
+rename_for_update: rename_for_update_mu_presel rename_for_update_el_presel rename_for_update_wjets rename_for_update_dileptons rename_for_update_el_sel rename_for_update_mu_sel rename_for_update_dy_tautau
 
 test_controls_v37_test5_issue1: tests=tests1
 test_controls_v37_test5_issue1: mc=distrs/v37_test5_bunch2_mc_wjets_wNjets.root
