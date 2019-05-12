@@ -258,22 +258,23 @@ run_all_yields_dy_tautau: wjets_norm=1.4
 run_all_yields_dy_tautau: mc_qcd_factor=2.5
 run_all_yields_dy_tautau: distr=yield
 run_all_yields_dy_tautau: lumi=35800
+run_all_yields_dy_tautau: options=--overwrite
 run_all_yields_dy_tautau:
-	mkdir -p ${out}/full_processes/
-	## dy tautau
-	## produce with mc qcd
-	#python stack_plot.py ${mc} ${data_mu} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau    --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	#python stack_plot.py ${mc} ${data_mu} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau_3j --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	#python stack_plot.py ${mc} ${data_el} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau    --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	#python stack_plot.py ${mc} ${data_el} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau_3j --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	## produce with data-driven qcd
-	#python stack_plot.py ${mc} ${data_mu} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau    --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	#python stack_plot.py ${mc} ${data_mu} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau_3j --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	#python stack_plot.py ${mc} ${data_el} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau    --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	#python stack_plot.py ${mc} ${data_el} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau_3j --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
-	## hadd them separately all
-	#hadd -f ${out}/dy_tautau_yields_data-qcd.root ${out}/distr*data-qcd.root
-	#hadd -f ${out}/dy_tautau_yields_mc-qcd.root   ${out}/distr*NOMINAL.root
+	mkdir -p ${out}/
+	# dy tautau
+	# produce with mc qcd
+	python stack_plot.py ${mc} ${data_mu} ${options} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau    --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	python stack_plot.py ${mc} ${data_mu} ${options} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau_3j --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	python stack_plot.py ${mc} ${data_el} ${options} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau    --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	python stack_plot.py ${mc} ${data_el} ${options} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau_3j --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	# produce with data-driven qcd
+	python stack_plot.py ${mc} ${data_mu} ${options} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau    --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	python stack_plot.py ${mc} ${data_mu} ${options} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_mutau_3j --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	python stack_plot.py ${mc} ${data_el} ${options} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau    --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	python stack_plot.py ${mc} ${data_el} ${options} -o ${out} --data-nick ${data_nick} --lumi ${lumi} -d ${distr} --wjet ${wjets_norm} -c dy_eltau_3j --qcd 1.05 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+	# hadd them separately all
+	hadd -f ${out}/dy_tautau_yields_data-qcd.root ${out}/distr*data-qcd.root
+	hadd -f ${out}/dy_tautau_yields_mc-qcd.root   ${out}/distr*NOMINAL.root
 	# produce the tables
 	python numbers_for_datacard.py ${out}/dy_tautau_yields_data-qcd.root -y -d yield -c dy_eltau,dy_eltau_3j,dy_mutau,dy_mutau_3j --latex
 	python numbers_for_datacard.py ${out}/dy_tautau_yields_mc-qcd.root   -y -d yield -c dy_eltau,dy_eltau_3j,dy_mutau,dy_mutau_3j --latex

@@ -985,12 +985,12 @@ if not args.plot and not args.ratio and not args.osss_pl:
     filename = out_dir + args.mc_file.split('.root')[0].replace('/', ',') + '_HISTOSEL_%s_%s_%s%s.root' % (distr_name, channel, sys_name, options)
     logging.info('saving root %s' % filename)
 
-    if isfile(filename):
+    if not args.overwrite and isfile(filename):
         print filename, "exists, nothing written"
         exit(0)
 
-    #fout = TFile(filename, 'RECREATE')
-    fout = TFile(filename, 'CREATE')
+    fout = TFile(filename, 'RECREATE')
+    #fout = TFile(filename, 'CREATE')
     fout.cd()
 
     # create the channel/sys/ TDir
