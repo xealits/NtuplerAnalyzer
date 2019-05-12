@@ -259,6 +259,139 @@ TES is like JES, the bins at 150 and 200GeV are close to asymmetry
 but not like LEPMu
 
 
+### weird muon short pulls
+
+change to rate: ID 1%, TRG 0.2%
+
+vim ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat_exp.txt
+
+make workspace        datacard=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat_exp
+make pre_pulls_short workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat_exp.root   nn=mu_v37_test13_2_exp
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_mu_v37_test13_2_exp_shapeshort.root
+
+LEPmuID         shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -
+LEPmuTRG        shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -
+
+
+LEPmuID         lnN          0.02    0.02   0.02   0.02   0.02        0.02      0.02   0.02   0.02      0.02   0.02      0.02   0.02      -                  0.02    0.02   0.02   0.02   0.02        0.02      0.02   0.02   0.02      0.02   0.02      0.02   0.02      -
+LEPmuTRG        lnN          0.005    0.005   0.005   0.005   0.005        0.005      0.005   0.005   0.005      0.005   0.005      0.005   0.005      -                  0.005    0.005   0.005   0.005   0.005        0.005      0.005   0.005   0.005      0.005   0.005      0.005   0.005      -
+
+Best fit r: 0.877361  -0.877361/+0.132101  (68% CL)
+
+damn
+
+JES             shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -
+JER             shape          1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -                  1.0    1.0   1.0   1.0   1.0        1.0      1.0   1.0   1.0      1.0   1.0      1.0   1.0      -
+
+JES             lnN          0.015    0.015   0.015   0.015   0.015        0.015      0.015   0.015   0.015      0.015   0.015      0.015   0.015      -                  0.015    0.015   0.015   0.015   0.015        0.015      0.015   0.015   0.015      0.015   0.015      0.015   0.015      -
+JER             lnN          0.005    0.005   0.005   0.005   0.005        0.005      0.005   0.005   0.005      0.005   0.005      0.005   0.005      -                  0.005    0.005   0.005   0.005   0.005        0.005      0.005   0.005   0.005      0.005   0.005      0.005   0.005      -
+
+Mr              shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -              
+Mf              shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -              
+Mfr             shape     1.0    1.0 1.0 1.0    1.0      -    -    -  -  - - - -     -      1.0    1.0 1.0 1.0    1.0           -           -           -       -            -             -           -           -               -              
+
+Mr              lnN     0.05    0.05 0.05 0.05    0.05      -    -    -  -  - - - -     -      0.05    0.05 0.05 0.05    0.05           -           -           -       -            -             -           -           -               -              
+Mf              lnN     0.05    0.05 0.05 0.05    0.05      -    -    -  -  - - - -     -      0.05    0.05 0.05 0.05    0.05           -           -           -       -            -             -           -           -               -              
+Mfr             lnN     0.05    0.05 0.05 0.05    0.05      -    -    -  -  - - - -     -      0.05    0.05 0.05 0.05    0.05           -           -           -       -            -             -           -           -               -              
+
+
+Frag            shape          0.5    0.5   0.5   0.5   0.5        -        -     -     -        -     -        -     -        -                  0.5    0.5   0.5   0.5   0.5        -        -     -     -        -     -        -     -        -
+SemilepBR       shape          0.01    0.01   0.01   0.01   0.01        -        -     -     -        -     -        -     -        -                  0.01    0.01   0.01   0.01   0.01        -        -     -     -        -     -        -     -        -
+Peterson        shape          0.5    0.5   0.5   0.5   0.5        -        -     -     -        -     -        -     -        -                  0.5    0.5   0.5   0.5   0.5        -        -     -     -        -     -        -     -        -
+
+Frag            lnN          0.015    0.015   0.015   0.015   0.015        -        -     -     -        -     -        -     -        -                  0.015    0.015   0.015   0.015   0.015        -        -     -     -        -     -        -     -        -
+SemilepBR       lnN          0.001    0.001   0.001   0.001   0.001        -        -     -     -        -     -        -     -        -                  0.001    0.001   0.001   0.001   0.001        -        -     -     -        -     -        -     -        -
+Peterson        lnN          0.98/1.    0.98/1.   0.98/1.   0.98/1.   0.98/1.        -        -     -     -        -     -        -     -        -                  0.98/1.    0.98/1.   0.98/1.   0.98/1.   0.98/1.        -        -     -     -        -     -        -     -        -
+
+
+Best fit r: 2.13888  -2.13888/+0.150254  (68% CL)
+
+wtf?
+
+
+vim ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat_exp2.txt
+make workspace datacard=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat_exp2
+make pre_pulls_short workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat_exp2.root   nn=mu_v37_test13_bunchFULLFIT2_noMCstat_exp2
+
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_mu_v37_test13_bunchFULLFIT2_noMCstat_exp2_shapeshort.root
+
+combine -M FitDiagnostics ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat_exp2.root   --name mu_v37_test13_bunchFULLFIT2_noMCstat_exp2ShapeShort    --noMCbonly 0 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf_only
+
+combine -M FitDiagnostics ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat_exp2.root   --name mu_v37_test13_bunchFULLFIT2_noMCstat_exp2ShapeShort    --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf_only
+
+name                                              b-only fit            s+b fit         rho
+['FSR', 'Frag', 'HDAMP', 'ISR', 'JER', 'JES', 'LEPmuID', 'LEPmuTRG', 'Mf', 'Mfr', 'Mr', 'PU', 'Peterson', 'TES', 'TOPPT', 'bSF', 'tau_fakes', 'wjets_norm']
+FSR                                              +0.79, 0.76        +0.79, 0.76       -0.28
+Frag                                             +0.32, 0.92        +0.32, 0.92       +0.26
+HDAMP                                            -1.00, 0.96        -1.00, 0.96       -0.09
+ISR                                              -0.71, 0.97        -0.71, 0.97       +0.19
+JER                                              +0.46, 0.97        +0.46, 0.97       -0.07
+JES                                              -0.00, 0.55        -0.00, 0.55       +0.01
+LEPmuID                                       ! +0.00, 0.39!     ! +0.00, 0.39!       -0.01
+LEPmuTRG                                      ! -0.00, 0.39!     ! -0.00, 0.39!       -0.00
+Mf                                            ! +0.00, 0.24!     ! +0.00, 0.24!       +0.00
+Mfr                                              -0.35, 0.88        -0.35, 0.88       -0.14
+Mr                                               -0.34, 0.90        -0.34, 0.90       -0.15
+PU                                               -0.45, 0.98        -0.45, 0.98       -0.35
+Peterson                                         +0.01, 0.75        +0.01, 0.75       +0.01
+TES                                           ! -0.00, 0.46!     ! -0.00, 0.46!       -0.00
+
+they are dead on 0, the error bars are slightly larger
+
+LEPmuID         shape          0.2    0.2   0.2   0.2   0.2        0.2      0.2   0.2   0.2      0.2   0.2      0.2   0.2      -                  0.2    0.2   0.2   0.2   0.2        0.2      0.2   0.2   0.2      0.2   0.2      0.2   0.2      - 
+
+LEPmuID         lnN          0.2    0.2   0.2   0.2   0.2        0.2      0.2   0.2   0.2      0.2   0.2      0.2   0.2      -                  0.2    0.2   0.2   0.2   0.2        0.2      0.2   0.2   0.2      0.2   0.2      0.2   0.2      - 
+LEPmuID         lnN          0.2    -     0.2   0.2   0.2        -        -     -     -        -     -        -     -        -                  0.2    0.2   0.2   0.2   0.2        -        -     -     -        -     -        -     -        - 
+
+-- immediately insane fit
+
+
+JES             shape          0.1    0.1   0.1   0.1   0.1        0.1      0.1   0.1   0.1      0.1   0.1      0.1   0.1      -                  0.1    0.1   0.1   0.1   0.1        0.1      0.1   0.1   0.1      0.1   0.1      0.1   0.1      -
+JES             lnN          0.02    0.02   0.02   -     -          0.02      -     -     0.02      -     0.02      -     0.02      -                  0.02    0.02   -     -     -          0.02      -     -     0.02      0.02   -        -     0.02      -
+
+same crap
+Best fit r: 1.49109  -0.409809/+0.899405  (68% CL)
+
+ok let's do shapes..
+
+Best fit r: 0.930202  -0.0631903/+0.0690552  (68% CL)
+
+and back to normal
+
+ok:
+ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat_exp2.txt
+
+make both mucard=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat_exp2 elcard=ttxsec/datacard_v37_test13_bunchFULLFIT2_el_noMCstat bothcard=ttxsec/datacard_v37_test13_bunchFULLFIT2_both_noMCstat_exp2
+
+make workspace datacard=ttxsec/datacard_v37_test13_bunchFULLFIT2_both_noMCstat_exp2
+make pre_pulls_short workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_both_noMCstat_exp2.root   nn=both_v37_test13_bunchFULLFIT2_noMCstat_exp2
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_both_v37_test13_bunchFULLFIT2_noMCstat_exp2_shapeshort.root
+
+
+cp ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_noMCstat_exp2.txt ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_exp2.txt
+vim -p ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_exp2.txt ttxsec/datacard_v37_test13_bunchFULLFIT2_mu.txt 
+
+
+make both mucard=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_exp2 elcard=ttxsec/datacard_v37_test13_bunchFULLFIT2_el bothcard=ttxsec/datacard_v37_test13_bunchFULLFIT2_both_exp2
+make workspace datacard=ttxsec/datacard_v37_test13_bunchFULLFIT2_both_exp2
+
+make impacts workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu_exp2.root   nn=mu_v37_test13_2_exp2
+make impacts workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_both_exp2.root nn=both_v37_test13_2_exp2
+
+
+./latest_impacts_both_v37_test13_2_exp2.pdf
+-- looks like mu only + all LEP are not even close
+
+use only lessparams pulls
+
+evince ./latest_impacts_both_v37_test13_2_exp2.pdf
+evince ./latest_impacts_mu_v37_test13_2_exp2.pdf
+
+
+
+#### extracting and renaming all fitting plots
+
+
 defs for JES and TES:
 
 'JESDown':  lambda ev: ev.event_weight,
@@ -298,6 +431,19 @@ main_sel_stages = {
         tt_channel_sel_stage_JESDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESDown_med, N_jets_JESDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
 also ok
+
+make plot_sys_vars_tau_ID_misID mc=distrs/v37_test13_bunchFULLFIT2_mc.root data_mu=distrs/v37_test13_bunchFULLFIT2/SingleMuon.root data_el=distrs/v37_test13_bunchFULLFIT2/SingleElectron.root output=plots/v37_test13_update1/sys-variations/
+
+-- weird looking muon ID and TRG
+   Mfr, Mr, Mf (worse in el)  -- off from nominal
+   Frag, Peterson, Semilep    -- off from nominal
+   JER, JES
+   TES is more or less ok
+
+
+
+
+### corrections to JES in PS datasets
 
 stage2 calculation
 
@@ -725,7 +871,6 @@ if it is so, then the difference of heights of neighboring bins should matter
 the expected deviation must be proportional to 2nd derivative:
 for bins [N-1][N][N+1] the central bin N varies for both Up and Down close to
 (N+1) + (N-1) - 2*N
-
 
 root -l v37_test14_LEPmu_JES_JER_TES_issue_MET.root
 
@@ -1339,13 +1484,13 @@ python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunch
 
 
 
-## trends at high MET
+
+
+## trends at 500GeV MET
 
 maybe the nominal MET propagation (JER factor) is wrong? Or TES?
 -- check their variations
 recoil corrections? -- they are too small?
-
-
 
 
 

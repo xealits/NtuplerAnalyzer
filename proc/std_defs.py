@@ -917,7 +917,7 @@ distrs_tauonic_std  = {'tau_pt', 'tau_eta', 'tau_sv_sign'}
 #distrs_tauonic = distrs_tauonic_nomt
 
 
-main_sys = ['nom', 'common', 'obj']
+main_sys = ['nom', 'common', 'obj', 'TOPPTUp']
 sys_updowns = ['TuneCUETP8M2T4Down', 'TuneCUETP8M2T4Up', 'FSRDown', 'FSRUp', 'HDAMPDown', 'HDAMPUp', 'ISRDown', 'ISRUp',]
 full_sys = ['nom', 'common', 'obj', 'tt_weights', "tt_hard", 'tt_pdf'] + sys_updowns
 presel_sys = ['NOMINAL', 'TOPPTDown', 'TOPPTUp', 'PUUp', 'PUDown']

@@ -1694,6 +1694,181 @@ make --keep-going up=update1 rename_for_update_wjets
 
 
 
+### the issue with met trends
+
+-- almost fixed by TOPPT (in mu presel and other controls practically fixed)
+the most visible in main selection
+
+make --dry-run plot_sel_1  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=muon
+
+python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc.root distrs/v37_test13_bunchCONTROLS1/SingleMuon.root -o plots/v37_test13_bunchCONTROLS1/ --data-nick data_other --overwrite -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d met_c      --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "MET [GeV]"         --title-y "[Events/GeV]"     --draw-overflows 5 --legend-shift 0.02
+
+python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc.root distrs/v37_test13_bunchCONTROLS1/SingleMuon.root -o plots/v37_test13_bunchCONTROLS1/ --data-nick data_other --overwrite -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d met_c      --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "MET [GeV]"         --title-y "[Events/GeV]"     --draw-overflows 5 --legend-shift 0.02 --sys TOPPTUp
+
+-- no TOPPT saved!
+
+leave old mets?
+-- it was in different style
+
+TODO: find the files with old met
+
+
+where mets are used?
+-- main sel
+   presel
+   wjets
+   tt elmu
+
+-- presel and wjets with SS?
+
+mu_sel,mu_sel_ss,el_sel,el_sel_ss,mu_preselCand,mu_preselCand_ss,el_preselCand,el_preselCand_ss,wjets_mu,wjets_mu_ss,wjets_el,wjets_el_ss,tt_elmu
+
+-- produced CONTROLMET with shorter MET distrs
+
+
+
+
+### check updowns in v37_test13_bunchFULLFIT2
+
+root -l jobsums/distrs/v37_test13_bunchFULLFIT2_mc.root
+hadd temp_tt_nom_n_updowns.root temp_tt_updowns.root v37_test13_bunchFULLFIT2/1/MC2016_Summer16_TTJets_powheg.root
+
+root -l temp_tt_nom_n_updowns.root
+
+((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_lj/NOMINAL/el_sel_ljout_tt_lj_NOMINAL_Mt_lep_met_c"))->Integral()
+
+((TH1D*) el_sel_ljout->Get("tt_eltau/FSRUp/el_sel_ljout_tt_eltau_FSRUp_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_eltau/FSRDown/el_sel_ljout_tt_eltau_FSRDown_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_lj/FSRUp/el_sel_ljout_tt_lj_FSRUp_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_ljout->Get("tt_lj/NOMINAL/el_sel_ljout_tt_lj_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_lj/FSRDown/el_sel_ljout_tt_lj_FSRDown_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_ljout->Get("tt_lj/NOMINAL/el_sel_ljout_tt_lj_NOMINAL_Mt_lep_met_c"))->Integral()
+
+(double) 0.933320
+(double) 1.11701
+(double) 0.554250
+(double) 1.55115
+
+-- kind of the same
+
+
+((TH1D*) el_sel_lj->Get("tt_eltau/NOMINAL/el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_lj->Get("tt_lj/NOMINAL/el_sel_lj_tt_lj_NOMINAL_Mt_lep_met_c"))->Integral()
+
+((TH1D*) el_sel_lj->Get("tt_eltau/FSRUp/el_sel_lj_tt_eltau_FSRUp_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_lj->Get("tt_eltau/NOMINAL/el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_lj->Get("tt_eltau/FSRDown/el_sel_lj_tt_eltau_FSRDown_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_lj->Get("tt_eltau/NOMINAL/el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_lj->Get("tt_lj/FSRUp/el_sel_lj_tt_lj_FSRUp_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_lj->Get("tt_lj/NOMINAL/el_sel_lj_tt_lj_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_lj->Get("tt_lj/FSRDown/el_sel_lj_tt_lj_FSRDown_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_lj->Get("tt_lj/NOMINAL/el_sel_lj_tt_lj_NOMINAL_Mt_lep_met_c"))->Integral()
+
+(double) 0.898980
+(double) 1.03620
+(double) 0.527688
+(double) 1.49219
+
+signal is asymmetric,
+otherwise the same
+
+
+((TH1D*) el_sel_ljout->Get("tt_eltau/ISRUp/el_sel_ljout_tt_eltau_ISRUp_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_lj/ISRUp/el_sel_ljout_tt_lj_ISRUp_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_eltau/ISRDown/el_sel_ljout_tt_eltau_ISRDown_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_lj/ISRDown/el_sel_ljout_tt_lj_ISRDown_Mt_lep_met_c"))->Integral()
+
+((TH1D*) el_sel_ljout->Get("tt_eltau/HDAMPUp/el_sel_ljout_tt_eltau_HDAMPUp_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_lj/HDAMPUp/el_sel_ljout_tt_lj_HDAMPUp_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_eltau/HDAMPDown/el_sel_ljout_tt_eltau_HDAMPDown_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_lj/HDAMPDown/el_sel_ljout_tt_lj_HDAMPDown_Mt_lep_met_c"))->Integral()
+
+
+
+
+### Some export plots from the update (move it back)
+
+mkdir plots/v37_test13_update1/
+cp plots/v37_test13_bunchDILEP1/* plots/v37_test13_update1/
+cp plots/v37_test13_bunchCONTROLS1/* plots/v37_test13_update1/
+cp plots/v37_test13_bunchFULLFIT2/*png plots/v37_test13_update1/
+
+make --keep-going rename_for_update up=update1
+
+make --keep-going up=update1 rename_for_update_dileptons
+make --keep-going up=update1 rename_for_update_wjets
+make --keep-going up=update1 rename_for_update_dy_tautau
+
+
+
+
+and let's redo them with propper process-merging:
+
+mkdir plots/v37_test13_bunchDILEP1/1/
+mkdir plots/v37_test13_bunchCONTROLS1/1/
+mkdir plots/v37_test13_bunchFULLFIT2/1/
+
+mv plots/v37_test13_bunchDILEP1/*png    plots/v37_test13_bunchDILEP1/1/
+mv plots/v37_test13_bunchCONTROLS1/*png plots/v37_test13_bunchCONTROLS1/1/
+mv plots/v37_test13_bunchFULLFIT2/*png  plots/v37_test13_bunchFULLFIT2/1/
+
+rm plots/v37_test13_bunchDILEP1/*png plots/v37_test13_bunchCONTROLS1/*png plots/v37_test13_bunchFULLFIT2/*png
+
+make plot_tt_dilep         nt=v37 proc=test13 distrs=bunchDILEP1 lumi=35800 datafile=SingleMuon       options="--overwrite --factor-dy 1.05"
+
+make plot_control_dy_mumu  nt=v37 proc=test13 distrs=bunchDILEP1 lumi=35800 datafile=SingleMuon       options="--overwrite --factor-dy 1.05"
+make plot_control_dy_elel  nt=v37 proc=test13 distrs=bunchDILEP1 lumi=35800 datafile=SingleElectron   options="--overwrite --factor-dy 0.98"
+
+make plot_control_dy_mutau nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 datafile=SingleMuon      options=--overwrite
+make plot_control_dy_eltau nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 datafile=SingleElectron  options=--overwrite
+
+make plot_control_wjets_mu nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 datafile=SingleMuon      options=--overwrite
+make plot_control_wjets_el nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 datafile=SingleElectron  options=--overwrite
+
+make plot_lj_1 nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 chan_tag=mu datafile=SingleMuon      options=--overwrite
+make plot_lj_1 nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 chan_tag=el datafile=SingleElectron  options=--overwrite
+
+make plot_presel_1  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 presel_lev=Cand chan_tag=mu datafile=SingleMuon     title_lep=muon     options=--overwrite
+make plot_presel_1  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 presel_lev=Cand chan_tag=el datafile=SingleElectron title_lep=electron options=--overwrite
+
+make plot_sel_1  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=muon
+make plot_sel_1  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=electron
+
+make plot_sel_fit_1  nt=v37 proc=test13 distrs=bunchFULLFIT2 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=muon      options="--data-nick data_other --overwrite"
+make plot_sel_fit_1  nt=v37 proc=test13 distrs=bunchFULLFIT2 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=electron  options="--data-nick data_other --overwrite"
+
+make plot_sel_paper_1  nt=v37 proc=test13 distrs=bunchFULLFIT2 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=#mu
+make plot_sel_paper_1  nt=v37 proc=test13 distrs=bunchFULLFIT2 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=e
+
+TOFIX -- mu does no hase s_top_eltau!
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root -o plots/v37_test13_bunchFULLFIT2/paper/ --data-nick data_other --overwrite -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d Mt_lep_met_c --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "[Events/GeV]"     --draw-overflows 5 --legend-shift 0.02  --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other
+
+
+
+mkdir plots/v37_test13_update2/
+mkdir plots/v37_test13_update2/paper/
+cp plots/v37_test13_bunchDILEP1/*png       plots/v37_test13_update2/
+cp plots/v37_test13_bunchCONTROLS1/*png    plots/v37_test13_update2/
+cp plots/v37_test13_bunchFULLFIT2/*png     plots/v37_test13_update2/
+cp plots/v37_test13_bunchFULLFIT2/paper/*  plots/v37_test13_update2/paper/
+
+make --keep-going rename_for_update up=update2
+make --keep-going rename_for_update_paper_plots up=update2
+
+only abou 1/4 of DY tautau 3j is DY tautau
+
+tt_dilep did not rename correctly: 2 tt_other processes in the legend
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc.root distrs/v37_test13_bunchDILEP1/SingleMuon.root -o plots/v37_test13_bunchDILEP1/ --overwrite --factor-dy 1.05 -p -r --lumi 35800 --data-nick data_other -c tt_elmu -d Mt_lep_met_c --wjet 1.4 --qcd-factor 2.5 --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_lj:tt_else.tt_other:tt_elmu
+
+ok, make just tt for now
+
+
+
+
+
+
+
+
+
+
+
 
 ## the question on BR-s
 
