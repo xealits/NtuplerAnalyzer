@@ -1,3 +1,219 @@
+# post-update v37 test13
+
+asymmetric systematics:
+
+TT weight sys look weird (Mf, Mr, Mfr)
+mu LEP
+JES, TES and JER
+
+why fit broke when one of the systematics was rate?
+
+check goodness of the fit
+
+
+
+DY tautau basic and 3j look strange in the distrs:
+different the composition in lep pT and tau pT (more qcd, wjets in one of them).
+
+
+
+
+
+## TT weight sys
+
+root -l distrs/v37_test13_bunchFULLFIT2_mc.root
+
+nom      = (TH1D*) mu_sel->Get("tt_mutau/NOMINAL/mu_sel_tt_mutau_NOMINAL_Mt_lep_met_c")
+mfr_up   = (TH1D*) mu_sel->Get("tt_mutau/MfrUp/mu_sel_tt_mutau_MfrUp_Mt_lep_met_c")
+mfr_down = (TH1D*) mu_sel->Get("tt_mutau/MfrDown/mu_sel_tt_mutau_MfrDown_Mt_lep_met_c")
+
+mfr_up->SetLineColor(kRed)
+mfr_down->SetLineColor(kRed+2)
+
+nom      ->Draw()
+mfr_up   ->Draw("same")
+mfr_down ->Draw("same")
+
+-- looks ok
+
+mfr_up   ->Divide(nom)
+mfr_down ->Divide(nom)
+
+mfr_up   ->Draw()
+mfr_down ->Draw("same")
+
+-- totally symmetric
+
+check the histosel file which was used in the fit
+
+root -l ../../fit-stuff/v37_test13_bunchFULLFIT2.root
+
+nom      = (TH1D*) mu_sel_ljout->Get("tt_mutau/NOMINAL/mu_sel_ljout_tt_mutau_NOMINAL_Mt_lep_met_c")
+mfr_up   = (TH1D*) mu_sel_ljout->Get("tt_mutau/MfrUp/mu_sel_ljout_tt_mutau_MfrUp_Mt_lep_met_c")
+mfr_down = (TH1D*) mu_sel_ljout->Get("tt_mutau/MfrDown/mu_sel_ljout_tt_mutau_MfrDown_Mt_lep_met_c")
+
+
+looks as if it is just normalized to the same integral and the stat variations are large this way
+
+
+mfr_up   ->Integral() /nom      ->Integral()
+mfr_down ->Integral() /nom      ->Integral()
+
+1.00260
+0.998200
+
+and in the distrs file:
+
+root -l distrs/v37_test13_bunchFULLFIT2_mc.root
+
+(double) 0.876873
+(double) 1.13379
+
+normalize and plot:
+
+nom      ->Scale(1. / nom     ->Integral())
+mfr_up   ->Scale(1. / mfr_up  ->Integral())
+mfr_down ->Scale(1. / mfr_down->Integral())
+
+mfr_up   ->Divide(nom)
+mfr_down ->Divide(nom)
+
+mfr_up   ->Draw()
+mfr_down ->Draw("same")
+
+c1->SaveAs("v37_test13_post_update_tt-weight-systs-issue_Mfr_in-distrs-file_normalized.png")
+
+c1->SaveAs("v37_test13_post_update_tt-weight-systs-issue_Mfr_in-fit-datafile_original_ratio.png")
+c1->SaveAs("v37_test13_post_update_tt-weight-systs-issue_Mfr_in-fit-datafile_normalized.png")
+
+
+-- the normalized distrs are slightly different, the fit datafile is flatter with less difference between Up and Down
+
+
+reproduce the histosel sys variation
+
+make --dry-run run_std_histos out=histosels/v37_test13_bunchFULLFIT2/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test13_bunchFULLFIT2_mc_1.root data_mu=distrs/v37_test13_bunchFULLFIT2/SingleMuon.root data_el=distrs/v37_test13_bunchFULLFIT2/SingleElectron.root | grep mu_sel_ljout
+
+make --dry-run run_histos mc=distrs/v37_test13_bunchFULLFIT2_mc_1.root data=distrs/v37_test13_bunchFULLFIT2/SingleMuon.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test13_bunchFULLFIT2/ wjets_norm=1.4 chan=mu_sel_ljout systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_ljout"
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc_1.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root -o histosels/v37_test13_bunchFULLFIT2_issue_w_TT_weights/ --data-nick data_other --lumi 35800 -c mu_sel_ljout -d Mt_lep_met_c --wjet 1.4  -x mu_selVloose_ljout --sys NOMINAL
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc_1.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root -o histosels/v37_test13_bunchFULLFIT2_issue_w_TT_weights/ --data-nick data_other --lumi 35800 -c mu_sel_ljout -d Mt_lep_met_c --wjet 1.4  -x mu_selVloose_ljout --sys MfrUp
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc_1.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root -o histosels/v37_test13_bunchFULLFIT2_issue_w_TT_weights/ --data-nick data_other --lumi 35800 -c mu_sel_ljout -d Mt_lep_met_c --wjet 1.4  -x mu_selVloose_ljout --sys MfrDown
+
+
+
+-- yeah! here the Vloose shape is used!
+
+-- then if the Vloose and Medium variations are indeed different, is Vloose shape justified here?
+
+
+and the main issue is in mc sums -- the variations are not even close to nominal, far from stat fluctuations
+
+nom      = (TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL")
+mfr_up   = (TH1D*) mu_sel_ljout->Get("sums_MfrUp/mc_sum1_MfrUp")
+mfr_down = (TH1D*) mu_sel_ljout->Get("sums_MfrDown/mc_sum1_MfrDown")
+
+mfr_up->SetLineColor(kRed)
+mfr_down->SetLineColor(kRed+2)
+
+nom      ->Draw()
+mfr_up   ->Draw("same")
+mfr_down ->Draw("same")
+
+-- yep, they are off
+   probably it is the missing QCD?
+
+reproduce this issue and then remove QCD in nominal
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc_1.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root -o histosels/v37_test13_bunchFULLFIT2_issue_w_TT_weights/ --data-nick data_other --lumi 35800 -c mu_sel_ljout -d Mt_lep_met_c --wjet 1.4  -x mu_selVloose_ljout --sys NOMINAL --overwrite --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc_1.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root -o histosels/v37_test13_bunchFULLFIT2_issue_w_TT_weights/ --data-nick data_other --lumi 35800 -c mu_sel_ljout -d Mt_lep_met_c --wjet 1.4  -x mu_selVloose_ljout --sys NOMINAL --overwrite --skip-QCD
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc_1.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root -o histosels/v37_test13_bunchFULLFIT2_issue_w_TT_weights/ --data-nick data_other --lumi 35800 -c mu_sel_ljout -d Mt_lep_met_c --wjet 1.4  -x mu_selVloose_ljout --sys MfrUp   --overwrite --skip-QCD
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc_1.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root -o histosels/v37_test13_bunchFULLFIT2_issue_w_TT_weights/ --data-nick data_other --lumi 35800 -c mu_sel_ljout -d Mt_lep_met_c --wjet 1.4  -x mu_selVloose_ljout --sys MfrDown --overwrite --skip-QCD
+
+
+hadd nom_w_data_qcd.root distrs,v37_test13_bunchFULLFIT2_mc_1_HISTOSEL_Mt_lep_met_c_mu_sel_ljout_NOMINAL_data-qcd_shape-mu_selVloose_ljout.root *Mfr*
+hadd nom_w_no_qcd.root   distrs,v37_test13_bunchFULLFIT2_mc_1_HISTOSEL_Mt_lep_met_c_mu_sel_ljout_NOMINAL_shape-mu_selVloose_ljout.root          *Mfr*
+
+root -l nom_w_data_qcd.root
+-- exactly as in the fit
+
+root -l nom_w_no_qcd.root
+-- much better
+
+mfr_up   ->Divide(nom)
+mfr_down ->Divide(nom)
+
+mfr_up   ->Draw()
+mfr_down ->Draw("same")
+
+-- yeah, all ok
+
+
+
+## reproduce sys vars without QCD
+
+histosel without QCD
+
+mkdir histosels/v37_test13_bunchFULLFIT2_noqcd/
+
+make run_std_histos_noqcd out=histosels/v37_test13_bunchFULLFIT2_noqcd/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test13_bunchFULLFIT2_mc_1.root data_mu=distrs/v37_test13_bunchFULLFIT2/SingleMuon.root data_el=distrs/v37_test13_bunchFULLFIT2/SingleElectron.root
+
+hadd histosels/v37_test13_bunchFULLFIT2_noqcd.root histosels/v37_test13_bunchFULLFIT2_noqcd/*.root
+
+
+make plot_sys_vars histosel_file=histosels/v37_test13_bunchFULLFIT2_noqcd.root outdir=plots/v37_test13_update1/sys-variations2/
+
+also
+
+make plot_sys_vars_tau_ID_misID mc=distrs/v37_test13_bunchFULLFIT2_mc.root data_mu=distrs/v37_test13_bunchFULLFIT2/SingleMuon.root data_el=distrs/v37_test13_bunchFULLFIT2/SingleElectron.root output=plots/v37_test13_update1/sys-variations2/
+
+
+Mr, Mf and Mfr symmetric
+
+JES OK, some jumps at 150-200GeV, similar to the data-mc disagreament
+JER -- useless stat fluctuations
+TES OK + stat fluctuations
+
+LEPmu -- symmetric + a slight bent, not as the past
+
+
+
+## check the LEPmu systematic vars
+
+'LEPmuIDUp'   : lambda ev: ev.event_weight*ev.event_weight_LEPmuIDUp   ,
+'LEPmuIDDown' : lambda ev: ev.event_weight*ev.event_weight_LEPmuIDDown ,
+'LEPmuTRGUp'  : lambda ev: ev.event_weight*ev.event_weight_LEPmuTRGUp  ,
+'LEPmuTRGDown': lambda ev: ev.event_weight*ev.event_weight_LEPmuTRGDown,
+
+            event_weight_LEPmuIDUp[0]    = (weight_lep_pu_muIDUp    / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
+            event_weight_LEPmuIDDown[0]  = (weight_lep_pu_muIDDown  / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
+            event_weight_LEPmuTRGUp[0]   = (weight_lep_pu_muTRGUp   / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
+            event_weight_LEPmuTRGDown[0] = (weight_lep_pu_muTRGDown / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
+
+-- OK..
+
+
+make --dry-run plot_sys_vars histosel_file=histosels/v37_test13_bunchFULLFIT2_noqcd.root outdir=plots/v37_test13_update1/sys-variations2/ | grep LEPmu
+
+for sysdef in LEPmuIDUp,LEPmuIDDown LEPmuTRGUp,LEPmuTRGDown ; \
+do \
+python mc_per_sys.py --ratio-range 0.1 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_lj    -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_lj_all_Mt_lep_met_f_$sysdef.png ; \
+python mc_per_sys.py --ratio-range 0.1 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_ljout -d Mt_lep_met_f -s $sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_ljout_all_Mt_lep_met_f_$sysdef.png ; \
+done
+
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_lj    -d Mt_lep_met_f -s LEPmuIDUp,LEPmuIDDown   --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_lj_all_Mt_lep_met_f_LEPmuIDUp,LEPmuIDDown.png       --ratio-y-line 1.0
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_ljout -d Mt_lep_met_f -s LEPmuIDUp,LEPmuIDDown   --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_ljout_all_Mt_lep_met_f_LEPmuIDUp,LEPmuIDDown.png    --ratio-y-line 1.0
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_lj    -d Mt_lep_met_f -s LEPmuTRGUp,LEPmuTRGDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_lj_all_Mt_lep_met_f_LEPmuTRGUp,LEPmuTRGDown.png     --ratio-y-line 1.0
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_ljout -d Mt_lep_met_f -s LEPmuTRGUp,LEPmuTRGDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_ljout_all_Mt_lep_met_f_LEPmuTRGUp,LEPmuTRGDown.png  --ratio-y-line 1.0
+
+
+-- yeah, muTRG is asymmetric, especially at mu_sel_lj
+
+
+
+
 # NEXT UPDATE
 
 golden json electron channel
