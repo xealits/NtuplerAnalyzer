@@ -11,6 +11,9 @@ python loop_selections.py --no-queue --job-dir temp/jobs/ --options " --wjets-nu
 # add the tt updowns
 python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test13 --distrs bunchFULLFIT2 --chan-groups fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout --dtags MC2016_Summer16_TTJets_powheg_CUETP8M2T4down,MC2016_Summer16_TTJets_powheg_CUETP8M2T4down_ext1,MC2016_Summer16_TTJets_powheg_CUETP8M2T4up,MC2016_Summer16_TTJets_powheg_CUETP8M2T4up_ext1,MC2016_Summer16_TTJets_powheg_fsrdown,MC2016_Summer16_TTJets_powheg_fsrdown_ext1,MC2016_Summer16_TTJets_powheg_fsrdown_ext2,MC2016_Summer16_TTJets_powheg_fsrup,MC2016_Summer16_TTJets_powheg_fsrup_ext1,MC2016_Summer16_TTJets_powheg_fsrup_ext2,MC2016_Summer16_TTJets_powheg_hdampDOWN,MC2016_Summer16_TTJets_powheg_hdampDOWN_ext1,MC2016_Summer16_TTJets_powheg_hdampUP,MC2016_Summer16_TTJets_powheg_hdampUP_ext1,MC2016_Summer16_TTJets_powheg_isrdown,MC2016_Summer16_TTJets_powheg_isrdown_ext1,MC2016_Summer16_TTJets_powheg_isrdown_ext2,MC2016_Summer16_TTJets_powheg_isrup
 
+# and the mets..
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test13 --distrs bunchCONTROLMET --chans mu_sel,mu_sel_ss,el_sel,el_sel_ss,mu_preselCand,mu_preselCand_ss,el_preselCand,el_preselCand_ss,wjets_mu,wjets_mu_ss,wjets_el,wjets_el_ss,tt_elmu --distributions met_c,met_f,met_f2 --sys NOMINAL,TOPPTUp
+
 
 
 # presel, sel, wjets and dy_tautau controls

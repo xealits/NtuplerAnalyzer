@@ -63,6 +63,8 @@ parser.add_argument("--factor-dy", type=float, help="scale factor for dy (from t
 parser.add_argument("--factor-procs", type=str, help="scale factor for given procs p1,p2,p3:factor -- for effect of rate systematics, tau ID and mis-ID")
 parser.add_argument("--factor-xsec",  type=str, help="guess x-sec/gen_lumi scale based on usual gen_lumi")
 
+parser.add_argument("--factor-everything", type=float, help="in v37 test13 bunchCONTROLMET everything is processed 9 times for some reason -- factor to scale that out")
+
 parser.add_argument("--factor-rate-systematic", type=str, help="scale the procs by the factor to simulate the rate syst (tau ID, mis-ID): tt_eltau,tt_taultauh,s_top_eltau,s_top_other,dy_tautau:0.95 tt_lj,tt_taulj,tt_other:0.5")
 parser.add_argument("--rename-systematic",  type=str, help="save under different name, use for the rate systematics")
 
@@ -195,6 +197,11 @@ if not args.no_data:
   else:
     histos_data_per_distr    = histos_data_distrs
     histos_data_per_distr_ss = histos_data_distrs_ss
+
+  if args.factor_everything:
+    for _, histos  in histos_data_per_distr + histos_data_per_distr_ss:
+      for h, _, _ in histos:
+        h.Scale(args.factor_everything)
 
 
 # normalize data distrs to different bin width:
@@ -538,6 +545,9 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=a
 
            if factor_rate_systematic and nick in factor_rate_systematic[0]:
                histo.Scale(factor_rate_systematic[1])
+
+           if args.factor_everything:
+               histo.Scale(args.factor_everything)
 
            # mc qcd normalization
            if nick in ('qcd', 'qcd_other'):
