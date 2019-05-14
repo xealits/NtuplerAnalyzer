@@ -34,6 +34,7 @@ parser.add_argument("--ratio-range", type=float, default=0.3, help="range of rat
 parser.add_argument("--y-max",       type=float,              help="set the maximum on Y axis")
 parser.add_argument("--y-range",     help="set the range on Y axis")
 
+parser.add_argument("--ratio-y-line",      type=float,              help="draw a horizaontal line at the given Y in the ratio plot")
 
 args = parser.parse_args()
 
@@ -52,7 +53,7 @@ else:
 logging.info("import ROOT")
 
 import ROOT
-from ROOT import gStyle, gROOT, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, kBlue
+from ROOT import gStyle, gROOT, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, kBlue, TLine
 gROOT.SetBatch()
 gStyle.SetOptStat(0)
 
@@ -275,6 +276,11 @@ if args.ratio:
     #right_title.SetFillColor(0)
     #right_title.Draw("same")
 
+    if args.ratio_y_line:
+        x_min = nom_MC.GetXaxis().GetXmin()
+        x_max = nom_MC.GetXaxis().GetXmax()
+        l = TLine(x_min, args.ratio_y_line, x_max, args.ratio_y_line)
+        l.Draw("same")
 
 if args.outname:
     cst.SaveAs(args.output_directory + '/' + args.outname)

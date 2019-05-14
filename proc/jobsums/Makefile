@@ -28,8 +28,8 @@ plot_sys_vars:
 	# lep el systematics
 	for sysdef in LEPelIDUp,LEPelIDDown LEPelTRGUp,LEPelTRGDown ; \
 	do \
-	python mc_per_sys.py --ratio-range 0.1 --y-max 1500 ${histosel_file} -c el_sel_lj    -d Mt_lep_met_f -s $$sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o ${outdir} --outname el_sel_lj_all_Mt_lep_met_f_$$sysdef.png ; \
-	python mc_per_sys.py --ratio-range 0.1 --y-max 1500 ${histosel_file} -c el_sel_ljout -d Mt_lep_met_f -s $$sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o ${outdir} --outname el_sel_ljout_all_Mt_lep_met_f_$$sysdef.png ; \
+	python mc_per_sys.py --ratio-range 0.1 --y-max 1500 ${histosel_file} -c el_sel_lj    -d Mt_lep_met_f  -s $$sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o ${outdir} --outname el_sel_lj_all_Mt_lep_met_f_$$sysdef.png ; \
+	python mc_per_sys.py --ratio-range 0.1 --y-max 1500 ${histosel_file} -c el_sel_ljout -d Mt_lep_met_f  -s $$sysdef --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o ${outdir} --outname el_sel_ljout_all_Mt_lep_met_f_$$sysdef.png ; \
 	done
 	# lep mu systematics
 	for sysdef in LEPmuIDUp,LEPmuIDDown LEPmuTRGUp,LEPmuTRGDown ; \
@@ -184,6 +184,29 @@ run_std_histos:
 	#make run_histos mc=${mc} data=${data_el} lumi=${lumi_el} distr=${distr} out=${out} wjets_norm=${wjets_norm} chan=el_sel_ljout systematics="`cat syst-test.syst-list.experimental syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_ljout" & 
 	make run_histos mc=${mc} data=${data_mu} lumi=${lumi_mu} distr=${distr} out=${out} wjets_norm=${wjets_norm} chan=mu_sel & \
 	make run_histos mc=${mc} data=${data_el} lumi=${lumi_el} distr=${distr} out=${out} wjets_norm=${wjets_norm} chan=el_sel & 
+
+run_std_histos_noqcd: mc=distrs/distrs_v25v26resub2_mc_noqcd.root
+run_std_histos_noqcd: data_mu=../quick-test/v25v26-resub2_hadds/SingleMuon.root
+run_std_histos_noqcd: data_el=../quick-test/v25v26-resub2_hadds/SingleElectron.root
+run_std_histos_noqcd: out=histosels/redo-v25-v26_resub2/
+run_std_histos_noqcd: distr=Mt_lep_met_c
+run_std_histos_noqcd: lumi_mu=35800
+run_std_histos_noqcd: lumi_el=31300
+run_std_histos_noqcd: wjets_norm=0.8
+run_std_histos_noqcd:
+	# log parameters
+	echo mc=${mc} data_mu=${data_mu} data_el=${data_el} lumi_mu=${lumi_mu} lumi_el=${lumi_el} distr=${distr} out=${out} wjets_norm=${wjets_norm} > ${out}/run_std_histos.params
+	# the batch with data-driven QCD
+	# the qcd has the experimental systematics, but not the TT modeling
+	make run_histos mc=${mc} data=${data_mu} lumi=${lumi_mu} distr=${distr} out=${out} wjets_norm=${wjets_norm} chan=mu_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--skip-QCD" shape_opt="-x mu_selVloose_lj" & \
+	make run_histos mc=${mc} data=${data_el} lumi=${lumi_el} distr=${distr} out=${out} wjets_norm=${wjets_norm} chan=el_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--skip-QCD" shape_opt="-x el_selVloose_lj" & \
+	make run_histos mc=${mc} data=${data_mu} lumi=${lumi_mu} distr=${distr} out=${out} wjets_norm=${wjets_norm} chan=mu_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--skip-QCD" shape_opt="-x mu_selVloose_ljout" & \
+	make run_histos mc=${mc} data=${data_el} lumi=${lumi_el} distr=${distr} out=${out} wjets_norm=${wjets_norm} chan=el_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--skip-QCD" shape_opt="-x el_selVloose_ljout" & \
+	# no updowns now
+	make run_histos mc=${mc} data=${data_mu} lumi=${lumi_mu} distr=${distr} out=${out} wjets_norm=${wjets_norm} chan=mu_sel_lj    systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" qcd_opt="--skip-QCD" shape_opt="-x mu_selVloose_lj" & \
+	make run_histos mc=${mc} data=${data_el} lumi=${lumi_el} distr=${distr} out=${out} wjets_norm=${wjets_norm} chan=el_sel_lj    systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" qcd_opt="--skip-QCD" shape_opt="-x el_selVloose_lj" & \
+	make run_histos mc=${mc} data=${data_mu} lumi=${lumi_mu} distr=${distr} out=${out} wjets_norm=${wjets_norm} chan=mu_sel_ljout systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" qcd_opt="--skip-QCD" shape_opt="-x mu_selVloose_ljout" & \
+	make run_histos mc=${mc} data=${data_el} lumi=${lumi_el} distr=${distr} out=${out} wjets_norm=${wjets_norm} chan=el_sel_ljout systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" qcd_opt="--skip-QCD" shape_opt="-x el_selVloose_ljout" & \
 
 all_yields_numbers: out=histosels/v37_test13_bunch1_yields1/
 all_yields_numbers:
