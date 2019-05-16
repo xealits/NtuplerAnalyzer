@@ -1426,6 +1426,8 @@ MET_pT_JERDown_noweight ->Draw("same")
 
 -- practically each bin deviates asymmetrically
 
+TODO: check the pT shapes with nomina selection stage to confirm it does not matter that much!
+
 
 
 also:
@@ -1437,6 +1439,101 @@ python sumup_ttree_draw.py "event_met_TESUp"   --ttree ttree_out --cond-com "(se
 python sumup_ttree_draw.py "event_met_TESDown" --ttree ttree_out --cond-com "(selection_stage_TESDown == 9 || selection_stage_TESDown == 7 || selection_stage_TESDown == 5)*event_weight"  --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_TESDown.root  --histo-name Mt_TESDown lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root     &
 
 
+#### check amount of bin cross-talk in a given bin
+
+
+ttree_out->Draw("event_met.pt()>>h(100,0,50)", "(event_met.pt() > 12.5 && event_met.pt() < 25.) && (event_met_JERUp.pt() < 12.5 || event_met_JERUp.pt() > 25.)", "col")
+ttree_out->Draw("event_met.pt()>>h(100,0,50)", "(event_met_JERUp.pt() > 12.5 && event_met_JERUp.pt() < 25.) && (event_met.pt() < 12.5 || event_met.pt() > 25.)", "col")
+
+ttree_out->Draw("event_met.pt()>>h(100,0,50)", "(event_met.pt() > 12.5 && event_met.pt() < 25.) && (event_met_JERDown.pt() < 12.5 || event_met_JERDown.pt() > 25.)", "col")
+ttree_out->Draw("event_met.pt()>>h(100,0,50)", "(event_met_JERDown.pt() > 12.5 && event_met_JERDown.pt() < 25.) && (event_met.pt() < 12.5 || event_met.pt() > 25.)", "col")
+
+
+python sumup_ttree_draw.py "event_met.pt()"          --ttree ttree_out --cond-com "(selection_stage         == 9 || selection_stage         == 7 || selection_stage         == 5)" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_NOMINAL_noweight.root --histo-name MET_pT_NOMINAL_noweight lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERUp.pt()"    --ttree ttree_out --cond-com "(selection_stage_JERUp   == 9 || selection_stage_JERUp   == 7 || selection_stage_JERUp   == 5)" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_JERUp_noweight.root   --histo-name MET_pT_JERUp_noweight   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERDown.pt()"  --ttree ttree_out --cond-com "(selection_stage_JERDown == 9 || selection_stage_JERDown == 7 || selection_stage_JERDown == 5)" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_JERDown_noweight.root --histo-name MET_pT_JERDown_noweight lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+let's JERUp:
+
+python sumup_ttree_draw.py "event_met_JERUp.pt()"    --ttree ttree_out --cond-com "(event_met.pt() > 12.5 && event_met.pt() < 25.) && (event_met_JERUp.pt() < 12.5 || event_met_JERUp.pt() > 25.) && (selection_stage_JERUp   == 9 || selection_stage_JERUp   == 7 || selection_stage_JERUp   == 5)" --histo-range 100,0,50 --output v37_test14_JER_bin_crosstalk_JERUp_wasin_n_left.root  --histo-name MET_pT_JERUp_wasin_n_left  lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERUp.pt()"    --ttree ttree_out --cond-com "(event_met_JERUp.pt() > 12.5 && event_met_JERUp.pt() < 25.) && (event_met.pt() < 12.5 || event_met.pt() > 25.) && (selection_stage_JERUp   == 9 || selection_stage_JERUp   == 7 || selection_stage_JERUp   == 5)" --histo-range 100,0,50 --output v37_test14_JER_bin_crosstalk_JERUp_wasout_n_in.root   --histo-name MET_pT_JERUp_wasout_n_in   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+python sumup_ttree_draw.py "event_met_JERDown.pt()"  --ttree ttree_out --cond-com "(event_met.pt() > 12.5 && event_met.pt() < 25.) && (event_met_JERDown.pt() < 12.5 || event_met_JERDown.pt() > 25.) && (selection_stage_JERDown   == 9 || selection_stage_JERDown   == 7 || selection_stage_JERDown   == 5)" --histo-range 100,0,50 --output v37_test14_JER_bin_crosstalk_JERDown_wasin_n_left.root  --histo-name MET_pT_JERDown_wasin_n_left  lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERDown.pt()"  --ttree ttree_out --cond-com "(event_met_JERDown.pt() > 12.5 && event_met_JERDown.pt() < 25.) && (event_met.pt() < 12.5 || event_met.pt() > 25.) && (selection_stage_JERDown   == 9 || selection_stage_JERDown   == 7 || selection_stage_JERDown   == 5)" --histo-range 100,0,50 --output v37_test14_JER_bin_crosstalk_JERDown_wasout_n_in.root   --histo-name MET_pT_JERDown_wasout_n_in   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+
+hadd v37_test14_JER_bin_crosstalk.root v37_test14_JER_bin_crosstalk_JERUp_wasin_n_left.root v37_test14_JER_bin_crosstalk_JERUp_wasout_n_in.root v37_test14_JER_bin_crosstalk_JERDown_wasin_n_left.root v37_test14_JER_bin_crosstalk_JERDown_wasout_n_in.root
+
+root -l v37_test14_JER_bin_crosstalk.root
+
+MET_pT_JERUp_wasin_n_left ->Draw()
+MET_pT_JERUp_wasout_n_in  ->Draw()
+MET_pT_JERDown_wasin_n_left ->Draw()
+MET_pT_JERDown_wasout_n_in  ->Draw()
+
+MET_pT_JERUp_wasin_n_left   ->Integral()
+MET_pT_JERUp_wasout_n_in    ->Integral()
+MET_pT_JERDown_wasin_n_left ->Integral()
+MET_pT_JERDown_wasout_n_in  ->Integral()
+
+(Double_t) 317.000
+(Double_t) 323.000
+
+(Double_t) 290.000
+(Double_t) 312.000
+
+JERUp must grow and JERDown must reduce
+but it does not: they are both above nominal, Down is too (and higher than the Up is)
+contradiction?
+
+
+python sumup_ttree_draw.py "event_met.pt()"          --ttree ttree_out --cond-com "(selection_stage         == 9 || selection_stage         == 7 || selection_stage         == 5)" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_NOMINAL_noweight.root --histo-name MET_pT_NOMINAL lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERUp.pt()"    --ttree ttree_out --cond-com "(selection_stage_JERUp   == 9 || selection_stage_JERUp   == 7 || selection_stage_JERUp   == 5)" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_JERUp_noweight.root   --histo-name MET_pT_JERUp   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERDown.pt()"  --ttree ttree_out --cond-com "(selection_stage_JERDown == 9 || selection_stage_JERDown == 7 || selection_stage_JERDown == 5)" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_JERDown_noweight.root --histo-name MET_pT_JERDown lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+hadd v37_test14_JER_issue_MET_pT_per_JER_noweight.root v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_*_noweight.root
+
+root -l v37_test14_JER_issue_MET_pT_per_JER_noweight.root
+
+MET_pT_JERUp_noweight   ->SetLineColor(kRed)
+MET_pT_JERDown_noweight ->SetLineColor(kRed+2)
+
+MET_pT_JERUp_noweight   ->Divide(MET_pT_NOMINAL_noweight)
+MET_pT_JERDown_noweight ->Divide(MET_pT_NOMINAL_noweight)
+
+l = (TLine*) new TLine(0., 1.0, 250., 1.0)
+MET_pT_JERUp_noweight   ->Draw()
+MET_pT_JERDown_noweight ->Draw("same")
+l->Draw("same")
+
+-- in 12.5-25 both variations are above nominal
+
+
+
+#### check with nominal selection stage
+
+python sumup_ttree_draw.py "event_met.pt()"          --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_NOMINAL_noweight_nomsel.root --histo-name MET_pT_NOMINAL_nomsel lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERUp.pt()"    --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_JERUp_noweight_nomsel.root   --histo-name MET_pT_JERUp_nomsel   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERDown.pt()"  --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_JERDown_noweight_nomsel.root --histo-name MET_pT_JERDown_nomsel lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+hadd v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_per_JER_noweight_nomsel.root v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_*_noweight_nomsel.root
+
+root -l v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_per_JER_noweight_nomsel.root
+
+MET_pT_JERUp_nomsel   ->SetLineColor(kRed)
+MET_pT_JERDown_nomsel ->SetLineColor(kRed+2)
+
+MET_pT_JERUp_nomsel   ->Divide(MET_pT_NOMINAL_nomsel)
+MET_pT_JERDown_nomsel ->Divide(MET_pT_NOMINAL_nomsel)
+
+l = (TLine*) new TLine(0., 1.0, 250., 1.0)
+MET_pT_JERUp_nomsel   ->Draw()
+MET_pT_JERDown_nomsel ->Draw("same")
+l->Draw("same")
+
+-- in 12.5-25 UP (light red) is at nominal, Down is above
+
+TODO: check the flow with only nominal selection stage
 
 
 
