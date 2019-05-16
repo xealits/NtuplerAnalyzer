@@ -3024,14 +3024,14 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 mu_b_trk, mu_b_trk_u = mu_sfs_b[0:2] # unc in mu_sfs_b[1]
                 mu_h_trk, mu_h_trk_u = mu_sfs_h[0:2] # unc in mu_sfs_h[1]
 
-                weight_lep_pu_muIDUp   = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1])  * weight_pu_bcdef + \
-                                             ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1])) * weight_pu_gh
-                weight_lep_pu_muIDDown = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1])  * weight_pu_bcdef + \
-                                             ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1])) * weight_pu_gh
-                weight_lep_pu_muTRGUp   = (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0]  * weight_pu_bcdef + \
-                                              ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]) * weight_pu_gh
-                weight_lep_pu_muTRGDown = (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0]  * weight_pu_bcdef + \
-                                              ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]) * weight_pu_gh
+                weight_lep_pu_muIDUp   = ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) * weight_pu_bcdef + \
+                                            ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]) * weight_pu_gh
+                weight_lep_pu_muIDDown = ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) * weight_pu_bcdef + \
+                                            ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]) * weight_pu_gh
+                weight_lep_pu_muTRGUp   = ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef + \
+                                             ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh
+                weight_lep_pu_muTRGDown = ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef + \
+                                             ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh
 
                 weight_lep_pu_PUUp = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef_up + \
                                         ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh_up
@@ -3076,15 +3076,15 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 mu_id_h,  mu_id_h_unc  = dilepton_and_sfs(mu_sfs_h1[3][0], mu_sfs_h1[3][1], mu_sfs_h2[3][0], mu_sfs_h2[3][1])
                 mu_iso_h, mu_iso_h_unc = dilepton_and_sfs(mu_sfs_h1[4][0], mu_sfs_h1[4][1], mu_sfs_h2[4][0], mu_sfs_h2[4][1])
 
-                weight_lep_pu_muIDUp   = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_id_b + mu_id_b_unc) * (mu_iso_b + mu_iso_b_unc)  * weight_pu_bcdef + \
-                                             ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_id_h + mu_id_h_unc) * (mu_iso_h + mu_iso_h_unc)) * weight_pu_gh
-                weight_lep_pu_muIDDown = (ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_id_b - mu_id_b_unc) * (mu_iso_b - mu_iso_b_unc)  * weight_pu_bcdef + \
-                                             ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_id_h - mu_id_h_unc) * (mu_iso_h - mu_iso_h_unc)) * weight_pu_gh
+                weight_lep_pu_muIDUp   = ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_id_b + mu_id_b_unc) * (mu_iso_b + mu_iso_b_unc) * weight_pu_bcdef + \
+                                            ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_id_h + mu_id_h_unc) * (mu_iso_h + mu_iso_h_unc) * weight_pu_gh
+                weight_lep_pu_muIDDown = ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_id_b - mu_id_b_unc) * (mu_iso_b - mu_iso_b_unc) * weight_pu_bcdef + \
+                                            ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_id_h - mu_id_h_unc) * (mu_iso_h - mu_iso_h_unc) * weight_pu_gh
 
-                weight_lep_pu_muTRGUp = (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_id_b * mu_iso_b  * weight_pu_bcdef + \
-                                            ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_id_h * mu_iso_h) * weight_pu_gh
-                weight_lep_pu_muTRGUp = (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_id_b * mu_iso_b  * weight_pu_bcdef + \
-                                            ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_id_h * mu_iso_h) * weight_pu_gh
+                weight_lep_pu_muTRGUp = ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_id_b * mu_iso_b  * weight_pu_bcdef + \
+                                           ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_id_h * mu_iso_h * weight_pu_gh
+                weight_lep_pu_muTRGUp = ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_id_b * mu_iso_b  * weight_pu_bcdef + \
+                                           ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_id_h * mu_iso_h * weight_pu_gh
 
                 # tests and control
                 #weight_lepMU0_trg_Up   = (ratio_bcdef * (mu_trg_sf_b1 + trg_b_unc1) * mu_sfs_b1[0] * mu_sfs_b1[3][0] * mu_sfs_b1[4][0] * weight_pu_bcdef + \
@@ -3357,10 +3357,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             #if not tlep_p4.DeltaR(ttau_p4) > 0.3:
             #    continue
 
-            tau_pt = p4.pt()
+            tau_pt      = p4.pt()
             tau_pt_up   = tau_pt
             tau_pt_down = tau_pt
-            TES_factor = 1. # this factor exists for nominal taus
+            TES_factor    = 1. # this factor exists for nominal taus
             TES_factor_up = 1.
             TES_factor_dn = 1.
 
@@ -3420,9 +3420,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 proc_met_JESUp   -= p4 * (TES_factor - 1.)
                 proc_met_JESDown -= p4 * (TES_factor - 1.)
 
-            if tau_pt_up > TAUS_PT_CUT:
+            if isMC and tau_pt_up > TAUS_PT_CUT:
                 proc_met_TESUp   -=  p4 * (TES_factor_up - 1.)
-            if tau_pt_down > TAUS_PT_CUT:
+            if isMC and tau_pt_down > TAUS_PT_CUT:
                 proc_met_TESDown -=  p4 * (TES_factor_dn - 1.)
 
         # sort by IDlev and pt
@@ -3762,14 +3762,21 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             #    proc_met_JESDown -= p4 * (en_factor*(1 - jes_shift) - 1.)
 
 
-            jet_pt  = p4.pt() * en_factor
+            # nominals
+            jet_pt_init = p4.pt()
+
+            # JER are multiplied by the separate JER factor
+            jet_pt_JERUp   = jet_pt_init
+            jet_pt_JERDown = jet_pt_init
+
+            # nominal and JES are multiplied by the nominal JER
+            jet_pt  = jet_pt_init * en_factor
             jet_eta = p4.eta()
 
-            # nominals
-            jet_pt_JERUp   = jet_pt
-            jet_pt_JERDown = jet_pt
             jet_pt_JESUp   = jet_pt
             jet_pt_JESDown = jet_pt
+
+            possible_jet_pts = [jet_pt]
 
             #if p4.pt() > 30: # nominal jet
             # TODO: for optimization tests I reduced the cut, review it with the test results
@@ -3831,8 +3838,6 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                             jet_weight_bSFUp  , _, _ = calc_btag_sf_weight(b_tagged, flavId, jet_pt, jet_eta, "up")
                             jet_weight_bSFDown, _, _ = calc_btag_sf_weight(b_tagged, flavId, jet_pt, jet_eta, "down")
 
-                    possible_jet_pts = [jet_pt]
-
                     if with_JER_sys:
                         #jer_factor, up, down = ev.jet_jer_factor[i], ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
                         up, down = ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
@@ -3844,22 +3849,23 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                         # --- this is correct, jet_pt is * jer_factor * jer_up / jer_factor
                         #     the jer_up factor must be * jer_nom
                         # for consistency let's make sys jet en corrections work like the nominal
-                        jet_pt_JERUp    = p4.pt() * jet_factor_JERUp  
-                        jet_pt_JERDown  = p4.pt() * jet_factor_JERDown
+                        jet_pt_JERUp    = jet_pt_init * jet_factor_JERUp
+                        jet_pt_JERDown  = jet_pt_init * jet_factor_JERDown
                         possible_jet_pts.extend([jet_pt_JERUp, jet_pt_JERDown])
 
                     if with_JES_sys:
                         #jes_shift = ev.jet_jes_correction_relShift[i]
                         jes_shift = ev.jet_jes_uncertainty[i]
-                        # for consistency:
+                        # for correct propagation to MET
+                        # the factor of jet systematic must inlcude full correction from the initial jet
                         jet_factor_JESUp   = en_factor * (1 + jes_shift)
                         jet_factor_JESDown = en_factor * (1 - jes_shift)
 
                         #jet_pt_JESUp   = jet_pt * jet_factor_JESUp
                         #jet_pt_JESDown = jet_pt * jet_factor_JESDown
                         # --- these are correct, jet_pt = jet * jer_factor * jes_up
-                        jet_pt_JESUp    = p4.pt() * jet_factor_JESUp  
-                        jet_pt_JESDown  = p4.pt() * jet_factor_JESDown
+                        jet_pt_JESUp    = jet_pt_init * jet_factor_JESUp
+                        jet_pt_JESDown  = jet_pt_init * jet_factor_JESDown
                         possible_jet_pts.extend([jet_pt_JESUp, jet_pt_JESDown])
 
                 en_factors  = (en_factor, jet_factor_JERUp, jet_factor_JERDown, jet_factor_JESUp, jet_factor_JESDown)
@@ -3886,6 +3892,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                   if isMC and PROP_LEPJET:
                     if jet_pt > JETS_PT_CUT:
                         proc_met -= p4 * (en_factor - 1.)
+                        # also propagate to TES variations
+                        proc_met_TESUp   -= p4 * (en_factor - 1.)
+                        proc_met_TESDown -= p4 * (en_factor - 1.)
                     if jet_pt_JERUp > JETS_PT_CUT:
                         proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
                     if jet_pt_JERDown > JETS_PT_CUT:
@@ -3901,7 +3910,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                     # in both data and MC
                     jes_uncorFactor = ev.jet_uncorrected_jecFactor[i]
                     if jet_pt > JETS_PT_CUT:
-                        proc_met -= p4 * (jes_uncorFactor - 1.)
+                        proc_met         -= p4 * (jes_uncorFactor - 1.)
+                        proc_met_TESUp   -= p4 * (jes_uncorFactor - 1.)
+                        proc_met_TESDown -= p4 * (jes_uncorFactor - 1.)
                     if jet_pt_JERUp > JETS_PT_CUT:
                         proc_met_JERUp   -= p4 * (jes_uncorFactor - 1.)
                     if jet_pt_JERDown > JETS_PT_CUT:
@@ -3917,7 +3928,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                   # correct the met from all not lep-matched jets
                   if isMC and PROP_JETS:
                       if jet_pt > JETS_PT_CUT:
-                          proc_met -= p4 * (en_factor - 1.)
+                          proc_met       -= p4 * (en_factor - 1.)
+                          proc_met_TESUp   -= p4 * (en_factor - 1.)
+                          proc_met_TESDown -= p4 * (en_factor - 1.)
                       if jet_pt_JERUp > JETS_PT_CUT:
                           proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
                       if jet_pt_JERDown > JETS_PT_CUT:
@@ -3931,23 +3944,18 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                   # multiply the b weights for all possible combinations
                   # and correct the met with all except lep-jet
                   if jet_pt > JETS_PT_CUT:
-                      #proc_met -= p4 * (en_factor - 1.)
                       weight_bSF     *= jet_weight_bSF_nom
                       weight_bSFUp   *= jet_weight_bSFUp
                       weight_bSFDown *= jet_weight_bSFDown
 
                   if jet_pt_JERUp > JETS_PT_CUT:
-                      #proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
                       weight_bSF_JERUp *= jet_weight_bSF_nom
                   if jet_pt_JERDown > JETS_PT_CUT:
-                      #proc_met_JERDown   -= p4 * (jet_factor_JERDown - 1.)
                       weight_bSF_JERDown *= jet_weight_bSF_nom
 
                   if jet_pt_JESUp > JETS_PT_CUT:
-                      #proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
                       weight_bSF_JESUp *= jet_weight_bSF_nom
                   if jet_pt_JESDown > JETS_PT_CUT:
-                      #proc_met_JESDown   -= p4 * (jet_factor_JESDown - 1.)
                       weight_bSF_JESDown *= jet_weight_bSF_nom
 
                   # count the jets
@@ -4234,7 +4242,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         tt_channel_presel_stage = passes_tt_preselection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_med_all, N_jets_nom_all), taus_candidates, proc_met)
 
         # nominal
-        tt_channel_sel_stage    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med, N_jets_nom_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage          = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med,     N_jets_nom_all),     [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
 
         tt_channel_sel_stage_TESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med,     N_jets_nom_all),     [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
         tt_channel_sel_stage_TESDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med,     N_jets_nom_all),     [tau for tau in sel_taus if (tau[0]*tau[1][2]).pt() > TAUS_PT_CUT], proc_met)
@@ -4745,14 +4753,15 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             # leptons and pu with systematics
             event_weight_LEP_PU[0]     = weight_lep_pu if weight_lep_pu > 0.0001 else 0.
 
-            event_weight_LEPmuIDUp[0]    = (weight_lep_pu_muIDUp    / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
-            event_weight_LEPmuIDDown[0]  = (weight_lep_pu_muIDDown  / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
-            event_weight_LEPmuTRGUp[0]   = (weight_lep_pu_muTRGUp   / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
-            event_weight_LEPmuTRGDown[0] = (weight_lep_pu_muTRGDown / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
-            event_weight_LEPelIDUp[0]    = (weight_lep_pu_elIDUp    / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
-            event_weight_LEPelIDDown[0]  = (weight_lep_pu_elIDDown  / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
-            event_weight_LEPelTRGUp[0]   = (weight_lep_pu_elTRGUp   / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
-            event_weight_LEPelTRGDown[0] = (weight_lep_pu_elTRGDown / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
+            max_weight_lep_pu = 2*weight_lep_pu
+            event_weight_LEPmuIDUp[0]    = (weight_lep_pu_muIDUp    / weight_lep_pu if weight_lep_pu_muIDUp    < max_weight_lep_pu else max_weight_lep_pu) if weight_lep_pu > 0.0001 and weight_lep_pu_muIDUp    > 0.0001 else 0.
+            event_weight_LEPmuIDDown[0]  = (weight_lep_pu_muIDDown  / weight_lep_pu if weight_lep_pu_muIDDown  < max_weight_lep_pu else max_weight_lep_pu) if weight_lep_pu > 0.0001 and weight_lep_pu_muIDDown  > 0.0001 else 0.
+            event_weight_LEPmuTRGUp[0]   = (weight_lep_pu_muTRGUp   / weight_lep_pu if weight_lep_pu_muTRGUp   < max_weight_lep_pu else max_weight_lep_pu) if weight_lep_pu > 0.0001 and weight_lep_pu_muTRGUp   > 0.0001 else 0.
+            event_weight_LEPmuTRGDown[0] = (weight_lep_pu_muTRGDown / weight_lep_pu if weight_lep_pu_muTRGDown < max_weight_lep_pu else max_weight_lep_pu) if weight_lep_pu > 0.0001 and weight_lep_pu_muTRGDown > 0.0001 else 0.
+            event_weight_LEPelIDUp[0]    = (weight_lep_pu_elIDUp    / weight_lep_pu if weight_lep_pu_elIDUp    < max_weight_lep_pu else max_weight_lep_pu) if weight_lep_pu > 0.0001 and weight_lep_pu_elIDUp    > 0.0001 else 0.
+            event_weight_LEPelIDDown[0]  = (weight_lep_pu_elIDDown  / weight_lep_pu if weight_lep_pu_elIDDown  < max_weight_lep_pu else max_weight_lep_pu) if weight_lep_pu > 0.0001 and weight_lep_pu_elIDDown  > 0.0001 else 0.
+            event_weight_LEPelTRGUp[0]   = (weight_lep_pu_elTRGUp   / weight_lep_pu if weight_lep_pu_elTRGUp   < max_weight_lep_pu else max_weight_lep_pu) if weight_lep_pu > 0.0001 and weight_lep_pu_elTRGUp   > 0.0001 else 0.
+            event_weight_LEPelTRGDown[0] = (weight_lep_pu_elTRGDown / weight_lep_pu if weight_lep_pu_elTRGDown < max_weight_lep_pu else max_weight_lep_pu) if weight_lep_pu > 0.0001 and weight_lep_pu_elTRGDown > 0.0001 else 0.
 
             event_weight_PUUp[0]    = (weight_lep_pu_PUUp / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
             event_weight_PUDown[0]  = (weight_lep_pu_PUDown / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.

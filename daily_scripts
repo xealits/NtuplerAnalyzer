@@ -8,6 +8,11 @@ Three main problems:
       there is no such issue in electron channel, el has some issue in Mf and some PDFs
 3) DY tautau basic and 3j look strange in the distrs:
    different the composition in lep pT and tau pT (more qcd, wjets in one of them).
+4) high MET trends: MC>Data at high MET
+   -- the TOPPT in elmu, presel and main selection does not fix them entirely
+      it cannot be due to QCD -- it's in high MET, especially at 200-500GeV
+   is it the reason of the disagreement in Mt?
+   is it fixable with recoil corrections?
 
 asymmetric systematics:
 
@@ -182,7 +187,9 @@ LEPmu -- symmetric + a slight bent, not as the past
 
 
 
-## check the LEPmu systematic vars
+
+
+## check the LEPmu systematic vars - fixed
 
 'LEPmuIDUp'   : lambda ev: ev.event_weight*ev.event_weight_LEPmuIDUp   ,
 'LEPmuIDDown' : lambda ev: ev.event_weight*ev.event_weight_LEPmuIDDown ,
@@ -214,6 +221,1129 @@ python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunch
 
 
 -- yeah, muTRG is asymmetric, especially at mu_sel_lj
+   muID is also asymmetric, though to a lesser degree
+
+
+but PU is OK...
+
+yeah! the variations weight was incorrectly calculated:
+
+                weight_lep_pu_muTRGUp   = (ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0]  * weight_pu_bcdef + \
+                                              ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]) * weight_pu_gh
+                weight_lep_pu_muTRGDown = (ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0]  * weight_pu_bcdef + \
+                                              ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]) * weight_pu_gh
+
+PU was ok:
+
+                weight_lep_pu_PUUp = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef_up + \
+                                        ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh_up
+                weight_lep_pu_PUDown = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef_dn + \
+                                          ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh_dn
+
+I'm surprised it did not destroy the event yield in these variations.
+
+v37 test14
+
+
+
+
+
+## check other pull-cinstrained systematics JES, Peterson, TES
+
+JES does look strange, the 150-200GeV bin especially,
+but no such asymmetry as in LEPmu
+
+Peterson is ok, also no difference between el and mu
+
+TES is like JES, the bins at 150 and 200GeV are close to asymmetry
+but not like LEPMu
+
+
+defs for JES and TES:
+
+'JESDown':  lambda ev: ev.event_weight,
+'JESUp'  :  lambda ev: ev.event_weight,
+'TESDown':  lambda ev: ev.event_weight,
+'TESUp'  :  lambda ev: ev.event_weight,
+
+systs_objects_mt_variation = {
+'NOMINAL'  : lambda ev: ev.event_met_lep_mt,
+'JERUp'    : lambda ev: ev.event_met_lep_mt_JERUp,
+'JERDown'  : lambda ev: ev.event_met_lep_mt_JERDown,
+'JESUp'    : lambda ev: ev.event_met_lep_mt_JESUp,
+'JESDown'  : lambda ev: ev.event_met_lep_mt_JESDown,
+'TESUp'    : lambda ev: ev.event_met_lep_mt_TESUp,
+'TESDown'  : lambda ev: ev.event_met_lep_mt_TESDown,
+}
+
+main_sel_stages = {
+'NOMINAL':  lambda ev: ev.selection_stage,
+'JERDown':  lambda ev: ev.selection_stage_JERDown,
+'JERUp'  :  lambda ev: ev.selection_stage_JERUp  ,
+'JESDown':  lambda ev: ev.selection_stage_JESDown,
+'JESUp'  :  lambda ev: ev.selection_stage_JESUp  ,
+'TESDown':  lambda ev: ev.selection_stage_TESDown,
+'TESUp'  :  lambda ev: ev.selection_stage_TESUp  ,
+}
+
+-- all ok
+
+        tt_channel_sel_stage          = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med,     N_jets_nom_all),     [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+
+        tt_channel_sel_stage_TESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med,     N_jets_nom_all),     [tau for tau in sel_taus if (tau[0]*tau[1][1]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_TESDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_nom_med,     N_jets_nom_all),     [tau for tau in sel_taus if (tau[0]*tau[1][2]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JERUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERUp_med,   N_jets_JERUp_all),   [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JERDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JERDown_med, N_jets_JERDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JESUp    = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESUp_med,   N_jets_JESUp_all),   [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+        tt_channel_sel_stage_JESDown  = passes_tt_selection_stages(passed_triggers, leps, (N_jets_JESDown_med, N_jets_JESDown_all), [tau for tau in sel_taus if (tau[0]*tau[1][0]).pt() > TAUS_PT_CUT], proc_met)
+
+also ok
+
+stage2 calculation
+
+        event_met_lep_mt         [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met.Px(), proc_met.Py())
+        event_met_lep_mt_JERUp   [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JERUp.Px(),   proc_met_JERUp.Py())
+        event_met_lep_mt_JERDown [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JERDown.Px(), proc_met_JERDown.Py())
+        event_met_lep_mt_JESUp   [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JESUp.Px(),   proc_met_JESUp.Py())
+        event_met_lep_mt_JESDown [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_JESDown.Px(), proc_met_JESDown.Py())
+        event_met_lep_mt_TESUp   [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_TESUp.Px(),   proc_met_TESUp.Py())
+        event_met_lep_mt_TESDown [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_TESDown.Px(), proc_met_TESDown.Py())
+
+(the only?) difference between nominal jets and variations:
+
+                    if jet_pt > JETS_PT_CUT:
+                        proc_met -= p4 * (en_factor - 1.)
+                    if jet_pt_JERUp > JETS_PT_CUT:
+                        proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
+                    if jet_pt_JERDown > JETS_PT_CUT:
+                        proc_met_JERDown -= p4 * (jet_factor_JERDown - 1.)
+                    if jet_pt_JESUp > JETS_PT_CUT:
+                        proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
+                    if jet_pt_JESDown > JETS_PT_CUT:
+                        proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
+                    # these were broken! the nominal jer factor was not applied, but now it is.
+
+but:
+
+                        jet_factor_JESUp   = en_factor * (1 + jes_shift)
+                        jet_factor_JESDown = en_factor * (1 - jes_shift)
+
+and these:
+
+                        up, down = ev.jet_jer_factor_up[i], ev.jet_jer_factor_down[i]
+                        jet_factor_JERUp   = up    if jer_factor > 0 else 0
+                        jet_factor_JERDown = down  if jer_factor > 0 else 0
+
+where
+
+				jer_factor = TMath::Max(0., 1. + (jer_sf - 1) * dPt / jet.pt());
+				jer_factor_up   = TMath::Max(0., 1. + (jer_sf_up   - 1) * dPt / jet.pt());
+				jer_factor_down = TMath::Max(0., 1. + (jer_sf_down - 1) * dPt / jet.pt());
+				jet.setP4(jet.p4()*jer_factor); // same as scaleEnergy in the Jet POG example
+
+but I use
+
+            p4 = ev.jet_initial_p4[i]
+
+-- so, here I do not need to divide by nominal JER!
+   the jet has only JES applied,
+   I multiply by jer with en_factor
+   then I multiply by JER Up Down to get the variations
+   -- but! jet_pt already inlcudes JER?
+
+            jet_pt  = p4.pt() * en_factor
+            jet_eta = p4.eta()
+            possible_jet_pts = [jet_pt]
+
+and
+
+            jet_pt_JERUp   = jet_pt
+            jet_pt_JERDown = jet_pt
+            jet_pt_JESUp   = jet_pt
+            jet_pt_JESDown = jet_pt
+
+-- JER is wrong
+
+but then I do:
+
+                        jet_pt_JESUp    = p4.pt() * jet_factor_JESUp  
+                        jet_pt_JESDown  = p4.pt() * jet_factor_JESDown
+
+and what I propagate to MET?
+-- MET is equalized with initial jets
+   I correct them by JER factor for nominal and by systematic factors for the rest
+   these factors are propagated to MET
+
+   so I need 1 factor for each jet variation, which includes full correction
+
+so, now the factors for MET propagation are correct, but the pT of systematic jets are not
+
+
+
+
+what's the problem with TES?
+
+                taus_main.append((p4, (TES_factor, TES_factor_up, TES_factor_dn), tau_pdgID, i, tau_ID, jetmatched))
+
+        event_met_lep_mt_TESUp   [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_TESUp.Px(),   proc_met_TESUp.Py())
+        event_met_lep_mt_TESDown [0] = transverse_mass_pts(lep_p4[0].Px(), lep_p4[0].Py(), proc_met_TESDown.Px(), proc_met_TESDown.Py())
+
+-- and propagations and pT cuts look ok
+
+'TESDown':  lambda ev: ev.event_weight,
+'TESUp'  :  lambda ev: ev.event_weight,
+
+'TESUp'    : lambda ev: ev.event_met_lep_mt_TESUp,
+'TESDown'  : lambda ev: ev.event_met_lep_mt_TESDown,
+
+damn!
+
+    proc_met_TESUp
+    proc_met_TESDown
+
+-- they don't get all the nominal JER propagation!!!
+
+-->>> go test14 TT and the rest
+
+
+check the change in TT:
+
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17 || selection_stage == 15)*event_weight"                        --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_NOMINAL_el.root    --histo-name Mt_NOMINAL_el lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight"                           --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_NOMINAL_mu.root    --histo-name Mt_NOMINAL_mu lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight*event_weight_LEPmuTRGUp"   --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_LEPmuTRGUp.root   --histo-name  Mt_LEPmuTRGUp  lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root    &
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight*event_weight_LEPmuTRGDown" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_LEPmuTRGDown.root --histo-name Mt_LEPmuTRGDown lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root    &
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight*event_weight_LEPmuIDUp"    --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_LEPmuIDUp.root    --histo-name  Mt_LEPmuIDUp   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root    &
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight*event_weight_LEPmuIDDown"  --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_LEPmuIDDown.root  --histo-name  Mt_LEPmuIDDown lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root    &
+
+python sumup_ttree_draw.py "event_met_lep_mt_JESUp"   --ttree ttree_out --cond-com "(selection_stage_JESUp   == 9 || selection_stage_JESUp   == 7 || selection_stage_JESUp   == 5)*event_weight"  --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_JESUp.root    --histo-name Mt_JESUp    lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root    &
+python sumup_ttree_draw.py "event_met_lep_mt_JESDown" --ttree ttree_out --cond-com "(selection_stage_JESDown == 9 || selection_stage_JESDown == 7 || selection_stage_JESDown == 5)*event_weight"  --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_JESDown.root  --histo-name Mt_JESDown  lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root    &
+
+python sumup_ttree_draw.py "event_met_lep_mt_TESUp"   --ttree ttree_out --cond-com "(selection_stage_TESUp   == 9 || selection_stage_TESUp   == 7 || selection_stage_TESUp   == 5)*event_weight"  --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_TESUp.root    --histo-name Mt_TESUp   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt_TESDown" --ttree ttree_out --cond-com "(selection_stage_TESDown == 9 || selection_stage_TESDown == 7 || selection_stage_TESDown == 5)*event_weight"  --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_TESDown.root  --histo-name Mt_TESDown lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "event_met_lep_mt_JERUp"   --ttree ttree_out --cond-com "(selection_stage_JERUp   == 9 || selection_stage_JERUp   == 7 || selection_stage_JERUp   == 5)*event_weight"  --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_JERUp.root    --histo-name Mt_JERUp   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt_JERDown" --ttree ttree_out --cond-com "(selection_stage_JERDown == 9 || selection_stage_JERDown == 7 || selection_stage_JERDown == 5)*event_weight"  --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_JERDown.root  --histo-name Mt_JERDown lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "event_met_lep_mt_JERUp"   --ttree ttree_out --cond-com "(selection_stage_JERUp   == 19 || selection_stage_JERUp   == 17 || selection_stage_JERUp   == 15)*event_weight" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_JERUp_el.root    --histo-name Mt_JERUp_el   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_lep_mt_JERDown" --ttree ttree_out --cond-com "(selection_stage_JERDown == 19 || selection_stage_JERDown == 17 || selection_stage_JERDown == 15)*event_weight" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_JERDown_el.root  --histo-name Mt_JERDown_el lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+-- damn! the el selections!
+
+hadd -f v37_test14_LEPmu_JES_JER_TES_issue.root v37_test14_LEPmu_JES_JER_TES_issue_*root
+
+root -l v37_test14_LEPmu_JES_JER_TES_issue.root
+
+Mt_LEPmuTRGUp   ->SetLineColor(kRed)
+Mt_LEPmuTRGDown ->SetLineColor(kRed+2)
+Mt_LEPmuIDUp    ->SetLineColor(kRed)
+Mt_LEPmuIDDown  ->SetLineColor(kRed+2)
+Mt_TESUp    ->SetLineColor(kRed)
+Mt_TESDown  ->SetLineColor(kRed+2)
+Mt_JESUp    ->SetLineColor(kRed)
+Mt_JESDown  ->SetLineColor(kRed+2)
+Mt_JERUp    ->SetLineColor(kRed)
+Mt_JERDown  ->SetLineColor(kRed+2)
+Mt_JERUp_el    ->SetLineColor(kRed)
+Mt_JERDown_el  ->SetLineColor(kRed+2)
+
+Mt_LEPmuTRGUp   ->Divide(Mt_NOMINAL_mu)
+Mt_LEPmuTRGDown ->Divide(Mt_NOMINAL_mu)
+Mt_LEPmuIDUp    ->Divide(Mt_NOMINAL_mu)
+Mt_LEPmuIDDown  ->Divide(Mt_NOMINAL_mu)
+Mt_TESUp        ->Divide(Mt_NOMINAL_mu)
+Mt_TESDown      ->Divide(Mt_NOMINAL_mu)
+Mt_JESUp        ->Divide(Mt_NOMINAL_mu)
+Mt_JESDown      ->Divide(Mt_NOMINAL_mu)
+Mt_JERUp        ->Divide(Mt_NOMINAL_mu)
+Mt_JERDown      ->Divide(Mt_NOMINAL_mu)
+Mt_JERUp_el     ->Divide(Mt_NOMINAL_el)
+Mt_JERDown_el   ->Divide(Mt_NOMINAL_el)
+
+
+Mt_LEPmuTRGUp   ->Draw()
+Mt_LEPmuTRGDown ->Draw("same")
+Mt_LEPmuIDUp    ->Draw()
+Mt_LEPmuIDDown  ->Draw("same")
+Mt_TESUp        ->Draw()
+Mt_TESDown      ->Draw("same")
+Mt_JESUp        ->Draw()
+Mt_JESDown      ->Draw("same")
+Mt_JERUp        ->Draw()
+Mt_JERDown      ->Draw("same")
+Mt_JERUp_el     ->Draw()
+Mt_JERDown_el   ->Draw("same")
+
+l = (TLine*) new TLine(0., 1.0, 250., 1.0)
+l->Draw("same")
+
+-- LEPmu are perfect
+
+   TES is good, except bins at 210-220GeV
+
+   JES more bins flipped
+
+   JER most bins are asymmetric from NOMINAL
+
+   the others are stat deviations, often asymmetric from NOMINAL
+   and they were made with wrong selection_stages-s
+   -- with correct selections:
+      TES and JES - much better
+      but still in some bins TESUp < NOMINAL and TESDown > NOMINAL?
+      JER -- still crapy, in most bins variations are on one side of NOMINAL
+             and the variations are close each other, they are just shifted to a side of NOMINAL
+
+what's with JER in the other (muon) channel?
+-- same stuff
+
+since the variations are often close to each other, it looks like some nominal stuf is not propagated to them
+
+
+
+### LEPmu -- identical Up Down
+
+root -l lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_1.root
+ttree_out->Draw("event_weight_LEPmuTRGUp:event_weight_LEPmuTRGDown")
+ttree_out->Draw("event_weight_LEPmuIDUp:event_weight_LEPmuIDDown")
+
+ttree_out->Draw("event_weight_LEPmuTRGUp - event_weight_LEPmuTRGDown")
+ttree_out->Draw("event_weight_LEPmuIDUp  - event_weight_LEPmuIDDown")
+
+does show them identical
+also some weights are > 1000!
+-- fixed to maximum = twice the nominal LEP weight
+
+debugger shows them different
+
+python -m pdb channel_distrs_full_loop.py --overwrite --do-W-stitching --metmuegclean false --options no_prop_lepjets -l logss temp/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_64.root
+
+break 98
+r
+b stage2:4729
+c
+
+(Pdb) p weight_lep_pu
+1.145978025815098
+(Pdb) p weight_lep_pu_muIDUp
+1.1547874854163567
+(Pdb) p pass_mu
+True
+(Pdb) p pass_el
+False
+(Pdb) p pass_elmu
+False
+(Pdb) p pass_mumu
+False
+(Pdb) p pass_elel
+False
+(Pdb) p weight_lep_pu_muIDUp
+1.1547874854163567
+(Pdb) p weight_lep_pu_muIDDown
+1.137195091197873
+
+let's test this file
+
+time python channel_distrs_full_loop.py --overwrite --do-W-stitching --metmuegclean false --options no_prop_lepjets -l logss temp/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_65.root
+
+-- line +1 and weaker -1
+
+1.145978025815098
+1.154787485416357
+1.137195091197873
+
+1.154787485416357 - 1.145978025815098
+0.008809459601258895
+
+1.145978025815098 - 1.137195091197873
+0.008782934617225013
+
+line +1 is not from pass_mu!
+
+((TTree*) ttree_out)->Draw("event_weight_LEPmuIDUp:event_weight_LEPmuIDDown>>h(100,0.9,1.1,100,0.9,1.1)", "selection_stage == 9 || selection_stage == 7 || selection_stage == 5", "col")
+((TTree*) ttree_out)->Draw("event_weight_LEPmuIDUp - event_weight_LEPmuIDDown",                           "selection_stage == 9 || selection_stage == 7 || selection_stage == 5")
+
+-- short -1 line
+
+the difference peaks at 0.015
+
+((TTree*) ttree_out)->Draw("event_weight_LEPmuTRGUp - event_weight_LEPmuTRGDown",                         "selection_stage == 9 || selection_stage == 7 || selection_stage == 5")
+
+-- peak at 0.005
+
+compare to nominal:
+
+((TTree*) ttree_out)->Draw("event_weight_LEPmuTRGUp   * event_weight_LEP_PU - event_weight_LEP_PU",       "selection_stage == 9 || selection_stage == 7 || selection_stage == 5")
+((TTree*) ttree_out)->Draw("event_weight_LEPmuTRGDown * event_weight_LEP_PU - event_weight_LEP_PU",       "selection_stage == 9 || selection_stage == 7 || selection_stage == 5")
+
+-- peak at 0.0025 and -0.0025
+
+((TTree*) ttree_out)->Draw("event_weight_LEPmuIDUp   * event_weight_LEP_PU - event_weight_LEP_PU",        "selection_stage == 9 || selection_stage == 7 || selection_stage == 5")
+((TTree*) ttree_out)->Draw("event_weight_LEPmuIDDown * event_weight_LEP_PU - event_weight_LEP_PU",        "selection_stage == 9 || selection_stage == 7 || selection_stage == 5")
+
+-- at 0.008 and -0.008
+
+So, check an actual test14 file:
+
+root -l lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_65.root
+
+-- same
+
+all ok, just confused the el and mu selection stages!
+
+
+
+### check JER in pdb
+
+the problem is:
+the JER deviations are well withing stat uncertainties, but they don't look like stat fluctuation:
+they are closer to each other than the stat uncertainty and consistently asymmetrically off the nominal
+
+
+python -m pdb channel_distrs_full_loop.py --overwrite --do-W-stitching --metmuegclean false --options no_prop_lepjets -l logss temp/ channels_nom_sys_muon_sel_main -i /gstore/t3cms/store/user/otoldaie//v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_64.root
+
+break 98
+r
+b stage2:3871
+b stage2:4137
+c
+
+p (jet_pt, jet_pt_JERUp, jet_pt_JERDown, jet_pt_JESUp, jet_pt_JESDown)
+
+p (jet_pt, jet_pt_JERUp, jet_pt_JERDown, jet_pt_JESUp, jet_pt_JESDown)
+p (proc_met.pt(), proc_met_JERUp.pt(), proc_met_JERDown.pt(), proc_met_JESUp.pt(), proc_met_JESDown.pt())
+
+(116.20066159957423, 116.3231554422673, 116.07815405970541, 117.34846416708938, 115.05285903205909)
+(146.21824645996094, 146.21824645996094, 146.21824645996094, 146.21824645996094, 146.21824645996094)
+
+(41.013478935302366, 41.04752402729718, 40.979433843307554, 41.69352002299687, 40.33343784760786)
+(147.35364960906952, 147.46073977343505, 147.24657149110465, 148.3580500785504, 146.3513579868092)
+
+(35.61375328476379, 35.66372104283346, 35.563789754442496, 36.69022598895816, 34.537280580569416)
+(147.35364960906952, 147.46073977343505, 147.24657149110465, 148.3580500785504, 146.3513579868092)
+
+-- consistently JER Up Down in MET pT are +- from nominal...
+
+
+
+the issue can be due to the correlation in MET pT-phi?
+
+check JER Up Down in met pT and phi separately
+
+python sumup_ttree_draw.py "event_met.pt()"          --ttree ttree_out --cond-com "(selection_stage         == 9 || selection_stage         == 7 || selection_stage         == 5)*event_weight" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_NOMINAL.root --histo-name MET_pT_NOMINAL lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERUp.pt()"    --ttree ttree_out --cond-com "(selection_stage_JERUp   == 9 || selection_stage_JERUp   == 7 || selection_stage_JERUp   == 5)*event_weight" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_JERUp.root   --histo-name MET_pT_JERUp   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERDown.pt()"  --ttree ttree_out --cond-com "(selection_stage_JERDown == 9 || selection_stage_JERDown == 7 || selection_stage_JERDown == 5)*event_weight" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_JERDown.root --histo-name MET_pT_JERDown lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+python sumup_ttree_draw.py "event_met.phi()"         --ttree ttree_out --cond-com "(selection_stage         == 9 || selection_stage         == 7 || selection_stage         == 5)*event_weight" --histo-range 20,-3.15,3.15 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_phi_NOMINAL.root --histo-name MET_phi_NOMINAL lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERUp.phi()"   --ttree ttree_out --cond-com "(selection_stage_JERUp   == 9 || selection_stage_JERUp   == 7 || selection_stage_JERUp   == 5)*event_weight" --histo-range 20,-3.15,3.15 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_phi_JERUp.root   --histo-name MET_phi_JERUp   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERDown.phi()" --ttree ttree_out --cond-com "(selection_stage_JERDown == 9 || selection_stage_JERDown == 7 || selection_stage_JERDown == 5)*event_weight" --histo-range 20,-3.15,3.15 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_phi_JERDown.root --histo-name MET_phi_JERDown lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+hadd -f v37_test14_LEPmu_JES_JER_TES_issue_MET.root v37_test14_LEPmu_JES_JER_TES_issue_MET_*root
+
+root -l v37_test14_LEPmu_JES_JER_TES_issue_MET.root
+
+MET_pT_JERUp   ->SetLineColor(kRed)
+MET_pT_JERDown ->SetLineColor(kRed+2)
+
+MET_phi_JERUp   ->SetLineColor(kRed)
+MET_phi_JERDown ->SetLineColor(kRed+2)
+
+MET_pT_JERUp   ->Divide(MET_pT_NOMINAL)
+MET_pT_JERDown ->Divide(MET_pT_NOMINAL)
+
+MET_phi_JERUp   ->Divide(MET_phi_NOMINAL)
+MET_phi_JERDown ->Divide(MET_phi_NOMINAL)
+
+
+
+l = (TLine*) new TLine(0., 1.0, 250., 1.0)
+MET_pT_JERUp   ->Draw()
+MET_pT_JERDown ->Draw("same")
+l->Draw("same")
+
+-- no, pT is also asymmetric in many bins..
+
+
+lphi = (TLine*) new TLine(-3.15, 1.0, 3.15, 1.0)
+MET_phi_JERUp   ->Draw()
+MET_phi_JERDown ->Draw("same")
+lphi->Draw("same")
+
+-- phi is random fluctuations
+
+root [1] MET_pT_JERUp->Print()
+TH1.Print Name  = MET_pT_JERUp, Entries= 114651, Total sum= 103886
+root [2] MET_pT_NOMINAL->Print()
+TH1.Print Name  = MET_pT_NOMINAL, Entries= 114674, Total sum= 103893
+root [3] MET_pT_JERDown->Print()
+TH1.Print Name  = MET_pT_JERDown, Entries= 114697, Total sum= 103936
+
+-- JERUp has less events
+
+
+
+
+check the correlation in 1 file
+
+root -l lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_27.root
+
+ttree_out->Draw("(event_met.pt()-event_met_JERUp.pt()):(event_met.phi()-event_met_JERUp.phi())")
+ttree_out->Draw("(event_met.pt()-event_met_JERDown.pt()):(event_met.phi()-event_met_JERDown.phi())")
+
+-- no correlation
+
+ttree_out->Draw("event_met.pt()-event_met_JERUp.pt()>>h(20,-1,1)")
+ttree_out->Draw("event_met.pt()-event_met_JERDown.pt()>>h(20,-1,1)")
+
+-- around 0: JERDown +0.06 +- 0.27
+             JERUp   -0.06 +- 0.27
+
+ttree_out->Draw("event_met_JERDown.pt()-event_met_JERUp.pt()>>h(20,-1.,1.)")
+
+-- also wide peak
+   -0.08 +- 0.38
+
+ttree_out->Draw("event_met_JERDown.pt()-event_met.pt():event_met_JERUp.pt()-event_met.pt()>>h(200,-0.1,0.1,200,-0.1,0.1)", "selection_stage == 5 || selection_stage == 7 || selection_stage == 9", "col")
+
+-- clear line -1
+   cannot be a fluctuation then, can it?
+
+   JERUp   = NOM + x
+   JERDown = NOM - x
+
+   x = +- 0.27
+
+   so both variations have bin-by-bin migration in both directions of 0.3 GeV magnitude -- within 1 bin or maximum between neighbors
+   but why does it even out so well that they look closer to each other than to NOMINAL at the end?
+
+it is the migration of thin layer between neighbor bins!
+the migration of thin layer between bins leads to variations proportional to differences between heights of neighbor bins
+if Up and Down vary in both directions equally (as in my case) the result for both is the same
+and it depends on heights of the given bin and its' neighbors
+
+if it is so, then the difference of heights of neighboring bins should matter
+
+the expected deviation must be proportional to 2nd derivative:
+for bins [N-1][N][N+1] the central bin N varies for both Up and Down close to
+(N+1) + (N-1) - 2*N
+
+
+root -l v37_test14_LEPmu_JES_JER_TES_issue_MET.root
+
+MET_pT_NOMINAL   ->GetBinContent(1)
+MET_pT_NOMINAL   ->GetBinContent(2)
+MET_pT_NOMINAL   ->GetBinContent(3)
+MET_pT_NOMINAL   ->GetBinContent(4)
+MET_pT_NOMINAL   ->GetBinContent(5)
+MET_pT_NOMINAL   ->GetBinContent(6)
+MET_pT_NOMINAL   ->GetBinContent(7)
+MET_pT_NOMINAL   ->GetBinContent(8)
+MET_pT_NOMINAL   ->GetBinContent(9)
+MET_pT_NOMINAL   ->GetBinContent(10)
+MET_pT_NOMINAL   ->GetBinContent(11)
+MET_pT_NOMINAL   ->GetBinContent(12)
+MET_pT_NOMINAL   ->GetBinContent(13)
+MET_pT_NOMINAL   ->GetBinContent(14)
+MET_pT_NOMINAL   ->GetBinContent(15)
+
+bins = [ 3215.15 8821.89 12504.1 14386.2 13869.2 12351.9 10155.2 7793.23 5938.67 4208.46 3167.35 2187.72 1548.06 1080.29 852.619 ]
+
+bins[1:length(bins)]
+
+bins_nominal = bins[2:length(bins)-1]
+bins_left    = bins[1:length(bins)-2]
+bins_right   = bins[3:length(bins)]
+
+bins_right + bins_left - 2*bins_nominal
+
+ -1924.53 
+ -1800.11 
+ -2399.1  
+ -1000.3  
+  -679.4  
+  -165.27 
+   507.41 
+   124.35 
+   689.1  
+    61.48 
+   339.97 
+   171.89 
+   240.099
+
+* some factor
+
+MET_pT_JERUp   ->SetLineColor(kRed)
+MET_pT_JERDown ->SetLineColor(kRed+2)
+
+MET_pT_JERUp   ->Divide(MET_pT_NOMINAL)
+MET_pT_JERDown ->Divide(MET_pT_NOMINAL)
+
+
+l = (TLine*) new TLine(0., 1.0, 250., 1.0)
+MET_pT_JERUp   ->Draw()
+MET_pT_JERDown ->Draw("same")
+l->Draw("same")
+
+-- the distr does not follow too well
+   the solid bin content is probably not good approximation
+
+max bin content per bin width:
+
+14386.2 / 12.5000
+1150.90
+
+1150.90 * 0.3
+345.270
+
+make finer bins and check the actuall points to move?
+
+12.5 / 0.5
+25
+12.5 / 0.25
+50
+
+python sumup_ttree_draw.py "event_met.pt()" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight" --histo-range 1000,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_NOMINAL_fine2.root --histo-name MET_pT_NOMINAL_fine2 lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met.pt()" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight" --histo-range  500,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_NOMINAL_fine.root  --histo-name MET_pT_NOMINAL_fine  lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+python sumup_ttree_draw.py "event_met.pt()" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight" --histo-range 2000,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_NOMINAL_fine3.root --histo-name MET_pT_NOMINAL_fine3 lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+hadd v37_test14_JER_binning_test.root v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_NOMINAL_fine2.root v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_NOMINAL_fine.root v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_NOMINAL.root
+
+root -l v37_test14_JER_binning_test.root
+
+MET_pT_NOMINAL      ->GetBinR(25)
+MET_pT_NOMINAL_fine ->GetBinCenter(25)
+
+MET_pT_NOMINAL      ->GetBinLowEdge(1*1)  + MET_pT_NOMINAL      ->GetBinWidth(1*1)
+MET_pT_NOMINAL_fine ->GetBinLowEdge(1*25) + MET_pT_NOMINAL_fine ->GetBinWidth(1*25)
+MET_pT_NOMINAL_fine2->GetBinLowEdge(1*50) + MET_pT_NOMINAL_fine2->GetBinWidth(1*50)
+
+(double) 12.5000
+(double) 12.5000
+(double) 12.5000
+
+MET_pT_NOMINAL      ->GetBinLowEdge(2*1)  + MET_pT_NOMINAL      ->GetBinWidth(2*1)
+MET_pT_NOMINAL_fine ->GetBinLowEdge(2*25) + MET_pT_NOMINAL_fine ->GetBinWidth(2*25)
+MET_pT_NOMINAL_fine2->GetBinLowEdge(2*50) + MET_pT_NOMINAL_fine2->GetBinWidth(2*50)
+
+(double) 25.0000
+(double) 25.0000
+(double) 25.0000
+
+mult=25
+for (int i =0; i<15*mult; ) {
+	i += mult;
+	cout << MET_pT_NOMINAL_fine ->GetBinLowEdge(i) + MET_pT_NOMINAL_fine ->GetBinWidth(i) << '\t' << MET_pT_NOMINAL_fine->GetBinContent(i) << endl;
+	}
+
+12.5	233.237
+25	441.169
+37.5	546.877
+50	642.236
+62.5	560.885
+75	457.119
+87.5	349.283
+100	281.726
+112.5	227.336
+125	146.267
+137.5	109.135
+150	66.3027
+162.5	68.648
+175	38.0659
+187.5	28.6125
+
+bins_25 = [ 233.237 441.169 546.877 642.236 560.885 457.119 349.283 281.726 227.336 146.267 109.135 66.3027 68.648 38.0659 28.6125 ]
+
+
+mult=50
+for (int i =0; i<15*mult; ) {
+	i += mult;
+	cout << MET_pT_NOMINAL_fine2->GetBinLowEdge(i) + MET_pT_NOMINAL_fine2->GetBinWidth(i) << '\t' << MET_pT_NOMINAL_fine2->GetBinContent(i) << endl;
+	}
+
+12.5	119.177
+25	231.524
+37.5	266.865
+50	334.267
+62.5	279.729
+75	249.043
+87.5	183.315
+100	124.16
+112.5	102.861
+125	74.1076
+137.5	47.5184
+150	32.9129
+162.5	31.3639
+175	18.9432
+187.5	15.2979
+
+bins_50 = [ 119.177 231.524 266.865 334.267 279.729 249.043 183.315 124.16 102.861 74.1076 47.5184 32.9129 31.3639 18.9432 15.2979 ]
+
+(bins_50 ./ bins_25)'
+15x1 Array{Float64,2}:
+ 0.51097 
+ 0.524797
+ 0.48798 
+ 0.520474
+ 0.498728
+ 0.54481 
+ 0.524832
+ 0.440712
+ 0.452462
+ 0.50666 
+ 0.435409
+ 0.496404
+ 0.45688 
+ 0.497642
+ 0.534658
+
+-- practically the same
+
+bins_nominal = bins_50[2:length(bins_50)-1]
+bins_left    = bins_50[1:length(bins_50)-2]
+bins_right   = bins_50[3:length(bins_50)]
+
+bins_right + bins_left - 2*bins_nominal
+
+  -77.006 
+   32.061 
+ -121.94  
+   23.852 
+  -35.042 
+    6.573 
+   37.856 
+   -7.4544
+    2.1642
+   11.9837
+   13.0565
+  -10.8717
+    8.7754
+
+bins_nominal = bins_25[2:length(bins_25)-1]
+bins_left    = bins_25[1:length(bins_25)-2]
+bins_right   = bins_25[3:length(bins_25)]
+
+bins_right + bins_left - 2*bins_nominal
+
+ -102.224 
+  -10.349 
+ -176.71  
+  -22.415 
+   -4.07  
+   40.279 
+   13.167 
+  -26.679 
+   43.937 
+   -5.7003
+   45.1776
+  -32.9274
+   21.1287
+
+and some factor
+-- the factor is the width of the neighboring layer,
+   so this number is the estimation of the actual amount of events moved into this bin
+   with fine binning the layer width = bin width
+
+damn!
+I need 2 neighboring layer-bins!
+
+mult=1
+for (int i =0; i<15*mult; ) {
+	i += mult;
+	cout << MET_pT_NOMINAL->GetBinLowEdge(i) + MET_pT_NOMINAL->GetBinWidth(i) << '\t' << MET_pT_NOMINAL->GetBinContent(i) << '\t' << MET_pT_NOMINAL->GetBinContent(i+1) << endl;
+	}
+
+12.5	3215.15	8821.89
+25	8821.89	12504.1
+37.5	12504.1	14386.2
+50	14386.2	13869.2
+62.5	13869.2	12351.9
+75	12351.9	10155.2
+87.5	10155.2	7793.23
+100	7793.23	5938.67
+112.5	5938.67	4208.46
+125	4208.46	3167.35
+137.5	3167.35	2187.72
+150	2187.72	1548.06
+162.5	1548.06	1080.29
+175	1080.29	852.619
+187.5	852.619	583.361
+
+mult=25
+for (int i =0; i<15*mult; ) {
+	i += mult;
+	cout << MET_pT_NOMINAL_fine->GetBinLowEdge(i) + MET_pT_NOMINAL_fine->GetBinWidth(i) << '\t' << MET_pT_NOMINAL_fine->GetBinContent(i) << '\t' << MET_pT_NOMINAL_fine->GetBinContent(i+1) << endl;
+	}
+
+12.5	233.237	226.92
+25	441.169	445.615
+37.5	546.877	535.026
+50	642.236	547.133
+62.5	560.885	555.021
+75	457.119	462.159
+87.5	349.283	350.987
+100	281.726	298.24
+112.5	227.336	195.48
+125	146.267	156.141
+137.5	109.135	110.703
+150	66.3027	63.2794
+162.5	68.648	53.7083
+175	38.0659	42.3108
+187.5	28.6125	25.3716
+
+mult=50
+for (int i =0; i<15*mult; ) {
+	i += mult;
+	cout << MET_pT_NOMINAL_fine2->GetBinLowEdge(i) + MET_pT_NOMINAL_fine2->GetBinWidth(i) << '\t' << MET_pT_NOMINAL_fine2->GetBinContent(i) << '\t' << MET_pT_NOMINAL_fine2->GetBinContent(i+1) << endl;
+	}
+
+-- difference of these is the flow between i and i+1 (through the left edge of the bin of i+1)
+
+12.5	119.177	106.835
+25	231.524	207.715
+37.5	266.865	248.603
+50	334.267	273.827
+62.5	279.729	297.188
+75	249.043	251.525
+87.5	183.315	180.342
+100	124.16	160.851
+112.5	102.861	95.1995
+125	74.1076	83.0732
+137.5	47.5184	37.0997
+150	32.9129	29.7503
+162.5	31.3639	34.0885
+175	18.9432	15.2845
+187.5	15.2979	14.5592
+
+
+mult=50
+for (int i =0; i<15*mult; ) {
+	i += mult;
+	cout << MET_pT_NOMINAL_fine2->GetBinContent(i) - MET_pT_NOMINAL_fine2->GetBinContent(i+1) << endl;
+	}
+
+flow_on_the_right_of_i_to_i1 = [ 12.342 23.8086 18.2616 60.4402 -17.4592 -2.48169 2.97281 -36.6906 7.66119 -8.96563 10.4188 3.16254 -2.72451 3.6587 0.738682 ]'
+
+flow_on_the_right_of_i_to_i1[1:length(flow_on_the_right_of_i_to_i1)-2] - flow_on_the_right_of_i_to_i1[2:length(flow_on_the_right_of_i_to_i1)-1]
+
+ -11.4666 
+   5.547  
+ -42.1786 
+  77.8994 
+ -14.9775 
+  -5.4545 
+  39.6634 
+ -44.3518 
+  16.6268 
+ -19.3844 
+   7.25626
+   5.88705
+  -6.38321
+   2.92002
+
+mult=25
+for (int i =0; i<15*mult; ) {
+	i += mult;
+	cout << MET_pT_NOMINAL_fine->GetBinContent(i) - MET_pT_NOMINAL_fine->GetBinContent(i+1) << endl;
+	}
+
+flow_on_the_right_of_i_to_i1 = [ 6.31657 -4.44666 11.8508 95.1032 5.86414 -5.04001 -1.7037 -16.5141 31.8551 -9.87376 -1.56789 3.02328 14.9397 -4.24484 3.24096 ]
+
+-- quite a fluctuation from the other one
+
+  10.7632 
+ -16.2975 
+ -83.2524 
+  89.2391 
+  10.9041 
+  -3.33631
+  14.8104 
+ -48.3692 
+  41.7289 
+  -8.30587
+  -4.59117
+ -11.9164 
+  19.1845 
+  -7.4858 
+
+-- these are absolute values of how much each bin gains after the fluctuation
+   what's the relative gain?
+   tune the bin width to match the gain?
+
+
+bins = [ 3215.15 8821.89 12504.1 14386.2 13869.2 12351.9 10155.2 7793.23 5938.67 4208.46 3167.35 2187.72 1548.06 1080.29 852.619 ]
+
+bins[1:length(bins)]
+
+bins_nominal = bins[2:length(bins)-1]
+bins_left    = bins[1:length(bins)-2]
+bins_right   = bins[3:length(bins)]
+
+flow = flow_on_the_right_of_i_to_i1[1:length(flow_on_the_right_of_i_to_i1)-2] - flow_on_the_right_of_i_to_i1[2:length(flow_on_the_right_of_i_to_i1)-1]
+
+the bin variations in met pT are usually < 1%, about 0.2%
+
+flow ./ bins_nominal
+13-element Array{Float64,1}:
+  0.00122006 
+ -0.00130337 
+ -0.00578696 
+  0.00643433 
+  0.000882791
+ -0.000328532
+  0.00190042 
+ -0.00814479 
+  0.00991547 
+ -0.00262234 
+ -0.00209861 
+ -0.00769765 
+  0.0177587
+
+-- close
+   the problem is that the flow from mult 50 is also close in the magnitude
+   the choice of these bins changes the whole flow and the flow is already comparable to the difference in systematics
+
+   the bin width should = to JER variation of met
+   does it depenp on nominal met?
+
+
+root -l lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/MC2016_Summer16_TTJets_powheg_27.root
+
+ttree_out->Draw("(event_met.pt()-event_met_JERUp.pt()):event_met.pt()")
+
+ttree_out->Draw("(event_met.pt()-event_met_JERUp.pt())>>h(20,-1.,1.)")
+ttree_out->Draw("(event_met.pt()-event_met_JERUp.pt())>>h(20,-1.,1.)", "event_met.pt() < 50")
+ttree_out->Draw("(event_met.pt()-event_met_JERUp.pt())>>h(20,-1.,1.)", "event_met.pt() > 50")
+
+all
+-0.063 +- 0.269
+
+< 50
+-0.035 +- 0.254
+
+> 50
+-0.081 +- 0.277
+
+-- quite close
+
+   it's also non-gaussian
+
+maybe target the bin width of exactly 0.27? -- non gaussian, wide distribution can have deviations
+
+ttree_out->Draw("event_met.pt()-event_met_JERUp.pt()")
+
+-- here -0.076 +- 1.564
+
+
+
+what we see is this:
+
+ttree_out->Draw("(event_met.pt()-event_met_JERUp.pt()):event_met.pt()>>h(500,0,250,20,-1.,1.)", "", "col")
+
+let see 1 bin
+
+ttree_out->Draw("(event_met.pt()-event_met_JERUp.pt()):event_met.pt()>>h(500,0,250,20,-1.,1.)", "event_met.pt() > 12.5 && event_met.pt() < 25.", "col")
+ttree_out->Draw("event_met.pt()-event_met_JERUp.pt()", "event_met.pt() > 12.5 && event_met.pt() < 25.", "col")
+8679
+
+mean +- std dev = -0.065 +- 1.331
+
+
+ttree_out->Draw("event_met_JERUp.pt()>>h(100,0,50)", "event_met.pt() > 12.5 && event_met.pt() < 25.", "col")
+8679
+events in the bin
+
+events which leave the bin after JERUp:
+
+ttree_out->Draw("event_met.pt()>>h(100,0,50)", "event_met.pt() > 12.5 && event_met.pt() < 25. && (event_met_JERUp.pt() < 12.5 || event_met_JERUp.pt() > 25.)", "col")
+320
+
+events fall out of the bin after the JES variation
+and they are not only the closest to the bin edges
+
+how many of them are close to edges:
+
+ttree_out->Draw("event_met.pt()>>h(100,0,50)", "((event_met.pt() > 12.5 && event_met.pt() < (12.5+0.25)) || (event_met.pt() > (25.-0.25) && event_met.pt() < 25.)) && (event_met_JERUp.pt() < 12.5 || event_met_JERUp.pt() > 25.)", "col")
+83
+ttree_out->Draw("event_met.pt()>>h(100,0,50)", "((event_met.pt() > 12.5 && event_met.pt() < (12.5+0.5)) || (event_met.pt() > (25.-0.5) && event_met.pt() < 25.)) && (event_met_JERUp.pt() < 12.5 || event_met_JERUp.pt() > 25.)", "col")
+126
+ttree_out->Draw("event_met.pt()>>h(100,0,50)", "((event_met.pt() > 12.5 && event_met.pt() < (12.5+1.5)) || (event_met.pt() > (25.-1.5) && event_met.pt() < 25.)) && (event_met_JERUp.pt() < 12.5 || event_met_JERUp.pt() > 25.)", "col")
+193
+
+
+
+the number of events on edges of 1.33 deviation:
+ttree_out->Draw("event_met.pt()-event_met_JERUp.pt()", "event_met.pt() > (25. - 1.33) && event_met.pt() < 25.", "col")
+ttree_out->Draw("event_met.pt()-event_met_JERUp.pt()", "event_met.pt() > 12.5 && event_met.pt() < (12.5 + 1.33)", "col")
+1138
+662
+
+ttree_out->Draw("event_met.pt()-event_met_JERUp.pt()", "event_met.pt() > (25. - 0.5) && event_met.pt() < 25.", "col")
+ttree_out->Draw("event_met.pt()-event_met_JERUp.pt()", "event_met.pt() > 12.5 && event_met.pt() < (12.5 + 0.5)", "col")
+442
+247
+
+ttree_out->Draw("event_met.pt()-event_met_JERUp.pt()", "event_met.pt() > (25. - 0.25) && event_met.pt() < 25.", "col")
+ttree_out->Draw("event_met.pt()-event_met_JERUp.pt()", "event_met.pt() > 12.5 && event_met.pt() < (12.5 + 0.25)", "col")
+207
+117
+
+-- the 0.25 layer already contains as much events as the JERUp variation kicks out of the bin
+   but from the original 320 events which leave the bin only 83 are in the 0.25 layer
+
+   this non-gaussian shape of JER breaks the locality and neighboring layers
+
+so, is a good estimation of the number of events leaving and entering the bin possible?
+"good" means the estimation does no suffer from fluctuations
+
+this trend is not destroied by the fluctuations -- fluctuations are smaller than the trend therefore there should be a method to estimate it
+
+320 events leave, hom many enter? the magnitude of the overall flow?
+for the same bin check events entering it
+
+ttree_out->Draw("event_met.pt()>>h(100,0,50)", "(event_met.pt() > 12.5 && event_met.pt() < 25.) && (event_met_JERUp.pt() < 12.5 || event_met_JERUp.pt() > 25.)", "col")
+ttree_out->Draw("event_met.pt()>>h(100,0,50)", "(event_met_JERUp.pt() > 12.5 && event_met_JERUp.pt() < 25.) && (event_met.pt() < 12.5 || event_met.pt() > 25.)", "col")
+
+320
+287
+
+for Down:
+
+ttree_out->Draw("event_met.pt()>>h(100,0,50)", "(event_met.pt() > 12.5 && event_met.pt() < 25.) && (event_met_JERDown.pt() < 12.5 || event_met_JERDown.pt() > 25.)", "col")
+ttree_out->Draw("event_met.pt()>>h(100,0,50)", "(event_met_JERDown.pt() > 12.5 && event_met_JERDown.pt() < 25.) && (event_met.pt() < 12.5 || event_met.pt() > 25.)", "col")
+
+257
+328
+
+so, Down moves events into the bin, Up moves them out
+what's on the plot:
+
+ttree_out->Draw("event_met_JESUp.pt()>>h(20,0,250)", "", "same")
+ttree_out->Draw("event_met_JESDown.pt()>>h(20,0,250)", "", "same")
+
+ttree_out->Draw("event_met.pt()>>h(20,0,250)", "", "")
+ttree_out->Draw("event_met_JERUp.pt()>>h(20,0,250)", "", "same")
+ttree_out->Draw("event_met_JERDown.pt()>>h(20,0,250)", "", "same")
+
+h_ = (TH1D*) ttree_out->GetHistogram()
+
+h_nom = (TH1D*) h_->Clone()
+h_nom->SetDirectory(0)
+h_nom->SetName("nom")
+
+h_up = (TH1D*) h_->Clone()
+h_up->SetDirectory(0)
+h_up->SetName("up")
+
+h_down = (TH1D*) h_->Clone()
+h_down->SetDirectory(0)
+h_down->SetName("down")
+
+h_up->SetLineColor(kRed)
+h_down->SetLineColor(kGreen)
+
+h_nom->Draw()
+h_up->Draw("same")
+h_down->Draw("same")
+
+h_up->Divide(h_nom)
+h_down->Divide(h_nom)
+h_up->Draw("")
+h_down->Draw("same")
+
+-- for JES clear variation with pivot point around 75GeV
+   JER -- bin by bin within 1%, but no correlation between Up and Down, really stat fluctuations
+
+ttree_out->Draw("event_met.pt()>>h(20,0,250)",         "selection_stage == 9 || selection_stage == 7 || selection_stage == 5", "")
+ttree_out->Draw("event_met_JERUp.pt()>>h(20,0,250)",   "selection_stage_JERUp == 9 || selection_stage_JERUp == 7 || selection_stage_JERUp == 5", "")
+ttree_out->Draw("event_met_JERDown.pt()>>h(20,0,250)", "selection_stage_JERDown == 9 || selection_stage_JERDown == 7 || selection_stage_JERDown == 5", "")
+
+-- also clear fluctuations
+
+no weight full:
+
+python sumup_ttree_draw.py "event_met.pt()"          --ttree ttree_out --cond-com "(selection_stage         == 9 || selection_stage         == 7 || selection_stage         == 5)" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_NOMINAL_noweight.root --histo-name MET_pT_NOMINAL_noweight lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERUp.pt()"    --ttree ttree_out --cond-com "(selection_stage_JERUp   == 9 || selection_stage_JERUp   == 7 || selection_stage_JERUp   == 5)" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_JERUp_noweight.root   --histo-name MET_pT_JERUp_noweight   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_JERDown.pt()"  --ttree ttree_out --cond-com "(selection_stage_JERDown == 9 || selection_stage_JERDown == 7 || selection_stage_JERDown == 5)" --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_MET_pT_JERDown_noweight.root --histo-name MET_pT_JERDown_noweight lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+hadd v37_test14_JER_noweight.root v37_test14_*_noweight.root
+
+root -l v37_test14_JER_noweight.root
+
+MET_pT_JERUp_noweight->SetLineColor(kRed)
+MET_pT_JERDown_noweight->SetLineColor(kGreen)
+
+MET_pT_JERUp_noweight   ->Divide(MET_pT_NOMINAL_noweight)
+MET_pT_JERDown_noweight ->Divide(MET_pT_NOMINAL_noweight)
+
+MET_pT_JERUp_noweight   ->Draw()
+MET_pT_JERDown_noweight ->Draw("same")
+
+-- practically each bin deviates asymmetrically
+
+
+
+also:
+
+python sumup_ttree_draw.py "event_met_JESUp"   --ttree ttree_out --cond-com "(selection_stage_JESUp   == 9 || selection_stage_JESUp   == 7 || selection_stage_JESUp   == 5)*event_weight"  --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_JESUp.root    --histo-name Mt_JESUp    lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root    &
+python sumup_ttree_draw.py "event_met_JESDown" --ttree ttree_out --cond-com "(selection_stage_JESDown == 9 || selection_stage_JESDown == 7 || selection_stage_JESDown == 5)*event_weight"  --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_JESDown.root  --histo-name Mt_JESDown  lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root    &
+
+python sumup_ttree_draw.py "event_met_TESUp"   --ttree ttree_out --cond-com "(selection_stage_TESUp   == 9 || selection_stage_TESUp   == 7 || selection_stage_TESUp   == 5)*event_weight"  --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_TESUp.root    --histo-name Mt_TESUp   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_TESDown" --ttree ttree_out --cond-com "(selection_stage_TESDown == 9 || selection_stage_TESDown == 7 || selection_stage_TESDown == 5)*event_weight"  --histo-range 20,0,250 --output v37_test14_LEPmu_JES_JER_TES_issue_Mt_TESDown.root  --histo-name Mt_TESDown lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root     &
+
+
+
+
+
+
+
+### see this fluctuations in test13 TT only -- to quickly assess the test14
+
+initial plots:
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_lj    -d Mt_lep_met_c -s JESUp,JESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_lj_all_Mt_lep_met_c_JESUp,JESDown.png     --ratio-y-line 1.0
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_ljout -d Mt_lep_met_c -s JESUp,JESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_ljout_all_Mt_lep_met_c_JESUp,JESDown.png  --ratio-y-line 1.0
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_lj    -p tt_mutau -d Mt_lep_met_c -s JESUp,JESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_lj_tt_mutau_Mt_lep_met_c_JESUp,JESDown.png     --ratio-y-line 1.0
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_ljout -p tt_mutau -d Mt_lep_met_c -s JESUp,JESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_ljout_tt_mutau_Mt_lep_met_c_JESUp,JESDown.png  --ratio-y-line 1.0
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_lj    -p tt_lj -d Mt_lep_met_c -s JESUp,JESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_lj_tt_lj_Mt_lep_met_c_JESUp,JESDown.png     --ratio-y-line 1.0
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_ljout -p tt_lj -d Mt_lep_met_c -s JESUp,JESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_ljout_tt_lj_Mt_lep_met_c_JESUp,JESDown.png  --ratio-y-line 1.0
+
+-- you can see the high Mt fluctuations in tt_mutau, which dominates high Mt region
+
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_lj    -d Mt_lep_met_c -s JERUp,JERDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_lj_all_Mt_lep_met_c_JERUp,JERDown.png     --ratio-y-line 1.0
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_ljout -d Mt_lep_met_c -s JERUp,JERDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_ljout_all_Mt_lep_met_c_JERUp,JERDown.png  --ratio-y-line 1.0
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_lj    -p tt_mutau -d Mt_lep_met_c -s JERUp,JERDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_lj_tt_mutau_Mt_lep_met_c_JERUp,JERDown.png     --ratio-y-line 1.0
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_ljout -p tt_mutau -d Mt_lep_met_c -s JERUp,JERDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_ljout_tt_mutau_Mt_lep_met_c_JERUp,JERDown.png  --ratio-y-line 1.0
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_lj    -p tt_lj -d Mt_lep_met_c -s JERUp,JERDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_lj_tt_lj_Mt_lep_met_c_JERUp,JERDown.png     --ratio-y-line 1.0
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_ljout -p tt_lj -d Mt_lep_met_c -s JERUp,JERDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_ljout_tt_lj_Mt_lep_met_c_JERUp,JERDown.png  --ratio-y-line 1.0
+
+-- both show deviations, tt_lj especially
+
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_lj    -d Mt_lep_met_c -s TESUp,TESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_lj_all_Mt_lep_met_c_TESUp,TESDown.png     --ratio-y-line 1.0
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_ljout -d Mt_lep_met_c -s TESUp,TESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_ljout_all_Mt_lep_met_c_TESUp,TESDown.png  --ratio-y-line 1.0
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_lj    -p tt_mutau -d Mt_lep_met_c -s TESUp,TESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_lj_tt_mutau_Mt_lep_met_c_TESUp,TESDown.png     --ratio-y-line 1.0
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_ljout -p tt_mutau -d Mt_lep_met_c -s TESUp,TESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_ljout_tt_mutau_Mt_lep_met_c_TESUp,TESDown.png  --ratio-y-line 1.0
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_lj    -p tt_lj -d Mt_lep_met_c -s TESUp,TESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_lj_tt_lj_Mt_lep_met_c_TESUp,TESDown.png     --ratio-y-line 1.0
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunchFULLFIT2_noqcd.root -c mu_sel_ljout -p tt_lj -d Mt_lep_met_c -s TESUp,TESDown --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/v37_test13_update1/sys-variations2/ --outname mu_sel_ljout_tt_lj_Mt_lep_met_c_TESUp,TESDown.png  --ratio-y-line 1.0
+
+-- also can be see, in tt_lj too
+
+
+
+
+
+## trends at high MET
+
+maybe the nominal MET propagation (JER factor) is wrong? Or TES?
+-- check their variations
+recoil corrections? -- they are too small?
 
 
 

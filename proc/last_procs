@@ -1,3 +1,13 @@
+# test14, fixed LEPmu Up Down weights
+python genjobs.py v37 test14 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue
+python genjobs.py v37 test14 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --dtags MC2016_Summer16_TTJets_powheg --jobs-name-tag tt
+python genjobs.py v37 test14 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --without-dtags MC2016_Summer16_TTJets_powheg
+python genjobs.py v37 test14 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --dtags qcd_ext,updowns,updowns_extra,wjets_amcatnlo
+
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test14 --distrs bunchFULLFIT3 --chan-groups fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout
+
+
+
 # add all updowns, qcd ext and wjets amcatnlo
 # test13, full run with corrected met propagation -- no propagation to Data
 python genjobs.py v37 test13 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue        --dtags qcd_ext,updowns,updowns_extra,wjets_amcatnlo

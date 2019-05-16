@@ -23,9 +23,17 @@ find_missing_jobs:
 	diff job_files job_files_produced | tee job_files_missing
 
 find_failed_jobs: nt=v37
-find_failed_jobs: proc=test8
+find_failed_jobs: proc=test14
+find_failed_jobs: job_name_tag=job
 find_failed_jobs:
-	wc -l job_*.e* | grep " [0-9][0-9] " > jobs_failed
+	# not always correct:
+	#wc -l job_*.e* | grep " [0-9][0-9] " > jobs_failed
+	grep --files-with-matches "output written,"    ${job_name_tag}_*.o* | sort > jobs_produced
+	grep --files-with-matches "output file exists" ${job_name_tag}_*.o* | sort > jobs_output_exists
+	cat jobs_produced jobs_output_exists | sort > jobs_done
+	ls ${job_name_tag}_*.o* | sort > jobs_all
+	diff jobs_all jobs_done | sed -n '/${job_name_tag}_/ s,^< ,, p' > jobs_failed
+	sed -e 's,^,qsub -l h_vmem=1G "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/${nt}/${proc}/jobs_dir/,' -e 's,\.o[0-9]*$$,",' jobs_failed > jobs_failed_submit
 
 find_failed_plots: correct_num=8
 find_failed_plots:

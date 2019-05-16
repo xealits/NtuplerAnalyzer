@@ -46,6 +46,8 @@ parser.add_argument("-n", "--ntupler-dir",    type=str, default='/gstore/t3cms/s
 parser.add_argument("-p", "--processing-dir", type=str, default='/lstore/cms/olek/outdirs/',
         help="the directory with Processed output (default /lstore/cms/olek/outdirs/)")
 
+parser.add_argument("--jobs-name-tag", type=str, default='job', help='change the name of the job script (default is "job", use for job management)')
+
 parser.add_argument("--dtags", type=str, default='std',
         help='dtags or groups of dtags to submit, separated by coma like "std,updowns" (default std)')
 
@@ -540,16 +542,19 @@ cd UserCode/NtuplerAnalyzer/proc/
     # write all the job files
     job_filenames = []
     for i, a_job in enumerate(job_commands):
-        job_name = '/job_%05d' % i
+        job_name = '/%s_%05d' % (args.jobs_name_tag, i)
         job_filename = jobs_dir + job_name
         job_filenames.append(job_filename)
         with open(job_filename, 'w') as f:
             f.write(job_template.format(job=a_job))
 
     #make the queue submition file
-    submition_file = jobs_dir + '/submit'
+    submition_file = jobs_dir + '/submit_%s' % args.jobs_name_tag
     with open(submition_file, 'w') as f:
         f.write('\n'.join("""qsub -l h_vmem={mem_size} '{jobsh}' """.format(mem_size=args.mem_size, jobsh=j_fname) for j_fname in job_filenames) + '\n')
+
+    print 'submit list in:'
+    print submition_file
 
 elif args.submit == 'online':
     com_file_template = """

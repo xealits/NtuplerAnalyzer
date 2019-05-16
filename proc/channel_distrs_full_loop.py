@@ -33,6 +33,9 @@ if __name__ == '__main__':
     parser.add_argument("--without-bSF",       action='store_true', help="don't apply b tagging SF")
     parser.add_argument("--old-loop",          action='store_true', help="run on old full selection")
 
+    parser.add_argument("--overwrite",      action='store_true', help="overwrite output")
+    parser.add_argument("--thread",         action='store_true', help="run stage2 in a separate thread")
+
     parser.add_argument("--metmuegclean",      type=str, default='true', help="use slimmedMETsMuEGClean MET for data")
     parser.add_argument("--n-recoil-jets",     type=int, help="set recoil jets for W+jets and dy+jets")
 
@@ -58,7 +61,10 @@ if __name__ == '__main__':
     else:
         log_common.basicConfig(level=logging.DEBUG)
 
-    log_common.info('running threads on %d files' % len(args.input_files))
+    if args.thread:
+        log_common.info('running threads  on %d files' % len(args.input_files))
+    else:
+        log_common.info('running directly on %d files' % len(args.input_files))
 
 
     for input_filename in args.input_files:
@@ -71,7 +77,7 @@ if __name__ == '__main__':
 
         fout_name = input_filename.split('/')[-1].split('.root')[0] + ".root" # no ranges anymore
 
-        if isfile(args.outdir + '/' + fout_name):
+        if isfile(args.outdir + '/' + fout_name) and not args.overwrite:
             print "output file exists: %s" % (args.outdir + '/' + fout_name)
             continue
 
@@ -120,8 +126,12 @@ if __name__ == '__main__':
                 stage2.PROP_LEPJET_UNCLUSTER = False
                 print 'no_prop_lepjets_uncluster', stage2.PROP_LEPJET_UNCLUSTER
 
-        t = threading.Thread(target=main, args=(input_filename, fout_name, args.outdir, args.channels))
-        t.start()
-        log_common.info('started thread on %s' % input_filename)
+        if args.thread:
+            t = threading.Thread(target=main, args=(input_filename, fout_name, args.outdir, args.channels))
+            t.start()
+            log_common.info('started thread on %s' % input_filename)
+        else:
+            log_common.info('running on %s' % input_filename)
+            main(input_filename, fout_name, args.outdir, args.channels)
 
 
