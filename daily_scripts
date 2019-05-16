@@ -549,7 +549,7 @@ damn!
 
 -- they don't get all the nominal JER propagation!!!
 
--->>> go test14 TT and the rest
+-->> go test14 TT and the rest
 
 
 check the change in TT:
@@ -768,7 +768,6 @@ p (proc_met.pt(), proc_met_JERUp.pt(), proc_met_JERDown.pt(), proc_met_JESUp.pt(
 (147.35364960906952, 147.46073977343505, 147.24657149110465, 148.3580500785504, 146.3513579868092)
 
 -- consistently JER Up Down in MET pT are +- from nominal...
-
 
 
 the issue can be due to the correlation in MET pT-phi?
@@ -1270,7 +1269,9 @@ all
 
 -- quite close
 
+
    it's also non-gaussian
+
 
 maybe target the bin width of exactly 0.27? -- non gaussian, wide distribution can have deviations
 

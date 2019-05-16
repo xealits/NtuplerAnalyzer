@@ -1727,6 +1727,103 @@ mu_sel,mu_sel_ss,el_sel,el_sel_ss,mu_preselCand,mu_preselCand_ss,el_preselCand,e
 
 
 
+in CONTROLMET:
+
+-- forgot Vloose for shapes..
+
+plot
+
+make --dry-run plot_control_wjets_mu nt=v37 proc=test13 distrs=bunchCONTROLSMET lumi=35800 datafile=SingleMuon      options=--overwrite
+
+make plot_control_met  nt=v37 proc=test13 distrs=bunchCONTROLMET lumi=35800 datafile=SingleMuon   options="--overwrite --bin-norm" y_title="[Events/GeV]" chan_tag=mu
+
+-- some crazy large amount of events (200k in main sel) but proportions are ok, and MC matche data?
+
+root [1] mu_sel->Get("data_other/NOMINAL/mu_sel_data_other_NOMINAL_met_f")->Print()
+TH1.Print Name  = mu_sel_data_other_NOMINAL_met_f, Entries= 207234, Total sum= 206640
+
+in fit:
+root -l distrs/v37_test13_bunchFULLFIT2/SingleMuon.root
+Root > mu_sel->Get("data_other/NOMINAL/mu_sel_data_other_NOMINAL_Mt_lep_met_c")->Print()
+TH1.Print Name  = mu_sel_data_other_NOMINAL_Mt_lep_met_c, Entries= 23026, Total sum= 22686
+
+root -l distrs/v37_test13_bunchCONTROLS1/SingleMuon.root
+mu_sel->Get("data_other/NOMINAL/mu_sel_data_other_NOMINAL_met_c")->Print()
+TH1.Print Name  = mu_sel_data_other_NOMINAL_met_c, Entries= 23026, Total sum= 23022
+
+mu_preselCand->Get("data_other/NOMINAL/mu_preselCand_data_other_NOMINAL_met_c")->Print()
+TH1.Print Name  = mu_preselCand_data_other_NOMINAL_met_c, Entries= 799953, Total sum= 799721
+
+root -l distrs/v37_test13_bunchCONTROLMET/SingleMuon.root 
+mu_preselCand->Get("data_other/NOMINAL/mu_preselCand_data_other_NOMINAL_met_c")->Print()
+TH1.Print Name  = mu_preselCand_data_other_NOMINAL_met_c, Entries= 7199577, Total sum= 7.19749e+06
+
+
+root -l distrs/v37_test13_bunchCONTROLS1/SingleElectron.root 
+el_sel->Get("data_other/NOMINAL/el_sel_data_other_NOMINAL_met_c")->Print
+TH1.Print Name  = el_sel_data_other_NOMINAL_met_c, Entries= 15420, Total sum= 15414
+
+root -l distrs/v37_test13_bunchCONTROLMET/SingleElectron.root 
+el_sel->Get("data_other/NOMINAL/el_sel_data_other_NOMINAL_met_c")->Print()
+TH1.Print Name  = el_sel_data_other_NOMINAL_met_c, Entries= 138780, Total sum= 138726
+
+15420./138780.
+799953./7199577
+23026./207234
+(double) 0.111111
+(double) 0.111111
+(double) 0.111111
+
+  138780. /  15420.
+ 7199577. / 799953.
+  207234. /  23026.
+
+9.00000
+
+???
+
+make --dry-run plot_control_met  nt=v37 proc=test13 distrs=bunchCONTROLMET lumi=35800 datafile=SingleMuon   options="--overwrite --bin-norm" y_title="[Events/GeV]" chan_tag=mu
+
+python stack_plot.py distrs/v37_test13_bunchCONTROLMET_mc.root distrs/v37_test13_bunchCONTROLMET/SingleMuon.root -o plots/v37_test13_bunchCONTROLMET/ --overwrite -p -r --lumi 35800 -c mu_sel    -d met_f      --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --title "" --title-x "E^{miss}_{T} [GeV]"         --title-y "[Events/GeV]"     --draw-overflows 5 --legend-shift 0.02 --data-nick data_other --factor-everything 0.111111
+
+
+make plot_control_met  nt=v37 proc=test13 distrs=bunchCONTROLMET lumi=35800 datafile=SingleMuon     options="--factor-everything 0.111111 --overwrite" y_title="[Events]" chan_tag=mu
+make plot_control_met  nt=v37 proc=test13 distrs=bunchCONTROLMET lumi=35800 datafile=SingleElectron options="--factor-everything 0.111111 --overwrite" y_title="[Events]" chan_tag=el
+
+make plot_control_met  nt=v37 proc=test13 distrs=bunchCONTROLMET lumi=35800 datafile=SingleMuon     options="--factor-everything 0.111111 --overwrite" y_title="[Events]" chan_tag=mu distr=met_f2
+make plot_control_met  nt=v37 proc=test13 distrs=bunchCONTROLMET lumi=35800 datafile=SingleElectron options="--factor-everything 0.111111 --overwrite" y_title="[Events]" chan_tag=el distr=met_f2
+
+cp distrs,v37_test13_bunchCONTROLMET_mc_distrs,v37_test13_bunchCONTROLMET,SingleElectron_met_f_el_preselCand_TOPPTUp_stack_ratio_dataqcd.png  exp/el_presel_met.png
+cp distrs,v37_test13_bunchCONTROLMET_mc_distrs,v37_test13_bunchCONTROLMET,SingleElectron_met_f_el_preselCand_TOPPTUp_stack_ratio.png          exp/el_presel_met_mc_qcd.png
+cp distrs,v37_test13_bunchCONTROLMET_mc_distrs,v37_test13_bunchCONTROLMET,SingleMuon_met_f_mu_preselCand_TOPPTUp_stack_ratio_dataqcd.png      exp/mu_presel_met.png
+cp distrs,v37_test13_bunchCONTROLMET_mc_distrs,v37_test13_bunchCONTROLMET,SingleMuon_met_f_mu_preselCand_TOPPTUp_stack_ratio.png              exp/mu_presel_met_mc_qcd.png
+
+cp distrs,v37_test13_bunchCONTROLMET_mc_distrs,v37_test13_bunchCONTROLMET,SingleElectron_met_f_el_sel_TOPPTUp_stack_ratio_dataqcd.png  exp/el_sel_met.png
+cp distrs,v37_test13_bunchCONTROLMET_mc_distrs,v37_test13_bunchCONTROLMET,SingleMuon_met_f_mu_sel_TOPPTUp_stack_ratio_dataqcd.png      exp/mu_sel_met.png
+
+cp distrs,v37_test13_bunchCONTROLMET_mc_distrs,v37_test13_bunchCONTROLMET,SingleElectron_met_f_tt_elmu_TOPPTUp_stack_ratio.png  exp/elmu_met.png
+cp distrs,v37_test13_bunchCONTROLMET_mc_distrs,v37_test13_bunchCONTROLMET,SingleMuon_met_f_tt_elmu_TOPPTUp_stack_ratio.png      exp/elmu_met.png
+
+cp distrs,v37_test13_bunchCONTROLMET_mc_distrs,v37_test13_bunchCONTROLMET,SingleElectron_met_f_wjets_el_NOMINAL_stack_ratio_dataqcd.png  exp/wjets_el_met_datadriven_qcd.png
+cp distrs,v37_test13_bunchCONTROLMET_mc_distrs,v37_test13_bunchCONTROLMET,SingleElectron_met_f_wjets_el_NOMINAL_stack_ratio.png          exp/wjets_el_met.png
+cp distrs,v37_test13_bunchCONTROLMET_mc_distrs,v37_test13_bunchCONTROLMET,SingleMuon_met_f_wjets_mu_NOMINAL_stack_ratio_dataqcd.png      exp/wjets_mu_met_datadriven_qcd.png
+cp distrs,v37_test13_bunchCONTROLMET_mc_distrs,v37_test13_bunchCONTROLMET,SingleMuon_met_f_wjets_mu_NOMINAL_stack_ratio.png              exp/wjets_mu_met.png
+
+
+
+### mu_presel with QCD MC
+
+make plot_presel_mc_qcd  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 presel_lev=Cand chan_tag=mu datafile=SingleMuon     title_lep=muon     options=--overwrite
+make plot_presel_mc_qcd  nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 presel_lev=Cand chan_tag=el datafile=SingleElectron title_lep=electron options=--overwrite
+
+make --keep-going rename_for_update_mu_presel up=update2
+make --keep-going rename_for_update_el_presel up=update2
+
+
+>>>>>>> Some of the final numbers of the update
+
+
+
 
 ### check updowns in v37_test13_bunchFULLFIT2
 

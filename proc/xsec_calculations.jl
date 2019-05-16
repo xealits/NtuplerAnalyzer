@@ -25,6 +25,20 @@ bt_sys  = 0.075
 bt_stat = 0.009
 
 
+# v13 test13 FULLFIT1 update1 update2
+
+el_sig  = 0.941
+el_sys  = 0.08
+el_stat = 0.014
+
+mu_sig  = 0.936
+mu_sys  = 0.072
+mu_stat = 0.011
+
+bt_sig  = 0.949
+bt_sys  = 0.071
+bt_stat = 0.009
+
 
 # and the actual calculation:
 
