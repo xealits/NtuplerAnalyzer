@@ -964,7 +964,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     ])
 
     if isTT:
-        control_hs.update({'PDFCT14n%dUp' % i: TH1D("weight_PDFCT14n%dUp" % i, "", 50, 0, 2) for i in range(58) })
+        control_hs.update(dict(('PDFCT14n%dUp' % i, TH1D("weight_PDFCT14n%dUp" % i, "", 50, 0, 2)) for i in range(58) ))
 
     # strange, getting PyROOT_NoneObjects from these after output
     for _, h in control_hs.items():

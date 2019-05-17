@@ -917,10 +917,11 @@ distrs_tauonic_std  = {'tau_pt', 'tau_eta', 'tau_sv_sign'}
 #distrs_tauonic = distrs_tauonic_nomt
 
 
-main_sys = ['nom', 'common', 'obj', 'TOPPTUp']
-sys_updowns = ['TuneCUETP8M2T4Down', 'TuneCUETP8M2T4Up', 'FSRDown', 'FSRUp', 'HDAMPDown', 'HDAMPUp', 'ISRDown', 'ISRUp',]
-full_sys = ['nom', 'common', 'obj', 'tt_weights', "tt_hard", 'tt_pdf'] + sys_updowns
-presel_sys = ['NOMINAL', 'TOPPTDown', 'TOPPTUp', 'PUUp', 'PUDown']
+main_sys       = ['nom', 'common', 'obj', 'TOPPTUp']
+sys_updowns    = ['TuneCUETP8M2T4Down', 'TuneCUETP8M2T4Up', 'FSRDown', 'FSRUp', 'HDAMPDown', 'HDAMPUp', 'ISRDown', 'ISRUp',]
+sys_tt_nominal = ['nom', 'common', 'obj', 'tt_weights', "tt_hard", 'tt_pdf']
+full_sys       = ['nom', 'common', 'obj', 'tt_weights', "tt_hard", 'tt_pdf'] + sys_updowns
+presel_sys     = ['NOMINAL', 'TOPPTDown', 'TOPPTUp', 'PUUp', 'PUDown']
 
 
 channels_distrs = {
@@ -1000,7 +1001,7 @@ sample_info = {
 'Data13TeV_SingleMuon2016H_03Feb2017_ver3'], ['nom']),
 
 'tt'  : (['MC2016_Summer16_TTJets_powheg'],
-  full_sys), # "tt_pdf1", "tt_pdf10", "tt_pdf20", "tt_pdf30", "tt_pdf40", "tt_pdf50,tt_alpha"]),
+  sys_tt_nominal), # "tt_pdf1", "tt_pdf10", "tt_pdf20", "tt_pdf30", "tt_pdf40", "tt_pdf50,tt_alpha"]),
 
 #'tt_syst': ([
 #'MC2016_Summer16_TTJets_powheg_CUETP8M2T4down',

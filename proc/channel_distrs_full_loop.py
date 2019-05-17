@@ -4,6 +4,9 @@ from os.path import isfile
 import logging
 import threading
 
+from sys import version_info
+print version_info
+
 #logging.basicConfig(level=logging.DEBUG)
 log_common = logging.getLogger("common")
 

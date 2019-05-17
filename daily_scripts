@@ -2,12 +2,14 @@
 
 Three main problems:
 1) the fit in both channels is asymmetric from the separate channels
+   -- test14 with fixes
 2) the pulls in muon channel for the systematics:
    JES, LEPmuID, LEPmuTRG, Peterson, TES
    -- the issue is the same in fit with all systematics and with less parameters, it also propagates to the fit of both channels
       there is no such issue in electron channel, el has some issue in Mf and some PDFs
 3) DY tautau basic and 3j look strange in the distrs:
    different the composition in lep pT and tau pT (more qcd, wjets in one of them).
+   -- no, it's fine! the difference is between eltau and mutau plots!
 4) high MET trends: MC>Data at high MET
    -- the TOPPT in elmu, presel and main selection does not fix them entirely
       it cannot be due to QCD -- it's in high MET, especially at 200-500GeV
@@ -23,6 +25,16 @@ JES, TES and JER
 why fit broke when one of the systematics was rate?
 
 check goodness of the fit
+
+
+
+
+
+## test14 FIT with fixed LEPmu and object systematics
+
+v37_test14_bunchFULLFIT3_mc_1.root
+
+make run_std_histos out=histosels/v37_test14_bunchFULLFIT3_mc_1/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test14_bunchFULLFIT3_mc_1.root data_mu=distrs/v37_test14_bunchFULLFIT3/SingleMuon.root data_el=distrs/v37_test14_bunchFULLFIT3/SingleElectron.root
 
 
 
@@ -248,7 +260,7 @@ v37 test14
 
 
 
-## check other pull-cinstrained systematics JES, Peterson, TES
+## check other pull-constrained systematics JES, Peterson, TES
 
 JES does look strange, the 150-200GeV bin especially,
 but no such asymmetry as in LEPmu
@@ -1584,11 +1596,34 @@ python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test13_bunch
 
 
 
+
+
+## DY tautau plots, different process yields
+
+which plots?
+
+No! It's fine, the difference is between mutau and eltau!
+eltau has less true tau contribution and more fakes.
+Probably there are less DY tauel-tauh events due to higher pT cut on the electron.
+
+
+python stack_plot.py distrs/v37_test13_bunch1YIELDS_mc_2.root distrs/v37_test13_bunch1YIELDS/SingleMuon.root -o histosels/v37_test13_bunch1_yields1_dy_tautau/ --data-nick data_other --lumi 35800 -d yield --wjet 1.4 -c dy_mutau    --qcd-factor 2.5 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_other,tt_lj:tt
+
+make --dry-run plot_control_dy_mutau nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 datafile=SingleMuon      options=--overwrite
+make --dry-run plot_control_dy_eltau nt=v37 proc=test13 distrs=bunchCONTROLS1 lumi=35800 datafile=SingleElectron  options=--overwrite
+
+
+
+
 ## trends at 500GeV MET
 
 maybe the nominal MET propagation (JER factor) is wrong? Or TES?
 -- check their variations
 recoil corrections? -- they are too small?
+
+1) compare to initial met
+2) which processes dominate the met tail? check process composition in the met tail
+
 
 
 
