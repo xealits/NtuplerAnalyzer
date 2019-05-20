@@ -8,11 +8,12 @@ from os.path import isfile
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
     description = "get the syst rates from the hadded ntuple file",
-    #epilog = "Example:\n$ python job_submit.py ttbarleps80_eventSelection jobing/my_runAnalysis_cfg_NEWSUBMIT.templ.py bin/ttbar-leptons-80X/analysis/dsets_testing_noHLT_TTbar.json test/tests/outdir_test_v11_ttbar_v8.40/"
+    epilog = "Example:\n$ python syst_rates.py --sys-histo ntupler/systematic_weights proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root"
     )
 
-parser.add_argument('filename', type=str, help='the filename')
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
+parser.add_argument("--sys-histo",  type=str, default="systematic_weights", help="the path to the histo with sys weights")
+parser.add_argument('inp_files', nargs='+', type=str, help='files to check')
 
 args = parser.parse_args()
 
@@ -30,9 +31,6 @@ from ROOT import TLegend
 #from ROOT import THStack
 
 logging.info("done")
-
-infile = TFile(args.filename)
-syst_histo = infile.Get("systematic_weights")
 
 # syst names
 syst_names = {
@@ -127,8 +125,27 @@ syst_names = {
 "PDFCT14n56"    :  86,
 }
 
+def get_sys_bin_number(name):
+    return 1 + syst_names[name]
+
+sum_syst_histo = None
+
+for filename in args.inp_files:
+    infile = TFile(filename)
+    syst_histo = infile.Get(args.sys_histo)
+
+    if not sum_syst_histo:
+        sum_syst_histo = syst_histo.Clone()
+        sum_syst_histo.SetDirectory(0)
+        sum_syst_histo.SetName("sum_syst_histo")
+
+    sum_syst_histo.Add(syst_histo)
+
+
+# print out results
+
 def sys(name):
-    return syst_histo.GetBinContent(1 + syst_names[name])
+    return sum_syst_histo.GetBinContent(get_sys_bin_number(name))
 
 print "init", sys("NOM_EVENTS")
 nom = sys("NOMINAL")
@@ -149,6 +166,5 @@ for sname in ["MrUp"     , "MrDown"   , "MfUp"     , "MfDown"   , "MfrUp"    , "
 nom_pdf = sys("PDF_NOM")
 for sname in sorted(['AlphaSUp', 'AlphaSDown'] + [name for name in syst_names.keys() if "PDFCT14" in name]):
     print "%20s %20f" % (sname, sys(sname) / nom_pdf)
-
 
 

@@ -37,6 +37,769 @@ v37_test14_bunchFULLFIT3_mc_1.root
 make run_std_histos out=histosels/v37_test14_bunchFULLFIT3_mc_1/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test14_bunchFULLFIT3_mc_1.root data_mu=distrs/v37_test14_bunchFULLFIT3/SingleMuon.root data_el=distrs/v37_test14_bunchFULLFIT3/SingleElectron.root
 
 
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL.root nn=v37_test14_mu
+
+   r :    +0.935   -0.066/+0.072 (68%)
+
+refit with 1.0 variations:
+
+   r :    +0.955   -0.080/+0.085 (68%)
+
+-- no tauID_eff in the impacts???
+
+
+test with small Frag:
+
+   r :    +0.927   -0.065/+0.075 (68%)
+
+
+pulls
+
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_noMCstat
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_noMCstat.root   nn=mu_v37_test14_bunchFULLFIT3_noMCstat
+
+-- look ok
+
+
+
+to both impacts:
+
+cp ttxsec/datacard_v37_test13_bunchFULLFIT2_el.txt ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL.txt
+
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL.root nn=v37_test14_el
+
+   r :    +0.949   -0.083/+0.093 (68%)
+
+
+make both mucard=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL elcard=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL bothcard=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL.root nn=v37_test14_both
+
+   r :    +0.936   -0.064/+0.068 (68%)
+
+-- very close to mu, but within the el-mu fit
+
+refit with 1.0 variations in mu:
+
+   r :    +0.973   -0.075/+0.083 (68%)
+
+-- damn, now it is sideways again!!
+
+
+
+python new_impact_table.py --merge-pdf  latest_impacts_v37_test14_el.json  latest_impacts_v37_test14_mu.json latest_impacts_v37_test14_both.json
+
+$\tauh$ jet identification  &  4.7 &  4.3 &  4.5 \\
+       pileup uncertainty  &  2.5 &  2.4 &  2.5 \\
+        top quark $p_{T}$  &  3.2 &  2.2 &  2.2 \\
+$\tauh$ misidentification background  &  3.0 &  2.0 &  2.0 \\
+         jet energy scale  &  1.1 &  0.0 &  1.1 \\
+     W+jets normalization  &  0.1 &  0.7 &  0.7 \\
+     b-tagging efficiency  &  1.0 &  1.0 &  0.7 \\
+     $\tauh$ Energy Scale  &  0.9 &  0.0 &  0.7 \\
+         DY normalization  &  0.4 &  0.4 &  0.5 \\
+ Single Top normalization  &  0.6 &  0.5 &  0.5 \\
+        QCD normalization  &  1.5 &  0.7 &  0.3 \\
+   electron ID efficiency  &  1.8 &  0.1 \\
+electron trigger efficiency  &  2.3 &  0.1 \\
+    jet energy resolution  &  0.1 &  0.1 &  0.0 \\
+       muon ID efficiency  &  0.0 &  0.0 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+  muon trigger efficiency  &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+  final   state radiation  &  1.6 &  2.4 &  2.0 \\
+  initial state radiation  &  1.6 &  1.3 &  1.2 \\
+ ME Renormalization scale  &  0.9 &  1.0 &  0.8 \\
+          b fragmentation  &  4.4 &  0.7 &  0.8 \\
+ME combined scale variation  &  0.7 &  0.9 &  0.7 \\
+   ME-PS matching (hdamp)  &  0.4 &  0.6 &  0.7 \\
+underlying event (Pythia tune)  &  0.4 &  0.6 &  0.6 \\
+   ME Factorization scale  &  0.3 &  0.0 &  0.2 \\
+semi-leptonic b-hadron BRs  &  1.4 &  0.0 &  0.1 \\
+                      PDF  &  1.4 &  1.4 &  1.4 \\
+            MC statistics  &  2.2 &  1.7 &  1.7 \\
+
+
+-- minimum everywhere, except QCD norm?
+
+
+test with small Frag in mu:
+
+make both mucard=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL elcard=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL bothcard=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1.root nn=v37_test14_both_test1
+
+0.954 +- 0.0856
+
+python new_impact_table.py --merge-pdf  latest_impacts_v37_test14_el.json  latest_impacts_v37_test14_mu.json latest_impacts_v37_test14_both_test1.json
+
+$\tauh$ jet identification  &  4.7 &  4.7 &  4.4 \\
+$\tauh$ misidentification background  &  3.0 &  2.5 &  2.9 \\
+       pileup uncertainty  &  2.5 &  2.3 &  2.8 \\
+        top quark $p_{T}$  &  3.2 &  3.5 &  2.5 \\
+    jet energy resolution  &  0.1 &  0.5 &  1.0 \\
+         jet energy scale  &  1.1 &  0.1 &  0.9 \\
+     W+jets normalization  &  0.1 &  0.6 &  0.8 \\
+     b-tagging efficiency  &  1.0 &  1.0 &  0.8 \\
+       muon ID efficiency  &  0.6 &  0.7 \\
+         DY normalization  &  0.4 &  0.4 &  0.5 \\
+ Single Top normalization  &  0.6 &  0.5 &  0.5 \\
+     $\tauh$ Energy Scale  &  0.9 &  0.5 &  0.5 \\
+  muon trigger efficiency  &  0.3 &  0.3 \\
+   electron ID efficiency  &  1.8 &  0.1 \\
+electron trigger efficiency  &  2.3 &  0.1 \\
+        QCD normalization  &  1.5 &  0.6 &  0.0 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  4.4 &  2.1 &  2.5 \\
+  final   state radiation  &  1.6 &  1.6 &  2.5 \\
+  initial state radiation  &  1.6 &  1.3 &  1.3 \\
+semi-leptonic b-hadron BRs  &  1.4 &  1.0 &  1.1 \\
+ ME Renormalization scale  &  0.9 &  1.2 &  0.9 \\
+ME combined scale variation  &  0.7 &  1.1 &  0.7 \\
+   ME-PS matching (hdamp)  &  0.4 &  0.6 &  0.7 \\
+underlying event (Pythia tune)  &  0.4 &  0.5 &  0.6 \\
+   ME Factorization scale  &  0.3 &  0.1 &  0.2 \\
+                      PDF  &  1.4 &  1.3 &  1.4 \\
+            MC statistics  &  2.2 &  1.7 &  1.7 \\
+
+not too bad
+
+head -n-2 ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL.txt  > ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat.txt
+head -n-2 ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL.txt  > ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat.txt
+
+make both mucard=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat elcard=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat bothcard=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1_noMCstat
+
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1_noMCstat
+
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat.root nn=v37_test14_el_test1_noMCtest
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat.root nn=v37_test14_mu_test1_noMCtest
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1_noMCstat.root nn=v37_test14_both_test1_noMCtest
+
+el:
+   r :    +0.965   -0.081/+0.092 (68%)
+
+mu:
+   r :    +0.922   -0.063/+0.072 (68%)
+
+both:
+   r :    +0.962   -0.120/+0.072 (68%)
+
+-- Frag is large in el, 2nd largest systematic
+
+check pulls
+
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat.root   nn=el_v37_test14_bunchFULLFIT3_noMCstat
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat.root   nn=mu_v37_test14_bunchFULLFIT3_noMCstat
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1_noMCstat.root nn=both_v37_test14_bunchFULLFIT3_noMCstat
+
+-- el looks ok
+   mu: JES constrained, Peterson, TES are constrained, TOPPT is pulled slightly down and constrained
+   Semilep, Tune, Mf sit on zero
+
+   Mf variation = 0.5 in mu, JES is not applied to all processes, Frag is 0.1
+
+   -- cancel all these and rerun
+
+el:
+   r :    +0.965   -0.081/+0.092 (68%)
+mu:
+   r :    +0.943   -0.073/+0.097 (68%)
+both:
+   r :    +0.983   -0.074/+0.083 (68%)
+
+-- same crap
+
+check pulls, which nuisnaces are different in el and mu
+if not obvious: use NLL to find fit result and search by freezing nuisances
+
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat.root   nn=el_v37_test14_bunchFULLFIT3_noMCstat
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat.root   nn=mu_v37_test14_bunchFULLFIT3_noMCstat
+
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_both_v37_test14_bunchFULLFIT3_noMCstat_shapeshort.root
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_mu_v37_test14_bunchFULLFIT3_noMCstat_shapeshort.root
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_el_v37_test14_bunchFULLFIT3_noMCstat_shapeshort.root
+
+from el in both are:
+PU, Peterson,
+TOPPT,
+TES, tau fakes,
+slightly JER.
+
+try freezing them:
+pre_pulls_short: freeze=--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf_only
+
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat.root         nn=el_v37_test14_bunchFULLFIT3_noMCstat   freeze="--freezeParameters lumi_13TeV,PU,Peterson,TOPPT,TES,JER --freezeNuisanceGroup tt_th_pdf_only"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat.root         nn=mu_v37_test14_bunchFULLFIT3_noMCstat   freeze="--freezeParameters lumi_13TeV,PU,Peterson,TOPPT,TES,JER --freezeNuisanceGroup tt_th_pdf_only"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1_noMCstat.root nn=both_v37_test14_bunchFULLFIT3_noMCstat freeze="--freezeParameters lumi_13TeV,PU,Peterson,TOPPT,TES,JER --freezeNuisanceGroup tt_th_pdf_only"
+
+el:
+ POI: r= 0.919302 -> [0.5,1.5]
+mu:
+ POI: r= 0.930163 -> [0.5,1.5]
+both:
+ POI: r= 0.930545 -> [0.5,1.5]
+
+closer
+
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat.root         nn=el_v37_test14_bunchFULLFIT3_noMCstat   freeze="--freezeParameters lumi_13TeV,PU,Peterson,TOPPT,TES,JER,tau_fakes --freezeNuisanceGroup tt_th_pdf_only"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat.root         nn=mu_v37_test14_bunchFULLFIT3_noMCstat   freeze="--freezeParameters lumi_13TeV,PU,Peterson,TOPPT,TES,JER,tau_fakes --freezeNuisanceGroup tt_th_pdf_only"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1_noMCstat.root nn=both_v37_test14_bunchFULLFIT3_noMCstat freeze="--freezeParameters lumi_13TeV,PU,Peterson,TOPPT,TES,JER,tau_fakes --freezeNuisanceGroup tt_th_pdf_only"
+
+ POI: r= 0.9224 -> [0.5,1.5]
+ POI: r= 0.961668 -> [0.5,1.5]
+ POI: r= 0.950317 -> [0.5,1.5]
+
+-- kind of ok
+
+only fakes:
+
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat.root         nn=el_v37_test14_bunchFULLFIT3_noMCstat   freeze="--freezeParameters lumi_13TeV,tau_fakes --freezeNuisanceGroup tt_th_pdf_only"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat.root         nn=mu_v37_test14_bunchFULLFIT3_noMCstat   freeze="--freezeParameters lumi_13TeV,tau_fakes --freezeNuisanceGroup tt_th_pdf_only"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1_noMCstat.root nn=both_v37_test14_bunchFULLFIT3_noMCstat freeze="--freezeParameters lumi_13TeV,tau_fakes --freezeNuisanceGroup tt_th_pdf_only"
+
+ POI: r= 0.963768 -> [0.5,1.5]
+ POI: r= 0.975455 -> [0.5,1.5]
+ POI: r= 1.00394 -> [0.5,1.5]
+
+-- nope
+
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat.root         nn=el_v37_test14_bunchFULLFIT3_noMCstat   freeze="--freezeParameters lumi_13TeV,tau_fakes,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat.root         nn=mu_v37_test14_bunchFULLFIT3_noMCstat   freeze="--freezeParameters lumi_13TeV,tau_fakes,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1_noMCstat.root nn=both_v37_test14_bunchFULLFIT3_noMCstat freeze="--freezeParameters lumi_13TeV,tau_fakes,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+
+ POI: r= 0.930022 -> [0.5,1.5]
+ POI: r= 0.97347 -> [0.5,1.5]
+ POI: r= 0.961981 -> [0.5,1.5]
+
+-- aha
+
+let's see these:
+
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat.root         nn=el_v37_test14_bunchFULLFIT3_noMCstat_freeze1    freeze="--freezeParameters lumi_13TeV,tau_fakes,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat.root         nn=mu_v37_test14_bunchFULLFIT3_noMCstat_freeze1    freeze="--freezeParameters lumi_13TeV,tau_fakes,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1_noMCstat.root nn=both_v37_test14_bunchFULLFIT3_noMCstat_freeze1  freeze="--freezeParameters lumi_13TeV,tau_fakes,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_el_v37_test14_bunchFULLFIT3_noMCstat_freeze1_shapeshort.root
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_mu_v37_test14_bunchFULLFIT3_noMCstat_freeze1_shapeshort.root
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_both_v37_test14_bunchFULLFIT3_noMCstat_freeze1_shapeshort.root
+
+-- pulls look the same as before?
+
+make impacts workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat.root         nn=el_v37_test14_bunchFULLFIT3_noMCstat_freeze1    freeze="--freezeParameters lumi_13TeV,tau_fakes,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+make impacts workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat.root         nn=mu_v37_test14_bunchFULLFIT3_noMCstat_freeze1    freeze="--freezeParameters lumi_13TeV,tau_fakes,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+make impacts workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1_noMCstat.root nn=both_v37_test14_bunchFULLFIT3_noMCstat_freeze1  freeze="--freezeParameters lumi_13TeV,tau_fakes,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+
+   r :    +0.930   -0.070/+0.076 (68%)
+   r :    +0.973   -0.068/+0.073 (68%)
+   r :    +0.962   -0.062/+0.066 (68%)
+
+python new_impact_table.py --merge-pdf  latest_impacts_el_v37_test14_bunchFULLFIT3_noMCstat_freeze1.json latest_impacts_mu_v37_test14_bunchFULLFIT3_noMCstat_freeze1.json latest_impacts_both_v37_test14_bunchFULLFIT3_noMCstat_freeze1.json
+
+
+$\tauh$ jet identification  &  4.6 &  4.8 &  4.6 \\
+       pileup uncertainty  &  1.9 &  1.9 &  1.6 \\
+    jet energy resolution  &  0.0 &  0.5 &  1.4 \\
+     b-tagging efficiency  &  1.2 &  1.5 &  1.2 \\
+         jet energy scale  &  0.9 &  0.6 &  0.9 \\
+         DY normalization  &  0.4 &  0.5 &  0.7 \\
+ Single Top normalization  &  0.6 &  0.6 &  0.6 \\
+       muon ID efficiency  &  0.6 &  0.6 \\
+     W+jets normalization  &  0.1 &  1.0 &  0.5 \\
+     $\tauh$ Energy Scale  &  0.3 &  0.1 &  0.4 \\
+  muon trigger efficiency  &  0.3 &  0.3 \\
+electron trigger efficiency  &  2.1 &  0.2 \\
+   electron ID efficiency  &  1.5 &  0.1 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+        QCD normalization  &  0.8 &  0.4 &  0.0 \\
+$\tauh$ misidentification background  &  0.0 &  0.0 &  0.0 \\
+        top quark $p_{T}$  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  3.0 &  2.5 &  2.5 \\
+  final   state radiation  &  2.5 &  2.1 &  2.0 \\
+  initial state radiation  &  1.7 &  1.8 &  1.8 \\
+ ME Renormalization scale  &  0.9 &  1.5 &  1.2 \\
+ME combined scale variation  &  0.6 &  1.4 &  1.0 \\
+semi-leptonic b-hadron BRs  &  1.1 &  0.7 &  0.7 \\
+   ME Factorization scale  &  0.4 &  0.2 &  0.3 \\
+underlying event (Pythia tune)  &  0.2 &  0.3 &  0.2 \\
+   ME-PS matching (hdamp)  &  0.1 &  0.2 &  0.1 \\
+                      PDF  &  0.0 &  0.1 &  0.0 \\
+            MC statistics  &  0.0 &  0.0 &  0.0 \\
+
+-- PDF != 0 in mu???
+   JER = 0 in el??
+   LEP el drop so much in both?
+
+
+
+try freezing only TOPPT
+
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat.root         nn=el_v37_test14_bunchFULLFIT3_noMCstat   freeze="--freezeParameters lumi_13TeV,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat.root         nn=mu_v37_test14_bunchFULLFIT3_noMCstat   freeze="--freezeParameters lumi_13TeV,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1_noMCstat.root nn=both_v37_test14_bunchFULLFIT3_noMCstat freeze="--freezeParameters lumi_13TeV,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+
+ POI: r= 0.926722 -> [0.5,1.5]
+ POI: r= 0.940619 -> [0.5,1.5]
+ POI: r= 0.937092 -> [0.5,1.5]
+
+-- ok
+   also: without TOPPT el drops from 0.96 to 0.92,
+         mu stays the same,
+         both drops
+
+TOPPT is indeed asymmetric, apparently it works like a switch
+
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_noMCstat.root         nn=el_v37_test14_bunchFULLFIT3_noMCstat_freeze1    freeze="--freezeParameters lumi_13TeV,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_noMCstat.root         nn=mu_v37_test14_bunchFULLFIT3_noMCstat_freeze1    freeze="--freezeParameters lumi_13TeV,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_test1_noMCstat.root nn=both_v37_test14_bunchFULLFIT3_noMCstat_freeze1  freeze="--freezeParameters lumi_13TeV,TOPPT --freezeNuisanceGroup tt_th_pdf_only"
+
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_el_v37_test14_bunchFULLFIT3_noMCstat_freeze1_shapeshort.root
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_mu_v37_test14_bunchFULLFIT3_noMCstat_freeze1_shapeshort.root
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_both_v37_test14_bunchFULLFIT3_noMCstat_freeze1_shapeshort.root
+
+
+
+
+try full fit without TOPPT
+
+make both mucard=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL elcard=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL bothcard=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL
+
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL
+
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL.root     nn=v37_test14_el_test1_freezeTOPPT     freeze="--freezeParameters lumi_13TeV,TOPPT"
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL.root     nn=v37_test14_mu_test1_freezeTOPPT     freeze="--freezeParameters lumi_13TeV,TOPPT"
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL.root   nn=v37_test14_both_test1_freezeTOPPT   freeze="--freezeParameters lumi_13TeV,TOPPT"
+
+   r :    +0.921   -0.075/+0.083 (68%)
+   r :    +0.945   -0.073/+0.078 (68%)
+   r :    +0.936   -0.070/+0.072 (68%)
+
+-- yeap
+
+python new_impact_table.py --merge-pdf  ./latest_impacts_v37_test14_el_test1_freezeTOPPT.json ./latest_impacts_v37_test14_mu_test1_freezeTOPPT.json ./latest_impacts_v37_test14_both_test1_freezeTOPPT.json
+
+$\tauh$ jet identification  &  4.7 &  4.8 &  4.7 \\
+$\tauh$ misidentification background  &  2.9 &  3.2 &  3.3 \\
+       pileup uncertainty  &  2.1 &  2.2 &  1.8 \\
+    jet energy resolution  &  0.1 &  0.5 &  1.2 \\
+     b-tagging efficiency  &  1.1 &  1.3 &  1.0 \\
+     $\tauh$ Energy Scale  &  0.8 &  0.5 &  0.7 \\
+     W+jets normalization  &  0.0 &  1.0 &  0.7 \\
+       muon ID efficiency  &  0.6 &  0.6 \\
+ Single Top normalization  &  0.6 &  0.5 &  0.5 \\
+         jet energy scale  &  0.6 &  0.2 &  0.5 \\
+         DY normalization  &  0.3 &  0.3 &  0.4 \\
+  muon trigger efficiency  &  0.4 &  0.3 \\
+electron trigger efficiency  &  2.3 &  0.2 \\
+   electron ID efficiency  &  1.8 &  0.2 \\
+        QCD normalization  &  1.0 &  0.4 &  0.1 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+        top quark $p_{T}$  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  3.6 &  3.0 \\
+  final   state radiation  &  1.2 &  2.0 &  2.0 \\
+  initial state radiation  &  1.7 &  1.5 &  1.5 \\
+ ME Renormalization scale  &  0.9 &  1.3 &  1.2 \\
+ME combined scale variation  &  0.7 &  1.1 &  1.0 \\
+semi-leptonic b-hadron BRs  &  1.3 &  0.9 &  0.9 \\
+   ME-PS matching (hdamp)  &  0.4 &  0.4 &  0.5 \\
+underlying event (Pythia tune)  &  0.3 &  0.4 &  0.3 \\
+   ME Factorization scale  &  0.3 &  0.3 &  0.3 \\
+                      PDF  &  1.4 &  1.3 &  1.3 \\
+            MC statistics  &  2.1 &  1.6 &  1.7 \\
+
+still LEPel are suppressed, many impacts are asymmetric
+Frag is lost in mu!?
+
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL.root   nn=el_v37_test14_bunchFULLFIT3_freezeTOPPT    freeze="--freezeParameters lumi_13TeV,TOPPT"
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL.root   nn=mu_v37_test14_bunchFULLFIT3_freezeTOPPT    freeze="--freezeParameters lumi_13TeV,TOPPT"
+make pre_pulls_short workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL.root nn=both_v37_test14_bunchFULLFIT3_freezeTOPPT  freeze="--freezeParameters lumi_13TeV,TOPPT"
+
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_el_v37_test14_bunchFULLFIT3_freezeTOPPT_shapeshort.root
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_mu_v37_test14_bunchFULLFIT3_freezeTOPPT_shapeshort.root
+python ttxsec/fit-stuff/pulls_plot.py pulls_of_nuisances_both_v37_test14_bunchFULLFIT3_freezeTOPPT_shapeshort.root
+
+-- Frag is still there, and at the same value as in the PDF-less short pull distr.....
+
+so, what's up with TOPPT?
+
+compare:
+
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL.root     nn=v37_test14_el_test1_NOfreezeTOPPT     freeze="--freezeParameters lumi_13TeV"
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL.root     nn=v37_test14_mu_test1_NOfreezeTOPPT     freeze="--freezeParameters lumi_13TeV"
+make impacts  workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL.root   nn=v37_test14_both_test1_NOfreezeTOPPT   freeze="--freezeParameters lumi_13TeV"
+
+   r :    +0.949   -0.083/+0.093 (68%)
+   r :    +0.948   -0.075/+0.096 (68%)
+   r :    +0.973   -0.074/+0.083 (68%)
+
+-- damn!
+
+   also mu is different from before?
+
+   Frag is too large in both mu and el
+   TOPPT is pulled up in el, centered in mu -- why mu does not favor TOPPT?
+
+python new_impact_table.py --merge-pdf  latest_impacts_v37_test14_el_test1_NOfreezeTOPPT.json latest_impacts_v37_test14_mu_test1_NOfreezeTOPPT.json latest_impacts_v37_test14_both_test1_NOfreezeTOPPT.json
+
+
+
+check freezing Frag
+
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL.root      nn=el_v37_test14_bunchFULLFIT3_freezeFrag   freeze="--freezeParameters lumi_13TeV,Frag"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL.root      nn=mu_v37_test14_bunchFULLFIT3_freezeFrag   freeze="--freezeParameters lumi_13TeV,Frag"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL.root    nn=both_v37_test14_bunchFULLFIT3_freezeFrag freeze="--freezeParameters lumi_13TeV,Frag"
+
+ POI: r= 0.963434 -> [0.5,1.5]
+ POI: r= 0.933502 -> [0.5,1.5]
+ POI: r= 0.955115 -> [0.5,1.5]
+
+-- not bad
+   so, maybe correcting Frag we'll get to ok fit in both
+   Frag is strangely large now
+
+
+
+
+### check Frag norm factors
+
+check what's applied in histosel?
+
+root -l ttxsec/fit-stuff/v37_test14_bunchFULLFIT3_mc_1_HISTOSEL.root
+
+el_sel_ljout->Get("tt_eltau/NOMINAL")
+
+el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c")->Print()
+el_sel_ljout->Get("tt_eltau/FragUp/el_sel_ljout_tt_eltau_FragUp_Mt_lep_met_c")->Print()
+el_sel_ljout->Get("tt_eltau/FragDown/el_sel_ljout_tt_eltau_FragDown_Mt_lep_met_c")->Print()
+TH1.Print Name  = el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c, Entries= 20649, Total sum= 5135.77
+TH1.Print Name  = el_sel_ljout_tt_eltau_FragUp_Mt_lep_met_c, Entries= 20649, Total sum= 4948.97
+TH1.Print Name  = el_sel_ljout_tt_eltau_FragDown_Mt_lep_met_c, Entries= 20649, Total sum= 5277.82
+
+Up
+root [8] 4948.97 / 5135.77
+(double) 0.963628
+Down
+root [9] 5277.82 / 5135.77
+(double) 1.02766
+
+((TH1D*) el_sel_ljout->Get("tt_lj/FragUp/el_sel_ljout_tt_lj_FragUp_Mt_lep_met_c"))->Integral()     / ((TH1D*) el_sel_ljout->Get("tt_lj/NOMINAL/el_sel_ljout_tt_lj_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_lj/FragDown/el_sel_ljout_tt_lj_FragDown_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_ljout->Get("tt_lj/NOMINAL/el_sel_ljout_tt_lj_NOMINAL_Mt_lep_met_c"))->Integral()
+
+(double) 0.935758
+(double) 1.05290
+
+
+-- somehow very close to the factors:
+
+              FragUp             0.958843
+            FragDown             1.029369
+
+-- checked them in new ntuples
+
+are the factors actualy applied?
+
+
+root -l distrs/v37_test13_bunchFULLFIT2_mc_1.root
+
+((TH1D*) el_sel_ljout->Get("tt_eltau/FragUp/el_sel_ljout_tt_eltau_FragUp_Mt_lep_met_c"))->Integral()      / ((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_eltau/FragDown/el_sel_ljout_tt_eltau_FragDown_Mt_lep_met_c"))->Integral()  / ((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c"))->Integral()
+
+(double) 0.923977
+(double) 1.05783
+
+-- applied....
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc_1.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root -o histosels/v37_test13_bunchFULLFIT2_issue_w_TT_weights/ --data-nick data_other --lumi 35800 -c mu_sel_ljout -d Mt_lep_met_c --wjet 1.4  -x mu_selVloose_ljout --sys NOMINAL
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc_1.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root -o histosels/v37_test13_bunchFULLFIT2_issue_w_TT_weights/ --data-nick data_other --lumi 35800 -c mu_sel_ljout -d Mt_lep_met_c --wjet 1.4  -x mu_selVloose_ljout --sys FragUp
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc_1.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root -o histosels/v37_test13_bunchFULLFIT2_issue_w_TT_weights/ --data-nick data_other --lumi 35800 -c mu_sel_ljout -d Mt_lep_met_c --wjet 1.4  -x mu_selVloose_ljout --sys FragDown
+
+
+how large was it before?
+
+root -l distrs/v25v26_redo_4_mc.root
+
+((TH1D*) el_sel_ljout->Get("tt_eltau/FragUp/el_sel_ljout_tt_eltau_FragUp_Mt_lep_met_f"))->Integral()      / ((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_f"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_eltau/FragDown/el_sel_ljout_tt_eltau_FragDown_Mt_lep_met_f"))->Integral()  / ((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_f"))->Integral()
+
+(double) 0.973473
+(double) 1.02142
+
+-- aha!
+
+so, why is the effect larger now?
+
+'FragUp'        : lambda ev: ev.event_weight*ev.event_weight_FragUp       ,
+'FragDown'      : lambda ev: ev.event_weight*ev.event_weight_FragDown     ,
+
+
+check MfrUp MfrDown too:
+
+((TH1D*) el_sel_ljout->Get("tt_eltau/MfrUp/el_sel_ljout_tt_eltau_MfrUp_Mt_lep_met_f"))->Integral()      / ((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_f"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_eltau/MfrDown/el_sel_ljout_tt_eltau_MfrDown_Mt_lep_met_f"))->Integral()  / ((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_f"))->Integral()
+
+was:
+
+(double) 0.875502
+(double) 1.13343
+
+now:
+
+root -l distrs/v37_test14_bunchFULLFIT3_mc_1.root
+
+(double) 0.875225
+(double) 1.13388
+
+-- same
+
+but Frag:
+
+(double) 0.923977
+(double) 1.05783
+
+is off
+
+check raw frag weight
+
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight"                       --histo-range 20,0,250 --output v37_test14_tooLargeFrag_Mt_NOMINAL.root  --histo-name Mt_NOMINAL  lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root    &
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight*event_weight_FragUp"   --histo-range 20,0,250 --output v37_test14_tooLargeFrag_Mt_FragUp.root   --histo-name Mt_FragUp   lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root    &
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight*event_weight_FragDown" --histo-range 20,0,250 --output v37_test14_tooLargeFrag_Mt_FragDown.root --histo-name Mt_FragDown lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root    &
+
+hadd v37_test14_tooLargeFrag_all.root v37_test14_tooLargeFrag_Mt_*.root
+
+Mt_FragUp   ->Integral() / Mt_NOMINAL ->Integral()
+Mt_FragDown ->Integral() / Mt_NOMINAL ->Integral()
+
+(double) 0.912181
+(double) 1.06949
+
+and
+>>> sqrt(0.912181)
+0.9550816719003669
+>>> sqrt(1.06949)
+1.0341614960923657
+
+
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight"                       --histo-range 20,0,250 --output v37_test14_tooLargeFrag_Mt_v26_NOMINAL.root  --histo-name Mt_v26_NOMINAL  lstore_outdirs/v26/resub4p/MC2016_Summer16_TTJets_powheg/*root    &
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight*event_weight_FragUp"   --histo-range 20,0,250 --output v37_test14_tooLargeFrag_Mt_v26_FragUp.root   --histo-name Mt_v26_FragUp   lstore_outdirs/v26/resub4p/MC2016_Summer16_TTJets_powheg/*root    &
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight*event_weight_FragDown" --histo-range 20,0,250 --output v37_test14_tooLargeFrag_Mt_v26_FragDown.root --histo-name Mt_v26_FragDown lstore_outdirs/v26/resub4p/MC2016_Summer16_TTJets_powheg/*root    &
+
+hadd v37_test14_tooLargeFrag_all.root v37_test14_tooLargeFrag_Mt_*.root
+
+Mt_v26_FragUp   ->Integral() / Mt_v26_NOMINAL ->Integral()
+Mt_v26_FragDown ->Integral() / Mt_v26_NOMINAL ->Integral()
+
+(double) 0.960752
+(double) 1.03496
+
+what's with weights in the ntuples?
+
+gen_weight_centralFrag <- not negligible
+gen_weight_FragUp
+gen_weight_FragDown
+
+python sumup_ttree_draw.py "gen_weight_FragUp   / gen_weight_centralFrag" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_FragUp.root   --histo-name ntuple_weight_FragUp   gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC*root    &
+python sumup_ttree_draw.py "gen_weight_FragDown / gen_weight_centralFrag" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_FragDown.root --histo-name ntuple_weight_FragDown gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC*root    &
+
+python sumup_ttree_draw.py "gen_weight_FragUp   / gen_weight_centralFrag" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_v26_FragUp.root   --histo-name ntuple_weight_v26_FragUp   gstore_outdirs/v26/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v26_MC2016_Summer16_TTJets_powheg/*/0000/MC*root    &
+python sumup_ttree_draw.py "gen_weight_FragDown / gen_weight_centralFrag" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_v26_FragDown.root --histo-name ntuple_weight_v26_FragDown gstore_outdirs/v26/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v26_MC2016_Summer16_TTJets_powheg/*/0000/MC*root    &
+
+hadd -f v37_test14_all_tooLargeFrag.root v37_test14_tooLargeFrag_*.root
+root -l v37_test14_all_tooLargeFrag.root
+
+ntuple_weight_v26_FragUp   ->SetLineColor(kRed)
+ntuple_weight_v26_FragDown ->SetLineColor(kRed)
+
+ntuple_weight_FragUp   ->Scale(1./ntuple_weight_FragUp   ->Integral())
+ntuple_weight_FragDown ->Scale(1./ntuple_weight_FragDown ->Integral())
+
+ntuple_weight_v26_FragUp   ->Scale(1./ntuple_weight_v26_FragUp   ->Integral())
+ntuple_weight_v26_FragDown ->Scale(1./ntuple_weight_v26_FragDown ->Integral())
+
+ntuple_weight_FragUp     ->Draw("histo")
+ntuple_weight_v26_FragUp ->Draw("histo same")
+
+ntuple_weight_FragDown     ->Draw("histo")
+ntuple_weight_v26_FragDown ->Draw("histo same")
+
+-- looks similar, but the selection of events is noticeable
+
+python sumup_ttree_draw.py "gen_weight_FragUp   / gen_weight_centralFrag" --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_FragUp.root       --histo-name ntuple_weight_FragUp       gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/*/*/*root &
+python sumup_ttree_draw.py "gen_weight_FragDown / gen_weight_centralFrag" --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_FragDown.root     --histo-name ntuple_weight_FragDown     gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/*/*/*root &
+python sumup_ttree_draw.py "gen_weight_FragUp   / gen_weight_centralFrag" --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_v26_FragUp.root   --histo-name ntuple_weight_v26_FragUp   gstore_outdirs/v26/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v26_MC2016_Summer16_TTJets_powheg/*/*/*root &
+python sumup_ttree_draw.py "gen_weight_FragDown / gen_weight_centralFrag" --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_v26_FragDown.root --histo-name ntuple_weight_v26_FragDown gstore_outdirs/v26/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v26_MC2016_Summer16_TTJets_powheg/*/*/*root &
+
+-- practically the same amount of events (veto leps etc are needed)
+   but still the same difference in the distrs!
+
+   red is large in Up and smaller in Down
+
+so, it seems the weight has changed in ntuples?
+git shows no difference for this weight:
+the genjets come from token particleLevel:jets
+
+        genJetsToken_ = consumes<std::vector<reco::GenJet> >(edm::InputTag("particleLevel:jets")); // not sure if it is different from previous one
+                iEvent.getByToken( genJetsToken_, genJets2);
+
+then the loop with weights did not change, only a separate match to leptons was added, which is just added and that's all
+
+how come this weight has changed, but the weight in the histo of sys weights has not?
+-- I forgot to divide the sys by central Frag?
+   no, I did divide it!
+   so, how come?
+
+check separate distrs
+
+python sumup_ttree_draw.py "gen_weight_FragUp"      --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_FragUp_distr.root    --histo-name ntuple_weight_FragUp_distr   gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/*/*/*root &
+python sumup_ttree_draw.py "gen_weight_FragDown"    --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_FragDown_distr.root  --histo-name ntuple_weight_FragDown_distr gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/*/*/*root &
+python sumup_ttree_draw.py "gen_weight_centralFrag" --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_central_distr.root   --histo-name ntuple_weight_central_distr  gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/*/*/*root &
+
+python sumup_ttree_draw.py "gen_weight_FragUp"      --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_v26_FragUp_distr.root   --histo-name ntuple_weight_v26_FragUp_distr   gstore_outdirs/v26/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v26_MC2016_Summer16_TTJets_powheg/*/*/*root &
+python sumup_ttree_draw.py "gen_weight_FragDown"    --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_v26_FragDown_distr.root --histo-name ntuple_weight_v26_FragDown_distr gstore_outdirs/v26/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v26_MC2016_Summer16_TTJets_powheg/*/*/*root &
+python sumup_ttree_draw.py "gen_weight_centralFrag" --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_v26_central_distr.root  --histo-name ntuple_weight_v26_central_distr  gstore_outdirs/v26/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v26_MC2016_Summer16_TTJets_powheg/*/*/*root &
+
+ntuple_weight_v26_FragUp_distr   ->SetLineColor(kRed)
+ntuple_weight_v26_FragDown_distr ->SetLineColor(kRed)
+ntuple_weight_v26_central_distr  ->SetLineColor(kRed)
+
+ntuple_weight_FragUp_distr   ->Scale(1./ntuple_weight_FragUp_distr   ->Integral())
+ntuple_weight_FragDown_distr ->Scale(1./ntuple_weight_FragDown_distr ->Integral())
+ntuple_weight_central_distr  ->Scale(1./ntuple_weight_central_distr  ->Integral())
+
+ntuple_weight_v26_FragUp_distr   ->Scale(1./ntuple_weight_v26_FragUp_distr   ->Integral())
+ntuple_weight_v26_FragDown_distr ->Scale(1./ntuple_weight_v26_FragDown_distr ->Integral())
+ntuple_weight_v26_central_distr  ->Scale(1./ntuple_weight_v26_central_distr  ->Integral())
+
+ntuple_weight_FragUp_distr     ->Draw("histo")
+ntuple_weight_v26_FragUp_distr ->Draw("histo same")
+
+ntuple_weight_FragDown_distr     ->Draw("histo")
+ntuple_weight_v26_FragDown_distr ->Draw("histo same")
+
+ntuple_weight_central_distr     ->Draw("histo")
+ntuple_weight_v26_central_distr ->Draw("histo same")
+
+-- all different
+
+experiment with sqrt:
+
+python sumup_ttree_draw.py "sqrt(gen_weight_FragUp)"      --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_FragUp_distr_sqrt.root    --histo-name ntuple_weight_FragUp_distr_sqrt   gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/*/*/*root &
+python sumup_ttree_draw.py "sqrt(gen_weight_FragDown)"    --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_FragDown_distr_sqrt.root  --histo-name ntuple_weight_FragDown_distr_sqrt gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/*/*/*root &
+python sumup_ttree_draw.py "sqrt(gen_weight_centralFrag)" --cond-com "(abs(leps_ID) == 11 || abs(leps_ID) == 13) && ntaus>0" --histo-range 100,0,2 --output v37_test14_tooLargeFrag_ntuple_weight_central_distr_sqrt.root   --histo-name ntuple_weight_central_distr_sqrt  gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/*/*/*root &
+
+ntuple_weight_FragUp_distr_sqrt   ->Scale(1./ntuple_weight_FragUp_distr_sqrt   ->Integral())
+ntuple_weight_FragDown_distr_sqrt ->Scale(1./ntuple_weight_FragDown_distr_sqrt ->Integral())
+ntuple_weight_central_distr_sqrt  ->Scale(1./ntuple_weight_central_distr_sqrt  ->Integral())
+
+ntuple_weight_FragUp_distr_sqrt ->Draw("histo")
+ntuple_weight_v26_FragUp_distr  ->Draw("histo same")
+
+ntuple_weight_FragDown_distr_sqrt ->Draw("histo")
+ntuple_weight_v26_FragDown_distr  ->Draw("histo same")
+
+ntuple_weight_central_distr_sqrt ->Draw("histo")
+ntuple_weight_v26_central_distr  ->Draw("histo same")
+
+-- red (v26) is wider
+
+damn!
+
+python syst_rates.py --sys-histo ntupler/systematic_weights proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/*/0000/*root
+python syst_rates.py --sys-histo ntupler/systematic_weights proc/gstore_outdirs/v26/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v26_MC2016_Summer16_TTJets_powheg/*/0000/*root
+
+                 v37                                               v26
+                init 77862932.0                                   init 77862932.0
+                nom  77862932.0                                   nom  77862932.0
+               MU_PU             1.013878                        MU_PU             1.013878
+             MU_PUUp             0.994845                      MU_PUUp             0.994845
+           MU_PUDown             1.036569                    MU_PUDown             1.036569
+               El_PU             1.031057                        El_PU             1.031057
+             El_PUUp             1.008920                      El_PUUp             1.008920
+           El_PUDown             1.057174                    El_PUDown             1.057174
+               TOPPT             1.000487                        TOPPT             1.000487
+
+              FragUp             0.958843                       FragUp             1.001121
+            FragDown             1.029369                     FragDown             0.999304
+         SemilepBRUp             1.002655                  SemilepBRUp             1.008565
+       SemilepBRDown             1.035816                SemilepBRDown             0.987051
+          PetersonUp             0.990594                   PetersonUp             1.000034
+
+                MrUp             0.896599                         MrUp             0.896599
+              MrDown             1.114157                       MrDown             1.114157
+                MfUp             0.980611                         MfUp             0.980611
+              MfDown             1.025510                       MfDown             1.025510
+               MfrUp             0.874600                        MfrUp             0.874600
+             MfrDown             1.135833                      MfrDown             1.135833
+          AlphaSDown             1.015573                   AlphaSDown             1.015573
+            AlphaSUp             0.984924                     AlphaSUp             0.984924
+
+-- so they did change...
+   but in git nothing has changed since tag v25
+   maybe in Bfrag? -- frag is unchanged by git log.. but there is a modified source laying in backup?
+
+but what's the overall effect of this change?
+
+In v37 final variation is:
+
+Up
+root [8] 4948.97 / 5135.77
+(double) 0.963628
+Down
+root [9] 5277.82 / 5135.77
+(double) 1.02766
+
+from this:
+
+(double) 0.923977
+(double) 1.05783
+
+in v26 it is:
+
+root -l ttxsec/HISTOSELS_v25v25redo_PUnormFix.root
+
+((TH1D*) el_sel_ljout->Get("tt_eltau/FragUp/el_sel_ljout_tt_eltau_FragUp_Mt_lep_met_f"))->Integral()      / ((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_f"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_eltau/FragDown/el_sel_ljout_tt_eltau_FragDown_Mt_lep_met_f"))->Integral()  / ((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_f"))->Integral()
+
+(double) 0.972381
+(double) 1.02213
+
+from:
+
+(double) 0.973473
+(double) 1.02142
+
+so, it's larger by 1% and 0.5% now...
+
+what is reduce these systematics by this amount?
+
+cp ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL.txt   ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_reducedFrag.txt
+cp ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL.txt   ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_reducedFrag.txt
+cp ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL.txt ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_reducedFrag.txt
+
+vim -p ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_reducedFrag.txt ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_reducedFrag.txt ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_reducedFrag.txt
+
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_reducedFrag
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_reducedFrag
+make workspace datacard=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_reducedFrag
+
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL_reducedFrag.root      nn=el_v37_test14_bunchFULLFIT3_reducedFrag   freeze="--freezeParameters lumi_13TeV"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL_reducedFrag.root      nn=mu_v37_test14_bunchFULLFIT3_reducedFrag   freeze="--freezeParameters lumi_13TeV"
+make nll workspace=ttxsec/datacard_v37_test14_bunchFULLFIT3_both_1_HISTOSEL_reducedFrag.root    nn=both_v37_test14_bunchFULLFIT3_reducedFrag freeze="--freezeParameters lumi_13TeV"
+
+ POI: r= 0.943315 -> [0.5,1.5]
+ POI: r= 0.940765 -> [0.5,1.5]
+ POI: r= 0.948811 -> [0.5,1.5]
+
+-- not too bad, but still there is an asymmetry
+
+
 
 
 
