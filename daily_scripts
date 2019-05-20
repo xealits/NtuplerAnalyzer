@@ -744,6 +744,66 @@ python syst_rates.py --sys-histo ntupler/systematic_weights proc/gstore_outdirs/
    but in git nothing has changed since tag v25
    maybe in Bfrag? -- frag is unchanged by git log.. but there is a modified source laying in backup?
 
+in other ntuples:
+
+v31v27
+
+init 77099579.0
+nom  77099579.0
+               MU_PU             1.013877
+             MU_PUUp             0.994846
+           MU_PUDown             1.036567
+               El_PU             1.031054
+             El_PUUp             1.008917
+           El_PUDown             1.057172
+               TOPPT             1.000487
+
+              FragUp             1.001121
+            FragDown             0.999305
+         SemilepBRUp             1.008565
+       SemilepBRDown             0.987050
+          PetersonUp             1.000036
+
+                MrUp             0.896600
+              MrDown             1.114157
+                MfUp             0.980608
+              MfDown             1.025513
+               MfrUp             0.874598
+             MfrDown             1.135837
+          AlphaSDown             1.015573
+            AlphaSUp             0.984924
+
+v34
+
+init 77106788.0
+nom  77106788.0
+               MU_PU             1.013878
+             MU_PUUp             0.994846
+           MU_PUDown             1.036568
+               El_PU             1.031058
+             El_PUUp             1.008922
+           El_PUDown             1.057173
+               TOPPT             1.000487
+
+              FragUp             0.958841
+            FragDown             1.029370
+         SemilepBRUp             1.002656
+       SemilepBRDown             1.035816
+          PetersonUp             0.990594
+
+                MrUp             0.896601
+              MrDown             1.114155
+                MfUp             0.980612
+              MfDown             1.025509
+               MfrUp             0.874603
+             MfrDown             1.135830
+          AlphaSDown             1.015573
+            AlphaSUp             0.984924
+
+-- the change happened between these, which is probably the ntupler was switched to CMSSW 8 0 29
+
+
+
 but what's the overall effect of this change?
 
 In v37 final variation is:
