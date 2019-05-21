@@ -10,11 +10,16 @@ Three main problems:
 3) DY tautau basic and 3j look strange in the distrs:
    different the composition in lep pT and tau pT (more qcd, wjets in one of them).
    -- no, it's fine! the difference is between eltau and mutau plots!
-4) high MET trends: MC>Data at high MET
+
+Also:
+1) high MET trends: MC>Data at high MET
    -- the TOPPT in elmu, presel and main selection does not fix them entirely
       it cannot be due to QCD -- it's in high MET, especially at 200-500GeV
    is it the reason of the disagreement in Mt?
    is it fixable with recoil corrections?
+2) and lj in muon has too large disagreement?
+   -- the fit in el and mu has different conditions, it fits different things, which is probably one of the sources of problems with asymmetry in fit of both channels etc
+   actually lj seems similar in el and mu, but in ljout el has the bending trend and very large contribution of QCD, and mu is on contrary quite flat
 
 asymmetric systematics:
 
@@ -2446,6 +2451,18 @@ recoil corrections? -- they are too small?
 
 1) compare to initial met
 2) which processes dominate the met tail? check process composition in the met tail
+3) how does it look in controls: DY, WJets, tt elmu?
+
+
+
+## issues with lj division?
+
+el ljout looks strange: a bending trend and too large QCD
+
+it seems the jets are added to the jet collections with any(jet_pt > cut for jet_pt in all_jet_pt_per_sys)
+not only nominal jets are considered
+but does it matter much?
+
 
 
 

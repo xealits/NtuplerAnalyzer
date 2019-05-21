@@ -3985,6 +3985,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                   if jet_pt_JESDown > JETS_PT_CUT:
                       N_jets_JESDown_all += 1
 
+                  # save the nominal jets for lj cut etc
+                  if not (jet_pt > JETS_PT_CUT):
+                      continue
                   # match tau
                   if not jet_tau_match_old:
                     # the same, but the cuts and lowest -> cuts
@@ -4009,7 +4012,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
                 else:
                     # matched lep
-                    jets_nom.lepmatched.append((p4, en_factors, bSF_weights, jet_b_discr, HF, PF, jet_index))
+                    if jet_pt > JETS_PT_CUT:
+                        jets_nom.lepmatched.append((p4, en_factors, bSF_weights, jet_b_discr, HF, PF, jet_index))
                     # TODO: notice, the b weights of these jets are not considered
                     # and these jets are not considered in number of jets
                     #if jet_pt > JETS_PT_CUT:
