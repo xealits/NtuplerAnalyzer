@@ -3,13 +3,30 @@
 Three main problems:
 1) the fit in both channels is asymmetric from the separate channels
    -- test14 with fixes
+      does not change the asymmetry, what happens is the fit in el pulls TOPPT Up, but mu does not
+      then the fit in both pulls TOPPT Up too
+      this asymmetric uncertainty + the correlated ones switch the fit into another domain of nuisances
+      for example, the fit looks perfect without TOPPT, also good without TOPPT and Frag, ok without Frag only
+
+      Frag alone produces too large impact
+      -- it is due to new b-frag weights in the ntuples, which have about 1/4 larger variation (the old one around 2% new is 2.5%)
+         the weights changed in ntuples themselves since around v35
+         the procedure for the weights did not change since than, neither in ntupler nor in BFrag plugin,
+         maybe it is due to the switch to CMSSW 8 0 29 from 26?
+
+      it's not clear why TOPPT is not prefered in mu, maybe because ljout is very flat there
+      the TOPPT bends the distribution, which is suitable in el, but in mu it is not needed
+
+      both uncertainties can be "shaken" into a different behavior with the change in lj variable (test15)
+
 2) the pulls in muon channel for the systematics:
    JES, LEPmuID, LEPmuTRG, Peterson, TES
-   -- the issue is the same in fit with all systematics and with less parameters, it also propagates to the fit of both channels
+   -- FIXED
+       the issue is the same in fit with all systematics and with less parameters, it also propagates to the fit of both channels
       there is no such issue in electron channel, el has some issue in Mf and some PDFs
 3) DY tautau basic and 3j look strange in the distrs:
    different the composition in lep pT and tau pT (more qcd, wjets in one of them).
-   -- no, it's fine! the difference is between eltau and mutau plots!
+   -- NO, IT's FINE! the difference is between eltau and mutau plots!
 
 Also:
 1) high MET trends: MC>Data at high MET
@@ -23,9 +40,9 @@ Also:
 
 asymmetric systematics:
 
-TT weight sys look weird (Mf, Mr, Mfr)
-mu LEP
-JES, TES and JER
+TT weight sys look weird (Mf, Mr, Mfr) <- NO, IT's FINE! the MC distrs did not have QCD!
+mu LEP                                 <- error with new per-epoch PU, wron place of parentheses
+JES, TES and JER                       <- error in the propagation to met
 
 why fit broke when one of the systematics was rate?
 
@@ -2453,6 +2470,120 @@ recoil corrections? -- they are too small?
 2) which processes dominate the met tail? check process composition in the met tail
 3) how does it look in controls: DY, WJets, tt elmu?
 
+in controls:
+WJets are surprisingly flat
+DY mumu seems ok, elel has slight trend (but it is upto 250GeV)
+elmu has the trend, TOPPT almost fixes it (what's in tight elmu, when the jet requirements are the same as in main selection? and in elmu both leptons are 30GeV now!)
+tt presel, sel do have the trend, maybe in el it is larger, and it seems in sel it is larger than in presel
+
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc.root distrs/v37_test13_bunchDILEP1/SingleMuon.root     -o plots/v37_test13_bunchDILEP1/ --overwrite --factor-dy 1.05 -p -r --lumi 35800 --data-nick data_other -c dy_mumu -d met_c --wjet 1.4 --qcd-factor 2.5 --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_lj:tt_else.tt_other:tt_elmu
+python stack_plot.py distrs/v37_test13_bunchDILEP1_mc.root distrs/v37_test13_bunchDILEP1/SingleElectron.root -o plots/v37_test13_bunchDILEP1/ --overwrite --factor-dy 1.05 -p -r --lumi 35800 --data-nick data_other -c dy_elel -d met_c --wjet 1.4 --qcd-factor 2.5 --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(, MET) [GeV]" --title-y "[Events/GeV]" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.s_top_mutau,s_top_lj,s_top_other:s_top.tt_mutau,tt_taultauh,tt_taulj,tt_lj:tt_else.tt_other:tt_elmu
+
+-- both DY are mostly flat, but make some bend, mumu at 100GeV and elel at 150GeV, mumu more than elel
+   they get to about 10% deviation at 500GeV
+
+
+plots on tt elmu, presel and sel:
+
+eog plots/v37_test13_bunchDILEP1/*n_met_c_tt_elmu*
+eog plots/v37_test13_bunchCONTROLS1/*n_met_c_??_presel*
+eog plots/v37_test13_bunchCONTROLS1/*n_met_c_??_sel_*
+
+-- in presel TOPPT almost fixes the difference, like in elmu, but the remaining gap is still larger in el
+
+python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc_1.root distrs/v37_test13_bunchCONTROLS1/SingleMuon.root     -p -r -o plots/v37_test13_bunchCONTROLS1/ -c mu_sel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 1.4 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc_1.root distrs/v37_test13_bunchCONTROLS1/SingleElectron.root -p -r -o plots/v37_test13_bunchCONTROLS1/ -c el_sel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 1.4 --qcd 1.05
+
+python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc_1.root distrs/v37_test13_bunchCONTROLS1/SingleMuon.root     -p -r -o plots/v37_test13_bunchCONTROLS1/ -c mu_sel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 1.4 --qcd 1.05 --sys TOPPTUp
+python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc_1.root distrs/v37_test13_bunchCONTROLS1/SingleElectron.root -p -r -o plots/v37_test13_bunchCONTROLS1/ -c el_sel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 1.4 --qcd 1.05 --sys TOPPTUp
+
+-- TOPPT was not saved for main selection?
+
+python stack_plot.py distrs/v37_test13_bunchCONTROLMET_mc.root distrs/v37_test13_bunchCONTROLMET/SingleMuon.root     -p -r -o plots/v37_test13_bunchCONTROLMET/ -c mu_sel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 1.4 --qcd 1.05
+python stack_plot.py distrs/v37_test13_bunchCONTROLMET_mc.root distrs/v37_test13_bunchCONTROLMET/SingleElectron.root -p -r -o plots/v37_test13_bunchCONTROLMET/ -c el_sel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 1.4 --qcd 1.05
+
+python stack_plot.py distrs/v37_test13_bunchCONTROLMET_mc.root distrs/v37_test13_bunchCONTROLMET/SingleMuon.root     -p -r -o plots/v37_test13_bunchCONTROLMET/ -c mu_sel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 1.4 --qcd 1.05 --sys TOPPTUp
+python stack_plot.py distrs/v37_test13_bunchCONTROLMET_mc.root distrs/v37_test13_bunchCONTROLMET/SingleElectron.root -p -r -o plots/v37_test13_bunchCONTROLMET/ -c el_sel --data-nick data_other -d met_c --lumi 35800 --overwrite --wjets 1.4 --qcd 1.05 --sys TOPPTUp
+
+-- the same, but slightly worse
+
+
+overall it should not be a large problem, it seems to show up only in tt and it is mostly fixed by TOPPT
+however, it's strange, and maybe it is due to some small correction, like propagating lep-matched jet etc
+
+
+
+### compare with init met
+
+python sumup_ttree_draw.py "event_met.pt()"      --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight"  --histo-range 50,0,500 --output v37_test14_met_trends_met.root      --histo-name met      lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_init.pt()" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight"  --histo-range 50,0,500 --output v37_test14_met_trends_met_init.root --histo-name met_init lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+hadd -f v37_test14_all_met_trends.root v37_test14_met_trends*.root
+root -l v37_test14_all_met_trends.root
+
+met_init->SetLineColor(kRed)
+
+met->Draw("hist")
+met_init->Draw("hist same")
+
+met->Divide(met_init)
+met->Draw("hist")
+
+-- very slight rising slope, about -2% at 0GeV and +2% at 200GeV and up
+   so, it could be the remaining correction in TT
+
+check in tt_elmu
+
+python sumup_ttree_draw.py "event_met.pt()"      --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210)*event_weight"  --histo-range 50,0,500 --output v37_test14_met_trends_tt_elmu_met.root      --histo-name tt_elmu_met      lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_init.pt()" --ttree ttree_out --cond-com "(selection_stage_em > 200 && selection_stage_em < 210)*event_weight"  --histo-range 50,0,500 --output v37_test14_met_trends_tt_elmu_met_init.root --histo-name tt_elmu_met_init lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+python sumup_ttree_draw.py "event_met.pt()"      --ttree ttree_out --cond-com "(selection_stage_em == 205)*event_weight"  --histo-range 50,0,500 --output v37_test14_met_trends_tt_elmu_tight_met.root      --histo-name tt_elmu_tight_met      lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_init.pt()" --ttree ttree_out --cond-com "(selection_stage_em == 205)*event_weight"  --histo-range 50,0,500 --output v37_test14_met_trends_tt_elmu_tight_met_init.root --histo-name tt_elmu_tight_met_init lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+tt_elmu_met_init->SetLineColor(kRed)
+tt_elmu_met->Draw("hist")
+tt_elmu_met_init->Draw("hist same")
+
+tt_elmu_tight_met_init->SetLineColor(kRed)
+tt_elmu_tight_met->Draw("hist")
+tt_elmu_tight_met_init->Draw("hist same")
+
+tt_elmu_met->Divide(tt_elmu_met_init)
+tt_elmu_met->Draw("hist")
+
+-- same in 1% range
+
+tt_elmu_tight_met->Divide(tt_elmu_tight_met_init)
+tt_elmu_tight_met->Draw("hist")
+
+-- practically no deviation!
+
+
+
+check in preselection
+
+selection_stage_presel
+
+python sumup_ttree_draw.py "event_met.pt()"      --ttree ttree_out --cond-com "(selection_stage_presel == 9)*event_weight"  --histo-range 50,0,500 --output v37_test14_met_trends_mu_preselCand_met.root      --histo-name mu_preselCand_met      lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_init.pt()" --ttree ttree_out --cond-com "(selection_stage_presel == 9)*event_weight"  --histo-range 50,0,500 --output v37_test14_met_trends_mu_preselCand_met_init.root --histo-name mu_preselCand_met_init lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+python sumup_ttree_draw.py "event_met.pt()"      --ttree ttree_out --cond-com "(selection_stage_presel == 19)*event_weight" --histo-range 50,0,500 --output v37_test14_met_trends_el_preselCand_met.root      --histo-name el_preselCand_met      lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+python sumup_ttree_draw.py "event_met_init.pt()" --ttree ttree_out --cond-com "(selection_stage_presel == 19)*event_weight" --histo-range 50,0,500 --output v37_test14_met_trends_el_preselCand_met_init.root --histo-name el_preselCand_met_init lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root  &
+
+mu_preselCand_met->Divide(mu_preselCand_met_init)
+mu_preselCand_met->Draw("hist")
+
+-- same as in main selection, deviation in 2% range
+
+el_preselCand_met->SetLineColor(kRed)
+el_preselCand_met->Divide(el_preselCand_met_init)
+el_preselCand_met->Draw("hist same")
+
+-- same
+
+side question: how come tt_elmu is different from these two? TES propagation?
+
+
 
 
 ## issues with lj division?
@@ -2463,7 +2594,62 @@ it seems the jets are added to the jet collections with any(jet_pt > cut for jet
 not only nominal jets are considered
 but does it matter much?
 
+python sumup_ttree_draw.py "event_jets_lj_var" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight"                       --histo-range 20,0,300 --output v37_test14_fixed_jets_for_lj_var_test14.root    --histo-name lj_var_test14    lstore_outdirs/v37/test14/MC2016_Summer16_TTJets_powheg/*root    &
+python sumup_ttree_draw.py "event_jets_lj_var" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight"                       --histo-range 20,0,300 --output v37_test14_fixed_jets_for_lj_var_test14_1.root  --histo-name lj_var_test14_1  lstore_outdirs/v37/test14_1/MC2016_Summer16_TTJets_powheg/*root  &
+
+hadd -f v37_test14_fixed_jets_comparison.root v37_test14_fixed_jets_for_lj_var_test14*.root
+root -l v37_test14_fixed_jets_comparison.root
+
+lj_var_test14_1->SetLineColor(kRed)
+
+lj_var_test14->Draw("hist")
+lj_var_test14_1->Draw("hist same")
+
+-- slightly different, the red is smaller at low values
+
+lj_var_test14_1->Divide(lj_var_test14)
+lj_var_test14_1->Draw()
+
+ok, then let produce it for refit
+test15
+
+TODO: so, actually I need separate jet collections of JES, JER (and TES?) jets for separate lj variables?
 
 
+
+
+
+how does bFrag affect lj categories? do they correlate?
+
+
+root -l fit-stuff/v37_test14_bunchFULLFIT3_mc_1_HISTOSEL.root
+
+((TH1D*) el_sel_ljout->Get("tt_lj/FragUp/el_sel_ljout_tt_lj_FragUp_Mt_lep_met_c"))->Integral()     / ((TH1D*) el_sel_ljout->Get("tt_lj/NOMINAL/el_sel_ljout_tt_lj_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_lj/FragDown/el_sel_ljout_tt_lj_FragDown_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_ljout->Get("tt_lj/NOMINAL/el_sel_ljout_tt_lj_NOMINAL_Mt_lep_met_c"))->Integral()
+
+((TH1D*) el_sel_lj->Get("tt_lj/FragUp/el_sel_lj_tt_lj_FragUp_Mt_lep_met_c"))->Integral()     / ((TH1D*) el_sel_lj->Get("tt_lj/NOMINAL/el_sel_lj_tt_lj_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_lj->Get("tt_lj/FragDown/el_sel_lj_tt_lj_FragDown_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_lj->Get("tt_lj/NOMINAL/el_sel_lj_tt_lj_NOMINAL_Mt_lep_met_c"))->Integral()
+
+(double) 0.935758
+(double) 1.05290
+
+(double) 0.935851
+(double) 1.05245
+
+-- in 3rd digit
+
+((TH1D*) el_sel_ljout->Get("tt_eltau/FragUp/el_sel_ljout_tt_eltau_FragUp_Mt_lep_met_c"))->Integral()     / ((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_ljout->Get("tt_eltau/FragDown/el_sel_ljout_tt_eltau_FragDown_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c"))->Integral()
+
+((TH1D*) el_sel_lj->Get("tt_eltau/FragUp/el_sel_lj_tt_eltau_FragUp_Mt_lep_met_c"))->Integral()     / ((TH1D*) el_sel_lj->Get("tt_eltau/NOMINAL/el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c"))->Integral()
+((TH1D*) el_sel_lj->Get("tt_eltau/FragDown/el_sel_lj_tt_eltau_FragDown_Mt_lep_met_c"))->Integral() / ((TH1D*) el_sel_lj->Get("tt_eltau/NOMINAL/el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c"))->Integral()
+
+(double) 0.963629
+(double) 1.02766
+
+(double) 0.957281
+(double) 1.03199
+
+-- aha! 0.5% effect
 
 
