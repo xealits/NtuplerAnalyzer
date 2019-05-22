@@ -272,6 +272,9 @@ for channel in channels:
        if args.skip_procs and process in args.skip_procs:
            continue
 
+       if 'sums_' in process or 'data' in process:
+           continue
+
        # adjusting to the broken data-driven qcd naming
        if process == 'qcd_other':
            histo_name = '_'.join([channel, 'qcd', sys_name, distr_name])
