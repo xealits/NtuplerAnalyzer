@@ -2653,6 +2653,9 @@ root -l fit-stuff/v37_test14_bunchFULLFIT3_mc_1_HISTOSEL.root
 -- aha! 0.5% effect
 
 
+
+### test15 the fit
+
 make run_std_histos out=histosels/v37_test15_bunchFULLFIT1/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root
 
 python numbers_for_datacard.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout --data-nick data_other
@@ -2755,6 +2758,158 @@ underlying event (Pythia tune)  &  0.4 &  0.7 &  0.4 \\
    some of main systematics are asymmetric
 
 TOPPT is still not prefered in mu, though it is slightly pulled up.
+
+
+try reducing frag by 1/4?
+
+try different Mt distribution, more bins?
+
+
+cp  ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.txt
+cp  ttxsec/datacard_v37_test15_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp.txt
+
+vim -p ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp.txt
+
+make both mucard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp elcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp bothcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp.root   nn=v37_test15_el_exp
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp.root nn=v37_test15_both_exp
+
+   r :    +0.945   -0.070/+0.076 (68%)
+   r :    +0.945   -0.079/+0.086 (68%)
+   r :    +0.958   -0.066/+0.073 (68%)
+
+-- mu also slightly pulls up FSR
+
+python new_impact_table.py --merge-pdf  latest_impacts_v37_test15_el_exp.json latest_impacts_v37_test15_mu_exp.json latest_impacts_v37_test15_both_exp.json
+
+$\tauh$ jet identification  &  4.7 &  4.5 &  4.4 \\
+       pileup uncertainty  &  2.6 &  2.4 &  2.4 \\
+$\tauh$ misidentification background  &  2.2 &  2.1 &  2.3 \\
+        top quark $p_{T}$  &  2.9 &  2.2 &  2.3 \\
+         jet energy scale  &  1.1 &  0.5 &  1.1 \\
+     b-tagging efficiency  &  1.1 &  1.1 &  0.9 \\
+     W+jets normalization  &  0.2 &  0.7 &  0.7 \\
+     $\tauh$ Energy Scale  &  0.9 &  0.6 &  0.7 \\
+       muon ID efficiency  &  0.6 &  0.6 \\
+         DY normalization  &  0.4 &  0.5 &  0.6 \\
+ Single Top normalization  &  0.6 &  0.5 &  0.5 \\
+  muon trigger efficiency  &  0.3 &  0.3 \\
+electron trigger efficiency  &  2.3 &  0.2 \\
+   electron ID efficiency  &  1.8 &  0.2 \\
+    jet energy resolution  &  0.3 &  0.6 &  0.1 \\
+        QCD normalization  &  0.9 &  0.5 &  0.1 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  2.3 &  2.0 &  2.3 \\
+  initial state radiation  &  1.6 &  1.5 &  1.6 \\
+  final   state radiation  &  1.3 &  2.0 &  1.6 \\
+ ME Renormalization scale  &  0.9 &  0.8 &  0.8 \\
+ME combined scale variation  &  0.5 &  0.9 &  0.7 \\
+semi-leptonic b-hadron BRs  &  0.7 &  0.6 &  0.6 \\
+underlying event (Pythia tune)  &  0.4 &  0.5 &  0.5 \\
+   ME-PS matching (hdamp)  &  0.5 &  0.4 &  0.4 \\
+   ME Factorization scale  &  0.3 &  0.0 &  0.1 \\
+                      PDF  &  1.4 &  1.5 &  1.5 \\
+            MC statistics  &  2.1 &  1.8 &  1.7 \\
+
+-- PU is very large
+   otherwise dissent, although with asymmetries and over-constrained LEPel and QCD norm
+
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp    freeze="--freezeParameters lumi_13TeV,FSR"
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp.root   nn=v37_test15_el_exp    freeze="--freezeParameters lumi_13TeV,FSR"
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp.root nn=v37_test15_both_exp  freeze="--freezeParameters lumi_13TeV,FSR"
+
+   r :    +0.951   -0.069/+0.074 (68%)
+   r :    +0.941   -0.077/+0.084 (68%)
+   r :    +0.958   -0.065/+0.070 (68%)
+
+-- so, FSR does correlate with TOPPT and signal strength in mu, but it's not the largest factor
+
+python new_impact_table.py --merge-pdf  latest_impacts_v37_test15_el_exp.json latest_impacts_v37_test15_mu_exp.json latest_impacts_v37_test15_both_exp.json
+
+$\tauh$ jet identification  &  4.6 &  4.4 &  4.3 \\
+       pileup uncertainty  &  2.5 &  2.3 &  2.3 \\
+        top quark $p_{T}$  &  2.9 &  2.2 &  2.3 \\
+$\tauh$ misidentification background  &  1.8 &  0.8 &  1.8 \\
+     b-tagging efficiency  &  1.1 &  1.2 &  1.0 \\
+         jet energy scale  &  1.1 &  0.4 &  1.0 \\
+     W+jets normalization  &  0.3 &  0.9 &  0.9 \\
+     $\tauh$ Energy Scale  &  0.9 &  0.6 &  0.7 \\
+       muon ID efficiency  &  0.6 &  0.6 \\
+         DY normalization  &  0.4 &  0.5 &  0.6 \\
+ Single Top normalization  &  0.7 &  0.5 &  0.5 \\
+  muon trigger efficiency  &  0.3 &  0.2 \\
+electron trigger efficiency  &  2.4 &  0.2 \\
+   electron ID efficiency  &  1.8 &  0.1 \\
+        QCD normalization  &  1.0 &  0.5 &  0.1 \\
+    jet energy resolution  &  0.4 &  0.5 &  0.0 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  2.3 &  2.1 &  2.3 \\
+  initial state radiation  &  1.8 &  1.8 &  1.8 \\
+ME combined scale variation  &  0.5 &  1.0 &  0.8 \\
+ ME Renormalization scale  &  0.8 &  0.8 &  0.8 \\
+semi-leptonic b-hadron BRs  &  0.7 &  0.7 &  0.7 \\
+   ME-PS matching (hdamp)  &  0.4 &  0.5 &  0.4 \\
+underlying event (Pythia tune)  &  0.4 &  0.5 &  0.4 \\
+   ME Factorization scale  &  0.2 &  0.1 &  0.0 \\
+  final   state radiation  &  0.0 &  0.0 &  0.0 \\
+                      PDF  &  1.5 &  1.5 &  1.5 \\
+            MC statistics  &  2.1 &  1.9 &  1.8 \\
+
+-- dissent
+   let's look at NLL
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp.root   nn=v37_test15_el_exp
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp.root nn=v37_test15_both_exp
+
+ POI: r= 0.945318 -> [0.5,1.5]
+ POI: r= 0.944658 -> [0.5,1.5]
+ POI: r= 0.958266 -> [0.5,1.5]
+
+-- el, mu and both are all smooth
+   does it mean that the domains of fits are very close, practically smooth transitions and indeed even an additional bin can move the minimum?
+
+
+
+also try no updowns and pdfs
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp    freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns"
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp.root   nn=v37_test15_el_exp    freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns"
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp.root nn=v37_test15_both_exp  freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf,tt_updowns"
+
+ POI: r= 0.953684 -> [0.5,1.5]
+ POI: r= 0.938149 -> [0.5,1.5]
+ POI: r= 0.960828 -> [0.5,1.5]
+
+
+no frag, and no frag no bSF
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp    freeze="--freezeParameters lumi_13TeV,Frag"
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp.root   nn=v37_test15_el_exp    freeze="--freezeParameters lumi_13TeV,Frag"
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp.root nn=v37_test15_both_exp  freeze="--freezeParameters lumi_13TeV,Frag"
+
+ POI: r= 0.944062 -> [0.5,1.5]
+ POI: r= 0.947951 -> [0.5,1.5]
+ POI: r= 0.961713 -> [0.5,1.5]
+
+-- aha
+
+
+
+#### test15 with additional bins in Mt distribution?
+
+python new_impact_table.py --merge-pdf  latest_impacts_v37_test15_el_exp.json latest_impacts_v37_test15_mu_exp.json latest_impacts_v37_test15_both_exp.json
+
+
 
 
 
