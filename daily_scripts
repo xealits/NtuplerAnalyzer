@@ -2653,3 +2653,108 @@ root -l fit-stuff/v37_test14_bunchFULLFIT3_mc_1_HISTOSEL.root
 -- aha! 0.5% effect
 
 
+make run_std_histos out=histosels/v37_test15_bunchFULLFIT1/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root
+
+python numbers_for_datacard.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout --data-nick data_other
+python numbers_for_datacard.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -d Mt_lep_met_c -c mu_sel_lj,mu_sel_ljout --data-nick data_other
+
+bin           el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                       
+rate          3261.234                 2403.519                 129.315                  185.239                  63.863                   15.511                   167.755                  23.972                   164.546                  0.981                    14.372                   176.465                  29.613                   118.405                  106.377                  
+el_sel_lj/data_other/NOMINAL/el_sel_lj_data_other_NOMINAL_Mt_lep_met_c
+obs 6690.000000
+mc sum = 6861.168569
+INFO:root:el_sel_ljout
+bin           el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                       
+rate          5217.944                 1651.873                 87.149                   309.987                  112.089                  35.835                   186.706                  32.157                   303.162                  1.928                    12.859                   223.866                  79.913                   228.733                  343.455                  
+el_sel_ljout/data_other/NOMINAL/el_sel_ljout_data_other_NOMINAL_Mt_lep_met_c
+obs 8414.000000
+mc sum = 8827.654918
+
+bin           mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          4910.391                 3608.734                 204.639                  271.988                  84.299                   23.138                   226.131                  34.416                   220.923                  0.000                    15.283                   228.671                  8.529                    190.632                  175.391                  
+mu_sel_lj/data_other/NOMINAL/mu_sel_lj_data_other_NOMINAL_Mt_lep_met_c
+obs 9831.000000
+mc sum = 10203.165384
+INFO:root:mu_sel_ljout
+bin           mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          7791.608                 2507.052                 142.576                  457.262                  171.572                  54.709                   289.521                  52.217                   440.611                  0.000                    29.676                   364.950                  23.466                   390.389                  174.009                  
+mu_sel_ljout/data_other/NOMINAL/mu_sel_ljout_data_other_NOMINAL_Mt_lep_met_c
+obs 12855.000000
+mc sum = 12889.619626
+
+old:
+bin          el_sel_lj         el_sel_ljout
+observation  6690.000000       8414.000000
+
+bin          mu_sel_lj         mu_sel_ljout
+observation  9831.000000       12855.000000
+
+
+
+
+cp ttxsec/datacard_v37_test14_bunchFULLFIT3_mu_1_HISTOSEL.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.txt
+cp ttxsec/datacard_v37_test14_bunchFULLFIT3_el_1_HISTOSEL.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_el.txt
+
+make both mucard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu elcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_el bothcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_both
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_el
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_both
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root nn=v37_test15_mu     &
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root nn=v37_test15_el     &
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root nn=v37_test15_both &
+
+0.9447181224822998,
+0.9507748484611511,
+0.9710243940353394,
+
+-- damn!
+
+python new_impact_table.py --merge-pdf  latest_impacts_v37_test15_el.json latest_impacts_v37_test15_mu.json latest_impacts_v37_test15_both.json
+
+$\tauh$ jet identification  &  4.7 &  4.4 &  4.5 \\
+        top quark $p_{T}$  &  3.1 &  3.1 &  3.1 \\
+$\tauh$ misidentification background  &  2.6 &  2.3 &  3.0 \\
+       pileup uncertainty  &  2.4 &  2.5 &  2.2 \\
+    jet energy resolution  &  0.5 &  0.9 &  1.1 \\
+     b-tagging efficiency  &  1.2 &  1.1 &  1.1 \\
+     W+jets normalization  &  0.2 &  1.1 &  1.0 \\
+     $\tauh$ Energy Scale  &  0.7 &  0.7 &  0.8 \\
+         DY normalization  &  0.4 &  0.8 &  0.7 \\
+       muon ID efficiency  &  0.6 &  0.6 \\
+         jet energy scale  &  1.2 &  0.4 &  0.6 \\
+ Single Top normalization  &  0.6 &  0.4 &  0.5 \\
+  muon trigger efficiency  &  0.3 &  0.3 \\
+        QCD normalization  &  1.0 &  0.8 &  0.1 \\
+electron trigger efficiency  &  2.3 &  0.1 \\
+   electron ID efficiency  &  1.8 &  0.1 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  3.8 &  4.5 &  4.0 \\
+  final   state radiation  &  1.2 &  1.9 &  1.8 \\
+  initial state radiation  &  1.7 &  1.6 &  1.7 \\
+ ME Renormalization scale  &  0.9 &  0.9 &  1.0 \\
+ME combined scale variation  &  0.6 &  0.9 &  1.0 \\
+semi-leptonic b-hadron BRs  &  1.5 &  1.2 &  1.0 \\
+underlying event (Pythia tune)  &  0.4 &  0.7 &  0.4 \\
+   ME-PS matching (hdamp)  &  0.4 &  0.3 &  0.3 \\
+   ME Factorization scale  &  0.2 &  0.3 &  0.2 \\
+                      PDF  &  1.4 &  1.9 &  1.4 \\
+            MC statistics  &  2.1 &  2.6 &  2.1 \\
+
+-- gigantic Frag 4%?
+   some of main systematics are asymmetric
+
+TOPPT is still not prefered in mu, though it is slightly pulled up.
+
+
+
