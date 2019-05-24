@@ -39,11 +39,11 @@ impact_name_exp = {
 "LEPmuID"     : "muon ID efficiency",
 "LEPelTRG"    : "electron trigger efficiency",
 "LEPmuTRG"    : "muon trigger efficiency",
-"JES"         : "jet energy scale",
-"JER"         : "jet energy resolution",
-"TauES"       : "$\\tauh$ Energy Scale",
-"TES"         : "$\\tauh$ Energy Scale",
-"PU"          : "pileup uncertainty",
+"JES"         : "JES", # "jet energy scale",
+"JER"         : "JER", #"jet energy resolution",
+"TauES"       : "TES", #"$\\tauh$ Energy Scale",
+"TES"         : "TES", #"$\\tauh$ Energy Scale",
+"PU"          : "PU uncertainty", #"pileup uncertainty",
 "TOPPT"       : "top quark $p_{T}$",
 }
 

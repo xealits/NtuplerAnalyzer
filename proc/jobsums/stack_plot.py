@@ -884,15 +884,18 @@ if args.form_shapes:
 # no, add just the data_sum entry
 if args.exp_legend:
     shift = args.legend_shift if args.legend_shift else 0.
-    leg = TLegend(0.8 - shift, 0.45, 1. - shift, 0.9)
+    leg = TLegend(0.8 - shift, 0.55, 1.   - shift, 0.92)
 else:
     shift = args.legend_shift if args.legend_shift else 0.
-    leg = TLegend(0.7 - shift, 0.45, 0.89 - shift, 0.9)
+    leg = TLegend(0.7 - shift, 0.55, 0.89 - shift, 0.92)
 
 # data is first in the legend
 if not args.fake_rate and not args.skip_legend and not (args.no_data or args.no_data_plot):
     histos_data_sum.SetMarkerStyle(21)
-    leg.AddEntry(histos_data_sum, "data", "e1 p")
+    leg.AddEntry(histos_data_sum, "data", "lep")
+
+# add the legend entry for MC sum error band
+leg.AddEntry(hs_sum2, "MC sum", 'f')
 
 # get MC stack and legend for it
 #hs, leg = plotting_root.stack_n_legend(used_histos)
@@ -1063,8 +1066,8 @@ if not args.plot and not args.ratio and not args.osss_pl:
 elif args.form_shapes:
     from ROOT import gStyle, gROOT, TCanvas, TPad
     gROOT.SetBatch()
-    gStyle.SetOptStat(0)
     cst = TCanvas("cst","stacked hists",10,10,700,700)
+    gStyle.SetOptStat(0)
     pad = TPad("pad","This is pad", 0., 0.,  1., 1.)
     pad.Draw()
 
@@ -1283,11 +1286,11 @@ else:
 
     from ROOT import gStyle, gROOT, TCanvas, TPad
     gROOT.SetBatch()
-    gStyle.SetOptStat(0)
     if args.exp_legend:
         cst = TCanvas("cst","stacked hists",10,10,1000,700)
     else:
         cst = TCanvas("cst","stacked hists",10,10,700,700)
+    gStyle.SetOptStat(0)
 
     if args.title == 'default':
         title_plot = "%s %s" % (channel, sys_name)
@@ -1302,6 +1305,16 @@ else:
     if args.ratio and args.plot:
         pad1 = TPad("pad1","This is pad1", 0., 0.3,   pad_right_edge, 1.)
         pad2 = TPad("pad2","This is pad2", 0., 0.05,  pad_right_edge, 0.3)
+
+        # trying to draw the axis labels on top of histograms
+        pad1.GetFrame().SetFillColor(42)
+        pad1.GetFrame().SetBorderMode(1)
+        pad1.GetFrame().SetBorderSize(5)
+
+        pad2.GetFrame().SetFillColor(42)
+        pad2.GetFrame().SetBorderMode(1)
+        pad2.GetFrame().SetBorderSize(5)
+
         #pad2.SetTopMargin(0.01) # doesn't work
         #gStyle.SetPadTopMargin(0.05) # nope
         #ROOT.gPad.SetTopMargin(0.01) # nope
@@ -1321,6 +1334,7 @@ else:
         ROOT.gPad.SetTopMargin(0.02)
         if args.exp_legend:
             ROOT.gPad.SetRightMargin(0.02)
+
     elif args.ratio:
         pad2 = TPad("pad2","This is pad2", 0., 0.05,  pad_right_edge, 1.)
         pad2.Draw()
@@ -1595,7 +1609,8 @@ else:
         left_title = TPaveText(0.12, 0.8, 0.35, 0.88, "brNDC")
     else:
         #left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
-        left_title = TPaveText(0.12, 0.8, 0.35, 0.88, "brNDC")
+        #left_title = TPaveText(0.12, 0.8, 0.35, 0.88, "brNDC")
+        left_title = TPaveText(0.1, 0.8, 0.25, 0.88, "brNDC")
 
     if args.no_data or args.no_data_plot:
         left_title.AddText("CMS simulation")
@@ -1625,6 +1640,13 @@ else:
 
     left_title .Draw("same")
     right_title.Draw("same")
+
+    # trying to get the ticks on the pad axes to be in the foreground
+    #pad1.Draw("same")
+    #cst.Update()
+    #cst.Draw("same")
+    #pad1.DrawFrame()
+    ROOT.gPad.RedrawAxis()
 
     cst.cd()
     if not args.fake_rate and not args.skip_legend:

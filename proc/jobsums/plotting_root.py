@@ -59,8 +59,8 @@ nick_info = {
 "tt_else":       {'color': rgb(189,0,38),      'legend': 't#bar{t}#rightarrow other'},
 "tt":            {'color': rgb(189,0,38),      'legend': 't#bar{t}'},
 
-"qcd"       : {'color': kViolet, 'legend': 'qcd'},
-"qcd_other" : {'color': kViolet, 'legend': 'qcd'},
+"qcd"       : {'color': kViolet, 'legend': 'QCD'},
+"qcd_other" : {'color': kViolet, 'legend': 'QCD'},
 }
 
 nick_colour = {nick: nick_info[nick]['color'] for nick in nick_info}
@@ -83,21 +83,21 @@ nick_order = {
 "tt_else": -11,
 "tt": -11,
 
-"wjets": -20,
-"wjets_other": -20,
-"wjets_tauh": -21,
-"wjets_taul": -22,
+"s_top_eltau": -20,
+"s_top_mutau": -21,
+"s_top_elmu":  -22,
+"s_top_lj":    -23,
+"s_top_other": -24,
+"s_top":       -24,
 
-"dy_tautau": -25,
-"dy_other":  -26,
-"dy":        -26,
+"wjets":       -30,
+"wjets_other": -30,
+"wjets_tauh":  -31,
+"wjets_taul":  -32,
 
-"s_top_eltau": -30,
-"s_top_mutau": -31,
-"s_top_elmu":  -32,
-"s_top_lj":    -33,
-"s_top_other": -34,
-"s_top":       -34,
+"dy_tautau":   -35,
+"dy_other":    -36,
+"dy":          -36,
 
 "dibosons"       : -40,
 "dibosons_other" : -40,
@@ -122,9 +122,11 @@ def stack_n_legend(used_histos, shift=0., exp_legend=False, sort_dy=False, leg=N
     #leg = TLegend(0.7 - (0.15 if not homogeneous_channels else 0.), 0.4, 0.89, 0.89)
     if not leg:
       if exp_legend:
-        leg = TLegend(0.8 - shift, 0.45, 1. - shift, 0.9)
+        leg = TLegend(0.8 - shift, 0.55, 1.   - shift, 0.92)
       else:
-        leg = TLegend(0.7 - shift, 0.45, 0.89 - shift, 0.9)
+        leg = TLegend(0.7 - shift, 0.55, 0.89 - shift, 0.92)
+
+    leg.SetBorderSize(0)
 
     process_counter = {} # for distinguishing processes in different channels
 

@@ -51,6 +51,251 @@ check goodness of the fit
 
 
 
+## correcting plots for the Enriques suggestions
+
+make --dry-run plot_sel_paper_1  nt=v37 proc=test13 distrs=bunchFULLFIT2 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=#mu  merge_procs="--merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other" y_range="--y-range 0,250."
+make --dry-run plot_sel_paper_1  nt=v37 proc=test13 distrs=bunchFULLFIT2 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=e    merge_procs="--merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other" y_range="--y-range 0,200."
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root     -o plots/v37_test13_bunchFULLFIT2/paper/ --data-nick data_other --overwrite --y-range 0,250. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d Mt_lep_met_c --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]"       --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02  --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc.root distrs/v37_test13_bunchFULLFIT2/SingleElectron.root -o plots/v37_test13_bunchFULLFIT2/paper/ --data-nick data_other --overwrite --y-range 0,250. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d Mt_lep_met_c --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02  --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other
+
+make  plot_sel_paper_1  nt=v37 proc=test13 distrs=bunchFULLFIT2 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=#mu  merge_procs="--merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other" y_range="--y-range 0,250."
+make  plot_sel_paper_1  nt=v37 proc=test13 distrs=bunchFULLFIT2 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=e    merge_procs="--merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other" y_range="--y-range 0,200."
+
+
+
+## redo the figures of QCD shape in OS and SS selections to have fitting dimensions -- the same as relIso plot
+
+696x672
+
+*2
+
+1392 1344
+
+
+
+root -l jobsums/distrs/v37_test5_bunch2_mc_4_amcatnlo.root
+
+-- poor stats
+
+TH1D* h_mu_presel    = (TH1D*) (mu_preselCand->Get("qcd_other/NOMINAL/mu_preselCand_qcd_other_NOMINAL_Mt_lep_met_f"))
+TH1D* h_mu_presel_ss = (TH1D*) (mu_preselCand_ss->Get("qcd_other/NOMINAL/mu_preselCand_ss_qcd_other_NOMINAL_Mt_lep_met_f"))
+
+h_mu_presel_ss ->SetLineColor(kRed)
+
+h_mu_presel   ->SetXTitle("M_{T} (#mu, E^{miss}_{T}) [GeV]")
+
+h_mu_presel    ->Draw()
+h_mu_presel_ss ->Draw("same")
+
+leg = new TLegend(0.6,0.7, 0.9,0.9)
+leg->AddEntry(h_mu_presel,    "Opposite Sign", "l")
+leg->AddEntry(h_mu_presel_ss, "Same Sign",     "l")
+
+gStyle->SetOptStat(0)
+
+leg->Draw("same")
+
+c1->SaveAs("v37_test5_bunch2_mc_4_amcatnlo_mt_shapes_os_ss_mu_presel.png")
+c1->SaveAs("v37_test5_bunch2_mc_4_amcatnlo_mt_shapes_os_ss_el_presel.png")
+
+
+TODO: record it in scripts
+
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=pQCDtest nt=v35   cond="(selection_stage==107 || selection_stage==105 || selection_stage==103 || selection_stage== 7 || selection_stage== 5 || selection_stage== 3)"  chan="mu_presel" &
+time make distrs_mc_nominal merge_dir=lstore_outdirs/merge-sets/ p=pQCDtest nt=v35   cond="(selection_stage==106 || selection_stage==104 || selection_stage==102 || selection_stage== 6 || selection_stage== 4 || selection_stage== 2)"  chan="mu_presel_ss" &
+
+hadd -f distrs_v35pQCDtest_QCD_HT_mu_preselCand.root distrs/*root
+
+root -l distrs_v35pQCDtest_QCD_HT_mu_preselCand.root
+
+gStyle->SetOptStat(0)
+gROOT->SetBatch()
+
+TH1D* h_mu_presel    = (TH1D*) (mu_presel->Get("qcd/NOMINAL/mu_presel_qcd_NOMINAL_Mt_lep_met_f/mu_presel_qcd_NOMINAL_mu_presel_qcd_NOMINAL_Mt_lep_met_f_mu_presel_qcd_NOMINAL_Mt_lep_met_f"))
+TH1D* h_mu_presel_ss = (TH1D*) (mu_presel_ss->Get("qcd/NOMINAL/mu_presel_ss_qcd_NOMINAL_Mt_lep_met_f/mu_presel_ss_qcd_NOMINAL_mu_presel_ss_qcd_NOMINAL_Mt_lep_met_f_mu_presel_ss_qcd_NOMINAL_Mt_lep_met_f"))
+
+h_mu_presel_ss ->SetLineColor(kRed)
+
+h_mu_presel   ->SetXTitle("M_{T} (#mu, p^{miss}_{T}) [GeV]")
+
+c1 = (TCanvas*) new TCanvas("c1","OS to SS", 1392, 1344)
+c1->Draw()
+
+h_mu_presel    ->Draw()
+h_mu_presel_ss ->Draw("same")
+
+leg = new TLegend(0.6,0.7, 0.9,0.9)
+leg->AddEntry(h_mu_presel,    "Opposite Sign", "l")
+leg->AddEntry(h_mu_presel_ss, "Same Sign",     "l")
+
+leg->Draw("same")
+
+left_title = (TPaveText*) new TPaveText(0.15, 0.845, 0.40, 0.89, "brNDC")
+left_title->AddText("CMS simulation")
+left_title->SetTextFont(1)
+left_title->SetFillColor(0)
+left_title->Draw("same")
+
+c1->SaveAs("v35_pQCDtest_mt_shapes_os_ss_mu_presel.png")
+
+
+
+
+## check the large impact of QCD in mu and both and not in el
+
+is it correlated with W+jets?
+
+which datacard was it?
+el was around 1.02 -- the old lumi cert
+
+reproduce the impacts:
+
+make impacts  workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_bFrag.root   nn=v25v26_update_an9_p5_largeQCD      freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf"
+make impacts  workspace=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_bFrag.root   nn=v25v26_update_an9_p5_largeQCD_el   freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf"
+make impacts  workspace=ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_bFrag.root nn=v25v26_update_an9_p5_largeQCD_both freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf"
+
+make impacts  workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_bFrag.root   nn=v25v26_update_an9_p5_largeQCD_mu_noWJets      freeze="--freezeParameters lumi_13TeV,wjets_norm --freezeNuisanceGroup tt_th_pdf"
+
+python new_impact_table.py --merge-pdf  latest_impacts_v25v26_update_an9_p5_largeQCD.json  latest_impacts_v25v26_update_an9_p5_largeQCD_mu_noWJets.json latest_impacts_v25v26_update_an9_p5_largeQCD_el.json latest_impacts_v25v26_update_an9_p5_largeQCD_both.json
+
+-- no, it's not
+
+
+is it really an8 datacard?
+
+
+make impacts  workspace=ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_noMC.root nn=searching_ANv8_datacard_both
+
+python new_impact_table.py --merge-pdf  ./latest_impacts_searching_ANv8_datacard_both.json
+
+     W+jets normalization  &  1.2 \\
+        QCD normalization  &  0.8 \\
+
+make impacts  workspace=ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_noMC.root nn=searching_ANv8_datacard_both freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf"
+python new_impact_table.py --merge-pdf  ./latest_impacts_searching_ANv8_datacard_both.json
+
+make impacts  workspace=ttxsec/datacard_v25v26redo_both_lnU_noQCDpu_fixPUnorms_noMC.root nn=searching_ANv8_datacard_both_noWJets freeze="--freezeParameters lumi_13TeV,wjets_norm --freezeNuisanceGroup tt_th_pdf"
+python new_impact_table.py --merge-pdf  ./latest_impacts_searching_ANv8_datacard_both_noWJets.json
+
+     W+jets normalization  &  1.1 \\
+        QCD normalization  &  1.0 \\
+
+noWJets
+        QCD normalization  &  0.9 \\
+
+
+make impacts  workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root nn=searching_ANv8_datacard_mu_lepMETprop freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf"
+python new_impact_table.py --merge-pdf ./latest_impacts_searching_ANv8_datacard_mu_lepMETprop.json
+
+0.917
+
+        QCD normalization  &  3.8 \\
+$\tauh$ misidentification background  &  2.7 \\
+     b-tagging efficiency  &  2.2 \\
+           PU uncertainty  &  2.1 \\
+                      JES  &  1.7 \\
+     W+jets normalization  &  1.4 \\
+                      TES  &  1.3 \\
+       muon ID efficiency  &  0.9 \\
+
+-- large QCD in mu!
+
+make impacts  workspace=ttxsec/datacard_v25v26redo_el_lnU_noQCDpu_fixPUnorms_lepMETprop.root nn=searching_ANv8_datacard_el_lepMETprop freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf"
+python new_impact_table.py --merge-pdf ./latest_impacts_searching_ANv8_datacard_el_lepMETprop.json
+
+   r :    +0.985   -0.089/+0.094 (68%)
+
+python new_impact_table.py --merge-pdf ./latest_impacts_searching_ANv8_datacard_el_lepMETprop.json ./latest_impacts_searching_ANv8_datacard_mu_lepMETprop.json
+
+$\tauh$ jet identification  &  5.1 &  4.8 \\
+        top quark $p_{T}$  &  2.8 &  4.0 \\
+        QCD normalization  &  0.6 &  3.8 \\
+electron trigger efficiency  &  2.8 \\
+$\tauh$ misidentification background  &  2.6 &  2.7 \\
+     b-tagging efficiency  &  1.9 &  2.2 \\
+   electron ID efficiency  &  2.1 \\
+           PU uncertainty  &  2.5 &  2.1 \\
+                      JES  &  1.4 &  1.7 \\
+     W+jets normalization  &  0.4 &  1.4 \\
+                      TES  &  1.0 &  1.3 \\
+       muon ID efficiency  &  0.9 \\
+ Single Top normalization  &  0.7 &  0.5 \\
+  muon trigger efficiency  &  0.4 \\
+                      JER  &  0.2 &  0.3 \\
+         DY normalization  &  0.3 &  0.3 \\
+   Dibosons normalization  &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 \\
+          b fragmentation  &  2.8 &  2.4 \\
+  final   state radiation  &  2.0 &  2.0 \\
+  initial state radiation  &  2.0 &  1.6 \\
+underlying event (Pythia tune)  &  0.6 &  0.7 \\
+semi-leptonic b-hadron BRs  &  0.5 &  0.2 \\
+   ME-PS matching (hdamp)  &  0.0 &  0.2 \\
+   ME Factorization scale  &  0.0 &  0.0 \\
+ ME Renormalization scale  &  0.0 &  0.0 \\
+ME combined scale variation  &  0.0 &  0.0 \\
+                      PDF  &  0.0 &  0.0 \\
+            MC statistics  &  2.9 &  1.9 \\
+
+-- freeze wjets in mu
+
+make impacts  workspace=ttxsec/datacard_v25v26redo_mu_lnU_noQCDpu_fixPUnorms_lepMETprop.root nn=searching_ANv8_datacard_mu_lepMETprop_noWJets freeze="--freezeParameters lumi_13TeV,wjets_norm --freezeNuisanceGroup tt_th_pdf"
+python new_impact_table.py --merge-pdf ./latest_impacts_searching_ANv8_datacard_mu_lepMETprop_noWJets.json
+
+   r :    +0.944   -0.086/+0.081 (68%)
+
+  tauID_eff :   +0.319  -0.978/+0.977  +0.031/-0.046
+  qcd_norm  :   +1.213  -0.948/+0.789  -0.019/+0.021
+
+-- pulled, but the impact is smaller
+
+$\tauh$ jet identification  &  4.6 \\
+$\tauh$ misidentification background  &  2.7 \\
+        top quark $p_{T}$  &  2.4 \\
+     b-tagging efficiency  &  2.3 \\
+        QCD normalization  &  2.1 \\
+           PU uncertainty  &  1.9 \\
+                      JES  &  1.5 \\
+                      TES  &  1.3 \\
+       muon ID efficiency  &  0.9 \\
+ Single Top normalization  &  0.6 \\
+  muon trigger efficiency  &  0.4 \\
+                      JER  &  0.3 \\
+         DY normalization  &  0.2 \\
+   Dibosons normalization  &  0.0 \\
+     W+jets normalization  &  0.0 \\
+               Luminosity  &  0.0 \\
+          b fragmentation  &  2.5 \\
+  final   state radiation  &  2.4 \\
+  initial state radiation  &  1.8 \\
+underlying event (Pythia tune)  &  1.0 \\
+semi-leptonic b-hadron BRs  &  0.3 \\
+   ME-PS matching (hdamp)  &  0.2 \\
+   ME Factorization scale  &  0.0 \\
+ ME Renormalization scale  &  0.0 \\
+ME combined scale variation  &  0.0 \\
+                      PDF  &  0.0 \\
+            MC statistics  &  2.1 \\
+
+-- so, this datacard is close to an8!
+
+
+
+make impacts  workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_mu.root nn=searching_ANv8_datacard_mu_v37_test13_bunchFULLFIT2 freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf"
+python new_impact_table.py --merge-pdf ./latest_impacts_searching_ANv8_datacard_mu_v37_test13_bunchFULLFIT2.json
+
+0.92
+
+make impacts  workspace=ttxsec/datacard_v37_test13_bunchFULLFIT2_el.root nn=searching_ANv8_datacard_el_v37_test13_bunchFULLFIT2 freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf"
+python new_impact_table.py --merge-pdf ./latest_impacts_searching_ANv8_datacard_el_v37_test13_bunchFULLFIT2.json
+
+   r :    +0.939   -0.082/+0.088 (68%)
+
+
+
+
+
 
 ## test14 FIT with fixed LEPmu and object systematics
 
