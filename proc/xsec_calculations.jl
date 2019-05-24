@@ -39,6 +39,22 @@ bt_sig  = 0.949
 bt_sys  = 0.071
 bt_stat = 0.009
 
+# v13 test15 paper6
+
+el_sig  = 0.946
+el_sys  = 0.082
+el_stat = 0.014
+
+mu_sig  = 0.945
+mu_sys  = 0.072
+mu_stat = 0.011
+
+bt_sig  = 0.961
+bt_sys  = 0.071
+bt_stat = 0.009
+
+
+
 
 # and the actual calculation:
 

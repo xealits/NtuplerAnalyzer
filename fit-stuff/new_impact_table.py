@@ -44,10 +44,10 @@ impact_name_exp = {
 "TauES"       : "TES", #"$\\tauh$ Energy Scale",
 "TES"         : "TES", #"$\\tauh$ Energy Scale",
 "PU"          : "PU uncertainty", #"pileup uncertainty",
-"TOPPT"       : "top quark $p_{T}$",
 }
 
 impact_name_th = {
+"TOPPT"       : "top quark $p_{T}$",
 "Frag"        : "b fragmentation",
 "Peterson"    : "b frag., Peterson variation",
 "SemilepBR"   : "semi-leptonic b-hadron BRs",

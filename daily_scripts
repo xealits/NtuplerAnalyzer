@@ -3149,6 +3149,68 @@ make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp.root nn=v3
 -- aha
 
 
+#### using this fit in the update paper v6, note v10
+
+just update the paper with corrections,
+note later -- possibly with new corrections
+
+in paper:
+1) Y systs table,
+2) Y NLL scal for expected and observed fit,
+3) the numbers
+
+python new_impact_table.py --merge-pdf  latest_impacts_v37_test15_el_exp.json latest_impacts_v37_test15_mu_exp.json latest_impacts_v37_test15_both_exp.json
+
+$\tauh$ jet identification  &  4.7 &  4.5 &  4.4 \\
+$\tauh$ misidentification background  &  2.3 &  2.2 &  2.3 \\
+       pileup uncertainty   &  2.6 &  2.3 &  2.3 \\
+         jet energy scale   &  1.1 &  0.5 &  1.1 \\
+     b-tagging efficiency   &  1.1 &  1.1 &  0.9 \\
+     W+jets normalization   &  0.2 &  0.7 &  0.7 \\
+     $\tauh$ Energy Scale   &  0.9 &  0.6 &  0.7 \\
+       muon ID efficiency   &   -  &  0.6 &  0.6 \\
+         DY normalization   &  0.4 &  0.5 &  0.6 \\
+ Single Top normalization   &  0.6 &  0.5 &  0.5 \\
+  muon trigger efficiency   &   -  &  0.3 &  0.3 \\
+electron trigger efficiency &  2.3 &   -  &  0.2 \\
+   electron ID efficiency   &  1.8 &   -  &  0.2 \\
+    jet energy resolution   &  0.3 &  0.6 &  0.1 \\
+        QCD normalization   &  0.9 &  0.5 &  0.1 \\
+   Dibosons normalization   &  0.005 &  0.003 &  0.004 \\
+
+        top quark $p_{T}$  &  2.9 &  2.2 &  2.3 \\
+          b fragmentation  &  2.3 &  2.0 &  2.3 \\
+  initial state radiation  &  1.6 &  1.5 &  1.6 \\
+  final   state radiation  &  1.3 &  2.0 &  1.6 \\
+ ME Renormalization scale  &  0.9 &  0.8 &  0.8 \\
+ME combined scale variation  &  0.5 &  0.9 &  0.7 \\
+semi-leptonic b-hadron BRs  &  0.7 &  0.6 &  0.6 \\
+underlying event (Pythia tune)  &  0.4 &  0.5 &  0.5 \\
+   ME-PS matching (hdamp)  &  0.5 &  0.4 &  0.4 \\
+   ME Factorization scale  &  0.3 &  0.03 &  0.1 \\
+                      PDF  &  1.4 &  1.5 &  1.5 \\
+            MC statistics  &  2.1 &  1.8 &  1.7 \\
+
+   Dibosons normalization  & 0.005 & 0.003 & 0.004 \\
+   ME Factorization scale  & 0.250 & 0.033 & 0.117 \\
+
+make fit_unc      nn=mu_v37_test15_exp_unc   workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   &
+make fit_unc_toys nn=mu_v37_test15_exp_unc   workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   &
+
+make fit_unc      nn=el_v37_test15_exp_unc   workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp.root   &
+make fit_unc_toys nn=el_v37_test15_exp_unc   workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp.root   &
+
+make fit_unc      nn=both_v37_test15_exp_unc workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp.root &
+make fit_unc_toys nn=both_v37_test15_exp_unc workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp.root &
+
+python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test15_exp_unc
+
+numbers:
+
+
+
+
+
 
 #### test15 with additional bins in Mt distribution?
 
