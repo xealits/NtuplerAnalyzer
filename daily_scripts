@@ -1,3 +1,541 @@
+# more questions on v7
+
+## justify 60GeV cut in lj categories
+
+check the separation of sig/background and statistics per different cuts for el and mu sel
+
+-- 58GeV did separate them into equal stats, but maybe the sig/bckg separation is better with 60GeV?
+   also everything must differ in el and mu
+
+plot the diagram of lj cuts:
+
+S S1 S2
+B B1 B2
+  C1 C2
+
+min |C1 - C2|
+max |S1 - B1|
+
+-- scatter plot for different values of lj cut
+
+signal and background
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_nocut.root --histo-name sig_nocut lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_nocut.root --histo-name bck_nocut lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<20.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_less20.root --histo-name sig_less20 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<20.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_less20.root --histo-name bck_less20 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<40.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_less40.root --histo-name sig_less40 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<40.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_less40.root --histo-name bck_less40 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<50.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_less50.root --histo-name sig_less50 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<50.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_less50.root --histo-name bck_less50 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<55.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_less55.root --histo-name sig_less55 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<55.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_less55.root --histo-name bck_less55 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<57.5)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_less57_5.root --histo-name sig_less57_5 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<57.5)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_less57_5.root --histo-name bck_less57_5 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<60.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_less60.root --histo-name sig_less60 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<60.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_less60.root --histo-name bck_less60 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<62.5)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_less62_5.root --histo-name sig_less62_5 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<62.5)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_less62_5.root --histo-name bck_less62_5 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<65.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_less65.root --histo-name sig_less65 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<65.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_less65.root --histo-name bck_less65 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<70.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_less70.root --histo-name sig_less70 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<70.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_less70.root --histo-name bck_less70 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<90.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_less90.root --histo-name sig_less90 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<90.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_less90.root --histo-name bck_less90 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<150.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_less150.root --histo-name sig_less150 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<150.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_less150.root --histo-name bck_less150 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<250.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_sig_less250.root --histo-name sig_less250 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<250.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_bck_less250.root --histo-name bck_less250 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+hadd -f v37_test15_all_lj_cut_diagram.root v37_test15_lj_cut_diagram_*.root
+
+root -l v37_test15_all_lj_cut_diagram.root
+
+cout << "20"  << ',' << sig_less20->Integral() << ',' << bck_less20->Integral() << endl
+cout << "40"  << ',' << sig_less40->Integral() << ',' << bck_less40->Integral() << endl
+cout << "50"  << ',' << sig_less50->Integral() << ',' << bck_less50->Integral() << endl
+cout << "55"  << ',' << sig_less55->Integral() << ',' << bck_less55->Integral() << endl
+cout << "57_5" << ',' << sig_less57_5->Integral() << ',' << bck_less57_5->Integral() << endl
+cout << "60"  << ',' << sig_less60->Integral() << ',' << bck_less60->Integral() << endl
+cout << "62_5" << ',' << sig_less62_5->Integral() << ',' << bck_less62_5->Integral() << endl
+cout << "65"  << ',' << sig_less65->Integral() << ',' << bck_less65->Integral() << endl
+cout << "70"  << ',' << sig_less70->Integral() << ',' << bck_less70->Integral() << endl
+cout << "90"  << ',' << sig_less90->Integral() << ',' << bck_less90->Integral() << endl
+cout << "150" << ',' << sig_less150->Integral() << ',' << bck_less150->Integral() << endl
+cout << "250" << ',' << sig_less250->Integral() << ',' << bck_less250->Integral() << endl
+cout << "all" << ',' << sig_nocut->Integral()  << ',' << bck_nocut->Integral() << endl
+
+cut,S1,B1
+20,3328.42,4261.75
+40,9435.7,7715.29
+50,12122.9,8843.6
+55,13184.2,9267.25
+57_5,13634.1,9431.56
+60,14067.9,9610.53
+62_5,14523.8,9775.78
+65,14931.6,9922.25
+70,15620.6,10168.9
+90,17898.7,10931
+150,22308.7,12372.9
+250,25970.1,13469.2
+
+all,36512.8,16285.8
+
+R
+cuts = read.csv("data.csv", header=T)
+S = 36512.8
+B = 16285.8
+
+cuts$S2 = S - cuts$S1
+cuts$B2 = B - cuts$B1
+
+cuts$C1 = cuts$S1 + cuts$B1
+cuts$C2 = cuts$S2 + cuts$B2
+
+library(ggplot2)
+
+ggplot(cuts, aes(abs(C1-C2), abs(S1-B1))) + geom_point()
+
+ggplot(cuts, aes(abs(C1-C2), abs(S1-B1))) + geom_text(label=cuts$cut)
+
+-- 70 is clearly the best
+
+ggplot(cuts, aes(abs(C1-C2), S1/B1)) + geom_text(label=cuts$cut)
+
+
+ggplot(cuts, aes(abs(C1-C2), abs(S2-B2))) + geom_text(label=cuts$cut)
+
+-- damn, clearly 70 is the best
+
+ggplot(cuts, aes(C1-C2, (S2-B2)/C2)) + geom_text(label=cuts$cut) + geom_text(mapping=aes(x=C1-C2, y=(S1-B1)/C1, label=cuts$cut))
+ggplot(cuts, aes(C1-C2, (S2-B2)/C2)) + geom_text(label=cuts$cut) + geom_text(mapping=aes(x=C1-C2, y=(B1-S1)/C1, label=cuts$cut), color="red")
+
+-- I think, back then I tried to find a cut with background > signal in one category...
+
+ggplot(cuts, aes(C1-C2, S2/S-B2/B)) + geom_text(label=cuts$cut)
+ggplot(cuts, aes(C1-C2, S2/S-B2/B)) + geom_text(label=cuts$cut) + geom_text(mapping=aes(x=C2-C1, y=S1/S-B1/B, label=cuts$cut), color="red")
+
+ggplot(cuts, aes(C1-C2, S2/C2-B1/C1)) + geom_text(label=cuts$cut)
+
+ggplot(cuts, aes(C1-C2, (S2-B2)/(S1-B1))) + geom_text(label=cuts$cut)
+
+maybe try the angle between vectors of the matrix: (S1/S, B1/B) and (S2/S, B2/B)
+
+ggplot(cuts, aes(C1-C2, (S1/S)*(S2/S) + (B1/B)*(B2/B))) + geom_text(label=cuts$cut)
+
+-- max is around 65GeV??
+   TODO: check what this means
+
+
+
+-- what's in el channel?
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_nocut.root --histo-name sig_el_nocut lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_nocut.root --histo-name bck_el_nocut lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<20.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_el_less20.root --histo-name sig_el_less20 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<20.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_el_less20.root --histo-name bck_el_less20 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<40.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_el_less40.root --histo-name sig_el_less40 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<40.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_el_less40.root --histo-name bck_el_less40 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<50.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_el_less50.root --histo-name sig_el_less50 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<50.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_el_less50.root --histo-name bck_el_less50 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<55.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_el_less55.root --histo-name sig_el_less55 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<55.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_el_less55.root --histo-name bck_el_less55 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<57.5)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_el_less57_5.root --histo-name sig_el_less57_5 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<57.5)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_el_less57_5.root --histo-name bck_el_less57_5 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<60.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_el_less60.root --histo-name sig_el_less60 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<60.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_el_less60.root --histo-name bck_el_less60 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<62.5)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_el_less62_5.root --histo-name sig_el_less62_5 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<62.5)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_el_less62_5.root --histo-name bck_el_less62_5 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<65.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_el_less65.root --histo-name sig_el_less65 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<65.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_el_less65.root --histo-name bck_el_less65 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<70.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_el_less70.root --histo-name sig_el_less70 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<70.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_el_less70.root --histo-name bck_el_less70 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<90.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_el_less90.root --histo-name sig_el_less90 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<90.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_el_less90.root --histo-name bck_el_less90 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<150.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_el_less150.root --histo-name sig_el_less150 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<150.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_el_less150.root --histo-name bck_el_less150 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>30 && gen_proc_id<40 && event_jets_lj_var<250.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_sig_el_less250.root --histo-name sig_el_less250 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+python sumup_ttree_draw.py "3" --ttree ttree_out --cond-com "((selection_stage == 19 || selection_stage == 17) && gen_proc_id>20 && gen_proc_id<30 && event_jets_lj_var<250.)*event_weight" --histo-range 5,0,5 --output v37_test15_lj_cut_diagram_el_bck_el_less250.root --histo-name bck_el_less250 lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root &
+
+hadd -f v37_test15_all_lj_cut_diagram.root v37_test15_lj_cut_diagram_*.root
+
+root -l v37_test15_all_lj_cut_diagram.root
+
+cout << "20"   << ',' << sig_el_less20->Integral()   << ',' << bck_el_less20->Integral() << endl
+cout << "40"   << ',' << sig_el_less40->Integral()   << ',' << bck_el_less40->Integral() << endl
+cout << "50"   << ',' << sig_el_less50->Integral()   << ',' << bck_el_less50->Integral() << endl
+cout << "55"   << ',' << sig_el_less55->Integral()   << ',' << bck_el_less55->Integral() << endl
+cout << "57_5" << ',' << sig_el_less57_5->Integral() << ',' << bck_el_less57_5->Integral() << endl
+cout << "60"   << ',' << sig_el_less60->Integral()   << ',' << bck_el_less60->Integral() << endl
+cout << "62_5" << ',' << sig_el_less62_5->Integral() << ',' << bck_el_less62_5->Integral() << endl
+cout << "65"   << ',' << sig_el_less65->Integral()   << ',' << bck_el_less65->Integral() << endl
+cout << "70"   << ',' << sig_el_less70->Integral()   << ',' << bck_el_less70->Integral() << endl
+cout << "90"   << ',' << sig_el_less90->Integral()   << ',' << bck_el_less90->Integral() << endl
+cout << "150"  << ',' << sig_el_less150->Integral()  << ',' << bck_el_less150->Integral() << endl
+cout << "250"  << ',' << sig_el_less250->Integral()  << ',' << bck_el_less250->Integral() << endl
+cout << "all"  << ',' << sig_el_nocut->Integral()    << ',' << bck_el_nocut->Integral() << endl
+
+
+
+
+
+
+## the question on the advantage of lj categories
+
+fit with no shape
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root -o plots/ -p -r --lumi 35800 -c mu_sel_lj -d Mt_lep_met_f --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --title "" --title-x "M_{T}(, MET) [GeV]" --title-y "Events" --data-nick data_other --overwrite --rebin 20
+
+make run_std_histos_no_shape out=histosels/v37_test15_bunchFULLFIT1_noshape/ options='"--rebin 20"' distr=Mt_lep_met_f wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root
+
+make run_histos     --dry-run mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root options="--rebin 20" lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_noshape/ wjets_norm=1.4 chan=mu_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_lj" & \
+
+
+make both mucard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes elcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp_noshapes bothcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp_noshapes
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp_noshapes
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp_noshapes
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes.root   nn=v37_test15_mu_exp_noshapes
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp_noshapes.root   nn=v37_test15_el_exp_noshapes
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp_noshapes.root nn=v37_test15_both_exp_noshapes
+
+
+
+and fit with no lj categories
+
+sel with all sys?
+-- yes! present in the v37_test15_bunchFULLFIT1_mc_1.root
+
+make run_std_histos_nocats out=histosels/v37_test15_bunchFULLFIT1_nocats/ distr=Mt_lep_met_c wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root
+
+hadd histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats.root histosels/v37_test15_bunchFULLFIT1_nocats/*root
+
+python numbers_for_datacard.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats.root -d Mt_lep_met_c -c el_sel,mu_sel --data-nick data_other
+
+make both mucard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats elcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp_nocats bothcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp_nocats
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp_nocats
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp_nocats
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats.root   nn=v37_test15_mu_exp_nocats
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp_nocats.root   nn=v37_test15_el_exp_nocats
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp_nocats.root nn=v37_test15_both_exp_nocats
+
+
+hmm? in nocats the fakes and FSR are much smaller than usually? (and correspondingly the overall uncertainty is about 0.2% smaller)
+-- are pre-fit tau fakes reduced to 20%?
+   no, they are 50%
+-- try without MC stat?
+-- rerun the usual exp
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp_2
+
+   r :    +0.945   -0.070/+0.076 (68%)
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats.root   nn=v37_test15_mu_exp_nocats
+
+   r :    +0.947   -0.068/+0.074 (68%)
+
+-- smaller per-bin stats?
+   -- test the toys
+
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats.root nn=mu_v37_test15_mu_exp_1_nocats
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root            nn=mu_v37_test15_mu_1
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root        nn=mu_v37_test15_mu_exp_1
+
+   r :    +1.000   -0.070/+0.080 (68%)
+   r :    +1.000   -0.075/+0.089 (68%)
+   r :    +1.000   -0.071/+0.082 (68%)
+
+-- damn! the 0.1-0.2%
+   and as before, the fakes and FSR are much smaller in nocats
+   -- FSR and others must have different variation in nocats!!!!!!!!!!!!!!!!
+
+rescale to larger lumi
+
+make run_std_histos        out=histosels/v37_test15_bunchFULLFIT1_100fb_cat/    distr=Mt_lep_met_c wjets_norm=1.4 lumi_mu=100000 lumi_el=100000 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root
+make run_std_histos_nocats out=histosels/v37_test15_bunchFULLFIT1_100fb_nocats/ distr=Mt_lep_met_c wjets_norm=1.4 lumi_mu=100000 lumi_el=100000 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root
+
+-- try the parameters in the combine
+   -- combine gitbook is 404?
+
+dilep_norm              extArg                   1.         [0.8,1.2]
+tau_ratio               extArg                   1.         [0.85,1.15]
+rate_elmu               rateParam  elmu     tt_other  (@0)   dilep_norm
+rate_eltau              rateParam  el       tt_eltau (@0*@1) dilep_norm,tau_ratio
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_100fb
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats_100fb
+
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats_100fb.root nn=mu_v37_test15_mu_exp_1_nocats_100fb
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_100fb.root        nn=mu_v37_test15_mu_exp_1_100fb
+
+   r :    +1.000   -0.137/+0.162 (68%)
+   r :    +1.000   -0.122/+0.151 (68%)
+
+-- lol! unc even larger?
+also it has no freeze lumi!
+
+   r :    +1.000   -0.137/+0.162 (68%)
+   r :    +1.000   -0.123/+0.151 (68%)
+
+-- same
+
+more stat -- larger uncertainty, but caregories do help?
+-- why on Earth the uncertainty is larger?
+
+   in both cases, the largest uncertainty is fakes, then JES, then MC stat
+
+try no MC stat
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_100fb_noMCstat
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats_100fb_noMCstat
+
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats_100fb_noMCstat.root nn=mu_v37_test15_mu_exp_1_nocats_100fb_noMCstat
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_100fb_noMCstat.root        nn=mu_v37_test15_mu_exp_1_100fb_noMCstat
+
+
+
+
+ok, try normal lumi now, with frozen lumi nuisance
+
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats.root nn=mu_v37_test15_mu_exp_1_nocats
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root        nn=mu_v37_test15_mu_exp_1
+
+   r :    +1.000   -0.067/+0.077 (68%)
+   r :    +1.000   -0.069/+0.079 (68%)
+
+-- same, just lumi was significant uncertainty
+
+try without FSR
+
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats.root nn=mu_v37_test15_mu_exp_1_nocats_noFSR   freeze="--freezeParameters lumi_13TeV,FSR"
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root        nn=mu_v37_test15_mu_exp_1_noFSR          freeze="--freezeParameters lumi_13TeV,FSR"
+
+   r :    +1.000   -0.066/+0.077 (68%)
+   r :    +1.000   -0.066/+0.076 (68%)
+
+-- aha
+   look at fakes, their impact and constraint now
+
+   fakes are asymmetric, more so in nocats,
+   they are constrained to about the same impact, 7th in usual and 10th in nocats, but the magnitude is the same
+
+   also ISR is one of the largest now
+
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats.root nn=mu_v37_test15_mu_exp_1_nocats_noFSR_noISR   freeze="--freezeParameters lumi_13TeV,FSR,ISR"
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root        nn=mu_v37_test15_mu_exp_1_noFSR_noISR          freeze="--freezeParameters lumi_13TeV,FSR,ISR"
+
+   r :    +1.000   -0.065/+0.075 (68%)
+   r :    +1.000   -0.064/+0.073 (68%)
+
+no updaowns and no Frag-s etc (they are constrained in _exp!)
+
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats.root nn=mu_v37_test15_mu_exp_1_nocats_noUpdowns_noFrags freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_updowns,tt_th_frag"
+make impacts_toys workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root        nn=mu_v37_test15_mu_exp_1_noUpdowns_noFrags        freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_updowns,tt_th_frag"
+
+   r :    +1.000   -0.062/+0.071 (68%)
+   r :    +1.000   -0.062/+0.070 (68%)
+
+-- ok
+
+
+and now, I need to compare the fakes in these selections + no shape
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes.root   nn=v37_test15_mu_exp_noshapes_noUpdowns_noFrags freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_updowns,tt_th_frag"
+
+   r :    +1.049   -0.131/+0.113 (68%)
+
+-- signal is pulled?
+
+-- compare only fakes in all 3
+
+python new_impact_table.py --merge-pdf  ./latest_impacts_mu_v37_test15_mu_exp_1_noUpdowns_noFrags_toys.json
+$\tauh$ jet identification  &  4.9 \\
+           PU uncertainty  &  2.3 \\
+     b-tagging efficiency  &  1.5 \\
+$\tauh$ misidentification background  &  1.1 \\
+       muon ID efficiency  &  0.7 \\
+                      TES  &  0.6 \\
+ Single Top normalization  &  0.6 \\
+...
+
+python new_impact_table.py --merge-pdf  ./latest_impacts_mu_v37_test15_mu_exp_1_nocats_noUpdowns_noFrags_toys.json                                                                                                                                                             
+$\tauh$ jet identification  &  4.9 \\
+           PU uncertainty  &  2.2 \\
+     b-tagging efficiency  &  1.3 \\
+$\tauh$ misidentification background  &  1.2 \\
+       muon ID efficiency  &  0.7 \\
+...
+
+python new_impact_table.py --merge-pdf  ./latest_impacts_v37_test15_mu_exp_noshapes_noUpdowns_noFrags.json
+$\tauh$ misidentification background  &  9.7 \\
+                      JES  &  9.3 \\
+$\tauh$ jet identification  &  6.1 \\
+     b-tagging efficiency  &  4.1 \\
+     W+jets normalization  &  2.6 \\
+           PU uncertainty  &  2.1 \\
+                      TES  &  1.8 \\
+                      JER  &  1.7 \\
+       muon ID efficiency  &  1.3 \\
+ Single Top normalization  &  0.9 \\
+...
+
+-- why JES is so large and why fakes are not constrained?
+   also, fakes are pulled to -0.5!!!?
+   but they are constrained about the same as in usual fits
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes.root   nn=v37_test15_mu_exp_noshapes_noUpdowns_noFrags_noJES freeze="--freezeParameters lumi_13TeV,JES --freezeNuisanceGroup tt_updowns,tt_th_frag"
+
+   r :    +1.057   -0.093/+0.101 (68%)
+
+python new_impact_table.py --merge-pdf  ./latest_impacts_v37_test15_mu_exp_noshapes_noUpdowns_noFrags_noJES.json
+
+$\tauh$ jet identification  &  6.2 \\
+$\tauh$ misidentification background  &  5.1 \\
+     b-tagging efficiency  &  4.6 \\
+     W+jets normalization  &  2.5 \\
+           PU uncertainty  &  2.1 \\
+                      JER  &  2.0 \\
+                      TES  &  1.5 \\
+       muon ID efficiency  &  1.2 \\
+ Single Top normalization  &  1.0 \\
+...
+
+-- fakes are still pulled to -0.5
+   and no parameter except signal compensates for it!
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes.root   nn=v37_test15_mu_exp_noshapes_noUpdowns_noFrags_noJES freeze="--freezeParameters lumi_13TeV,JES --freezeNuisanceGroup tt_updowns,tt_th_frag,tt_th_pdf"
+
+   r :    +1.057   -0.093/+0.101 (68%)
+
+-- damn! make toys
+
+make impacts_toys  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes.root   nn=v37_test15_mu_exp_noshapes_noUpdowns_noFrags_noJES freeze="--freezeParameters lumi_13TeV,JES --freezeNuisanceGroup tt_updowns,tt_th_frag,tt_th_pdf"
+
+   r :    +1.000   -0.090/+0.100 (68%)
+
+  tauID_eff :   -0.000  -0.994/+0.994  +0.059/-0.057
+
+  Parameter :   Best-fit               r            
+  tau_fakes :   +0.000  -0.252/+0.226WARNING: underflow to inf in pdf_binmu_sel_lj_obsOnly for bin 0, weight 10202.3
+FASTEXIT from pdf_binmu_sel_lj_obsOnly
+WARNING: underflow to inf in pdf_binmu_sel_ljout_obsOnly for bin 0, weight 12888.9
+FASTEXIT from pdf_binmu_sel_ljout_obsOnly
+[#0] WARNING:Minization -- RooMinimizerFcn: Minimized function has error status.
+
+python new_impact_table.py --merge-pdf  ./latest_impacts_v37_test15_mu_exp_noshapes_noUpdowns_noFrags_noJES_toys.json
+
+-- and there are no fakes in the table
+
+
+
+-- make NLL and save fakes, probably several minima
+
+combine -M MultiDimFit ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes.root -t -1 --expectSignal 1. --algo grid --points 100 --rMax 2 --name v37_test15_mu_exp_noshapes_noUpdowns_noFrags_noJES --forceRecreateNLL --saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff --freezeParameters lumi_13TeV,JES --freezeNuisanceGroup tt_updowns,tt_th_frag,tt_th_pdf
+
+root -l higgsCombinev37_test15_mu_exp_noshapes_noUpdowns_noFrags_noJES.MultiDimFit.mH120.root
+limit->Draw("2*deltaNLL:r",         "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("2*deltaNLL:tauID_eff", "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("2*deltaNLL:tau_fakes", "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+-- at 2 (where the variation of tauID_eff ~= 1.) the fakes are varied to slightly less than 0.2
+
+let's try fakes 20%
+
+make workspace      datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes
+make impacts_toys  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes.root   nn=v37_test15_mu_exp_noshapes_noUpdowns_noFrags_noJES freeze="--freezeParameters lumi_13TeV,JES --freezeNuisanceGroup tt_updowns,tt_th_frag,tt_th_pdf"
+
+   r :    +1.000   -0.086/+0.096 (68%)
+
+-- sure
+
+  tau_fakes :   +0.000  -0.494/+0.457  +0.046/-0.039
+
+try 30% and 40%
+
+make impacts_toys  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes.root   nn=v37_test15_mu_exp_noshapes_noUpdowns_noFrags_noJES_30p freeze="--freezeParameters lumi_13TeV,JES --freezeNuisanceGroup tt_updowns,tt_th_frag,tt_th_pdf"
+
+   r :    +1.000   -0.088/+0.098 (68%)
+  tau_fakes :   +0.000  -0.370/+0.337  +0.049/-0.041
+
+make impacts_toys  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes.root   nn=v37_test15_mu_exp_noshapes_noUpdowns_noFrags_noJES_40p freeze="--freezeParameters lumi_13TeV,JES --freezeNuisanceGroup tt_updowns,tt_th_frag,tt_th_pdf"
+
+   r :    +1.000   -0.089/+0.099 (68%)
+  tau_fakes :   +0.000  -0.298/+0.269  +0.050/-0.042
+
+make impacts_toys  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noshapes.root   nn=v37_test15_mu_exp_noshapes_noUpdowns_noFrags_noJES_50p freeze="--freezeParameters lumi_13TeV,JES --freezeNuisanceGroup tt_updowns,tt_th_frag,tt_th_pdf"
+
+   r :    +1.000   -0.090/+0.100 (68%)
+  tau_fakes :   +0.000  -0.252/+0.226WARNING: underflow to inf in pdf_binmu_sel_lj_obsOnly for bin 0, weight 10202.3
+FASTEXIT from pdf_binmu_sel_lj_obsOnly
+WARNING: underflow to inf in pdf_binmu_sel_ljout_obsOnly for bin 0, weight 12888.9
+FASTEXIT from pdf_binmu_sel_ljout_obsOnly
+[#0] WARNING:Minization -- RooMinimizerFcn: Minimized function has error status.
+
+
+
+
+
+also and in no cats and no shape -- then start from here, how much each method improves this result:
+from 50%->5% with only categories and from 50%->2.5% with only shape and 50->2% with both
+
+make run_std_histos_nocats out=histosels/v37_test15_bunchFULLFIT1_nocats/ options='"--rebin 20"' distr=Mt_lep_met_f wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root
+
+histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_noshape.root
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats_noshape_noMCstat
+
+-- the workspace crashes for the datacard with autoMCstat
+
+make impacts_toys  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats_noshape_noMCstat.root   nn=v37_test15_mu_exp_nocats_noshapes_noUpdowns_noFrags_noJES_50p freeze="--freezeParameters lumi_13TeV,JES --freezeNuisanceGroup tt_updowns,tt_th_frag,tt_th_pdf"
+
+   r :    +1.000   -0.293/+0.215 (68%)
+  tau_fakes :   +0.000  -0.994/+0.994  +0.191/-0.286
+
+-- so, from 25% of uncertainty
+
+the uncertainty with 20% variation of fakes should be 0.2 of this:
+
+make impacts_toys  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_nocats_noshape_noMCstat.root   nn=v37_test15_mu_exp_nocats_noshapes_noUpdowns_noFrags_noJES_20p freeze="--freezeParameters lumi_13TeV,JES --freezeNuisanceGroup tt_updowns,tt_th_frag,tt_th_pdf"
+
+   r :    +1.000   -0.136/+0.130 (68%)
+  tauID_eff :   +0.000  -0.994/+0.994  +0.058/-0.055
+  tau_fakes :   +0.000  -0.994/+0.994  +0.095/-0.114
+
+-- aha
+
+
+
+
+
 # post-update v37 test13
 
 Three main problems:
