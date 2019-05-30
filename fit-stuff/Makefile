@@ -36,6 +36,7 @@ impacts:
 	../../../CombineHarvester/CombineTools/scripts/plotImpacts_my.py -i latest_impacts_${nn}.json -o latest_impacts_${nn}
 
 impacts_toys: toys=-t -1 --expectSignal 1
+impacts_toys: freeze=--freezeParameters lumi_13TeV
 impacts_toys:
 	make impacts nn=${nn}_toys toys="${toys}" workspace=${workspace} freeze="${freeze}"
 
