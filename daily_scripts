@@ -137,6 +137,74 @@ ggplot(cuts, aes(C1-C2, (S1/S)*(S2/S) + (B1/B)*(B2/B))) + geom_text(label=cuts$c
 
 -- max is around 65GeV??
    TODO: check what this means
+         does it mean the vectors are the closest to each other and solve the questions poorly
+
+ggplot(cuts, aes(C1-C2, (B1/S1)^2 + (S2/B2)^2)) + geom_text(label=cuts$cut)
+ggplot(cuts, aes(abs(C1-C2), (B1/S1)^2 + (S2/B2)^2)) + geom_text(label=cuts$cut)
+
+ggplot(cuts, aes(abs(C1-C2), (B2/S2)^2 + (S1/B1)^2)) + geom_text(label=cuts$cut)
+
+ggplot(cuts, aes(C1-C2, S1, label=cut)) + geom_text() +
+    geom_text(mapping=aes(y=S2), color="red") +
+    geom_text(mapping=aes(y=B1), color="green") +
+    geom_text(mapping=aes(y=B2), color="blue")
+
+-- signals cross at about 90
+   backgrounds at 45
+   in C1-C2 the 60 is indeed around the middle between the two points
+
+ggplot(cuts, aes(C1-C2, (S2-B2)/C2, label=cut)) + geom_text() +
+    geom_text(mapping=aes(y=(B1-S1)/C1), color="red")
+
+ggplot(cuts, aes(abs(C1-C2), S2-B2, label=cuts$cut)) + geom_text() +
+    geom_text(mapping=aes(y=B1-S1), color="red")
+
+-- I want to maximize both Y axes
+   the line B1-S1 is mostly < 0, because overall there are more signal than background everywhere
+   so, I must compare fractions of signal and background?
+
+ggplot(cuts, aes(B1/B, S1/S, label=cuts$cut)) + geom_text() +
+    geom_text(mapping=aes(x=B2/B, y=S2/S), color="red")
+
+ggplot(cuts, aes(C1-C2, (B1/B - B2/B)^2 + (S1/S - S2/S)^2, label=cuts$cut)) + geom_text()
+
+ggplot(cuts, aes(C1-C2, ((B1/B - B2/B)^2 + (S1/S - S2/S)^2)/(((S1/S)^2 + (B1/B)^2)*((S2/S)^2 + (B2/B)^2)), label=cuts$cut)) + geom_text()
+
+ggplot(cuts, aes(C1-C2, (B1/B*B2/B + S1/S*S2/S)/(((S1/S)^2 + (B1/B)^2)*((S2/S)^2 + (B2/B)^2)), label=cuts$cut)) + geom_text()
+
+-- here the minimum is at 55 -- 57.5 -- 60
+   but it is the minimal angle between two vectors,
+   if we maximize the angle, than it's the worst combination
+nope! without sqrt it's not the cosine!
+
+ggplot(cuts, aes(C1-C2, (B1/B*B2/B + S1/S*S2/S)/sqrt(((S1/S)^2 + (B1/B)^2)*((S2/S)^2 + (B2/B)^2)), label=cuts$cut)) + geom_text()
+
+-- a line from 0.9 to 0.95,
+   60 does have smaller cosine than 70!
+
+ggplot(cuts, aes((C1-C2)/(C1+C2), (B1/B*B2/B + S1/S*S2/S)/sqrt(((S1/S)^2 + (B1/B)^2)*((S2/S)^2 + (B2/B)^2)), label=cuts$cut)) + geom_text()
+
+60 is about -0.125
+
+ggplot(cuts, aes((C1-C2)/(C1+C2), S2/S1, label=cuts$cut)) + geom_text() +
+    geom_text(mapping=aes(y=B1/B2), color="red")
+
+
+p <- ggplot(cuts, aes((C1-C2)/(C1+C2), S2/S1, label=cuts$cut)) + geom_text() +
+    geom_text(mapping=aes(y=B1/B2), color="red") +
+    scale_y_log10()
+
+
+g <- ggplotGrob(p)
+
+g[[1]][[13]]$children[[1]]$label <- c("S2/S1;",  "B1/B2")
+g[[1]][[13]]$children[[1]]$gp$col <- c("black", "red")
+g[[1]][[13]]$children[[1]]$hjust <- c(1, 0)
+g[[1]][[13]]$children[[1]]$y <- unit(c(0.5, 0.5), "npc")
+
+plot(g)
+
+ggsave("tradeoff_lj_cut_in_main_selection_muontau.png")
 
 
 
