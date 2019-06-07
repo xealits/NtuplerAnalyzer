@@ -1634,6 +1634,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			LogInfo("Demo") << "MC systematic weights";
 			}
 
+		#if defined(BFRAG_PROC)
+		#if BFRAG_PROC==2016
 		// gen2 leptons for signal acceptance info
 		edm::Handle<std::vector<reco::GenJet>> genLeps2;
 		iEvent.getByToken( genLepsToken_, genLeps2);
@@ -1644,6 +1646,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_gen2_leptons_pdgId.push_back(genLep->pdgId());
 			NT_gen2_leptons_p4.push_back(genLep->p4());
 			}
+		#endif
+		#endif
 
 		//// fatjets just in case
 		//edm::Handle<std::vector<reco::GenJet>> genFatJets2;
@@ -1653,6 +1657,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//	// this jet should have some info on whether it's b jet
 		//	NT_gen2_fatjets_pdgId.push_back(genFatJet->pdgId());
 		//	}
+		#if defined(BFRAG_PROC)
+		#if BFRAG_PROC==2016
 
 		// fragmentation and decay tables (of b->hadron) systematics
 		edm::Handle<std::vector<reco::GenJet>> genJets2;
@@ -1665,8 +1671,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer/blob/master/plugins/BFragmentationWeightProducer.cc
 		// TODO: check the genJet info checks
 
-		#if defined(BFRAG_PROC)
-		#if BFRAG_PROC==2016
 		edm::Handle<edm::ValueMap<float> > centralFrag;
 		iEvent.getByToken(centralFragToken_, centralFrag);
 		edm::Handle<edm::ValueMap<float> > upFrag;
