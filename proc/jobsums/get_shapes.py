@@ -36,6 +36,8 @@ parser.add_argument('--formula',  type=str, help="to plot h1 overlayed with 123*
 parser.add_argument('--set-file',  type=str, help=" histos come from this file, skip filename in the input_files definition, but : must be there")
 
 parser.add_argument('--no-std-path',  action='store_true', help="the histo is directly given by the path, it is not the standard `chan_proc_sys_distr`")
+
+parser.add_argument("--output-type",       type=str, default='png', help="output type (png, eps etc)")
 #parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename[:chan,proc,sys[,distr]]`""")
 parser.add_argument('input_files', nargs='+', help="""the files process, `histo_name:filename[:chan/proc/sys[/distr]]` with any `p/a/th` to a TH histo""")
 
@@ -324,5 +326,7 @@ if not args.no_legend:
 if args.outname:
     cst.SaveAs(args.outname)
 else:
-    cst.SaveAs('./compare_%s_%s_%s_%s_%s%s%s.png' % (args.channel, args.process, args.systematic, args.distr, ','.join(histos.keys()), '_formula' if args.formula else '', '_nonorm' if args.no_norm else ''))
+    outname = './compare_%s_%s_%s_%s_%s%s%s.' % (args.channel, args.process, args.systematic, args.distr, ','.join(histos.keys()), '_formula' if args.formula else '', '_nonorm' if args.no_norm else '')
+    outname += args.output_type
+    cst.SaveAs(outname)
 

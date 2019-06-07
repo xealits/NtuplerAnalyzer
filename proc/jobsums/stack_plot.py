@@ -28,7 +28,8 @@ parser.add_argument("-o", "--output-directory", type=str, default='', help="opti
 parser.add_argument("--uncertainty-systematic",  type=str, help="add systematic variations to the hs sum uncertainty")
 
 parser.add_argument("--rebin", type=int, help="rebin the histograms")
-parser.add_argument("--infinite-bin-errors", type=float, help="if MC bins get infinite errors (like after rebining) use the sqrt(content)*by this factor (choose from the most relevant MC)")
+parser.add_argument("--infinite-bin-errors",   type=float, help="if MC bins get infinite errors (like after rebining) use the sqrt(content)*by this factor (choose from the most relevant MC)")
+parser.add_argument("--scale-relative-errors", type=float, default=1., help="to check the errors on the ratio plot")
 
 parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
 
@@ -405,6 +406,11 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=a
                histo_name = '_'.join([channel, nick, fixed_sys_name, distr_name])
                h_init = process.ReadObj().Get(fixed_sys_name + '/' + histo_name)
 
+           if not h_init and nick == 'qcd_other':
+               # check if it is a processed qcd:
+               histo_name = '_'.join([channel, 'qcd', fixed_sys_name, distr_name])
+               h_init = process.ReadObj().Get(fixed_sys_name + '/' + histo_name)
+
            if not h_init:
                logging.debug("absent NOMINAL %s" % histo_name)
                continue
@@ -544,6 +550,7 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=a
                histo.Scale(float(factor))
 
            if factor_rate_systematic and nick in factor_rate_systematic[0]:
+               print "AAAAAA scaling rate sys for", nick
                histo.Scale(factor_rate_systematic[1])
 
            if args.factor_everything:
@@ -992,6 +999,7 @@ if not args.plot and not args.ratio and not args.osss_pl:
     options += "_data-qcd" if args.qcd > 0. else ""
     options += ("_shape-%s" % args.shape) if args.shape else ""
 
+    old_sys_name = sys_name
     if args.rename_systematic:
         sys_name = args.rename_systematic
 
@@ -1025,6 +1033,16 @@ if not args.plot and not args.ratio and not args.osss_pl:
         syst_dir.cd()
 
         h.SetDirectory(syst_dir)
+
+        # new histo name, since the sys name can be renamed:
+        name = h.GetName()
+        if old_sys_name in name:
+            distr = name.split(old_sys_name)[1][1:]
+        else:
+            distr = name.split(sys_name)[1][1:]
+
+        new_name = '_'.join((channel, nick, sys_name, distr))
+        h.SetName(new_name)
         h.Write()
 
     chan_dir.cd()
@@ -1379,7 +1397,16 @@ else:
             histo_data_relative.SetStats(False)
             histo_data_relative.SetMaximum(ratio_max)
             histo_data_relative.SetMinimum(ratio_min)
-            histo_data_relative.Divide(hs_sum2)
+            histo_data_relative.Sumw2()
+            #histo_data_relative.Divide(hs_sum2) # this gives idiotic error bars in data
+            # do bin by bin scale to mc content:
+            for bini in range(histo_data_relative.GetSize()):
+                data_c = histo_data_relative.GetBinContent(bini)
+                data_e = histo_data_relative.GetBinError(bini)
+                mc_c   = hs_sum2.GetBinContent(bini)
+                ratio = (1. / float(mc_c)) if mc_c > 0. else 1.
+                histo_data_relative.SetBinContent(bini, ratio * data_c)
+                histo_data_relative.SetBinError(bini,   args.scale_relative_errors * ratio * data_e)
 
             histo_data_relative.GetXaxis().SetLabelFont(63)
             histo_data_relative.GetXaxis().SetLabelSize(14) # labels will be 14 pixels

@@ -27,6 +27,9 @@ parser = argparse.ArgumentParser(
     )
 
 parser.add_argument("fit_release",    help="the name tag of the fit")
+parser.add_argument("--nll-limit",  type=float, default=10., help="limit the maximum of NLL on the plot (deafult 10)")
+parser.add_argument("--xsec-scale", type=float, default=143.23, help="the name tag of the fit (default 143.23)")
+parser.add_argument("--title-x",    type=str,   default='\\text{visible cross section [pb]}', help="the name tag of the fit")
 parser.add_argument("--debug", action="store_true", help="debug logging")
 
 args = parser.parse_args()
@@ -38,15 +41,33 @@ else:
 
 logging.info("importing ROOT")
 import ROOT
-from ROOT import TCanvas, TGraph, TLine, gStyle, gROOT, gPad, TFile, TTree, TPaveText, TLegend
+from ROOT import TCanvas, TGraph, TLine, gStyle, gROOT, gPad, TFile, TTree, TPaveText, TLegend, kBlack, TColor
 #include "TGraph.h"
 #include "TAxis.h"
 #include "TH1.h"
 logging.info("done")
 
 
+def rgb(r, g, b):
+    '''rgb(r, g, b):
+
+    from:
+    http://webhome.phy.duke.edu/~dmb60/the-guide/
+    TColor* color = gROOT->GetColor(TColor::GetColor(red,green,blue));//Use ints from 0 to 255 
+    color->SetAlpha(0.5);//0 is fully transparent, 1 fully opaque
+    hist->SetFillColor(color->GetNumber());
+    '''
+    return TColor.GetColor(r, g, b)
+
+colors = {'el': 43, 'mu': 45, 'both': kBlack}
+colors = {'el': rgb(254,204,92),  'mu': rgb(255,255,178), 'both': kBlack}
+colors = {'el': rgb(240,59,32),   'mu': rgb(254,204,92),  'both': kBlack}
+colors = {'el': rgb(153,153,255), 'mu': rgb(146,0,255),   'both': kBlack}
+
+names = {'el': 'e#tau_{h}', 'mu': '#mu#tau_{h}', 'both': 'combined'}
+
 # accept el, bu, both: 140.318  146.057  143.229
-draw_command = "2*deltaNLL:r*143.23" # visible cross section in both channels # full space "2*deltaNLL:r*831.76" # "2*deltaNLL:r"
+draw_command = "2*deltaNLL:r*%f" % args.xsec_scale # visible cross section in both channels # full space "2*deltaNLL:r*831.76" # "2*deltaNLL:r"
 
 '''
 higgsCombineMuFullUncertainty.MultiDimFit.mH120.root higgsCombineMuNoTau.MultiDimFit.mH120.root higgsCombineMuNoSysButTOPPT.MultiDimFit.mH120.root
@@ -84,15 +105,14 @@ the_files_expected = {
 
 
 
+gROOT.SetBatch();
+gStyle.SetOptStat(0);
+
+c1 = TCanvas("c1","Expected Bias Band Graph",200,10,800,800);
+c1.DrawFrame(0.85,0.75,1.15,1.25);
 
 def plot(chan, plot_expected, plot_data, report_lumi=True):
-   gROOT.SetBatch();
-   gStyle.SetOptStat(0);
-
-   c1 = TCanvas("c1","Expected Bias Band Graph",200,10,800,800);
-
    #c1.SetGrid();
-   c1.DrawFrame(0.85,0.75,1.15,1.25);
 
    # prepare data files
    if plot_data:
@@ -103,15 +123,15 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            file_stat  = TFile(fn_stat)
 
            ttree_full = file_full.Get("limit")
-           n = ttree_full.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+           n = ttree_full.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
            g_full = TGraph(n, ttree_full.GetV2(), ttree_full.GetV1())
 
            ttree_notau = file_notau.Get("limit")
-           n = ttree_notau.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+           n = ttree_notau.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
            g_notau = TGraph(n, ttree_notau.GetV2(), ttree_notau.GetV1())
 
            ttree_stat = file_stat.Get("limit")
-           n = ttree_stat.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+           n = ttree_stat.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
            g_stat = TGraph(n, ttree_stat.GetV2(), ttree_stat.GetV1())
 
            g_full.SetLineWidth(3)
@@ -123,7 +143,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
            #g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
            #g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
-           g_full .SetTitle(";\\text{visible cross section [pb]};-2\\Delta ln L")
+           g_full .SetTitle(";%s;-2\\Delta ln L" % args.title_x)
            g_notau.SetTitle(";;")
            g_stat .SetTitle(";;")
 
@@ -147,15 +167,15 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            print fn_full, fn_notau, fn_stat
 
            exp_ttree_full = exp_file_full.Get("limit")
-           n = exp_ttree_full.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+           n = exp_ttree_full.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
            exp_g_full = TGraph(n, exp_ttree_full.GetV2(), exp_ttree_full.GetV1())
 
            exp_ttree_notau = exp_file_notau.Get("limit")
-           n = exp_ttree_notau.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+           n = exp_ttree_notau.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
            exp_g_notau = TGraph(n, exp_ttree_notau.GetV2(), exp_ttree_notau.GetV1())
 
            exp_ttree_stat = exp_file_stat.Get("limit")
-           n = exp_ttree_stat.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+           n = exp_ttree_stat.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
            exp_g_stat = TGraph(n, exp_ttree_stat.GetV2(), exp_ttree_stat.GetV1())
 
            exp_g_full.SetLineWidth(3)
@@ -167,7 +187,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
            #exp_g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
            #exp_g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
-           exp_g_full .SetTitle(";\\text{visible cross section [pb]};-2\\Delta ln L")
+           exp_g_full .SetTitle(";%s;-2\\Delta ln L" % args.title_x)
            exp_g_notau.SetTitle(";;")
            exp_g_stat .SetTitle(";;")
 
@@ -270,17 +290,195 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    plotted += '_obs' if plot_data else ''
    c1.SaveAs("uncertainty_scans_%s_%s%s.png" % (args.fit_release, chan, plotted))
 
-plot('mu', True, True)
-plot('mu', True, False)
+def plot_all(report_lumi=True):
+    # prepare all plots
+    plots = {}
+    for chan in ('el', 'mu', 'both'):
+           fn_full, fn_notau, fn_stat = the_files[chan]
 
-plot('el', True, True)
-plot('el', True, False)
+           file_full  = TFile(fn_full)
+           file_notau = TFile(fn_notau)
+           file_stat  = TFile(fn_stat)
 
-#plot('mu', False, True)
-#plot('el', False, True)
+           ttree_full = file_full.Get("limit")
+           n = ttree_full.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
+           g_full = TGraph(n, ttree_full.GetV2(), ttree_full.GetV1())
+
+           ttree_notau = file_notau.Get("limit")
+           n = ttree_notau.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
+           g_notau = TGraph(n, ttree_notau.GetV2(), ttree_notau.GetV1())
+
+           ttree_stat = file_stat.Get("limit")
+           n = ttree_stat.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
+           g_stat = TGraph(n, ttree_stat.GetV2(), ttree_stat.GetV1())
+
+           g_full.SetLineWidth(3)
+           g_notau.SetLineWidth(2)
+           g_stat.SetLineWidth(2)
+           g_stat.SetLineStyle(7)
+
+           # removing the title
+           #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
+           #g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
+           #g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
+           g_full .SetTitle(";%s;-2\\Delta ln L" % args.title_x)
+           g_notau.SetTitle(";;")
+           g_stat .SetTitle(";;")
+
+           #g_full .GetXaxis().SetRange(0.75, 1.35)
+           #g_notau.GetXaxis().SetRange(0.75, 1.35)
+           #g_stat .GetXaxis().SetRange(0.75, 1.35)
+           g_full .GetXaxis().SetRangeUser(0.75, 1.35)
+           g_notau.GetXaxis().SetRangeUser(0.75, 1.35)
+           g_stat .GetXaxis().SetRangeUser(0.75, 1.35)
+
+           plots[chan] = g_full, g_notau, g_stat
+           print "set up observed plots"
+
+    plots_expected = {}
+    # prepare expected plots
+    for chan in ('el', 'mu', 'both'):
+           fn_full, fn_notau, fn_stat = the_files_expected[chan]
+
+           exp_file_full  = TFile(fn_full)
+           exp_file_notau = TFile(fn_notau)
+           exp_file_stat  = TFile(fn_stat)
+
+           print fn_full, fn_notau, fn_stat
+
+           exp_ttree_full = exp_file_full.Get("limit")
+           n = exp_ttree_full.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
+           exp_g_full = TGraph(n, exp_ttree_full.GetV2(), exp_ttree_full.GetV1())
+
+           exp_ttree_notau = exp_file_notau.Get("limit")
+           n = exp_ttree_notau.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
+           exp_g_notau = TGraph(n, exp_ttree_notau.GetV2(), exp_ttree_notau.GetV1())
+
+           exp_ttree_stat = exp_file_stat.Get("limit")
+           n = exp_ttree_stat.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
+           exp_g_stat = TGraph(n, exp_ttree_stat.GetV2(), exp_ttree_stat.GetV1())
+
+           exp_g_full.SetLineWidth(3)
+           exp_g_notau.SetLineWidth(2)
+           exp_g_stat.SetLineWidth(2)
+           exp_g_stat.SetLineStyle(7)
+
+           # removing the title
+           #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
+           #exp_g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
+           #exp_g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
+           exp_g_full .SetTitle(";%s;-2\\Delta ln L" % args.title_x)
+           exp_g_notau.SetTitle(";;")
+           exp_g_stat .SetTitle(";;")
+
+           #exp_g_full .GetXaxis().SetRange(0.75, 1.35)
+           #exp_g_notau.GetXaxis().SetRange(0.75, 1.35)
+           #exp_g_stat .GetXaxis().SetRange(0.75, 1.35)
+           exp_g_full .GetXaxis().SetRangeUser(0.75, 1.35)
+           exp_g_notau.GetXaxis().SetRangeUser(0.75, 1.35)
+           exp_g_stat .GetXaxis().SetRangeUser(0.75, 1.35)
+
+           plots_expected[chan] = exp_g_full, exp_g_notau, exp_g_stat
+           print "set up expectation plots"
+
+    leg = TLegend(0.6, 0.7, 0.89, 0.89)
+
+    # first plots to set up the canvas
+    chan = 'el'
+    print 'plotting %s' % chan
+    exp_g_full = plots_expected[chan][0]
+    g_full     = plots[chan][0]
+
+    exp_g_full.SetLineColor(colors[chan])
+    g_full    .SetLineColor(colors[chan])
+
+    g_full .Draw("ap") # this cast makes the following work
+    g_full .Draw("L")
+    #g_notau.Draw("L same")
+    #g_stat .Draw("L same")
+
+    name = names[chan]
+    leg.AddEntry(g_full, "%s" % name, "L")
+    #leg.AddEntry(g_full, "%s observed" % name, "L")
+    #leg.AddEntry(g_full, "fitted full unc.", "L")
+    #leg.AddEntry(g_stat, "fitted stat unc.", "L")
+
+    #exp_g_full.SetLineStyle(7)
+
+    ##exp_g_full .Draw("ap")
+    #exp_g_full .Draw("L same")
+    ##exp_g_notau.Draw("L same")
+    ##exp_g_stat .Draw("L same")
+
+    #leg.AddEntry(exp_g_full, "%s expected" % chan, "L")
+    ##leg.AddEntry(exp_g_full, "exp. full unc.", "L")
+    ##leg.AddEntry(exp_g_stat, "exp. stat unc.", "L")
+
+    # add el and mu
+    for chan in ('mu', 'both'):
+        exp_g_full = plots_expected[chan][0]
+        g_full     = plots[chan][0]
+
+        exp_g_full.SetLineColor(colors[chan])
+        g_full    .SetLineColor(colors[chan])
+
+        name = names[chan]
+        g_full .Draw("L same")
+        #leg.AddEntry(g_full, "%s observed" % name, "L")
+        leg.AddEntry(g_full, "%s" % name, "L")
+
+        #exp_g_full.SetLineStyle(7)
+        ##exp_g_full .Draw("same ap") # this cast makes the following work
+        #exp_g_full .Draw("same L")
+        #leg.AddEntry(exp_g_full, "%s expected" % name, "L")
 
 
-# 
-plot('both', True, True , False)
-plot('both', True, False, False)
+    left_title = TPaveText(0.15, 0.82, 0.3, 0.88, "brNDC")
+    left_title.AddText("CMS")
+    left_title.SetTextFont(1)
+    left_title.SetFillColor(0)
+    left_title.Draw("same")
+
+    right_title = TPaveText(0.5, 0.9, 0.9, 0.95, "brNDC")
+    both = True
+
+    if report_lumi:
+        right_title.AddText("%s fb^{-1} (13 TeV)" % (35.8 if chan == 'el' else 35.8))
+    elif both:
+        right_title.AddText("%s fb^{-1} (13 TeV)" % '35.8')
+    else:
+        right_title.AddText("(13 TeV)")
+
+    right_title.SetTextFont(132)
+    right_title.SetFillColor(0)
+    right_title.Draw("same")
+
+    leg.SetBorderSize(0)
+    leg.Draw("same")
+
+    plotted = ''
+    plotted += '_exp'
+    plotted += '_obs'
+    c1.SaveAs("uncertainty_scans_%s_%s%s.png" % (args.fit_release, 'all', plotted))
+
+#plot('mu', True, True)
+#c1.SaveAs("uncertainty_scans_%s_%s%s.png" % (args.fit_release, 'mu', '_exp_obs'))
+#c1.Clear()
+#plot('mu', True, False)
+#c1.SaveAs("uncertainty_scans_%s_%s%s.png" % (args.fit_release, 'mu', '_exp'))
+#c1.Clear()
+
+#plot('el', True, True)
+#plot('el', True, False)
+#c1.Clear()
+#
+##plot('mu', False, True)
+##plot('el', False, True)
+#
+## 
+#plot('both', True, True , False)
+#plot('both', True, False, False)
+#c1.Clear()
+
+plot_all()
 
