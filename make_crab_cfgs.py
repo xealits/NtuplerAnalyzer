@@ -31,6 +31,9 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--dsets-info", type=str, default='dsets_info.yaml', help="file with info on datasets: xsec, dtag, isMC, possible LumiMask")
     parser.add_argument("--output-site", type=str, default='T2_PT_NCG_Lisbon', help="grid output site")
     parser.add_argument("--without-HLT", action="store_true", default=False, help="turn off HLT in events (to support noHLT MC in 2015)")
+
+    parser.add_argument('-l', '--lumi-certificate', type=str, default='', help='the certificate for data')
+
     parser.add_argument("--debug", action="store_true", help="debug logging")
     #parser.add_argument("-o", "--output-dir", type=str, default='python/crab_cfgs/', help="directory where config files are created for this vertsion (in version/ subdir)")
 
@@ -50,11 +53,19 @@ if __name__ == "__main__":
     with open(args.dsets_info) as f:
         dsets_info = load(f)
 
-    dtag = dsets_info[dset]['dtag']
-    isMC = dsets_info[dset]['isMC']
-    LumiMask = dsets_info[dset]['LumiMask']
+    if dset in dsets_info:
+        dtag = dsets_info[dset]['dtag']
+        isMC = dsets_info[dset]['isMC']
+        LumiMask = dsets_info[dset]['LumiMask']
+        is2017rereco = 'is2017rereco' in dsets_info[dset]
+    else:
+        _, first, second, third = dset.split('/')
+        isMC = 'SIM' in third
+        dtag = first + ',' + second
+        LumiMask = args.lumi_certificate
+        is2017rereco = False
+
     withHLT = not args.without_HLT
-    is2017rereco = 'is2017rereco' in dsets_info[dset]
 
     logging.debug('dtag = ' + dtag)
     logging.debug('suffix = ' + suffix)
