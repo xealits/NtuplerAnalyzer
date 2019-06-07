@@ -1,5 +1,17 @@
 # more questions on v7
 
+## NLL in the full phase space
+
+python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test15_exp_unc --xsec-scale 831.76
+
+
+## plot sig-bckg shape without Y title
+
+python get_shapes.py --x-title "M_{T}(l, MET) [GeV]" --y-title "" --norm-binwidth --formula "background:signal" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":distrs/v37_test15_bunchFULLFIT1_mc_1.root:mu_selVloose/tt_mutau/NOMINAL "background":distrs/v37_test15_bunchFULLFIT1_mc_1.root:mu_selVloose/tt_lj/NOMINAL --y-range 0,0.015
+
+
+
+
 ## justify 60GeV cut in lj categories
 
 check the separation of sig/background and statistics per different cuts for el and mu sel
