@@ -3917,6 +3917,11 @@ numbers:
 
 
 
+#### post-fit distributions to see the QCD in el lj-ljout is not asymmetric
+
+make postfit_distrs fit_tag=v37_test15_bunchFULLFIT1
+
+-- exactly the same proportions of QCD as before, in el and in mu!
 
 
 
