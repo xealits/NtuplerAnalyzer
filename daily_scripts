@@ -86,24 +86,6 @@ python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats
 
 mkdir plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/
 
-python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauIDUp   --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:1.05
-python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauIDDown --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:0.95
-
-python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauIDUp   --factor-rate-systematic tt_eltau,tt_eltau,tt_taultauh,s_top_eltau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:1.05
-python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauIDDown --factor-rate-systematic tt_eltau,tt_eltau,tt_taultauh,s_top_eltau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:0.95
-
-
-python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:1.5
-python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:0.5
-
-python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:1.5
-python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:0.5
-
-python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root     -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.
-python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.
-
-hadd -f histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/*root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/other/*root
-
 python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r --lumi 1 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02  --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --y-range 0,250. --uncertainty-systematic TauMisID,TauID
 
 python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r --lumi 1 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02  --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --y-range 0,250. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID
@@ -116,7 +98,65 @@ distrs/v37_test15_bunchFULLFIT1/SingleMuon.root
 distrs/v37_test15_bunchFULLFIT1/SingleElectron.root
 
 
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauIDUp   --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:1.05
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauIDDown --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:0.95
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauIDUp   --factor-rate-systematic tt_eltau,tt_eltau,tt_taultauh,s_top_eltau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:1.05
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauIDDown --factor-rate-systematic tt_eltau,tt_eltau,tt_taultauh,s_top_eltau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:0.95
+
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:1.3
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:0.7
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:1.3
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:0.7
+
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root     -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 35800 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250.
+
+
+again with histosel to pass by the qcd issue:
+
+make a nominal with datadriven qcd and overflows
+then make the rates out of it
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root     -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250. --qcd 1.05
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal --data-nick data_other --overwrite --lumi 35800 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250. --qcd 1.05
+
+hadd plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/*.root
+
+and the rates:
+
+python stack_plot.py plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root   -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 1 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --legend-shift 0.02   --y-range 0,250.  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:1.3
+python stack_plot.py plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root   -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 1 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --legend-shift 0.02   --y-range 0,250.  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:0.7
+
+python stack_plot.py plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root   -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 1 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --legend-shift 0.02   --y-range 0,250.  --rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:1.3
+python stack_plot.py plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root   -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 1 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --legend-shift 0.02   --y-range 0,250.  --rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:0.7
+
+
+python stack_plot.py plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 1 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --legend-shift 0.02   --y-range 0,250.  --rename-sys TauIDUp   --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:1.05
+python stack_plot.py plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 1 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --legend-shift 0.02   --y-range 0,250.  --rename-sys TauIDDown --factor-rate-systematic tt_mutau,tt_eltau,tt_taultauh,s_top_mutau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:0.95
+
+python stack_plot.py plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 1 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --legend-shift 0.02   --y-range 0,250.  --rename-sys TauIDUp   --factor-rate-systematic tt_eltau,tt_eltau,tt_taultauh,s_top_eltau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:1.05
+python stack_plot.py plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/histosel.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys --data-nick data_other --overwrite --lumi 1 -c el_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --legend-shift 0.02   --y-range 0,250.  --rename-sys TauIDDown --factor-rate-systematic tt_eltau,tt_eltau,tt_taultauh,s_top_eltau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:0.95
+
+
+hadd -f histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test_renom.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/plots,*root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/renominal/*root
+
+
+
+
+hadd -f histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/*root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/other/*root
+
 hadd -f histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/*root
+
+final fix:
+
+hadd -f histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats.root plots/test/v37_test15_bunchFULLFIT1_nocats_tau_sys/plots,*root
+
+
 
 python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r --lumi 1 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02  --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --y-range 0,250. --uncertainty-systematic TauMisID
 
@@ -129,9 +169,54 @@ python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats
 
 
 
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_muj.tt_taultauh,tt_other. --y-range 0,250. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_muj.tt_taultauh,tt_other. --y-range 0,250. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_elj.tt_taultauh,tt_other. --y-range 0,250. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8
+
+
+
+### some spike in uncertainty in eltau
+
+full sys:
 
 python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_elj.tt_taultauh,tt_other. --y-range 0,250. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8
+
+no sys:
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_elj.tt_taultauh,tt_other. --y-range 0,250. --lumi-label 35.8
+
+-- no spike
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_elj.tt_taultauh,tt_other. --y-range 0,250. --uncertainty-systematic TauMisID,TauID --lumi-label 35.8
+
+-- here
+
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_elj.tt_taultauh,tt_other. --y-range 0,250. --uncertainty-systematic TauMisID --lumi-label 35.8
+
+-- here at 60-80
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_elj.tt_taultauh,tt_other. --y-range 0,250. --uncertainty-systematic TauID    --lumi-label 35.8
+
+-- and here at 60-80
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_elj.tt_taultauh,tt_other. --y-range 0,250. --sys TauMisIDUp --lumi-label 35.8
+
+-- it's from MC QCD
+
+histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test_renom.root
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test_renom.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test_renom.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_elj.tt_taultauh,tt_other. --y-range 0,250. --sys TauMisIDUp --lumi-label 35.8
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test_renom.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test_renom.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_elj.tt_taultauh,tt_other. --y-range 0,250. --uncertainty-systematic TauMisID --lumi-label 35.8
+
+-- qcd is still there, even in nominal distr!
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test_renom.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_test_renom.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, MET) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_elj.tt_taultauh,tt_other. --y-range 0,250. --sys NOMINAL --lumi-label 35.8
+
+-- here it is
+   fixed the typo in hadd
+   now ok
 
 
 
@@ -147,6 +232,9 @@ python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test15_exp_unc --xsec-scal
 
 python get_shapes.py --x-title "M_{T}(l, MET) [GeV]" --y-title "" --norm-binwidth --formula "background:signal" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":distrs/v37_test15_bunchFULLFIT1_mc_1.root:mu_selVloose/tt_mutau/NOMINAL "background":distrs/v37_test15_bunchFULLFIT1_mc_1.root:mu_selVloose/tt_lj/NOMINAL --y-range 0,0.015
 
+and with correct label
+
+python get_shapes.py --x-title "M_{T}(l, p^{miss}_{T}) [GeV]" --y-title "" --norm-binwidth --formula "background:signal" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":distrs/v37_test15_bunchFULLFIT1_mc_1.root:mu_selVloose/tt_mutau/NOMINAL "background":distrs/v37_test15_bunchFULLFIT1_mc_1.root:mu_selVloose/tt_lj/NOMINAL --y-range 0,0.015
 
 
 
