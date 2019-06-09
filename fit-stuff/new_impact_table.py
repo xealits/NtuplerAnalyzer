@@ -54,6 +54,7 @@ impact_name_th = {
 "Mr"          : "ME Renormalization scale",
 "Mf"          : "ME Factorization scale",
 "Mfr"         : "ME combined scale variation",
+"ME"          : "ME scales",
 "FSR"         : "final   state radiation",
 "ISR"         : "initial state radiation",
 "HDAMP"       : "ME-PS matching (hdamp)",
@@ -106,6 +107,14 @@ if 'Frag' in impacts_th and 'Peterson' in impacts_th:
     frags    = impacts_th.pop('Frag')
     peterson = impacts_th.pop('Peterson')
     impacts_th['Frag'] = [(p**2 + f **2)**0.5 for f, p in zip(frags, peterson)]
+
+if 'Mfr' in impacts_th and 'Mf' in impacts_th and 'Mr' in impacts_th:
+    # these should be added as 'Frag'
+    #print "adding frags"
+    m_fr = impacts_th.pop('Mfr')
+    m_f  = impacts_th.pop('Mf')
+    m_r  = impacts_th.pop('Mr')
+    impacts_th['ME'] = [(fr**2 + f**2 + r**2)**0.5 for fr, r, f in zip(m_fr, m_f, m_r)]
 
 
 #table_row_format = "\\lstinline!%25s!  & %4.2f \\\\"

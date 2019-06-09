@@ -185,7 +185,7 @@ if args.devs:
     for channel, file_results in results.items():
         for file_nickname, numbers in file_results.items():
             nominal, _ = numbers['nom']
-            logging.debug('%s %f' % (file_nickname, nominal))
+            logging.info('%s %f' % (file_nickname, nominal))
 
             # when merging systematic groups, construct new dict with results
             if 'merge' in args.devs:
@@ -199,6 +199,7 @@ if args.devs:
                         else:
                             devs = [sys_val-nominal for sname, (sys_val, _) in numbers.items() if sname in sys_group]
                         logging.debug('%s %s' % (sys_group_name, str(devs)))
+                        #sqrt_sum_dev = sqrt(sum(dev**2 for dev in devs)/len(devs))
                         sqrt_sum_dev = sqrt(sum(dev**2 for dev in devs))
                         logging.debug(sqrt_sum_dev)
                         update_numbers[sys_group_name] = sqrt_sum_dev, 0
@@ -225,10 +226,12 @@ if 'merge_files' in args.devs:
         for sys_name, sys_group_names in [('tune', ('tune_Up', 'tune_Down')), ('hdamp', ('hdamp_Up', 'hdamp_Down')), ('tune', ('tune_Up', 'tune_Down')), ('isr', ('isr_Up', 'isr_Down')), ('fsr', ('fsr_Up', 'fsr_Down'))]:
             sys_group = [file_results[fn]['nom'] for fn in sys_group_names if fn in file_results]
             if 'rel' in args.devs:
-                sys_dev  = sqrt(sum(((nominal - sys_val) / nominal)**2 for sys_val, _ in sys_group))
+                #sys_dev  = sqrt(sum(((nominal - sys_val) / nominal)**2 for sys_val, _ in sys_group))
+                sys_dev  = sqrt(sum(((nominal - sys_val) / nominal)**2 for sys_val, _ in sys_group)/len(sys_group))
                 sys_stat = sqrt(sum((sys_sta / nominal)**2 for _, sys_sta in sys_group))/len(sys_group)
             else:
-                sys_dev  = sqrt(sum((nominal - sys_val)**2 for sys_val, _ in sys_group))
+                #sys_dev  = sqrt(sum((nominal - sys_val)**2 for sys_val, _ in sys_group))
+                sys_dev  = sqrt(sum((nominal - sys_val)**2 for sys_val, _ in sys_group)/len(sys_group))
                 sys_stat = sqrt(sum((sys_sta)**2 for _, sys_sta in sys_group))/len(sys_group)
             merged_files.setdefault(sys_name, OrderedDict())['nom'] = sys_dev, sys_stat
 
@@ -268,6 +271,7 @@ else:
     logging.debug(proc_names)
 
     print ' '*21 + ' '*5 + ' '.join(['%10s' % p for p in proc_names])
+    add_up = None
     for name, numbers in per_sys.items():
         #
         logging.debug(name)
@@ -276,6 +280,18 @@ else:
             print ("%10s %-20s " % name) + ' '*5 + ' '.join(["%10.4f +- %6.4f" % numbers[pn] for pn in proc_names])
         else:
             print ("%10s %-20s " % name) + ' '*5 + ' '.join(["%10.4f" % numbers[pn][0] for pn in proc_names])
+
+        if name == ('nominal_0', 'nom'):
+            continue
+        if add_up is None:
+            add_up = {pn: [numbers[pn][0]] for pn in proc_names}
+        else:
+            for pn in proc_names:
+                num = numbers[pn][0]
+                add_up[pn].append(num)
+
+    add_up = {pn: sqrt(sum([n**2 for n in add_up[pn]])) for pn in proc_names}
+    print ("%-20s " % 'sum') + ' '*5 + ' '.join(["%10.4f" % add_up[pn] for pn in proc_names])
 
 ## TODO: what is this ratio for? it does not work now
 #if args.ratio:
