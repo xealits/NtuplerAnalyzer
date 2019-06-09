@@ -41,10 +41,12 @@ parser.add_argument("vProc",       help="Processing version")
 parser.add_argument("chan_def",    help="definition of selection channels")
 parser.add_argument("-q", "--queue-dir",      type=str, default='./queue_dir',
         help="the directory for storing the generated job queues (default ./queue_dir)")
-parser.add_argument("-n", "--ntupler-dir",    type=str, default='/gstore/t3cms/store/user/otoldaie/',
-        help="the directory with Ntupler outputs (default /gstore/t3cms/store/user/otoldaie/)")
-parser.add_argument("-p", "--processing-dir", type=str, default='/lstore/cms/olek/outdirs/',
-        help="the directory with Processed output (default /lstore/cms/olek/outdirs/)")
+parser.add_argument("-n", "--ntupler-dir",    type=str, default='./gstore_outdirs',
+        help="the directory with Ntupler outputs (default ./gstore_outdirs)")
+parser.add_argument("-p", "--processing-dir", type=str, default='./lstore_outdirs/',
+        help="the directory with Processed output (default ./lstore_outdirs/)")
+parser.add_argument("-c", "--cmssw-project-dir", type=str, default='/lstore/cms/olek/CMSSW_8_0_26_patch1/src/',
+        help="the directory with CMSSW/src to find crrections etc (default '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/')")
 
 parser.add_argument("--jobs-name-tag", type=str, default='job', help='change the name of the job script (default is "job", use for job management)')
 
@@ -529,7 +531,7 @@ cd UserCode/NtuplerAnalyzer/proc/
 
     vars_for_the_job = dict(environ)
     # after boot.tcsh everything is in the vars
-    project_dir = '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/'
+    project_dir = args.cmssw_project_dir
     ntupler_proc_dir = 'UserCode/NtuplerAnalyzer/proc/'
     vars_for_the_job.update(project_dir=project_dir)
     job_template = job_template.format(**vars_for_the_job)
