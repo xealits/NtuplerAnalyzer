@@ -17,11 +17,12 @@ workspace:
 nll: workspace=ttxsec/latest_datacard_el.root
 nll: nn=el
 nll: freeze=--freezeParameters lumi_13TeV
+nll: options=
 nll: points=100
 nll: min=0.5
 nll: max=1.5
 nll:
-	combine -M MultiDimFit ${workspace} --algo grid --points ${points} --rMin ${min} --rMax ${max} --name ${nn} ${freeze}
+	combine -M MultiDimFit ${workspace} --algo grid --points ${points} --rMin ${min} --rMax ${max} --name ${nn} ${freeze} ${options}
 
 # for toys pass
 #  -t -1 --expectSignal 1

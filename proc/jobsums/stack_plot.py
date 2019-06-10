@@ -1038,8 +1038,10 @@ if not args.plot and not args.ratio and not args.osss_pl:
         name = h.GetName()
         if old_sys_name in name:
             distr = name.split(old_sys_name)[1][1:]
-        else:
+        elif sys_name in name:
             distr = name.split(sys_name)[1][1:]
+        else:
+            distr = name
 
         new_name = '_'.join((channel, nick, sys_name, distr))
         h.SetName(new_name)

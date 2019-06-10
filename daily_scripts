@@ -1,5 +1,339 @@
 # more questions on v7
 
+
+## another look at the weirdness in the fitting
+
+the fit in combined channel > in el and mu
+
+the hypothesis is:
+this is due to no TOPPT pull up in mu,
+which makes the fitted signal strength smaller in mu than in case of TOPPT 1sigma up;
+the TOPPT is up in el and in combined;
+if mu had TOPPT up the signal strength would be > in combined.
+
+first clue:
+in newest fit files the MC normalization is slightly smaller than in fitted histosel datafiles
+-- why is that, is it reasonable, does the fit in new files produce larger signal strength in mu?
+
+
+### check the hypothesis
+
+find the fitted datacards
+refit mu with TOPPT set to one
+
+old is exported:
+export/v37_test13_bunchFULLFIT2/
+
+but the most recent version in proc/xsec_calculations.jl is v13 test15 paper6
+seems to correspond to
+scan_mu_v37_test15_exp_unc.png
+-- only the sig strength is 0.946 instead of 0.945
+but both and el correspond too
+
+-- which datacard was it?
+
+this stuff:
+
+make fit_unc      nn=mu_v37_test15_exp_unc   workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   &
+make fit_unc_toys nn=mu_v37_test15_exp_unc   workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   &
+
+let's repeat and confirm the hypothesis
+
+make fit_unc      nn=mu_v37_test15_exp_unc_REPTEST   workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   &
+
+r = 0.946
+
+eog ./scan_mu_v37_test15_exp_unc_REPTEST.png ./scan_mu_v37_test15_exp_unc.png
+
+-- and identical 
+
+nll
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp_REPTEST
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp_REPTEST_TOPPT1 freeze="--freezeParameters lumi_13TeV       --setParameters TOPPT=1"
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp_REPTEST_TOPPT1 freeze="--freezeParameters lumi_13TeV,TOPPT --setParameters TOPPT=1"
+
+ POI: r= 0.945318 -> [0.5,1.5]
+
+-- strangely not 0.946
+
+Set Default Value of Parameter TOPPT To : 1
+Computing results starting from observation (a-posteriori)
+ POI: r= 0.945335 -> [0.5,1.5]
+
+Set Default Value of Parameter TOPPT To : 1
+Computing results starting from observation (a-posteriori)
+ POI: r= 0.96354 -> [0.5,1.5]
+
+-- and both is:
+
+bt_sig  = 0.961
+
+
+----- yeah, the hypothesis is right
+
+the datacard and datafile are:
+
+ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.txt
+ttxsec/fit-stuff/v37_test15_bunchFULLFIT1_HISTOSEL.root
+
+
+### check the first clue
+
+are new files indeed different in normalization?
+how do they fit?
+why are they different, which correction was applied/changed?
+
+which files are the new files?
+-- in the sys uncertainty propagation
+
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/test/v37_test15_bunchFULLFIT1_nocats_TRACKNORM/ --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250. --qcd 1.05 --bin-norm
+
+INFO:root:data       =    23026.000000      451.527152
+INFO:root:mc sum     =    23384.346228    23384.346228
+INFO:root:mc sum unc =      358.025025      358.025025
+INFO:root:mc sum unc =      358.025025      358.025025
+MC sum error 45.1649933904 2836.94840317
+
+INFO:root:data       =     1090.115000       22.406628
+INFO:root:mc sum     =     1108.050102     1108.050102
+INFO:root:mc sum unc =       17.632043       17.632043
+INFO:root:mc sum unc =       17.632043       17.632043
+MC sum error 2.25824966952 141.847420158
+
+-- looks very similar to before
+
+eog plots/test/v37_test15_bunchFULLFIT1_nocats_TRACKNORM//distrs,v37_test15_bunchFULLFIT1_mc_1_distrs,v37_test15_bunchFULLFIT1,SingleMuon_Mt_lep_met_c_mu_sel_NOMINAL_stack_ratio_dataqcd.png plots/v37_test13_bunchFULLFIT2/distrs,v37_test13_bunchFULLFIT2_mc_distrs,v37_test13_bunchFULLFIT2,SingleMuon_Mt_lep_met_c_mu_sel_NOMINAL_stack_ratio_x_mu_selVloose_dataqcd.png
+
+-- practically the same, very small variations in bins
+
+I bet the smaller normalization was in running stack on HISTOSEL files, which reapplied the corrections second time....
+
+let's confirm
+
+python stack_plot.py distrs/v37_test13_bunchFULLFIT2_mc.root distrs/v37_test13_bunchFULLFIT2/SingleMuon.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_TRACKNORM/ --data-nick data_other --overwrite -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d Mt_lep_met_c --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02  --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --y-range 0,250.
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats.root -o plots/test/v37_test15_bunchFULLFIT1_nocats_TRACKNORM/ --data-nick data_other --overwrite -p -r --lumi 1 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02  --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_taultauh,tt_taulj,tt_other --y-range 0,250.
+
+INFO:root:data       =     1090.115000       22.406628
+INFO:root:mc sum     =     1115.028687     1115.028687
+
+INFO:root:data       =     1090.115000       22.406628
+INFO:root:mc sum     =     1064.060467     1064.060467
+
+eog plots/test/v37_test15_bunchFULLFIT1_nocats_TRACKNORM//distrs,v37_test15_bunchFULLFIT1_mc_1_distrs,v37_test15_bunchFULLFIT1,SingleMuon_Mt_lep_met_c_mu_sel_NOMINAL_stack_ratio_dataqcd.png plots/test/v37_test15_bunchFULLFIT1_nocats_TRACKNORM//histosels,datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_histosels,datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_Mt_lep_met_c_mu_sel_NOMINAL_stack_ratio.png plots/test/v37_test15_bunchFULLFIT1_nocats_TRACKNORM//distrs,v37_test13_bunchFULLFIT2_mc_distrs,v37_test13_bunchFULLFIT2,SingleMuon_Mt_lep_met_c_mu_sel_NOMINAL_stack_ratio_x_mu_selVloose_dataqcd.png
+
+-- yeah, that's it
+
+
+### check FULLFIT2 for fit
+
+it is very close to FULLFIT1, but the shape of QCD is smoother, the trend is more linear in large Mt
+
+make run_std_histos out=histosels/v37_test15_bunchFULLFIT2/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test15_bunchFULLFIT2_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT2/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT2/SingleElectron.root
+
+-- it was test13 FULLFIT2
+
+eog scan_mu_v37_test13_bunchFULLFIT2.png
+
+shows 0.936
+
+
+### propagate stuff to QCD?
+
+-- everything must be propagated for experimental and toppt systematics
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_qcd_prop.txt
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_qcd_prop
+
+only TOPPT then the others
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_qcd_prop.root   nn=v37_test15_mu_exp_QCDPROP_TOPPT
+
+ POI: r= 0.945315 -> [0.5,1.5]
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_qcd_prop.root   nn=v37_test15_mu_exp_QCDPROP_TOPPTnALLEXP
+
+ POI: r= 0.939738 -> [0.5,1.5]
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_qcd_prop.root   nn=v37_test15_mu_exp_QCDPROP_TOPPTnALLEXP options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff"
+
+limit->Draw("2*deltaNLL:r",         "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("2*deltaNLL:tauID_eff", "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("2*deltaNLL:tau_fakes", "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("2*deltaNLL:TOPPT",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp.root   nn=v37_test15_el_exp_REPEAT   options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff"
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp.root nn=v37_test15_both_exp_REPEAT options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff"
+
+ POI: r= 0.944658 -> [0.5,1.5]
+ POI: r= 0.958266 -> [0.5,1.5]
+
+
+TOPPT is the most effective in the large and small Mt, where QCD has negligible effect
+
+
+### error in wjets normalization?
+
+the Mt trend is too linear in muon-tau,
+TOPPT bends small and large Mt, fixing the large Mt and failing the small ones,
+more wjets would make the bend in Mt, which corresponds exactly to TOPPT
+
+check the effect of TOPPT on the shape, data-mc difference
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/test/v37_test15_bunchFULLFIT1_nocats_TRACKNORM/ --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250. --qcd 1.05 --bin-norm
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root     -p -r -o plots/test/v37_test15_bunchFULLFIT1_nocats_TRACKNORM/ --data-nick data_other --overwrite --lumi 35800 -c mu_sel    -d Mt_lep_met_c --ratio-range 0.5  --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02   --y-range 0,250. --qcd 1.05 --bin-norm --sys TOPPTUp
+
+DEBUG:root:data qcd for (Mt_lep_met_c, mu_sel_ss) Integral = 23.253098
+
+INFO:root:data       =     1090.115000       22.406628
+INFO:root:mc sum     =     1097.922715     1097.922715
+INFO:root:mc sum unc =       17.410155       17.410155
+INFO:root:mc sum unc =       17.410155       17.410155
+MC sum error 2.2525495217 141.195438418
+
+eog plots/test/v37_test15_bunchFULLFIT1_nocats_TRACKNORM//distrs,v37_test15_bunchFULLFIT1_mc_1_distrs,v37_test15_bunchFULLFIT1,SingleMuon_Mt_lep_met_c_mu_sel_*_stack_ratio_dataqcd.png
+
+-- perfectly fits! no distortion at small Mt!
+   it must be applied
+
+try an additional factor for wjets directly in the fit first
+
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_wjets15.txt
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_wjets12.txt
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_wjets15
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_wjets12
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_wjets15.root   nn=v37_test15_mu_exp_wjets15 freeze="--freezeParameters lumi_13TeV,TOPPT --setParameters TOPPT=1"
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_wjets12.root   nn=v37_test15_mu_exp_wjets12 freeze="--freezeParameters lumi_13TeV,TOPPT --setParameters TOPPT=1"
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_wjets15.root   nn=v37_test15_mu_exp_wjets15    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff"
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_wjets12.root   nn=v37_test15_mu_exp_wjets12    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff"
+
+ POI: r= 0.929815 -> [0.5,1.5]
+ POI: r= 0.929826 -> [0.5,1.5]
+
+-- ??????
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp_REPEAT2    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff"
+
+ POI: r= 0.945318 -> [0.5,1.5]
+
+BS
+
+with factor 1.0:
+
+ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_wjets14.txt
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_wjets14
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_wjets14.root   nn=v37_test15_mu_exp_wjets14    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff"
+
+ POI: r= 0.929904 -> [0.5,1.5]
+
+-- 1!=1 wtf how higgscombine works?
+
+and all of them have TOPPT around 0.1!
+
+
+
+remake the histos
+
+make run_std_histos out=histosels/v37_test15_bunchFULLFIT1_wjets15/ wjets_norm=1.5 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root
+hadd -f histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_wjets15.root histosels/v37_test15_bunchFULLFIT1_wjets15/*root
+
+make run_std_histos out=histosels/v37_test15_bunchFULLFIT1_wjets13/ wjets_norm=1.3 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root
+hadd -f histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_wjets13.root histosels/v37_test15_bunchFULLFIT1_wjets13/*root
+
+
+
+
+
+### fit with the outlier bin?
+
+make run_std_histos out=histosels/v37_test15_bunchFULLFIT1_withOVERFLOWS/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root options='"--draw-overflows 5"'
+
+hadd -f histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_withOVERFLOWS.root histosels/v37_test15_bunchFULLFIT1_withOVERFLOWS/*root
+
+cp histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_withOVERFLOWS.root ../../fit-stuff/
+
+datacard:
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_withOVERFLOW.txt
+
+and correct the numbers (! so higgscombine does not use overflows after all)
+
+python numbers_for_datacard.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_withOVERFLOWS.root -d Mt_lep_met_c -c mu_sel_lj,mu_sel_ljout --data-nick data_other
+
+bin           mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          5021.631                 3609.587                 204.639                  272.438                  85.639                   23.271                   226.264                  34.568                   229.457                  0.000                    15.283                   228.929                  8.529                    190.632                  176.650                  
+mu_sel_lj/data_other/NOMINAL/mu_sel_lj_data_other_NOMINAL_Mt_lep_met_c
+obs 9932.000000
+mc sum = 10327.515914
+INFO:root:mu_sel_ljout
+bin           mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          8022.158                 2507.487                 142.576                  458.961                  173.945                  55.917                   289.888                  52.688                   462.813                  0.000                    29.676                   364.950                  23.466                   390.389                  178.219                  
+mu_sel_ljout/data_other/NOMINAL/mu_sel_ljout_data_other_NOMINAL_Mt_lep_met_c
+obs 13094.000000
+mc sum = 13153.132784
+
+
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_withOVERFLOW
+
+-- all MC does not have bSF sys histo
+
+make --dry-run run_std_histos out=histosels/v37_test15_bunchFULLFIT1_withOVERFLOWS/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root options='"--draw-overflows 5"'
+
+make --dry-run run_histos mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root options="--draw-overflows 5" lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_withOVERFLOWS/ wjets_norm=1.4 chan=mu_sel_lj    systematics="bSFUp" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_lj"    & \
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root -o histosels/v37_test15_bunchFULLFIT1_withOVERFLOWS/ --data-nick data_other --lumi 35800 -c mu_sel_lj -d Mt_lep_met_c --wjet 1.4 --qcd 1.05 -x mu_selVloose_lj --systematic bSFUp --draw-overflows 5
+
+-- renaming of systematics crashes on processing data histo
+
+
+only TOPPT then the others
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_withOVERFLOW.root   nn=v37_test15_mu_exp_withOVERFLOW options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff"
+
+ POI: r= 0.945004 -> [0.5,1.5]
+
+no good
+
+but TOPPT landed at 0.6!!!???
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_withOVERFLOW.root   nn=v37_test15_mu_exp_withOVERFLOW options="--saveSpecifiedNuis tau_fakes,tauID_eff --setParameters TOPPT=1" freeze="--freezeParameters lumi_13TeV,TOPPT"
+
+ POI: r= 0.958599 -> [0.5,1.5]
+
+-- damn, so probably with overflows all signal strengths slide down
+
+
+
+### rebin?
+
+ KEY: TH1D	mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_c;1	
+ KEY: TH1D	mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_c2;1	
+ KEY: TH1D	mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_f;1	
+
+-- use c2 or f?
+
+make run_std_histos out=histosels/v37_test15_bunchFULLFIT1_Mt_lep_met_f/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root  distr=Mt_lep_met_f
+hadd -f histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_Mt_lep_met_f.root histosels/v37_test15_bunchFULLFIT1_Mt_lep_met_f/*root
+
+make run_std_histos out=histosels/v37_test15_bunchFULLFIT1_Mt_lep_met_c2/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/v37_test15_bunchFULLFIT1_mc_1.root data_mu=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root  distr=Mt_lep_met_c2
+hadd -f histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_Mt_lep_met_c2.root histosels/v37_test15_bunchFULLFIT1_Mt_lep_met_c2/*root
+
+
+
 ## new systematics for the ratio to dilepton
 
 -- cannot find the old source, some analysis nore!
@@ -73,6 +407,7 @@ python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats
 
 -- ok, but the Data>MC more than in the paper
    which data went to the paper and why this one is different?
+   --- here I rerun the stack_plot on histosel datafile, which reapplies the corrections second time, reducing the MC norm
 
 try systematic uncertainties
 
