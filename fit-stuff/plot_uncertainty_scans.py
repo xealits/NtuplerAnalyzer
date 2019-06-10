@@ -312,7 +312,10 @@ def plot_all(report_lumi=True):
            n = ttree_stat.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
            g_stat = TGraph(n, ttree_stat.GetV2(), ttree_stat.GetV1())
 
-           g_full.SetLineWidth(3)
+           if chan == 'both':
+               g_full.SetLineWidth(4)
+           else:
+               g_full.SetLineWidth(2)
            g_notau.SetLineWidth(2)
            g_stat.SetLineWidth(2)
            g_stat.SetLineStyle(7)
@@ -358,7 +361,10 @@ def plot_all(report_lumi=True):
            n = exp_ttree_stat.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
            exp_g_stat = TGraph(n, exp_ttree_stat.GetV2(), exp_ttree_stat.GetV1())
 
-           exp_g_full.SetLineWidth(3)
+           if chan == 'both':
+               exp_g_full.SetLineWidth(4)
+           else:
+               exp_g_full.SetLineWidth(2)
            exp_g_notau.SetLineWidth(2)
            exp_g_stat.SetLineWidth(2)
            exp_g_stat.SetLineStyle(7)
