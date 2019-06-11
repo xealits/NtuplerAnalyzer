@@ -134,7 +134,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            n = ttree_stat.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
            g_stat = TGraph(n, ttree_stat.GetV2(), ttree_stat.GetV1())
 
-           g_full.SetLineWidth(3)
+           g_full.SetLineWidth(4)
            g_notau.SetLineWidth(2)
            g_stat.SetLineWidth(2)
            g_stat.SetLineStyle(7)
@@ -178,7 +178,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            n = exp_ttree_stat.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %f" % args.nll_limit, "L")
            exp_g_stat = TGraph(n, exp_ttree_stat.GetV2(), exp_ttree_stat.GetV1())
 
-           exp_g_full.SetLineWidth(3)
+           exp_g_full.SetLineWidth(2)
            exp_g_notau.SetLineWidth(2)
            exp_g_stat.SetLineWidth(2)
            exp_g_stat.SetLineStyle(7)
@@ -289,6 +289,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    plotted += '_exp' if plot_expected else ''
    plotted += '_obs' if plot_data else ''
    c1.SaveAs("uncertainty_scans_%s_%s%s.png" % (args.fit_release, chan, plotted))
+
 
 def plot_all(report_lumi=True):
     # prepare all plots
@@ -482,9 +483,9 @@ def plot_all(report_lumi=True):
 ##plot('el', False, True)
 #
 ## 
-#plot('both', True, True , False)
-#plot('both', True, False, False)
+plot('both', True, True , False)
+plot('both', True, False, False)
 #c1.Clear()
 
-plot_all()
+#plot_all()
 
