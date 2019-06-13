@@ -1,5 +1,35 @@
-# more questions on v7
+# questions in v8
 
+shape plot
+
+python get_shapes.py --x-title "M_{T}(l, p^{miss}_{T}) [GeV]" --y-title "a.u." --norm-binwidth --formula "background:signal" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":distrs/v37_test15_bunchFULLFIT1_mc_1.root:mu_selVloose/tt_mutau/NOMINAL "background":distrs/v37_test15_bunchFULLFIT1_mc_1.root:mu_selVloose/tt_lj/NOMINAL --y-range 0,0.015
+python get_shapes.py --x-title "M_{T}(l, p^{miss}_{T}) [GeV]" --y-title "a.u." --norm-binwidth --formula "background:signal" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":distrs/v37_test15_bunchFULLFIT1_mc_1.root:mu_selVloose/tt_mutau/NOMINAL "background":distrs/v37_test15_bunchFULLFIT1_mc_1.root:mu_selVloose/tt_lj/NOMINAL --y-range 0,0.0159 --output-type pdf --left-title
+
+
+stack plot
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_muj.tt_taultauh,tt_other. --y-range 0,250. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj:tt_elj.tt_taultauh,tt_other. --y-range 0,250. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25
+
+
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,250. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+
+
+
+and the NLL scan in pdf with horizontal lines at 1 and 4
+
+python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test15_exp_unc --xsec-scale 831.76 --title-x "cross section [pb]" --horizontal-lines 1,4 --output-type pdf
+
+-- the horizontal TLine-s don't work with the TGraph-s.......
+
+
+
+
+
+# more questions on v7
 
 ## just make the plot with combined channel only
 

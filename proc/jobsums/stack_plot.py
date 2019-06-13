@@ -24,6 +24,7 @@ parser.add_argument("-r", "--ratio", action='store_true', help="don't save the r
 parser.add_argument("-l", "--logy", action='store_true', help="set logarithmic scale for Y axis of stack plot")
 parser.add_argument("--normalize", action='store_true', help="normalize the integral to data")
 parser.add_argument("-o", "--output-directory", type=str, default='', help="optional output directory")
+parser.add_argument("--output-type", type=str, default='png', help="the output type (png by default)")
 
 parser.add_argument("--uncertainty-systematic",  type=str, help="add systematic variations to the hs sum uncertainty")
 
@@ -32,6 +33,9 @@ parser.add_argument("--infinite-bin-errors",   type=float, help="if MC bins get 
 parser.add_argument("--scale-relative-errors", type=float, default=1., help="to check the errors on the ratio plot")
 
 parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
+parser.add_argument("--text-size-axes-labels", type=float, default=14, help="the text size of the labels of axes")
+parser.add_argument("--text-size-axes-titles", type=float, default=20, help="the text size of the titles of axes")
+parser.add_argument("--leg-n-columns", type=int, help="number of columns in the legend")
 
 parser.add_argument("--lumi", type=float, help="use to skip the final normalizing step")
 
@@ -84,6 +88,7 @@ parser.add_argument("--processes", type=str, default='all', help="set processes 
 parser.add_argument("--data-nick", type=str, default='data', help="data nick")
 
 parser.add_argument("--exp-legend",   action='store_true', help="experimentary legend drawing")
+parser.add_argument("--top-legend",   action='store_true', help="draw legend at the top")
 parser.add_argument("--legend-shift", type=float,          help="shift legend on X axis")
 parser.add_argument("--skip-legend",  action='store_true', help="don't plot the legend (full view of distribution)")
 
@@ -109,9 +114,13 @@ assert isfile(args.data_file)
 logging.info("import ROOT")
 
 import ROOT
-from ROOT import TFile, THStack, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, TLine
+from ROOT import TFile, THStack, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kRed, kCyan, kGray, TLine, gStyle
 import plotting_root
 from draw_overflows import DrawOverflow
+
+gStyle.SetHatchesLineWidth(1)
+#gStyle.SetHatchesLineColor(kGray)
+gStyle.SetHatchesSpacing(5)
 
 #channel = "mu_presel"
 #channel = "mu_sel"
@@ -742,8 +751,13 @@ def get_histos_with_data_qcd(sys_name):
             if 'qcd' not in nick:
                 hs_sum_noqcd.Add(h)
 
-        hs_sum2.SetFillStyle(3004);
-        hs_sum2.SetFillColor(1);
+        hs_sum2.SetFillStyle(3004)
+        #hs_sum2.SetFillStyle(3354)
+        #hs_sum2.SetFillStyle(3254)
+        #gStyle.SetHatchesLineWidth(1)
+        #gStyle.SetHatchesSpacing(1)
+        #hs_sum2.SetFillColor(1)
+        hs_sum2.SetFillColor(kGray+2)
         hs_sum2.SetMarkerStyle(1)
         hs_sum2.SetMarkerColor(0)
 
@@ -892,6 +906,8 @@ if args.form_shapes:
 if args.exp_legend:
     shift = args.legend_shift if args.legend_shift else 0.
     leg = TLegend(0.8 - shift, 0.55, 1.   - shift, 0.92)
+elif args.top_legend:
+    leg = TLegend(0.15, 0.75, 0.85, 0.92)
 else:
     shift = args.legend_shift if args.legend_shift else 0.
     leg = TLegend(0.7 - shift, 0.55, 0.89 - shift, 0.92)
@@ -903,6 +919,9 @@ if not args.fake_rate and not args.skip_legend and not (args.no_data or args.no_
 
 # add the legend entry for MC sum error band
 leg.AddEntry(hs_sum2, "MC sum", 'f')
+
+if args.leg_n_columns:
+    leg.SetNColumns(args.leg_n_columns)
 
 # get MC stack and legend for it
 #hs, leg = plotting_root.stack_n_legend(used_histos)
@@ -970,10 +989,10 @@ out_dir = args.output_directory + '/' if args.output_directory else './'
 if not args.no_data:
     histos_data = histos_data_per_distr[0][1]
 
-    histos_data[0][0].GetXaxis().SetLabelFont(63)
-    histos_data[0][0].GetXaxis().SetLabelSize(14) # labels will be 14 pixels
-    histos_data[0][0].GetYaxis().SetLabelFont(63)
-    histos_data[0][0].GetYaxis().SetLabelSize(14) # labels will be 14 pixels
+    histos_data[0][0].GetXaxis().SetLabelFont(43)
+    histos_data[0][0].GetXaxis().SetLabelSize(args.text_size_axes_labels) # labels will be 14 pixels
+    histos_data[0][0].GetYaxis().SetLabelFont(43)
+    histos_data[0][0].GetYaxis().SetLabelSize(args.text_size_axes_labels)
 
 
 if not args.plot and not args.ratio and not args.osss_pl:
@@ -1243,10 +1262,10 @@ elif args.osss or args.osss_mc or args.osss_pl:
         histo_diff_os.SetMinimum(min_y)
 
     # tune the typography: font sizes, title offsets etc
-    histo_diff_os.GetXaxis().SetTitleFont(63)
-    histo_diff_os.GetXaxis().SetTitleSize(20)
-    histo_diff_os.GetYaxis().SetTitleFont(63)
-    histo_diff_os.GetYaxis().SetTitleSize(20)
+    histo_diff_os.GetXaxis().SetTitleFont(43)
+    histo_diff_os.GetXaxis().SetTitleSize(args.text_size_axes_titles)
+    histo_diff_os.GetYaxis().SetTitleFont(43)
+    histo_diff_os.GetYaxis().SetTitleSize(args.text_size_axes_titles)
     histo_diff_os.GetYaxis().SetTitleOffset(1.4)
 
     # set titles and draw
@@ -1323,8 +1342,8 @@ else:
     pad_right_edge = 0.8 if args.exp_legend else 1.
 
     if args.ratio and args.plot:
-        pad1 = TPad("pad1","This is pad1", 0., 0.3,   pad_right_edge, 1.)
-        pad2 = TPad("pad2","This is pad2", 0., 0.05,  pad_right_edge, 0.3)
+        pad1 = TPad("pad1","This is pad1", 0., 0.3,  pad_right_edge, 1.)
+        pad2 = TPad("pad2","This is pad2", 0., 0.0,  pad_right_edge, 0.3)
 
         # trying to draw the axis labels on top of histograms
         pad1.GetFrame().SetFillColor(42)
@@ -1350,7 +1369,7 @@ else:
             ROOT.gPad.SetRightMargin(0.02)
         #ROOT.gPad.SetTopMargin(0.01)
         pad2.cd()
-        #ROOT.gPad.SetBottomMargin(0.001)
+        ROOT.gPad.SetBottomMargin(0.3)
         ROOT.gPad.SetTopMargin(0.02)
         if args.exp_legend:
             ROOT.gPad.SetRightMargin(0.02)
@@ -1410,14 +1429,14 @@ else:
                 histo_data_relative.SetBinContent(bini, ratio * data_c)
                 histo_data_relative.SetBinError(bini,   args.scale_relative_errors * ratio * data_e)
 
-            histo_data_relative.GetXaxis().SetLabelFont(63)
-            histo_data_relative.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
-            histo_data_relative.GetYaxis().SetLabelFont(63)
-            histo_data_relative.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
-            histo_data_relative.GetXaxis().SetTitleFont(63)
-            histo_data_relative.GetXaxis().SetTitleSize(20)
-            histo_data_relative.GetYaxis().SetTitleFont(63)
-            histo_data_relative.GetYaxis().SetTitleSize(20)
+            histo_data_relative.GetXaxis().SetLabelFont(43)
+            histo_data_relative.GetYaxis().SetLabelFont(43)
+            histo_data_relative.GetXaxis().SetLabelSize(args.text_size_axes_labels)
+            histo_data_relative.GetYaxis().SetLabelSize(args.text_size_axes_labels)
+            histo_data_relative.GetXaxis().SetTitleFont(43)
+            histo_data_relative.GetYaxis().SetTitleFont(43)
+            histo_data_relative.GetXaxis().SetTitleSize(args.text_size_axes_titles)
+            histo_data_relative.GetYaxis().SetTitleSize(args.text_size_axes_titles)
 
         hs_sum1_relative = hs_sum2.Clone()
         hs_sum1_relative.SetName("rel_mc")
@@ -1435,16 +1454,15 @@ else:
 
         #h2.GetYaxis()->SetLabelOffset(0.01)
 
-        hs_sum1_relative.GetXaxis().SetLabelFont(63)
-        hs_sum1_relative.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
-        hs_sum1_relative.GetYaxis().SetLabelFont(63)
-        hs_sum1_relative.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
+        hs_sum1_relative.GetXaxis().SetLabelFont(43)
+        hs_sum1_relative.GetYaxis().SetLabelFont(43)
+        hs_sum1_relative.GetXaxis().SetLabelSize(args.text_size_axes_labels) # labels will be 14 pixels
+        hs_sum1_relative.GetYaxis().SetLabelSize(args.text_size_axes_labels)
 
-        hs_sum1_relative.GetXaxis().SetTitleFont(63)
-        hs_sum1_relative.GetXaxis().SetTitleSize(20)
-
-        hs_sum1_relative.GetYaxis().SetTitleFont(63)
-        hs_sum1_relative.GetYaxis().SetTitleSize(20)
+        hs_sum1_relative.GetXaxis().SetTitleFont(43)
+        hs_sum1_relative.GetYaxis().SetTitleFont(43)
+        hs_sum1_relative.GetXaxis().SetTitleSize(args.text_size_axes_titles)
+        hs_sum1_relative.GetYaxis().SetTitleSize(args.text_size_axes_titles)
 
         # if there is stack plot
         # removing the margin space to stack plot
@@ -1453,16 +1471,20 @@ else:
             #hs_sum1_relative.GetYaxis().SetLabelOffset(0.01)
             #histo_data_relative.GetYaxis().SetLabelOffset(0.01)
             hs_sum1_relative   .SetXTitle(title_x)
-            hs_sum1_relative   .GetXaxis().SetTitleOffset(4.) # place the title not overlapping with labels...
+            hs_sum1_relative   .GetXaxis().SetTitleOffset(3.) # place the title not overlapping with labels...
             if not (args.no_data or args.no_data_plot):
                 histo_data_relative.SetXTitle(title_x)
                 histo_data_relative.GetXaxis().SetTitleOffset(4.)
 
         hs_sum1_relative   .GetYaxis().SetTitleOffset(1.4) # place the title not overlapping with labels...
-
         hs_sum1_relative   .SetYTitle("Data/MC")
 
+        #hs_sum1_relative.SetLineWidth(1)
+        #hs_sum1_relative.SetLineColor(kGray)
+        #hs_sum1_relative.SetFillStyle(3005) # the fill style is used for the error bars
+        #hs_sum1_relative.SetFillColor(kGray+2)
         hs_sum1_relative.Draw("e2")
+        #hs_sum1_relative.Draw("a4")
         if not (args.no_data or args.no_data_plot):
             histo_data_relative.SetYTitle("Data/MC")
             histo_data_relative.GetYaxis().SetTitleOffset(1.4)
@@ -1519,15 +1541,15 @@ else:
             if not (args.no_data or args.no_data_plot):
                 histos_data_sum.SetMinimum(0)
 
-        #hs.GetYaxis().SetTitleFont(63)
+        #hs.GetYaxis().SetTitleFont(43)
         #hs.GetYaxis().SetTitleSize(20)
-        hs_sum2.GetYaxis().SetTitleFont(63)
-        hs_sum2.GetYaxis().SetTitleSize(20)
+        hs_sum2.GetYaxis().SetTitleFont(43)
+        hs_sum2.GetYaxis().SetTitleSize(args.text_size_axes_titles)
         if not (args.no_data or args.no_data_plot):
-            histos_data_sum.GetYaxis().SetTitleFont(63)
-            histos_data_sum.GetYaxis().SetTitleSize(20)
+            histos_data_sum.GetYaxis().SetTitleFont(43)
+            histos_data_sum.GetYaxis().SetTitleSize(args.text_size_axes_titles)
 
-        #histos_data_sum.GetYaxis().SetLabelFont(63)
+        #histos_data_sum.GetYaxis().SetLabelFont(43)
         #histos_data_sum.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
 
         # axis labels
@@ -1536,18 +1558,18 @@ else:
         #histos_data_sum.GetYaxis().SetLabelSize(0.02)
         #histos_data_sum.GetXaxis().SetLabelSize(0.02)
 
-        hs_sum2.GetYaxis().SetLabelFont(63)
-        hs_sum2.GetXaxis().SetLabelFont(63)
-        hs_sum2.GetYaxis().SetLabelSize(14)
-        hs_sum2.GetXaxis().SetLabelSize(14)
+        hs_sum2.GetYaxis().SetLabelFont(43)
+        hs_sum2.GetXaxis().SetLabelFont(43)
+        hs_sum2.GetYaxis().SetLabelSize(args.text_size_axes_labels)
+        hs_sum2.GetXaxis().SetLabelSize(args.text_size_axes_labels)
         if not (args.no_data or args.no_data_plot):
-            histos_data_sum.GetYaxis().SetLabelFont(63)
-            histos_data_sum.GetXaxis().SetLabelFont(63)
-            histos_data_sum.GetYaxis().SetLabelSize(14)
-            histos_data_sum.GetXaxis().SetLabelSize(14)
+            histos_data_sum.GetYaxis().SetLabelFont(43)
+            histos_data_sum.GetXaxis().SetLabelFont(43)
+            histos_data_sum.GetYaxis().SetLabelSize(args.text_size_axes_labels)
+            histos_data_sum.GetXaxis().SetLabelSize(args.text_size_axes_labels)
 
         #hs             .GetYaxis().SetTitleOffset(1.4)
-        hs_sum2        .GetYaxis().SetTitleOffset(1.5) # place the title not overlapping with labels...
+        hs_sum2        .GetYaxis().SetTitleOffset(1.4) # place the title not overlapping with labels...
 
         #hs             .SetYTitle(title_y)
         hs_sum2        .SetYTitle(title_y)
@@ -1556,7 +1578,7 @@ else:
         hs_sum2        .SetTitle(title_plot)
 
         if not (args.no_data or args.no_data_plot):
-            histos_data_sum.GetYaxis().SetTitleOffset(1.5)
+            histos_data_sum.GetYaxis().SetTitleOffset(1.4)
             histos_data_sum.SetYTitle(title_y)
             histos_data_sum.SetTitle(title_plot)
 
@@ -1589,6 +1611,7 @@ else:
                 pass
             else:
                 # only error band in usual case
+                #hs_sum2.SetFillColor(kGray+2)
                 hs_sum2.Draw("same e2")
 
             histos_data_sum.Draw("same e1p")
@@ -1601,6 +1624,7 @@ else:
                 hs_sum2.Draw()
             else:
                 # only error band in usual case
+                #hs_sum2.SetFillColor(kGray+2)
                 hs_sum2.Draw("e2")
 
             if not args.fake_rate:
@@ -1620,6 +1644,7 @@ else:
                 hs_sum2.Draw("same")
             else:
                 # only error band in usual case
+                #hs_sum2.SetFillColor(kGray+2)
                 hs_sum2.Draw("same e2")
 
     '''
@@ -1639,13 +1664,19 @@ else:
     else:
         #left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
         #left_title = TPaveText(0.12, 0.8, 0.35, 0.88, "brNDC")
-        left_title = TPaveText(0.1, 0.8, 0.25, 0.88, "brNDC")
+        #left_title = TPaveText(0.1, 0.8, 0.25, 0.88, "brNDC")
+        #left_title = TPaveText(0.1, 0.92, 0.5, 0.99, "brNDC")
+        left_title = TPaveText(0.1, 0.92, 0.5, 1., "brNDC")
 
     if args.no_data or args.no_data_plot:
         left_title.AddText("CMS simulation")
     else:
         left_title.AddText("CMS")
-    left_title.SetTextFont(1)
+    #left_title.SetTextFont(1)
+    #left_title.SetFillColor(0)
+
+    left_title.SetTextAlign(13) # this adjust to left (+ margin inside the box and top)
+    left_title.SetMargin(0)
     left_title.SetFillColor(0)
 
     '''
@@ -1662,7 +1693,12 @@ else:
         #right_title = TPaveText(0.85, 0.9, 1.0, 0.96, "brNDC")
         right_title = TPaveText(0.75, 0.9, 0.98, 0.98, "brNDC")
     else:
-        right_title = TPaveText(0.65, 0.9, 0.9,  0.95, "brNDC")
+        #right_title = TPaveText(0.65, 0.9, 0.9,  0.95, "brNDC")
+        #right_title = TPaveText(0.5, 0.92, 0.9, 0.99, "brNDC")
+        right_title = TPaveText(0.5, 0.93, 0.9, 1., "brNDC")
+
+    right_title.SetTextAlign(33)
+    right_title.SetMargin(0)
     right_title.AddText("%s fb^{-1} (13 TeV)" % (args.lumi / 1000. if args.lumi else args.lumi_label))
     right_title.SetTextFont(132)
     right_title.SetFillColor(0)
@@ -1683,11 +1719,11 @@ else:
        leg.Draw("same")
 
     if args.output_name:
-        filename = out_dir + args.output_name + '.png'
+        filename = out_dir + args.output_name + '.' + args.output_type
     else:
         stack_or_ratio = ('_stack' if args.plot else '') + ('_ratio' if args.ratio else '')
         shape_chan = ('_x_' + args.shape) if args.shape else ''
-        filename = out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ('_noQCD' if args.skip_QCD else '') + ('_nodata' if args.no_data else '') + ('_nodataplot' if args.no_data_plot else '') + args.output_suffix + ".png"
+        filename = out_dir + '_'.join((args.mc_file.replace('/', ',').split('.root')[0], args.data_file.replace('/', ',').split('.root')[0], distr_names[0], channel, sys_name)) + stack_or_ratio + shape_chan + ('_dataqcd' if args.qcd > 0. else '') + ('_fakerate' if args.fake_rate else '') + ('_cumulative' if args.cumulative else '') + ('_cumulative-fractions' if args.cumulative_fractions else '') + ('_logy' if args.logy else '') + ('_normalize' if args.normalize else '') + ('_nolegend' if args.skip_legend else '') + ('_noQCD' if args.skip_QCD else '') + ('_nodata' if args.no_data else '') + ('_nodataplot' if args.no_data_plot else '') + args.output_suffix + '.' + args.output_type
 
     if isfile(filename) and not args.overwrite:
         print filename, "exists, nothing written"

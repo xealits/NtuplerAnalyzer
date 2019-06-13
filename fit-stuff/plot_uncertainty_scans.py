@@ -30,6 +30,8 @@ parser.add_argument("fit_release",    help="the name tag of the fit")
 parser.add_argument("--nll-limit",  type=float, default=10., help="limit the maximum of NLL on the plot (deafult 10)")
 parser.add_argument("--xsec-scale", type=float, default=143.23, help="the name tag of the fit (default 143.23)")
 parser.add_argument("--title-x",    type=str,   default='\\text{visible cross section [pb]}', help="the name tag of the fit")
+parser.add_argument("--output-type",      type=str,   default='png', help="the output format (png by default)")
+parser.add_argument("--horizontal-lines", type=str,   help="add dashed grey horizontal lines at the Y axis given as <y1>[,<y2>]...")
 parser.add_argument("--debug", action="store_true", help="debug logging")
 
 args = parser.parse_args()
@@ -41,7 +43,7 @@ else:
 
 logging.info("importing ROOT")
 import ROOT
-from ROOT import TCanvas, TGraph, TLine, gStyle, gROOT, gPad, TFile, TTree, TPaveText, TLegend, kBlack, TColor
+from ROOT import TCanvas, TGraph, TLine, gStyle, gROOT, gPad, TFile, TTree, TPaveText, TLegend, kBlack, TColor, kGray
 #include "TGraph.h"
 #include "TAxis.h"
 #include "TH1.h"
@@ -207,12 +209,42 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    #g_stat .SetXTitle("fitted \\mu")
    leg = TLegend(0.6, 0.7, 0.89, 0.89)
 
+   # draw horizontal lines first
+   drawn = False
+   if args.horizontal_lines:
+       for y in [float(s) for s in args.horizontal_lines.split(',')]:
+           l = TLine(100, y, 1000, y)
+           l.SetLineColor(kGray)
+           if not drawn: # root is awesome, isn't it?
+               drawn = True
+               l.Draw()
+           else:
+               l.Draw('same')
+           print "drew line", y
+
    if plot_expected and plot_data:
       print "plotting both"
       exp_g_full.SetLineStyle(7)
 
-      exp_g_full .Draw("ap") # this cast makes the following work
-      exp_g_full .Draw("L")
+      if not drawn:
+          exp_g_full .Draw("ap") # this cast makes the following work
+          exp_g_full .Draw("L")
+      else:
+          exp_g_full .Draw("same ap")
+          exp_g_full .Draw("same L")
+
+      if args.horizontal_lines:
+         for y in [float(s) for s in args.horizontal_lines.split(',')]:
+             l = TLine(0, y, 1000, y)
+             l.SetLineColor(kGray)
+             l.Draw('same L')
+             print "drew line", y
+
+      exp_g_full .Draw("same ap")
+      exp_g_full .Draw("same L")
+
+      #exp_g_full .Draw("ap") # this cast makes the following work
+      #exp_g_full .Draw("L")
       #exp_g_notau.Draw("L same")
       #exp_g_stat .Draw("L same")
 
@@ -259,10 +291,17 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    #left_title.AddText("CMS preliminary at 13 TeV")
    #left_title.SetTextFont(1)
 
-   left_title = TPaveText(0.15, 0.82, 0.3, 0.88, "brNDC")
+   #left_title = TPaveText(0.15, 0.82, 0.3, 0.88, "brNDC")
+   #left_title.AddText("CMS")
+   #left_title.SetTextFont(1)
+   #left_title.SetFillColor(0)
+
+   left_title = TPaveText(0.1, 0.92, 0.5, 0.99, "brNDC")
+   left_title.SetTextAlign(13)
+   left_title.SetMargin(0)
    left_title.AddText("CMS")
-   left_title.SetTextFont(1)
    left_title.SetFillColor(0)
+
    left_title.Draw("same")
 
    #right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
@@ -270,7 +309,8 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    #right_title.SetTextFont(132)
    #right_title.SetFillColor(0)
 
-   right_title = TPaveText(0.5, 0.9, 0.9, 0.95, "brNDC")
+   #right_title = TPaveText(0.5, 0.9, 0.9, 0.95, "brNDC")
+   right_title = TPaveText(0.5, 0.92, 0.9, 0.99, "brNDC")
    both = True
    if report_lumi:
        right_title.AddText("%s fb^{-1} (13 TeV)" % (35.8 if chan == 'el' else 35.8))
@@ -279,16 +319,19 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    else:
        right_title.AddText("(13 TeV)")
 
+   right_title.SetMargin(0)
+   right_title.SetTextAlign(33)
    right_title.SetTextFont(132)
    right_title.SetFillColor(0)
    right_title.Draw("same")
 
+   leg.SetBorderSize(0)
    leg.Draw("same")
 
    plotted = ''
    plotted += '_exp' if plot_expected else ''
    plotted += '_obs' if plot_data else ''
-   c1.SaveAs("uncertainty_scans_%s_%s%s.png" % (args.fit_release, chan, plotted))
+   c1.SaveAs("uncertainty_scans_%s_%s%s.%s" % (args.fit_release, chan, plotted, args.output_type))
 
 
 def plot_all(report_lumi=True):
@@ -390,7 +433,21 @@ def plot_all(report_lumi=True):
 
     leg = TLegend(0.6, 0.7, 0.89, 0.89)
 
+    # plotting
     # first plots to set up the canvas
+
+    # draw horizontal lines first
+    drawn = False
+    if args.horizontal_lines:
+        for y in [float(s) for s in args.horizontal_lines.split(',')]:
+            l = TLine(0.1, y, 0.9, y)
+            l.SetLineColor(kGray)
+            if not drawn: # root is awesome, isn't it?
+                drawn = True
+                l.Draw()
+            else:
+                l.Draw('same')
+
     chan = 'el'
     print 'plotting %s' % chan
     exp_g_full = plots_expected[chan][0]
@@ -399,8 +456,12 @@ def plot_all(report_lumi=True):
     exp_g_full.SetLineColor(colors[chan])
     g_full    .SetLineColor(colors[chan])
 
-    g_full .Draw("ap") # this cast makes the following work
-    g_full .Draw("L")
+    if not drawn:
+        g_full .Draw("ap") # this cast makes the following work
+        g_full .Draw("L")
+    else:
+        g_full .Draw("same ap")
+        g_full .Draw("same L")
     #g_notau.Draw("L same")
     #g_stat .Draw("L same")
 
@@ -440,13 +501,20 @@ def plot_all(report_lumi=True):
         #leg.AddEntry(exp_g_full, "%s expected" % name, "L")
 
 
-    left_title = TPaveText(0.15, 0.82, 0.3, 0.88, "brNDC")
+    #left_title = TPaveText(0.15, 0.82, 0.3, 0.88, "brNDC")
+    #left_title.AddText("CMS")
+    #left_title.SetTextFont(1)
+    #left_title.SetFillColor(0)
+
+    left_title = TPaveText(0.1, 0.92, 0.5, 0.99, "brNDC")
+    left_title.SetTextAlign(13)
+    left_title.SetMargin(0)
     left_title.AddText("CMS")
-    left_title.SetTextFont(1)
     left_title.SetFillColor(0)
+
     left_title.Draw("same")
 
-    right_title = TPaveText(0.5, 0.9, 0.9, 0.95, "brNDC")
+    right_title = TPaveText(0.5, 0.9, 0.9, 0.99, "brNDC")
     both = True
 
     if report_lumi:
@@ -466,7 +534,7 @@ def plot_all(report_lumi=True):
     plotted = ''
     plotted += '_exp'
     plotted += '_obs'
-    c1.SaveAs("uncertainty_scans_%s_%s%s.png" % (args.fit_release, 'all', plotted))
+    c1.SaveAs("uncertainty_scans_%s_%s%s.%s" % (args.fit_release, 'all', plotted, args.output_type))
 
 #plot('mu', True, True)
 #c1.SaveAs("uncertainty_scans_%s_%s%s.png" % (args.fit_release, 'mu', '_exp_obs'))

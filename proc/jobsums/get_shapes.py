@@ -57,14 +57,14 @@ else:
 logging.info("import ROOT")
 
 import ROOT
-from ROOT import gStyle, gROOT, gPad, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TLine, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan
+from ROOT import gStyle, gROOT, gPad, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TLine, TPaveText, TText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan
 gROOT.SetBatch()
 gStyle.SetOptStat(0)
 #gStyle.SetLineWidth(2)
 
 from plotting_root import rgb, nick_colour
 
-leg = TLegend(0.6, 0.7, 0.9, 0.89)
+leg = TLegend(0.6, 0.7, 0.89, 0.89)
 leg.SetBorderSize(0)
 
 histos = {}
@@ -265,6 +265,7 @@ else:
             # rescale to 1 just in case
             #histo.Scale(1./histo.Integral())
 
+
         if drawn:
             if y_max is not None and y_min is not None:
                 logging.debug("setting min-max")
@@ -282,10 +283,17 @@ else:
                 histo.SetYTitle(args.y_title)
             if args.title:
                 histo.SetTitle(args.title)
+
+            histo.GetYaxis().SetTitleOffset(1.4)
             histo.GetYaxis().SetLabelFont(63)
             histo.GetXaxis().SetLabelFont(63)
-            histo.GetYaxis().SetLabelSize(14)
-            histo.GetXaxis().SetLabelSize(14)
+            histo.GetYaxis().SetLabelSize(20)
+            histo.GetXaxis().SetLabelSize(20)
+
+            histo.GetYaxis().SetTitleFont(63)
+            histo.GetXaxis().SetTitleFont(63)
+            histo.GetYaxis().SetTitleSize(24)
+            histo.GetXaxis().SetTitleSize(24)
             if y_max is not None and y_min is not None:
                 logging.debug("setting min-max")
                 histo.SetMaximum(y_max)
@@ -306,13 +314,28 @@ for histo, subform in reversed(plots_to_legend):
         leg.AddEntry(histo, subform) #, "l")
 
 if args.left_title:
-    left_title = TPaveText(0.12, 0.8, 0.36, 0.88, "brNDC")
+    #left_title = TPaveText(0.12, 0.8, 0.36, 0.88, "brNDC")
+    left_title = TPaveText(0.1, 0.92, 0.5, 0.97, "brNDC")
+    #left_title.SetBorderSize(1)
+    #left_title.SetTextAlign(11) # this adjust to left (+ margin inside the box and top)
+    left_title.SetTextAlign(13) # this adjust to left (+ margin inside the box and top)
+    left_title.SetMargin(0)
     left_title.AddText("CMS simulation")
-    left_title.SetTextFont(1)
+    #left_title.SetTextFont(1) # italic/cursive
+    #left_title.SetTextFont(1)
     left_title.SetFillColor(0)
+
+    ## this does not show up on the plot
+    #left_title = TText(0.05, 0.905, "CMS simulation")
+    #left_title.SetTextAlign(11)
+    #left_title.SetTextSize(0.12)
+
     left_title .Draw("same")
 
-right_title = TPaveText(0.65, 0.9, 0.9, 0.95, "brNDC")
+#right_title = TPaveText(0.65, 0.91, 0.89, 0.96, "brNDC")
+right_title = TPaveText(0.65, 0.92, 0.9, 0.97, "brNDC")
+right_title.SetTextAlign(33)
+right_title.SetMargin(0)
 right_title.AddText("(13 TeV)")
 right_title.SetTextFont(132)
 right_title.SetFillColor(0)
