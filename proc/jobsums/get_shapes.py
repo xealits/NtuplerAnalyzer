@@ -285,13 +285,13 @@ else:
                 histo.SetTitle(args.title)
 
             histo.GetYaxis().SetTitleOffset(1.4)
-            histo.GetYaxis().SetLabelFont(63)
-            histo.GetXaxis().SetLabelFont(63)
+            histo.GetYaxis().SetLabelFont(43)
+            histo.GetXaxis().SetLabelFont(43)
             histo.GetYaxis().SetLabelSize(20)
             histo.GetXaxis().SetLabelSize(20)
 
-            histo.GetYaxis().SetTitleFont(63)
-            histo.GetXaxis().SetTitleFont(63)
+            histo.GetYaxis().SetTitleFont(43)
+            histo.GetXaxis().SetTitleFont(43)
             histo.GetYaxis().SetTitleSize(24)
             histo.GetXaxis().SetTitleSize(24)
             if y_max is not None and y_min is not None:

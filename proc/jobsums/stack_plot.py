@@ -917,9 +917,6 @@ if not args.fake_rate and not args.skip_legend and not (args.no_data or args.no_
     histos_data_sum.SetMarkerStyle(21)
     leg.AddEntry(histos_data_sum, "data", "lep")
 
-# add the legend entry for MC sum error band
-leg.AddEntry(hs_sum2, "MC sum", 'f')
-
 if args.leg_n_columns:
     leg.SetNColumns(args.leg_n_columns)
 
@@ -1716,6 +1713,9 @@ else:
     cst.cd()
     if not args.fake_rate and not args.skip_legend:
        if args.exp_legend: leg.SetBorderSize(0)
+
+       # add the legend entry for MC sum error band
+       leg.AddEntry(hs_sum2, "uncertainty", 'f')
        leg.Draw("same")
 
     if args.output_name:

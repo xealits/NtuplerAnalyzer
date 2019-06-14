@@ -29,6 +29,82 @@ python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test15_exp_unc --xsec-scal
 
 
 
+# the problem with the fit in muon channel
+
+TOPPT is not pulled up, therefor the signal strangth is lower than in the fit in both channels
+
+reproduce
+
+correlations do not show anything useful???
+the parameters affected by setting TOPPPT=1 --- freezing them does not set TOPPT to 1?
+    freezing sets them to zero, which is not correct
+    --- save all these parameters in NLL scan, check their correlation with TOPPT
+
+--- check FSR variations?
+    they affect mis-ID, which affects the signal at low Mt
+
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp_REPTEST
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp_REPTEST_TOPPT1 freeze="--freezeParameters lumi_13TeV       --setParameters TOPPT=1"
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp_REPTEST_TOPPT1 freeze="--freezeParameters lumi_13TeV,TOPPT --setParameters TOPPT=1"
+
+TOPPT correlations:
+
++0.29 signal
+-0.10 wjets norm
+-0.09 tau fakes
++0.09 Frag
+-0.08 PU
++0.08 tau ID
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp_REPTEST options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff,wjets_norm,Frag,PU"
+
+ POI: r= 0.945318 -> [0.5,1.5]
+
+root -l higgsCombinev37_test15_mu_exp_REPTEST.MultiDimFit.mH120.root
+
+limit->Draw("2*deltaNLL:TOPPT",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("2*deltaNLL:TOPPT:r",     "deltaNLL>0 && 2*deltaNLL<10", "cont")
+
+
+try to relax the gaussian constraint
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.txt  ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_TOPPT3.txt
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_TOPPT3
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_TOPPT3.root   nn=v37_test15_mu_exp_REPTEST_TOPPT3 options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff,wjets_norm,Frag,PU"
+
+ POI: r= 0.954292 -> [0.5,1.5]
+
+still not 0.96
+and some interruption in
+limit->Draw("2*deltaNLL:TOPPT",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+
+remove FSR from signal
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.txt  ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noSigFSR.txt
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noSigFSR
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noSigFSR.root   nn=v37_test15_mu_exp_REPTEST_noSigFSR options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff,wjets_norm,Frag,PU"
+
+ POI: r= 0.948681 -> [0.5,1.5]
+
+freezing FSR also did not help?
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noSigFSR.root   nn=v37_test15_mu_exp_REPTEST_noSigFSR options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff,wjets_norm,Frag,PU" freeze="--freezeParameters lumi_13TeV,FSR"
+
+ POI: r= 0.951209 -> [0.5,1.5]
+
+root -l higgsCombinev37_test15_mu_exp_REPTEST_noSigFSR.MultiDimFit.mH120.root
+limit->Draw("2*deltaNLL:TOPPT",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+at  0.3
+and 1.0 is about 2sigma away (2*deltaNLL = 4)
+
+
+check separate Mt lj ljout plots!
+
+
+
+
 # more questions on v7
 
 ## just make the plot with combined channel only
