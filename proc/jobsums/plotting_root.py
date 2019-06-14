@@ -64,8 +64,8 @@ nick_info = {
 "tt_else":       {'color': rgb(189,0,38),      'legend': 't#bar{t}#rightarrow other'},
 "tt":            {'color': rgb(189,0,38),      'legend': 't#bar{t}'},
 
-"qcd"       : {'color': kViolet, 'legend': 'QCD'},
-"qcd_other" : {'color': kViolet, 'legend': 'QCD'},
+"qcd"       : {'color': kViolet, 'legend': 'multijet'},
+"qcd_other" : {'color': kViolet, 'legend': 'multijet'},
 }
 
 nick_colour = {nick: nick_info[nick]['color'] for nick in nick_info}
