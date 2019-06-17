@@ -125,6 +125,15 @@ if __name__ == '__main__':
               if 'no_prop_lepjets' in args.options:
                 stage2.PROP_LEPJET = False
                 print 'no_prop_lepjets', stage2.PROP_LEPJET
+
+              if 'on_uncor_lepjets' in args.options:
+                stage2.PROP_UNCORLEPJET = True
+                print 'on_uncor_lepjets', stage2.PROP_UNCORLEPJET
+
+              if 'on_remove_lepjets' in args.options:
+                stage2.REMOVE_LEPJET = True
+                print 'on_remove_lepjets', stage2.REMOVE_LEPJET
+
               if 'no_prop_lepjets_uncluster' in args.options:
                 stage2.PROP_LEPJET_UNCLUSTER = False
                 print 'no_prop_lepjets_uncluster', stage2.PROP_LEPJET_UNCLUSTER

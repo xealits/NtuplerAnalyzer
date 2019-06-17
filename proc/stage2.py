@@ -33,6 +33,8 @@ SV_SIGN_CUT = 2.5
 
 METMuEGClean = True # the met for data
 PROP_TAU     = True
+REMOVE_LEPJET     = False
+PROP_UNCORLEPJET  = False
 PROP_LEPJET  = False
 PROP_LEPJET_UNCLUSTER = False
 PROP_JETS    = True
@@ -3691,7 +3693,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             #genmatch = 0
             if isMC:
                 # JES is ALREADY APPLIED
-                #jes_uncorFactor = ev.jet_uncorrected_jecFactor[i]
+                jes_uncorFactor = ev.jet_uncorrected_jecFactor[i]
                 #en_factor *= jer_factor * jes_uncorFactor
 
                 # jer factor is needed for the syst variation
@@ -3889,7 +3891,48 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 # correct the met from lep-matched jet
                 if match_lep:
 
+                  if PROP_UNCORLEPJET:
+                    # done for data and MC
+                    #if jet_pt > JETS_PT_CUT:
+                    # uncorrect the lep jet, return the correction to MET
+                    proc_met -= p4 * (jes_uncorFactor - 1.)
+                    # also propagate to TES variations
+                    proc_met_TESUp   -= p4 * (jes_uncorFactor - 1.)
+                    proc_met_TESDown -= p4 * (jes_uncorFactor - 1.)
+                    #if jet_pt_JERUp > JETS_PT_CUT:
+                    proc_met_JERUp   -= p4 * (jes_uncorFactor*jet_factor_JERUp - 1.)
+                    #if jet_pt_JERDown > JETS_PT_CUT:
+                    proc_met_JERDown -= p4 * (jes_uncorFactor*jet_factor_JERDown - 1.)
+                    #if jet_pt_JESUp > JETS_PT_CUT:
+                    proc_met_JESUp   -= p4 * (jes_uncorFactor*jet_factor_JESUp - 1.)
+                    #if jet_pt_JESDown > JETS_PT_CUT:
+                    proc_met_JESDown -= p4 * (jes_uncorFactor*jet_factor_JESDown - 1.)
+
+                  if REMOVE_LEPJET:
+                    # done for data and MC
+                    # the idea: the lep jet is a phantom object, which does not represent any real part of the decay
+                    #           therefore the MET must not be changed due to some corrections of this jet or by the jet itself
+                    #if jet_pt > JETS_PT_CUT:
+                    # uncorrect the lep jet, return the correction to MET
+                    # lepjet is a phantom 
+                    proc_met += p4
+                    # also propagate to TES variations
+                    proc_met_TESUp   += p4
+                    proc_met_TESDown += p4
+                    #if jet_pt_JERUp > JETS_PT_CUT:
+                    proc_met_JERUp   += p4
+                    #if jet_pt_JERDown > JETS_PT_CUT:
+                    proc_met_JERDown += p4
+                    #if jet_pt_JESUp > JETS_PT_CUT:
+                    proc_met_JESUp   += p4
+                    #if jet_pt_JESDown > JETS_PT_CUT:
+                    proc_met_JESDown += p4
+
                   if isMC and PROP_LEPJET:
+                    # this does not make sense:
+                    # to correct a non existent jet and propagate the correction to MET in MC only
+                    # -- there is no physical reason for this change of MET
+                    # also it is done only if the jet passes the pT threshold?? what's the reason for this?
                     if jet_pt > JETS_PT_CUT:
                         proc_met -= p4 * (en_factor - 1.)
                         # also propagate to TES variations

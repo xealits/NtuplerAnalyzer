@@ -103,6 +103,457 @@ and 1.0 is about 2sigma away (2*deltaNLL = 4)
 check separate Mt lj ljout plots!
 
 
+## signal correlations
+
+some systematic substitutes TOPPT in correcting the bins
+find them by
+1) post-fit values
+2) signal correlations
+
+post fit values
+
+fitted                                                                                            set
+name                                              b-only fit         rho            s+b fit           s+b fit         rho         name                                              b-only fit      
+FSR                                           ! -5.95, 0.28!       -0.27        +0.31, 0.79       +0.31, 0.78       -0.28         FSR                                           ! -6.03, 0.28!      
+
+Frag                                             -0.97, 0.89       +0.25        +0.09, 1.04       +0.16, 1.03       +0.26         Frag                                             -0.94, 0.87      
+
+HDAMP                                            -1.07, 0.63       -0.06        -0.40, 0.97       -0.40, 0.97       -0.06         HDAMP                                            -1.09, 0.63      
+ISR                                           ! -2.53, 0.91!       +0.21        -0.28, 0.98       -0.29, 0.98       +0.22         ISR                                           ! -2.57, 0.90!      
+JER                                           ! -0.14, 0.41!       -0.05        +0.64, 0.90       +0.62, 0.91       -0.04         JER                                           ! -0.15, 0.41!      
+JES                                           ! -0.06, 0.18!       +0.11        +0.54, 0.55       +0.56, 0.55       +0.10         JES                                           ! -0.05, 0.17!      
+Mf                                               -0.21, 0.74       +0.00        +0.07, 0.92       +0.05, 1.03       +0.02         Mf                                               -0.24, 0.76      
+
+Mfr                                              -0.06, 0.55       -0.13        -0.10, 1.03       -0.01, 1.15       -0.17         Mfr                                              -0.13, 0.55      
+Mr                                               +0.11, 0.80       -0.11        -0.11, 0.96       +0.00, 0.96       -0.14         Mr                                               +0.02, 0.83      
+
+PU                                               +0.39, 0.77       -0.34        -0.29, 0.97       -0.34, 0.94       -0.32         PU                                               +0.43, 0.75      
+
+Peterson                                         -0.02, 0.70       +0.06        -0.04, 1.09       -0.01, 1.18       +0.08         Peterson                                         +0.04, 0.77      
+SemilepBR                                        +0.49, 0.93       +0.01        +0.00, 0.81       +0.00, 0.79       +0.01         SemilepBR                                        +0.45, 0.80      
+TES                                              +0.95, 0.62       -0.07        -0.07, 0.72       -0.09, 0.77       -0.07         TES                                              +0.95, 0.63      
+TuneCUETP8M2T4                                   +0.78, 0.86       +0.07        -0.04, 0.97       -0.00, 0.97       +0.07         TuneCUETP8M2T4                                   +0.80, 0.86      
+bSF                                              -0.84, 0.91       -0.14        +0.41, 0.94       +0.43, 0.94       -0.16         bSF                                              -0.81, 0.91      
+dy_norm                                          -0.57, 0.97       +0.08        -0.09, 0.98       -0.05, 0.98       +0.06         dy_norm                                          -0.54, 0.97      
+qcd_norm                                         -0.57, 0.88       +0.06        -0.35, 0.91       -0.31, 0.91       +0.04         qcd_norm                                         -0.51, 0.88      
+
+tauID_eff                                        -0.74, 0.94       -0.61        -0.11, 0.96       -0.04, 0.96       -0.67         tauID_eff                                        -0.66, 0.94      
+
+tau_fakes                                     ! +4.14, 0.21!       +0.30        -0.25, 0.60       -0.28, 0.59       +0.34         tau_fakes                                     ! +4.12, 0.21!      
+
+wjets_norm                                       -0.18, 0.92       -0.09        +0.42, 0.97       +0.34, 0.95       -0.06         wjets_norm                                       -0.22, 0.91      
+
+TOPPT                                         ! -0.12, 0.43!       +0.29        +0.37, 0.70
+
+-- the "s+b fit" gives " %+4.2f, %4.2f" % (valShift, sigShift)
+   where
+   valShift = (nuis_x.getVal() - mean_p)/sigma_p
+   sigShift =  nuis_x.getError()/sigma_p
+
+                        # calculate the difference of the nuisance parameter
+                        # w.r.t to the prefit value in terms of the uncertainty
+                        # on the prefit value
+                        valShift = (nuis_x.getVal() - mean_p)/sigma_p
+
+correlations
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC
+combine -M FitDiagnostics ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root --plots --saveShapes --saveWithUncertainties --name v37_test15_mu_exp_REPEAT_covariances --freezeNuisanceGroup tt_th_pdf
+combine -M FitDiagnostics ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root --plots --saveShapes --saveWithUncertainties --name v37_test15_mu_exp_REPEAT_covariances --freezeNuisanceGroup tt_th_pdf_only
+
+root -l fitDiagnosticsv37_test15_mu_exp_REPEAT_covariances.root
+gStyle->SetPaintTextFormat("1.2f")
+covariance_fit_s->SetMarkerSize(1.)
+covariance_fit_s->Draw("colz text")
+
+signal correlations:
+
+-0.58 tau ID
+-0.32 PU
++0.31 tau fakes
++0.26 TOPPT
+-0.25 FSR
++0.24 Frag
++0.20 ISR
++0.13 JES
+-0.13 bSF
+-0.13 Mfr
+-0.11 Mr
+-0.09 wjets
+
+
+
+### check postfit values when TOPPT = 1 VS the fitted value?
+
+combine -M FitDiagnostics ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   --name v37_test15_mu_exp_noMC_pulls_fitted    --noMCbonly 0 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf_only
+python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsv37_test15_mu_exp_noMC_pulls_fitted.root -g pulls_of_nuisances_v37_test15_mu_exp_noMC_pulls_fitted.root   -o
+
+Best fit r: 0.947316  -0.0683456/+0.0727285  (68% CL)
+
+combine -M FitDiagnostics ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   --name v37_test15_mu_exp_noMC_pulls_set    --noMCbonly 0 --freezeParameters lumi_13TeV,TOPPT --freezeNuisanceGroup tt_th_pdf_only --setParameters TOPPT=1
+python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsv37_test15_mu_exp_noMC_pulls_set.root -g pulls_of_nuisances_v37_test15_mu_exp_noMC_pulls_set.root   -o
+
+Best fit r: 0.963743  -0.0662516/+0.0712771  (68% CL)
+
+fitted                                                                                            set
+name                                              b-only fit         rho            s+b fit           s+b fit         rho         name                                              b-only fit      
+FSR                                           ! -5.95, 0.28!       -0.27        +0.31, 0.79       +0.31, 0.78       -0.28         FSR                                           ! -6.03, 0.28!      
+Frag                                             -0.97, 0.89       +0.25        +0.09, 1.04       +0.16, 1.03       +0.26         Frag                                             -0.94, 0.87      
+HDAMP                                            -1.07, 0.63       -0.06        -0.40, 0.97       -0.40, 0.97       -0.06         HDAMP                                            -1.09, 0.63      
+ISR                                           ! -2.53, 0.91!       +0.21        -0.28, 0.98       -0.29, 0.98       +0.22         ISR                                           ! -2.57, 0.90!      
+JER                                           ! -0.14, 0.41!       -0.05        +0.64, 0.90       +0.62, 0.91       -0.04         JER                                           ! -0.15, 0.41!      
+JES                                           ! -0.06, 0.18!       +0.11        +0.54, 0.55       +0.56, 0.55       +0.10         JES                                           ! -0.05, 0.17!      
+Mf                                               -0.21, 0.74       +0.00        +0.07, 0.92       +0.05, 1.03       +0.02         Mf                                               -0.24, 0.76      
+Mfr                                              -0.06, 0.55       -0.13        -0.10, 1.03       -0.01, 1.15       -0.17         Mfr                                              -0.13, 0.55      
+Mr                                               +0.11, 0.80       -0.11        -0.11, 0.96       +0.00, 0.96       -0.14         Mr                                               +0.02, 0.83      
+PU                                               +0.39, 0.77       -0.34        -0.29, 0.97       -0.34, 0.94       -0.32         PU                                               +0.43, 0.75      
+Peterson                                         -0.02, 0.70       +0.06        -0.04, 1.09       -0.01, 1.18       +0.08         Peterson                                         +0.04, 0.77      
+SemilepBR                                        +0.49, 0.93       +0.01        +0.00, 0.81       +0.00, 0.79       +0.01         SemilepBR                                        +0.45, 0.80      
+TES                                              +0.95, 0.62       -0.07        -0.07, 0.72       -0.09, 0.77       -0.07         TES                                              +0.95, 0.63      
+TuneCUETP8M2T4                                   +0.78, 0.86       +0.07        -0.04, 0.97       -0.00, 0.97       +0.07         TuneCUETP8M2T4                                   +0.80, 0.86      
+bSF                                              -0.84, 0.91       -0.14        +0.41, 0.94       +0.43, 0.94       -0.16         bSF                                              -0.81, 0.91      
+dy_norm                                          -0.57, 0.97       +0.08        -0.09, 0.98       -0.05, 0.98       +0.06         dy_norm                                          -0.54, 0.97      
+qcd_norm                                         -0.57, 0.88       +0.06        -0.35, 0.91       -0.31, 0.91       +0.04         qcd_norm                                         -0.51, 0.88      
+tauID_eff                                        -0.74, 0.94       -0.61        -0.11, 0.96       -0.04, 0.96       -0.67         tauID_eff                                        -0.66, 0.94      
+tau_fakes                                     ! +4.14, 0.21!       +0.30        -0.25, 0.60       -0.28, 0.59       +0.34         tau_fakes                                     ! +4.12, 0.21!      
+wjets_norm                                       -0.18, 0.92       -0.09        +0.42, 0.97       +0.34, 0.95       -0.06         wjets_norm                                       -0.22, 0.91      
+
+TOPPT                                         ! -0.12, 0.43!       +0.29        +0.37, 0.70
+
+-- b Frag, wjets_norm, Mfr, Mr
+
+freeze them
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   nn=v37_test15_mu_exp_noMC_noFSR    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV,Frag,wjets_norm,Mfr,Mr"
+
+ POI: r= 0.946315 -> [0.5,1.5]
+
+-- freezing Frag should worsen things
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   nn=v37_test15_mu_exp_noMC_noFSR    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV,wjets_norm,Mfr,Mr"
+
+ POI: r= 0.947853 -> [0.5,1.5]
+
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   nn=v37_test15_mu_exp_noMC_noFSR    options="--saveSpecifiedNuis tau_fakes,tauID_eff --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV,TOPPT --setParameters TOPPT=1."
+
+ POI: r= 0.963748 -> [0.5,1.5]
+
+set FSR to 0.16
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   nn=v37_test15_mu_exp_noMC_noFSR    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV,FSR --setParameters FSR=0.16"
+
+ POI: r= 0.9509 -> [0.5,1.5]
+
+-- not enough
+
+limit->Draw("2*deltaNLL:r",         "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("2*deltaNLL:TOPPT",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+at 0.35
+
+set Mfr and Mr to 0.0
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   nn=v37_test15_mu_exp_noMC_noFSR    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV,FSR,Mfr,Mr --setParameters FSR=0.16,Mfr=0.0,Mr=0.0"
+
+ POI: r= 0.94901 -> [0.5,1.5]
+
+-- ???
+
+
+
+those are deviations from prefit value relative to prefit sigma
+-- set 1.16 and 1.0
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   nn=v37_test15_mu_exp_noMC_noFSR    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV,FSR --setParameters FSR=1.16"
+
+ POI: r= 0.924019 -> [0.5,1.5]
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   nn=v37_test15_mu_exp_noMC_noFSR    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV,FSR,Mfr,Mr --setParameters FSR=1.16,Mfr=1.0,Mr=1.0"
+
+ POI: r= 0.904484 -> [0.5,1.5]
+
+wtf?
+
+and TOPPT = 0.6!!!?
+
+not FSR! Frag
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   nn=v37_test15_mu_exp_noMC_noFSR    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV,Frag --setParameters Frag=1.16"
+
+ POI: r= 0.967048 -> [0.5,1.5]
+
+this is it!
+
+and TOPPT is only around 0.43
+
+
+just to test:
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   nn=v37_test15_mu_exp_noMC_noFSR    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV,Frag --setParameters Frag=0.16"
+
+ POI: r= 0.948551 -> [0.5,1.5]
+
+
+see the effect of Frag
+-- FragUp reduces all MC
+
+
+return Frag to 1.0
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC_fullFrag.txt
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC_fullFrag
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC_fullFrag.root   nn=v37_test15_mu_exp_noMC_fullFrag    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff,Frag --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV"
+
+ POI: r= 0.950632 -> [0.5,1.5]
+
+-- TOPPT 0.38
+   Frag  0.1
+
+the rest of frags:
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC_fullFrag2.txt
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC_fullFrag2
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC_fullFrag2.root   nn=v37_test15_mu_exp_noMC_fullFrag2    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff,Frag --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV"
+
+ POI: r= 0.950709 -> [0.5,1.5]
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC_fullFrag3.txt
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC_fullFrag3
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC_fullFrag3.root   nn=v37_test15_mu_exp_noMC_fullFrag3    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff,Frag --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV"
+
+ POI: r= 0.957041 -> [0.5,1.5]
+
+-- this will lead to unreasonable large uncertainty
+
+bt_sig  = 0.961
+
+
+what if both problems, the unphysical TOPPT in muons and the bend in electrons, are the same?
+-- they are due to some mistake in handling lepton jets
+
+
+
+### check how lepton jets are handled now, check the variations
+
+{in the past some procedure for lepton jets drastically and unreasonably increased the data-mc difference
+ maybe it was due to that one error in jet-met propagation, which was fixed in data?}
+
+https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMetAnalysis#Type_I_Correction
+
+MET = - JEC jets - unclustered particles
+
+probably the unclustered include the isolated leptons
+
+so, in principle, the inly thing to propagate is the recalculated JER
+and it is not propagated now by default
+
+resub test16
+
+and 2 test files:
+
+output written, time elapsed 0:21:13.794651
+output written, time elapsed 0:21:15.613446
+
+root -l temp/MC2016_Summer16_TTJets_powheg_84.root
+root -l temp/2/MC2016_Summer16_TTJets_powheg_84.root
+
+ttree_out->Draw("event_met_lep_mt>>h(20,0,250)", "selection_stage == 9 || selection_stage == 7")
+
+h_ = (TH1D*) ttree_out->GetHistogram()
+
+h_nom = (TH1D*) h_->Clone()
+h_nom->SetDirectory(0)
+
+
+h_nom->SetName("nom")
+out_file  = (TFile*) new TFile("met_lepjet_prop_test_nominal.root", "RECREATE")
+
+
+h_nom->SetDirectory(out_file)
+
+out_file->Write()
+out_file->Close()
+
+
+h_nom->SetName("lepjet")
+out_file  = (TFile*) new TFile("met_lepjet_prop_test_lepjet.root", "RECREATE")
+
+
+hadd -f met_lepjet_prop_test_all.root met_lepjet_prop_test_lepjet.root met_lepjet_prop_test_nominal.root
+
+root -l met_lepjet_prop_test_all.root
+
+lepjet->SetLineColor(kRed)
+
+lepjet->Draw()
+nom->Draw("same")
+
+lepjet->Divide(nom)
+lepjet->Draw()
+
+met with no conditions on events
+--- sub percent deviation?
+
+mt with mu_sel condition
+--- fluctuations
+
+python sumup_ttree_draw.py "event_met_lep_mt" --histo-range 20,0,250 --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)*event_weight" --output met_lep_prop_test_MT_in_v37_test15.root       --histo-name mt_lep_met_test15       lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --histo-range 20,0,250 --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)*event_weight" --output met_lep_prop_test_MT_in_v37_test16.root       --histo-name mt_lep_met_test16       lstore_outdirs/v37/test16/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "event_met_lep_mt" --histo-range 20,0,250 --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight"    --output met_lep_prop_test_MT_in_v37_test15_mu_selVloose.root       --histo-name mt_lep_met_test15_mu_selVloose       lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --histo-range 20,0,250 --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight"    --output met_lep_prop_test_MT_in_v37_test16_mu_selVloose.root       --histo-name mt_lep_met_test16_mu_selVloose       lstore_outdirs/v37/test16/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "event_met_lep_mt" --histo-range 20,0,250 --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17 || selection_stage == 15)*event_weight" --output met_lep_prop_test_MT_in_v37_test15_el_selVloose.root       --histo-name mt_lep_met_test15_el_selVloose       lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --histo-range 20,0,250 --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17 || selection_stage == 15)*event_weight" --output met_lep_prop_test_MT_in_v37_test16_el_selVloose.root       --histo-name mt_lep_met_test16_el_selVloose       lstore_outdirs/v37/test16/MC2016_Summer16_TTJets_powheg/*root     &
+
+hadd -f met_lep_prop_test_MT_all_v37_tests.root met_lep_prop_test_MT_in_v37_test15*.root met_lep_prop_test_MT_in_v37_test16*.root
+
+root -l met_lep_prop_test_MT_all_v37_tests.root
+
+mt_lep_met_test15
+mt_lep_met_test15_el_selVloose
+mt_lep_met_test15_mu_selVloose
+
+mt_lep_met_test16                ->SetLineColor(kRed)
+mt_lep_met_test16_el_selVloose   ->SetLineColor(kRed)
+mt_lep_met_test16_mu_selVloose   ->SetLineColor(kRed)
+
+mt_lep_met_test15->Draw()
+mt_lep_met_test16->Draw("same")
+mt_lep_met_test15_el_selVloose->Draw()
+mt_lep_met_test16_el_selVloose->Draw("same")
+mt_lep_met_test15_mu_selVloose->Draw()
+mt_lep_met_test16_mu_selVloose->Draw("same")
+
+
+mt_lep_met_test16->Divide( mt_lep_met_test15)
+mt_lep_met_test16_el_selVloose->Divide( mt_lep_met_test15_el_selVloose)
+mt_lep_met_test16_mu_selVloose->Divide( mt_lep_met_test15_mu_selVloose)
+
+mt_lep_met_test16             ->Draw()
+mt_lep_met_test16_el_selVloose->Draw()
+mt_lep_met_test16_mu_selVloose->Draw()
+
+-- slight rise of Mt, 1-2%
+   I don't see a bend-like change
+
+
+noooooooooooooooooooooo!
+it's not in JER!
+JER should not be done on the lep jet, neither propagated to MET!
+lep jet is a phantom object that should not exist and neither should its' part in MET.
+JES of the lep jet included in the Type1 MET must also be removed.
+
+so, there are 2 options:
+1) try to remove only the JES correction
+2) try to remove the whole jet from MET
+
+-- and these are done both in Data and MC?
+
+check JES factor in Data and MC
+
+root -l gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_1.root
+
+root -l gstore_outdirs/v37/SingleMuon/Ntupler_v37_Data13TeV_SingleMuon2016H_03Feb2017_ver2/190205_175811/0000/Data13TeV_SingleMuon2016H_03Feb2017_ver2_1.root
+
+ntupler->Get("reduced_ttree")->Draw("jet_uncorrected_jecFactor[0]")
+
+-- present in both
+
+test:
+
+ntupler->Get("reduced_ttree")->Draw("jet_uncorrected_jecFactor[0]*jet_jes_recorrection[0]")
+
+= 1 in both
+
+so 1) is done by 1 - jet_uncorrected_jecFactor
+
+
+
+
+## rebinning Mt
+
+outlier bin, _f and _c2
+
+
+
+## separate Mt lj ljout plots
+
+python stack_plot.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375.  --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+
+python stack_plot.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375.  --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+
+evince plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_mu_sel_lj_NOMINAL_stack_ratio.pdf plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_mu_sel_ljout_NOMINAL_stack_ratio.pdf
+
+-- ljout is close to agreement
+
+python stack_plot.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375.  --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --sys TOPPTUp
+python stack_plot.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375.  --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --sys TOPPTUp
+
+evince plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_mu_sel_lj_NOMINAL_stack_ratio.pdf plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_mu_sel_lj_TOPPTUp_stack_ratio.pdf
+
+evince plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_mu_sel_ljout_NOMINAL_stack_ratio.pdf plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_mu_sel_ljout_TOPPTUp_stack_ratio.pdf
+
+-- TOPPT slightly improves both, brings ljout in full agreement but lj not completely, some bins fluctuate
+
+
+compare to electrons
+
+python stack_plot.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,250.  --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+python stack_plot.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,250.  --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+
+python stack_plot.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,250.  --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --sys TOPPTUp
+python stack_plot.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,250.  --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --sys TOPPTUp
+
+evince plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_el_sel_lj_NOMINAL_stack_ratio.pdf plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_el_sel_lj_TOPPTUp_stack_ratio.pdf
+evince plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_el_sel_ljout_NOMINAL_stack_ratio.pdf plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_el_sel_ljout_TOPPTUp_stack_ratio.pdf
+
+-- large fluctuations, as before (another problem -- the bend in ljout, can it be due to el-matched jet and propagation to MET?)
+   barely visible effect in lj and noticeable correction in ljout
+
+
+
+the effect of Frag:
+
+python stack_plot.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375.  --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --sys FragUp
+python stack_plot.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375.  --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --sys FragUp
+
+evince plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_mu_sel_lj_NOMINAL_stack_ratio.pdf plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_mu_sel_lj_FragUp_stack_ratio.pdf
+
+evince plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_mu_sel_ljout_NOMINAL_stack_ratio.pdf plots/update-v8_plot_with_sys//histosels,v37_test15_bunchFULLFIT1_HISTOSEL_histosels,v37_test15_bunchFULLFIT1_HISTOSEL_Mt_lep_met_c_mu_sel_ljout_FragUp_stack_ratio.pdf
+
+-- FragUp reduces all MC
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -c mu_sel_lj    -d Mt_lep_met_c -s FragUp,FragDown   --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/tests/ --outname mu_sel_lj_all_Mt_lep_met_f_FragUp,FragDown.png       --ratio-y-line 1.0 --ratio-range 0.3
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -c mu_sel_ljout    -d Mt_lep_met_c -s FragUp,FragDown   --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/tests/ --outname mu_sel_ljout_all_Mt_lep_met_f_FragUp,FragDown.png       --ratio-y-line 1.0 --ratio-range 0.3
+
+-- quite asymmetric, Up has larger effect and Up reduces small Mt more
+
+
+
+check separate tt processes:
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -c mu_sel_lj     -p tt_mutau  -d Mt_lep_met_c -s FragUp,FragDown   --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/tests/ --outname mu_sel_lj_tt_mutau_Mt_lep_met_f_FragUp,FragDown.png      --ratio-y-line 1.0   --ratio-range 0.3
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -c mu_sel_ljout  -p tt_mutau  -d Mt_lep_met_c -s FragUp,FragDown   --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/tests/ --outname mu_sel_ljout_tt_mutau_Mt_lep_met_f_FragUp,FragDown.png   --ratio-y-line 1.0   --ratio-range 0.3
+
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -c mu_sel_lj     -p tt_lj  -d Mt_lep_met_c -s FragUp,FragDown   --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/tests/ --outname mu_sel_lj_tt_lj_Mt_lep_met_f_FragUp,FragDown.png      --ratio-y-line 1.0   --ratio-range 0.3
+python mc_per_sys.py --ratio-range 0.05 --y-max 2500. histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root -c mu_sel_ljout  -p tt_lj  -d Mt_lep_met_c -s FragUp,FragDown   --no-data --ratio  --add-titles --title-x "M_{T} [GeV]" --title " " -o plots/tests/ --outname mu_sel_ljout_tt_lj_Mt_lep_met_f_FragUp,FragDown.png   --ratio-y-line 1.0   --ratio-range 0.3
+
+eog plots/tests//mu_sel_lj_tt_mutau_Mt_lep_met_f_FragUp,FragDown.png plots/tests//mu_sel_ljout_tt_mutau_Mt_lep_met_f_FragUp,FragDown.png plots/tests//mu_sel_lj_tt_lj_Mt_lep_met_f_FragUp,FragDown.png plots/tests//mu_sel_ljout_tt_lj_Mt_lep_met_f_FragUp,FragDown.png
+
+-- symmetric and quite flat
+   must be the missing QCD!
+
+   the effect on tt_lj is up to 5%
+   and on tt_mutau around 2-4%
+
+
 
 
 # more questions on v7
@@ -519,6 +970,7 @@ make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v3
 cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.txt
 make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC
 combine -M FitDiagnostics ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root --plots --saveShapes --saveWithUncertainties --name v37_test15_mu_exp_REPEAT_covariances --freezeNuisanceGroup tt_th_pdf
+combine -M FitDiagnostics ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root --plots --saveShapes --saveWithUncertainties --name v37_test15_mu_exp_REPEAT_covariances --freezeNuisanceGroup tt_th_pdf_only
 
 Best fit r: 0.946876  -0.0699566/+0.074483  (68% CL)
 
@@ -541,10 +993,22 @@ covariance_fit_s->Draw("colz text")
 -0.08 PU
 +0.08 tau ID
 
++0.26 signal
++0.13 Mr
+-0.10 wjets
++0.09 tau ID
+-0.08 tau fakes
++0.08 Frag
++0.08 Mfr
+-0.07 PU
+
+
 -- try wjets after all?
    smaller wjets first
 
    also fakes correlate with many other parameters, including FSR, check FSR?
+
+   what's with Mr?
 
 
 wjets 1.3 -- no difference, covariance with signal is about the same 0.31
@@ -577,59 +1041,6 @@ vary FSR:
 
 cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC_varyFSR.txt
 make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC
-
-
-
-### check postfit values when TOPPT = 1 VS the fitted value?
-
-combine -M FitDiagnostics ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   --name v37_test15_mu_exp_noMC_pulls_fitted    --noMCbonly 0 --freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf_only
-python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsv37_test15_mu_exp_noMC_pulls_fitted.root -g pulls_of_nuisances_v37_test15_mu_exp_noMC_pulls_fitted.root   -o
-
-Best fit r: 0.947316  -0.0683456/+0.0727285  (68% CL)
-
-combine -M FitDiagnostics ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   --name v37_test15_mu_exp_noMC_pulls_set    --noMCbonly 0 --freezeParameters lumi_13TeV,TOPPT --freezeNuisanceGroup tt_th_pdf_only --setParameters TOPPT=1
-python ttxsec/fit-stuff/diffNuisances.py fitDiagnosticsv37_test15_mu_exp_noMC_pulls_set.root -g pulls_of_nuisances_v37_test15_mu_exp_noMC_pulls_set.root   -o
-
-Best fit r: 0.963743  -0.0662516/+0.0712771  (68% CL)
-
-fitted                                                                                            set
-name                                              b-only fit            s+b fit         rho           s+b fit         rho         name                                              b-only fit      
-FSR                                           ! -5.95, 0.28!        +0.31, 0.79       -0.27       +0.31, 0.78       -0.28         FSR                                           ! -6.03, 0.28!      
-Frag                                             -0.97, 0.89        +0.09, 1.04       +0.25       +0.16, 1.03       +0.26         Frag                                             -0.94, 0.87      
-HDAMP                                            -1.07, 0.63        -0.40, 0.97       -0.06       -0.40, 0.97       -0.06         HDAMP                                            -1.09, 0.63      
-ISR                                           ! -2.53, 0.91!        -0.28, 0.98       +0.21       -0.29, 0.98       +0.22         ISR                                           ! -2.57, 0.90!      
-JER                                           ! -0.14, 0.41!        +0.64, 0.90       -0.05       +0.62, 0.91       -0.04         JER                                           ! -0.15, 0.41!      
-JES                                           ! -0.06, 0.18!        +0.54, 0.55       +0.11       +0.56, 0.55       +0.10         JES                                           ! -0.05, 0.17!      
-Mf                                               -0.21, 0.74        +0.07, 0.92       +0.00       +0.05, 1.03       +0.02         Mf                                               -0.24, 0.76      
-Mfr                                              -0.06, 0.55        -0.10, 1.03       -0.13       -0.01, 1.15       -0.17         Mfr                                              -0.13, 0.55      
-Mr                                               +0.11, 0.80        -0.11, 0.96       -0.11       +0.00, 0.96       -0.14         Mr                                               +0.02, 0.83      
-PU                                               +0.39, 0.77        -0.29, 0.97       -0.34       -0.34, 0.94       -0.32         PU                                               +0.43, 0.75      
-Peterson                                         -0.02, 0.70        -0.04, 1.09       +0.06       -0.01, 1.18       +0.08         Peterson                                         +0.04, 0.77      
-SemilepBR                                        +0.49, 0.93        +0.00, 0.81       +0.01       +0.00, 0.79       +0.01         SemilepBR                                        +0.45, 0.80      
-TES                                              +0.95, 0.62        -0.07, 0.72       -0.07       -0.09, 0.77       -0.07         TES                                              +0.95, 0.63      
-TuneCUETP8M2T4                                   +0.78, 0.86        -0.04, 0.97       +0.07       -0.00, 0.97       +0.07         TuneCUETP8M2T4                                   +0.80, 0.86      
-bSF                                              -0.84, 0.91        +0.41, 0.94       -0.14       +0.43, 0.94       -0.16         bSF                                              -0.81, 0.91      
-dy_norm                                          -0.57, 0.97        -0.09, 0.98       +0.08       -0.05, 0.98       +0.06         dy_norm                                          -0.54, 0.97      
-qcd_norm                                         -0.57, 0.88        -0.35, 0.91       +0.06       -0.31, 0.91       +0.04         qcd_norm                                         -0.51, 0.88      
-tauID_eff                                        -0.74, 0.94        -0.11, 0.96       -0.61       -0.04, 0.96       -0.67         tauID_eff                                        -0.66, 0.94      
-tau_fakes                                     ! +4.14, 0.21!        -0.25, 0.60       +0.30       -0.28, 0.59       +0.34         tau_fakes                                     ! +4.12, 0.21!      
-wjets_norm                                       -0.18, 0.92        +0.42, 0.97       -0.09       +0.34, 0.95       -0.06         wjets_norm                                       -0.22, 0.91      
-
-TOPPT                                         ! -0.12, 0.43!        +0.37, 0.70       +0.29
-
--- b Frag, wjets_norm, Mfr, Mr
-
-freeze them
-
-make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   nn=v37_test15_mu_exp_noMC_noFSR    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV,Frag,wjets_norm,Mfr,Mr"
-
- POI: r= 0.946315 -> [0.5,1.5]
-
--- freezing Frag should worsen things
-
-make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp_noMC.root   nn=v37_test15_mu_exp_noMC_noFSR    options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV,wjets_norm,Mfr,Mr"
-
- POI: r= 0.947853 -> [0.5,1.5]
 
 
 
