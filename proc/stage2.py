@@ -3900,13 +3900,13 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                     proc_met_TESUp   -= p4 * (jes_uncorFactor - 1.)
                     proc_met_TESDown -= p4 * (jes_uncorFactor - 1.)
                     #if jet_pt_JERUp > JETS_PT_CUT:
-                    proc_met_JERUp   -= p4 * (jes_uncorFactor*jet_factor_JERUp - 1.)
+                    proc_met_JERUp   -= p4 * (jes_uncorFactor - 1.)
                     #if jet_pt_JERDown > JETS_PT_CUT:
-                    proc_met_JERDown -= p4 * (jes_uncorFactor*jet_factor_JERDown - 1.)
+                    proc_met_JERDown -= p4 * (jes_uncorFactor - 1.)
                     #if jet_pt_JESUp > JETS_PT_CUT:
-                    proc_met_JESUp   -= p4 * (jes_uncorFactor*jet_factor_JESUp - 1.)
+                    proc_met_JESUp   -= p4 * (jes_uncorFactor - 1.)
                     #if jet_pt_JESDown > JETS_PT_CUT:
-                    proc_met_JESDown -= p4 * (jes_uncorFactor*jet_factor_JESDown - 1.)
+                    proc_met_JESDown -= p4 * (jes_uncorFactor - 1.)
 
                   if REMOVE_LEPJET:
                     # done for data and MC

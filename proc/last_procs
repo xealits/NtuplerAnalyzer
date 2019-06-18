@@ -1,3 +1,14 @@
+# a mistake in lepjet removal in jes and jer variations of met
+python genjobs.py v37 test172 --options on_uncor_lepjets  --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue                 --dtags MC2016_Summer16_TTJets_powheg,std_data --jobs-name-tag tt_data
+
+python genjobs.py v37 test172 --options on_uncor_lepjets  --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --without-dtags MC2016_Summer16_TTJets_powheg
+python genjobs.py v37 test172 --options on_uncor_lepjets  --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue                 --dtags qcd_ext,updowns,updowns_extra,wjets_amcatnlo --jobs-name-tag extra
+
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test172 --distrs bunchFULLFIT1 --chan-groups fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout
+
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test172 --distrs bunchFULLFIT1 --chan-groups fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout --dtags Data13TeV_SingleElectron2016B_03Feb2017_ver2,Data13TeV_SingleElectron2016C_03Feb2017_v1,Data13TeV_SingleElectron2016D_03Feb2017_v1,Data13TeV_SingleElectron2016E_03Feb2017_v1,Data13TeV_SingleElectron2016F_03Feb2017_v1,Data13TeV_SingleElectron2016G_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver2,Data13TeV_SingleElectron2016H_03Feb2017_ver3,Data13TeV_SingleMuon2016B_03Feb2017_ver2,Data13TeV_SingleMuon2016C_03Feb2017_v1,Data13TeV_SingleMuon2016D_03Feb2017_v1,Data13TeV_SingleMuon2016E_03Feb2017_v1,Data13TeV_SingleMuon2016F_03Feb2017_v1,Data13TeV_SingleMuon2016G_03Feb2017_v1,Data13TeV_SingleMuon2016H_03Feb2017_ver2,Data13TeV_SingleMuon2016H_03Feb2017_ver3
+
+
 # tests of correct handling of the lep jet
 python genjobs.py v37 test18 --options on_remove_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue                 --dtags MC2016_Summer16_TTJets_powheg --jobs-name-tag tt
 python genjobs.py v37 test18 --options on_remove_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --without-dtags MC2016_Summer16_TTJets_powheg
@@ -11,6 +22,7 @@ python genjobs.py v37 test17 --options on_uncor_lepjets  --do-W-stitching --metm
 python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test17 --distrs bunchFULLFIT1 --chan-groups fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout
 
 python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test17 --distrs bunchFULLFIT1 --chan-groups fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout --dtags Data13TeV_SingleElectron2016B_03Feb2017_ver2,Data13TeV_SingleElectron2016C_03Feb2017_v1,Data13TeV_SingleElectron2016D_03Feb2017_v1,Data13TeV_SingleElectron2016E_03Feb2017_v1,Data13TeV_SingleElectron2016F_03Feb2017_v1,Data13TeV_SingleElectron2016G_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver2,Data13TeV_SingleElectron2016H_03Feb2017_ver3,Data13TeV_SingleMuon2016B_03Feb2017_ver2,Data13TeV_SingleMuon2016C_03Feb2017_v1,Data13TeV_SingleMuon2016D_03Feb2017_v1,Data13TeV_SingleMuon2016E_03Feb2017_v1,Data13TeV_SingleMuon2016F_03Feb2017_v1,Data13TeV_SingleMuon2016G_03Feb2017_v1,Data13TeV_SingleMuon2016H_03Feb2017_ver2,Data13TeV_SingleMuon2016H_03Feb2017_ver3
+
 
 
 # compare to prop lep jets
