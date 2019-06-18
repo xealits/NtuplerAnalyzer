@@ -3691,9 +3691,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             PF = -1
             jet_index = i
             #genmatch = 0
+            jes_uncorFactor = ev.jet_uncorrected_jecFactor[i]
             if isMC:
                 # JES is ALREADY APPLIED
-                jes_uncorFactor = ev.jet_uncorrected_jecFactor[i]
                 #en_factor *= jer_factor * jes_uncorFactor
 
                 # jer factor is needed for the syst variation

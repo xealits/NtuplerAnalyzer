@@ -27,6 +27,213 @@ python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test15_exp_unc --xsec-scal
 
 
 
+# run on the datacards
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_el
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu
+make both mucard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu elcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_el bothcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_both
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_both
+
+combineCards.py mu=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.txt el=ttxsec/datacard_v37_test15_bunchFULLFIT1_el.txt > ttxsec/datacard_v37_test15_bunchFULLFIT1_both.txt
+../scripts/text2workspace.py ttxsec/datacard_v37_test15_bunchFULLFIT1_el.txt
+
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root   nn=v37_test15_mu_STATTEST    &
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root   nn=v37_test15_el_STATTEST    &
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root nn=v37_test15_both_STATTEST  &
+
+ POI: r= 0.945318 -> [0.5,1.5]
+ POI: r= 0.944658 -> [0.5,1.5]
+ POI: r= 0.958266 -> [0.5,1.5]
+
+VS
+
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_STATTESTexp
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el_exp.root   nn=v37_test15_el_STATTESTexp
+make nll  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both_exp.root nn=v37_test15_both_STATTESTexp
+
+ POI: r= 0.945318 -> [0.5,1.5]
+ POI: r= 0.944658 -> [0.5,1.5]
+ POI: r= 0.958266 -> [0.5,1.5]
+
+same
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root   nn=v37_test15_mu_STATTEST    &
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root   nn=v37_test15_el_STATTEST    &
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root nn=v37_test15_both_STATTEST  &
+
+overall uncertainty:
+
+el   0.945 +- 0.0824
+mu   0.945 +- 0.073
+both 0.958 +- 0.0697
+
+OK
+
+
+
+
+goodness of fit
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root   --algo=KS         -s 123                    --freezeParameters lumi_13TeV -n v37_test15_mu_STATTEST_KS
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root   --algo=KS         -s 123                    --freezeParameters lumi_13TeV -n v37_test15_el_STATTEST_KS
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root --algo=KS         -s 123                    --freezeParameters lumi_13TeV -n v37_test15_both_STATTEST_KS
+
+Kolmogorov-Smirnov test statistic: 0.00514565
+Kolmogorov-Smirnov test statistic: 0.0146337
+Kolmogorov-Smirnov test statistic: 0.0201683
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root   --algo=KS         -s 321                    --freezeParameters lumi_13TeV -n v37_test15_mu_STATTEST_KS
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root   --algo=KS         -s 321                    --freezeParameters lumi_13TeV -n v37_test15_el_STATTEST_KS
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root --algo=KS         -s 321                    --freezeParameters lumi_13TeV -n v37_test15_both_STATTEST_KS
+
+Kolmogorov-Smirnov test statistic: 0.00514565
+Kolmogorov-Smirnov test statistic: 0.0146337
+Kolmogorov-Smirnov test statistic: 0.0201683
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root   --algo=KS -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test15_mu_STATTEST_KS100    &
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root   --algo=KS -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test15_el_STATTEST_KS100    &
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root --algo=KS -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test15_both_STATTEST_KS100  &
+
+root -l higgsCombinev37_test15_mu_STATTEST_KS100.GoodnessOfFit.mH120.123.root
+root -l higgsCombinev37_test15_el_STATTEST_KS100.GoodnessOfFit.mH120.123.root
+root -l higgsCombinev37_test15_both_STATTEST_KS100.GoodnessOfFit.mH120.123.root
+
+limit->Draw("limit")
+h = (TH1D*) limit->GetHistogram()
+h_c = (TH1D*) h->GetCumulative(kFALSE)
+h_c->Draw()
+
+h_c->GetBinContent(h_c->FindBin(0.00514565))
+h_c->GetBinContent(h_c->FindBin(0.0146337))
+h_c->GetBinContent(h_c->FindBin(0.0201683))
+
+90.000
+15.000
+40.000
+
+good!
+perfect
+
+
+tests from twiki:
+https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsWG/HiggsPAGPreapprovalChecks
+
+combine -M FitDiagnostics -t -1 --expectSignal 0  ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root
+combine -M FitDiagnostics -t -1 --expectSignal 0  ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root
+combine -M FitDiagnostics -t -1 --expectSignal 0  ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root
+
+python ../test/diffNuisances.py -a fitDiagnostics.root -g plots.root
+
+
+mu
+
+Best fit r: 6.16239e-06  -6.16239e-06/+4.52402  (68% CL)
+
+in table b fit has most parameters like this:
+* +0.00, 1.24*
+! -0.00, 1.59!
+
+-- it's at 0, the variation is slightly larger than 1sigma
+   why are they marked?
+   probably >1.1sigma is *marked*
+   and      >1.5sigma is !marked!
+
+
+el
+
+Best fit r: 9.29125e-05  -9.29125e-05/+0.0211531  (68% CL)
+
+all at zero, few marks and only *marks*
+
+
+
+both
+
+Best fit r: 0.000312353  -0.000312353/+0.0166493  (68% CL)
+
+and also all nuisances at 0, few are marked, couple !with!
+
+
+combine -M FitDiagnostics -t -1 --expectSignal 1  ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root
+combine -M FitDiagnostics -t -1 --expectSignal 1  ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root
+combine -M FitDiagnostics -t -1 --expectSignal 1  ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root
+
+python ../test/diffNuisances.py -a fitDiagnostics.root -g plots.root
+
+
+
+mu
+
+Best fit r: 1  -0.0718557/+0.0821157  (68% CL)
+
+s+b is perfect, very few are marked
+
+
+
+el
+
+Best fit r: 1  -0.0792545/+0.0920065  (68% CL)
+
+more marks than in mu, but *majority is*
+
+
+both
+
+Best fit r: 1  -0.0682529/+0.0778925  (68% CL)
+
+same, only FSR and fakes are !marked!, a bunch of *marks*
+
+
+
+Validate script
+
+../../../CombineHarvester/CombineTools/scripts/ValidateDatacards.py ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.txt
+../../../CombineHarvester/CombineTools/scripts/ValidateDatacards.py ttxsec/datacard_v37_test15_bunchFULLFIT1_el.txt
+../../../CombineHarvester/CombineTools/scripts/ValidateDatacards.py ttxsec/datacard_v37_test15_bunchFULLFIT1_both.txt
+
+../../../CombineHarvester/CombineTools/scripts/ValidateDatacards.py ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.txt
+[SetFlag] Changing value of flag "check-negative-bins-on-import" from 1 to 0
+[SetFlag] Changing value of flag "workspaces-use-clone" from 0 to 1
+================================
+=======Validation results=======
+================================
+>>>There were  40 warnings of type  'up/down templates vary the yield in the same direction'
+>>>There were no warnings of type  'At least one of the up/down systematic uncertainty templates is empty'
+>>>There were  40 warnings of type  'Uncertainty has normalisation effect of more than 10.0%'
+>>>There were  4 warnings of type  'Uncertainty probably has no genuine shape effect'
+>>>There were no warnings of type 'Empty process'
+
+../../../CombineHarvester/CombineTools/scripts/ValidateDatacards.py ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root
+../../../CombineHarvester/CombineTools/scripts/ValidateDatacards.py ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root
+../../../CombineHarvester/CombineTools/scripts/ValidateDatacards.py ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root
+
+../../../CombineHarvester/CombineTools/scripts/ValidateDatacards.py ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root
+[SetFlag] Changing value of flag "check-negative-bins-on-import" from 1 to 0
+[SetFlag] Changing value of flag "workspaces-use-clone" from 0 to 1
+================================
+=======Validation results=======
+================================
+>>>There were no warnings
+
+[SetFlag] Changing value of flag "check-negative-bins-on-import" from 1 to 0
+[SetFlag] Changing value of flag "workspaces-use-clone" from 0 to 1
+================================
+=======Validation results=======
+================================
+>>>There were no warnings
+
+[SetFlag] Changing value of flag "check-negative-bins-on-import" from 1 to 0
+[SetFlag] Changing value of flag "workspaces-use-clone" from 0 to 1
+================================
+=======Validation results=======
+================================
+>>>There were no warnings
+
+
+
+
 
 
 # the problem with the fit in muon channel
@@ -539,6 +746,122 @@ mt_lep_met_test18_mu_selVloose->Draw("same")
 
 these shifts propagate to data too, so the final effect is hard to estimate
 finish both procedures, test17 first
+
+
+### test17 plots
+
+python stack_plot.py distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root distrs/v37_test17_bunchFULLFIT1/SingleElectron.root  -o plots/v37_test17_bunchFULLFIT1_mc1/ --data-nick data_other --overwrite -p -r -c el_sel -x el_selVloose --qcd 1.05 --wjets 1.4 -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,250.  --lumi 35800 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+python stack_plot.py distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root distrs/v37_test17_bunchFULLFIT1/SingleMuon.root      -o plots/v37_test17_bunchFULLFIT1_mc1/ --data-nick data_other --overwrite -p -r -c mu_sel -x mu_selVloose --qcd 1.05 --wjets 1.4 -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375.  --lumi 35800 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+
+-- el is muc better?
+
+python stack_plot.py distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root distrs/v37_test17_bunchFULLFIT1/SingleElectron.root  -o plots/v37_test17_bunchFULLFIT1_mc1/ --data-nick data_other --overwrite -p -r -c el_sel_lj    -x el_selVloose_lj    --qcd 1.05 --wjets 1.4 -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,250.  --lumi 35800 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+python stack_plot.py distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root distrs/v37_test17_bunchFULLFIT1/SingleMuon.root      -o plots/v37_test17_bunchFULLFIT1_mc1/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -x mu_selVloose_lj    --qcd 1.05 --wjets 1.4 -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375.  --lumi 35800 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+
+python stack_plot.py distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root distrs/v37_test17_bunchFULLFIT1/SingleElectron.root  -o plots/v37_test17_bunchFULLFIT1_mc1/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -x el_selVloose_ljout --qcd 1.05 --wjets 1.4 -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,250.  --lumi 35800 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+python stack_plot.py distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root distrs/v37_test17_bunchFULLFIT1/SingleMuon.root      -o plots/v37_test17_bunchFULLFIT1_mc1/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -x mu_selVloose_ljout --qcd 1.05 --wjets 1.4 -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375.  --lumi 35800 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+
+evince plots/v37_test17_bunchFULLFIT1_mc1//distrs,distrs_v37_test*_lj*
+
+-- looks kind of the same as before,
+   in el the bend is broken but in another weird way, no trend though
+   in mu both categories have similar slope and linearity, ljout has smaller slope than lj
+
+compare to test15
+
+mkdir -p plots/v37_test15_bunchFULLFIT1_mc_1/
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root  -o plots/v37_test15_bunchFULLFIT1_mc_1/ --data-nick data_other --overwrite -p -r -c el_sel_lj    -x el_selVloose_lj    --qcd 1.05 --wjets 1.4 -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,250.  --lumi 35800 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root      -o plots/v37_test15_bunchFULLFIT1_mc_1/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -x mu_selVloose_lj    --qcd 1.05 --wjets 1.4 -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375.  --lumi 35800 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleElectron.root  -o plots/v37_test15_bunchFULLFIT1_mc_1/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -x el_selVloose_ljout --qcd 1.05 --wjets 1.4 -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,250.  --lumi 35800 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+python stack_plot.py distrs/v37_test15_bunchFULLFIT1_mc_1.root distrs/v37_test15_bunchFULLFIT1/SingleMuon.root      -o plots/v37_test15_bunchFULLFIT1_mc_1/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -x mu_selVloose_ljout --qcd 1.05 --wjets 1.4 -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375.  --lumi 35800 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+
+evince plots/v37_test17_bunchFULLFIT1_mc1//distrs,distrs_v37_test*_el_sel_lj* plots/v37_test15_bunchFULLFIT1_mc_1/distr*_el_sel_lj*
+evince plots/v37_test17_bunchFULLFIT1_mc1//distrs,distrs_v37_test*_mu_sel_lj* plots/v37_test15_bunchFULLFIT1_mc_1/distr*_mu_sel_lj*
+
+
+-- yeah, they are practically the same, just some variations in bins
+
+
+histograms
+
+make run_std_histos out=histosels/v37_test17_bunchFULLFIT1/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root data_mu=distrs/v37_test17_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test17_bunchFULLFIT1/SingleElectron.root
+
+something crashes with "file exists, nothing is written"?
+
+make run_histos mc=distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root data=distrs/v37_test17_bunchFULLFIT1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test17_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_lj"    & \
+make run_histos mc=distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root data=distrs/v37_test17_bunchFULLFIT1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test17_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_lj"    & \
+make run_histos mc=distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root data=distrs/v37_test17_bunchFULLFIT1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test17_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_ljout" & \
+make run_histos mc=distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root data=distrs/v37_test17_bunchFULLFIT1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test17_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_ljout" & \
+# no updowns now
+make run_histos mc=distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root data=distrs/v37_test17_bunchFULLFIT1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test17_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_lj    systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_lj" & \
+make run_histos mc=distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root data=distrs/v37_test17_bunchFULLFIT1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test17_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_lj    systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_lj" & \
+make run_histos mc=distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root data=distrs/v37_test17_bunchFULLFIT1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test17_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_ljout systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_ljout" & \
+make run_histos mc=distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root data=distrs/v37_test17_bunchFULLFIT1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test17_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_ljout systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_ljout" & \
+#
+make run_histos mc=distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root data=distrs/v37_test17_bunchFULLFIT1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test17_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel & \
+make run_histos mc=distrs/distrs_v37_test17_bunchFULLFIT1_mc1.root data=distrs/v37_test17_bunchFULLFIT1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test17_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel & 
+
+-- all ok
+
+hadd histosels/datafile_HISTOSEL_v37_test17_bunchFULLFIT1.root histosels/v37_test17_bunchFULLFIT1/*
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test17_bunchFULLFIT1_el.txt
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.txt ttxsec/datacard_v37_test17_bunchFULLFIT1_mu.txt
+
+vim -p ttxsec/datacard_v37_test17_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test17_bunchFULLFIT1_mu.txt
+
+shapes qcd       el_sel_lj     fit-stuff/datafile_HISTOSEL_v37_test17_bunchFULLFIT1.root  el_sel_lj/qcd_other/NOMINAL/el_sel_lj_qcd_NOMINAL_Mt_lep_met_c                 el_sel_lj/qcd_other/$SYSTEMATIC/el_sel_lj_qcd_$SYSTEMATIC_Mt_lep_met_c
+shapes qcd       el_sel_ljout  fit-stuff/datafile_HISTOSEL_v37_test17_bunchFULLFIT1.root  el_sel_ljout/qcd_other/NOMINAL/el_sel_ljout_qcd_NOMINAL_Mt_lep_met_c           el_sel_ljout/qcd_other/$SYSTEMATIC/el_sel_ljout_qcd_$SYSTEMATIC_Mt_lep_met_c
+
+shapes qcd       mu_sel_lj     fit-stuff/datafile_HISTOSEL_v37_test17_bunchFULLFIT1.root  mu_sel_lj/qcd_other/NOMINAL/mu_sel_lj_qcd_NOMINAL_Mt_lep_met_c                 mu_sel_lj/qcd_other/$SYSTEMATIC/mu_sel_lj_qcd_$SYSTEMATIC_Mt_lep_met_c
+shapes qcd       mu_sel_ljout  fit-stuff/datafile_HISTOSEL_v37_test17_bunchFULLFIT1.root  mu_sel_ljout/qcd_other/NOMINAL/mu_sel_ljout_qcd_NOMINAL_Mt_lep_met_c           mu_sel_ljout/qcd_other/$SYSTEMATIC/mu_sel_ljout_qcd_$SYSTEMATIC_Mt_lep_met_c
+
+
+make workspace datacard=ttxsec/datacard_v37_test17_bunchFULLFIT1_el
+make workspace datacard=ttxsec/datacard_v37_test17_bunchFULLFIT1_mu
+make both mucard=ttxsec/datacard_v37_test17_bunchFULLFIT1_mu elcard=ttxsec/datacard_v37_test17_bunchFULLFIT1_el bothcard=ttxsec/datacard_v37_test17_bunchFULLFIT1_both
+make workspace datacard=ttxsec/datacard_v37_test17_bunchFULLFIT1_both
+
+combineCards.py mu=ttxsec/datacard_v37_test17_bunchFULLFIT1_mu.txt el=ttxsec/datacard_v37_test17_bunchFULLFIT1_el.txt > ttxsec/datacard_v37_test17_bunchFULLFIT1_both.txt
+../scripts/text2workspace.py ttxsec/datacard_v37_test17_bunchFULLFIT1_el.txt
+
+
+make nll  workspace=ttxsec/datacard_v37_test17_bunchFULLFIT1_mu.root   nn=v37_test17_mu_test1
+make nll  workspace=ttxsec/datacard_v37_test17_bunchFULLFIT1_el.root   nn=v37_test17_el_test1
+make nll  workspace=ttxsec/datacard_v37_test17_bunchFULLFIT1_both.root nn=v37_test17_both_test1
+
+ POI: r= 0.858347 -> [0.5,1.5]
+
+-- wtf??? muons fail??? muons look better than before!
+   ljout has one bin where data fluctuates to MC, comparing to the test15
+
+ POI: r= 0.932541 -> [0.5,1.5]
+ POI: r= 0.89147 -> [0.5,1.5]
+
+wtf?
+.. but both ends up in between
+
+VS
+
+ POI: r= 0.945318 -> [0.5,1.5]
+ POI: r= 0.944658 -> [0.5,1.5]
+ POI: r= 0.958266 -> [0.5,1.5]
+
+root -l higgsCombinev37_test17_mu_test1.MultiDimFit.mH120.root
+limit->Draw("2*deltaNLL:r",         "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("2*deltaNLL:TOPPT",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+-- and it's smooth?
+
+
+make impacts  workspace=ttxsec/datacard_v37_test17_bunchFULLFIT1_mu.root   nn=v37_test17_mu_test1    &
+make impacts  workspace=ttxsec/datacard_v37_test17_bunchFULLFIT1_el.root   nn=v37_test17_el_test1    &
+make impacts  workspace=ttxsec/datacard_v37_test17_bunchFULLFIT1_both.root nn=v37_test17_both_test1  &
+
+
+
 
 
 
