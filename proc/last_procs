@@ -1,6 +1,11 @@
 # tests of correct handling of the lep jet
-python genjobs.py v37 test18 --options on_remove_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --dtags MC2016_Summer16_TTJets_powheg --jobs-name-tag tt
-python genjobs.py v37 test17 --options on_uncor_lepjets  --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --dtags MC2016_Summer16_TTJets_powheg --jobs-name-tag tt
+python genjobs.py v37 test18 --options on_remove_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue                 --dtags MC2016_Summer16_TTJets_powheg --jobs-name-tag tt
+python genjobs.py v37 test18 --options on_remove_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --without-dtags MC2016_Summer16_TTJets_powheg
+
+python genjobs.py v37 test17 --options on_uncor_lepjets  --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue                 --dtags MC2016_Summer16_TTJets_powheg --jobs-name-tag tt
+python genjobs.py v37 test17 --options on_uncor_lepjets  --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --without-dtags MC2016_Summer16_TTJets_powheg
+python genjobs.py v37 test17 --options on_uncor_lepjets  --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue                 --dtags qcd_ext,updowns,updowns_extra,wjets_amcatnlo --jobs-name-tag extra
+
 
 
 # compare to prop lep jets

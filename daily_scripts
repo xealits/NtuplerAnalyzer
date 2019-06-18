@@ -474,6 +474,73 @@ ntupler->Get("reduced_ttree")->Draw("jet_uncorrected_jecFactor[0]*jet_jes_recorr
 so 1) is done by 1 - jet_uncorrected_jecFactor
 
 
+test17 and test18
+-- proper handling of lep jet
+
+test17
+
+python sumup_ttree_draw.py "event_met_lep_mt" --histo-range 20,0,250 --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight"    --output met_lep_prop_test_MT_in_v37_test17_mu_selVloose.root       --histo-name mt_lep_met_test17_mu_selVloose       lstore_outdirs/v37/test17/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --histo-range 20,0,250 --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17 || selection_stage == 15)*event_weight" --output met_lep_prop_test_MT_in_v37_test17_el_selVloose.root       --histo-name mt_lep_met_test17_el_selVloose       lstore_outdirs/v37/test17/MC2016_Summer16_TTJets_powheg/*root     &
+
+test18
+
+python sumup_ttree_draw.py "event_met_lep_mt" --histo-range 20,0,250 --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight"    --output met_lep_prop_test_MT_in_v37_test18_mu_selVloose.root       --histo-name mt_lep_met_test18_mu_selVloose       lstore_outdirs/v37/test18/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --histo-range 20,0,250 --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17 || selection_stage == 15)*event_weight" --output met_lep_prop_test_MT_in_v37_test18_el_selVloose.root       --histo-name mt_lep_met_test18_el_selVloose       lstore_outdirs/v37/test18/MC2016_Summer16_TTJets_powheg/*root     &
+
+hadd -f met_lep_prop_test_MT_all_v37_tests.root met_lep_prop_test_MT_in_v37_test1*.root
+
+root -l met_lep_prop_test_MT_all_v37_tests.root
+
+mt_lep_met_test15_el_selVloose
+mt_lep_met_test15_mu_selVloose
+
+mt_lep_met_test16_el_selVloose   ->SetLineColor(kRed)
+mt_lep_met_test16_mu_selVloose   ->SetLineColor(kRed)
+
+mt_lep_met_test15->Draw()
+mt_lep_met_test16->Draw("same")
+mt_lep_met_test15_el_selVloose->Draw()
+mt_lep_met_test16_el_selVloose->Draw("same")
+mt_lep_met_test15_mu_selVloose->Draw()
+mt_lep_met_test16_mu_selVloose->Draw("same")
+
+
+mt_lep_met_test16->Divide( mt_lep_met_test15)
+mt_lep_met_test16_el_selVloose->Divide( mt_lep_met_test15_el_selVloose)
+mt_lep_met_test16_mu_selVloose->Divide( mt_lep_met_test15_mu_selVloose)
+
+normalize, since some jobs are missing:
+
+mt_lep_met_test15_el_selVloose->Scale(1./mt_lep_met_test15_el_selVloose->Integral())
+mt_lep_met_test15_mu_selVloose->Scale(1./mt_lep_met_test15_mu_selVloose->Integral())
+
+mt_lep_met_test17_el_selVloose->Scale(1./mt_lep_met_test17_el_selVloose->Integral())
+mt_lep_met_test17_mu_selVloose->Scale(1./mt_lep_met_test17_mu_selVloose->Integral())
+
+mt_lep_met_test18_el_selVloose->Scale(1./mt_lep_met_test18_el_selVloose->Integral())
+mt_lep_met_test18_mu_selVloose->Scale(1./mt_lep_met_test18_mu_selVloose->Integral())
+
+
+
+mt_lep_met_test17_el_selVloose->Divide( mt_lep_met_test15_el_selVloose)
+mt_lep_met_test17_mu_selVloose->Divide( mt_lep_met_test15_mu_selVloose)
+
+mt_lep_met_test18_el_selVloose->Divide( mt_lep_met_test15_el_selVloose)
+mt_lep_met_test18_mu_selVloose->Divide( mt_lep_met_test15_mu_selVloose)
+
+mt_lep_met_test17_el_selVloose->Draw()
+mt_lep_met_test17_mu_selVloose->Draw()
+
+mt_lep_met_test18_el_selVloose->Draw()
+mt_lep_met_test18_mu_selVloose->Draw("same")
+
+-- 17 strong shift to smaller values, linear +8% to -12%, flattens at very large values, similar el and mu
+   18 very stron shift, non linear shape +150% to -75%, flattens at very large values
+
+these shifts propagate to data too, so the final effect is hard to estimate
+finish both procedures, test17 first
+
+
 
 
 ## rebinning Mt
