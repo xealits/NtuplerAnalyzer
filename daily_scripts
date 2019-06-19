@@ -116,6 +116,43 @@ h_c->GetBinContent(h_c->FindBin(0.0201683))
 good!
 perfect
 
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root   --algo=KS         -s 123                    --freezeParameters lumi_13TeV,TOPPT --setParameters TOPPT=1 -n v37_test15_mu_STATTEST_KS_TOPPT1
+
+Kolmogorov-Smirnov test statistic: 0.00494335
+
+root -l stattests/1/higgsCombinev37_test15_mu_STATTEST_KS100.GoodnessOfFit.mH120.123.root
+
+limit->Draw("limit")
+h = (TH1D*) limit->GetHistogram()
+h_c = (TH1D*) h->GetCumulative(kFALSE)
+h_c->Draw()
+
+h_c->GetBinContent(h_c->FindBin(0.00494335))
+
+93.0000
+
+-- 93% on one side of the test!
+
+test nll-s!
+
+also the KS 100 run does not include 1 less parameter?
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root   --algo=KS -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV,TOPPT --setParameters TOPPT=1 -n v37_test15_mu_STATTEST_KS100_TOPPT1
+
+mv higgsCombinev37_test15_mu_STATTEST_KS100_TOPPT1.GoodnessOfFit.mH120.123.root stattests/1/
+root -l stattests/1/higgsCombinev37_test15_mu_STATTEST_KS100_TOPPT1.GoodnessOfFit.mH120.123.root
+
+mean   expected limit: r < 0.00884269 +/- 0.000252048 @ 95%CL (100 toyMC)
+median expected limit: r < 0.00847823 @ 95%CL (100 toyMC)
+   68% expected band : 0.00646995 < r < 0.0111219
+   95% expected band : 0.00481851 < r < 0.0153409
+
+aha
+
+97.0000
+
+aha
+
 
 tests from twiki:
 https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsWG/HiggsPAGPreapprovalChecks
@@ -861,8 +898,26 @@ make impacts  workspace=ttxsec/datacard_v37_test17_bunchFULLFIT1_el.root   nn=v3
 make impacts  workspace=ttxsec/datacard_v37_test17_bunchFULLFIT1_both.root nn=v37_test17_both_test1  &
 
 
+freeze JES and JER which might contain an error
 
+make nll  workspace=ttxsec/datacard_v37_test17_bunchFULLFIT1_mu.root   nn=v37_test17_mu_test1_noJESJER freeze="--freezeParameters lumi_13TeV,JES,JER"
 
+ POI: r= 0.92108 -> [0.5,1.5]
+
+better, but:
+
+make nll  workspace=ttxsec/datacard_v37_test17_bunchFULLFIT1_el.root   nn=v37_test17_el_test1_noJESJER    freeze="--freezeParameters lumi_13TeV,JES,JER"
+make nll  workspace=ttxsec/datacard_v37_test17_bunchFULLFIT1_both.root nn=v37_test17_both_test1_noJESJER  freeze="--freezeParameters lumi_13TeV,JES,JER"
+
+ POI: r= 0.936244 -> [0.5,1.5]
+
+-- again they are not so far apart....
+
+ POI: r= 0.927886 -> [0.5,1.5]
+
+at last!!!!!!!!!!!!
+
+if only correct JES and JER brought them a bit higher
 
 
 
