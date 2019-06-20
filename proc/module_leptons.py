@@ -41,6 +41,16 @@ muon_unc_sys_id  = 0.005
 muon_unc_sys_iso = 0.002
 muon_unc_sys_trg = 0.002
 
+# here https://twiki.cern.ch/twiki/bin/view/CMS/MuonWorkInProgressAndPagResults
+# they recommend to use 2015 systematics from here:
+# https://twiki.cern.ch/twiki/bin/view/CMS/MuonReferenceEffsRun2#Results_for_CMSSW_7_6_X_dataset
+# and they are about twice more conservative
+
+muon_unc_sys_id  = 0.01
+muon_unc_sys_iso = 0.005
+muon_unc_sys_trg = 0.005
+
+
 """
 tests:
 
