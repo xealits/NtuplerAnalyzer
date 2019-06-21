@@ -38,6 +38,7 @@ PROP_UNCORLEPJET  = False
 PROP_LEPJET  = False
 PROP_LEPJET_UNCLUSTER = False
 PROP_JETS    = True
+PROP_ALL_JETS    = True
 
 REQUIRE_MLB = False
 
@@ -3971,17 +3972,17 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
                   # correct the met from all not lep-matched jets
                   if isMC and PROP_JETS:
-                      if jet_pt > JETS_PT_CUT:
+                      if PROP_ALL_JETS or jet_pt > JETS_PT_CUT:
                           proc_met       -= p4 * (en_factor - 1.)
                           proc_met_TESUp   -= p4 * (en_factor - 1.)
                           proc_met_TESDown -= p4 * (en_factor - 1.)
-                      if jet_pt_JERUp > JETS_PT_CUT:
+                      if PROP_ALL_JETS or jet_pt_JERUp > JETS_PT_CUT:
                           proc_met_JERUp   -= p4 * (jet_factor_JERUp - 1.)
-                      if jet_pt_JERDown > JETS_PT_CUT:
+                      if PROP_ALL_JETS or jet_pt_JERDown > JETS_PT_CUT:
                           proc_met_JERDown -= p4 * (jet_factor_JERDown - 1.)
-                      if jet_pt_JESUp > JETS_PT_CUT:
+                      if PROP_ALL_JETS or jet_pt_JESUp > JETS_PT_CUT:
                           proc_met_JESUp   -= p4 * (jet_factor_JESUp - 1.)
-                      if jet_pt_JESDown > JETS_PT_CUT:
+                      if PROP_ALL_JETS or jet_pt_JESDown > JETS_PT_CUT:
                           proc_met_JESDown -= p4 * (jet_factor_JESDown - 1.)
                       # these were broken! the nominal jer factor was not applied, but now it is.
 
