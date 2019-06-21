@@ -3349,6 +3349,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             # the original index i is needed for the match to refitted values
 
             if abs(p4.eta()) > 2.4: continue
+            # now it's 2.3????
             # it should work like Python does and not copy these objects! (cast)
             #p4, DM, IDlev = ev.tau_p4[0], ev.tau_decayMode[0], ev.tau_IDlev[0]
             #if IDlev < 3 or abs(p4.eta()) < 2.4: continue # only Medium taus

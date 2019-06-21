@@ -14,6 +14,13 @@ workspace: datacard=ttxsec/latest_datacard_mu
 workspace:
 	../scripts/text2workspace.py ${datacard}.txt
 
+fit: workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.root
+fit: nn=el
+fit: freeze=--freezeParameters lumi_13TeV
+fit: options=
+fit:
+	combine -M FitDiagnostics   ${workspace} --name ${nn} ${freeze} ${options}
+
 nll: workspace=ttxsec/latest_datacard_el.root
 nll: nn=el
 nll: freeze=--freezeParameters lumi_13TeV

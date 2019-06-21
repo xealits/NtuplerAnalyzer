@@ -1,3 +1,14 @@
+# questions of object sign offs
+
+tau fakes from electrons and muons?
+
+python sumup_ttree_draw.py "@event_taus_genmatch.size()" --histo-range 20,0,10   --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)*event_weight" --output v37_test15_taus_genmatch_length.root  --histo-name taus_genmatch_length   lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_taus_genmatch[0]"      --histo-range 20,-10,10 --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)*event_weight" --output v37_test15_taus_genmatch_value.root   --histo-name taus_genmatch          lstore_outdirs/v37/test15/MC2016_Summer16_TTJets_powheg/*root     &
+
+hadd v37_test15_all_taus_genmatch.root v37_test15_taus_genmatch_value.root v37_test15_taus_genmatch_length.root
+
+
+
 # questions in v8
 
 shape plot
@@ -27,7 +38,7 @@ python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test15_exp_unc --xsec-scal
 
 
 
-# run on the datacards
+# stat comitee tests for higgsCombine datacard, run on the datacards
 
 make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_el
 make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu
@@ -267,6 +278,78 @@ Validate script
 =======Validation results=======
 ================================
 >>>There were no warnings
+
+
+
+## corrected the fixed lepjet propagation test172
+
+make run_std_histos out=histosels/v37_test172_bunchFULLFIT1/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/distrs_v37_test172_bunchFULLFIT1_mc1.root data_mu=distrs/v37_test172_bunchFULLFIT1/SingleMuon.root data_el=distrs/v37_test172_bunchFULLFIT1/SingleElectron.root
+
+something crashes with "file exists, nothing is written"?
+
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1_mc1.root data=distrs/v37_test172_bunchFULLFIT1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_lj"    & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1_mc1.root data=distrs/v37_test172_bunchFULLFIT1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_lj"    & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1_mc1.root data=distrs/v37_test172_bunchFULLFIT1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_ljout" & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1_mc1.root data=distrs/v37_test172_bunchFULLFIT1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_ljout" & \
+# no updowns now
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1_mc1.root data=distrs/v37_test172_bunchFULLFIT1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_lj    systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_lj" & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1_mc1.root data=distrs/v37_test172_bunchFULLFIT1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_lj    systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_lj" & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1_mc1.root data=distrs/v37_test172_bunchFULLFIT1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_ljout systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_ljout" & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1_mc1.root data=distrs/v37_test172_bunchFULLFIT1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_ljout systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_ljout" & \
+#
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1_mc1.root data=distrs/v37_test172_bunchFULLFIT1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1_mc1.root data=distrs/v37_test172_bunchFULLFIT1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel & 
+
+
+
+hadd histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1.root histosels/v37_test172_bunchFULLFIT1/*
+
+cp ttxsec/datacard_v37_test17_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test172_bunchFULLFIT1_el.txt
+cp ttxsec/datacard_v37_test17_bunchFULLFIT1_mu.txt ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.txt
+
+vim -p ttxsec/datacard_v37_test172_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.txt
+
+shapes qcd       el_sel_lj     fit-stuff/datafile_HISTOSEL_v37_test172_bunchFULLFIT1.root  el_sel_lj/qcd_other/NOMINAL/el_sel_lj_qcd_NOMINAL_Mt_lep_met_c                 el_sel_lj/qcd_other/$SYSTEMATIC/el_sel_lj_qcd_$SYSTEMATIC_Mt_lep_met_c
+shapes qcd       el_sel_ljout  fit-stuff/datafile_HISTOSEL_v37_test172_bunchFULLFIT1.root  el_sel_ljout/qcd_other/NOMINAL/el_sel_ljout_qcd_NOMINAL_Mt_lep_met_c           el_sel_ljout/qcd_other/$SYSTEMATIC/el_sel_ljout_qcd_$SYSTEMATIC_Mt_lep_met_c
+
+shapes qcd       mu_sel_lj     fit-stuff/datafile_HISTOSEL_v37_test172_bunchFULLFIT1.root  mu_sel_lj/qcd_other/NOMINAL/mu_sel_lj_qcd_NOMINAL_Mt_lep_met_c                 mu_sel_lj/qcd_other/$SYSTEMATIC/mu_sel_lj_qcd_$SYSTEMATIC_Mt_lep_met_c
+shapes qcd       mu_sel_ljout  fit-stuff/datafile_HISTOSEL_v37_test172_bunchFULLFIT1.root  mu_sel_ljout/qcd_other/NOMINAL/mu_sel_ljout_qcd_NOMINAL_Mt_lep_met_c           mu_sel_ljout/qcd_other/$SYSTEMATIC/mu_sel_ljout_qcd_$SYSTEMATIC_Mt_lep_met_c
+
+
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1_el
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1_mu
+make both mucard=ttxsec/datacard_v37_test172_bunchFULLFIT1_mu elcard=ttxsec/datacard_v37_test172_bunchFULLFIT1_el bothcard=ttxsec/datacard_v37_test172_bunchFULLFIT1_both
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1_both
+
+combineCards.py mu=ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.txt el=ttxsec/datacard_v37_test172_bunchFULLFIT1_el.txt > ttxsec/datacard_v37_test172_bunchFULLFIT1_both.txt
+../scripts/text2workspace.py ttxsec/datacard_v37_test172_bunchFULLFIT1_el.txt
+
+
+make nll  workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.root   nn=v37_test172_mu_test1
+make nll  workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1_el.root   nn=v37_test172_el_test1
+make nll  workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1_both.root nn=v37_test172_both_test1
+
+ POI: r= 0.91961 -> [0.5,1.5]
+ POI: r= 0.933139 -> [0.5,1.5]
+ POI: r= 0.929332 -> [0.5,1.5]
+
+-- yeap...
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1_el.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1_both.root
+
+Best fit r: 0.919563  -0.0714482/+0.0783514  (68% CL)
+Best fit r: 0.933132  -0.0797546/+0.0884625  (68% CL)
+Best fit r: 0.928627  -0.0698014/+0.0753698  (68% CL)
+
+make impacts  workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.root   nn=v37_test172_mu_test1    &
+make impacts  workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1_el.root   nn=v37_test172_el_test1    &
+make impacts  workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1_both.root nn=v37_test172_both_test1  &
+
+
+
+
 
 
 
