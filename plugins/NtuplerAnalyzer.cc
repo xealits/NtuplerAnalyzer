@@ -936,7 +936,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	bool record_ElTau, record_MuTau, record_tauCands, record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets, record_signal, record_all;
 
 	TString dtag;
-	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop, is2017rereco;
+	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop, is2017rereco, is2017data;
 	bool isLocal;
 	bool withHLT;
 	string  HLT_source,
@@ -1172,6 +1172,7 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	bool period_EF  = !isMC && (dtag.Contains("2016E") || dtag.Contains("2016F"));
 	bool period_G   = !isMC && (dtag.Contains("2016G"));
 	bool period_H   = !isMC && (dtag.Contains("2016H"));
+	is2017data = !isMC && (dtag.Contains("Data2017")); // TODO check 2017 data handling with dtag
 
 	aMCatNLO = dtag.Contains("amcatnlo");
 	isWJets = dtag.Contains("WJet") || dtag.Contains("W0Jet") || dtag.Contains("W1Jet") || dtag.Contains("W2Jet") || dtag.Contains("W3Jet") || dtag.Contains("W4Jet");
@@ -1225,6 +1226,7 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 		jet_corr_files = "/Summer16_23Sep2016GV4_DATA";
 	else if (period_H)
 		jet_corr_files = "/Summer16_23Sep2016HV4_DATA";
+	else jet_corr_files = "/Summer16_23Sep2016HV4_DATA"; // TODO correct jet corrections for 2017
 	jesCor = utils::cmssw::getJetCorrector (jecDir, jet_corr_files, isMC);
 	totalJESUnc = new JetCorrectionUncertainty ((jecDir + jet_corr_files + "_Uncertainty_AK4PFchs.txt").Data());
 
@@ -2252,6 +2254,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id << " is Sig " << isTTSignal;
 			}
 
+		if(NT_nvtx_gen <0 )        NT_nvtx_gen=0; // TODO check vertexes procedure
+		if(NT_nvtx_gen >MAX_NVTX ) NT_nvtx_gen=MAX_NVTX;
 		weight = pu_vector_NOMINAL[NT_nvtx_gen] * (aMCatNLO? weight_Gen : 1) * weight_TopPT;
 
 		// the referense of all events
@@ -2260,7 +2264,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		double nominal_syst_weight = (aMCatNLO? weight_Gen : 1);
 		systematic_weights->Fill(NOM_EVENTS);
 		systematic_weights->Fill(NOMINAL, nominal_syst_weight);
-
 		if (NT_nvtx_gen < MAX_NVTX)
 			{
 			systematic_weights->Fill(MU_PU     , nominal_syst_weight * pu_vector_mu[NT_nvtx_gen]);
@@ -2467,10 +2470,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	iEvent.getByToken( trigResults_, trigResults );
 	iEvent.getByToken( trigResultsRECO_, trigResultsRECO );
-	iEvent.getByToken( trigResultsPAT_, trigResultsPAT );
+	if(!is2017data)
+	{
+		iEvent.getByToken( trigResultsPAT_, trigResultsPAT );
+	}
 
 	// 2016 data, Aug 2017 rereco
-	if (is2017rereco)
+	if (is2017rereco || is2017data)
 		{
 		//is present only if PAT (and miniAOD) is not run simultaniously with RECO
 		trigResults_with_met_filters = trigResultsRECO;
@@ -2508,7 +2514,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_BadChargedCandidateFilter = utils::passTriggerPatterns(patFilters, "Flag_BadChargedCandidateFilter");
 			NT_BadPFMuonFilter           = utils::passTriggerPatterns(patFilters, "Flag_BadPFMuonFilter");
 			}
-		else
+		else if(!is2017data) // TODO make bool for 2017 data
 			{
 			NT_filters_noBadMuons     = utils::passTriggerPatterns(patFilters, "Flag_noBadMuons"); // <---- the bad muons are done on the fly with cfg.py thingy
 			NT_filters_duplicateMuons = utils::passTriggerPatterns(patFilters, "Flag_duplicateMuons");

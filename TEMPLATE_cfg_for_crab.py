@@ -136,7 +136,7 @@ process.ntupler.isLocal = cms.bool(False) # LSF submition is local
 
 process.ntupler.withHLT = cms.bool({withHLT})
 
-process.ntupler.elHLT_MC   = cms.string("HLT_Ele32_eta2p1_WPTight_Gsf_v*")
+process.ntupler.elHLT_MC   = cms.string("HLT_Ele27_WPTight_Gsf_v14")
 process.ntupler.muHLT_MC1   = cms.string("HLT_IsoMu24_v*"  )
 process.ntupler.muHLT_MC2   = cms.string("HLT_IsoTkMu24_v*")
 

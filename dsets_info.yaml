@@ -68,8 +68,6 @@
 /EWKZ2Jets_ZToLL_M-50_13TeV-madgraph-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_EWKZ2Jets, isMC: true, xsec: 3.9870000000000001}
 /JetHT/Run2016B-03Feb2017_ver2-v2/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
   dtag: Data13TeV_JetHT2016B_03Feb2017_ver2, isMC: false, xsec: 1}
-/JetHT/Run2016C-03Feb2017-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
-  dtag: Data13TeV_JetHT2016C_03Feb2017_v1, isMC: false, xsec: 1}
 /JetHT/Run2016D-03Feb2017-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
   dtag: Data13TeV_JetHT2016D_03Feb2017_v1, isMC: false, xsec: 1}
 /JetHT/Run2016E-03Feb2017-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
@@ -156,117 +154,8 @@
 /ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_SingleT_tW_5FS_powheg, isMC: true, xsec: 35.600000000000001}
 
 
-/SingleElectron/Run2016B-03Feb2017_ver2-v2/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_SingleElectron2016B_03Feb2017_ver2, isMC: false, xsec: 1}
-/SingleElectron/Run2016B-18Apr2017_ver1-v1/AOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_AOD_SingleElectron2016B_18Apr2017_ver1-v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016B-18Apr2017_ver2-v1/AOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_AOD_SingleElectron2016B_18Apr2017_ver2-v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016B-23Sep2016-v2/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleElectron2016B_23Sep-v2,
-  isMC: false, xsec: 1}
-/SingleElectron/Run2016B-23Sep2016-v3/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleElectron2016B_23Sep-v3,
-  isMC: false, xsec: 1}
-/SingleElectron/Run2016C-03Feb2017-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_SingleElectron2016C_03Feb2017_v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016C-18Apr2017-v1/AOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_AOD_SingleElectron2016C_18Apr2017-v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016C-23Sep2016-v1/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleElectron2016C_23Sep-v1,
-  isMC: false, xsec: 1}
-/SingleElectron/Run2016D-03Feb2017-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_SingleElectron2016D_03Feb2017_v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016D-18Apr2017-v1/AOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_AOD_SingleElectron2016D_18Apr2017-v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016D-23Sep2016-v1/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleElectron2016D_23Sep-v1,
-  isMC: false, xsec: 1}
-/SingleElectron/Run2016E-03Feb2017-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_SingleElectron2016E_03Feb2017_v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016E-18Apr2017-v1/AOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_AOD_SingleElectron2016E_18Apr2017-v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016E-23Sep2016-v1/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleElectron2016E_23Sep-v1,
-  isMC: false, xsec: 1}
-/SingleElectron/Run2016F-03Feb2017-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_SingleElectron2016F_03Feb2017_v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016F-18Apr2017-v1/AOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_AOD_SingleElectron2016F_18Apr2017-v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016F-23Sep2016-v1/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleElectron2016F_23Sep-v1,
-  isMC: false, xsec: 1}
-/SingleElectron/Run2016G-03Feb2017-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_SingleElectron2016G_03Feb2017_v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016G-18Apr2017-v1/AOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_AOD_SingleElectron2016G_18Apr2017-v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016G-23Sep2016-v1/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleElectron2016G_23Sep-v1,
-  isMC: false, xsec: 1}
-/SingleElectron/Run2016H-03Feb2017_ver2-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_SingleElectron2016H_03Feb2017_ver2, isMC: false, xsec: 1}
-/SingleElectron/Run2016H-03Feb2017_ver3-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_SingleElectron2016H_03Feb2017_ver3, isMC: false, xsec: 1}
-/SingleElectron/Run2016H-18Apr2017-v1/AOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
-  dtag: Data13TeV_AOD_SingleElectron2016H_18Apr2017-v1, isMC: false, xsec: 1}
-/SingleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
-  dtag: Data13TeV_SingleMuon2016B_03Feb2017_ver2, isMC: false, xsec: 1}
-/SingleMuon/Run2016B-23Sep2016-v2/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleMuon2016B_23Sep-v2,
-  isMC: false, xsec: 1}
-/SingleMuon/Run2016B-23Sep2016-v3/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleMuon2016B_23Sep-v3,
-  isMC: false, xsec: 1}
-/SingleMuon/Run2016C-03Feb2017-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
-  dtag: Data13TeV_SingleMuon2016C_03Feb2017_v1, isMC: false, xsec: 1}
-/SingleMuon/Run2016C-23Sep2016-v1/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleMuon2016C_23Sep-v1,
-  isMC: false, xsec: 1}
-/SingleMuon/Run2016D-03Feb2017-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
-  dtag: Data13TeV_SingleMuon2016D_03Feb2017_v1, isMC: false, xsec: 1}
-/SingleMuon/Run2016D-23Sep2016-v1/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleMuon2016D_23Sep-v1,
-  isMC: false, xsec: 1}
-/SingleMuon/Run2016E-03Feb2017-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
-  dtag: Data13TeV_SingleMuon2016E_03Feb2017_v1, isMC: false, xsec: 1}
-/SingleMuon/Run2016E-23Sep2016-v1/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleMuon2016E_23Sep-v1,
-  isMC: false, xsec: 1}
-/SingleMuon/Run2016F-03Feb2017-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
-  dtag: Data13TeV_SingleMuon2016F_03Feb2017_v1, isMC: false, xsec: 1}
-/SingleMuon/Run2016F-23Sep2016-v1/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleMuon2016F_23Sep-v1,
-  isMC: false, xsec: 1}
-/SingleMuon/Run2016G-03Feb2017-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
-  dtag: Data13TeV_SingleMuon2016G_03Feb2017_v1, isMC: false, xsec: 1}
-/SingleMuon/Run2016G-23Sep2016-v1/AOD: {LumiMask: '', dtag: Data13TeV_AOD_SingleMuon2016G_23Sep-v1,
-  isMC: false, xsec: 1}
-/SingleMuon/Run2016H-03Feb2017_ver2-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
-  dtag: Data13TeV_SingleMuon2016H_03Feb2017_ver2, isMC: false, xsec: 1}
-/SingleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
-  dtag: Data13TeV_SingleMuon2016H_03Feb2017_ver3, isMC: false, xsec: 1}
+/SingleElectron/Run2016B-03Feb2017_ver2-v2/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt, is2017rereco: true,  dtag: Data2017_SingleElectron_B, isMC: false, xsec: 1}
 
-/SingleMuon/Run2016B-07Aug17_ver1-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt', is2017rereco: true,
-  dtag: Data13TeV_SingleMuon2016B_07Aug17_ver1, isMC: false, xsec: 1}
-/SingleMuon/Run2016B-07Aug17_ver2-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt', is2017rereco: true,
-  dtag: Data13TeV_SingleMuon2016B_07Aug17_ver2, isMC: false, xsec: 1}
-/SingleMuon/Run2016C-07Aug17-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt', is2017rereco: true,
-  dtag: Data13TeV_SingleMuon2016C_07Aug17_v1, isMC: false, xsec: 1}
-/SingleMuon/Run2016D-07Aug17-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt', is2017rereco: true,
-  dtag: Data13TeV_SingleMuon2016D_07Aug17_v1, isMC: false, xsec: 1}
-/SingleMuon/Run2016E-07Aug17-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt', is2017rereco: true,
-  dtag: Data13TeV_SingleMuon2016E_07Aug17_v1, isMC: false, xsec: 1}
-/SingleMuon/Run2016F-07Aug17-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt', is2017rereco: true,
-  dtag: Data13TeV_SingleMuon2016F_07Aug17_v1, isMC: false, xsec: 1}
-/SingleMuon/Run2016G-07Aug17-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt', is2017rereco: true,
-  dtag: Data13TeV_SingleMuon2016G_07Aug17_v1, isMC: false, xsec: 1}
-/SingleMuon/Run2016H-07Aug17-v1/MINIAOD: {LumiMask: 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt', is2017rereco: true,
-  dtag: Data13TeV_SingleMuon2016H_07Aug17_v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016B-07Aug17_ver1-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json, is2017rereco: true,
-  dtag: Data13TeV_SingleElectron2016B_07Aug17_ver1, isMC: false, xsec: 1}
-/SingleElectron/Run2016B-07Aug17_ver2-v2/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json, is2017rereco: true,
-  dtag: Data13TeV_SingleElectron2016B_07Aug17_ver2, isMC: false, xsec: 1}
-/SingleElectron/Run2016C-07Aug17-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json, is2017rereco: true,
-  dtag: Data13TeV_SingleElectron2016C_07Aug17_v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016D-07Aug17-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json, is2017rereco: true,
-  dtag: Data13TeV_SingleElectron2016D_07Aug17_v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016E-07Aug17-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json, is2017rereco: true,
-  dtag: Data13TeV_SingleElectron2016E_07Aug17_v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016F-07Aug17-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json, is2017rereco: true,
-  dtag: Data13TeV_SingleElectron2016F_07Aug17_v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016G-07Aug17-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json, is2017rereco: true,
-  dtag: Data13TeV_SingleElectron2016G_07Aug17_v1, isMC: false, xsec: 1}
-/SingleElectron/Run2016H-07Aug17-v1/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json, is2017rereco: true,
-  dtag: Data13TeV_SingleElectron2016H_07Aug17_v1, isMC: false, xsec: 1}
-
-/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_TTJets_powheg, isMC: true, xsec: 831.75999999999999}
 
 /TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM :
     {LumiMask: '', dtag: MC2016_Summer16_TTJets_powheg_fsrdown,      isMC: true, xsec: 831.75999999999999}
@@ -361,4 +250,43 @@
 /WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_WZTo3LNu_powheg, isMC: true, xsec: 4.4296499999999996}
 /ZZTo2L2Nu_13TeV_powheg_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM: {
   LumiMask: '', dtag: MC2016_Summer16_ZZTo2L2Nu_powheg, isMC: true, xsec: 0.56399999999999995}
+
 /ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_ZZTo2L2Q_amcatnlo_madspin, isMC: true, xsec: 3.2200000000000002}
+
+
+/WZ_TuneCP5_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM : {LumiMask: '', dtag: MC2017_Fall17_WZTuneCP5_13TeV, isMC: true, xsec: 22.82}
+
+/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM : {LumiMask: '', dtag: MC2017_Fall17_WJetsToLNu_13TeV, isMC: true, xsec: 56000}
+
+/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM : {LumiMask: '', dtag: MC2017_Fall17_TTTo2L2Nu, isMC: true, xsec: 72.1}
+
+/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM : {LumiMask: '', dtag: MC2017_Fall17_TTToHadronic_13TeV, isMC: true, xsec: 313.9}
+
+
+/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM : {LumiMask: '', dtag: MC2017_Fall17_TTToSemileptonic_13TeV, isMC: true, xsec: 300.9}
+
+/WpWpJJ_QCD_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM : {LumiMask: '', dtag: MC2017_Fall17_WpWpJJ_QCD_13TeV, isMC: true, xsec: 0.02227}
+
+/SingleElectron/Run2017F-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleElectron_F, isMC: false, xsec: 1}
+
+/SingleElectron/Run2017E-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleElectron_E, isMC: false, xsec: 1}
+
+/SingleElectron/Run2017D-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleElectron_D, isMC: false, xsec: 1}
+
+/SingleElectron/Run2017C-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleElectron_C, isMC: false, xsec: 1}
+
+/SingleElectron/Run2017B-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleElectron_B, isMC: false, xsec: 1}
+
+/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleMuon_B, isMC: false, xsec: 1}
+
+/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleMuon_C, isMC: false, xsec: 1}
+
+/SingleMuon/Run2017D-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleMuon_D, isMC: false, xsec: 1}
+
+/SingleMuon/Run2017E-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleMuon_E, isMC: false, xsec: 1}
+
+/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleMuon_F, isMC: false, xsec: 1}
+
+
+
+

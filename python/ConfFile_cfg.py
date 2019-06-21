@@ -67,6 +67,11 @@ input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_hdampUP_TuneCUETP8M2T4_
 
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_165F54A0-A3BE-E611-B3F7-0025905A606A.root',), True, 'TTJets2'
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8_9EAC0046-06B7-E611-AF76-141877411FED.root',), True, 'TTJets_fsrdown'
+input_files, isMC, dtag = ('file:/eos/user/m/mmagheri/ttbar_prova.root',), True, 'TT_prova'
+
+input_files, isMC, dtag = ('file:/eos/user/m/mmagheri/6236CEDA-C0C8-E711-9081-FA163E84B51B.root',), False, 'Prova_locale_segnale'
+#input_files, isMC, dtag = ('file:/eos/user/m/mmagheri/F6E4B280-3E97-E711-B40B-549F35AD8BFD.root',), True, 'Prova_locale_segnale'
+
 
 from os import environ
 
@@ -78,7 +83,7 @@ if 'INFILE' in environ:
 if any('2015' in infile for infile in input_files) or '2015' in dtag:
     HLT_source = 'HLT2'
 
-record_scheme = 'signal_recordAll' # 'signal' # 'tauID' # 'tauCands' #  Dilep MonitorHLT tauIDantiIso jets'
+record_scheme = 'tauCands' # 'signal' # 'tauID' # 'tauCands' #  Dilep MonitorHLT tauIDantiIso jets'
 
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/26ABF488-A0BE-E611-BEEB-0CC47A4D7640.root'
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root'
@@ -192,7 +197,7 @@ process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
 #process.genParticles2HepMC = genParticles2HepMC.clone( genParticles = cms.InputTag("mergedGenParticles") )
 #process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
 #process.particleLevel.excludeNeutrinosFromJetClustering = False
-process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
+#process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
 
 
 
@@ -284,7 +289,7 @@ if isMC:
     process.p = cms.Path(
      process.BadPFMuonFilter *
      process.BadChargedCandidateFilter *
-     process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
+#     process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
      process.ntupler)
 
 else:
