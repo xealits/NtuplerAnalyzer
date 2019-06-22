@@ -478,6 +478,31 @@ a problem with prop tau?
 a problem with METMuEGClean for data? -- when checked the difference was negligible
 
 
+difference in tt
+
+python sumup_ttree_draw.py "event_met_lep_mt" --histo-range 20,0,250 --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7 || selection_stage == 5)*event_weight"    --output met_lep_prop_test_MT_in_v37_test173_mu_selVloose.root       --histo-name mt_lep_met_test173_mu_selVloose       lstore_outdirs/v37/test173/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --histo-range 20,0,250 --ttree ttree_out --cond-com "(selection_stage == 19 || selection_stage == 17 || selection_stage == 15)*event_weight" --output met_lep_prop_test_MT_in_v37_test173_el_selVloose.root       --histo-name mt_lep_met_test173_el_selVloose       lstore_outdirs/v37/test173/MC2016_Summer16_TTJets_powheg/*root     &
+
+hadd -f met_lep_prop_test_MT_all_v37_tests.root met_lep_prop_test_MT_in_v37_test15*.root met_lep_prop_test_MT_in_v37_test16*.root met_lep_prop_test_MT_in_v37_test17*.root
+
+root -l met_lep_prop_test_MT_all_v37_tests.root
+
+mt_lep_met_test15_el_selVloose ->Scale(1./mt_lep_met_test15_el_selVloose ->Integral())
+mt_lep_met_test15_mu_selVloose ->Scale(1./mt_lep_met_test15_mu_selVloose ->Integral())
+mt_lep_met_test173_el_selVloose->Scale(1./mt_lep_met_test173_el_selVloose->Integral())
+mt_lep_met_test173_mu_selVloose->Scale(1./mt_lep_met_test173_mu_selVloose->Integral())
+
+mt_lep_met_test173_el_selVloose->Divide( mt_lep_met_test15_el_selVloose)
+mt_lep_met_test173_mu_selVloose->Divide( mt_lep_met_test15_mu_selVloose)
+
+mt_lep_met_test173_el_selVloose->Draw()
+mt_lep_met_test173_mu_selVloose->Draw()
+
+negligible variations at sub percent level
+but can they shift the fit in muons?
+-- full MC
+
+
 
 
 # the problem with the fit in muon channel
