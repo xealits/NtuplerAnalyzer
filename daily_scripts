@@ -462,6 +462,167 @@ damn
 
 
 
+# test173 (all jets are propagated to met)
+
+mkdir histosels/v37_test173_bunchFULLFIT1_1/
+
+make run_histos mc=distrs/distrs_v37_test173_bunchFULLFIT1_mc3.root data=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test173_bunchFULLFIT1_1/ wjets_norm=1.4 chan=mu_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_lj"    options="--draw-overflows 5"  & \
+make run_histos mc=distrs/distrs_v37_test173_bunchFULLFIT1_mc3.root data=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test173_bunchFULLFIT1_1/ wjets_norm=1.4 chan=el_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_lj"    options="--draw-overflows 5"  & \
+make run_histos mc=distrs/distrs_v37_test173_bunchFULLFIT1_mc3.root data=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test173_bunchFULLFIT1_1/ wjets_norm=1.4 chan=mu_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_ljout" options="--draw-overflows 5"  & \
+make run_histos mc=distrs/distrs_v37_test173_bunchFULLFIT1_mc3.root data=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test173_bunchFULLFIT1_1/ wjets_norm=1.4 chan=el_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_ljout" options="--draw-overflows 5"  & \
+
+make run_histos mc=distrs/distrs_v37_test173_bunchFULLFIT1_mc3.root data=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test173_bunchFULLFIT1_1/ wjets_norm=1.4 chan=mu_sel_lj        systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_lj"    options="--draw-overflows 5" & \
+make run_histos mc=distrs/distrs_v37_test173_bunchFULLFIT1_mc3.root data=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test173_bunchFULLFIT1_1/ wjets_norm=1.4 chan=el_sel_lj        systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_lj"    options="--draw-overflows 5" & \
+make run_histos mc=distrs/distrs_v37_test173_bunchFULLFIT1_mc3.root data=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test173_bunchFULLFIT1_1/ wjets_norm=1.4 chan=mu_sel_ljout     systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_ljout" options="--draw-overflows 5" & \
+make run_histos mc=distrs/distrs_v37_test173_bunchFULLFIT1_mc3.root data=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test173_bunchFULLFIT1_1/ wjets_norm=1.4 chan=el_sel_ljout     systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_ljout" options="--draw-overflows 5" & \
+
+make run_histos mc=distrs/distrs_v37_test173_bunchFULLFIT1_mc3.root data=distrs/v37_test15_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test173_bunchFULLFIT1_1/ wjets_norm=1.4 chan=mu_sel options="--draw-overflows 5" & \
+make run_histos mc=distrs/distrs_v37_test173_bunchFULLFIT1_mc3.root data=distrs/v37_test15_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test173_bunchFULLFIT1_1/ wjets_norm=1.4 chan=el_sel options="--draw-overflows 5" & 
+
+datafile_v37_test173_bunchFULLFIT1_1_HISTOSELS.root
+
+python numbers_for_datacard.py histosels/datafile_v37_test173_bunchFULLFIT1_1_HISTOSELS.root  -d Mt_lep_met_c -c mu_sel_lj,mu_sel_ljout --data-nick data_other
+
+bin           mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          5021.631                 3609.587                 204.639                  272.438                  85.639                   19.814                   226.264                  34.568                   229.457                  0.000                    14.417                   210.746                  8.529                    182.381                  191.965                  
+mu_sel_lj/data_other/NOMINAL/mu_sel_lj_data_other_NOMINAL_Mt_lep_met_c
+obs 9932.000000
+mc sum = 10312.074358
+INFO:root:mu_sel_ljout
+bin           mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          8022.158                 2507.487                 142.576                  458.961                  173.945                  48.551                   289.888                  52.688                   462.813                  0.000                    28.105                   328.486                  20.106                   363.954                  204.176                  
+mu_sel_ljout/data_other/NOMINAL/mu_sel_ljout_data_other_NOMINAL_Mt_lep_met_c
+obs 13094.000000
+mc sum = 13103.893821
+
+
+python numbers_for_datacard.py histosels/datafile_v37_test173_bunchFULLFIT1_1_HISTOSELS.root  -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout --data-nick data_other
+
+bin           el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                       
+rate          3355.162                 2404.101                 129.315                  186.019                  65.278                   12.559                   167.903                  24.050                   173.703                  0.981                    14.372                   163.975                  26.450                   103.876                  116.763                  
+el_sel_lj/data_other/NOMINAL/el_sel_lj_data_other_NOMINAL_Mt_lep_met_c
+obs 6787.000000
+mc sum = 6944.506603
+INFO:root:el_sel_ljout
+bin           el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                       
+rate          5410.930                 1652.989                 87.149                   313.832                  115.389                  32.073                   186.752                  32.833                   323.063                  1.928                    12.859                   202.614                  78.079                   213.738                  360.008                  
+el_sel_ljout/data_other/NOMINAL/el_sel_ljout_data_other_NOMINAL_Mt_lep_met_c
+obs 8633.000000
+mc sum = 9024.235665
+
+obs 9932.000000
+obs 13094.000000
+
+obs 6787.000000
+obs 8633.000000
+
+
+bin          mu_sel_lj         mu_sel_ljout
+observation  9831.000000       12855.000000
+
+bin          el_sel_lj         el_sel_ljout
+observation  6690.000000       8414.000000
+
+-- these are numbers of 172 data. They are smaller than test15! Did all data jobs return?
+   CHECK!!!!!! what's with data integral in test172???
+
+
+
+cp ttxsec/datacard_v37_test172_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test173_bunchFULLFIT1_1_el.txt
+cp ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.txt ttxsec/datacard_v37_test173_bunchFULLFIT1_1_mu.txt
+
+vim -p ttxsec/datacard_v37_test173_bunchFULLFIT1_1_el.txt ttxsec/datacard_v37_test173_bunchFULLFIT1_1_mu.txt
+
+make workspace datacard=ttxsec/datacard_v37_test173_bunchFULLFIT1_1_el
+make workspace datacard=ttxsec/datacard_v37_test173_bunchFULLFIT1_1_mu
+make both mucard=ttxsec/datacard_v37_test173_bunchFULLFIT1_1_mu elcard=ttxsec/datacard_v37_test173_bunchFULLFIT1_1_el bothcard=ttxsec/datacard_v37_test173_bunchFULLFIT1_1_both
+make workspace datacard=ttxsec/datacard_v37_test173_bunchFULLFIT1_1_both
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test173_bunchFULLFIT1_1_el.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test173_bunchFULLFIT1_1_mu.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test173_bunchFULLFIT1_1_both.root
+
+Best fit r: 0.932459  -0.0813973/+0.0867149  (68% CL)
+Best fit r: 0.943797  -0.0730817/+0.0799847  (68% CL)
+Best fit r: 0.950343  -0.0693685/+0.0760036  (68% CL)
+
+-- same crap as in test15, slight fluctuations
+
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test173_bunchFULLFIT1_1_mu.root --freezeParameters TOPPT --setParameters TOPPT=1.0
+
+Best fit r: 0.956954  -0.0708596/+0.0771303  (68% CL)
+
+
+
+
+
+## check data integrals in test15, test172, test173
+
+head ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.txt
+
+head ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.txt
+head ttxsec/datacard_v37_test172_bunchFULLFIT1_2_mu.txt
+
+head ttxsec/datacard_v37_test173_bunchFULLFIT1_1_el.txt
+
+root -l fit-stuff/v37_test15_bunchFULLFIT1_HISTOSEL.root
+
+root -l fit-stuff/datafile_HISTOSEL_v37_test172_bunchFULLFIT1.root
+root -l fit-stuff/datafile_HISTOSEL_v37_test172_bunchFULLFIT1_2.root
+
+root -l fit-stuff/datafile_v37_test173_bunchFULLFIT1_1_HISTOSELS.root
+
+mu_sel_lj    ->Get("data_other/NOMINAL/mu_sel_lj_data_other_NOMINAL_Mt_lep_met_c")->Print()
+mu_sel_ljout ->Get("data_other/NOMINAL/mu_sel_ljout_data_other_NOMINAL_Mt_lep_met_c")->Print()
+el_sel_lj    ->Get("data_other/NOMINAL/el_sel_lj_data_other_NOMINAL_Mt_lep_met_c")->Print()
+el_sel_ljout ->Get("data_other/NOMINAL/el_sel_ljout_data_other_NOMINAL_Mt_lep_met_c")->Print()
+
+TH1.Print Name  = mu_sel_lj_data_other_NOMINAL_Mt_lep_met_c,    Entries= 9932, Total sum= 9831
+TH1.Print Name  = mu_sel_ljout_data_other_NOMINAL_Mt_lep_met_c, Entries= 13094, Total sum= 12855
+TH1.Print Name  = el_sel_lj_data_other_NOMINAL_Mt_lep_met_c,    Entries= 6787, Total sum= 6690
+TH1.Print Name  = el_sel_ljout_data_other_NOMINAL_Mt_lep_met_c, Entries= 8633, Total sum= 8414
+
+
+
+TH1.Print Name  = mu_sel_lj_data_other_NOMINAL_Mt_lep_met_c,    Entries= 9932, Total sum= 9843
+TH1.Print Name  = mu_sel_ljout_data_other_NOMINAL_Mt_lep_met_c, Entries= 13094, Total sum= 12891
+TH1.Print Name  = el_sel_lj_data_other_NOMINAL_Mt_lep_met_c,    Entries= 6787, Total sum= 6702
+TH1.Print Name  = el_sel_ljout_data_other_NOMINAL_Mt_lep_met_c, Entries= 8633, Total sum= 8436
+
+TH1.Print Name  = mu_sel_lj_data_other_NOMINAL_Mt_lep_met_c,    Entries= 9843, Total sum= 9932
+TH1.Print Name  = mu_sel_ljout_data_other_NOMINAL_Mt_lep_met_c, Entries= 12891, Total sum= 13094
+TH1.Print Name  = el_sel_lj_data_other_NOMINAL_Mt_lep_met_c,    Entries= 6702, Total sum= 6787
+TH1.Print Name  = el_sel_ljout_data_other_NOMINAL_Mt_lep_met_c, Entries= 8436, Total sum= 8633
+
+
+TH1.Print Name  = mu_sel_lj_data_other_NOMINAL_Mt_lep_met_c,    Entries= 9831, Total sum= 9932
+TH1.Print Name  = mu_sel_ljout_data_other_NOMINAL_Mt_lep_met_c, Entries= 12855, Total sum= 13094
+TH1.Print Name  = el_sel_lj_data_other_NOMINAL_Mt_lep_met_c,    Entries= 6690, Total sum= 6787
+TH1.Print Name  = el_sel_ljout_data_other_NOMINAL_Mt_lep_met_c, Entries= 8414, Total sum= 8633
+
+
+bin          mu_sel_lj         mu_sel_ljout
+observation  9831.000000       12855.000000
+
+bin          el_sel_lj         el_sel_ljout
+observation  6690.000000       8414.000000
+
+
+-- the last two contain overflows!
+
+
+
+
+
 
 ## any remaining old problems
 

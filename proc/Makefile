@@ -34,6 +34,7 @@ find_failed_jobs:
 	ls ${job_name_tag}_*.o* | sort > jobs_all
 	diff jobs_all jobs_done | sed -n '/${job_name_tag}_/ s,^< ,, p' > jobs_failed
 	sed -e 's,^,qsub -l h_vmem=1G "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/${nt}/${proc}/jobs_dir/,' -e 's,\.o[0-9]*$$,",' jobs_failed > jobs_failed_submit
+	wc -l jobs_failed_submit
 
 find_failed_plots: correct_num=8
 find_failed_plots:
