@@ -3971,9 +3971,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 if not match_lep:
 
                   # correct the met from all not lep-matched jets
-                  if isMC and PROP_JETS:
+                  if isMC and PROP_JETS and not jet_tau_match_old:
                       if PROP_ALL_JETS or jet_pt > JETS_PT_CUT:
-                          proc_met       -= p4 * (en_factor - 1.)
+                          proc_met         -= p4 * (en_factor - 1.)
                           proc_met_TESUp   -= p4 * (en_factor - 1.)
                           proc_met_TESDown -= p4 * (en_factor - 1.)
                       if PROP_ALL_JETS or jet_pt_JERUp > JETS_PT_CUT:
@@ -3988,19 +3988,19 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
                   # multiply the b weights for all possible combinations
                   # and correct the met with all except lep-jet
-                  if jet_pt > JETS_PT_CUT:
+                  if not jet_tau_match_old and jet_pt > JETS_PT_CUT:
                       weight_bSF     *= jet_weight_bSF_nom
                       weight_bSFUp   *= jet_weight_bSFUp
                       weight_bSFDown *= jet_weight_bSFDown
 
-                  if jet_pt_JERUp > JETS_PT_CUT:
+                  if not jet_tau_match_old and jet_pt_JERUp   > JETS_PT_CUT:
                       weight_bSF_JERUp *= jet_weight_bSF_nom
-                  if jet_pt_JERDown > JETS_PT_CUT:
+                  if not jet_tau_match_old and jet_pt_JERDown > JETS_PT_CUT:
                       weight_bSF_JERDown *= jet_weight_bSF_nom
 
-                  if jet_pt_JESUp > JETS_PT_CUT:
+                  if not jet_tau_match_old and jet_pt_JESUp   > JETS_PT_CUT:
                       weight_bSF_JESUp *= jet_weight_bSF_nom
-                  if jet_pt_JESDown > JETS_PT_CUT:
+                  if not jet_tau_match_old and jet_pt_JESDown > JETS_PT_CUT:
                       weight_bSF_JESDown *= jet_weight_bSF_nom
 
                   # count the jets
