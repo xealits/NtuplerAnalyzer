@@ -35,6 +35,7 @@ METMuEGClean = True # the met for data
 PROP_TAU     = True
 REMOVE_LEPJET     = False
 PROP_UNCORLEPJET  = False
+PROP_UNCORTAUJET  = False
 PROP_LEPJET  = False
 PROP_LEPJET_UNCLUSTER = False
 PROP_JETS    = True
@@ -1944,6 +1945,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     # lj_var of the jets in the event
     event_jets_lj_var = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_jets_lj_var', event_jets_lj_var, 'event_jets_lj_var/f' )
+    event_jets_lj_w_mass = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_jets_lj_w_mass', event_jets_lj_w_mass, 'event_jets_lj_w_mass/f' )
+    event_jets_lj_t_mass = array( 'f', [ 0 ] )
+    ttree_out.Branch( 'event_jets_lj_t_mass', event_jets_lj_t_mass, 'event_jets_lj_t_mass/f' )
+
     event_jets_input_has = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_jets_input_has', event_jets_input_has, 'event_jets_input_has/f' )
     event_jets_found_has = array( 'f', [ 0 ] )
@@ -3970,6 +3976,23 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 # match lep
                 if not match_lep:
 
+                  if PROP_UNCORTAUJET and jet_tau_match_old:
+                    # done for data and MC
+                    #if jet_pt > JETS_PT_CUT:
+                    # uncorrect the lep jet, return the correction to MET
+                    proc_met -= p4 * (jes_uncorFactor - 1.)
+                    # also propagate to TES variations
+                    proc_met_TESUp   -= p4 * (jes_uncorFactor - 1.)
+                    proc_met_TESDown -= p4 * (jes_uncorFactor - 1.)
+                    #if jet_pt_JERUp > JETS_PT_CUT:
+                    proc_met_JERUp   -= p4 * (jes_uncorFactor - 1.)
+                    #if jet_pt_JERDown > JETS_PT_CUT:
+                    proc_met_JERDown -= p4 * (jes_uncorFactor - 1.)
+                    #if jet_pt_JESUp > JETS_PT_CUT:
+                    proc_met_JESUp   -= p4 * (jes_uncorFactor - 1.)
+                    #if jet_pt_JESDown > JETS_PT_CUT:
+                    proc_met_JESDown -= p4 * (jes_uncorFactor - 1.)
+
                   # correct the met from all not lep-matched jets
                   if isMC and PROP_JETS and not jet_tau_match_old:
                       if PROP_ALL_JETS or jet_pt > JETS_PT_CUT:
@@ -4422,6 +4445,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         jets_input_has = -11
         jets_found_has = -11
         lj_var = -11.
+        w_mass = -11.
+        t_mass = -11.
         if requires_lj:
             # all jets, without regard to tau in the event go into the calculation
             # (taumatched jets go too)
@@ -4477,6 +4502,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                     jets_found_has += 1
 
         event_jets_lj_var[0] = lj_var
+        event_jets_lj_w_mass[0] = w_mass
+        event_jets_lj_t_mass[0] = t_mass
+
         event_jets_input_has[0] = jets_input_has
         event_jets_found_has[0] = jets_found_has
 

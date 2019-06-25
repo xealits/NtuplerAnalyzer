@@ -130,6 +130,10 @@ if __name__ == '__main__':
                 stage2.PROP_UNCORLEPJET = True
                 print 'on_uncor_lepjets', stage2.PROP_UNCORLEPJET
 
+              if 'on_uncor_taujets' in args.options:
+                stage2.PROP_UNCORTAUJET = True
+                print 'on_uncor_taujets', stage2.PROP_UNCORTAUJET
+
               if 'on_remove_lepjets' in args.options:
                 stage2.REMOVE_LEPJET = True
                 print 'on_remove_lepjets', stage2.REMOVE_LEPJET

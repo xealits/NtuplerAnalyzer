@@ -193,3 +193,6 @@ dtags_procs = {
 #}
 
 
+print "LOADED GEN PROCS"
+print genproc_tt_lj
+
