@@ -800,6 +800,216 @@ uncorrecting is probably better
 
 
 
+
+# test175
+
+hadd distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1.root v37_test15_bunchFULLFIT1/MC*root v37_test175_bunchFULLFIT1/ttbar/MC2016_Summer16_TTJets_powheg.root
+
+mkdir histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1/
+
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1.root data=distrs/v37_test175_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_lj"      & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1.root data=distrs/v37_test175_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_lj"      & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1.root data=distrs/v37_test175_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_ljout"   & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1.root data=distrs/v37_test175_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_ljout"   & \
+
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1.root data=distrs/v37_test175_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_lj        systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_lj"     & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1.root data=distrs/v37_test175_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_lj        systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_lj"     & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1.root data=distrs/v37_test175_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_ljout     systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_ljout"  & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1.root data=distrs/v37_test175_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_ljout     systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_ljout"  & \
+
+
+hadd datafile_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_HISTOSEL.root v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1/*
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_el.txt
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_mu.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_mu.txt
+
+
+vim -p ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_mu.txt
+
+data changed significantly! (no overflows? test174 also did not have them)
+
+
+python numbers_for_datacard.py histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_HISTOSEL.root  -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout --data-nick data_other
+python numbers_for_datacard.py histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_HISTOSEL.root  -d Mt_lep_met_c -c mu_sel_lj,mu_sel_ljout --data-nick data_other
+
+bin           el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                       
+rate          3266.333                 2402.517                 129.463                  184.964                  63.698                   15.511                   167.755                  23.972                   164.546                  0.981                    14.372                   176.465                  29.613                   118.405                  86.450                   
+
+obs 6552.000000
+mc sum = 6845.046683
+
+bin           el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                       
+rate          5208.330                 1655.452                 87.311                   308.340                  113.105                  35.835                   186.706                  32.157                   303.162                  1.928                    12.859                   223.866                  79.913                   228.733                  309.600                  
+
+obs 8263.000000
+mc sum = 8787.296649
+
+-- way to large difference!
+
+test15
+obs 6690.000000
+mc sum = 6861.168569
+obs 8414.000000
+mc sum = 8827.654918
+
+test172
+obs 6787.000000
+mc sum = 6944.506603
+obs 8633.000000
+mc sum = 9024.235665
+
+test174
+obs 6690.000000
+mc sum = 6855.653553
+obs 8414.000000
+mc sum = 8801.586957
+
+-- test174 contains the test15 data, only TT was re-processed
+
+root -l v37_test15_bunchFULLFIT1/SingleElectron.root
+root -l v37_test172_bunchFULLFIT1/SingleElectron.root
+root -l v37_test174_bunchFULLFIT1/SingleElectron.root
+root -l v37_test175_bunchFULLFIT1/SingleElectron.root
+
+el_sel_lj->Get("data_other/NOMINAL/el_sel_lj_data_other_NOMINAL_Mt_lep_met_c")->Print()
+TH1.Print Name  = el_sel_lj_data_other_NOMINAL_Mt_lep_met_c, Entries= 6787, Total sum= 6690
+TH1.Print Name  = el_sel_lj_data_other_NOMINAL_Mt_lep_met_c, Entries= 6787, Total sum= 6702
+-- test174 must have test15 data without overflows
+TH1.Print Name  = el_sel_lj_data_other_NOMINAL_Mt_lep_met_c, Entries= 6635, Total sum= 6552
+
+-- aha!
+
+
+ls -lh lstore_outdirs/v37/test175/Data13TeV_SingleElectron2016*/ | sort | less
+
+first suspects:
+
+-rw-r-----+ 1 olek t3cms 1.5M Jun 25 15:58 Data13TeV_SingleElectron2016C_03Feb2017_v1_36.root
+
+-rw-r-----+ 1 olek t3cms 28M Jun 25 16:46 Data13TeV_SingleElectron2016E_03Feb2017_v1_48.root
+-rw-r-----+ 1 olek t3cms 3.5M Jun 25 17:07 Data13TeV_SingleElectron2016F_03Feb2017_v1_37.root
+-rw-r-----+ 1 olek t3cms 4.9M Jun 25 15:54 Data13TeV_SingleElectron2016H_03Feb2017_ver2_1.root
+-rw-r-----+ 1 olek t3cms 5.7M Jun 25 15:53 Data13TeV_SingleElectron2016D_03Feb2017_v1_59.root
+-rw-r-----+ 1 olek t3cms 7.4M Jun 25 15:55 Data13TeV_SingleElectron2016B_03Feb2017_ver2_106.root
+-rw-r-----+ 1 olek t3cms 8.0M Jun 25 15:54 Data13TeV_SingleElectron2016B_03Feb2017_ver2_1.root
+-rw-r-----+ 1 olek t3cms 9.6M Jun 25 15:54 Data13TeV_SingleElectron2016B_03Feb2017_ver2_2.root
+-rw-r-----+ 1 olek t3cms 9.6M Jun 25 16:42 Data13TeV_SingleElectron2016G_03Feb2017_v1_86.root
+-rw-r-----+ 1 olek t3cms 9.9M Jun 25 15:55 Data13TeV_SingleElectron2016B_03Feb2017_ver2_4.root
+
+same now:
+
+-rw-r-----+ 1 olek t3cms 1.5M May 21 15:13 Data13TeV_SingleElectron2016C_03Feb2017_v1_36.root
+
+-rw-r-----+ 1 olek t3cms 28M May 21 16:55 Data13TeV_SingleElectron2016E_03Feb2017_v1_48.root
+-rw-r-----+ 1 olek t3cms 3.5M May 21 17:29 Data13TeV_SingleElectron2016F_03Feb2017_v1_37.root
+-rw-r-----+ 1 olek t3cms 4.9M May 21 15:01 Data13TeV_SingleElectron2016H_03Feb2017_ver2_1.root
+-rw-r-----+ 1 olek t3cms 5.7M May 21 15:38 Data13TeV_SingleElectron2016D_03Feb2017_v1_59.root
+-rw-r-----+ 1 olek t3cms 7.4M May 21 16:58 Data13TeV_SingleElectron2016B_03Feb2017_ver2_106.root
+-rw-r-----+ 1 olek t3cms 8.0M May 21 17:00 Data13TeV_SingleElectron2016B_03Feb2017_ver2_1.root
+-rw-r-----+ 1 olek t3cms 9.6M May 21 15:34 Data13TeV_SingleElectron2016B_03Feb2017_ver2_2.root
+-rw-r-----+ 1 olek t3cms 9.6M May 21 15:41 Data13TeV_SingleElectron2016G_03Feb2017_v1_86.root
+-rw-r-----+ 1 olek t3cms 9.9M May 21 15:35 Data13TeV_SingleElectron2016B_03Feb2017_ver2_4.root
+
+sumup their event counters
+
+python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v37/test175/Data13TeV_SingleElectron2016*/*root
+python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v37/test15/Data13TeV_SingleElectron2016*/*root
+
+"                None" : 939605058.000000,
+"                None" : 939605058.000000,
+
+-- so, probably the plots failed
+
+python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v37/test175/Data13TeV_SingleMuon2016*/*root &
+python check_gen_lumi_weights.py --counter-histo events_counter --counter-bin 1 lstore_outdirs/v37/test15/Data13TeV_SingleMuon2016*/*root  &
+
+"                None" : 783262254.000000,
+"                None" : 784877187.000000,
+
+1/7% less
+
+find jobsums/distrs/v37_test15_bunchFULLFIT1/all/  -name "*SingleEle*root" | wc -l
+find jobsums/distrs/v37_test175_bunchFULLFIT1/all/ -name "*SingleEle*root" | wc -l
+
+2814
+1876
+
+-- but 175 does not have simple _sel channels!
+
+find jobsums/distrs/v37_test15_bunchFULLFIT1/all/  -name "*SingleMu*root" | wc -l
+find jobsums/distrs/v37_test175_bunchFULLFIT1/all/ -name "*SingleMu*root" | wc -l
+
+2808
+1872
+
+number of data jobs in both cases:
+
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test175 --distrs bunchFULLFIT1 --chan-groups fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout --dtags Data13TeV_SingleElectron2016B_03Feb2017_ver2,Data13TeV_SingleElectron2016C_03Feb2017_v1,Data13TeV_SingleElectron2016D_03Feb2017_v1,Data13TeV_SingleElectron2016E_03Feb2017_v1,Data13TeV_SingleElectron2016F_03Feb2017_v1,Data13TeV_SingleElectron2016G_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver2,Data13TeV_SingleElectron2016H_03Feb2017_ver3 && ls batch_plots/ | wc -l
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test175 --distrs bunchFULLFIT1 --chan-groups fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout --dtags Data13TeV_SingleElectron2016B_03Feb2017_ver2,Data13TeV_SingleElectron2016C_03Feb2017_v1,Data13TeV_SingleElectron2016D_03Feb2017_v1,Data13TeV_SingleElectron2016E_03Feb2017_v1,Data13TeV_SingleElectron2016F_03Feb2017_v1,Data13TeV_SingleElectron2016G_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver2,Data13TeV_SingleElectron2016H_03Feb2017_ver3
+
+fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout
+
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test175 --distrs bunchFULLFIT1 --chan-groups fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout --dtags Data13TeV_SingleElectron2016B_03Feb2017_ver2,Data13TeV_SingleElectron2016C_03Feb2017_v1,Data13TeV_SingleElectron2016D_03Feb2017_v1,Data13TeV_SingleElectron2016E_03Feb2017_v1,Data13TeV_SingleElectron2016F_03Feb2017_v1,Data13TeV_SingleElectron2016G_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver2,Data13TeV_SingleElectron2016H_03Feb2017_ver3
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test175 --distrs bunchFULLFIT1 --chan-groups fit_tt_leptau,fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout --dtags Data13TeV_SingleElectron2016B_03Feb2017_ver2,Data13TeV_SingleElectron2016C_03Feb2017_v1,Data13TeV_SingleElectron2016D_03Feb2017_v1,Data13TeV_SingleElectron2016E_03Feb2017_v1,Data13TeV_SingleElectron2016F_03Feb2017_v1,Data13TeV_SingleElectron2016G_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver2,Data13TeV_SingleElectron2016H_03Feb2017_ver3
+
+
+
+
+
+bin           mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          4915.346                 3607.634                 204.417                  271.802                  83.768                   23.138                   226.131                  34.416                   220.923                  0.000                    15.283                   228.671                  8.529                    190.632                  71.865                   
+
+obs 9284.000000
+mc sum = 10102.555409
+
+bin           mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          7776.974                 2514.654                 143.036                  455.072                  172.542                  54.709                   289.521                  52.217                   440.611                  0.000                    29.676                   364.950                  23.466                   390.389                  36.128                   
+
+obs 12113.000000
+mc sum = 12743.946387
+
+
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_el
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_mu
+make both mucard=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_mu elcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_el bothcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_both
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_both
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_el.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_mu.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test175_bunchFULLFIT1_both.root
+
+Best fit r: 0.951809  -0.0815818/+0.0884361  (68% CL)
+Best fit r: 0.940956  -0.0726787/+0.0790259  (68% CL)
+
+-- fuck!
+
+Best fit r: 0.952406  -0.0693208/+0.0753598  (68% CL)
+
+fuck muons!
+
+
+test174
+
+Best fit r: 0.951809  -0.0815818/+0.0884361  (68% CL)
+Best fit r: 0.940956  -0.0726787/+0.0790259  (68% CL)
+Best fit r: 0.952406  -0.0693208/+0.0753598  (68% CL)
+
+
+
+
+
+
+
+
 # any remaining old problems
 
 el energy scale? -- why did it never show up?
