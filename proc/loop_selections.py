@@ -66,6 +66,7 @@ cd UserCode/NtuplerAnalyzer/proc/
 
 template_command = "time python sumup_loop.py {options} {out_file} {inp_file} {definitions}"
 
+import std_defs
 from std_defs import sample_info, channels_distrs, extend_full_sys_list
 
 # construct {dtag: sys}

@@ -22,8 +22,9 @@ find_missing_jobs:
 	find lstore_outdirs/v37/test8/ -name "*root" -exec basename '{}' \; 2> /dev/null | sort > job_files_produced
 	diff job_files job_files_produced | tee job_files_missing
 
-find_failed_jobs: nt=v37
-find_failed_jobs: proc=test14
+#sed -e 's,^,qsub -l h_vmem=${job_memory} "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/${nt}/${proc}/jobs_dir/,' -e 's,\.o[0-9]*$$,",' jobs_failed > jobs_failed_submit
+find_failed_jobs: job_dir=
+find_failed_jobs: job_memory=1G
 find_failed_jobs: job_name_tag=job
 find_failed_jobs:
 	# not always correct:
@@ -33,13 +34,36 @@ find_failed_jobs:
 	cat jobs_produced jobs_output_exists | sort > jobs_done
 	ls ${job_name_tag}_*.o* | sort > jobs_all
 	diff jobs_all jobs_done | sed -n '/${job_name_tag}_/ s,^< ,, p' > jobs_failed
-	sed -e 's,^,qsub -l h_vmem=1G "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/${nt}/${proc}/jobs_dir/,' -e 's,\.o[0-9]*$$,",' jobs_failed > jobs_failed_submit
+	# add the submition line for each job
+	sed -e 's,^,qsub -l h_vmem=${job_memory} "${job_dir},' -e 's,\.o[0-9]*$$,",' jobs_failed > jobs_failed_submit
 	wc -l jobs_failed_submit
+
+find_failed_jobs_stage2: nt=v37
+find_failed_jobs_stage2: proc=test14
+find_failed_jobs_stage2: job_name_tag=job
+find_failed_jobs_stage2:
+	make find_failed_jobs job_dir=/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/./queue_dir/${nt}/${proc}/jobs_dir/ job_memory=1G job_name_tag=${job_name_tag}
+
+find_failed_jobs_plots: job_dir=batch_jobs/
+find_failed_jobs_plots: job_name_tag=j
+find_failed_jobs_plots:
+	make find_failed_jobs job_dir=${job_dir} job_memory=512M job_name_tag=${job_name_tag}
 
 find_failed_plots: correct_num=8
 find_failed_plots:
 	wc -l j_*.e* | sort | grep -v "^[ ][ ]*${correct_num} \|^[ ][ ]*[0-9][0-9]* total" > failed_plots
 	sed -i -e 's,\.e[0-9][0-9]*$$,",' -e 's,^[ ][ ]*[0-9][0-9]*[ ][ ]*,qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/,' failed_plots
+
+check_job_output: out=jobsums/distrs/v37_test175_bunchFULLFIT1/all/
+check_job_output:
+	find ${out} -name "*root" -size -10k | wc -l
+
+test_pattern: nt=v37
+test_pattern: proc=test14
+test_pattern: job_name_tag=job
+test_pattern: pattern=${nt}_${proc}_${job_name_tag}
+test_pattern:
+	echo ${pattern}
 
 sumup_weights: nt=v37
 sumup_weights: proc=test5
