@@ -54,9 +54,25 @@ find_failed_plots:
 	wc -l j_*.e* | sort | grep -v "^[ ][ ]*${correct_num} \|^[ ][ ]*[0-9][0-9]* total" > failed_plots
 	sed -i -e 's,\.e[0-9][0-9]*$$,",' -e 's,^[ ][ ]*[0-9][0-9]*[ ][ ]*,qsub -l h_vmem=512M "/lstore/cms/olek/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/proc/batch_jobs/,' failed_plots
 
+resub_failed_jobs_stage2: nt=v37
+resub_failed_jobs_stage2: proc=test14
+resub_failed_jobs_stage2: job_name_tag=job
+resub_failed_jobs_stage2: find_failed_jobs_stage2
+	rm j_*[0-9]
+	sh ./jobs_failed_submit
+	make qwatch
+
+resub_failed_jobs_plots: job_dir=batch_jobs/
+resub_failed_jobs_plots: job_name_tag=j
+resub_failed_jobs_plots: find_failed_jobs_plots
+	rm j_*[0-9]
+	sh ./jobs_failed_submit
+	make qwatch
+
 check_job_output: out=jobsums/distrs/v37_test175_bunchFULLFIT1/all/
 check_job_output:
 	find ${out} -name "*root" -size -10k | wc -l
+	find ${out} -name "*root"            | wc -l
 
 test_pattern: nt=v37
 test_pattern: proc=test14

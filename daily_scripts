@@ -1198,6 +1198,99 @@ make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from
 
 
 
+# test176
+
+mv distrs/distrs_v37_test15_bunchFULLFIT1_tt_data_from_v37_test176_bunchFULLFIT1_mc1.root distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1.root
+
+mkdir histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1/
+
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1.root data=distrs/v37_test176_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_lj"      & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1.root data=distrs/v37_test176_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_lj"      & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1.root data=distrs/v37_test176_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_ljout"   & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1.root data=distrs/v37_test176_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_ljout"   & \
+
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1.root data=distrs/v37_test176_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_lj        systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_lj"     & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1.root data=distrs/v37_test176_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_lj        systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_lj"     & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1.root data=distrs/v37_test176_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_ljout     systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_ljout"  & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1.root data=distrs/v37_test176_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_ljout     systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_ljout"  & \
+
+
+hadd datafile_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_HISTOSEL.root v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1/*
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_el.txt
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_mu.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_mu.txt
+
+
+vim -p ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_mu.txt
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_el
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_mu
+
+-- ??? in el no error after the change of the histosel file? qcd did not change???
+   qcd slightly changed in mu_sel_ljout
+
+make both mucard=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_mu elcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_el bothcard=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_both
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_both
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_el.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_mu.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_both.root
+
+test174:
+
+Best fit r: 0.951809  -0.0815818/+0.0884361  (68% CL)
+Best fit r: 0.940956  -0.0726787/+0.0790259  (68% CL)
+Best fit r: 0.952406  -0.0693208/+0.0753598  (68% CL)
+
+test176:
+
+Best fit r: 0.913926  -0.0798187/+0.0868165  (68% CL)
+Best fit r: 0.890489  -0.0697686/+0.0763669  (68% CL)
+Best fit r: 0.892041  -0.0674457/+0.0739623  (68% CL)
+
+-- damn this? what is this?
+   the same as test172 but with no JER from taujet
+   but the numbers are the same as in test174??
+
+test172:
+
+Best fit r: 0.927935  -0.0776618/+0.0886654  (68% CL)
+Best fit r: 0.918919  -0.0703641/+0.0785824  (68% CL)
+Best fit r: 0.923146  -0.0688665/+0.0741745  (68% CL)
+
+compare data and tt shapes in test174 and test176:
+
+python get_shapes.py --x-title "M_{T}(l, MET) [GeV]" --y-title "" --norm-binwidth --formula "test174:test176" -c mu_sel -d Mt_lep_met_c -p tt_lj test176:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_HISTOSEL.root:mu_sel_lj/data_other/NOMINAL test174:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_HISTOSEL.root:mu_sel_lj/data_other/NOMINAL
+
+-- data noticeably went down at large Mt
+
+python get_shapes.py --x-title "M_{T}(l, MET) [GeV]" --y-title "" --no-norm --norm-formulas --formula "test176/test174" -c mu_sel -d Mt_lep_met_c -p tt_lj test176:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_HISTOSEL.root:mu_sel_lj/data_other/NOMINAL    test174:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_HISTOSEL.root:mu_sel_lj/data_other/NOMINAL
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_c_test176,test174_formula_nonorm.png ./compare_mu_sel_lj_data_NOMINAL_Mt_lep_met_c_test176,test174_formula_nonorm.png
+python get_shapes.py --x-title "M_{T}(l, MET) [GeV]" --y-title "" --no-norm --norm-formulas --formula "test176/test174" -c mu_sel -d Mt_lep_met_c -p tt_lj test176:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_HISTOSEL.root:mu_sel_ljout/data_other/NOMINAL test174:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_HISTOSEL.root:mu_sel_ljout/data_other/NOMINAL
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_c_test176,test174_formula_nonorm.png ./compare_mu_sel_ljout_data_NOMINAL_Mt_lep_met_c_test176,test174_formula_nonorm.png
+
+python get_shapes.py --x-title "M_{T}(l, MET) [GeV]" --y-title "" --no-norm --norm-formulas --formula "test176/test174" -c mu_sel -d Mt_lep_met_c -p tt_lj test176:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_HISTOSEL.root:mu_sel_lj/tt_lj/NOMINAL    test174:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_HISTOSEL.root:mu_sel_lj/tt_lj/NOMINAL
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_c_test176,test174_formula_nonorm.png ./compare_mu_sel_lj_tt_lj_NOMINAL_Mt_lep_met_c_test176,test174_formula_nonorm.png
+python get_shapes.py --x-title "M_{T}(l, MET) [GeV]" --y-title "" --no-norm --norm-formulas --formula "test176/test174" -c mu_sel -d Mt_lep_met_c -p tt_lj test176:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_HISTOSEL.root:mu_sel_ljout/tt_lj/NOMINAL test174:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_HISTOSEL.root:mu_sel_ljout/tt_lj/NOMINAL
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_c_test176,test174_formula_nonorm.png ./compare_mu_sel_ljout_tt_lj_NOMINAL_Mt_lep_met_c_test176,test174_formula_nonorm.png
+
+python get_shapes.py --x-title "M_{T}(l, MET) [GeV]" --y-title "" --no-norm --norm-formulas --formula "test176/test174" -c mu_sel -d Mt_lep_met_c -p tt_lj test176:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_HISTOSEL.root:mu_sel_lj/tt_mutau/NOMINAL    test174:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_HISTOSEL.root:mu_sel_lj/tt_mutau/NOMINAL
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_c_test176,test174_formula_nonorm.png ./compare_mu_sel_lj_tt_mutau_NOMINAL_Mt_lep_met_c_test176,test174_formula_nonorm.png
+python get_shapes.py --x-title "M_{T}(l, MET) [GeV]" --y-title "" --no-norm --norm-formulas --formula "test176/test174" -c mu_sel -d Mt_lep_met_c -p tt_lj test176:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_HISTOSEL.root:mu_sel_ljout/tt_mutau/NOMINAL test174:histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_HISTOSEL.root:mu_sel_ljout/tt_mutau/NOMINAL
+mv ./compare_mu_sel_tt_lj_NOMINAL_Mt_lep_met_c_test176,test174_formula_nonorm.png ./compare_mu_sel_ljout_tt_mutau_NOMINAL_Mt_lep_met_c_test176,test174_formula_nonorm.png
+
+eog compare*data*test176*png
+eog compare*tt_lj*test176*png
+eog compare*tt_mutau*test176*png
+
+-- data falls significantly, but tt too...
+
+let's try the rest of mc..
+
+
+
+
+
 # any remaining old problems
 
 el energy scale? -- why did it never show up?

@@ -388,5 +388,7 @@ fout.Close()
 
 if args.time:
     work_time = str(datetime.now() - start_time)
-    print "output written, time elapsed %s" % work_time
+    print "time elapsed %s" % work_time
+
+print "output written"
 
