@@ -209,6 +209,7 @@ hadd MC2016_Summer16_QCD_HT-500-700.root   init/MC2016_Summer16_QCD_HT-500-700*.
 hadd MC2016_Summer16_QCD_HT-700-1000.root  init/MC2016_Summer16_QCD_HT-700-1000*.root   &
 
 
+mkdir init
 
 mv MC2016_Summer16_DYJetsToLL_* MC2016_Summer16_W[234]Jets* MC2016_Summer16_WJets_madgraph* init/
 mv MC2016_Summer16_WJets_amcatnl* init/

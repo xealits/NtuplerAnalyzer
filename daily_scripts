@@ -1288,6 +1288,446 @@ eog compare*tt_mutau*test176*png
 let's try the rest of mc..
 
 
+## full test176
+
+mkdir histosels/v37_test176_bunchFULLFIT1/
+
+make run_histos mc=distrs/distrs_v37_test176_bunchFULLFIT1_mc1.root data=distrs/v37_test176_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_lj"      & \
+make run_histos mc=distrs/distrs_v37_test176_bunchFULLFIT1_mc1.root data=distrs/v37_test176_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_lj"      & \
+make run_histos mc=distrs/distrs_v37_test176_bunchFULLFIT1_mc1.root data=distrs/v37_test176_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_ljout"   & \
+make run_histos mc=distrs/distrs_v37_test176_bunchFULLFIT1_mc1.root data=distrs/v37_test176_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_ljout"   & \
+
+make run_histos mc=distrs/distrs_v37_test176_bunchFULLFIT1_mc1.root data=distrs/v37_test176_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_lj        systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_lj"     & \
+make run_histos mc=distrs/distrs_v37_test176_bunchFULLFIT1_mc1.root data=distrs/v37_test176_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_lj        systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_lj"     & \
+make run_histos mc=distrs/distrs_v37_test176_bunchFULLFIT1_mc1.root data=distrs/v37_test176_bunchFULLFIT1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=mu_sel_ljout     systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_ljout"  & \
+make run_histos mc=distrs/distrs_v37_test176_bunchFULLFIT1_mc1.root data=distrs/v37_test176_bunchFULLFIT1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test176_bunchFULLFIT1/ wjets_norm=1.4 chan=el_sel_ljout     systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_ljout"  & \
+
+datafile_v37_test176_bunchFULLFIT1_HISTOSELS1.root
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test176_bunchFULLFIT1_el.txt
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_ttbar_from_test174_bunchFULLFIT1_mu.txt ttxsec/datacard_v37_test176_bunchFULLFIT1_mu.txt
+
+
+vim -p ttxsec/datacard_v37_test176_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test176_bunchFULLFIT1_mu.txt
+
+shapes qcd       el_sel_lj     fit-stuff/v37_test15_bunchFULLFIT1_HISTOSEL.root  el_sel_lj/qcd_other/NOMINAL/el_sel_lj_qcd_NOMINAL_Mt_lep_met_c                 el_sel_lj/qcd_other/$SYSTEMATIC/el_sel_lj_qcd_$SYSTEMATIC_Mt_lep_met_c
+shapes qcd       el_sel_ljout  fit-stuff/v37_test15_bunchFULLFIT1_HISTOSEL.root  el_sel_ljout/qcd_other/NOMINAL/el_sel_ljout_qcd_NOMINAL_Mt_lep_met_c           el_sel_ljout/qcd_other/$SYSTEMATIC/el_sel_ljout_qcd_$SYSTEMATIC_Mt_lep_met_c
+
+
+
+make workspace datacard=ttxsec/datacard_v37_test176_bunchFULLFIT1_el
+make workspace datacard=ttxsec/datacard_v37_test176_bunchFULLFIT1_mu
+
+-- in el qcd changed only in ljout!
+   in mu qcd changed only in ljout and dy_other changed in lj
+
+make both mucard=ttxsec/datacard_v37_test176_bunchFULLFIT1_el elcard=ttxsec/datacard_v37_test176_bunchFULLFIT1_mu bothcard=ttxsec/datacard_v37_test176_bunchFULLFIT1_both
+make workspace datacard=ttxsec/datacard_v37_test176_bunchFULLFIT1_both
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test176_bunchFULLFIT1_el.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test176_bunchFULLFIT1_mu.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test176_bunchFULLFIT1_both.root
+
+Best fit r: 0.907093  -0.0807581/+0.0861987  (68% CL)
+Best fit r: 0.905444  -0.070016/+0.0772323  (68% CL)
+Best fit r: 0.909669  -0.0694934/+0.0731807  (68% CL)
+
+-- the worst of both test15 and test172....
+
+
+
+
+
+# optimizing number of bins in Mt
+
+1) reduce MC stat
+2) but increase number of bins to fit nuisances better
+
+-- how to quantify these?
+
+typical data stat in the results:
+el   1.5%
+mu   1.1%
+both 0.9%
+
+number of experimental systematics
+14
++ 3 frag
++ 1 toppt
++ 4 updowns
++ 3 scales
++ 1 alpha
++ pdfs
+
+root -l histosels/datafile_v37_test15_bunchFULLFIT1_ttbar_data_from_test176_bunchFULLFIT1_HISTOSEL.root
+
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10)
+
+-- bin 10 is overflow
+
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(1)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(2)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(3)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(4)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(5)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(6)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(7)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(8)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(9)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(10)
+
+(Double_t) 1223.27
+(Double_t) 1370.44
+(Double_t) 1705.40
+(Double_t) 1935.81
+(Double_t) 1647.13
+(Double_t) 1334.35
+(Double_t) 546.085
+(Double_t) 302.178
+(Double_t) 145.247
+(Double_t) 107.953
+
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(1) 
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(2)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(3)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(4)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(5)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(6)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(7)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(8)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(9)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(10)
+
+(double) 0.0151734
+root [25] ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(2)
+(double) 0.0141962
+root [26] ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(3)
+(double) 0.0117133
+root [27] ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(4)
+(double) 0.0111209
+root [28] ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(5)
+(double) 0.0116769
+root [29] ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(6)
+(double) 0.0136230
+root [30] ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(7)
+(double) 0.0216158
+root [31] ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(8)
+(double) 0.0293189
+root [32] ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(9)
+(double) 0.0425628
+root [33] ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(10)
+(double) 0.0490453
+
+-- so what if aim at 14 bins and minimize MC stat?
+
+ 9 bins
+-1 merge the last two
++3 split the middle
++3 more?
+
+merge last two bins and add 1 bin between 7 first ones
+
+1/sqrt(N)
+
+sqrt(N1/N2)
+
+sqrt( 1223.27 ) / 1223.27
+sqrt( 1370.44 ) / 1370.44
+sqrt( 1705.40 ) / 1705.40
+sqrt( 1935.81 ) / 1935.81
+sqrt( 1647.13 ) / 1647.13
+sqrt( 1334.35 ) / 1334.35
+sqrt( 546.085 ) / 546.085
+sqrt( 302.178 ) / 302.178
+sqrt( 145.247 ) / 145.247
+sqrt( 107.953 ) / 107.953
+
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(1) 
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(2)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(3)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(4)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(5)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(6)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(7)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(8)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(9)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10) / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(10)
+
+(double) 0.0157412
+(double) 0.0129166
+(double) 0.0110614
+(double) 0.0103275
+(double) 0.0101011
+(double) 0.0104918
+(double) 0.0150304
+(double) 0.0194137
+(double) 0.0274660
+(double) 0.0302012
+
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10)
+
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(1) 
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(2)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(3)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(4)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(5)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(6)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(7)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(8)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(9)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(10)
+
+(Double_t) 2545.56
+(Double_t) 2800.67
+(Double_t) 3505.97
+(Double_t) 4014.17
+(Double_t) 3728.21
+(Double_t) 3256.67
+(Double_t) 1539.01
+(Double_t) 917.179
+(Double_t) 456.622
+(Double_t) 365.509
+
+-- the effect of different MC
+   first bin has 2.5k events and 0.015 error
+   the bin 1539.01 has the same 0.015 error
+
+
+flatten the distr via the cumulative distr
+
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetCumulative()
+
+test on data with sumup draw script
+and tilt the bin size to approximately accomodate the MC stat difference
+
+overall 22k events
+22k / 14 = 1.5k
+
+the first bin is 2.5k and 1.57%
+make it 2k first and 1k last?
+
+julia> sqrt(1000)/1000
+0.03162277660168379
+
+julia> 0.3 * sqrt(1000)/1000 
+0.009486832980505138
+
+julia> sqrt(456) / 456
+0.0468292905790847
+
+julia> 0.0275 / (sqrt(456) / 456)
+0.5872393038617221
+
+julia> 0.6 * sqrt(1000)/1000
+0.018973665961010275
+
+-- yeah seems ok
+
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)" --custom-range 0,20,40,60,80,100,130,160,200,250 --output study_bins_data_mu_sel_std_Mt_c_test6.root   --histo-name data_mu_sel_std_Mt_c_test6   lstore_outdirs/v37/test6/Data13TeV_SingleMu*/Data13TeV*.root   &
+
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)" --custom-range 0,20,40,60,80,100,130,160,200,250 --output study_bins_data_mu_sel_std_Mt_c.root   --histo-name data_mu_sel_std_Mt_c   lstore_outdirs/v37/test15/Data13TeV_SingleMu*/Data13TeV*.root   &
+
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)" --custom-range 0,16,30,42,54,62,70,88,96,108,118,130,160,250 --output study_bins_data_mu_sel_Mt_c_test1.root --histo-name data_mu_sel_Mt_c_test1 lstore_outdirs/v37/test15/Data13TeV_SingleMu*/Data13TeV*.root   &
+
+hadd -f study_bins_all_data.root study_bins_data*root
+
+root -l study_bins_all_data.root
+
+data_mu_sel_std_Mt_c->GetBinContent(1) 
+data_mu_sel_std_Mt_c->GetBinContent(2)
+data_mu_sel_std_Mt_c->GetBinContent(3)
+data_mu_sel_std_Mt_c->GetBinContent(4)
+data_mu_sel_std_Mt_c->GetBinContent(5)
+data_mu_sel_std_Mt_c->GetBinContent(6)
+data_mu_sel_std_Mt_c->GetBinContent(7)
+data_mu_sel_std_Mt_c->GetBinContent(8)
+data_mu_sel_std_Mt_c->GetBinContent(9)
+data_mu_sel_std_Mt_c->GetBinContent(10)
+
+-- test6 was what?
+
+data_mu_sel_std_Mt_c_test15->GetBinContent(1) 
+data_mu_sel_std_Mt_c_test15->GetBinContent(2)
+data_mu_sel_std_Mt_c_test15->GetBinContent(3)
+data_mu_sel_std_Mt_c_test15->GetBinContent(4)
+data_mu_sel_std_Mt_c_test15->GetBinContent(5)
+data_mu_sel_std_Mt_c_test15->GetBinContent(6)
+data_mu_sel_std_Mt_c_test15->GetBinContent(7)
+data_mu_sel_std_Mt_c_test15->GetBinContent(8)
+data_mu_sel_std_Mt_c_test15->GetBinContent(9)
+data_mu_sel_std_Mt_c_test15->GetBinContent(10)
+
+data_mu_sel_Mt_c_test1->GetBinContent(1) 
+data_mu_sel_Mt_c_test1->GetBinContent(2)
+data_mu_sel_Mt_c_test1->GetBinContent(3)
+data_mu_sel_Mt_c_test1->GetBinContent(4)
+data_mu_sel_Mt_c_test1->GetBinContent(5)
+data_mu_sel_Mt_c_test1->GetBinContent(6)
+data_mu_sel_Mt_c_test1->GetBinContent(7)
+data_mu_sel_Mt_c_test1->GetBinContent(8)
+data_mu_sel_Mt_c_test1->GetBinContent(9)
+data_mu_sel_Mt_c_test1->GetBinContent(10)
+data_mu_sel_Mt_c_test1->GetBinContent(11)
+data_mu_sel_Mt_c_test1->GetBinContent(12)
+data_mu_sel_Mt_c_test1->GetBinContent(13)
+data_mu_sel_Mt_c_test1->GetBinContent(14)
+
+(Double_t) 2063.00
+(Double_t) 1811.00
+(Double_t) 1825.00
+(Double_t) 2025.00
+(Double_t) 1575.00
+(Double_t) 1578.00
+(Double_t) 3771.00
+(Double_t) 1433.00
+(Double_t) 1758.00
+(Double_t) 1124.00
+(Double_t) 943.000
+(Double_t) 1502.00
+(Double_t) 1278.00
+(Double_t) 340.000
+
+data_mu_sel_Mt_c_test1->GetBinCenter(7)
+
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)" --custom-range 0,16,30,42,54,62,70,78,86,96,106,118,135,160,250 --output study_bins_data_mu_sel_Mt_c_test2.root --histo-name data_mu_sel_Mt_c_test2 lstore_outdirs/v37/test15/Data13TeV_SingleMu*/Data13TeV*.root
+
+hadd -f study_bins_all_data.root study_bins_data*root
+
+root -l study_bins_all_data.root
+
+data_mu_sel_Mt_c_test2->GetBinContent(1) 
+data_mu_sel_Mt_c_test2->GetBinContent(2)
+data_mu_sel_Mt_c_test2->GetBinContent(3)
+data_mu_sel_Mt_c_test2->GetBinContent(4)
+data_mu_sel_Mt_c_test2->GetBinContent(5)
+data_mu_sel_Mt_c_test2->GetBinContent(6)
+data_mu_sel_Mt_c_test2->GetBinContent(7)
+data_mu_sel_Mt_c_test2->GetBinContent(8)
+data_mu_sel_Mt_c_test2->GetBinContent(9)
+data_mu_sel_Mt_c_test2->GetBinContent(10)
+data_mu_sel_Mt_c_test2->GetBinContent(11)
+data_mu_sel_Mt_c_test2->GetBinContent(12)
+data_mu_sel_Mt_c_test2->GetBinContent(13)
+data_mu_sel_Mt_c_test2->GetBinContent(14)
+data_mu_sel_Mt_c_test2->GetBinContent(15)
+
+root [1] data_mu_sel_Mt_c_test2->GetBinContent(1)
+(Double_t) 2063.00
+root [2] data_mu_sel_Mt_c_test2->GetBinContent(2)
+(Double_t) 1811.00
+root [3] data_mu_sel_Mt_c_test2->GetBinContent(3)
+(Double_t) 1825.00
+root [4] data_mu_sel_Mt_c_test2->GetBinContent(4)
+(Double_t) 2025.00
+root [5] data_mu_sel_Mt_c_test2->GetBinContent(5)
+(Double_t) 1575.00
+root [6] data_mu_sel_Mt_c_test2->GetBinContent(6)
+(Double_t) 1578.00
+root [7] data_mu_sel_Mt_c_test2->GetBinContent(7)
+(Double_t) 1688.00
+root [8] data_mu_sel_Mt_c_test2->GetBinContent(8)
+(Double_t) 1686.00
+root [9] data_mu_sel_Mt_c_test2->GetBinContent(9)
+(Double_t) 1830.00
+root [10] data_mu_sel_Mt_c_test2->GetBinContent(10)
+(Double_t) 1511.00
+root [11] data_mu_sel_Mt_c_test2->GetBinContent(11)
+(Double_t) 1371.00
+root [12] data_mu_sel_Mt_c_test2->GetBinContent(12) 
+(Double_t) 1277.00
+root [13] data_mu_sel_Mt_c_test2->GetBinContent(13)
+(Double_t) 1168.00
+root [14] data_mu_sel_Mt_c_test2->GetBinContent(14)
+(Double_t) 1278.00
+root [15] data_mu_sel_Mt_c_test2->GetBinContent(15)
+(Double_t) 340.000
+
+data_mu_sel_Mt_c_test2->GetBinCenter(9)
+91
+
+0,16,30,42,54, 62, 70,78,86,96, 106,118,135,160,250
+0,16,32,44,54, 64, 74,81,88,95, 104,116,132,160,250
+
+0,16,32,44,54,64,74,81,88,95,104,116,132,160,250
+
+python sumup_ttree_draw.py "event_met_lep_mt" --ttree ttree_out --cond-com "(selection_stage == 9 || selection_stage == 7)" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250 --output study_bins_data_mu_sel_Mt_c_test3.root --histo-name data_mu_sel_Mt_c_test3 lstore_outdirs/v37/test15/Data13TeV_SingleMu*/Data13TeV*.root
+
+hadd -f study_bins_all_data.root study_bins_data*root
+
+root -l study_bins_all_data.root
+
+data_mu_sel_Mt_c_test3->GetBinContent(1) 
+data_mu_sel_Mt_c_test3->GetBinContent(2)
+data_mu_sel_Mt_c_test3->GetBinContent(3)
+data_mu_sel_Mt_c_test3->GetBinContent(4)
+data_mu_sel_Mt_c_test3->GetBinContent(5)
+data_mu_sel_Mt_c_test3->GetBinContent(6)
+data_mu_sel_Mt_c_test3->GetBinContent(7)
+data_mu_sel_Mt_c_test3->GetBinContent(8)
+data_mu_sel_Mt_c_test3->GetBinContent(9)
+data_mu_sel_Mt_c_test3->GetBinContent(10)
+data_mu_sel_Mt_c_test3->GetBinContent(11)
+data_mu_sel_Mt_c_test3->GetBinContent(12)
+data_mu_sel_Mt_c_test3->GetBinContent(13)
+data_mu_sel_Mt_c_test3->GetBinContent(14)
+data_mu_sel_Mt_c_test3->GetBinContent(15)
+data_mu_sel_Mt_c_test3->GetBinContent(16)
+
+root [1] data_mu_sel_Mt_c_test3->GetBinContent(1)
+(Double_t) 2063.00
+root [2] data_mu_sel_Mt_c_test3->GetBinContent(2)
+(Double_t) 2080.00
+root [3] data_mu_sel_Mt_c_test3->GetBinContent(3)
+(Double_t) 1880.00
+root [4] data_mu_sel_Mt_c_test3->GetBinContent(4)
+(Double_t) 1701.00
+root [5] data_mu_sel_Mt_c_test3->GetBinContent(5)
+(Double_t) 1929.00
+root [6] data_mu_sel_Mt_c_test3->GetBinContent(6)
+(Double_t) 2101.00
+root [7] data_mu_sel_Mt_c_test3->GetBinContent(7)
+(Double_t) 1425.00
+root [8] data_mu_sel_Mt_c_test3->GetBinContent(8)
+(Double_t) 1469.00
+root [9] data_mu_sel_Mt_c_test3->GetBinContent(9)
+(Double_t) 1260.00
+root [10] data_mu_sel_Mt_c_test3->GetBinContent(10)
+(Double_t) 1398.00
+root [11] data_mu_sel_Mt_c_test3->GetBinContent(11)
+(Double_t) 1468.00
+root [12] data_mu_sel_Mt_c_test3->GetBinContent(12)
+(Double_t) 1278.00
+root [13] data_mu_sel_Mt_c_test3->GetBinContent(13)
+(Double_t) 1356.00
+root [14] data_mu_sel_Mt_c_test3->GetBinContent(14)
+(Double_t) 1278.00
+root [15] data_mu_sel_Mt_c_test3->GetBinContent(15)
+(Double_t) 340.000
+root [16] data_mu_sel_Mt_c_test3->GetBinContent(16)
+(Double_t) 340.000
+
+-- the large bins in the middle should not be a problem, they cover the wjets
+
+
+
 
 
 

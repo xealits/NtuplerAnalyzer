@@ -1,6 +1,7 @@
 qwatch: n=10
 qwatch:
-	watch -n ${n} 'qstat | grep " r     " | wc -l ; qstat | wc -l'
+	#watch -n ${n} 'qstat | grep " r     " | wc -l ; qstat | wc -l'
+	watch -n ${n} 'qstat -s r | wc -l ; qstat | wc -l'
 
 clear_gstore_failed: nt=v37
 clear_gstore_failed:
@@ -58,14 +59,14 @@ resub_failed_jobs_stage2: nt=v37
 resub_failed_jobs_stage2: proc=test14
 resub_failed_jobs_stage2: job_name_tag=job
 resub_failed_jobs_stage2: find_failed_jobs_stage2
-	rm j_*[0-9]
+	rm ${job_name_tag}_*[0-9]
 	sh ./jobs_failed_submit
 	make qwatch
 
 resub_failed_jobs_plots: job_dir=batch_jobs/
 resub_failed_jobs_plots: job_name_tag=j
 resub_failed_jobs_plots: find_failed_jobs_plots
-	rm j_*[0-9]
+	rm ${job_name_tag}_*[0-9]
 	sh ./jobs_failed_submit
 	make qwatch
 

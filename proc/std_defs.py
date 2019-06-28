@@ -704,7 +704,8 @@ systs_objects_met_variation = {
 from ROOT import TMath
 
 distr_defs = {
-    'Mt_lep_met_c':  (systs_objects_mt_variation,  ('custom-range', [0,20,40,60,80,100,130,160,200,250])),
+    #'Mt_lep_met_c':  (systs_objects_mt_variation,  ('custom-range', [0,20,40,60,80,100,130,160,200,250])),
+    'Mt_lep_met_c':  (systs_objects_mt_variation,  ('custom-range', [0,16,32,44,54,64,74,81,88,95,104,116,132,160,250])), # optimized for equal MC stats
     'Mt_lep_met_c2': (systs_objects_mt_variation,  ('custom-range', [0,20,40,60,80,100,120,140,170,200,250,500])),
     'Mt_lep_met_f':  (systs_objects_mt_variation,  ('histo-range',  [20,0,250])),
     'Mt_lep_met_init_f': ({'NOMINAL': lambda ev: ev.event_met_lep_mt_init2}, ('histo-range',  [20,0,250])),
