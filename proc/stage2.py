@@ -46,7 +46,7 @@ REQUIRE_MLB = False
 def PASSES_FUNC(pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all):
     #return pass_mu or pass_el or pass_elmu or pass_mu_all or pass_el_all or pass_mumu
     #return pass_elmu
-    return pass_mu or pass_el or pass_elmu_el or pass_mumu or pass_elel
+    return pass_mu or pass_el # or pass_elmu_el or pass_mumu or pass_elel
 
 
 def passes_wjets_control_selection(passed_triggers, leps, N_jets, taus, proc_met):
@@ -2686,6 +2686,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         weight_init = 1. # common weight of event (1. for data), which also includes the weights averaged per datataking epoch scale factors (PU and muon LEP SFs)
         weight_pu = 1.
+        weight_pu_up = 1.
+        weight_pu_dn = 1.
         weight_pu_el = 1.
         weight_pu_mu = 1.
         weight_pu_bcdef = 1.
@@ -2944,7 +2946,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                     gen_proc_id[0] = genproc_stop_other
 
             # LEPTON SFs
-            # and PU SFs averaged together
+            # (and PU SFs averaged together)
+            # now they are separate again
             weight_lep_pu    = 1.
 
             weight_lep_pu_elIDUp     = 1.
@@ -2952,8 +2955,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             weight_lep_pu_elTRGUp    = 1.
             weight_lep_pu_elTRGDown  = 1.
 
-            weight_lep_pu_PUUp    = 1.
-            weight_lep_pu_PUDown  = 1.
+            #weight_lep_pu_PUUp    = 1.
+            #weight_lep_pu_PUDown  = 1.
 
             weight_lep_pu_muIDUp     = 1.
             weight_lep_pu_muIDDown   = 1.
@@ -3013,8 +3016,10 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 mu_h_trk, _ = mu_sfs_h[0:2] # unc in mu_sfs_h[1]
 
                 # test how much lepton SFs affect
-                weight_lepall_pu = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef + \
-                                      ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh
+                #weight_lepall_pu = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef + \
+                #                      ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh
+                weight_lepall_pu = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                                      ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
                 #weight_lep_pu_MU_id = ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcd + \
                 #                         ratio_gh * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh
@@ -3033,23 +3038,32 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 mu_b_trk, mu_b_trk_u = mu_sfs_b[0:2] # unc in mu_sfs_b[1]
                 mu_h_trk, mu_h_trk_u = mu_sfs_h[0:2] # unc in mu_sfs_h[1]
 
-                weight_lep_pu_muIDUp   = ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) * weight_pu_bcdef + \
-                                            ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]) * weight_pu_gh
-                weight_lep_pu_muIDDown = ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) * weight_pu_bcdef + \
-                                            ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]) * weight_pu_gh
-                weight_lep_pu_muTRGUp   = ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef + \
-                                             ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh
-                weight_lep_pu_muTRGDown = ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef + \
-                                             ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh
+                #weight_lep_pu_muIDUp   = ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) * weight_pu_bcdef + \
+                #                            ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1]) * weight_pu_gh
+                #weight_lep_pu_muIDDown = ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) * weight_pu_bcdef + \
+                #                            ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1]) * weight_pu_gh
+                #weight_lep_pu_muTRGUp   = ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef + \
+                #                             ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh
+                #weight_lep_pu_muTRGDown = ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef + \
+                #                             ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh
 
-                weight_lep_pu_PUUp = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef_up + \
-                                        ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh_up
-                weight_lep_pu_PUDown = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef_dn + \
-                                          ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh_dn
+                weight_lep_pu_muIDUp   = ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) + \
+                                            ratio_gh * mu_trg_sf_h * (mu_h_trk + mu_h_trk_u) * (mu_sfs_h[3][0] + mu_sfs_h[3][1]) * (mu_sfs_h[4][0] + mu_sfs_h[4][1])
+                weight_lep_pu_muIDDown = ratio_bcdef * mu_trg_sf_b * (mu_b_trk - mu_b_trk_u) * (mu_sfs_b[3][0] - mu_sfs_b[3][1]) * (mu_sfs_b[4][0] - mu_sfs_b[4][1]) + \
+                                            ratio_gh * mu_trg_sf_h * (mu_h_trk - mu_h_trk_u) * (mu_sfs_h[3][0] - mu_sfs_h[3][1]) * (mu_sfs_h[4][0] - mu_sfs_h[4][1])
+                weight_lep_pu_muTRGUp   = ratio_bcdef * (mu_trg_sf_b + trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                                             ratio_gh * (mu_trg_sf_h + trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+                weight_lep_pu_muTRGDown = ratio_bcdef * (mu_trg_sf_b - trg_b_unc) * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                                             ratio_gh * (mu_trg_sf_h - trg_h_unc) * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
+
+                #weight_lep_pu_PUUp = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef_up + \
+                #                        ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh_up
+                #weight_lep_pu_PUDown = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef_dn + \
+                #                          ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh_dn
 
                 # test how much lepton SFs affect
-                weight_lep_pu = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * weight_pu_bcdef + \
-                                   ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * weight_pu_gh
+                weight_lep_pu = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] + \
+                                   ratio_gh * mu_trg_sf_h * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0]
 
                 # separate weights for control and reconstruction of weights
                 weight_lep_B_MU_id = mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0]
@@ -3100,20 +3114,20 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 #                             ratio_gh * (mu_trg_sf_h1 + trg_h_unc1) * mu_sfs_h1[0] * mu_sfs_h1[3][0] * mu_sfs_h1[4][0] * weight_pu_gh   )
 
                 # test how much lepton SFs affect
-                weight_lep_pu = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_id_b * mu_iso_b * weight_pu_bcdef + \
-                                   ratio_gh * mu_trg_sf_h * mu_h_trk * mu_id_h * mu_iso_h * weight_pu_gh
+                weight_lep_pu = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_id_b * mu_iso_b + \
+                                   ratio_gh * mu_trg_sf_h * mu_h_trk * mu_id_h * mu_iso_h
 
-                weight_lep_pu_PUUp = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_id_b * mu_iso_b * weight_pu_bcdef_up + \
-                                        ratio_gh * mu_trg_sf_h * mu_h_trk * mu_id_h * mu_iso_h * weight_pu_gh_up
-                weight_lep_pu_PUDown = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_id_b * mu_iso_b * weight_pu_bcdef_dn + \
-                                          ratio_gh * mu_trg_sf_h * mu_h_trk * mu_id_h * mu_iso_h * weight_pu_gh_dn
+                #weight_lep_pu_PUUp = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_id_b * mu_iso_b * weight_pu_bcdef_up + \
+                #                        ratio_gh * mu_trg_sf_h * mu_h_trk * mu_id_h * mu_iso_h * weight_pu_gh_up
+                #weight_lep_pu_PUDown = ratio_bcdef * mu_trg_sf_b * mu_b_trk * mu_id_b * mu_iso_b * weight_pu_bcdef_dn + \
+                #                          ratio_gh * mu_trg_sf_h * mu_h_trk * mu_id_h * mu_iso_h * weight_pu_gh_dn
 
                 weight_lep_B_MU_id = mu_b_trk * mu_id_b * mu_iso_b
                 weight_lep_H_MU_id = mu_h_trk * mu_id_h * mu_iso_h
                 weight_lep_B_MU_trg = mu_trg_sf_b
                 weight_lep_H_MU_trg = mu_trg_sf_h
 
-
+            # FIX THIS: elTRGUp is wrong
             # for now let's just use 1 elmu and it is electron-triggered one
             if isMC and pass_elmu:
                 # find which lepton is mu and which is el
@@ -3151,8 +3165,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 weight_lep_pu_muTRGDown = ratio_bcdef * mu_b_trk * mu_sfs_b[3][0] * mu_sfs_b[4][0] * (mu_trg_sf_b - trg_b_unc) * weight_pu_bcdef + \
                                           ratio_gh    * mu_h_trk * mu_sfs_h[3][0] * mu_sfs_h[4][0] * (mu_trg_sf_h - trg_h_unc) * weight_pu_gh
 
-                weight_lep_pu_muTRGUp   = weight_lep_pu
-                weight_lep_pu_muTRGDown = weight_lep_pu
+                weight_lep_pu_muTRGUp   = weight_lep_mu
+                weight_lep_pu_muTRGDown = weight_lep_mu
 
                 # controls
                 #weight_lep_EL_trg = el_trg_sf
@@ -3164,8 +3178,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 # the overall weight and systematic
                 weight_lep_pu = weight_lep_el * weight_lep_mu
 
-                weight_lep_pu_PUUp   = weight_lep_el * weight_lep_mu_PUUp
-                weight_lep_pu_PUDown = weight_lep_el * weight_lep_mu_PUDown
+                #weight_lep_pu_PUUp   = weight_lep_el * weight_lep_mu_PUUp
+                #weight_lep_pu_PUDown = weight_lep_el * weight_lep_mu_PUDown
 
                 weight_lep_pu_muIDUp    = weight_lep_el * \
                                          (ratio_bcdef * mu_trg_sf_b * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) * weight_pu_bcdef + \
@@ -3220,8 +3234,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 # the overall weight and systematic
                 weight_lep_pu = weight_lep_el * weight_lep_mu * el_trg_sf
 
-                weight_lep_pu_PUUp   = weight_lep_el * weight_lep_mu_PUUp   * el_trg_sf
-                weight_lep_pu_PUDown = weight_lep_el * weight_lep_mu_PUDown * el_trg_sf
+                #weight_lep_pu_PUUp   = weight_lep_el * weight_lep_mu_PUUp   * el_trg_sf
+                #weight_lep_pu_PUDown = weight_lep_el * weight_lep_mu_PUDown * el_trg_sf
 
                 weight_lep_pu_muIDUp    = weight_lep_el * \
                                          (ratio_bcdef * (mu_b_trk + mu_b_trk_u) * (mu_sfs_b[3][0] + mu_sfs_b[3][1]) * (mu_sfs_b[4][0] + mu_sfs_b[4][1]) * weight_pu_bcdef + \
@@ -3258,17 +3272,22 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 el_trg_sf, el_trg_unc = lepton_electron_trigger_SF(ev.lep_p4[0].eta(), ev.lep_p4[0].pt())
                 # on 0 position is the value, on 1 is uncertainty
 
-                weight_lep_pu_elIDUp   = el_trg_sf * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1]) * weight_pu
-                weight_lep_pu_elIDDown = el_trg_sf * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1]) * weight_pu
+                #weight_lep_pu_elIDUp   = el_trg_sf * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1]) * weight_pu
+                #weight_lep_pu_elIDDown = el_trg_sf * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1]) * weight_pu
+                #weight_lep_pu_elTRGUp   = (el_trg_sf + el_trg_unc) * el_sfs_reco[0] * el_sfs_id[0] * weight_pu
+                #weight_lep_pu_elTRGDown = (el_trg_sf - el_trg_unc) * el_sfs_reco[0] * el_sfs_id[0] * weight_pu
 
-                weight_lep_pu_elTRGUp   = (el_trg_sf + el_trg_unc) * el_sfs_reco[0] * el_sfs_id[0] * weight_pu
-                weight_lep_pu_elTRGDown = (el_trg_sf - el_trg_unc) * el_sfs_reco[0] * el_sfs_id[0] * weight_pu
+                weight_lep_pu_elIDUp   = el_trg_sf * (el_sfs_reco[0] + el_sfs_reco[1]) * (el_sfs_id[0] + el_sfs_id[1])
+                weight_lep_pu_elIDDown = el_trg_sf * (el_sfs_reco[0] - el_sfs_reco[1]) * (el_sfs_id[0] - el_sfs_id[1])
+                weight_lep_pu_elTRGUp   = (el_trg_sf + el_trg_unc) * el_sfs_reco[0] * el_sfs_id[0]
+                weight_lep_pu_elTRGDown = (el_trg_sf - el_trg_unc) * el_sfs_reco[0] * el_sfs_id[0]
 
                 # test how much leptons SFs affect
-                weight_lep_pu = el_trg_sf * el_sfs_reco[0] * el_sfs_id[0] * weight_pu
+                #weight_lep_pu = el_trg_sf * el_sfs_reco[0] * el_sfs_id[0] * weight_pu
+                weight_lep_pu = el_trg_sf * el_sfs_reco[0] * el_sfs_id[0]
 
-                weight_lep_pu_PUUp   = el_trg_sf * el_sfs_reco[0] * el_sfs_id[0] * weight_pu_up
-                weight_lep_pu_PUDown = el_trg_sf * el_sfs_reco[0] * el_sfs_id[0] * weight_pu_dn
+                #weight_lep_pu_PUUp   = el_trg_sf * el_sfs_reco[0] * el_sfs_id[0] * weight_pu_up
+                #weight_lep_pu_PUDown = el_trg_sf * el_sfs_reco[0] * el_sfs_id[0] * weight_pu_dn
 
                 weight_lep_EL_trg = el_trg_sf
                 weight_lep_EL_id  = el_sfs_reco[0] * el_sfs_id[0]
@@ -3285,22 +3304,25 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                 el_trg_sf, el_trg_unc = dilepton_or_sfs(el_trg_sf1, el_trg_unc2, el_trg_sf2, el_trg_unc2)
 
                 # on 0 position is the value, on 1 is uncertainty
-                weight_lep_pu_elIDUp   = el_trg_sf * (el_reco + el_reco_unc) * (el_id + el_id_unc) * weight_pu
-                weight_lep_pu_elIDDown = el_trg_sf * (el_reco - el_reco_unc) * (el_id - el_id_unc) * weight_pu
+                weight_lep_pu_elIDUp   = el_trg_sf * (el_reco + el_reco_unc) * (el_id + el_id_unc)
+                weight_lep_pu_elIDDown = el_trg_sf * (el_reco - el_reco_unc) * (el_id - el_id_unc)
 
-                weight_lep_pu_elTRGUp   = (el_trg_sf + el_trg_unc) * el_reco * el_id * weight_pu
-                weight_lep_pu_elTRGDown = (el_trg_sf - el_trg_unc) * el_reco * el_id * weight_pu
+                weight_lep_pu_elTRGUp   = (el_trg_sf + el_trg_unc) * el_reco * el_id
+                weight_lep_pu_elTRGDown = (el_trg_sf - el_trg_unc) * el_reco * el_id
 
                 # test how much leptons SFs affect
-                weight_lep_pu = el_trg_sf * el_reco * el_id * weight_pu
+                weight_lep_pu = el_trg_sf * el_reco * el_id
 
-                weight_lep_pu_PUUp   = el_trg_sf * el_reco * el_id * weight_pu_up
-                weight_lep_pu_PUDown = el_trg_sf * el_reco * el_id * weight_pu_dn
+                #weight_lep_pu_PUUp   = el_trg_sf * el_reco * el_id * weight_pu_up
+                #weight_lep_pu_PUDown = el_trg_sf * el_reco * el_id * weight_pu_dn
 
                 weight_lep_EL_trg = el_trg_sf
                 weight_lep_EL_id  = el_reco * el_id
 
+            #weight_init *= weight_lep_pu if weight_lep_pu > 0.0001 else 0.
+            # lep_pu does not include PU now!
             weight_init *= weight_lep_pu if weight_lep_pu > 0.0001 else 0.
+            weight_init *= weight_pu  if weight_pu  > 0.0001 else 0.
 
         control_counters.Fill(52)
 
@@ -4392,7 +4414,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         notpasses_presel = tt_channel_presel_stage < 1
         notpasses_wjets  = selection_wjets_control < 1
 
-        if notpasses_tt_leptau and notpasses_em and notpasses_dy_tautau and notpasses_dy_mumu and notpasses_wjets and notpasses_alliso and notpasses_presel:
+        #if notpasses_tt_leptau and notpasses_em and notpasses_dy_tautau and notpasses_dy_mumu and notpasses_wjets and notpasses_alliso and notpasses_presel:
+        # only main selection and preselection
+        #if notpasses_tt_leptau and notpasses_presel:
+        # only main selection
+        if notpasses_tt_leptau:
             continue
 
         # SAVE SELECTION, objects and weights
@@ -4828,6 +4854,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             event_weight_LEPall[0]  = weight_lepall_pu
 
             # leptons and pu with systematics
+            # weight_lep_pu and others do not contain PU weight now!
             event_weight_LEP_PU[0]     = weight_lep_pu if weight_lep_pu > 0.0001 else 0.
 
             max_weight_lep_pu = 2*weight_lep_pu
@@ -4840,8 +4867,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             event_weight_LEPelTRGUp[0]   = (weight_lep_pu_elTRGUp   / weight_lep_pu if weight_lep_pu_elTRGUp   < max_weight_lep_pu else max_weight_lep_pu) if weight_lep_pu > 0.0001 and weight_lep_pu_elTRGUp   > 0.0001 else 0.
             event_weight_LEPelTRGDown[0] = (weight_lep_pu_elTRGDown / weight_lep_pu if weight_lep_pu_elTRGDown < max_weight_lep_pu else max_weight_lep_pu) if weight_lep_pu > 0.0001 and weight_lep_pu_elTRGDown > 0.0001 else 0.
 
-            event_weight_PUUp[0]    = (weight_lep_pu_PUUp / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
-            event_weight_PUDown[0]  = (weight_lep_pu_PUDown / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
+            #event_weight_PUUp[0]    = (weight_lep_pu_PUUp / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
+            #event_weight_PUDown[0]  = (weight_lep_pu_PUDown / weight_lep_pu) if weight_lep_pu > 0.0001 else 0.
+
+            event_weight_PUUp[0]    = (weight_pu_up / weight_pu) if weight_pu > 0.0001 else 0.
+            event_weight_PUDown[0]  = (weight_pu_dn / weight_pu) if weight_pu > 0.0001 else 0.
 
             # control and reconstruction of full weight
 

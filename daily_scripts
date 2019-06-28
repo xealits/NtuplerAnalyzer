@@ -1730,6 +1730,188 @@ root [16] data_mu_sel_Mt_c_test3->GetBinContent(16)
 
 
 
+# test15 BIN1
+
+mkdir histosels/v37_test15_bunchFULLFIT1BIN1/
+
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test15_bunchFULLFIT1BIN1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=mu_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_lj"      & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test15_bunchFULLFIT1BIN1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=el_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_lj"      & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test15_bunchFULLFIT1BIN1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=mu_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_ljout"   & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test15_bunchFULLFIT1BIN1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=el_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_ljout"   & \
+
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test15_bunchFULLFIT1BIN1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=mu_sel_lj        systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_lj"     & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test15_bunchFULLFIT1BIN1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=el_sel_lj        systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_lj"     & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test15_bunchFULLFIT1BIN1/SingleMuon.root     lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=mu_sel_ljout     systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_ljout"  & \
+make run_histos mc=distrs/distrs_v37_test15_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test15_bunchFULLFIT1BIN1/SingleElectron.root lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test15_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=el_sel_ljout     systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_ljout"  & \
+
+hadd datafile_v37_test15_bunchFULLFIT1BIN1_HISTOSELS1.root histosels/v37_test15_bunchFULLFIT1BIN1/*root
+
+
+
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_el.txt
+cp ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.txt ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_mu.txt
+
+
+vim -p ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_el.txt ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_mu.txt
+
+shapes qcd       el_sel_lj     fit-stuff/v37_test15_bunchFULLFIT1_HISTOSEL.root  el_sel_lj/qcd_other/NOMINAL/el_sel_lj_qcd_NOMINAL_Mt_lep_met_c                 el_sel_lj/qcd_other/$SYSTEMATIC/el_sel_lj_qcd_$SYSTEMATIC_Mt_lep_met_c
+shapes qcd       el_sel_ljout  fit-stuff/v37_test15_bunchFULLFIT1_HISTOSEL.root  el_sel_ljout/qcd_other/NOMINAL/el_sel_ljout_qcd_NOMINAL_Mt_lep_met_c           el_sel_ljout/qcd_other/$SYSTEMATIC/el_sel_ljout_qcd_$SYSTEMATIC_Mt_lep_met_c
+
+
+python numbers_for_datacard.py histosels/datafile_v37_test15_bunchFULLFIT1BIN1_HISTOSELS1.root  -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout --data-nick data_other
+python numbers_for_datacard.py histosels/datafile_v37_test15_bunchFULLFIT1BIN1_HISTOSELS1.root  -d Mt_lep_met_c -c mu_sel_lj,mu_sel_ljout --data-nick data_other
+
+
+obs 6690.000000
+mc sum = 6851.220294
+obs 8414.000000
+mc sum = 8821.297920
+
+bin           el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                       el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                              0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                       
+rate          3261.234                 2403.519                 129.315                  185.239                  63.863                   15.511                   161.823                  23.430                   159.969                  0.981                    14.372                   176.465                  29.613                   118.405                  107.481                         5217.944                 1651.873                 87.149                   309.987                  112.089                  35.835                   186.706                  32.157                   303.162                  1.928                    12.859                   223.866                  76.203                   224.576                  344.964                  
+
+
+
+grep "^obs" ttxsec/datacard_v37_test15_bunchFULLFIT1_el.txt
+observation  6690.000000       8414.000000
+grep "^obs" ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.txt
+observation  9831.000000       12855.000000
+
+
+
+obs 9831.000000
+mc sum = 10189.441646
+obs 12855.000000
+mc sum = 12885.022428
+
+bin           mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                       mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                              0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          4910.391                 3608.734                 204.639                  271.988                  84.299                   23.138                   219.903                  33.017                   213.240                  0.000                    15.283                   228.671                  8.529                    190.632                  176.977                         7791.608                 2507.052                 142.576                  457.262                  171.572                  54.709                   289.521                  52.217                   440.611                  0.000                    29.676                   364.950                  23.466                   384.198                  175.603                  
+
+
+
+python numbers_for_datacard.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root  -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout --data-nick data_other
+python numbers_for_datacard.py histosels/v37_test15_bunchFULLFIT1_HISTOSEL.root  -d Mt_lep_met_c -c mu_sel_lj,mu_sel_ljout --data-nick data_other
+
+obs 6690.000000
+mc sum = 6861.168569
+obs 8414.000000
+mc sum = 8827.654918
+
+bin           el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                el_sel_lj                       el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             el_sel_ljout             
+process       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                       tt_eltau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_eltau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                              0                        3                        4                        5                        6                        7                        8                        9                        12                       13                       14                       15                       16                       17                       18                       
+rate          3261.234                 2403.519                 129.315                  185.239                  63.863                   15.511                   167.755                  23.972                   164.546                  0.981                    14.372                   176.465                  29.613                   118.405                  106.377                         5217.944                 1651.873                 87.149                   309.987                  112.089                  35.835                   186.706                  32.157                   303.162                  1.928                    12.859                   223.866                  79.913                   228.733                  343.455                  
+
+
+
+
+obs 9831.000000
+mc sum = 10203.165384
+obs 12855.000000
+mc sum = 12889.619626
+
+bin           mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                mu_sel_lj                       mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             mu_sel_ljout             
+process       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                       tt_mutau                 tt_lj                    tt_taulj                 tt_taultauh              tt_other                 dibosons_other           s_top_lj                 s_top_other              s_top_mutau              wjets_tauh               wjets_taul               wjets_other              dy_other                 dy_tautau                qcd_other                
+process       0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                              0                        3                        4                        5                        6                        7                        8                        9                        11                       13                       14                       15                       16                       17                       18                       
+rate          4910.391                 3608.734                 204.639                  271.988                  84.299                   23.138                   226.131                  34.416                   220.923                  0.000                    15.283                   228.671                  8.529                    190.632                  175.391                         7791.608                 2507.052                 142.576                  457.262                  171.572                  54.709                   289.521                  52.217                   440.611                  0.000                    29.676                   364.950                  23.466                   390.389                  174.009                  
+
+
+
+
+test172:
+
+obs 6702.000000
+mc sum = 6876.285164
+obs 8436.000000
+mc sum = 8850.535531
+
+obs 9843.000000
+mc sum = 10220.146489
+obs 12891.000000
+mc sum = 12921.257513
+
+6702.000000 / 6876.285164
+0.9746541686618162
+8436.000000 / 8850.535531
+0.9531626612256352
+
+9843.000000 / 10220.146489
+0.9630977413674133
+12891.000000 / 12921.257513
+0.9976583151469925
+
+.............. purely shape thing
+     which part of the shape?????
+
+
+check PU norm again
+
+python syst_rates.py --sys-histo ntupler/systematic_weights proc/gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root
+               MU_PU             1.013878
+             MU_PUUp             0.994845
+           MU_PUDown             1.036569
+               El_PU             1.031057
+             El_PUUp             1.008920
+           El_PUDown             1.057174
+
+python syst_rates.py --sys-histo ntupler/systematic_weights proc/gstore_outdirs/v37/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/Ntupler_v37_MC2016_Summer16_WJets_madgraph/190206_135543/0000/*root
+               MU_PU             1.013839
+             MU_PUUp             0.994828
+           MU_PUDown             1.036514
+               El_PU             1.030980
+             El_PUUp             1.008845
+           El_PUDown             1.057099
+
+
+probably, if you split PU into epochs you have to renormalize it specially too
+
+
+
+check PU pull in mu whith TOPPT=1  <---------- might not mean anything! if PU is broken it won't behave even if TOPPT=1
+
+make nll      workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_exp_REPTEST_TOPPT1 freeze="--freezeParameters lumi_13TeV,TOPPT --setParameters TOPPT=1"
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_REPTEST2_TOPPTf_checkPU freeze="--freezeParameters lumi_13TeV"    &
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root   nn=v37_test15_mu_REPTEST2_TOPPT1_checkPU freeze="--freezeParameters lumi_13TeV,TOPPT --setParameters TOPPT=1"    &
+
+-- PU does not move
+   but again, it can be broken, together with the normalization
+
+
+
+
+
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_el
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_mu
+
+-- Mismatch in normalizations for bin el_sel_lj, process s_top_eltau: rate 164.546000, shape 159.969287
+
+
+make both mucard=ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_el elcard=ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_mu bothcard=ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_both
+make workspace datacard=ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_both
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_el.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_mu.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test15_bunchFULLFIT1BIN1_both.root
+
+Best fit r: 0.954726  -0.0807631/+0.0889651  (68% CL)
+Best fit r: 0.946875  -0.072756/+0.0787322  (68% CL)
+Best fit r: 0.967728  -0.070674/+0.0768737  (68% CL)
+
+
+
+howww?????
+
+
+
+
+
+
+
 
 # any remaining old problems
 
