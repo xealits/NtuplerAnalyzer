@@ -444,6 +444,7 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_matching_gen_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_N_trackerLayersWithMeasurement)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_correction)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_energy_parameter1_r9) // a parameter for energy corrections, r9 in electrons, 0 in muons
 
 // tau gen matches for leptons from taus (in DY and TT)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_matching_gen_collection)

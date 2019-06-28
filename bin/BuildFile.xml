@@ -28,9 +28,9 @@
 <use name="HiggsAnalysis/CombinedLimit"/>
 <use name="RecoEgamma/ElectronIdentification"/>
 <use name="EgammaAnalysis/ElectronTools"/>
+  <bin name="jet_masurements"              file="jet_masurements.cc"></bin>
 -->
 
-  <bin name="jet_masurements"              file="jet_masurements.cc"></bin>
 
 </environment>
 

@@ -2428,7 +2428,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 *   https://hypernews.cern.ch/HyperNews/CMS/get/met.html
 	 */
 
-	/* sting interface in 2016
+	// sting interface in 2016
 	string filters_name = "";
 	// 2016 data, Aug 2017 rereco
 	if (is2017rereco)
@@ -2440,7 +2440,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// 2016 data, Feb 2017 rereco
 		filters_name = "PAT";
 		}
-	*/
+        edm::TriggerResultsByName patFilters = iEvent.triggerResultsByName(filters_name); //is present only if PAT (and miniAOD) is not run simultaniously with RECO
 
 	/* Token interface in 2016
 	*/
@@ -2465,7 +2465,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		trigResults_with_met_filters = trigResultsPAT;
 		}
 
-	edm::TriggerResultsByName patFilters = iEvent.triggerResultsByName(*trigResults_with_met_filters);
+	//edm::TriggerResultsByName patFilters = iEvent.triggerResultsByName(*trigResults_with_met_filters);
 
 	//if(!isMC && !metFilters.isValid()){metFilters = iEvent.triggerResultsByName("PAT");} //if not present, then it's part of RECO
 	//if(!isMC && !metFilters.isValid()){       
@@ -2642,16 +2642,16 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	if (withHLT)
 		{
-		//edm::TriggerResultsByName tr = iEvent.triggerResultsByName (HLT_source);
-		edm::TriggerResultsByName tr = iEvent.triggerResultsByName(*trigResults);
+		edm::TriggerResultsByName tr = iEvent.triggerResultsByName (HLT_source);
+		//edm::TriggerResultsByName tr = iEvent.triggerResultsByName(*trigResults);
 
-		//if (!tr.isValid ()){
+		if (!tr.isValid ()){
 			// HLT2 was a quirk of Spring16 MC campaigns (noHLT/reHLT/withHLT thing)
 			// need to compare 2016-2015 in tau SV
 			// using HLT2 as backup (DY50 with HLT is present only in reHLT campaign, wich has this HLT2 path)
-			//tr = iEvent.triggerResultsByName ("HLT2");
+			tr = iEvent.triggerResultsByName ("HLT2");
 			// it crashes weirdly with "no consumes" complaints
-			//}
+			}
 
 		if (!tr.isValid ()){
 			cout << HLT_source << " is NOT valid!" << endl;
@@ -2925,6 +2925,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		//double dataSF = rc.kScaleDT(selMuons[l].charge(), selMuons[l].pt(), selMuons[l].eta(), selMuons[l].phi(), 0, 0);
 		//NT_lep_correction.push_back(dataSF);
+		NT_lep_energy_parameter1_r9.push_back(0.);
 		}
 
 	LogInfo ("Demo") << "saved muons";
@@ -2960,6 +2961,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				NT_lep_matching_gen_collection_dR.push_back(match2.dR);
 				}
 			}
+		NT_lep_energy_parameter1_r9.push_back(selElectrons[l].r9());
 		}
 
 	NT_nleps = selLeptons.size();
