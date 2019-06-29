@@ -415,6 +415,320 @@ Best fit r: 0.926233  -0.0709715/+0.0789828  (68% CL)
 Best fit r: 0.948986  -0.0799883/+0.0876587  (68% CL)
 Best fit r: 0.94178   -0.0684634/+0.0753474  (68% CL)
 
+el_sig  = 0.946
+mu_sig  = 0.945
+bt_sig  = 0.961
+
+test15:
+
+combine -M FitDiagnostics  ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root
+combine -M FitDiagnostics  ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root
+
+Best fit r: 0.9463  -0.0732235/+0.0785937  (68% CL)
+Best fit r: 0.946198  -0.082118/+0.0889266  (68% CL)
+
+combine -M FitDiagnostics  ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root --freezeParameters TOPPT,lumi_13TeV --setParameters TOPPT=1.0
+combine -M FitDiagnostics  ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root --freezeParameters TOPPT,lumi_13TeV --setParameters TOPPT=1.0
+
+Best fit r: 0.963472  -0.0677546/+0.0735895  (68% CL)
+Best fit r: 0.952573  -0.074693/+0.0805046  (68% CL)
+
+combine -M FitDiagnostics  ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root
+combine -M FitDiagnostics  ttxsec/datacard_v37_test15_bunchFULLFIT1_mu_exp.root --freezeParameters TOPPT,lumi_13TeV --setParameters TOPPT=1.0
+
+Best fit r: 0.9463  -0.0732235/+0.0785937  (68% CL)
+Best fit r: 0.963472  -0.0677546/+0.0735895  (68% CL)
+
+
+
+## post-fit TOPPT for test15 and test172 BIN
+
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root   nn=v37_test15_mu    &
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root   nn=v37_test15_el    &
+make impacts  workspace=ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root nn=v37_test15_both  &
+
+make impacts  workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   nn=v37_test172_BIN1_mu    &
+make impacts  workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   nn=v37_test172_BIN1_el    &
+make impacts  workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root nn=v37_test172_BIN1_both  &
+
+
+
+
+
+## goodness of fit for test15 and test172 BIN
+
+test15:
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root   --algo=KS         -s 123                    --freezeParameters lumi_13TeV -n v37_test15_mu_STATTEST_KS
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root   --algo=KS         -s 123                    --freezeParameters lumi_13TeV -n v37_test15_el_STATTEST_KS
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root --algo=KS         -s 123                    --freezeParameters lumi_13TeV -n v37_test15_both_STATTEST_KS
+
+Kolmogorov-Smirnov test statistic: 0.00514565
+Kolmogorov-Smirnov test statistic: 0.0146337
+Kolmogorov-Smirnov test statistic: 0.0201683
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root   --algo=KS         -s 321                    --freezeParameters lumi_13TeV -n v37_test15_mu_STATTEST_KS
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root   --algo=KS         -s 321                    --freezeParameters lumi_13TeV -n v37_test15_el_STATTEST_KS
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root --algo=KS         -s 321                    --freezeParameters lumi_13TeV -n v37_test15_both_STATTEST_KS
+
+Kolmogorov-Smirnov test statistic: 0.00514565
+Kolmogorov-Smirnov test statistic: 0.0146337
+Kolmogorov-Smirnov test statistic: 0.0201683
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root   --algo=KS -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test15_mu_STATTEST_KS100    &
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root   --algo=KS -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test15_el_STATTEST_KS100    &
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root --algo=KS -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test15_both_STATTEST_KS100  &
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_mu.root   --algo=KS -t 1000  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test15_mu_STATTEST_KS1000    &
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_el.root   --algo=KS -t 1000  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test15_el_STATTEST_KS1000    &
+combine -M GoodnessOfFit ttxsec/datacard_v37_test15_bunchFULLFIT1_both.root --algo=KS -t 1000  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test15_both_STATTEST_KS1000  &
+
+root -l higgsCombinev37_test15_mu_STATTEST_KS100.GoodnessOfFit.mH120.123.root
+root -l higgsCombinev37_test15_el_STATTEST_KS100.GoodnessOfFit.mH120.123.root
+root -l higgsCombinev37_test15_both_STATTEST_KS100.GoodnessOfFit.mH120.123.root
+
+limit->Draw("limit")
+h = (TH1D*) limit->GetHistogram()
+h_c = (TH1D*) h->GetCumulative(kFALSE)
+h_c->Draw()
+
+h_c->GetBinContent(h_c->FindBin(0.00514565))
+h_c->GetBinContent(h_c->FindBin(0.0146337))
+h_c->GetBinContent(h_c->FindBin(0.0201683))
+
+90.000
+15.000
+40.000
+
+
+
+test172 BIN1:
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   --algo=KS         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_el_KS
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   --algo=KS         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_mu_KS
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root --algo=KS         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_both_KS
+
+Kolmogorov-Smirnov test statistic: 0.0195574
+Kolmogorov-Smirnov test statistic: 0.00641978
+Kolmogorov-Smirnov test statistic: 0.0268595
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   --algo=KS         -s 333                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_el_KS
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   --algo=KS         -s 333                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_mu_KS
+
+Kolmogorov-Smirnov test statistic: 0.0195574
+Kolmogorov-Smirnov test statistic: 0.00641978
+
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   --algo=KS -t 1000  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_el_KS1000
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   --algo=KS -t 1000  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_mu_KS1000
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root --algo=KS -t 1000  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_both_KS1000
+
+some BUSERRORs
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   --algo=KS -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_el_KS100   &
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   --algo=KS -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_mu_KS100   &
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root --algo=KS -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_both_KS100 &
+
+root -l higgsCombinev37_test172_BIN1_el_KS100.GoodnessOfFit.mH120.123.root
+root -l higgsCombinev37_test172_BIN1_mu_KS100.GoodnessOfFit.mH120.123.root
+root -l higgsCombinev37_test172_BIN1_both_KS100.GoodnessOfFit.mH120.123.root
+
+limit->Draw("limit")
+h = (TH1D*) limit->GetHistogram()
+h_c = (TH1D*) h->GetCumulative(kFALSE)
+h_c->Draw()
+
+h_c->GetBinContent(h_c->FindBin(0.0195574))
+h_c->GetBinContent(h_c->FindBin(0.00641978))
+h_c->GetBinContent(h_c->FindBin(0.0268595))
+
+
+el
+
+Done in 0.08 min (cpu), 0.08 min (real)
+mean   expected limit: r < 0.0111579 +/- 0.000264503 @ 95%CL (100 toyMC)
+median expected limit: r < 0.0111493 @ 95%CL (100 toyMC)
+   68% expected band : 0.00875235 < r < 0.0138181
+   95% expected band : 0.00660687 < r < 0.0182304
+
+-- damn! el is farther than 2 sigma
+
+mu
+
+Done in 0.08 min (cpu), 0.08 min (real)
+mean   expected limit: r < 0.00962801 +/- 0.000267278 @ 95%CL (100 toyMC)
+median expected limit: r < 0.00938763 @ 95%CL (100 toyMC)
+   68% expected band : 0.00715396 < r < 0.0116733
+   95% expected band : 0.00529382 < r < 0.0167107
+
+-- at 2 sigma
+
+both
+
+Done in 0.20 min (cpu), 0.20 min (real)
+mean   expected limit: r < 0.0227406 +/- 0.000453121 @ 95%CL (100 toyMC)
+median expected limit: r < 0.022558 @ 95%CL (100 toyMC)
+   68% expected band : 0.0187187 < r < 0.0276366
+   95% expected band : 0.0148432 < r < 0.0353402
+
+-- 1 sigma
+
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root --algo=KS         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_both_KS
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root --algo=KS -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_both_KS100
+
+other algo
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   --algo=AD         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_el_AD
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   --algo=AD -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_el_AD100
+
+Anderson-Darling test statistic: 2.68542
+
+Done in 0.09 min (cpu), 0.09 min (real)
+mean   expected limit: r < 0.816318 +/- 0.0385012 @ 95%CL (100 toyMC)
+median expected limit: r < 0.718764 @ 95%CL (100 toyMC)
+   68% expected band : 0.478446 < r < 1.21722
+   95% expected band : 0.2746 < r < 1.8618
+
+-- out of 2 sigma
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   --algo=AD         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_mu_AD
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   --algo=AD -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_mu_AD100
+
+Anderson-Darling test statistic: 0.432311
+
+Done in 0.09 min (cpu), 0.09 min (real)
+mean   expected limit: r < 0.901912 +/- 0.0503163 @ 95%CL (100 toyMC)
+median expected limit: r < 0.795609 @ 95%CL (100 toyMC)
+   68% expected band : 0.441055 < r < 1.33012
+   95% expected band : 0.344676 < r < 2.69014
+
+-- close within 2sigma
+
+the same as KS....
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root   --algo=AD         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_both_AD
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root   --algo=AD -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_both_AD100
+
+Anderson-Darling test statistic: 3.24128
+
+Done in 0.19 min (cpu), 0.19 min (real)
+mean   expected limit: r < 2.12534 +/- 0.0837728 @ 95%CL (100 toyMC)
+median expected limit: r < 1.81222 @ 95%CL (100 toyMC)
+   68% expected band : 1.43246 < r < 2.85778
+   95% expected band : 1.15873 < r < 4.61773
+
+
+
+
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   --algo=saturated         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_el_saturated
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   --algo=saturated -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_el_saturated100
+
+Best fit test statistic: 34.9071
+
+-- toys look the same
+
+Done in 0.06 min (cpu), 0.06 min (real)
+mean   expected limit: r < 25.4939 +/- 0.740418 @ 95%CL (100 toyMC)
+median expected limit: r < 24.4254 @ 95%CL (100 toyMC)
+   68% expected band : 18.5552 < r < 33.5456
+   95% expected band : 14.2932 < r < 48.9625
+
+-- will be close within 2sigma
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   --algo=saturated         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_mu_saturated
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   --algo=saturated -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_mu_saturated100
+
+Best fit test statistic: 21.3244
+
+-- toys are spot on around it???
+
+Done in 0.06 min (cpu), 0.06 min (real)
+mean   expected limit: r < 26.1437 +/- 0.649555 @ 95%CL (100 toyMC)
+median expected limit: r < 25.0417 @ 95%CL (100 toyMC)
+   68% expected band : 20.1302 < r < 33.0529
+   95% expected band : 14.9615 < r < 38.5587
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root   --algo=saturated         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_both_saturated
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root   --algo=saturated -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_both_saturated100
+
+Best fit test statistic: 59.2
+Done in 0.13 min (cpu), 0.13 min (real)
+mean   expected limit: r < 54.236 +/- 1.14671 @ 95%CL (100 toyMC)
+median expected limit: r < 51.7415 @ 95%CL (100 toyMC)
+   68% expected band : 45.1974 < r < 63.3964
+   95% expected band : 38.3026 < r < 88.0115
+
+
+
+
+
+saturated must use --toysFreq (recommendations of StatComm)
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   --toysFreq --algo=saturated         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_el_Freq_saturated
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   --toysFreq --algo=saturated -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_el_Freq_saturated100
+
+Best fit test statistic: 34.9071
+
+Done in 0.05 min (cpu), 0.05 min (real)
+mean   expected limit: r < 25.8833 +/- 0.790352 @ 95%CL (100 toyMC)
+median expected limit: r < 25.0568 @ 95%CL (100 toyMC)
+   68% expected band : 17.9224 < r < 34.3626
+   95% expected band : 12.2765 < r < 45.1597
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   --toysFreq --algo=saturated         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_mu_Freq_saturated
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   --toysFreq --algo=saturated -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_mu_Freq_saturated100
+
+Best fit test statistic: 21.3244
+
+Done in 0.05 min (cpu), 0.05 min (real)
+mean   expected limit: r < 24.6986 +/- 0.610106 @ 95%CL (100 toyMC)
+median expected limit: r < 24.2238 @ 95%CL (100 toyMC)
+   68% expected band : 18.7463 < r < 30.2441
+   95% expected band : 14.7774 < r < 41.4129
+
+
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root --toysFreq --algo=saturated         -s 123                    --freezeParameters lumi_13TeV -n v37_test172_BIN1_both_Freq_saturated
+combine -M GoodnessOfFit ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root --toysFreq --algo=saturated -t 100  -s 123 --expectSignal 1.0 --freezeParameters lumi_13TeV -n v37_test172_BIN1_both_Freq_saturated100
+
+Best fit test statistic: 59.2
+
+Done in 0.13 min (cpu), 0.13 min (real)
+mean   expected limit: r < 54.2977 +/- 1.00356 @ 95%CL (100 toyMC)
+median expected limit: r < 53.6138 @ 95%CL (100 toyMC)
+   68% expected band : 45.1399 < r < 64.2596
+   95% expected band : 36.1924 < r < 79.3447
+
+
+root -l higgsCombinev37_test172_BIN1_el_Freq_saturated100.GoodnessOfFit.mH120.123.root
+root -l higgsCombinev37_test172_BIN1_mu_Freq_saturated100.GoodnessOfFit.mH120.123.root
+root -l higgsCombinev37_test172_BIN1_both_Freq_saturated100.GoodnessOfFit.mH120.123.root
+
+limit->Draw("limit")
+h = (TH1D*) limit->GetHistogram()
+h_c = (TH1D*) h->GetCumulative(kFALSE)
+h_c->Draw()
+
+h_c->GetBinContent(h_c->FindBin(34.9071))
+h_c->GetBinContent(h_c->FindBin(21.3244))
+h_c->GetBinContent(h_c->FindBin(59.2))
+
+14
+72
+33
+
+saturated is perfect, probably KS will move with 1000 toys
+
+
+
 
 
 
@@ -1826,6 +2140,189 @@ root [16] data_mu_sel_Mt_c_test3->GetBinContent(16)
 (Double_t) 340.000
 
 -- the large bins in the middle should not be a problem, they cover the wjets
+
+
+
+## new bins
+
+root -l ttxsec/fit-stuff/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1.root
+
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(1) 
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(2)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(3)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(4)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(5)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(6)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(7)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(8)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9)  / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(9)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10) / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(10)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(11) / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(11)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(12) / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(12)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(13) / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(13)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(14) / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(14)
+((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(15) / ((TH1D*) mu_sel->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(15)
+
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(1) 
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(2)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(3)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(4)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(5)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(6)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(7)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(8)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(9)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(10)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(11) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(11)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(12) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(12)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(13) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(13)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(14) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(14)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(15) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(15)
+
+(double) 0.0172156
+(double) 0.0166630
+(double) 0.0164729
+(double) 0.0168070
+(double) 0.0163870
+(double) 0.0155801
+(double) 0.0177694
+(double) 0.0188755
+(double) 0.0197206
+(double) 0.0194180
+(double) 0.0207218
+(double) 0.0216070
+(double) 0.0229805
+(double) 0.0243059
+
+
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(1) 
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(2)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(3)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(4)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(5)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(6)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(7)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(8)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(9)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(10)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(11) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(11)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(12) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(12)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(13) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(13)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(14) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(14)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(15) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(15)
+
+(double) 0.0176836
+(double) 0.0157696
+(double) 0.0163650
+(double) 0.0173664
+(double) 0.0152858
+(double) 0.0147253
+(double) 0.0189938
+(double) 0.0176682
+(double) 0.0189050
+(double) 0.0179056
+(double) 0.0174288
+(double) 0.0179586
+(double) 0.0178912
+(double) 0.0180873
+
+
+root -l ttxsec/fit-stuff/v37_test15_bunchFULLFIT1_HISTOSEL.root
+
+mu_sel:
+
+(double) 0.0157412
+(double) 0.0129166
+(double) 0.0110614
+(double) 0.0103275
+(double) 0.0101011
+(double) 0.0104918
+(double) 0.0150304
+(double) 0.0194137
+(double) 0.0274660
+(double) 0.0302012
+
+reproduce:
+
+sqrt(((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1) *((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1)  + ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1) *((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1)  )/ (((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(1) +((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(1))
+sqrt(((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2) *((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2)  + ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2) *((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2)  )/ (((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(2) +((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(2))
+sqrt(((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3) *((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3)  + ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3) *((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3)  )/ (((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(3) +((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(3))
+sqrt(((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4) *((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4)  + ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4) *((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4)  )/ (((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(4) +((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(4))
+sqrt(((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5) *((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5)  + ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5) *((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5)  )/ (((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(5) +((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(5))
+sqrt(((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6) *((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6)  + ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6) *((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6)  )/ (((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(6) +((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(6))
+sqrt(((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7) *((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7)  + ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7) *((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7)  )/ (((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(7) +((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(7))
+sqrt(((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8) *((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8)  + ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8) *((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8)  )/ (((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(8) +((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(8))
+sqrt(((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9) *((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9)  + ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9) *((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9)  )/ (((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(9) +((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(9))
+sqrt(((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10)*((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10) + ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10)*((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10) )/ (((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(10)+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(10))
+
+(double) 0.0113655
+(double) 0.0101276
+(double) 0.00852927
+(double) 0.00775465
+(double) 0.00797480
+(double) 0.00863227
+(double) 0.0128444
+(double) 0.0169468
+(double) 0.0239307
+
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(1) 
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(2)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(3)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(4)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(5)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(6)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(7)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(8)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9)  / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(9)
+((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(10)
+
+(double) 0.0156921
+(double) 0.0147218
+(double) 0.0119174
+(double) 0.0112019
+(double) 0.0114783
+(double) 0.0132423
+(double) 0.0204905
+(double) 0.0282595
+(double) 0.0401889
+(double) 0.0458659
+
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(1)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(1) 
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(2)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(2)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(3)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(3)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(4)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(4)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(5)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(5)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(6)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(6)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(7)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(7)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(8)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(8)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(9)  / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(9)
+((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinError(10) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(10)
+
+(double) 0.0161757
+(double) 0.0139308
+(double) 0.0121156
+(double) 0.0107360
+(double) 0.0110546
+(double) 0.0113832
+(double) 0.0164848
+(double) 0.0211763
+(double) 0.0297870
+(double) 0.0314496
+
+mu_sel:
+
+(double) 0.0157412
+(double) 0.0129166
+(double) 0.0110614
+(double) 0.0103275
+(double) 0.0101011
+(double) 0.0104918
+(double) 0.0150304
+(double) 0.0194137
+(double) 0.0274660
+(double) 0.0302012
+
+
 
 
 
