@@ -30,7 +30,7 @@ find_failed_jobs: job_name_tag=job
 find_failed_jobs:
 	# not always correct:
 	#wc -l job_*.e* | grep " [0-9][0-9] " > jobs_failed
-	grep --files-with-matches "output written,"    ${job_name_tag}_*.o* | sort > jobs_produced
+	grep --files-with-matches "output written"    ${job_name_tag}_*.o* | sort > jobs_produced
 	grep --files-with-matches "output file exists" ${job_name_tag}_*.o* | sort > jobs_output_exists
 	cat jobs_produced jobs_output_exists | sort > jobs_done
 	ls ${job_name_tag}_*.o* | sort > jobs_all

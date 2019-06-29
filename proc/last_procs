@@ -2,6 +2,8 @@
 python genjobs.py v37 test20  --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --dtags MC2016_Summer16_TTJets_powheg          --jobs-name-tag tt
 python genjobs.py v37 test20  --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --without-dtags MC2016_Summer16_TTJets_powheg,std_data --jobs-name-tag mc
 
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test20 --distrs bunchFULLFIT1BIN1 --chan-groups fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout
+
 # reproduce test15 with no taujet JER -- I have this? 00 yeah, 174 but it has only TT!
 python genjobs.py v37 test152 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --dtags MC2016_Summer16_TTJets_powheg,std_data --jobs-name-tag tt_data
 python genjobs.py v37 test152 --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue --without-dtags MC2016_Summer16_TTJets_powheg,std_data
