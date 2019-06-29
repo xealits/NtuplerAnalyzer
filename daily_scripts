@@ -316,6 +316,107 @@ Validate script
 >>>There were no warnings
 
 
+# corrected the fixed lepjet propagation test172 BIN1
+
+make run_std_histos out=histosels/v37_test172_bunchFULLFIT1BIN1/ wjets_norm=1.4 lumi_mu=35800 lumi_el=35800 mc=distrs/distrs_v37_test172_bunchFULLFIT1BIN1_mc1.root data_mu=distrs/v37_test172_bunchFULLFIT1BIN1/SingleMuon.root data_el=distrs/v37_test172_bunchFULLFIT1BIN1/SingleElectron.root
+
+something crashes with "file exists, nothing is written"?
+
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test172_bunchFULLFIT1BIN1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=mu_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_lj"    & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test172_bunchFULLFIT1BIN1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=el_sel_lj    systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_lj"    & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test172_bunchFULLFIT1BIN1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=mu_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x mu_selVloose_ljout" & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test172_bunchFULLFIT1BIN1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=el_sel_ljout systematics="NOMINAL `cat syst-test.syst-list.experimental | tr '\n' ' '`" qcd_opt="--qcd 1.05" shape_opt="-x el_selVloose_ljout" & \
+
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test172_bunchFULLFIT1BIN1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=mu_sel_lj    systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_lj" & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test172_bunchFULLFIT1BIN1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=el_sel_lj    systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_lj" & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test172_bunchFULLFIT1BIN1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=mu_sel_ljout systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x mu_selVloose_ljout" & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test172_bunchFULLFIT1BIN1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=el_sel_ljout systematics="`cat syst-test.syst-list.parton_showers syst-test.syst-list.pdfs | tr '\n' ' '`" shape_opt="-x el_selVloose_ljout" & \
+
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test172_bunchFULLFIT1BIN1/SingleMuon.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=mu_sel & \
+make run_histos mc=distrs/distrs_v37_test172_bunchFULLFIT1BIN1_mc1.root data=distrs/v37_test172_bunchFULLFIT1BIN1/SingleElectron.root options= lumi=35800 distr=Mt_lep_met_c out=histosels/v37_test172_bunchFULLFIT1BIN1/ wjets_norm=1.4 chan=el_sel & 
+
+
+
+hadd histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1.root histosels/v37_test172_bunchFULLFIT1BIN1/*
+
+cp ttxsec/datacard_v37_test17_bunchFULLFIT1BIN1_el.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.txt
+cp ttxsec/datacard_v37_test17_bunchFULLFIT1BIN1_mu.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.txt
+
+cp ttxsec/datacard_v37_test172_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.txt
+cp ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.txt
+
+vim -p ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.txt
+
+grep observa ttxsec/datacard_v37_test172_bunchFULLFIT1_el.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.txt
+ttxsec/datacard_v37_test172_bunchFULLFIT1_el.txt:observation  6690.000000       8414.000000
+ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.txt:observation  6690.000000       8414.000000
+
+grep observa ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.txt
+ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.txt:observation  9831.000000       12855.000000
+ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.txt:observation  9831.000000       12855.000000
+
+absolutely the same data
+
+shapes qcd       el_sel_lj     fit-stuff/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1.root  el_sel_lj/qcd_other/NOMINAL/el_sel_lj_qcd_NOMINAL_Mt_lep_met_c                 el_sel_lj/qcd_other/$SYSTEMATIC/el_sel_lj_qcd_$SYSTEMATIC_Mt_lep_met_c
+shapes qcd       el_sel_ljout  fit-stuff/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1.root  el_sel_ljout/qcd_other/NOMINAL/el_sel_ljout_qcd_NOMINAL_Mt_lep_met_c           el_sel_ljout/qcd_other/$SYSTEMATIC/el_sel_ljout_qcd_$SYSTEMATIC_Mt_lep_met_c
+
+shapes qcd       mu_sel_lj     fit-stuff/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1.root  mu_sel_lj/qcd_other/NOMINAL/mu_sel_lj_qcd_NOMINAL_Mt_lep_met_c                 mu_sel_lj/qcd_other/$SYSTEMATIC/mu_sel_lj_qcd_$SYSTEMATIC_Mt_lep_met_c
+shapes qcd       mu_sel_ljout  fit-stuff/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1.root  mu_sel_ljout/qcd_other/NOMINAL/mu_sel_ljout_qcd_NOMINAL_Mt_lep_met_c           mu_sel_ljout/qcd_other/$SYSTEMATIC/mu_sel_ljout_qcd_$SYSTEMATIC_Mt_lep_met_c
+
+python numbers_for_datacard.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1.root  -d Mt_lep_met_c -c mu_sel_lj,mu_sel_ljout --data-nick data_other
+python numbers_for_datacard.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1.root  -d Mt_lep_met_c -c el_sel_lj,el_sel_ljout --data-nick data_other
+
+
+
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu
+
+RuntimeError: Mismatch in normalizations for bin el_sel_lj, process wjets_taul: rate 14.372000, shape 33.656336
+
+-- amcatnlo wjets have been hadded!
+
+rehadd distrs and histosel
+-- el passes
+   mu passes
+
+make both mucard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu elcard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el bothcard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both
+
+
+combineCards.py mu=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.txt el=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.txt > ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.txt
+../scripts/text2workspace.py ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.txt
+
+
+test172:
+
+make nll  workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.root   nn=v37_test172_mu_test1
+make nll  workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1_el.root   nn=v37_test172_el_test1
+make nll  workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1_both.root nn=v37_test172_both_test1
+
+ POI: r= 0.91961 -> [0.5,1.5]
+ POI: r= 0.933139 -> [0.5,1.5]
+ POI: r= 0.929332 -> [0.5,1.5]
+
+-- yeap...
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1_el.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1_both.root
+
+Best fit r: 0.919563  -0.0714482/+0.0783514  (68% CL)
+Best fit r: 0.933132  -0.0797546/+0.0884625  (68% CL)
+Best fit r: 0.928627  -0.0698014/+0.0753698  (68% CL)
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root
+
+Best fit r: 0.926233  -0.0709715/+0.0789828  (68% CL)
+Best fit r: 0.948986  -0.0799883/+0.0876587  (68% CL)
+Best fit r: 0.94178   -0.0684634/+0.0753474  (68% CL)
+
+
+
 
 # corrected the fixed lepjet propagation test172
 
