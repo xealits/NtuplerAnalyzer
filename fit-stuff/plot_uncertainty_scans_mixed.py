@@ -1,3 +1,46 @@
+import argparse, logging
+
+import ctypes
+from ctypes import c_double
+
+# Allocate array of double*
+n = 3
+#x     = (ctypes.POINTER(ctypes.c_double) * n)()
+#y     = (ctypes.POINTER(ctypes.c_double) * n)()
+#ymin  = (ctypes.POINTER(ctypes.c_double) * n)()
+#ymax  = (ctypes.POINTER(ctypes.c_double) * n)()
+#ymin2 = (ctypes.POINTER(ctypes.c_double) * n)()
+#ymax2 = (ctypes.POINTER(ctypes.c_double) * n)()
+
+x     = (ctypes.c_double * n)()
+y     = (ctypes.c_double * n)()
+ymin  = (ctypes.c_double * n)()
+ymax  = (ctypes.c_double * n)()
+ymin2 = (ctypes.c_double * n)()
+ymax2 = (ctypes.c_double * n)()
+
+
+parser = argparse.ArgumentParser(
+    formatter_class = argparse.RawDescriptionHelpFormatter,
+    description = "plot the NLL scans for the given fitting release",
+    epilog = "Example:\n    $ python plot_uncertainty_scans.py v37_test13_bunchFULLFIT2_2"
+    )
+
+parser.add_argument("fit_release",    help="the name tag of the fit")
+parser.add_argument("--nll-limit",  type=float, default=10., help="limit the maximum of NLL on the plot (deafult 10)")
+parser.add_argument("--xsec-scale", type=float, default=143.23, help="the name tag of the fit (default 143.23)")
+parser.add_argument("--title-x",    type=str,   default='\\text{visible cross section [pb]}', help="the name tag of the fit")
+parser.add_argument("--output-type",      type=str,   default='png', help="the output format (png by default)")
+parser.add_argument("--horizontal-lines", type=str,   help="add dashed grey horizontal lines at the Y axis given as <y1>[,<y2>]...")
+parser.add_argument("--debug", action="store_true", help="debug logging")
+
+args = parser.parse_args()
+
+if args.debug:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.INFO)
+
 import ROOT
 from ROOT import TCanvas, TGraph, TLine, gStyle, gROOT, gPad, TFile, TTree, TPaveText, TLegend
 from ROOT import kRed, kBlue, kBlack
@@ -35,17 +78,20 @@ TGraph *g2 = new TGraph(430, ttree_full->GetV2(), ttree_full->GetV1())
 '''
 
 
+nn = args.fit_release
+
 the_files = {
-'el': ["higgsCombineElFullUncertainty.MultiDimFit.mH120.root", "higgsCombineElNoTau.MultiDimFit.mH120.root", "higgsCombineElNoSys.MultiDimFit.mH120.root"],
-'mu': ["higgsCombineMuFullUncertainty.MultiDimFit.mH120.root", "higgsCombineMuNoTau.MultiDimFit.mH120.root", "higgsCombineMuNoSys.MultiDimFit.mH120.root"],
-'both': ["higgsCombineBothFullUncertainty.MultiDimFit.mH120.root", "higgsCombineBothNoTau.MultiDimFit.mH120.root", "higgsCombineBothNoSys.MultiDimFit.mH120.root"],
+'el':   [  "higgsCombineel_%sFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn,   "higgsCombineel_%sNoTau.MultiDimFit.mH120.root" % nn,   "higgsCombineel_%sNoSys.MultiDimFit.mH120.root" % nn],
+'mu':   [  "higgsCombinemu_%sFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn,   "higgsCombinemu_%sNoTau.MultiDimFit.mH120.root" % nn,   "higgsCombinemu_%sNoSys.MultiDimFit.mH120.root" % nn],
+'both': ["higgsCombineboth_%sFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn, "higgsCombineboth_%sNoTau.MultiDimFit.mH120.root" % nn, "higgsCombineboth_%sNoSys.MultiDimFit.mH120.root" % nn],
 }
 
 the_files_expected = {
-'el': ["higgsCombineExpectedElFullUncertainty.MultiDimFit.mH120.root", "higgsCombineExpectedElNoTau.MultiDimFit.mH120.root", "higgsCombineExpectedElNoSys.MultiDimFit.mH120.root"],
-'mu': ["higgsCombineExpectedMuFullUncertainty.MultiDimFit.mH120.root", "higgsCombineExpectedMuNoTau.MultiDimFit.mH120.root", "higgsCombineExpectedMuNoSys.MultiDimFit.mH120.root"],
-'both': ["higgsCombineExpectedBothFullUncertainty.MultiDimFit.mH120.root", "higgsCombineExpectedBothNoTau.MultiDimFit.mH120.root", "higgsCombineExpectedBothNoSys.MultiDimFit.mH120.root"],
+'el':   [  "higgsCombineel_%s_ExpectedFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn,   "higgsCombineel_%s_ExpectedNoTau.MultiDimFit.mH120.root" % nn,   "higgsCombineel_%s_ExpectedNoSys.MultiDimFit.mH120.root" % nn],
+'mu':   [  "higgsCombinemu_%s_ExpectedFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn,   "higgsCombinemu_%s_ExpectedNoTau.MultiDimFit.mH120.root" % nn,   "higgsCombinemu_%s_ExpectedNoSys.MultiDimFit.mH120.root" % nn],
+'both': ["higgsCombineboth_%s_ExpectedFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn, "higgsCombineboth_%s_ExpectedNoTau.MultiDimFit.mH120.root" % nn, "higgsCombineboth_%s_ExpectedNoSys.MultiDimFit.mH120.root" % nn],
 }
+
 
 
 
@@ -78,18 +124,18 @@ ttree_full_mu_exp   = file_full_mu_exp.Get("limit")
 ttree_full_both_exp = file_full_both_exp.Get("limit")
 
 
-n             = ttree_full_el_obs.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+n             = ttree_full_el_obs.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
 g_full_el_obs = TGraph(n, ttree_full_el_obs.GetV2(), ttree_full_el_obs.GetV1())
-n             = ttree_full_mu_obs.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+n             = ttree_full_mu_obs.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
 g_full_mu_obs = TGraph(n, ttree_full_mu_obs.GetV2(), ttree_full_mu_obs.GetV1())
-n               = ttree_full_both_obs.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+n             = ttree_full_both_obs.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
 g_full_both_obs = TGraph(n, ttree_full_both_obs.GetV2(), ttree_full_both_obs.GetV1())
 
-n             = ttree_full_el_exp.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+n             = ttree_full_el_exp.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
 g_full_el_exp = TGraph(n, ttree_full_el_exp.GetV2(), ttree_full_el_exp.GetV1())
-n             = ttree_full_mu_exp.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+n             = ttree_full_mu_exp.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
 g_full_mu_exp = TGraph(n, ttree_full_mu_exp.GetV2(), ttree_full_mu_exp.GetV1())
-n               = ttree_full_both_exp.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+n               = ttree_full_both_exp.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
 g_full_both_exp = TGraph(n, ttree_full_both_exp.GetV2(), ttree_full_both_exp.GetV1())
 
 

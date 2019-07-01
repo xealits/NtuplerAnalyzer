@@ -985,6 +985,27 @@ python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc.root distrs/v37_test13_
 
 
 
+## NLL scans
+
+python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test15_exp_unc --xsec-scale 831.76 --title-x "cross section [pb]"
+
+does not really work:
+python ttxsec/fit-stuff/plot_uncertainty_scans_mixed.py v37_test15_exp_unc --xsec-scale 831.76 --title-x "cross section [pb]"
+
+rename higgsCombinev37_test172BIN1_el_test1 higgsCombineel_v37_test172BIN1_test1 v37_test172BIN1_test1/higgsCombinev37_test172BIN1_el_test1*
+rename higgsCombinev37_test172BIN1_mu_test1 higgsCombinemu_v37_test172BIN1_test1 v37_test172BIN1_test1/higgsCombinev37_test172BIN1_mu_test1*
+rename higgsCombinev37_test172BIN1_both_test1 higgsCombineboth_v37_test172BIN1_test1 v37_test172BIN1_test1/higgsCombinev37_test172BIN1_both_test1*
+
+ls v37_test172BIN1_test1/higgsCombineel_v37_test172BIN1_test1*
+ls v37_test172BIN1_test1/higgsCombinemu_v37_test172BIN1_test1*
+ls v37_test172BIN1_test1/higgsCombineboth_v37_test172BIN1_test1*
+
+mv v37_test172BIN1_test1/higgsCombineel_v37_test172BIN1_test1*   ./
+mv v37_test172BIN1_test1/higgsCombinemu_v37_test172BIN1_test1*   ./
+mv v37_test172BIN1_test1/higgsCombineboth_v37_test172BIN1_test1* ./
+
+python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test172BIN1_test1 --xsec-scale 831.76 --title-x "cross section [pb]"
+
 
 
 
