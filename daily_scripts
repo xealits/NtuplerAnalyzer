@@ -827,6 +827,80 @@ underlying event (Pythia tune)  &  0.5 &  0.5 &  0.6 \\
                       PDF  &  1.5 &  1.5 &  1.6 \\
             MC statistics  &  2.0 &  1.6 &  1.6 \\
 
+&  4.7 &  4.5 &  4.5 \\
+&  2.4 &  2.3 &  2.3 \\
+&  2.6 &  2.2 &  2.3 \\
+&  1.1 &  1.2 &  0.9 \\
+&  0.7 &  0.8 &  0.8 \\
+&      &  0.6 &  0.6 \\
+&  0.4 &  0.4 &  0.6 \\
+&  0.6 &  0.5 &  0.5 \\
+&  0.1 &  0.4 &  0.5 \\
+&  0.1 &  0.5 &  0.4 \\
+&  0.1 &  0.2 &  0.4 \\
+&      &  0.3 &  0.2 \\
+&  2.3 &      &  0.2 \\
+&  1.8 &      &  0.2 \\
+&  0.6 &  0.3 &  0.1 \\
+& <0.1 & <0.1 & <0.1 \\
+
+&  2.7 &  2.3 &  2.4 \\
+&  2.3 &  2.0 &  2.2 \\
+&  1.7 &  1.9 &  1.7 \\
+&  1.7 &  1.6 &  1.5 \\
+&  1.1 &  1.2 &  1.1 \\
+&  0.8 &  0.6 &  0.7 \\
+&  0.5 &  0.5 &  0.6 \\
+&  0.4 &  0.4 &  0.5 \\
+&  1.5 &  1.5 &  1.6 \\
+&  2.0 &  1.6 &  1.6 \\
+
+\begin{table}[htp]
+\begin{center}
+%\caption{Systematic uncertainties in the signal strength determined from the simultaneous fit in the $e\tauh$ and $\mu\tauh$ final states, and their combination.}
+\label{tab:impacts_both}
+\begin{tabular}{lccc|ccc}
+%\toprule
+\hline
+\multicolumn{1}{c}{Source} & \multicolumn{3}{c}{Uncertainty [\%] v11} \\ \cline{2-4}
+                           &  $e\tau$        & $\mu\tau$    &     Combined \\ \hline
+
+\multicolumn{1}{l}\textit{Experimental uncertainties:}&      \\
+$\tau$ jet identification               &  4.7 &  4.5 &  4.4 \\
+$\tau$ misidentification background     &  2.3 &  2.2 &  2.3 \\
+pileup (PU)                             &  2.6 &  2.3 &  2.3 \\
+jet energy scale                        &  1.1 &  0.5 &  1.1 \\
+\cPqb tagging efficiency                &  1.1 &  1.1 &  0.9 \\
+W+jets normalization                    &  0.2 &  0.7 &  0.7 \\
+$\tauh$ energy scale                    &  0.9 &  0.6 &  0.7 \\
+muon reconstruction                     &   -  &  0.6 &  0.6 \\
+Drell-Yan normalization                 &  0.4 &  0.5 &  0.6 \\
+single top normalization                &  0.6 &  0.5 &  0.5 \\
+muon trigger efficiency                 &   -  &  0.3 &  0.3 \\
+electron trigger efficiency             &  2.3 &   -  &  0.2 \\
+electron reconstruction                 &  1.8 &   -  &  0.2 \\
+jet energy resolution                   &  0.3 &  0.6 &  0.1 \\
+multijet normalization                  &  0.9 &  0.5 &  0.1 \\
+dibosons normalization                  &  $<0.1$ &  $<0.1$ &  $<0.1$ \\
+
+\hline
+\multicolumn{1}{l}\textit{Theoretical uncertainties:} & \\
+top quark \pt modeling                      &  2.9 &  2.2 &  2.3 \\
+b quark fragmentation                       &  2.3 &  2.0 &  2.3 \\
+initial state radiation (ISR)               &  1.6 &  1.5 &  1.6 \\
+final state radiation (FSR)                 &  1.3 &  2.0 &  1.6 \\
+                ME scales                   &  1.1 &  1.2 &  1.1 \\
+semi-leptonic b-hadron branching fraction   &  0.7 &  0.6 &  0.6 \\
+underlying event                            &  0.4 &  0.5 &  0.5 \\
+ME-PS matching ($h_{\rm damp}$)             &  0.5 &  0.4 &  0.4 \\
+PDF                                         &  1.4 &  1.5 &  1.5 \\
+MC statistics                               &  2.1 &  1.8 &  1.7 \\
+ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
 cp ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp.txt
 cp ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp.txt
 
