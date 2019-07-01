@@ -1006,6 +1006,20 @@ mv v37_test172BIN1_test1/higgsCombineboth_v37_test172BIN1_test1* ./
 
 python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test172BIN1_test1 --xsec-scale 831.76 --title-x "cross section [pb]"
 
+cp higgsCombinemu_v37_test172BIN1_test1FullUncertaintyWLumi.MultiDimFit.mH120.root   higgsCombinemu_v37_test172BIN1_test1FullUncertainty.MultiDimFit.mH120.root
+cp higgsCombineel_v37_test172BIN1_test1FullUncertaintyWLumi.MultiDimFit.mH120.root   higgsCombineel_v37_test172BIN1_test1FullUncertainty.MultiDimFit.mH120.root
+cp higgsCombineboth_v37_test172BIN1_test1FullUncertaintyWLumi.MultiDimFit.mH120.root higgsCombineboth_v37_test172BIN1_test1FullUncertainty.MultiDimFit.mH120.root
+
+cp higgsCombinemu_v37_test172BIN1_test1_ExpectedFullUncertaintyWLumi.MultiDimFit.mH120.root   higgsCombinemu_v37_test172BIN1_test1_ExpectedFullUncertainty.MultiDimFit.mH120.root
+cp higgsCombineel_v37_test172BIN1_test1_ExpectedFullUncertaintyWLumi.MultiDimFit.mH120.root   higgsCombineel_v37_test172BIN1_test1_ExpectedFullUncertainty.MultiDimFit.mH120.root
+cp higgsCombineboth_v37_test172BIN1_test1_ExpectedFullUncertaintyWLumi.MultiDimFit.mH120.root higgsCombineboth_v37_test172BIN1_test1_ExpectedFullUncertainty.MultiDimFit.mH120.root
+
+python ttxsec/fit-stuff/plot_uncertainty_scans_mixed.py v37_test172BIN1_test1 --xsec-scale 831.76 --title-x "cross section [pb]"
+cp uncertainty_scans_el_mu_both.png uncertainty_scans_el_mu_both_10NL.png
+
+python ttxsec/fit-stuff/plot_uncertainty_scans_mixed.py v37_test172BIN1_test1 --xsec-scale 831.76 --title-x "cross section [pb]" --nll-limit 5.
+cp uncertainty_scans_el_mu_both.png uncertainty_scans_el_mu_both_5NLL.png
+
 
 
 
