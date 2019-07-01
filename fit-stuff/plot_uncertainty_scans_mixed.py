@@ -73,10 +73,11 @@ ymax2 = (ctypes.c_double * n)()
 higgsCombineMuFullUncertainty.MultiDimFit.mH120.root higgsCombineMuNoTau.MultiDimFit.mH120.root higgsCombineMuNoSysButTOPPT.MultiDimFit.mH120.root
 
 TTree* ttree_full = (TTree*) _file0->Get("limit")
-n = ttree_full->Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
+n = ttree_full->Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< 10", "L")
 TGraph *g2 = new TGraph(430, ttree_full->GetV2(), ttree_full->GetV1())
 '''
 
+draw_command = "2*deltaNLL:r*%f" % args.xsec_scale # visible cross section in both channels # full space "2*deltaNLL:r*831.76" # draw_command
 
 nn = args.fit_release
 
@@ -106,13 +107,13 @@ c1.cd()
 
 leg = TLegend(0.6, 0.7, 0.89, 0.89)
 
-file_full_el_exp   = TFile("higgsCombineExpectedElFullUncertainty.MultiDimFit.mH120.root")
-file_full_mu_exp   = TFile("higgsCombineExpectedMuFullUncertainty.MultiDimFit.mH120.root")
-file_full_both_exp = TFile("higgsCombineExpectedBothFullUncertainty.MultiDimFit.mH120.root")
+file_full_el_exp   = TFile("higgsCombineel_%s_ExpectedFullUncertainty.MultiDimFit.mH120.root" % nn)
+file_full_mu_exp   = TFile("higgsCombinemu_%s_ExpectedFullUncertainty.MultiDimFit.mH120.root" % nn)
+file_full_both_exp = TFile("higgsCombineboth_%s_ExpectedFullUncertainty.MultiDimFit.mH120.root" % nn)
 
-file_full_el_obs   = TFile("higgsCombineElFullUncertainty.MultiDimFit.mH120.root")
-file_full_mu_obs   = TFile("higgsCombineMuFullUncertainty.MultiDimFit.mH120.root")
-file_full_both_obs = TFile("higgsCombineBothFullUncertainty.MultiDimFit.mH120.root")
+file_full_el_obs   = TFile("higgsCombineel_%sFullUncertainty.MultiDimFit.mH120.root" % nn)
+file_full_mu_obs   = TFile("higgsCombinemu_%sFullUncertainty.MultiDimFit.mH120.root" % nn)
+file_full_both_obs = TFile("higgsCombineboth_%sFullUncertainty.MultiDimFit.mH120.root" % nn)
 
 
 ttree_full_el_obs   = file_full_el_obs.Get("limit")
@@ -124,18 +125,18 @@ ttree_full_mu_exp   = file_full_mu_exp.Get("limit")
 ttree_full_both_exp = file_full_both_exp.Get("limit")
 
 
-n             = ttree_full_el_obs.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
+n             = ttree_full_el_obs.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
 g_full_el_obs = TGraph(n, ttree_full_el_obs.GetV2(), ttree_full_el_obs.GetV1())
-n             = ttree_full_mu_obs.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
+n             = ttree_full_mu_obs.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
 g_full_mu_obs = TGraph(n, ttree_full_mu_obs.GetV2(), ttree_full_mu_obs.GetV1())
-n             = ttree_full_both_obs.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
+n             = ttree_full_both_obs.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
 g_full_both_obs = TGraph(n, ttree_full_both_obs.GetV2(), ttree_full_both_obs.GetV1())
 
-n             = ttree_full_el_exp.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
+n             = ttree_full_el_exp.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
 g_full_el_exp = TGraph(n, ttree_full_el_exp.GetV2(), ttree_full_el_exp.GetV1())
-n             = ttree_full_mu_exp.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
+n             = ttree_full_mu_exp.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
 g_full_mu_exp = TGraph(n, ttree_full_mu_exp.GetV2(), ttree_full_mu_exp.GetV1())
-n               = ttree_full_both_exp.Draw("2*deltaNLL:r", "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
+n               = ttree_full_both_exp.Draw(draw_command, "2*deltaNLL>0 && 2*deltaNLL< %s" % args.nll_limit, "L")
 g_full_both_exp = TGraph(n, ttree_full_both_exp.GetV2(), ttree_full_both_exp.GetV1())
 
 
@@ -160,8 +161,10 @@ g_full_el_exp  .SetLineStyle(7)
 g_full_mu_exp  .SetLineStyle(7)
 g_full_both_exp.SetLineStyle(7)
 
-g_full_el_obs .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
-g_full_el_exp .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
+#g_full_el_obs .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
+#g_full_el_exp .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
+g_full_el_obs .SetTitle(";%s;-2\\Delta ln L" % args.title_x)
+g_full_el_exp .SetTitle(";%s;-2\\Delta ln L" % args.title_x)
 
 g_full_mu_obs .SetTitle(";;")
 g_full_mu_exp .SetTitle(";;")
