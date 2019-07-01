@@ -577,21 +577,22 @@ plot_sel_lj_1:
 
 # main selection plots without categories
 plot_sel_1: options=--data-nick data_other --overwrite
+plot_sel_1: output_type=png
 plot_sel_1:
 	echo `date` plot_sel_1 nt=${nt} proc=${proc} distrs=${distrs} chan=${chan_tag}_sel >> logs
 	mkdir -p plots/${nt}_${proc}_${distrs}/
 	# main selection
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d lep_pt  --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "${title_lep} p_{T} [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d lep_eta --wjet 1.4 --qcd 1.05 --ratio-range 0.5            --title "" --title-x "${title_lep} #eta" --title-y "Events"
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d tau_eta --wjet 1.4 --qcd 1.05 --ratio-range 0.5            --title "" --title-x "#tau #eta"         --title-y "Events"
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d bjet_pt  --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "leading b-tagged jet p_{T} [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d bjet_eta --wjet 1.4 --qcd 1.05 --ratio-range 0.5            --title "" --title-x "leading b-tagged jet #eta"        --title-y "Events"
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d Mt_lep_met_f --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d met_c      --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "MET [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root --output-type ${output_type} -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d lep_pt  --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "${title_lep} p_{T} [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root --output-type ${output_type} -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d lep_eta --wjet 1.4 --qcd 1.05 --ratio-range 0.5            --title "" --title-x "${title_lep} #eta" --title-y "Events"
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root --output-type ${output_type} -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root --output-type ${output_type} -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d tau_eta --wjet 1.4 --qcd 1.05 --ratio-range 0.5            --title "" --title-x "#tau #eta"         --title-y "Events"
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root --output-type ${output_type} -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d bjet_pt  --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "leading b-tagged jet p_{T} [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root --output-type ${output_type} -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d bjet_eta --wjet 1.4 --qcd 1.05 --ratio-range 0.5            --title "" --title-x "leading b-tagged jet #eta"        --title-y "Events"
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root --output-type ${output_type} -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d Mt_lep_met_f --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(${title_lep}, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root --output-type ${output_type} -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d met_c      --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "MET [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02
 	# N jets
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d nbjets     --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "number of b-tagged jets"         --title-y "Events"
-	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d nrjets     --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "number of not b-tagged jets"     --title-y "Events"
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root --output-type ${output_type} -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d nbjets     --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "number of b-tagged jets"         --title-y "Events"
+	python stack_plot.py distrs/${nt}_${proc}_${distrs}_mc.root distrs/${nt}_${proc}_${distrs}/${datafile}.root --output-type ${output_type} -o plots/${nt}_${proc}_${distrs}/ ${options} -p -r --lumi ${lumi} -c ${chan_tag}_sel    -x ${chan_tag}_selVloose    -d nrjets     --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "number of not b-tagged jets"     --title-y "Events"
 
 
 # in paper, with merged processes, main selection plots without categories and 
@@ -697,10 +698,10 @@ plot_control_met:
 .ONESHELL:
 rename_for_update_el_presel: nt=v37
 rename_for_update_el_presel: proc=test13
-rename_for_update_el_presel: up=update1
+rename_for_update_el_presel: distrs=update1
 rename_for_update_el_presel:
-	mkdir -p plots/${nt}_${proc}_${up}/renames/
-	cd plots/${nt}_${proc}_${up}/renames/
+	mkdir -p plots/${nt}_${proc}_${distrs}/renames/
+	cd plots/${nt}_${proc}_${distrs}/renames/
 	#ln -s ../*el_preselCand_*NOMINAL*dataqcd.png el_presel_b_discr_loose.png
 	#ln -s ../*el_preselCand_*NOMINAL*dataqcd.png el_presel_b_discr_med.png
 	#ln -s ../*el_preselCand_*NOMINAL*dataqcd.png el_presel_b_discr_rest.png
@@ -751,10 +752,10 @@ rename_for_update_el_presel:
 .ONESHELL:
 rename_for_update_mu_presel: nt=v37
 rename_for_update_mu_presel: proc=test13
-rename_for_update_mu_presel: up=update1
+rename_for_update_mu_presel: distrs=update1
 rename_for_update_mu_presel:
-	mkdir -p plots/${nt}_${proc}_${up}/renames/
-	cd plots/${nt}_${proc}_${up}/renames/
+	mkdir -p plots/${nt}_${proc}_${distrs}/renames/
+	cd plots/${nt}_${proc}_${distrs}/renames/
 	ln -s ../*bjet_eta_mu_preselCand_NOMINAL*dataqcd.png mu_presel_bjet_eta.png
 	ln -s ../*bjet_pt_mu_preselCand_NOMINAL*dataqcd.png  mu_presel_bjet_pt.png
 	ln -s ../*lep_eta_mu_preselCand_NOMINAL*dataqcd.png mu_presel_electron_eta.png
@@ -775,11 +776,11 @@ rename_for_update_mu_presel:
 .ONESHELL:
 rename_for_update_main_sel: nt=v37
 rename_for_update_main_sel: proc=test13
-rename_for_update_main_sel: up=update1
+rename_for_update_main_sel: distrs=update1
 rename_for_update_main_sel: lepton=mu
 rename_for_update_main_sel:
-	mkdir -p plots/${nt}_${proc}_${up}/renames/
-	cd plots/${nt}_${proc}_${up}/renames/
+	mkdir -p plots/${nt}_${proc}_${distrs}/renames/
+	cd plots/${nt}_${proc}_${distrs}/renames/
 	#ln -s ../*bjet_eta_${lepton}_sel_NOMINAL*dataqcd.png ${lepton}_sel_bjet_eta.png
 	#ln -s ../*bjet_pt_${lepton}_sel_NOMINAL*dataqcd.png  ${lepton}_sel_bjet_pt.png
 	ln -s ../*lep_eta_${lepton}_sel_NOMINAL*dataqcd.png ${lepton}_sel_lep_eta.png
@@ -801,10 +802,10 @@ rename_for_update_el_sel:
 .ONESHELL:
 rename_for_update_wjets: nt=v37
 rename_for_update_wjets: proc=test13
-rename_for_update_wjets: up=update1
+rename_for_update_wjets: distrs=update1
 rename_for_update_wjets:
-	mkdir -p plots/${nt}_${proc}_${up}/renames/
-	cd plots/${nt}_${proc}_${up}/renames/
+	mkdir -p plots/${nt}_${proc}_${distrs}/renames/
+	cd plots/${nt}_${proc}_${distrs}/renames/
 	#ln -s ../*lep_pt_wjets_mu_NOMINAL*dataqcd.png       wjets_mu_lep_pt.png
 	#ln -s ../*met_c_wjets_mu_NOMINAL*dataqcd.png        wjets_mu_met.png
 	ln -s ../*lep_pt_wjets_mu_NOMINAL*ratio.png         wjets_mu_lep_pt.png
@@ -820,10 +821,10 @@ rename_for_update_wjets:
 .ONESHELL:
 rename_for_update_dileptons: nt=v37
 rename_for_update_dileptons: proc=test13
-rename_for_update_dileptons: up=update1
+rename_for_update_dileptons: distrs=update1
 rename_for_update_dileptons:
-	mkdir -p plots/${nt}_${proc}_${up}/renames/
-	cd plots/${nt}_${proc}_${up}/renames/
+	mkdir -p plots/${nt}_${proc}_${distrs}/renames/
+	cd plots/${nt}_${proc}_${distrs}/renames/
 	ln -s ../*lep_pt_dy_mumu_NOMINAL*ratio.png         dy_lep_pt.png
 	ln -s ../*Mt_lep_met_c_dy_mumu_NOMINAL*ratio.png   dy_Mt_lep_met.png
 	ln -s ../*lep_pt_dy_mumu_NOMINAL*ratio.png         dy_mumu_lep_pt.png
@@ -841,10 +842,10 @@ rename_for_update_dileptons:
 .ONESHELL:
 rename_for_update_dy_tautau: nt=v37
 rename_for_update_dy_tautau: proc=test13
-rename_for_update_dy_tautau: up=update1
+rename_for_update_dy_tautau: distrs=update1
 rename_for_update_dy_tautau:
-	mkdir -p plots/${nt}_${proc}_${up}/renames/
-	cd plots/${nt}_${proc}_${up}/renames/
+	mkdir -p plots/${nt}_${proc}_${distrs}/renames/
+	cd plots/${nt}_${proc}_${distrs}/renames/
 	# dy_tautau
 	ln -s ../*lep_pt_dy_eltau_NOMINAL*.png       dy_eltau_lep_pt.png
 	ln -s ../*lep_eta_dy_eltau_NOMINAL*.png      dy_eltau_lep_eta.png
@@ -866,17 +867,17 @@ rename_for_update_dy_tautau:
 .ONESHELL:
 rename_for_update_paper_plots: nt=v37
 rename_for_update_paper_plots: proc=test13
-rename_for_update_paper_plots: up=update1
+rename_for_update_paper_plots: distrs=update1
 rename_for_update_paper_plots:
-	mkdir -p plots/${nt}_${proc}_${up}/renames/
-	cd plots/${nt}_${proc}_${up}/renames/
+	mkdir -p plots/${nt}_${proc}_${distrs}/renames/
+	cd plots/${nt}_${proc}_${distrs}/renames/
 	#
 	ln -s ../paper/*Mt_lep_met_c_mu_sel*.png paper_mu_sel_Mt.png
 	ln -s ../paper/*Mt_lep_met_c_el_sel*.png paper_el_sel_Mt.png
 
 rename_for_update: nt=v37
 rename_for_update: proc=test13
-rename_for_update: up=update1
+rename_for_update: distrs=update1
 rename_for_update: rename_for_update_mu_presel rename_for_update_el_presel rename_for_update_wjets rename_for_update_dileptons rename_for_update_el_sel rename_for_update_mu_sel rename_for_update_dy_tautau
 
 test_controls_v37_test5_issue1: tests=tests1

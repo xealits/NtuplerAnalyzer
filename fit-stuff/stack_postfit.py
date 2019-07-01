@@ -81,7 +81,7 @@ parser.add_argument("--y-max",       type=float, default=2000, help="set the max
 
 parser.add_argument("--lumi",  type=float, default=35.8, help="lumi reported")
 parser.add_argument("--title", type=str,   default='',   help="optional title")
-parser.add_argument("--title-y", type=str,   default='[Evts./GeV]',   help="optional title")
+parser.add_argument("--title-y", type=str,   default='Events/GeV',   help="optional title")
 parser.add_argument("--title-x", type=str,   default='M_{T} [GeV]',   help="optional title")
 
 parser.add_argument("--mu", action='store_true', help="aim mu processes")
@@ -93,7 +93,8 @@ parser.add_argument("--prefit-process",  type=str,   help="take the prefit distr
 
 parser.add_argument("--no-data", action='store_true', help="don't plot data")
 
-parser.add_argument("--custom-bins", action='store_true', help="the bins adjusted to statistics")
+parser.add_argument("--custom-bins", type=str, default='0,20,40,60,80,100,130,160,200,250', help="the bins adjusted to statistics")
+#bin_edges = [0,20,40,60,80,100,130,160,200,250]
 parser.add_argument("--coarse-bins", action='store_true', help="the 10 bins from 0 to 200 for Mt")
 
 parser.add_argument("--debug", action='store_true', help="log at DEBUG level")
@@ -132,7 +133,7 @@ mc_processes_mu = [
       "dibosons_other",
       "dy_other",
       "dy_tautau",
-      "qcd",
+      "qcd_other",
       "s_top_lj",
       "s_top_mutau",
       "s_top_other",
@@ -166,7 +167,7 @@ mc_processes_el = [
       "dibosons_other",
       "dy_other",
       "dy_tautau",
-      "qcd",
+      "qcd_other",
       "s_top_lj",
       "s_top_eltau",
       "s_top_other",
@@ -193,7 +194,8 @@ mc_sum_higComb = chan_dir.Get("total")
 
 def th_postfit(name):
     if args.custom_bins:
-        bin_edges = [0,20,40,60,80,100,130,160,200,250]
+        #bin_edges = [0,20,40,60,80,100,130,160,200,250]
+        bin_edges = [float(i) for i in args.custom_bins.split(',')]
         #bin_edges = [float(b) for b in args.custom_range.split(',')]
         n_bin_edges = len(bin_edges)
         n_bins = n_bin_edges - 1
@@ -216,8 +218,9 @@ data   .GetYaxis().SetRangeUser(0, args.y_max)
 mc_sum .GetYaxis().SetRangeUser(0, args.y_max)
 
 shift = 0.
-leg = TLegend(0.7 - shift, 0.4, 0.89 - shift, 0.89)
+leg = TLegend(0.65 - shift, 0.2, 0.89 - shift, 0.89)
 leg.AddEntry(data, nick_info['data']['legend'], "e2 L")
+leg.SetBorderSize(0)
 
 # convert the higcomb TGraph data to histogram
 for bini in range(data.GetSize()):
@@ -324,11 +327,11 @@ mc_sum_rel = mc_sum.Clone()
 hs.SetTitle(args.title)
 mc_sum.SetTitle(args.title)
 
-#data.GetYaxis().SetTitleFont(63)
+#data.GetYaxis().SetTitleFont(43)
 #data.GetYaxis().SetTitleSize(20)
-mc_sum.GetYaxis().SetTitleFont(63)
+mc_sum.GetYaxis().SetTitleFont(43)
 mc_sum.GetYaxis().SetTitleSize(20)
-mc_sum.GetXaxis().SetTitleFont(63)
+mc_sum.GetXaxis().SetTitleFont(43)
 mc_sum.GetXaxis().SetTitleSize(20)
 
 # axis labels
@@ -355,14 +358,14 @@ if args.y_max:
     mc_sum.GetYaxis().SetRangeUser(0, args.y_max)
     mc_sum.SetAxisRange(0, args.y_max, "Y")
 
-data.GetXaxis().SetLabelFont(63)
+data.GetXaxis().SetLabelFont(43)
 data.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
-mc_sum.GetXaxis().SetLabelFont(63)
+mc_sum.GetXaxis().SetLabelFont(43)
 mc_sum.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
 
-data.GetYaxis().SetLabelFont(63)
+data.GetYaxis().SetLabelFont(43)
 data.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
-mc_sum.GetYaxis().SetLabelFont(63)
+mc_sum.GetYaxis().SetLabelFont(43)
 mc_sum.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
 
 if args.ratio:
@@ -385,26 +388,41 @@ leg.Draw("same")
 #left_title.AddText("CMS preliminary at 13 TeV")
 #left_title.SetTextFont(1)
 
-left_title = TPaveText(0.15, 0.82, 0.25, 0.88, "brNDC")
+#left_title = TPaveText(0.15, 0.82, 0.25, 0.88, "brNDC")
+#left_title.AddText("CMS")
+#left_title.SetTextFont(1)
+#left_title.SetFillColor(0)
+##left_title.Draw("same")
+
+#left_title = TPaveText(0.1, 0.92, 0.5, 0.99, "brNDC")
+left_title = TPaveText(0.1, 0.92, 0.5, 1., "brNDC")
 left_title.AddText("CMS")
-left_title.SetTextFont(1)
+left_title.SetTextAlign(13) # this adjust to left (+ margin inside the box and top)
+left_title.SetMargin(0)
 left_title.SetFillColor(0)
-#left_title.Draw("same")
 
 #right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
 #right_title.AddText("L = %s fb^{-1}" % args.lumi)
 #right_title.SetTextFont(132)
 #right_title.SetFillColor(0)
 
-right_title = TPaveText(0.7, 0.9, 0.9, 0.98, "brNDC")
-#if report_lumi:
-#    right_title.AddText("%s fb^{-1} (13 TeV)" % (31.3 if chan == 'el' else 35.8))
-#else:
-#    right_title.AddText("(13 TeV)")
+#right_title = TPaveText(0.7, 0.9, 0.9, 0.98, "brNDC")
+##if report_lumi:
+##    right_title.AddText("%s fb^{-1} (13 TeV)" % (31.3 if chan == 'el' else 35.8))
+##else:
+##    right_title.AddText("(13 TeV)")
+#right_title.AddText("%s fb^{-1} (13 TeV)" % args.lumi)
+#right_title.SetTextFont(132)
+#right_title.SetFillColor(0)
+##right_title.Draw("same")
+
+right_title = TPaveText(0.5, 0.93, 0.9, 1., "brNDC")
+right_title.SetTextAlign(33)
+right_title.SetMargin(0)
 right_title.AddText("%s fb^{-1} (13 TeV)" % args.lumi)
 right_title.SetTextFont(132)
 right_title.SetFillColor(0)
-#right_title.Draw("same")
+
 
 left_title .Draw("same")
 right_title.Draw("same")
@@ -449,28 +467,28 @@ if args.ratio:
 
     #data_rel.GetXaxis().SetLabelOffset(999)
     #data_rel.GetXaxis().SetLabelSize(0)
-    data_rel.GetXaxis().SetLabelFont(63)
+    data_rel.GetXaxis().SetLabelFont(43)
     data_rel.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
-    mc_sum_rel.GetXaxis().SetLabelFont(63)
+    mc_sum_rel.GetXaxis().SetLabelFont(43)
     mc_sum_rel.GetXaxis().SetLabelSize(14) # labels will be 14 pixels
 
-    data_rel.GetYaxis().SetLabelFont(63)
+    data_rel.GetYaxis().SetLabelFont(43)
     data_rel.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
-    mc_sum_rel.GetYaxis().SetLabelFont(63)
+    mc_sum_rel.GetYaxis().SetLabelFont(43)
     mc_sum_rel.GetYaxis().SetLabelSize(14) # labels will be 14 pixels
 
     data_rel   .GetXaxis().SetTitleOffset(4.) # place the title not overlapping with labels...
     mc_sum_rel .GetXaxis().SetTitleOffset(4.)
 
-    mc_sum_rel .GetYaxis().SetTitleFont(63)
-    mc_sum_rel .GetYaxis().SetTitleSize(14)
-    data_rel   .GetYaxis().SetTitleFont(63)
-    data_rel   .GetYaxis().SetTitleSize(14)
+    mc_sum_rel .GetYaxis().SetTitleFont(43)
+    mc_sum_rel .GetYaxis().SetTitleSize(20)
+    data_rel   .GetYaxis().SetTitleFont(43)
+    data_rel   .GetYaxis().SetTitleSize(20)
 
-    mc_sum_rel .GetXaxis().SetTitleFont(63)
-    mc_sum_rel .GetXaxis().SetTitleSize(14)
-    data_rel   .GetXaxis().SetTitleFont(63)
-    data_rel   .GetXaxis().SetTitleSize(14)
+    mc_sum_rel .GetXaxis().SetTitleFont(43)
+    mc_sum_rel .GetXaxis().SetTitleSize(20)
+    data_rel   .GetXaxis().SetTitleFont(43)
+    data_rel   .GetXaxis().SetTitleSize(20)
 
     mc_sum_rel .GetYaxis().SetTitleOffset(1.5)
     data_rel   .GetYaxis().SetTitleOffset(1.5)

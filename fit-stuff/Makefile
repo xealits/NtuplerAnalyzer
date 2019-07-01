@@ -129,14 +129,15 @@ full_card_fit: max=1.5
 full_card_fit: nll impacts impacts_toys fit_unc fit_unc_toys pre_pulls pre_pulls_short
 
 postfit_distrs: fit_tag=v37_test13_bunchFULLFIT2
+postfit_distrs: bins=0,20,40,60,80,100,130,160,200,250
 postfit_distrs:
 	combine -M FitDiagnostics ttxsec/datacard_${fit_tag}_mu.root  --saveShapes --saveWithUncertainties --name ${fit_tag}_MuShapes --freezeParameters lumi_13TeV
 	combine -M FitDiagnostics ttxsec/datacard_${fit_tag}_el.root  --saveShapes --saveWithUncertainties --name ${fit_tag}_ElShapes --freezeParameters lumi_13TeV
 	# plot results
-	python ttxsec/fit-stuff/stack_postfit.py fitDiagnostics${fit_tag}_MuShapes.root mu_sel_lj    --mu --ratio --ratio-range 0.5 --custom-bins --y-max 150
-	python ttxsec/fit-stuff/stack_postfit.py fitDiagnostics${fit_tag}_MuShapes.root mu_sel_ljout --mu --ratio --ratio-range 0.5 --custom-bins --y-max 150
-	python ttxsec/fit-stuff/stack_postfit.py fitDiagnostics${fit_tag}_ElShapes.root el_sel_lj    --lumi 35.8 --ratio --custom-bins --ratio-range 0.5 --y-max 100
-	python ttxsec/fit-stuff/stack_postfit.py fitDiagnostics${fit_tag}_ElShapes.root el_sel_ljout --lumi 35.8 --ratio --custom-bins --ratio-range 0.5 --y-max 100
+	python ttxsec/fit-stuff/stack_postfit.py --custom-bins "${bins}" fitDiagnostics${fit_tag}_MuShapes.root mu_sel_lj    --mu --ratio --ratio-range 0.5 --y-max 150
+	python ttxsec/fit-stuff/stack_postfit.py --custom-bins "${bins}" fitDiagnostics${fit_tag}_MuShapes.root mu_sel_ljout --mu --ratio --ratio-range 0.5 --y-max 150
+	python ttxsec/fit-stuff/stack_postfit.py --custom-bins "${bins}" fitDiagnostics${fit_tag}_ElShapes.root el_sel_lj    --lumi 35.8 --ratio --ratio-range 0.5 --y-max 100
+	python ttxsec/fit-stuff/stack_postfit.py --custom-bins "${bins}" fitDiagnostics${fit_tag}_ElShapes.root el_sel_ljout --lumi 35.8 --ratio --ratio-range 0.5 --y-max 100
 
 
 full_three_card_fit: freeze=--freezeParameters lumi_13TeV
