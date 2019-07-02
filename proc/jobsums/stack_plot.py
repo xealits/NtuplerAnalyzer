@@ -23,6 +23,7 @@ parser.add_argument("-p", "--plot",  action='store_true', help="don't save the r
 parser.add_argument("-r", "--ratio", action='store_true', help="don't save the root file, make ratio plot (in addition to stack or alone)")
 parser.add_argument("-l", "--logy", action='store_true', help="set logarithmic scale for Y axis of stack plot")
 parser.add_argument("--normalize", action='store_true', help="normalize the integral to data")
+parser.add_argument("--do-not-reweight", action='store_true', help="do not change MC in any way, do not reweight or normalize")
 parser.add_argument("-o", "--output-directory", type=str, default='', help="optional output directory")
 parser.add_argument("--output-type", type=str, default='png', help="the output type (png by default)")
 
@@ -543,8 +544,12 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=a
 
                final_factor = args.lumi * tauIDSF_factor * pu_factor * th_factor
                init_integral = histo.Integral()
-               histo.Scale(final_factor)
-               logging.info("final factor %20s %20f   %5f %5f %5f     %20f = %10.2f / %10f" % (nick, args.lumi, tauIDSF_factor, pu_factor, th_factor, final_factor, histo.Integral(), init_integral))
+               if args.do_not_reweight:
+                   logging.info("no reweighting for MC")
+                   pass
+               else:
+                   histo.Scale(final_factor)
+                   logging.info("final factor %20s %20f   %5f %5f %5f     %20f = %10.2f / %10f" % (nick, args.lumi, tauIDSF_factor, pu_factor, th_factor, final_factor, histo.Integral(), init_integral))
 
            # wjets normalization
            if args.wjets > 0 and 'wjets' in nick:
@@ -910,7 +915,7 @@ elif args.top_legend:
     leg = TLegend(0.15, 0.75, 0.85, 0.92)
 else:
     shift = args.legend_shift if args.legend_shift else 0.
-    leg = TLegend(0.7 - shift, 0.55, 0.89 - shift, 0.92)
+    leg = TLegend(0.7 - shift, 0.45, 0.89 - shift, 0.92)
 
 # data is first in the legend
 if not args.fake_rate and not args.skip_legend and not (args.no_data or args.no_data_plot):

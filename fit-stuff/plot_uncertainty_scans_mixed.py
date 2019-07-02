@@ -43,7 +43,25 @@ else:
 
 import ROOT
 from ROOT import TCanvas, TGraph, TLine, gStyle, gROOT, gPad, TFile, TTree, TPaveText, TLegend
-from ROOT import kRed, kBlue, kBlack
+from ROOT import TColor, kRed, kBlue, kBlack
+
+def rgb(r, g, b):
+    '''rgb(r, g, b):
+
+    from:
+    http://webhome.phy.duke.edu/~dmb60/the-guide/
+    TColor* color = gROOT->GetColor(TColor::GetColor(red,green,blue));//Use ints from 0 to 255 
+    color->SetAlpha(0.5);//0 is fully transparent, 1 fully opaque
+    hist->SetFillColor(color->GetNumber());
+    '''
+    return TColor.GetColor(r, g, b)
+
+colors = {'el': 43, 'mu': 45, 'both': kBlack}                                                                                                          
+colors = {'el': rgb(254,204,92),  'mu': rgb(255,255,178), 'both': kBlack}
+colors = {'el': rgb(240,59,32),   'mu': rgb(254,204,92),  'both': kBlack}
+colors = {'el': rgb(153,153,255), 'mu': rgb(146,0,255),   'both': kBlack}
+colors = {'el': kRed, 'mu': kBlue, 'both': kBlack}
+
 
 #include "TGraph.h"
 #include "TAxis.h"
@@ -150,12 +168,19 @@ g_full_mu_exp  .SetLineWidth(2)
 g_full_both_obs.SetLineWidth(4)
 g_full_both_exp.SetLineWidth(4)
 
-g_full_el_obs  .SetLineColor(kRed)
-g_full_el_exp  .SetLineColor(kRed)
-g_full_mu_obs  .SetLineColor(kBlue)
-g_full_mu_exp  .SetLineColor(kBlue)
-g_full_both_obs  .SetLineColor(kBlack)
-g_full_both_exp  .SetLineColor(kBlack)
+#g_full_el_obs  .SetLineColor(kRed)
+#g_full_el_exp  .SetLineColor(kRed)
+#g_full_mu_obs  .SetLineColor(kBlue)
+#g_full_mu_exp  .SetLineColor(kBlue)
+#g_full_both_obs  .SetLineColor(kBlack)
+#g_full_both_exp  .SetLineColor(kBlack)
+
+g_full_el_obs    .SetLineColor(colors['el'])
+g_full_el_exp    .SetLineColor(colors['el'])
+g_full_mu_obs    .SetLineColor(colors['mu'])
+g_full_mu_exp    .SetLineColor(colors['mu'])
+g_full_both_obs  .SetLineColor(colors['both'])
+g_full_both_exp  .SetLineColor(colors['both'])
 
 g_full_el_exp  .SetLineStyle(7)
 g_full_mu_exp  .SetLineStyle(7)

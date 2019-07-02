@@ -57,14 +57,14 @@ else:
 logging.info("import ROOT")
 
 import ROOT
-from ROOT import gStyle, gROOT, gPad, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TLine, TPaveText, TText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan
+from ROOT import gStyle, gROOT, gPad, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TLine, TPaveText, TText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, kBlue, kBlack
 gROOT.SetBatch()
 gStyle.SetOptStat(0)
 #gStyle.SetLineWidth(2)
 
 from plotting_root import rgb, nick_colour
 
-default_colors = []
+default_colors = [kRed, kBlue-4, kViolet-2, kBlack, kBlack]
 color_i = 0
 def new_color():
     global color_i
@@ -145,11 +145,12 @@ for i, fileparameter in enumerate(args.input_files):
     histo.SetDirectory(0)
     histo.SetFillColor(0)
     #histo.SetLineColor(1 + i)
-    histo.SetLineColor(new_color())
+    color = new_color()
+    histo.SetLineColor(color)
     histo.SetLineWidth(3)
 
     histo.SetMarkerStyle(19)
-    histo.SetMarkerColor(1 + i)
+    histo.SetMarkerColor(color)
 
     if not args.no_norm:
         histo.Scale(1./histo.Integral())

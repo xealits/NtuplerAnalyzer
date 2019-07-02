@@ -84,6 +84,8 @@ parser.add_argument("--title", type=str,   default='',   help="optional title")
 parser.add_argument("--title-y", type=str,   default='Events/GeV',   help="optional title")
 parser.add_argument("--title-x", type=str,   default='M_{T} [GeV]',   help="optional title")
 
+parser.add_argument("--out-type", type=str,   default='png',   help="output type (png default)")
+
 parser.add_argument("--mu", action='store_true', help="aim mu processes")
 
 parser.add_argument("--resum", action='store_true', help="resum the MC sum")
@@ -532,7 +534,7 @@ if args.prefit:
 if args.prefit_process:
     out_file += '_prefit-' + args.prefit_process
 
-out_file += '.png'
+out_file += '.' + args.out_type
 
 cst.SaveAs(out_file)
 
