@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser(
     )
 
 parser.add_argument('-n', '--number-of-groups', type=int, help="number of groups")
-parser.add_argument('-i', '--items-per-groups', type=int, help="number of items per group")
+parser.add_argument('-i', '--items-per-groups', type=int, help="number of files per a hadd command")
 parser.add_argument('-d', '--debug',    action='store_true', help="DEBUG level of logging")
 
 parser.add_argument('out_file',   type=str, help="output directory, the hadd results")

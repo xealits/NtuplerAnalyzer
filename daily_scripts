@@ -1,3 +1,152 @@
+# plots for the pre-approval
+
+update the control plots with latest formats -- from the ones in AN
++ move nvtx to the backup -- since cannot make a new format plot of it -- no nvtx in stage2!!!
++ add more control plots? (etas?)
+
+   but without full uncertainty
+   full uncertainty is only in Mt plots
+
+-- I've got controls in test172! only hadd and plot them
+   ! check if all njets etc are there !
+   -- met_c is the wide distr
+
+3x2 for each channel
+lep pt, lep eta, met, cosine phi, Mt, +???
+
+4x3 for both channels?
+tau pt, tau eta, bjet pt, rjet pt, njets, nbjets
+
+- skip bjet eta and rjet eta
+
+-- check latest bins in jet and bjet eta!
+
+let's hadd and plot everything
+
+
+## control plots in test172
+
+check all plots are produced
+
+make check_job_output out=jobsums/distrs/v37_test172_bunchCONTROLS1
+find jobsums/distrs/v37_test172_bunchCONTROLS1 -name "*root" -size -10k | wc -l
+0
+find jobsums/distrs/v37_test172_bunchCONTROLS1 -name "*root"            | wc -l
+40305
+
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test172 --distrs bunchCONTROLS1 --chan-groups tt_leptau,tt_leptau_lj,tt_leptau_ljout,tt_leptau_Vloose,tt_leptau_Vloose_lj,tt_leptau_Vloose_ljout,tt_presel_cands,tt_presel_cands_lj,tt_presel_cands_ljout,wjets,wjets_ss,dy_leptau,dy_leptau_ss,tt_dileptons,dy_dileptons
+2687
+
+grep "^time" batch_jobs/j_Data13TeV_SingleElectron2016B_03Feb2017_ver2_103.root | wc -l
+15
+
+>>> 15 * 2687
+40305
+
+perfect
+
+
+
+hadd and norm
+
+make multihadd2_distrs_all_dtags nt=v37 proc=test172 distrs=bunchCONTROLS1 max_procs=14
+
+-- the directory is 6.6G... let's wait for local hadding
+   and make the other thing
+
+dilep_mass
+cos_phi_met_lep
+phi_met_lep
+bjet_eta
+bjet_pt
+rjet_lead_eta
+rjet_lead_pt
+lep_eta
+lep_pt
+tau_eta
+tau_pt
+met_c
+met_f
+nbjets
+nrjets
+
+make plot_sel_1  nt=v37 proc=test172 distrs=bunchCONTROLS1 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=muon      output_type=pdf  &
+make plot_sel_1  nt=v37 proc=test172 distrs=bunchCONTROLS1 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=electron  output_type=pdf  &
+
+
+## remake the Mt plots with new binning
+
+the Mt per tau pT with new binning for better stats?
+signal-background plot in the new binning?
+
+just plot Mt for signal and background, inclusive and per tau pT
+then hadd and compare on plots
+
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_mutau_Mt_inclusive.root --histo-name tt_mutau_Mt_inclusive  lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_lj_Mt_inclusive.root    --histo-name tt_lj_Mt_inclusive     lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_mutau_Mt_inclusive2.root --histo-name tt_mutau_Mt_inclusive2  lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_lj_Mt_inclusive2.root    --histo-name tt_lj_Mt_inclusive2     lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_taus[0].pt() < 40.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_mutau_Mt_tau_pt_40.root --histo-name tt_mutau_Mt_tau_pt_40  lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_taus[0].pt() < 40.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_lj_Mt_tau_pt_40.root    --histo-name tt_lj_Mt_tau_pt_40     lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_taus[0].pt() < 65.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_mutau_Mt_tau_pt_65.root --histo-name tt_mutau_Mt_tau_pt_65  lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_taus[0].pt() < 65.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_lj_Mt_tau_pt_65.root    --histo-name tt_lj_Mt_tau_pt_65     lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_taus[0].pt() >= 65.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_mutau_Mt_tau_pt_more.root --histo-name tt_mutau_Mt_tau_pt_more  lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_taus[0].pt() >= 65.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_lj_Mt_tau_pt_more.root    --histo-name tt_lj_Mt_tau_pt_more     lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_taus[0].pt() < 60.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_mutau_Mt_tau_pt_60.root --histo-name tt_mutau_Mt_tau_pt_60  lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_taus[0].pt() < 60.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_lj_Mt_tau_pt_60.root    --histo-name tt_lj_Mt_tau_pt_60     lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_taus[0].pt() >= 60.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_mutau_Mt_tau_pt_more60.root --histo-name tt_mutau_Mt_tau_pt_more60  lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_taus[0].pt() >= 60.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_lj_Mt_tau_pt_more60.root    --histo-name tt_lj_Mt_tau_pt_more60     lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+
+hadd -f v37_new_bins_Mt_plots_mu_sel_all.root v37_new_bins_Mt_plots_mu_sel_tt_*.root
+
+root -l v37_new_bins_Mt_plots_mu_sel_all.root
+
+tt_lj_Mt_tau_pt_40   ->Divide(tt_lj_Mt_inclusive)
+tt_lj_Mt_tau_pt_65   ->Divide(tt_lj_Mt_inclusive)
+tt_lj_Mt_tau_pt_more ->Divide(tt_lj_Mt_inclusive)
+tt_lj_Mt_inclusive   ->Divide(tt_lj_Mt_inclusive)
+
+tt_lj_Mt_tau_pt_40   ->Draw()
+tt_lj_Mt_tau_pt_65   ->Draw("same")
+tt_lj_Mt_tau_pt_more ->Draw("same")
+tt_lj_Mt_inclusive   ->Draw("same")
+
+-- ok
+
+try more robust measure:
+
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_taus[0].pt() > 40.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_mutau_Mt_tau_pt_more40.root --histo-name tt_mutau_Mt_tau_pt_more40  lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_taus[0].pt() > 40.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_lj_Mt_tau_pt_more40.root    --histo-name tt_lj_Mt_tau_pt_more40     lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>30 && gen_proc_id<40 && event_taus[0].pt() > 65.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_mutau_Mt_tau_pt_more65.root --histo-name tt_mutau_Mt_tau_pt_more65  lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+python sumup_ttree_draw.py "event_met_lep_mt" --custom-range 0,16,32,44,54,64,74,81,88,95,104,116,132,160,250   --ttree ttree_out --cond-com "((selection_stage == 9 || selection_stage == 7) && gen_proc_id>20 && gen_proc_id<30 && event_taus[0].pt() > 65.)*event_weight" --output v37_new_bins_Mt_plots_mu_sel_tt_lj_Mt_tau_pt_more65.root    --histo-name tt_lj_Mt_tau_pt_more65     lstore_outdirs/v37/test172/MC2016_Summer16_TTJets_powheg/*root     &
+
+tt_lj_Mt_tau_pt_40   ->Divide(tt_lj_Mt_tau_pt_more40)
+tt_lj_Mt_tau_pt_65   ->Divide(tt_lj_Mt_tau_pt_more65)
+
+tt_lj_Mt_tau_pt_65   ->Draw()
+tt_lj_Mt_tau_pt_40   ->Draw("same")
+
+-- there is some strange deviation with two peaks, but it is small and does not break overall linearity
+
+let's plot comparisons
+
+python jobsums/get_shapes.py --x-title "M_{T}(l, p^{miss}_{T}) [GeV]" --y-title "a.u." --norm-binwidth --formula "background:signal" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":v37_new_bins_Mt_plots_mu_sel_all.root:tt_mutau_Mt_inclusive "background":v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive --y-range 0,0.0159 --output-type pdf --left-title --no-std-path
+
+python jobsums/get_shapes.py --x-title "M_{T}(l, p^{miss}_{T}) [GeV]" --y-title "a.u." --formula "inclusive/inclusive2:tau40/inclusive2:tau65/inclusive2:tauMore/inclusive2" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "inclusive":v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive "inclusive2":v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive "tau40":v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_tau_pt_40 "tau65":v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_tau_pt_65 "tauMore":v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_tau_pt_more --y-range 0,2. --output-type pdf --left-title --no-std-path --no-norm --draw-error-bars
+
+python jobsums/get_shapes.py --x-title "M_{T}(l, p^{miss}_{T}) [GeV]" --y-title "a.u." --formula "inclusive/inclusive2:tau40/inclusive2:tau60/inclusive2:tauMore60/inclusive2" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "inclusive":v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive "inclusive2":v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive "tau40":v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_tau_pt_40 "tau60":v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_tau_pt_60 "tauMore60":v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_tau_pt_more60 --y-range 0,2. --output-type pdf --left-title --no-std-path --no-norm --draw-error-bars
+
+
+
+
+
 # questions of object sign offs
 
 tau fakes from electrons and muons?
@@ -1019,6 +1168,8 @@ cp uncertainty_scans_el_mu_both.png uncertainty_scans_el_mu_both_10NL.png
 
 python ttxsec/fit-stuff/plot_uncertainty_scans_mixed.py v37_test172BIN1_test1 --xsec-scale 831.76 --title-x "cross section [pb]" --nll-limit 5.
 cp uncertainty_scans_el_mu_both.png uncertainty_scans_el_mu_both_5NLL.png
+
+
 
 
 
