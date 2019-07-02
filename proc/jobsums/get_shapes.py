@@ -64,11 +64,28 @@ gStyle.SetOptStat(0)
 
 from plotting_root import rgb, nick_colour
 
+default_colors = []
+color_i = 0
+def new_color():
+    global color_i
+    if default_colors:
+        return default_colors.pop()
+    else:
+        color_i += 1
+        return color_i
+
 leg = TLegend(0.6, 0.7, 0.89, 0.89)
 leg.SetBorderSize(0)
 
 histos = {}
-legend_names = {}
+legend_names = {
+'tau40': '30<p_{T}<40',
+'tau60': '40<p_{T}<60',
+'tauMore60': '60<p_{T}',
+'tau40/inclusive2': '30<p_{T}<40',
+'tau60/inclusive2': '40<p_{T}<60',
+'tauMore60/inclusive2': '60<p_{T}',
+}
 
 for i, fileparameter in enumerate(args.input_files):
     pars = fileparameter.split(':')
@@ -127,7 +144,8 @@ for i, fileparameter in enumerate(args.input_files):
     logging.debug("integral : %f" % histo.Integral())
     histo.SetDirectory(0)
     histo.SetFillColor(0)
-    histo.SetLineColor(1 + i)
+    #histo.SetLineColor(1 + i)
+    histo.SetLineColor(new_color())
     histo.SetLineWidth(3)
 
     histo.SetMarkerStyle(19)
