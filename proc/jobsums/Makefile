@@ -124,7 +124,7 @@ multihadd2_distrs_all_dtags: size=30
 multihadd2_distrs_all_dtags: max_procs=10
 multihadd2_distrs_all_dtags: dtag_pattern=""
 multihadd2_distrs_all_dtags:
-	for dtag in `ls distrs/${nt}_${proc}_${distrs}/all/ | grep ${dtag_pattern}`; \
+	for dtag in `ls distrs/${nt}_${proc}_${distrs}/all/ | grep ${dtag_pattern} | grep -v "\.root"`; \
 	do \
 	make multihadd2_distrs dtag=$$dtag nt=${nt} proc=${proc} distrs=${distrs} size=${size} max_procs=${max_procs} ; \
 	done
