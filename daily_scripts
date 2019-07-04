@@ -1,3 +1,101 @@
+# check new datasets
+
+from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable
+2016
+release 9_4_X
+17Jul2018
+
+from tau ID
+https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Tau_ID_efficiency
+
+SF(Data/MC) for Run 2 for 2016 ReminiAOD in CMSSW9_4_X, 2017 and 2018: See table below. 
+
+table:
+        ID 	Working Point 	2016 ReminiAOD 	2017 ReReco 	2018
+MVA 2017v2 	VVLoose     	0.90 ± 0.03 	0.89 ± 0.03 	0.86 ± 0.04
+MVA 2017v2 	VLoose      	0.90 ± 0.03 	0.88 ± 0.03 	0.90 ± 0.03
+MVA 2017v2 	Loose       	0.86 ± 0.02 	0.89 ± 0.03 	0.90 ± 0.03
+MVA 2017v2 	Medium      	0.88 ± 0.02 	0.89 ± 0.03 	0.90 ± 0.02
+MVA 2017v2 	Tight          	0.87 ± 0.02 	0.89 ± 0.03 	0.90 ± 0.02
+MVA 2017v2 	VTight      	0.86 ± 0.02 	0.86 ± 0.03 	0.89 ± 0.02
+MVA 2017v2 	VVTight     	0.86 ± 0.02 	0.84 ± 0.03 	0.89 ± 0.02 
+
+-- 0.02 indeed
+
+
+$ das_client --limit 0 --query="dataset=/SingleElectron/*17Jul2018*/MINIAOD"
+/SingleElectron/Run2016B-17Jul2018_ver1-v1/MINIAOD
+/SingleElectron/Run2016B-17Jul2018_ver2-v1/MINIAOD
+/SingleElectron/Run2016C-17Jul2018-v1/MINIAOD
+/SingleElectron/Run2016D-17Jul2018-v1/MINIAOD
+/SingleElectron/Run2016E-17Jul2018-v1/MINIAOD
+/SingleElectron/Run2016F-17Jul2018-v1/MINIAOD
+/SingleElectron/Run2016G-17Jul2018-v1/MINIAOD
+/SingleElectron/Run2016H-17Jul2018-v1/MINIAOD
+0 otoldaie @lxplus707 master ~/work/private/16/CMSSW_8_0_29/src/UserCode/NtuplerAnalyzer/proc/jobsums
+$ das_client --limit 0 --query="dataset=/SingleMuon/*17Jul2018*/MINIAOD"
+/SingleMuon/Run2016B-17Jul2018_ver1-v1/MINIAOD
+/SingleMuon/Run2016B-17Jul2018_ver2-v1/MINIAOD
+/SingleMuon/Run2016C-17Jul2018-v1/MINIAOD
+/SingleMuon/Run2016D-17Jul2018-v1/MINIAOD
+/SingleMuon/Run2016E-17Jul2018-v1/MINIAOD
+/SingleMuon/Run2016F-17Jul2018-v1/MINIAOD
+/SingleMuon/Run2016G-17Jul2018-v1/MINIAOD
+/SingleMuon/Run2016H-17Jul2018-v1/MINIAOD
+
+
+## check 2016 legacy rereco jet corrections
+
+
+## check what's needed for unlustered MET -- recompute ntuples?
+
+is it just one of the METs?
+save all MET corrections they have in MINIAOD
+
+
+
+## submit ntuples
+
+
+## check the rest of corrections
+
+
+
+
+
+# checking lumi
+
+brilcalc lumi -i /afs/cern.ch/work/o/otoldaie/public/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_DATACERT.json -u /pb
+
+#Summary: 
++-------+------+--------+--------+-------------------+------------------+
+| nfill | nrun | nls    | ncms   | totdelivered(/pb) | totrecorded(/pb) |
++-------+------+--------+--------+-------------------+------------------+
+| 144   | 393  | 232259 | 232241 | 37381.753         | 35863.818        |
++-------+------+--------+--------+-------------------+------------------+
+#Check JSON:
+#(run,ls) in json but not in results: []
+
+
+brilcalc lumi -i /afs/cern.ch/work/o/otoldaie/public/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_DATACERT.json -u /pb -b "STABLE BEAMS"
+
+#Summary: 
++-------+------+--------+--------+-------------------+------------------+
+| nfill | nrun | nls    | ncms   | totdelivered(/pb) | totrecorded(/pb) |
++-------+------+--------+--------+-------------------+------------------+
+| 144   | 393  | 232259 | 232241 | 37381.753         | 35863.818        |
++-------+------+--------+--------+-------------------+------------------+
+#Check JSON:
+#(run,ls) in json but not in results: []
+
+
+-- same
+
+and rounding should be 35863.818 -> 35900
+
+
+
+
 # plots for the pre-approval
 
 update the control plots with latest formats -- from the ones in AN
@@ -1179,6 +1277,85 @@ bt_stat = 0.009
 789.34024 [11.0508 70.1052 19.7335]
 770.2097600000001 [8.47231 61.7438 19.2552]
 783.51792 [7.05166 61.1027 19.5879]
+
+
+
+### fit with 2% tau ID uncertainty
+
+cp ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp3.txt
+cp ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp3.txt
+
+vim -p ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp3.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp3.txt
+
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp3
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp3
+
+make both mucard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp3 elcard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp3 bothcard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp3
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp3
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp3.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp3.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp3.root
+
+Best fit r: 0.94626  -0.0695961/+0.0758241  (68% CL)
+Best fit r: 0.925835  -0.0605657/+0.0673238  (68% CL)
+Best fit r: 0.942713  -0.0579149/+0.0633641  (68% CL)
+
+-- in impacts
+0.946 +- 0.0691
+0.926 +- 0.0601
+0.943 +- 0.0571
+
+-- not 0.0579149??
+
+VS
+
+0.951 +- 0.0794
+0.925 +- 0.0705
+0.943 +- 0.0679
+
+exactly -1% in each channel...
+
+1) compare to Atlas' paper
+0.070 ± 0.003 ± 0.005
+sqrt(0.003**2 + 0.005**2)
+0.0058309518948453
+0.0058309518948453 / 0.07
+0.08329931278350428
+
+2) compare impacts tables to see how each systematic changes, what happens?
+
+
+_exp:
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp.root
+
+Best fit r: 0.951386  -0.0786579/+0.0864248  (68% CL)
+Best fit r: 0.924956  -0.0699168/+0.0772119  (68% CL)
+Best fit r: 0.943077  -0.0667657/+0.0745019  (68% CL)
+
+no tag:
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root
+
+Best fit r: 0.948986  -0.0799883/+0.0876587  (68% CL)
+Best fit r: 0.926233  -0.0709715/+0.0789828  (68% CL)
+Best fit r: 0.94178  -0.0684634/+0.0753474  (68% CL)
+
+-- somehow, only 1 percent reduction?
+  
+check the impacts:
+
+make impacts    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp3.root   nn=v37_test172BIN1_el_test3   freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+make impacts    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp3.root   nn=v37_test172BIN1_mu_test3   freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+make impacts    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp3.root nn=v37_test172BIN1_both_test3 freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+
+
+
 
 
 
