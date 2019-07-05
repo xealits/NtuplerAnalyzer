@@ -204,9 +204,26 @@ process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidate
 process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 
 
+# for legacy 2016 the tau ID must be recomputed
+# setting up the recomputation here
+
+from UserCode.NtuplerAnalyzer.runTauIdMVA import *
+
+na = TauIDEmbedder(process, cms, # pass tour process object
+    #cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2017v2_WPEff90"), # <-- a tricky place, WP90 is ??
+    #cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2017v2_WPEff70"),
+    tauIdDiscrMVA_2017_version = 'v2',
+    debug  = True,
+    toKeep = ["2017v2"] # pick the one you need: ["2017v1", "2017v2", "newDM2017v2", "dR0p32017v2", "2016v1", "newDM2016v1"]
+)
+na.runTauID()
+
+
 if isMC:
     print "MC"
     process.p = cms.Path(
+     process.rerunMvaIsolationSequence *
+     process.NewTauIDsEmbedded *
      process.BadPFMuonFilter *
      process.BadChargedCandidateFilter *
      process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
@@ -215,6 +232,8 @@ if isMC:
 else:
     print "data"
     process.p = cms.Path(
+     process.rerunMvaIsolationSequence *
+     process.NewTauIDsEmbedded *
      process.BadPFMuonFilter *
      process.BadChargedCandidateFilter *
      process.ntupler)

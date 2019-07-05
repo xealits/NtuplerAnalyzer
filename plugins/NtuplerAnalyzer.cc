@@ -1072,7 +1072,8 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	//tracks_    = consumes<reco::TrackCollection>(edm::InputTag("generalTracks"));
 	muons_     = consumes<pat::MuonCollection>    (edm::InputTag("slimmedMuons"));
 	electrons_ = consumes<pat::ElectronCollection>(edm::InputTag("slimmedElectrons"));
-	taus_ = consumes<pat::TauCollection>(edm::InputTag("slimmedTaus"));
+	//taus_ = consumes<pat::TauCollection>(edm::InputTag("slimmedTaus"));
+	taus_ = consumes<pat::TauCollection>(edm::InputTag("NewTauIDsEmbedded")); // the taus with embedded reprocessed 2017v2 tau IDs for 2016 legacy
 	vtx_ = consumes<reco::VertexCollection>(edm::InputTag("offlineSlimmedPrimaryVertices"));
 	rho_ = consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
 	// declare consuming the HLT to be able to get triggers in the following
@@ -2867,15 +2868,25 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	 * TAUS preliminary
 	 */
 	//string tau_Loose_ID("byLooseCombinedIsolationDeltaBetaCorr3Hits");
-	string tau_VLoose_ID ("byVLooseIsolationMVArun2v1DBoldDMwLT");
-	string tau_Loose_ID  ("byLooseIsolationMVArun2v1DBoldDMwLT");
-	string tau_Medium_ID ("byMediumIsolationMVArun2v1DBoldDMwLT");
-	string tau_Tight_ID  ("byTightIsolationMVArun2v1DBoldDMwLT");
-	string tau_VTight_ID ("byVTightIsolationMVArun2v1DBoldDMwLT");
+	//string tau_VLoose_ID ("byVLooseIsolationMVArun2v1DBoldDMwLT");
+	//string tau_Loose_ID  ("byLooseIsolationMVArun2v1DBoldDMwLT");
+	//string tau_Medium_ID ("byMediumIsolationMVArun2v1DBoldDMwLT");
+	//string tau_Tight_ID  ("byTightIsolationMVArun2v1DBoldDMwLT");
+	//string tau_VTight_ID ("byVTightIsolationMVArun2v1DBoldDMwLT");
 	string tau_decayMode       ("decayModeFinding");
 	//string tau_decayMode       ("decayModeFindingOldDMs");
 	string tau_againstMuon     ("againstMuonTight3");
 	string tau_againstElectron ("againstElectronTightMVA6");
+
+	//("byIsolationMVArun2017v2DBoldDMwLTraw2017");
+	
+	//string ("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+	string tau_VLoose_ID ("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+	string tau_Loose_ID  ("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
+	string tau_Medium_ID ("byMediumIsolationMVArun2017v2DBoldDMwLT2017");
+	string tau_Tight_ID  ("byTightIsolationMVArun2017v2DBoldDMwLT2017");
+	string tau_VTight_ID ("byVTightIsolationMVArun2017v2DBoldDMwLT2017");
+	//string ("byVVTightIsolationMVArun2017v2DBoldDMwLT2017");
 
 	pat::TauCollection IDtaus, selTaus;
 	processTaus_ID    (taus,   weight, tau_decayMode, tau_againstMuon, tau_againstElectron, IDtaus, false, false);
