@@ -265,6 +265,25 @@ namespace patUtils
               break;
             }
       break;
+	case CutVersion::Legacy2016_07Aug17Jul :
+		// https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaRunIIRecommendations#Fall17v2
+		// The available IDs are: 'cutBasedElectronID-Fall17-94X-V1-loose' 'cutBasedElectronID-Fall17-94X-V1-medium' 'cutBasedElectronID-Fall17-94X-V1-tight' 'cutBasedElectronID-Fall17-94X-V1-veto' 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose' 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium' 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight' 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto' 'cutBasedElectronID-Spring15-25ns-V1-standalone-loose' 'cutBasedElectronID-Spring15-25ns-V1-standalone-medium' 'cutBasedElectronID-Spring15-25ns-V1-standalone-tight' 'cutBasedElectronID-Spring15-25ns-V1-standalone-veto' 'cutBasedElectronID-Spring15-50ns-V2-standalone-loose' 'cutBasedElectronID-Spring15-50ns-V2-standalone-medium' 'cutBasedElectronID-Spring15-50ns-V2-standalone-tight' 'cutBasedElectronID-Spring15-50ns-V2-standalone-veto' 'cutBasedElectronID-Summer16-80X-V1-loose' 'cutBasedElectronID-Summer16-80X-V1-medium' 'cutBasedElectronID-Summer16-80X-V1-tight' 'cutBasedElectronID-Summer16-80X-V1-veto' 'eidLoose' 'eidRobustHighEnergy' 'eidRobustLoose' 'eidRobustTight' 'eidTight' 'heepElectronID-HEEPV60' 'heepElectronID-HEEPV70' 'mvaEleID-Fall17-iso-V1-wp80' 'mvaEleID-Fall17-iso-V1-wp90' 'mvaEleID-Fall17-iso-V1-wpLoose' 'mvaEleID-Fall17-noIso-V1-wp80' 'mvaEleID-Fall17-noIso-V1-wp90' 'mvaEleID-Fall17-noIso-V1-wpLoose' 'mvaEleID-Spring15-25ns-Trig-V1-wp80' 'mvaEleID-Spring15-25ns-Trig-V1-wp90' 'mvaEleID-Spring15-25ns-nonTrig-V1-wp80' 'mvaEleID-Spring15-25ns-nonTrig-V1-wp90' 'mvaEleID-Spring15-25ns-nonTrig-V1-wpLoose' 'mvaEleID-Spring15-50ns-Trig-V1-wp80' 'mvaEleID-Spring15-50ns-Trig-V1-wp90' 'mvaEleID-Spring16-GeneralPurpose-V1-wp80' 'mvaEleID-Spring16-GeneralPurpose-V1-wp90' 'mvaEleID-Spring16-HZZ-V1-wpLoose' .
+		// V2 ID exosts only for 10X releases
+		// but it seems it is exactly the same as V1 for 2016
+		switch(IdLevel)
+			{
+			case llvvElecId::StdLoose :
+				if (el.electronID("cutBasedElectronID-Fall17-94X-V1-loose") == true) return true;
+				break;
+			case llvvElecId::StdTight :
+				if (el.electronID("cutBasedElectronID-Fall17-94X-V1-tight") == true) return true;
+				break;
+			default:
+				printf("FIXME ElectronId llvvElecId::%i @ CutVersion::Legacy2016_07Aug17Jul is unkown\n", IdLevel);
+				return false;
+				break;
+			}
+		break;
 
     default:
       printf("FIXME CutVersion::%i is unkown\n", cutVersion);
@@ -620,6 +639,26 @@ namespace patUtils
                         break;
                 }
              break;
+
+	case CutVersion::Legacy2016_07Aug17Jul :
+		// https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaRunIIRecommendations#Fall17v2
+		switch(IsoLevel)
+			{
+			// iso must be correctly embedded into ID
+			// they don't even have an ISO SF:
+			// https://twiki.cern.ch/twiki/bin/view/CMS/EgammaIDRecipesRun2#94X_series_Fall17V2_Scale_fa_AN1
+			case llvvElecIso::StdLoose :
+				if (el.electronID("cutBasedElectronID-Fall17-94X-V1-loose") == true) return true;
+				break;
+			case llvvElecIso::StdTight :
+				if (el.electronID("cutBasedElectronID-Fall17-94X-V1-tight") == true) return true;
+				break;
+			default:
+				printf("FIXME ElectronIso llvvElecIso::%i @ CutVersion::Legacy2016_07Aug17Jul is unkown\n", IsoLevel);
+				return false;
+				break;
+			}
+		break;
 
           default:
              printf("FIXME ElectronIsolation  CutVersion::%i is unkown\n", cutVersion);

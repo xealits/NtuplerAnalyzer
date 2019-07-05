@@ -74,10 +74,10 @@ namespace patUtils
 	 pat::Tau     tau;
    };
 
-   namespace llvvElecId { enum ElecId  {Veto, Loose, Medium, Tight, LooseMVA, MediumMVA, TightMVA}; }
+   namespace llvvElecId { enum ElecId  {Veto, Loose, Medium, Tight, LooseMVA, MediumMVA, TightMVA, StdLoose, StdTight}; }
    namespace llvvMuonId { enum MuonId  {Loose, Soft, Tight, tkHighPT, TightAndTlkHighPt, StdLoose, StdSoft, StdMedium, StdTight}; }
    namespace llvvPhotonId { enum PhotonId  {Loose, Medium, Tight}; }
-   namespace llvvElecIso{ enum ElecIso {Veto, Loose, Medium, Tight}; }
+   namespace llvvElecIso{ enum ElecIso {Veto, Loose, Medium, Tight, StdLoose, StdTight}; }
    namespace llvvMuonIso{ enum MuonIso {Loose,Tight, H4lWP, StdLoose, StdSoft, StdMedium, StdTight}; }
    namespace CutVersion { enum CutSet {Spring15Cut25ns, ICHEP16Cut, Moriond17Cut, Legacy2016_07Aug17Jul}; }
 

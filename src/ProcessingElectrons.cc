@@ -125,13 +125,27 @@ for(unsigned int count_idiso_electrons = 0, n=0; n<electrons.size (); ++n)
 	// to include into veto counters
 	bool passStdImpactParameterVeto = passStdImpactParameter;
 
-	passId     = patUtils::passId(electron, goodPV, el_ID,      patUtils::CutVersion::Moriond17Cut) && passSigma     && passImpactParameter;
-	passVetoId = patUtils::passId(electron, goodPV, veto_el_ID, patUtils::CutVersion::Moriond17Cut) && passSigmaVeto && passImpactParameterVeto;
+	//passId     = patUtils::passId(electron, goodPV, el_ID,      patUtils::CutVersion::Legacy2016_07Aug17Jul) && passSigma     && passImpactParameter;
+	//passVetoId = patUtils::passId(electron, goodPV, veto_el_ID, patUtils::CutVersion::Legacy2016_07Aug17Jul) && passSigmaVeto && passImpactParameterVeto;
+
+	// sigma is embedded into ID in legacy 2016
+	// however, the impacts are not:
+	// https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Working_points_for_94X_and_later
+	// Impact parameter cuts:
+	// As before, the d0 and dz cuts are NOT part of the tuned ID.
+	// The reasons for this decision include: efficiency strongly dependent on the physics of the event,
+	// measurements wanting to have impact parameter handling different from per-electron d0/dz,
+	// relatively low discriminating power of the variables.
+	// Instead an average analysis is recommended to use safe highly efficient (when PV is properly found)
+	// baseline cuts given in the table below. The d0 and dz are NOT applied in the VID framework,
+	// and are left for regular users to cut on explicitly if desired. 
+	passId     = patUtils::passId(electron, goodPV, el_ID,      patUtils::CutVersion::Legacy2016_07Aug17Jul) && passImpactParameter;
+	passVetoId = patUtils::passId(electron, goodPV, veto_el_ID, patUtils::CutVersion::Legacy2016_07Aug17Jul) && passImpactParameterVeto;
 
 	// ------------------------- electron isolation
 
-	passIso     = patUtils::passIso(electron, el_ISO,      patUtils::CutVersion::Moriond17Cut, rho);
-	passVetoIso = patUtils::passIso(electron, veto_el_ISO, patUtils::CutVersion::Moriond17Cut, rho);
+	passIso     = patUtils::passIso(electron, el_ISO,      patUtils::CutVersion::Legacy2016_07Aug17Jul, rho);
+	passVetoIso = patUtils::passIso(electron, veto_el_ISO, patUtils::CutVersion::Legacy2016_07Aug17Jul, rho);
 
 
 	// ---------------------------- Electron Kinematics
@@ -161,6 +175,7 @@ for(unsigned int count_idiso_electrons = 0, n=0; n<electrons.size (); ++n)
 		{
 		// impact is on in IDs by default
 		//if(passVetoKin && passVetoId && passVetoIso && passStdImpactParameter) nVetoE_IsoImp++;
+		// FIXME: so now the anti-iso QCD does not work!
 		if(passVetoKin && passVetoId && passVetoIso) nVetoE_Iso++;
 		if(passVetoKin && passVetoId) nVetoE_all++;
 		}

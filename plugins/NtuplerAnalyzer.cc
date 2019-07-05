@@ -2842,7 +2842,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	pat::ElectronCollection selElectrons, selElectrons_allIso;
 	unsigned int nVetoE_Iso = 0, nVetoE_all = 0;
 	LorentzVector elDiff(0., 0., 0., 0.);
-	processElectrons_ID_ISO_Kinematics(electrons, goodPV, NT_fixedGridRhoFastjetAll, weight, patUtils::llvvElecId::Tight, patUtils::llvvElecId::Loose, patUtils::llvvElecIso::Tight, patUtils::llvvElecIso::Loose,
+	//processElectrons_ID_ISO_Kinematics(electrons, goodPV, NT_fixedGridRhoFastjetAll, weight, patUtils::llvvElecId::Tight, patUtils::llvvElecId::Loose, patUtils::llvvElecIso::Tight, patUtils::llvvElecIso::Loose,
+	processElectrons_ID_ISO_Kinematics(electrons, goodPV, NT_fixedGridRhoFastjetAll, weight, patUtils::llvvElecId::StdTight, patUtils::llvvElecId::StdLoose, patUtils::llvvElecIso::StdTight, patUtils::llvvElecIso::StdLoose,
 		el_kino_cuts_pt, el_kino_cuts_eta, el_veto_kino_cuts_pt, el_veto_kino_cuts_eta,
 		selElectrons, selElectrons_allIso,
 		elDiff, nVetoE_Iso, nVetoE_all, false, false);
