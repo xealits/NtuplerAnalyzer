@@ -3176,6 +3176,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NT_njets = 0;
 	NT_nalljets = 0;
 	string btagger_label("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+	string btagger_2016legacy_1("pfDeepCSVJetTags:probb");
+	string btagger_2016legacy_2("pfDeepCSVJetTags:probbb");
+
 	for (unsigned int ijet=0; ijet<jets.size(); ijet++)
 		{
 		pat::Jet& jet = jets[ijet];
@@ -3246,8 +3249,16 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_jet_pu_discr.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
 		//NT_jet_pu_discr_updated.push_back(ijet->hasUserFloat("pileupJetIdUpdated:fullDiscriminant") ? ijet->userFloat("pileupJetIdUpdated:fullDiscriminant") : -999);
 		float b_discriminator = jet.bDiscriminator(btagger_label);
-		NT_jet_b_discr.push_back(b_discriminator);
-		if (b_discriminator > btag_threshold) NT_nallbjets += 1;
+		NT_jet_b_discr_original2016.push_back(b_discriminator);
+		//if (b_discriminator > btag_threshold) NT_nallbjets += 1;
+
+		// legacy 2016 rereco
+		float b_discriminator_legacy2016_1 = jet.bDiscriminator(btagger_2016legacy_1);
+		float b_discriminator_legacy2016_2 = jet.bDiscriminator(btagger_2016legacy_2);
+		NT_jet_b_DeepCSV_legacy2016_1.push_back(b_discriminator_legacy2016_1);
+		NT_jet_b_DeepCSV_legacy2016_2.push_back(b_discriminator_legacy2016_2);
+		NT_jet_b_discr.push_back(b_discriminator_legacy2016_1 + b_discriminator_legacy2016_2);
+		if ((b_discriminator_legacy2016_1 + b_discriminator_legacy2016_2) > btag_threshold) NT_nallbjets += 1;
 
 		NT_jet_hadronFlavour.push_back(jet.hadronFlavour());
 		NT_jet_partonFlavour.push_back(jet.partonFlavour());
