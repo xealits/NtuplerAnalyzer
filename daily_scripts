@@ -44,7 +44,64 @@ $ das_client --limit 0 --query="dataset=/SingleMuon/*17Jul2018*/MINIAOD"
 /SingleMuon/Run2016H-17Jul2018-v1/MINIAOD
 
 
+## what's needed in ntupler?
+
+which release?
+data and MC in 9_4_9
+can some correction require something newer?
+1) probably no, since this is old stable data
+2) if it is required I'll stumble at it during implementation and will update the release
+
+MC weights and gen tree processing
+
+b frag weights
+PDFs
+-- DONE
+
+MET filters
+-- check
+
+HLT
+and HLT objects
+
+MUONs ELECTRONs
+ID and ISO
+muons:     Muon selectors (Since 9_4_X) (ID and ISO)
+electrons: 
+
+Lepton energy scale?
+-- did not figure out how to run their one-number-producing software
+
+Tau ID, discriminants
+
+MET? systematics? unclustered?
+
+JETS
+JEC: JES is re-applied for control, JER is stored, both variations are calculated and stores
+b-tagging?
+-- in the preliminary calculation of number of bjets the WP cut is used!
+
+beamspot...
+
+tracks for tau SV
+
+and record...
+
+
+
+systematics are applied to control their affect on MC weight
+is PU the same?
+-- also check if the calculation for N vtx is the same?
+
+
+
 ## check 2016 legacy rereco jet corrections
+
+the 2018 datasets are miniaod of 2017 -- the corrections did not change!
+
+what's needed in ntupler?
+the JEC files and all?
+
 
 
 ## check what's needed for unlustered MET -- recompute ntuples?
@@ -53,8 +110,14 @@ is it just one of the METs?
 save all MET corrections they have in MINIAOD
 
 
+## check electron and muon energy scale -- the electron needed R9, which is implemented, what else?
+
+
+
 
 ## submit ntuples
+
+
 
 
 ## check the rest of corrections
