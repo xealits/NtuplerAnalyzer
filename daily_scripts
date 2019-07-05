@@ -58,28 +58,212 @@ b frag weights
 PDFs
 -- DONE
 
+
+
+
+
+
 MET filters
--- check
+-- CHECK they are ON for 2017 and 2016 legacy
+   they are applied, but it is not clear whether they work
+DONE
+
+
+
 
 HLT
 and HLT objects
+-- triggers work and match
+   in Data OK
+   in TT   OK
+DONE
+
+
+
+
 
 MUONs ELECTRONs
 ID and ISO
 muons:     Muon selectors (Since 9_4_X) (ID and ISO)
-electrons: 
+electrons: electronID(ID) -- the ID includes ISO
 
-Lepton energy scale?
+pat::Electron: the ID cutBasedElectronID-Fall17-94X-V2-tight can't be found in this pat::Electron.
+The available IDs are: 'cutBasedElectronID-Fall17-94X-V1-loose' 'cutBasedElectronID-Fall17-94X-V1-medium' 'cutBasedElectronID-Fall17-94X-V1-tight' 'cutBasedElectronID-Fall17-94X-V1-veto' 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose' 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium' 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight' 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto' 'cutBasedElectronID-Spring15-25ns-V1-standalone-loose' 'cutBasedElectronID-Spring15-25ns-V1-standalone-medium' 'cutBasedElectronID-Spring15-25ns-V1-standalone-tight' 'cutBasedElectronID-Spring15-25ns-V1-standalone-veto' 'cutBasedElectronID-Spring15-50ns-V2-standalone-loose' 'cutBasedElectronID-Spring15-50ns-V2-standalone-medium' 'cutBasedElectronID-Spring15-50ns-V2-standalone-tight' 'cutBasedElectronID-Spring15-50ns-V2-standalone-veto' 'cutBasedElectronID-Summer16-80X-V1-loose' 'cutBasedElectronID-Summer16-80X-V1-medium' 'cutBasedElectronID-Summer16-80X-V1-tight' 'cutBasedElectronID-Summer16-80X-V1-veto' 'eidLoose' 'eidRobustHighEnergy' 'eidRobustLoose' 'eidRobustTight' 'eidTight' 'heepElectronID-HEEPV60' 'heepElectronID-HEEPV70' 'mvaEleID-Fall17-iso-V1-wp80' 'mvaEleID-Fall17-iso-V1-wp90' 'mvaEleID-Fall17-iso-V1-wpLoose' 'mvaEleID-Fall17-noIso-V1-wp80' 'mvaEleID-Fall17-noIso-V1-wp90' 'mvaEleID-Fall17-noIso-V1-wpLoose' 'mvaEleID-Spring15-25ns-Trig-V1-wp80' 'mvaEleID-Spring15-25ns-Trig-V1-wp90' 'mvaEleID-Spring15-25ns-nonTrig-V1-wp80' 'mvaEleID-Spring15-25ns-nonTrig-V1-wp90' 'mvaEleID-Spring15-25ns-nonTrig-V1-wpLoose' 'mvaEleID-Spring15-50ns-Trig-V1-wp80' 'mvaEleID-Spring15-50ns-Trig-V1-wp90' 'mvaEleID-Spring16-GeneralPurpose-V1-wp80' 'mvaEleID-Spring16-GeneralPurpose-V1-wp90' 'mvaEleID-Spring16-HZZ-V1-wpLoose' .
+
+-- V1 ID should be fine!
+
+FIXME: the ID includes relIso, so the anti-iso region for QCD does not work anymore!
+
+lep ID and ISO
+DONE
+
+
+
+
+
+
+TODO: Lepton energy scale?
 -- did not figure out how to run their one-number-producing software
+   it requires R9 for electrons, which is stored already
+-- ele scale must be precomputed in legacy
+   https://twiki.cern.ch/twiki/bin/view/CMS/EgammaMiniAODV2#Accessing_the_MiniAOD_V2
+   > For E/gamma, the miniAOD V2 simply adds the ID and energy scale & smearing information to the pat::Photon/Electrons.
+
+https://twiki.cern.ch/twiki/bin/view/CMS/EgammaMiniAODV2#Energy_Scale_and_Smearing
+
+> E/gamma provides residual corrections to scale the data to the MC
+> and smear the MC to the resolution matched in data.
+> The resulting energies and the correction values are stored
+> now in the pat::Electron/pat::Photon along with the systematic values.
+> These are accessed by user floats.
+
+https://twiki.cern.ch/twiki/bin/view/CMS/EgammaMiniAODV2#Applying_the_Energy_Scale_and_sm
+
+> For electrons the recommended nominal p4 is obtained by
+> 
+> auto corrP4  = pat::Electron::p4() * pat::Electron::userFloat("ecalTrkEnergyPostCorr") / pat::Electron::energy();
+
+-- has only the correct Scale in Data and Smear in MC
+
+> One thing of note, there is an inflection in the energy scale at ~45 GeV in the 2016 legacy.
+> If you are using templates and have an energy range that crosses 45 GeV,
+> you will constrain the energy scale to which ever side you have more data (likely <45 GeV) and this will cause incorrect pulls.
+> Therefore you should use also "ScaleEt" as a systematic template as well.
+> This template is an estimate of the energy uncertainty and the sign switches around ~45GeV so the template is correctly constrained.
+> Finally as a warning if any constraint (larger than 90%) is observed in pre(post)-fit results concerning electron/photons energy scale, please contact EGamma/ECAL DPG.
+
+> If you are not sufficiently sensitive to the energy scale and you are just using them as a per bin uncorrelated error for simplicity over correctness,
+> then you can just use the overall values, "ScaleUp", "ScaleDown", "SigmaUp","SigmaDown". 
+
+OK
+
+
+
+
+
 
 Tau ID, discriminants
+CHECK
+damn!
+https://twiki.cern.ch/twiki/bin/viewauth/CMS/TauIDRecommendation13TeV#Isolation
+MiniAOD: 2016 94X reprocessing (RunIISummer16MiniAODv3)
+requires reprocessing of tau ID
+Tau IDs are MVA 2017v2
+
+pat::Tau: the ID byVTightIsolationMVArun2017v2DBoldDMwLT2017 can't be found in this pat::Tau.
+The available IDs are: 'againstElectronLooseMVA6' 'againstElectronMVA6Raw' 'againstElectronMVA6category' 'againstElectronMediumMVA6' 'againstElectronTightMVA6' 'againstElectronVLooseMVA6' 'againstElectronVTightMVA6' 'againstMuonLoose3' 'againstMuonTight3' 'byCombinedIsolationDeltaBetaCorrRaw3Hits' 'byIsolationMVArun2v1DBdR03oldDMwLTraw' 'byIsolationMVArun2v1DBnewDMwLTraw' 'byIsolationMVArun2v1DBoldDMwLTraw' 'byIsolationMVArun2v1PWdR03oldDMwLTraw' 'byIsolationMVArun2v1PWnewDMwLTraw' 'byIsolationMVArun2v1PWoldDMwLTraw' 'byLooseCombinedIsolationDeltaBetaCorr3Hits' 'byLooseIsolationMVArun2v1DBdR03oldDMwLT' 'byLooseIsolationMVArun2v1DBnewDMwLT' 'byLooseIsolationMVArun2v1DBoldDMwLT' 'byLooseIsolationMVArun2v1PWdR03oldDMwLT' 'byLooseIsolationMVArun2v1PWnewDMwLT' 'byLooseIsolationMVArun2v1PWoldDMwLT' 'byMediumCombinedIsolationDeltaBetaCorr3Hits' 'byMediumIsolationMVArun2v1DBdR03oldDMwLT' 'byMediumIsolationMVArun2v1DBnewDMwLT' 'byMediumIsolationMVArun2v1DBoldDMwLT' 'byMediumIsolationMVArun2v1PWdR03oldDMwLT' 'byMediumIsolationMVArun2v1PWnewDMwLT' 'byMediumIsolationMVArun2v1PWoldDMwLT' 'byPhotonPtSumOutsideSignalCone' 'byTightCombinedIsolationDeltaBetaCorr3Hits' 'byTightIsolationMVArun2v1DBdR03oldDMwLT' 'byTightIsolationMVArun2v1DBnewDMwLT' 'byTightIsolationMVArun2v1DBoldDMwLT' 'byTightIsolationMVArun2v1PWdR03oldDMwLT' 'byTightIsolationMVArun2v1PWnewDMwLT' 'byTightIsolationMVArun2v1PWoldDMwLT' 'byVLooseIsolationMVArun2v1DBdR03oldDMwLT' 'byVLooseIsolationMVArun2v1DBnewDMwLT' 'byVLooseIsolationMVArun2v1DBoldDMwLT' 'byVLooseIsolationMVArun2v1PWdR03oldDMwLT' 'byVLooseIsolationMVArun2v1PWnewDMwLT' 'byVLooseIsolationMVArun2v1PWoldDMwLT'
+'byVTightIsolationMVArun2v1DBdR03oldDMwLT'
+'byVTightIsolationMVArun2v1DBnewDMwLT'
+'byVTightIsolationMVArun2v1DBoldDMwLT'
+'byVTightIsolationMVArun2v1PWdR03oldDMwLT'
+'byVTightIsolationMVArun2v1PWnewDMwLT'
+'byVTightIsolationMVArun2v1PWoldDMwLT'
+'byVVLooseIsolationMVArun2v1DBoldDMwLT'
+'byVVTightIsolationMVArun2v1DBdR03oldDMwLT' 'byVVTightIsolationMVArun2v1DBnewDMwLT' 'byVVTightIsolationMVArun2v1DBoldDMwLT' 'byVVTightIsolationMVArun2v1PWdR03oldDMwLT' 'byVVTightIsolationMVArun2v1PWnewDMwLT' 'byVVTightIsolationMVArun2v1PWoldDMwLT' 'chargedIsoPtSum' 'chargedIsoPtSumdR03' 'decayModeFinding' 'decayModeFindingNewDMs' 'footprintCorrection' 'footprintCorrectiondR03' 'neutralIsoPtSum' 'neutralIsoPtSumWeight' 'neutralIsoPtSumWeightdR03' 'neutralIsoPtSumdR03' 'photonPtSumOutsideSignalCone' 'photonPtSumOutsideSignalConedR03' 'puCorrPtSum' .
+DONE
+
+
+
+
+
+
+
+CHECK the TES per decay mode -- there are more decay modes now!
+-- it's in stage2
+DONE
+
+
+
+
+
+
 
 MET? systematics? unclustered?
 
+shiftedP4(systematic_uncertainty, correction_level)
+
+  152       enum METUncertainty {
+  153     JetResUp=0, JetResDown=1, JetEnUp=2, JetEnDown=3,
+  154         MuonEnUp=4, MuonEnDown=5, ElectronEnUp=6, ElectronEnDown=7,
+  155     TauEnUp=8, TauEnDown=9, UnclusteredEnUp=10, UnclusteredEnDown=11,
+  156     PhotonEnUp=12, PhotonEnDown=13, NoShift=14, METUncertaintySize=15,
+  157     JetResUpSmear=16, JetResDownSmear=17, METFullUncertaintySize=18
+  158       };
+
+Exception Message:
+MET uncertainty does not exist 
+
+in 9_4_10:
+
+  152        JetResUp=0, JetResDown=1, JetEnUp=2, JetEnDown=3,
+  153        MuonEnUp=4, MuonEnDown=5, ElectronEnUp=6, ElectronEnDown=7,
+  154        TauEnUp=8, TauEnDown=9, UnclusteredEnUp=10, UnclusteredEnDown=11,
+  155        PhotonEnUp=12, PhotonEnDown=13, NoShift=14, METUncertaintySize=15,
+  156        JetResUpSmear=16, JetResDownSmear=17, METFullUncertaintySize=18
+
+-- same
+
+these don't exist:
+
+JetResUpSmear
+JetResDownSmear
+
+the rest are saved
+
+
+
+
+
 JETS
+
 JEC: JES is re-applied for control, JER is stored, both variations are calculated and stores
+ADDED new JEC, checked on Data & TT 1 file
+
+JES files DONE
+
+JER efficiency table
+-- in files
+DONE
+
+JET PF ID ?????? where????? which????
+-- 2017 is significantly different, efficiency of >99% everywhere, so there is no Loose ID
+use 80X recommendation!
+DONE
+
+
+
+
+
 b-tagging?
 -- in the preliminary calculation of number of bjets the WP cut is used!
+
+only DeepCSV
+not clear name
+
+here:
+https://cmssdt.cern.ch/lxr/source/RecoBTag/Combined/test/testDeepCSV_cfg.py
+they define
+0025    btagDiscriminators = [
+0026       'pfCombinedSecondaryVertexV2BJetTags',
+0027 
+0028       'pfDeepCSVJetTags:probudsg', 
+0029       'pfDeepCSVJetTags:probb', 
+0030       'pfDeepCSVJetTags:probc', 
+0031       'pfDeepCSVJetTags:probbb', 
+0032       ## probcc was merged with probc
+
+and in the table they say to sum:
+
+pfDeepCSVJetTags:probb + pfDeepCSVJetTags:probbb
+
+so let's do this
+
+added 2 new bDiscriminants in the ntuples
+ok the sum is between 0 and 1, looks OK
+
+DONE
+
+
 
 beamspot...
 
@@ -102,6 +286,7 @@ the 2018 datasets are miniaod of 2017 -- the corrections did not change!
 what's needed in ntupler?
 the JEC files and all?
 
+DONE
 
 
 ## check what's needed for unlustered MET -- recompute ntuples?
@@ -109,18 +294,79 @@ the JEC files and all?
 is it just one of the METs?
 save all MET corrections they have in MINIAOD
 
+added
+
 
 ## check electron and muon energy scale -- the electron needed R9, which is implemented, what else?
 
+added
+
+
+## check el scale and mets
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_energy_SmearUp[0]/lep_p4[0].energy()",   "abs(leps_ID) == 11")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_energy_SmearDown[0]/lep_p4[0].energy()", "abs(leps_ID) == 11")
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_energy_ScaleUp[0]/lep_p4[0].energy()",   "abs(leps_ID) == 11")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_energy_ScaleDown[0]/lep_p4[0].energy()", "abs(leps_ID) == 11")
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("lep_energy_ScaleEtDown[0]-lep_energy_ScaleEtUp[0]:lep_p4[0].energy()>>h(100,0,100,100,-1,1)", "abs(leps_ID) == 11", "col")
+
+all work
+no Smear in Data though, as expected
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("met_init_shift_UnclusteredEnUp   .pt() / met_init.pt() ")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("met_init_shift_UnclusteredEnDown .pt() / met_init.pt() ")
+
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("met_init_shift_JetEnUp           .pt() / met_init.pt() ")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("met_init_shift_JetEnDown         .pt() / met_init.pt() ")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("met_init_shift_JetResUp          .pt() / met_init.pt() ")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("met_init_shift_JetResDown        .pt() / met_init.pt() ")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("met_init_shift_MuonEnUp          .pt() / met_init.pt() ")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("met_init_shift_MuonEnDown        .pt() / met_init.pt() ")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("met_init_shift_ElectronEnUp      .pt() / met_init.pt() ")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("met_init_shift_ElectronEnDown    .pt() / met_init.pt() ")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("met_init_shift_TauEnUp           .pt() / met_init.pt() ")
+((TTree*) ntupler->Get("reduced_ttree"))->Draw("met_init_shift_TauEnDown         .pt() / met_init.pt() ")
+
+-- unclustered does have a significant influence, up to 0.3-0.5 difference
+
+JetEn is up to 0.1
+JerRes is more like unclustered (?)
+MuonEn within 0.07-0.08
+ElEn is 0.012 (smaller than muon?)
+TauEn within 0.055
+
+OK
 
 
 
 ## submit ntuples
 
+get data
+
+for dsets_file in `ls dsets_ext_wjets_dyjets dsets_all_usual_mc`
+do
+for c in `cut -f2 -d/ $dsets_file`
+do
+das_client --limit 0 --query="dataset=/$c/RunIISummer16MiniAODv3*/MINIAODSIM"
+done | tee ${dsets_file}_2016legacy
+done
+
+
+add MC to dsets_info.py
+
+dsets_ext_wjets_dyjets_2016legacy
+dsets_all_usual_mc_2016legacy
+
+/WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_WZTo3LNu_powheg, isMC: true, xsec: 4.4296499999999996}
 
 
 
-## check the rest of corrections
+
+
+## check the rest of corrections for stage2
+
 
 
 
