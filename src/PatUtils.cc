@@ -11,7 +11,7 @@ namespace patUtils
     // VersionedPatElectronSelector loose_id("some_VID_tag_including_the_WP");
     return id(el, event);
   }
-  
+
   bool passId(pat::Electron& el,  reco::Vertex& vtx, int IdLevel, int cutVersion){
     
     //for electron Id look here: //https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Spring15_selection_25ns 
@@ -319,7 +319,7 @@ namespace patUtils
 	// ICHEP16 or Moriond17 selection
     case CutVersion::Moriond17Cut :
     case CutVersion::ICHEP16Cut :
-        
+
             switch(IdLevel){
               
             case llvvMuonId::Loose :
@@ -357,13 +357,33 @@ namespace patUtils
             case llvvMuonId::StdTight :
               if(mu.isTightMuon(vtx)) return true;
               break;
-              
+
             default:
               printf("FIXME MuonId llvvMuonId::%i is unkown\n", IdLevel);
               return false;
               break;
             }
-	break;
+	case CutVersion::Legacy2016_07Aug17Jul:
+		switch(IdLevel){
+			case llvvMuonId::StdLoose :
+				if(mu.isLooseMuon()) return true;
+				break;
+
+			case llvvMuonId::StdSoft :
+				if(mu.isSoftMuon(vtx)) return true;
+				break;
+
+			case llvvMuonId::StdTight :
+				if(mu.isTightMuon(vtx)) return true;
+				break;
+
+			default:
+				printf("FIXME MuonId llvvMuonId::%i @ CutVersion::%i is unkown\n", IdLevel, CutVersion::Legacy2016_07Aug17Jul);
+				return false;
+			break;
+			}
+		break;
+
     default:
         printf("FIXME MuonID CutVersion::%i is unkown\n", cutVersion);
         return false;
@@ -372,7 +392,7 @@ namespace patUtils
 
     return false;
   }  
-  
+
   bool passId(pat::Photon& photon, double rho, int IdLevel){
     // https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedPhotonIdentificationRun2
     // CSA14 selection, conditions: 25ns, better detector alignment. 
@@ -518,7 +538,7 @@ namespace patUtils
     // VersionedPatElectronSelector loose_id("some_VID_tag_including_the_WP");
     return true; // Isolation is now embedded into the ID.
   }
-  
+
   bool passIso(pat::Electron& el, int IsoLevel, int cutVersion, double rho  ){
          //https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Spring15_selection_25ns
 	  float  chIso   = el.pfIsolationVariables().sumChargedHadronPt;
@@ -610,7 +630,7 @@ namespace patUtils
 
           return false;  
    }
-  
+
   bool passIso(pat::Muon& mu, int IsoLevel, int cutVersion){
     //https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Muon_Isolation
     float  chIso   = mu.pfIsolationR04().sumChargedHadronPt;
@@ -677,6 +697,27 @@ namespace patUtils
                 break;
            }
            break;
+
+	case CutVersion::Legacy2016_07Aug17Jul :
+		// https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Muon_selectors_Since_9_4_X
+		switch(IsoLevel){
+			case llvvMuonIso::StdLoose : 
+				// this is the correct value for 2016 legacy
+				//if( relIso < 0.40 ) return true;
+				if (mu.passed(reco::Muon::MiniIsoLoose)) return true;
+				break;
+
+			case llvvMuonIso::StdTight :
+				// this is the correct value for 2016 legacy
+				//if( relIso < 0.10 ) return true;
+				if (mu.passed(reco::Muon::MiniIsoTight)) return true;
+                                break;
+			default:
+				printf("FIXME MuonIso llvvMuonIso::%i @ CutVersion::%i is unkown\n", IsoLevel, CutVersion::Legacy2016_07Aug17Jul);
+				return false;
+				break;
+		}
+		break;
 
        default:
            printf("FIXME MuonIsolation  CutVersion::%i is unkown\n", cutVersion);

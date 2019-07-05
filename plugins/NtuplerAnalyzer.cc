@@ -2828,7 +2828,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	unsigned int nVetoMu_Iso = 0, nVetoMu_all = 0;
 	//pat::MuonCollection selIDMuons, selMuons;
 	pat::MuonCollection selMuons, selMuons_allIso;
-	processMuons_ID_ISO_Kinematics(muons, goodPV, weight, patUtils::llvvMuonId::StdTight, patUtils::llvvMuonId::StdLoose, patUtils::llvvMuonIso::Tight, patUtils::llvvMuonIso::Loose,               
+	//processMuons_ID_ISO_Kinematics(muons, goodPV, weight, patUtils::llvvMuonId::StdTight, patUtils::llvvMuonId::StdLoose, patUtils::llvvMuonIso::Tight, patUtils::llvvMuonIso::Loose,               
+	processMuons_ID_ISO_Kinematics(muons, goodPV, weight, patUtils::llvvMuonId::StdTight, patUtils::llvvMuonId::StdLoose, patUtils::llvvMuonIso::StdTight, patUtils::llvvMuonIso::StdLoose,
 		mu_kino_cuts_pt, mu_kino_cuts_eta, mu_veto_kino_cuts_pt, mu_veto_kino_cuts_eta,
 		selMuons, selMuons_allIso,
 		muDiff, nVetoMu_Iso, nVetoMu_all, false, false);

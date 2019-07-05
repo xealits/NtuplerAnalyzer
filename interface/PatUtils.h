@@ -78,8 +78,8 @@ namespace patUtils
    namespace llvvMuonId { enum MuonId  {Loose, Soft, Tight, tkHighPT, TightAndTlkHighPt, StdLoose, StdSoft, StdMedium, StdTight}; }
    namespace llvvPhotonId { enum PhotonId  {Loose, Medium, Tight}; }
    namespace llvvElecIso{ enum ElecIso {Veto, Loose, Medium, Tight}; }
-   namespace llvvMuonIso{ enum MuonIso {Loose,Tight, H4lWP}; }
-   namespace CutVersion { enum CutSet {Spring15Cut25ns, ICHEP16Cut, Moriond17Cut}; }
+   namespace llvvMuonIso{ enum MuonIso {Loose,Tight, H4lWP, StdLoose, StdSoft, StdMedium, StdTight}; }
+   namespace CutVersion { enum CutSet {Spring15Cut25ns, ICHEP16Cut, Moriond17Cut, Legacy2016_07Aug17Jul}; }
 
    bool passId (VersionedPatElectronSelector id, edm::EventBase const & event, pat::Electron el);
    bool passId (pat::Electron& el,  reco::Vertex& vtx, int IdLevel, int cutVersion); // Old PHYS14 ID
