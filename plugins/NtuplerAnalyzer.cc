@@ -1365,6 +1365,20 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// if output contains stand-alone objects (not vector of LorentxVector-s, but just 1 LorentzVector, like MET or something)
 	// you have to reset them yourself, since each object might have its' own method
 	NT_met_init.SetXYZT(0,0,0,0);
+
+	NT_met_init_shift_UnclusteredEnUp   .SetXYZT(0,0,0,0);
+	NT_met_init_shift_UnclusteredEnDown .SetXYZT(0,0,0,0);
+	NT_met_init_shift_JetEnUp           .SetXYZT(0,0,0,0);
+	NT_met_init_shift_JetEnDown         .SetXYZT(0,0,0,0);
+	NT_met_init_shift_JetResUp          .SetXYZT(0,0,0,0);
+	NT_met_init_shift_JetResDown        .SetXYZT(0,0,0,0);
+	NT_met_init_shift_MuonEnUp          .SetXYZT(0,0,0,0);
+	NT_met_init_shift_MuonEnDown        .SetXYZT(0,0,0,0);
+	NT_met_init_shift_ElectronEnUp      .SetXYZT(0,0,0,0);
+	NT_met_init_shift_ElectronEnDown    .SetXYZT(0,0,0,0);
+	NT_met_init_shift_TauEnUp           .SetXYZT(0,0,0,0);
+	NT_met_init_shift_TauEnDown         .SetXYZT(0,0,0,0);
+
 	NT_met_uncorrected.SetXYZT(0,0,0,0);
 	NT_met_corrected.SetXYZT(0,0,0,0);
 	NT_met_slimmedMets.SetXYZT(0,0,0,0);
@@ -2982,13 +2996,33 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		//double dataSF = rc.kScaleDT(selMuons[l].charge(), selMuons[l].pt(), selMuons[l].eta(), selMuons[l].phi(), 0, 0);
 		//NT_lep_correction.push_back(dataSF);
+
+		NT_lep_energy_ScaleUp      .push_back(0.);
+		NT_lep_energy_ScaleDown    .push_back(0.);
+		NT_lep_energy_SmearUp      .push_back(0.);
+		NT_lep_energy_SmearDown    .push_back(0.);
+		NT_lep_energy_ScaleEtUp    .push_back(0.);
+		NT_lep_energy_ScaleEtDown  .push_back(0.);
+        	NT_lep_energy_parameter1_r9.push_back(0.);
 		}
 
 	LogInfo ("Demo") << "saved muons";
 
 	for(size_t l=0; l<selElectrons.size(); ++l)
 		{
-		NT_lep_p4.push_back(selElectrons[l].p4());
+		//NT_lep_p4.push_back(selElectrons[l].p4());
+		// legacy 2016 nominal corrected electron energy:
+		NT_lep_p4.push_back(selElectrons[l].p4() * selElectrons[l].userFloat("ecalTrkEnergyPostCorr") / selElectrons[l].energy());
+		// systematic variations of the correction:
+		// Scale and Smear -- saving them for both data and MC, but apply only in MC
+		NT_lep_energy_ScaleUp   .push_back(selElectrons[l].userFloat("energyScaleUp"));
+		NT_lep_energy_ScaleDown .push_back(selElectrons[l].userFloat("energyScaleDown"));
+		NT_lep_energy_SmearUp   .push_back(selElectrons[l].userFloat("energySigmaUp"));
+		NT_lep_energy_SmearDown .push_back(selElectrons[l].userFloat("energySigmaDown"));
+		// legacy 2016 feature: energy invervion at 45GeV, correction with this additional variation
+		NT_lep_energy_ScaleEtUp   .push_back(selElectrons[l].userFloat("energyScaleEtUp"));
+		NT_lep_energy_ScaleEtDown .push_back(selElectrons[l].userFloat("energyScaleEtDown"));
+
 		NT_lep_id.push_back(selElectrons[l].pdgId());
 		// mu_trig_objs or el_trig_objs
 		// Propagating 0.1 -> 0.2 trigger match to el untill found the recommended value
@@ -3017,6 +3051,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				NT_lep_matching_gen_collection_dR.push_back(match2.dR);
 				}
 			}
+
+        	NT_lep_energy_parameter1_r9.push_back(selElectrons[l].r9());
 		}
 
 	NT_nleps = selLeptons.size();
@@ -3105,6 +3141,36 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		const pat::MET& MET = metsHandle_slimmedMETs->front();
 		NT_met_slimmedMets = MET.p4();
 		NT_met_init = MET.p4();
+
+		// systematic shifts
+		/*
+		 *       enum METUncertainty {
+		 *     JetResUp=0, JetResDown=1, JetEnUp=2, JetEnDown=3,
+		 *         MuonEnUp=4, MuonEnDown=5, ElectronEnUp=6, ElectronEnDown=7,
+		 *     TauEnUp=8, TauEnDown=9, UnclusteredEnUp=10, UnclusteredEnDown=11,
+		 *     PhotonEnUp=12, PhotonEnDown=13, NoShift=14, METUncertaintySize=15,
+		 *     JetResUpSmear=16, JetResDownSmear=17, METFullUncertaintySize=18
+		 *       };
+		 */
+
+		NT_met_init_shift_UnclusteredEnUp   = MET.shiftedP4(pat::MET::UnclusteredEnUp);
+		NT_met_init_shift_UnclusteredEnDown = MET.shiftedP4(pat::MET::UnclusteredEnDown);
+		NT_met_init_shift_JetEnUp           = MET.shiftedP4(pat::MET::JetEnUp);
+		NT_met_init_shift_JetEnDown         = MET.shiftedP4(pat::MET::JetEnDown);
+		NT_met_init_shift_JetResUp          = MET.shiftedP4(pat::MET::JetResUp);
+		NT_met_init_shift_JetResDown        = MET.shiftedP4(pat::MET::JetResDown);
+		NT_met_init_shift_MuonEnUp          = MET.shiftedP4(pat::MET::MuonEnUp);
+		NT_met_init_shift_MuonEnDown        = MET.shiftedP4(pat::MET::MuonEnDown);
+		NT_met_init_shift_ElectronEnUp      = MET.shiftedP4(pat::MET::ElectronEnUp);
+		NT_met_init_shift_ElectronEnDown    = MET.shiftedP4(pat::MET::ElectronEnDown);
+		NT_met_init_shift_TauEnUp           = MET.shiftedP4(pat::MET::TauEnUp);
+		NT_met_init_shift_TauEnDown         = MET.shiftedP4(pat::MET::TauEnDown);
+
+		/*
+		NT_met_init_shift_JetResUpSmear     = MET.shiftedP4(pat::MET::JetResUpSmear);
+		NT_met_init_shift_JetResDownSmear   = MET.shiftedP4(pat::MET::JetResDownSmear);
+		*/
+
 		LogInfo ("Demo") << "met slimmed";
 		}
 	// LorentzVector met = mets_slimmedMETs[0].p4 ();

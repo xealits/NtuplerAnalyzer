@@ -9,6 +9,13 @@
 #
 
 
+submit: job_file=cur_jobs
+submit:
+	for c in `cat ${job_file}`; \
+	do \
+	crab submit -c $$c ; \
+	done
+
 resubmit:
 	for js in `ls crab_projects/crab_Ntupler_${nt}* -d`; \
 	do \

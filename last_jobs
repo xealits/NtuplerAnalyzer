@@ -1,3 +1,15 @@
+# v50
+# run on legacy rereco and
+for c in `cat dsets_17Jul2018_rereco dsets_all_usual_mc_2016legacy dsets_ext_wjets_dyjets_2016legacy`
+do
+python make_crab_cfgs.py --is2016legacy $c v50 Dilep_tauID &
+done | tee cur_jobs
+
+make submit
+
+
+
+
 # v41 fixed electron selection
 for c in `cat dsets_feb_rereco dsets_all_usual_mc dsets_ext_wjets_dyjets`
 do

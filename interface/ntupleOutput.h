@@ -419,6 +419,23 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, PV_z_err)
 
 // MET OUTPUT
 OBJECT_in_NTuple(OUTNTUPLE, met_init                , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+
+OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_UnclusteredEnUp   , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_UnclusteredEnDown , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_JetEnUp           , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_JetEnDown         , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_JetResUp          , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_JetResDown        , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_MuonEnUp          , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_MuonEnDown        , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_ElectronEnUp      , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_ElectronEnDown    , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_TauEnUp           , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_TauEnDown         , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+
+//OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_JetResUpSmear     , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+//OBJECT_in_NTuple(OUTNTUPLE, met_init_shift_JetResDownSmear   , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
+
 OBJECT_in_NTuple(OUTNTUPLE, met_uncorrected         , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
 OBJECT_in_NTuple(OUTNTUPLE, met_corrected           , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
 OBJECT_in_NTuple(OUTNTUPLE, met_slimmedMets         , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >)
@@ -441,6 +458,13 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_matching_gen_dR)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_N_trackerLayersWithMeasurement)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_correction)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_energy_parameter1_r9) // a parameter for energy corrections, r9 in electrons, 0 in muons
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_energy_ScaleUp)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_energy_ScaleDown)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_energy_SmearUp)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_energy_SmearDown)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_energy_ScaleEtUp)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, lep_energy_ScaleEtDown)
 
 // tau gen matches for leptons from taus (in DY and TT)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   lep_matching_gen_collection)
