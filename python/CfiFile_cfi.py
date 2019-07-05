@@ -19,7 +19,7 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     record_all           = cms.bool(False) ,
 
     isMC = cms.bool(False),
-    is2017rereco = cms.bool(False),
+    is2016legacy = cms.bool(False),
     isLocal = cms.bool(False),
     withHLT     = cms.bool(True  ),    # in 2015 some datasets (like QCD) don't have HLT
     HLT_source  = cms.string("HLT"  ), # in 2015 had HLT2 for reHLT datasets

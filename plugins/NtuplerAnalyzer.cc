@@ -936,7 +936,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	bool record_ElTau, record_MuTau, record_tauCands, record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets, record_signal, record_all;
 
 	TString dtag;
-	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop, is2017rereco, is2017data;
+	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop, is2016legacy, is2017data;
 	bool isLocal;
 	bool withHLT;
 	string  HLT_source,
@@ -1025,7 +1025,7 @@ record_signal        (iConfig.getParameter<bool>("record_signal"))        ,
 record_all           (iConfig.getParameter<bool>("record_all"))        ,
 dtag       (iConfig.getParameter<std::string>("dtag")),
 isMC       (iConfig.getParameter<bool>("isMC")),
-is2017rereco       (iConfig.getParameter<bool>("is2017rereco")),
+is2016legacy       (iConfig.getParameter<bool>("is2016legacy")),
 isLocal    (iConfig.getParameter<bool>("isLocal")),
 withHLT    (iConfig.getParameter<bool>("withHLT")),
 HLT_source (iConfig.getParameter<std::string>("HLT_source")),
@@ -1168,10 +1168,10 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	edm::LogInfo ("Demo") << "AAA";
 
 	// dtag configs
-	bool period_BCD = !isMC && (dtag.Contains("2016B") || dtag.Contains("2016C") || dtag.Contains("2016D"));
-	bool period_EF  = !isMC && (dtag.Contains("2016E") || dtag.Contains("2016F"));
-	bool period_G   = !isMC && (dtag.Contains("2016G"));
-	bool period_H   = !isMC && (dtag.Contains("2016H"));
+	bool period_2016BCD = !isMC && (dtag.Contains("2016B") || dtag.Contains("2016C") || dtag.Contains("2016D"));
+	bool period_2016EF  = !isMC && (dtag.Contains("2016E") || dtag.Contains("2016F"));
+	bool period_2016G   = !isMC && (dtag.Contains("2016G"));
+	bool period_2016H   = !isMC && (dtag.Contains("2016H"));
 	is2017data = !isMC && (dtag.Contains("Data2017")); // TODO check 2017 data handling with dtag
 
 	aMCatNLO = dtag.Contains("amcatnlo");
@@ -1216,17 +1216,36 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	// in 2016 the corrections for data are per-period:
 	// Summer16_23Sep2016BCDV4_DATA_        Summer16_23Sep2016EFV4_DATA_        Summer16_23Sep2016GV4_DATA_        Summer16_23Sep2016HV4_DATA_
 	TString jet_corr_files;
-	if (isMC)
-		jet_corr_files = "/Summer16_23Sep2016V4_MC";
-	else if (period_BCD)
-		jet_corr_files = "/Summer16_23Sep2016BCDV4_DATA";
-	else if (period_EF)
-		jet_corr_files = "/Summer16_23Sep2016EFV4_DATA";
-	else if (period_G)
-		jet_corr_files = "/Summer16_23Sep2016GV4_DATA";
-	else if (period_H)
-		jet_corr_files = "/Summer16_23Sep2016HV4_DATA";
-	else jet_corr_files = "/Summer16_23Sep2016HV4_DATA"; // TODO correct jet corrections for 2017
+	if (is2016legacy)
+		{
+		// Summer16_07Aug2017BCD_V11_DATA.tar.gz  Summer16_07Aug2017EF_V11_DATA.tar.gz  Summer16_07Aug2017GH_V11_DATA.tar.gz  Summer16_07Aug2017_V11_MC.tar.gz
+		if (isMC)
+			jet_corr_files = "/Summer16_07Aug2017_V11_MC";
+		else if (period_2016BCD)
+			jet_corr_files = "/Summer16_07Aug2017BCD_V11_DATA";
+		else if (period_2016EF)
+			jet_corr_files = "/Summer16_07Aug2017EF_V11_DATA";
+		else if (period_2016G || period_2016H)
+			jet_corr_files = "/Summer16_07Aug2017GH_V11_DATA";
+		//else jet_corr_files = "/Summer16_07Aug2017GH_V11_DATA";
+		}
+ 	// TODO add jet corrections for 2017
+	else
+		{
+		// original 2016 rereco, Moriond17
+		if (isMC)
+			jet_corr_files = "/Summer16_23Sep2016V4_MC";
+		else if (period_2016BCD)
+			jet_corr_files = "/Summer16_23Sep2016BCDV4_DATA";
+		else if (period_2016EF)
+			jet_corr_files = "/Summer16_23Sep2016EFV4_DATA";
+		else if (period_2016G)
+			jet_corr_files = "/Summer16_23Sep2016GV4_DATA";
+		else if (period_2016H)
+			jet_corr_files = "/Summer16_23Sep2016HV4_DATA";
+		else jet_corr_files = "/Summer16_23Sep2016HV4_DATA";
+		}
+
 	jesCor = utils::cmssw::getJetCorrector (jecDir, jet_corr_files, isMC);
 	totalJESUnc = new JetCorrectionUncertainty ((jecDir + jet_corr_files + "_Uncertainty_AK4PFchs.txt").Data());
 
@@ -2450,7 +2469,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	/* sting interface in 2016
 	string filters_name = "";
 	// 2016 data, Aug 2017 rereco
-	if (is2017rereco)
+	if (is2016legacy)
 		{
 		filters_name = "RECO";
 		}
@@ -2476,7 +2495,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	}
 
 	// 2016 data, Aug 2017 rereco
-	if (is2017rereco || is2017data)
+	if (is2016legacy || is2017data)
 		{
 		//is present only if PAT (and miniAOD) is not run simultaniously with RECO
 		trigResults_with_met_filters = trigResultsRECO;
@@ -2498,7 +2517,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//if (!isMC && metFilters.isValid())
 	// apparently MET POG suggests trying and looking at filters in MC
 	// and they are there, in patFilters
-	if (!isMC && patFilters.isValid())
+	//if (!isMC && patFilters.isValid())
+	if (!isMC)
 		{
 		// event is good if all filters ar true
 		NT_filters_hbhe             = utils::passTriggerPatterns(patFilters, "Flag_HBHENoiseFilter*", "Flag_HBHENoiseIsoFilter*");
@@ -2509,7 +2529,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_filters_halo_super       = utils::passTriggerPatterns(patFilters, "Flag_globalSuperTightHalo2016Filter");
 
 		// 2016 thing: bad muons
-		if (is2017rereco)
+		if (is2016legacy)
 			{
 			NT_BadChargedCandidateFilter = utils::passTriggerPatterns(patFilters, "Flag_BadChargedCandidateFilter");
 			NT_BadPFMuonFilter           = utils::passTriggerPatterns(patFilters, "Flag_BadPFMuonFilter");
