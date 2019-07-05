@@ -28,7 +28,8 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     muHLT_Data1 = cms.string("HLT_IsoMu24_v*"  ), # the HLT pattern match
     muHLT_Data2 = cms.string("HLT_IsoTkMu24_v*"),
     elHLT_Data  = cms.string("HLT_Ele27_WPTight_Gsf_v*"),
-    elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v*"), #MATTEO cambiato triggere elettroni MC, vediamo come va prima era v7
+    elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v7"), #TODO: figure out how to pass some parameters from command line?
+    #elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v*"), #MATTEO cambiato triggere elettroni MC, vediamo come va prima era v7
     lepMonitorHLT = cms.string("HLT_PFHT400_*"),
 
     #hlt_objects = cms.InputTag("selectedPatTrigger"), # 2016

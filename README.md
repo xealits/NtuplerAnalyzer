@@ -50,6 +50,88 @@ However the directory is not readable. For some reason I cannot chmod a director
 
 
 
+Info on installation in 94X
+---------------------------
+
+The BFragmentationAnalyzer does not compile
+
+    cmsrel CMSSW_9_4_9
+    cd CMSSW_9_4_9/src
+    cmsenv
+    git cms-init
+
+    mkdir TopQuarkAnalysis
+    git clone https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer.git
+    cd TopQuarkAnalysis
+    cd BFragmentationAnalyzer
+    git fetch origin master_94X:master94X
+    git checkout master94X
+    scram b
+
+--- says there is no file "Utilities/General/FileInPath.h".
+Found it in cmssw `8_0_X` and wget all headers and src from that tag.
+
+    wget https://raw.githubusercontent.com/cms-sw/cmssw/CMSSW_8_0_X/Utilities/General/src/FileInPath.cc
+
+--- and all the rest.
+
+Now
+
+    scram b
+    /afs/cern.ch/work/o/otoldaie/private/16/CMSSW_9_4_9/src/TopQuarkAnalysis/BFragmentationAnalyzer/plugins/BFragmentationWeightProducer.cc:130:35: error: no matching function for call to 'edm::Event::put(std::auto_ptr<edm::ValueMap<float> >&, const std::__cxx11::basic_string<char>&)'
+            iEvent.put(valMap, it.first);
+                                       ^
+
+--- great.
+
+And also `master_94X` is not different from `master`:
+
+    git log origin/master...origin/master_94X
+
+Following the error in `Event::put` I change `auto_ptr` to `unique_ptr` and get:
+
+    /cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/gcc/6.3.0/include/c++/6.3.0/bits/unique_ptr.h:359:7: note: declared here
+           unique_ptr(const unique_ptr&) = delete;
+           ^~~~~~~~~~
+
+-- so this might be a problem.
+
+Made an adhoc solution by not using ValueMap, but really what you nead is:
+
+    Event.put(make_unique(*valMap), ...)
+
+-- commited it in the local BFrag repository.
+Checked the run on Data and TT.
+Updated the TEMPLATE-s
+
+
+
+RivetInterface for
+
+    git cms-addpkg GeneratorInterface/RivetInterface
+    cd GeneratorInterface/RivetInterface
+    scram b
+
+OK
+
+
+HTT Recoil Corrections?
+do I use them here?
+try ntupler first
+
+
+Ntupler
+compiled!
+and BFrag worked!
+
+
+check other "compile 2017" defifs
+-- it's `BFRAG_PROC`
+
+so, all ok with the external plugin
+
+
+
 
 Old notes (keeping just in case)
 --------------------------------

@@ -122,7 +122,7 @@ process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
 #process.genParticles2HepMC = genParticles2HepMC.clone( genParticles = cms.InputTag("mergedGenParticles") )
 #process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
 #process.particleLevel.excludeNeutrinosFromJetClustering = False
-#process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
+process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
 
 
 # NTUPLER
@@ -136,9 +136,10 @@ process.ntupler.isLocal = cms.bool(False) # LSF submition is local
 
 process.ntupler.withHLT = cms.bool({withHLT})
 
-process.ntupler.elHLT_MC   = cms.string("HLT_Ele27_WPTight_Gsf_v14")
-process.ntupler.muHLT_MC1   = cms.string("HLT_IsoMu24_v*"  )
-process.ntupler.muHLT_MC2   = cms.string("HLT_IsoTkMu24_v*")
+# the triggers in 2017:
+#process.ntupler.elHLT_MC   = cms.string("HLT_Ele27_WPTight_Gsf_v14")
+#process.ntupler.muHLT_MC1   = cms.string("HLT_IsoMu24_v*"  )
+#process.ntupler.muHLT_MC2   = cms.string("HLT_IsoTkMu24_v*")
 
 # for LumiDump (to be scraped):
 process.ntupler.input = cms.untracked.vstring(
@@ -208,7 +209,7 @@ if isMC:
     process.p = cms.Path(
      process.BadPFMuonFilter *
      process.BadChargedCandidateFilter *
-     #process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
+     process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
      process.ntupler)
 
 else:

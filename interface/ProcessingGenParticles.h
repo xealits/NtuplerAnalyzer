@@ -6,7 +6,7 @@
 
 #include <string>
 
-typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
+//typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
 
 
 const reco::Candidate* find_W_decay(const reco::Candidate * W);
