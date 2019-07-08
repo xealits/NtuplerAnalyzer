@@ -1,3 +1,353 @@
+# remaining questions and updates
+
+the approval questions -> paper
+
+* mention CDF and Atlas -- how? say something about precisions?
+
+* Why is the systematic uncertainty related to the electron trigger so much larger than the muon trigger ? Do you understand how the combined value is lower than both ? 
+
+    still not clear why electrons are so much constrained by muons
+
+    the value in both can be lower
+
+* event yield table, add descrription in the caption
+
+    "Table 1: the definition of bkg-like region needs to be included in the caption. (Is this separation really needed?) Make it clear and mention numbers are prefit "
+
+    add systematic uncertainties??? to say "the agreement is good within the systematic uncertainties"
+
+    OK for now
+
+* systematics table, merge with dilepton systematics
+
+    Table 2 and 4 reduce to 1, remove redundancy; move "MC stat" out of the theoretical uncertainties
+    "MC stat" must be separate from modeling
+
+    -- FIRST, update the numbers!
+
+* remove NLL
+
+    what did Michele say?
+
+* add tau pT? close to the yields table as an example of good Data-Prediction agreement at main selection
+
+  where?
+  at the same place also mention good agreement in pre-fit MT?
+  --- it's the beginning of "Results", next to the table with event categories, everything is about event categories there
+  at the event selection?
+  let's try
+
+  OK
+
+* "improve the systematics description"
+
+    check all the references to the systematics section and clarify these
+
+    in:
+
+      + "Background Estimate", in the general paragraph and about mis-ID taus, and about the normalization of the multijet
+      + and about the sys uncertainty of the acceptance
+
+    remove the normalization of the multijet and mention the processes explicitly in the Systematics
+    --- did not remove, expanded saying "As one of the processes with mis-ID taus,.."
+
+    OK for now
+
+* "R needs to a better explanation and justification"
+
+    clarify that we divide on BR(tau->tauh) to get to the tau!
+    like this: "In the ratio, the correlated uncertainties cancel out."
+
+    is it also about calculating R?
+
+    can BLUE be applied to a ratio?
+    BLUE is basically a sum, it calculates (x1 + x2)/2, we need the same for ratio, but what's the citation then?
+
+* add somewhere pT plots with TOPPT Up: MET and b jet pT
+
+* update numbers:
+
+    vis cross section
+    full cross section
+    ratio
+    Gamma
+
+    anything else?
+
+
+update the presentation
+
+update AN
+
+add the objects review questions to the twiki
+
+
+## tau pT plot at main selection
+
+which histosel contains main selection, tau pT and all systematics? None, tau pT is not a fitted param, it's CONTROL
+all systematics without PDF?
+
+distrs/distrs_v37_test172_bunchCONTROLS1_mc1.root
+
+ok good
+
+make --dry-run plot_sel_1  nt=v37 proc=test172 distrs=bunchCONTROLS1 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=muon      output_type=pdf merge_procs="--merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other." options="--data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend" &
+
+mkdir plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --bin-norm --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --drop-bin 29.
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --bin-norm --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID
+
+-- ok
+
+let's add the tau systematics
+
+mkdir distrs/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/
+
+foreach tausys ( "--rename-sys TauMisIDDown --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:0.5" "--rename-sys TauMisIDUp   --factor-rate-systematic tt_lj,tt_taulj,tt_other,s_top_lj:1.5" "--rename-sys TauIDDown --factor-rate-systematic tt_eltau,tt_eltau,tt_taultauh,s_top_eltau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:0.95" "--rename-sys TauIDUp   --factor-rate-systematic tt_eltau,tt_eltau,tt_taultauh,s_top_eltau,s_top_eltau,s_top_other,dy_tautau,dibosons_other:1.05")
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root     --do-not-reweight -o distrs/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --lumi 35800 -c mu_sel  -x mu_selVloose   -d tau_pt   $tausys
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --do-not-reweight -o distrs/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --lumi 35800 -c el_sel  -x el_selVloose   -d tau_pt   $tausys
+end
+
+hadd -f distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/*root
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root     --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events" --draw-overflows 5 --legend-shift 0.02 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --y-range 0,10000
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events" --draw-overflows 5 --legend-shift 0.02 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --y-range 0,10000
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root     --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events" --draw-overflows 2 --legend-shift 0.02 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --y-range 0,7500 --x-range 25,100
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events" --draw-overflows 2 --legend-shift 0.02 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --y-range 0,7500 --x-range 25,100
+
+
+
+
+
+
+
+
+## merge systematics tables
+
+this one
+
+v37_test172BIN1_test1/impacts_table
+
+$\tauh$ jet identification  &  4.7 &  4.5 &  4.5 \\
+           PU uncertainty  &  2.8 &  2.8 &  2.5 \\
+$\tauh$ misidentification background  &  1.9 &  2.1 &  2.3 \\
+     b-tagging efficiency  &  1.1 &  1.2 &  0.9 \\
+                      TES  &  0.7 &  0.8 &  0.8 \\
+       muon ID efficiency  &  0.6 &  0.6 \\
+         DY normalization  &  0.4 &  0.4 &  0.6 \\
+ Single Top normalization  &  0.6 &  0.5 &  0.5 \\
+     W+jets normalization  &  0.1 &  0.4 &  0.5 \\
+        QCD normalization  &  0.1 &  0.5 &  0.4 \\
+                      JES  &  0.1 &  0.2 &  0.4 \\
+  muon trigger efficiency  &  0.3 &  0.2 \\
+electron trigger efficiency  &  2.3 &  0.2 \\
+   electron ID efficiency  &  1.8 &  0.2 \\
+                      JER  &  0.6 &  0.3 &  0.1 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  2.3 &  2.0 &  2.4 \\
+        top quark $p_{T}$  &  2.7 &  2.3 &  2.2 \\
+  final   state radiation  &  1.7 &  1.9 &  1.7 \\
+  initial state radiation  &  1.7 &  1.6 &  1.5 \\
+                ME scales  &  1.1 &  1.2 &  1.1 \\
+semi-leptonic b-hadron BRs  &  0.8 &  0.6 &  0.7 \\
+underlying event (Pythia tune)  &  0.5 &  0.5 &  0.6 \\
+   ME-PS matching (hdamp)  &  0.4 &  0.4 &  0.5 \\
+                      PDF  &  1.5 &  1.5 &  1.6 \\
+            MC statistics  &  2.0 &  1.6 &  1.6 \\
+
+
+and the dileptons...
+add the dileptons to printing?
+
+python new_impact_table.py --merge-pdf  v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_el_test1.json v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_mu_test1.json v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_both_test1.json  > v37_test172BIN1_test1/impacts_table
+
+python new_impact_table.py --quote-dileps --merge-pdf  v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_el_test1.json v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_mu_test1.json v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_both_test1.json
+
+choose on the names
+and add the dileptons to the printing
++ print the missing systematics as <0.1%
+
+"tt background" ???
+-- mis-ID and WJets and multijet this way
+
+
+
+$\tauh$ jet identification &  4.7 &  4.5 &  4.5 \\
+           PU uncertainty  &  2.8 &  2.8 &  2.5 \\
+\ttbar background          &  1.9 &  2.1 &  2.3 \\
+     b-tagging efficiency  &  1.1 &  1.2 &  0.9 \\
+     $\tauh$ energy scale  &  0.7 &  0.8 &  0.8 \\
+       muon ID efficiency  &  0.6 &  0.6 \\
+         DY normalization  &  0.4 &  0.4 &  0.6 \\
+ Single Top normalization  &  0.6 &  0.5 &  0.5 \\
+     W+jets normalization  &  0.1 &  0.4 &  0.5 \\
+        QCD normalization  &  0.1 &  0.5 &  0.4 \\
+                      JES  &  0.1 &  0.2 &  0.4 \\
+  muon trigger efficiency  &  0.3 &  0.2 \\
+electron trigger efficiency  &  2.3 &  0.2 \\
+   electron ID efficiency  &  1.8 &  0.2 \\
+                      JER  &  0.6 &  0.3 &  0.1 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  2.3 &  2.0 &  2.4 \\
+        top quark $p_{T}$  &  2.7 &  2.3 &  2.2 \\
+  final   state radiation  &  1.7 &  1.9 &  1.7 \\
+  initial state radiation  &  1.7 &  1.6 &  1.5 \\
+                ME scales  &  1.1 &  1.2 &  1.1 \\
+semi-leptonic b-hadron BRs  &  0.8 &  0.6 &  0.7 \\
+underlying event (Pythia tune)  &  0.5 &  0.5 &  0.6 \\
+   ME-PS matching (hdamp)  &  0.4 &  0.4 &  0.5 \\
+                      PDF  &  1.5 &  1.5 &  1.6 \\
+            MC statistics  &  2.0 &  1.6 &  1.6 \\
+
+
+$\tauh$ identification                      & 0.0 & 4.4  & 0  \\
+
+\cPqb tagging efficiency            & 0.4 & 0.9  & 1  \\
+jet energy scale                    & 0.4 & 1.1  & 1  \\
+jet energy resolution               & 0.4 & 0.1  & 1  \\
+$\tauh$ energy scale                & 0.0 & 0.7  & 0  \\
+pileup (PU)                         & 0.1 & 2.3  & 1  \\
+
+\ttbar background                   & 0.2 & 2.3  & 0  \\
+DY background                       & 0.9 & 0.6  & 1  \\
+tW background                       & 1.1 & 0.5  & 1  \\
+diboson background                  & 0.2 & $<0.1$ & 1  \\
+W+jets background                   & 0.2 & 0.7  & 1  \\
+
+top quark \pt modeling                    & 0.5 & 2.3  & 1  \\
+\cPqb quark fragmentation                 & 0.7 & 2.0  & 1  \\
+semi-leptonic b-hadron branching fraction & 0.1 & 0.6  & 1  \\
+
+\ttbar ME scale                         & 0.2 & 1.1  & 1  \\
+\ttbar FSR scale                        & 0.8 & 1.6  & 1  \\
+\ttbar ISR scale                        & 0.4 & 1.6  & 1  \\
+
+ME-PS matching                      & 0.2 & 0.4  & 1  \\
+underlying event                    & 0.3 & 0.5  & 1  \\
+
+
+
+PDF is calculated on the fly!
+
+PDF                                     & 1.1 & 1.5  & 1  \\
+
+
+trigger efficiency                      & 0.3 & 0.3  & 0  \\
+lepton identification and isolation     & 2.0 & 0.6  & 1  \\
+
+-- will have to post-process
+
+
+missing systematics:
+
+muon momentum scale             & 0.1 & $<0.1$ & 1  \\
+electron momentum scale         & 0.1 & $<0.1$ & 1  \\
+
+tW ME scale                         & 0.2 & $<0.1$ & 1  \\
+DY ME scale                         & 0.1 & $<0.1$ & 1  \\
+
+tW ISR scale                        & 0.1 & $<0.1$ & 1  \\
+tW FSR scale                        & 0.1 & $<0.1$ & 1  \\
+
+colour reconnection                 & 0.3 & $<0.1$ & 1  \\
+
+integrated luminosity               & 2.5 & 2.5  & 1  \\
+-- ??
+
+MC statistics                           & 1.1 & 1.7  & 0  \\
+\hline
+
+\multicolumn{3}{c}{Extrapolation uncertainties:} \\
+\ttbar ME scale         & 0.3 & 0.3  & 0 \\
+PDF                     & 0.8 & 1.3  & 0 \\
+top quark \pt modeling  & 0.5 & 0.1  & 0 \\
+\ttbar ISR scale        & 0.1 & 0.4  & 0 \\
+\ttbar FSR scale        & 0.1 & 1.9  & 0 \\
+underlying event        & 0.1 & 0.3  & 0 \\
+
+
+add this one manually!
+
+statistical                             & 0.2 & 0.9  & 0  \\
+
+el_sig  = 0.949
+el_sys  = 0.082
+el_stat = 0.014
+
+mu_sig  = 0.926
+mu_sys  = 0.072
+mu_stat = 0.011
+
+bt_sig  = 0.942
+bt_sys  = 0.070
+bt_stat = 0.009
+
+0.014 / 0.949
+0.011 / 0.926
+0.009 / 0.942
+
+0.014752370916754479
+0.011879049676025917
+0.009554140127388535
+
+$\tauh$ jet identification  &  4.7 &  4.5 &  4.5 & 0.0 & 0 \\
+  pileup (PU) uncertainty  &  2.8 &  2.8 &  2.5 & 0.1 & 1 \\
+        \ttbar background  &  1.9 &  2.1 &  2.3 & 0.2 & 0 \\
+ \cPqb tagging efficiency  &  1.1 &  1.2 &  0.9 & 0.4 & 1 \\
+     $\tauh$ energy scale  &  0.7 &  0.8 &  0.8 & 0.0 & 0 \\
+       muon ID efficiency  &  0.6 &  0.6 & 0 & 0 \\
+            DY background  &  0.4 &  0.4 &  0.6 & 0.9 & 1 \\
+            tW background  &  0.6 &  0.5 &  0.5 & 1.1 & 1 \\
+        W+jets background  &  0.1 &  0.4 &  0.5 & 0.2 & 0 \\
+      multijet background  &  0.1 &  0.5 &  0.4 & $<0.1$ & 0 \\
+         jet energy scale  &  0.1 &  0.2 &  0.4 & 0.4 & 1 \\
+  muon trigger efficiency  &  0.3 &  0.2 & 0 & 0 \\
+electron trigger efficiency  &  2.3 &  0.2 & 0 & 0 \\
+   electron ID efficiency  &  1.8 &  0.2 & 0 & 0 \\
+    jet energy resolution  &  0.6 &  0.3 &  0.1 & 0.4 & 1 \\
+      dibosons background  &  0.0 &  0.0 &  0.0 & 0.2 & 1 \\
+          b fragmentation  &  2.3 &  2.0 &  2.4 & 0.7 & 1 \\
+top quark $p_{T}$ modeling  &  2.7 &  2.3 &  2.2 & 0.5 & 1 \\
+         \ttbar FSR scale  &  1.7 &  1.9 &  1.7 & 0.8 & 1 \\
+         \ttbar ISR scale  &  1.7 &  1.6 &  1.5 & 0.4 & 1 \\
+         \ttbar ME scales  &  1.1 &  1.2 &  1.1 & 0.2 & 1 \\
+semi-leptonic b-hadron branching fraction  &  0.8 &  0.6 &  0.7 & 0.1 & 1 \\
+         underlying event  &  0.5 &  0.5 &  0.6 & 0.3 & 1 \\
+           ME-PS matching  &  0.4 &  0.4 &  0.5 & 0.2 & 1 \\
+               lumi_13TeV  &  0.0 &  0.0 &  0.0 \\
+                      PDF  &  1.5 &  1.5 &  1.6 \\
+            MC statistics  &  2.0 &  1.6 &  1.6 \\
+
+trigger efficiency & $<0.1$ & $<0.1$ & $<0.1$ & 0.3 & 0 \\
+lepton identification and isolation & $<0.1$ & $<0.1$ & $<0.1$ & 2.0 & 1 \\
+muon momentum scale & $<0.1$ & $<0.1$ & $<0.1$ & 0.1 & 1 \\
+electron momentum scale & $<0.1$ & $<0.1$ & $<0.1$ & 0.1 & 1 \\
+tW ME scale & $<0.1$ & $<0.1$ & $<0.1$ & 0.2 & 1 \\
+DY ME scale & $<0.1$ & $<0.1$ & $<0.1$ & 0.1 & 1 \\
+tW ISR scale & $<0.1$ & $<0.1$ & $<0.1$ & 0.1 & 1 \\
+tW FSR scale & $<0.1$ & $<0.1$ & $<0.1$ & 0.1 & 1 \\
+colour reconnection & $<0.1$ & $<0.1$ & $<0.1$ & 0.3 & 1 \\
+PDF dilep & $<0.1$ & $<0.1$ & $<0.1$ & 1.1 & 1 \\
+MC statistics & $<0.1$ & $<0.1$ & $<0.1$ & 1.1 & 0 \\
+
+integrated luminosity & 2.5 & 2.5 & 2.5 & 2.5 & 1 \\
+statistics & 1.4 & 1.1 & 0.9 & 0.2 & 0 \\
+
+\ttbar ME scales & 0.3 & 0.4 & 0.3 & 0.2 & 0 \\
+PDF & 1.2 & 1.4 & 1.3 & 0.2 & 0 \\
+underlying event & 0.3 & 0.2 & 0.2 & 0.3 & 0 \\
+ME-PS matching & 0.8 & 1.0 & 0.9 & 0.2 & 0 \\
+\ttbar ISR scale & 0.5 & 0.3 & 0.3 & 0.4 & 0 \\
+\ttbar FSR scale & 1.9 & 2.0 & 1.9 & 0.8 & 0 \\
+
+
+
+
 # check new datasets
 
 from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable
