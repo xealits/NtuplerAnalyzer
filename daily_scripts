@@ -10,6 +10,9 @@ the approval questions -> paper
 
     the value in both can be lower
 
+    CHECK: the MORE CONSERVATIVE muon recommendations (x2 uncertainty)???
+    x2 uncertainty is closer to dileptons
+
 * event yield table, add descrription in the caption
 
     "Table 1: the definition of bkg-like region needs to be included in the caption. (Is this separation really needed?) Make it clear and mention numbers are prefit "
@@ -245,6 +248,9 @@ lepton identification and isolation     & 2.0 & 0.6  & 1  \\
 
 missing systematics:
 
+electron efficiencies & $<0.1$ & $<0.1$ & $<0.1$ & 1.5 & 1 \\
+muon efficiencies & $<0.1$ & $<0.1$ & $<0.1$ & 1.3 & 1 \\
+
 muon momentum scale             & 0.1 & $<0.1$ & 1  \\
 electron momentum scale         & 0.1 & $<0.1$ & 1  \\
 
@@ -324,7 +330,9 @@ semi-leptonic b-hadron branching fraction  &  0.8 &  0.6 &  0.7 & 0.1 & 1 \\
             MC statistics  &  2.0 &  1.6 &  1.6 \\
 
 trigger efficiency & $<0.1$ & $<0.1$ & $<0.1$ & 0.3 & 0 \\
-lepton identification and isolation & $<0.1$ & $<0.1$ & $<0.1$ & 2.0 & 1 \\
+electron efficiencies & $<0.1$ & $<0.1$ & $<0.1$ & 1.5 & 1 \\
+muon efficiencies & $<0.1$ & $<0.1$ & $<0.1$ & 1.3 & 1 \\
+
 muon momentum scale & $<0.1$ & $<0.1$ & $<0.1$ & 0.1 & 1 \\
 electron momentum scale & $<0.1$ & $<0.1$ & $<0.1$ & 0.1 & 1 \\
 tW ME scale & $<0.1$ & $<0.1$ & $<0.1$ & 0.2 & 1 \\

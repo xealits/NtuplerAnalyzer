@@ -91,15 +91,15 @@ el_sys_extr = sum([el_sys acc_el_err / acc_el].^2) ^ 0.5
 mu_sys_extr = sum([mu_sys acc_mu_err / acc_mu].^2) ^ 0.5
 bt_sys_extr = sum([bt_sys acc_bt_err / acc_bt].^2) ^ 0.5
 
-xsec_el_extr = [el_sig el_stat el_sys_extr 0.025 ]
-xsec_mu_extr = [mu_sig mu_stat mu_sys_extr 0.025 ]
-xsec_bt_extr = [bt_sig bt_stat bt_sys_extr 0.025 ]
+xsec_el_extr = [el_sig el_stat el_sys_extr  0.025]
+xsec_mu_extr = [mu_sig mu_stat mu_sys_extr  0.025]
+xsec_bt_extr = [bt_sig bt_stat bt_sys_extr  0.025]
 
 xsec_el_extr = el_sig * 831.76
 xsec_mu_extr = mu_sig * 831.76
 xsec_bt_extr = bt_sig * 831.76
 
-println(xsec_el_extr, " ", xsec_el_extr .* [el_stat el_sys_extr 0.025 ])
-println(xsec_mu_extr, " ", xsec_mu_extr .* [mu_stat mu_sys_extr 0.025 ])
-println(xsec_bt_extr, " ", xsec_bt_extr .* [bt_stat bt_sys_extr 0.025 ])
+println(xsec_el_extr, " ", xsec_el_extr .* [el_stat el_sys_extr  0.025 ])
+println(xsec_mu_extr, " ", xsec_mu_extr .* [mu_stat mu_sys_extr  0.025 ])
+println(xsec_bt_extr, " ", xsec_bt_extr .* [bt_stat bt_sys_extr  0.025 ])
 
