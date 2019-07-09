@@ -28,9 +28,13 @@ the approval questions -> paper
 
     -- FIRST, update the numbers!
 
+    OK
+
 * remove NLL
 
     what did Michele say?
+
+    or improve it?
 
 * add tau pT? close to the yields table as an example of good Data-Prediction agreement at main selection
 
@@ -68,12 +72,18 @@ the approval questions -> paper
 
 * add somewhere pT plots with TOPPT Up: MET and b jet pT
 
+    to AN, right after control plots
+
+* check propagation to qcd
+
 * update numbers:
 
     vis cross section
     full cross section
     ratio
     Gamma
+
+    DONE
 
     anything else?
 
@@ -83,6 +93,201 @@ update the presentation
 update AN
 
 add the objects review questions to the twiki
+
+
+
+## investigation of strong constraint on the impact of LEPel in fit to "both"
+
+the problem:
+
+LEPelID impact is 1.8 in el-only fit
+but it is 0.2 in both fit
+when LEPmuID is 0.6 in both
+
+       muon ID efficiency    &  0.6 &  0.6 & 0 & 0 \\
+  muon trigger efficiency    &  0.3 &  0.2 & 0 & 0 \\
+
+   electron ID efficiency    &  1.8 &  0.2 & 0 & 0 \\
+electron trigger efficiency  &  2.3 &  0.2 & 0 & 0 \\
+
+for reference dileptons:
+
+trigger efficiency     & 0.3 & 0 \\
+electron efficiencies  & 1.5 & 1 \\
+muon efficiencies      & 1.3 & 1 \\
+
+
+how el ID can be constraned to 0.2 if the impact of muons is still 0.6?
+
+1) the el variation is constrained, but by only about 0.7-0.8 of magnitude
+   it seems not enough to explain this difference in signal strength?
+
+2) is there some additional dumping of the impact of LEPel on the signal strength?
+   check by plotting r VS LEPelID in el-only fit and both fit
+
+make nll workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   nn=v37_test172_bunchFULLFITBIN1_el_constr   options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff,LEPelID,LEPelTRG --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV" &
+make nll workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root nn=v37_test172_bunchFULLFITBIN1_both_constr options="--saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff,LEPelID,LEPelTRG --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV" &
+
+limit->Draw("2*deltaNLL:TOPPT",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+limit->Draw("2*deltaNLL:LEPelID",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("2*deltaNLL:LEPelTRG",    "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+-- they are constrained even in el fit?  --- not in impacts plot!
+   and in both they are pulled and constrained?
+
+limit->Draw("r:LEPelID",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("r:LEPelTRG",    "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+-- in both cases, el and both, the lines are linear
+
+limit->Scan("r:LEPelID",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Scan("r:LEPelTRG",    "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+root -l higgsCombinev37_test172_bunchFULLFITBIN1_el_constr.MultiDimFit.mH120.root
+
+*    Row   *         r *   LEPelID *
+*       23 * 0.7250000 * 0.6556418 *
+*       75 *     1.245 * -0.686390 *
+
+*    Row   *         r *  LEPelTRG *
+************************************
+*       23 * 0.7250000 * 0.8503066 *
+*       75 *     1.245 * -0.874708 *
+
+root -l higgsCombinev37_test172_bunchFULLFITBIN1_both_constr.MultiDimFit.mH120.root
+
+*    Row   *         r *   LEPelID *
+************************************
+*       24 * 0.7549999 * -0.129323 *
+*       67 * 1.1849999 * -0.288905 *
+
+*    Row   *         r *  LEPelTRG *
+************************************
+*       24 * 0.7549999 * -0.224410 *
+*       67 * 1.1849999 * -0.374716 *
+
+
+(-0.686390 - 0.6556418) / (1.245 - 0.7250000)
+(-0.874708 - 0.8503066) / (1.245 - 0.7250000)
+
+-2.580830384615384
+-3.317335769230769
+
+(-0.288905 - (-0.129323)) / (1.1849999 - 0.7549999)
+(-0.374716 - (-0.224410)) / (1.1849999 - 0.7549999)
+
+-0.37112093023255815
+-0.3495488372093023
+
+so, definitely there is a dumping...
+it must be comming from muons?
+
+
+
+does it happen in toys or is it a coinsidance in observed data?
+
+make impacts_toys    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el.root   nn=v37_test172BIN1_el_test_elconstr   freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+make impacts_toys    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root nn=v37_test172BIN1_both_test_elconstr freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+make impacts_toys    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   nn=v37_test172BIN1_mu_test_elconstr   freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+
+python new_impact_table.py --merge-pdf   ./latest_impacts_v37_test172BIN1_el_test_elconstr_toys.json ./latest_impacts_v37_test172BIN1_mu_test_elconstr_toys.json  ./latest_impacts_v37_test172BIN1_both_test_elconstr_toys.json
+
+$\tauh$ jet identification  &  5.0 &  4.9 &  4.9 \\
+  pileup (PU) uncertainty  &  2.8 &  2.9 &  2.9 \\
+        \ttbar background  &  2.4 &  2.1 &  2.2 \\
+ \cPqb tagging efficiency  &  1.2 &  1.2 &  1.0 \\
+       muon ID efficiency  &  0.7 &  0.6 \\
+     $\tauh$ energy scale  &  0.8 &  0.6 &  0.6 \\
+            tW background  &  0.6 &  0.5 &  0.5 \\
+            DY background  &  0.3 &  0.4 &  0.5 \\
+      multijet background  &  0.1 &  0.6 &  0.5 \\
+electron trigger efficiency  &  2.4 &  0.4 \\
+         jet energy scale  &  0.2 &  0.1 &  0.3 \\
+   electron ID efficiency  &  1.9 &  0.3 \\
+    jet energy resolution  &  0.4 &  0.4 &  0.3 \\
+  muon trigger efficiency  &  0.3 &  0.3 \\
+        W+jets background  &  0.1 &  0.1 &  0.1 \\
+      dibosons background  &  0.0 &  0.0 &  0.0 \\
+top quark $p_{T}$ modeling  &  2.8 &  2.5 &  2.3 \\
+          b fragmentation  &  2.3 &  2.1 &  2.3 \\
+         \ttbar FSR scale  &  1.9 &  2.0 &  2.0 \\
+         \ttbar ISR scale  &  1.8 &  1.7 &  1.7 \\
+          \ttbar ME scale  &  1.2 &  1.5 \\
+semi-leptonic b-hadron branching fraction  &  0.7 &  0.7 &  0.7 \\
+           ME-PS matching  &  0.4 &  0.5 &  0.6 \\
+         underlying event  &  0.4 &  0.5 &  0.5 \\
+               lumi_13TeV  &  0.0 &  0.0 &  0.0 \\
+                      PDF  &  1.6 &  1.6 &  1.6 \\
+            MC statistics  &  2.0 &  1.7 &  1.6 \\
+
+  muon trigger efficiency  &  0.3 &  0.3 \\
+       muon ID efficiency  &  0.7 &  0.6 \\
+
+electron trigger efficiency  &  2.4 &  0.4 \\
+   electron ID efficiency  &  1.9 &  0.3 \\
+
+the same constraint
+
+no dumping in muons??
+
+let's see it in the correlation to signal strength
+
+
+make nll workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.root   nn=v37_test172_bunchFULLFITBIN1_mu_constr_toys   options="--toys -1 --expectSignal 1. --saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff,LEPmuID,LEPmuTRG --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV" &
+make nll workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root nn=v37_test172_bunchFULLFITBIN1_both_constr_toys options="--toys -1 --expectSignal 1. --saveSpecifiedNuis TOPPT,tau_fakes,tauID_eff,LEPelID,LEPelTRG,LEPmuID,LEPmuTRG --freezeNuisanceGroup tt_th_pdf_only" freeze="--freezeParameters lumi_13TeV" &
+
+root -l higgsCombinev37_test172_bunchFULLFITBIN1_mu_constr_toys.MultiDimFit.mH120.root
+root -l higgsCombinev37_test172_bunchFULLFITBIN1_both_constr_toys.MultiDimFit.mH120.root
+
+limit->Draw("2*deltaNLL:LEPmuID",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("2*deltaNLL:LEPmuTRG",    "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+limit->Draw("r:LEPmuID",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("r:LEPmuTRG",    "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+limit->Scan("r:LEPmuID",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Scan("r:LEPmuTRG",    "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+*    Row   *         r *   LEPmuID *
+************************************
+*       31 * 0.8050000 * 0.2786468 *
+*       78 * 1.2749999 * -0.263019 *
+
+-- practically 1 to 1
+
+*    Row   *         r *  LEPmuTRG *
+************************************
+*       31 * 0.8050000 * 0.1399287 *
+*       78 * 1.2749999 * -0.117619 *
+
+-- less than 1 to 1
+
+both:
+
+*    Row   *         r *   LEPmuID *
+************************************
+*       32 * 0.8149999 * 0.2692489 *
+*       77 * 1.2649999 * -0.268289 *
+
+*    Row   *         r *  LEPmuTRG *
+************************************
+*       32 * 0.8149999 * 0.1147791 *
+*       77 * 1.2649999 * -0.100326 *
+
+
+no dumping!
+
+limit->Draw("LEPmuTRG:LEPmuID",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("LEPelTRG:LEPelID",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+limit->Draw("LEPelID:LEPmuID",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+limit->Draw("LEPelTRG:LEPmuTRG",   "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+limit->Draw("LEPelID*LEPelID + LEPelTRG*LEPelTRG:LEPmuID*LEPmuID + LEPmuTRG*LEPmuTRG",     "deltaNLL>0 && 2*deltaNLL<10", "L")
+
+limit->Draw("r:LEPmuTRG",    "deltaNLL>0 && 2*deltaNLL<10", "L")
+
 
 
 ## tau pT plot at main selection
