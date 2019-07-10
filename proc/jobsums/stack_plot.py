@@ -432,6 +432,11 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=a
                logging.info("shape from %s" % h_shape_path)
 
                h_shape = infile.Get(h_shape_path)
+               # take NOMINAL systematic if the shape is not found
+               if not h_shape:
+                   histo_name = '_'.join([shape_channel, nick, 'NOMINAL', distr_name])
+                   h_shape_path = shape_channel + '/' + nick + '/' + 'NOMINAL' + '/' + histo_name
+                   h_shape = infile.Get(h_shape_path)
                histo = h_shape.Clone()
                if h_shape.Integral() == 0:
                    print "both = 0: %f %f" % (h_init.Integral(), h_shape.Integral())
@@ -915,7 +920,8 @@ elif args.top_legend:
     leg = TLegend(0.15, 0.75, 0.85, 0.92)
 else:
     shift = args.legend_shift if args.legend_shift else 0.
-    leg = TLegend(0.7 - shift, 0.45, 0.89 - shift, 0.92)
+    #leg = TLegend(0.7 - shift, 0.45, 0.89 - shift, 0.92)
+    leg = TLegend(0.65 - shift, 0.4, 0.89 - shift, 0.92)
 
 # data is first in the legend
 if not args.fake_rate and not args.skip_legend and not (args.no_data or args.no_data_plot):
@@ -1479,7 +1485,7 @@ else:
                 histo_data_relative.GetXaxis().SetTitleOffset(4.)
 
         hs_sum1_relative   .GetYaxis().SetTitleOffset(1.4) # place the title not overlapping with labels...
-        hs_sum1_relative   .SetYTitle("Data/MC")
+        hs_sum1_relative   .SetYTitle("Data/Pred.")
 
         #hs_sum1_relative.SetLineWidth(1)
         #hs_sum1_relative.SetLineColor(kGray)
@@ -1488,7 +1494,7 @@ else:
         hs_sum1_relative.Draw("e2")
         #hs_sum1_relative.Draw("a4")
         if not (args.no_data or args.no_data_plot):
-            histo_data_relative.SetYTitle("Data/MC")
+            histo_data_relative.SetYTitle("Data/Pred.")
             histo_data_relative.GetYaxis().SetTitleOffset(1.4)
             histo_data_relative.Draw("e p same")
 
