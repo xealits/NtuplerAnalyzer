@@ -33,8 +33,11 @@ the approval questions -> paper
 * remove NLL
 
     what did Michele say?
+    > I think the NLL plot is nice to show. It does not add much but why not including it.
 
     or improve it?
+
+    let's just add the Y axis title for now
 
 * add tau pT? close to the yields table as an example of good Data-Prediction agreement at main selection
 
@@ -62,7 +65,7 @@ the approval questions -> paper
 
 * "R needs to a better explanation and justification"
 
-    clarify that we divide on BR(tau->tauh) to get to the tau!
+    clarify that we divide on BR(tau->tauh) to get to the tau! <-- it is inexplicitly mentioned "by dividing BR(W->tauh)
     like this: "In the ratio, the correlated uncertainties cancel out."
 
     is it also about calculating R?
@@ -93,6 +96,50 @@ update the presentation
 update AN
 
 add the objects review questions to the twiki
+
+
+
+
+
+## conservative muon systematics
+
+the last fit (the approval presentation)
+
+                         eτ h μτ h both
+τ h identification        4.7  4.5  4.5
+τ h mis-identification    2.2  2.3  2.3
+PU uncertainty            2.5  2.2  2.3
+b-tagging efficiency      1.1  1.2  0.9
+TES                       0.7  0.8  0.8
+muon ID efficiency          -  0.6  0.6
+DY normalization          0.4  0.4  0.6
+
+PDF     1.5 1.5 1.6
+MC stat 2.0 1.6 1.6
+
+python new_impact_table.py --quote-dileps --merge-pdf  v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_el_test1.json v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_mu_test1.json v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_both_test1.json
+
+-- correct
+
+python new_impact_table.py --merge-pdf  latest_impacts_v37_test172BIN1_el_test2.json  latest_impacts_v37_test172BIN1_mu_test2.json latest_impacts_v37_test172BIN1_both_test2.json
+
+-- practically the same
+
+v37_test172BIN1_test1/impacts_table_expMu2
+
+-- only muon eff-s are larger than test1, the rest is practically the same, difference is in the rounding
+
+
+
+
+
+## improving the NLL plot
+
+add the Y axis title for now, then maybe add the brazil-colors for 1-2sigma
+
+python ttxsec/fit-stuff/plot_uncertainty_scans_mixed.py v37_test172BIN1_test1 --xsec-scale 831.76 --title-x "cross section [pb]" --nll-limit 5.
+
+python ttxsec/fit-stuff/plot_uncertainty_scans_mixed.py v37_test172BIN1_test1 --xsec-scale 831.76 --title-x "cross section [pb]" --nll-limit 5. --output-type pdf --only-both
 
 
 
@@ -325,6 +372,9 @@ python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs
 
 python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root     --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events" --draw-overflows 2 --legend-shift 0.02 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --y-range 0,7500 --x-range 25,100
 python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events" --draw-overflows 2 --legend-shift 0.02 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --y-range 0,7500 --x-range 25,100
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root     --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events" --draw-overflows 2 --legend-shift 0.02 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --y-range 0,7500 --x-range 30,100
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events" --draw-overflows 2 --legend-shift 0.02 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --y-range 0,7500 --x-range 30,100
 
 
 
