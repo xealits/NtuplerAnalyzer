@@ -129,6 +129,62 @@ v37_test172BIN1_test1/impacts_table_expMu2
 
 -- only muon eff-s are larger than test1, the rest is practically the same, difference is in the rounding
 
+was made like this:
+
+python new_impact_table.py --merge-pdf  v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_el_test1.json v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_mu_test1_expMu2.json v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_both_test1_expMu2.json  > v37_test172BIN1_test1/impacts_table_expMu2
+
+-- with test1
+
+cp v37_test172BIN1_test1/impacts_table v37_test172BIN1_test1/impacts_table_merge_expMu2
+vim -p v37_test172BIN1_test1/impacts_table_merge v37_test172BIN1_test1/impacts_table_expMu2
+
+$\tauh$ jet identification  &  4.7 &  4.5 &  4.4 \\
+           PU uncertainty  &  2.8 &  2.8 &  2.5 \\
+$\tauh$ misidentification background  &  1.9 &  2.2 &  2.4 \\
+       muon ID efficiency  &  1.2 &  1.1 \\
+     b-tagging efficiency  &  1.1 &  1.1 &  0.9 \\
+                      TES  &  0.7 &  0.8 &  0.8 \\
+electron trigger efficiency  &  2.3 &  0.6 \\
+         DY normalization  &  0.4 &  0.4 &  0.6 \\
+ Single Top normalization  &  0.6 &  0.5 &  0.5 \\
+     W+jets normalization  &  0.1 &  0.4 &  0.4 \\
+                      JES  &  0.1 &  0.3 &  0.4 \\
+   electron ID efficiency  &  1.8 &  0.4 \\
+  muon trigger efficiency  &  0.6 &  0.4 \\
+        QCD normalization  &  0.1 &  0.5 &  0.4 \\
+                      JER  &  0.6 &  0.3 &  0.1 \\
+   Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
+               Luminosity  &  0.0 &  0.0 &  0.0 \\
+          b fragmentation  &  2.3 &  2.0 &  2.4 \\
+        top quark $p_{T}$  &  2.7 &  2.3 &  2.2 \\
+  final   state radiation  &  1.7 &  1.9 &  1.7 \\
+  initial state radiation  &  1.7 &  1.5 &  1.5 \\
+                ME scales  &  1.1 &  1.2 &  1.1 \\
+semi-leptonic b-hadron BRs  &  0.8 &  0.6 &  0.7 \\
+underlying event (Pythia tune)  &  0.5 &  0.5 &  0.5 \\
+   ME-PS matching (hdamp)  &  0.4 &  0.4 &  0.5 \\
+                      PDF  &  1.5 &  1.5 &  1.6 \\
+            MC statistics  &  2.0 &  1.7 &  1.7 \\
+
+trigger: sqrt(0.4**2 + 0.6**2)
+0.72
+
+get overall uncertainty in this fit!
+
+make fit_unc         workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_expMu2.root   nn=v37_test172BIN1_mu_test1_expMu2   freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+make fit_unc         workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_expMu2.root nn=v37_test172BIN1_both_test1_expMu2 freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+
+mu
+0.926 +0.080-0.072
++0.022-0.019
++0.077-0.069
++0.011-0.011
+
+both
+0.939 +0.076-0.069
++0.021-0.019
++0.073-0.066
++0.009-0.009
 
 
 
@@ -403,12 +459,14 @@ $\tauh$ misidentification background  &  1.9 &  2.1 &  2.3 \\
   muon trigger efficiency  &  0.3 &  0.2 \\
 electron trigger efficiency  &  2.3 &  0.2 \\
    electron ID efficiency  &  1.8 &  0.2 \\
+
                       JER  &  0.6 &  0.3 &  0.1 \\
    Dibosons normalization  &  0.0 &  0.0 &  0.0 \\
                Luminosity  &  0.0 &  0.0 &  0.0 \\
           b fragmentation  &  2.3 &  2.0 &  2.4 \\
         top quark $p_{T}$  &  2.7 &  2.3 &  2.2 \\
   final   state radiation  &  1.7 &  1.9 &  1.7 \\
+
   initial state radiation  &  1.7 &  1.6 &  1.5 \\
                 ME scales  &  1.1 &  1.2 &  1.1 \\
 semi-leptonic b-hadron BRs  &  0.8 &  0.6 &  0.7 \\
@@ -439,6 +497,25 @@ $\tauh$ jet identification &  4.7 &  4.5 &  4.5 \\
 \ttbar background          &  1.9 &  2.1 &  2.3 \\
      b-tagging efficiency  &  1.1 &  1.2 &  0.9 \\
      $\tauh$ energy scale  &  0.7 &  0.8 &  0.8 \\
+
+
+
+
+  initial state radiation  &  1.7 &  1.5 &  1.5 \\
+                ME scales  &  1.1 &  1.2 &  1.1 \\
+semi-leptonic b-hadron BRs  &  0.8 &  0.6 &  0.7 \\
+underlying event (Pythia tune)  &  0.5 &  0.5 &  0.5 \\
+   ME-PS matching (hdamp)  &  0.4 &  0.4 &  0.5 \\
+                      PDF  &  1.5 &  1.5 &  1.6 \\
+            MC statistics  &  2.0 &  1.7 &  1.7 \\
+
+cat v37_test172BIN1_test1/impacts_table
+$\tauh$ jet identification  &  4.7 &  4.5 &  4.5 \\
+           PU uncertainty  &  2.8 &  2.8 &  2.5 \\
+$\tauh$ misidentification background  &  1.9 &  2.1 &  2.3 \\
+     b-tagging efficiency  &  1.1 &  1.2 &  0.9 \\
+                      TES  &  0.7 &  0.8 &  0.8 \\
+
        muon ID efficiency  &  0.6 &  0.6 \\
          DY normalization  &  0.4 &  0.4 &  0.6 \\
  Single Top normalization  &  0.6 &  0.5 &  0.5 \\
@@ -461,7 +538,6 @@ underlying event (Pythia tune)  &  0.5 &  0.5 &  0.6 \\
    ME-PS matching (hdamp)  &  0.4 &  0.4 &  0.5 \\
                       PDF  &  1.5 &  1.5 &  1.6 \\
             MC statistics  &  2.0 &  1.6 &  1.6 \\
-
 
 $\tauh$ identification                      & 0.0 & 4.4  & 0  \\
 
@@ -607,6 +683,291 @@ underlying event & 0.3 & 0.2 & 0.2 & 0.3 & 0 \\
 ME-PS matching & 0.8 & 1.0 & 0.9 & 0.2 & 0 \\
 \ttbar ISR scale & 0.5 & 0.3 & 0.3 & 0.4 & 0 \\
 \ttbar FSR scale & 1.9 & 2.0 & 1.9 & 0.8 & 0 \\
+
+
+
+
+
+
+
+## lepton charge mis-identification?
+
+lep_matching_gen_collection
+
+not present in stage2
+
+python sumup_ttree_draw.py "lep_matching_gen[0]" --histo-range 20,-10,10   --cond-com "leps_ID == -11 && HLT_el && lep_matched_HLT[0] && tau_IDlev[0]>2 && njets >2" --output v37_mischarge_electron.root      --histo-name mischarge_electron       gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root    &
+python sumup_ttree_draw.py "lep_matching_gen[0]" --histo-range 20,-10,10   --cond-com "leps_ID ==  11 && HLT_el && lep_matched_HLT[0] && tau_IDlev[0]>2 && njets >2" --output v37_mischarge_electron_anti.root --histo-name mischarge_electron_anti  gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root    &
+
+python sumup_ttree_draw.py "lep_matching_gen[0]" --histo-range 20,-10,10   --cond-com "leps_ID == -13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0]>2 && njets >2" --output v37_mischarge_muon.root          --histo-name mischarge_muon           gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root    &
+python sumup_ttree_draw.py "lep_matching_gen[0]" --histo-range 20,-10,10   --cond-com "leps_ID ==  13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0]>2 && njets >2" --output v37_mischarge_muon_anti.root     --histo-name mischarge_muon_anti      gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root    &
+
+rm v37_mischarge_electron.root v37_mischarge_electron_anti.root v37_mischarge_muon.root v37_mischarge_muon_anti.root
+
+hadd -f v37_mischarging_leptons_all.root v37_mischarge_electron.root v37_mischarge_electron_anti.root v37_mischarge_muon.root v37_mischarge_muon_anti.root
+
+root -l v37_mischarging_leptons_all.root
+
+mischarge_electron->Draw()
+
+all leptons in bins -1, -4 (lep tau) and very few in 1
+
+mischarge_electron->FindBin(-4)
+(Int_t) 7
+mischarge_electron->GetBinContent(7)
+(Double_t) 3034.00
+mischarge_electron->GetBinContent(8)
+(Double_t) 0.00000
+mischarge_electron->GetBinContent(9)
+(Double_t) 24.0000
+mischarge_electron->GetBinContent(10)
+(Double_t) 53092.0
+
+mischarge_electron->GetBinContent(11)
+(Double_t) 10.0000
+mischarge_electron->GetBinContent(12)
+(Double_t) 254.000
+mischarge_electron->GetBinContent(13)
+(Double_t) 4.00000
+mischarge_electron->GetBinContent(14)
+(Double_t) 1.00000
+
+mischarge_electron->GetBinContent(15)
+(Double_t) 8.00000
+mischarge_electron->GetBinContent(16)
+(Double_t) 8.00000
+mischarge_electron->GetBinContent(17)
+(Double_t) 6.00000
+
+
+mischarge_electron->Integral()
+(Double_t) 56474.0
+
+(mischarge_electron->GetBinContent(7) + mischarge_electron->GetBinContent(10)) / mischarge_electron->Integral()
+0.993838
+
+(mischarge_electron->GetBinContent(12)) / mischarge_electron->Integral()
+0.00449764
+
+
+(mischarge_muon->GetBinContent(7) + mischarge_muon->GetBinContent(10)) / mischarge_muon->Integral()
+(double) 0.996624
+
+(mischarge_muon->GetBinContent(12)) / mischarge_muon->Integral()
+(double) 0.00000
+
+mischarge_muon->GetBinContent(10)
+mischarge_muon->GetBinContent(11)
+mischarge_muon->GetBinContent(12)
+mischarge_muon->GetBinContent(13)
+mischarge_muon->GetBinContent(14)
+mischarge_muon->GetBinContent(15)
+mischarge_muon->GetBinContent(16)
+mischarge_muon->GetBinContent(17)
+
+(Double_t) 81737.0
+(Double_t) 3.00000
+(Double_t) 0.00000
+(Double_t) 0.00000
+(Double_t) 1.00000
+(Double_t) 0.00000
+(Double_t) 25.0000
+(Double_t) 59.0000
+
+-- some from b hadrons...
+
+
+
+## are uncertainties taken from impacts actually correct?
+
+is it correct that:
+sum of quadratures of impacts ~= estimation of the overal uncertainty,
+since each impact is profiled separately?
+
+then is it correct to use these impacts in the ratio?
+
+or must each systematic uncertainty be obtained fin the pilling-off procedure?
+
+
+## Why is the systematic uncertainty related to the electron trigger so much larger than the muon trigger ? Do you understand how the combined value is lower than both ? 
+
+-- in the simultaneous fit the electrons are constrained by the muon final state,
+   1) muons have more events and
+   2) different kinematics with more events at hight MT? CHECK -- NO, it does not have more signal events at large MT
+   3) and the LEP mu variation is smaller
+
+but the ratio of el/mu at large MT is only about 0.7-0.8
+and the fraction of signal is about 0.6-0.85
+the impact of electron LEP falls by a factor of 4..
+
+it seems the constrain on electrons in both does come from muons:
+fitting x2 larger variation of muon LEP systematics leads to x2 el impacts
+
+
+## btw check pulls and constrains
+
+LEPel TRG and IF are not constrained in el
+in both they are *slightly* constrained: TRG to 0.75 and ID to 0.8
+but their impact is much smaller
+and muon LEP are not constrained in both
+
+can there be some dumping effect?
+I do not see how: even when fitting both
+the muons do not dump in el channels!
+
+
+### check the magnitudes and correlations between ID and TRG in el and mu -- close magnitudes and opposite correlations lead to no impact on signal strength
+
+and correlations between el and mu -- mu dumps el?
+
+
+### any shape in the variation of mu or el LEP?
+
+
+
+### CHECK if muon-tau has more signal at large Mt (better signal separation per MT)
+
+NO, it does not:
+
+((TH1D*) el_sel_lj->Get("tt_eltau/NOMINAL/el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c"))->GetBinContent(11) / ((TH1D*) el_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(11)
+((TH1D*) el_sel_lj->Get("tt_eltau/NOMINAL/el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c"))->GetBinContent(12) / ((TH1D*) el_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(12)
+((TH1D*) el_sel_lj->Get("tt_eltau/NOMINAL/el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c"))->GetBinContent(13) / ((TH1D*) el_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(13)
+((TH1D*) el_sel_lj->Get("tt_eltau/NOMINAL/el_sel_lj_tt_eltau_NOMINAL_Mt_lep_met_c"))->GetBinContent(14) / ((TH1D*) el_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(14)
+
+(double) 0.580637
+(double) 0.681279
+(double) 0.767242
+(double) 0.854280
+
+((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c"))->GetBinContent(11) / ((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(11)
+((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c"))->GetBinContent(12) / ((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(12)
+((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c"))->GetBinContent(13) / ((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(13)
+((TH1D*) el_sel_ljout->Get("tt_eltau/NOMINAL/el_sel_ljout_tt_eltau_NOMINAL_Mt_lep_met_c"))->GetBinContent(14) / ((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(14)
+
+(double) 0.689072
+(double) 0.745005
+(double) 0.810931
+(double) 0.861755
+
+
+((TH1D*) mu_sel_lj->Get("tt_mutau/NOMINAL/mu_sel_lj_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(11) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(11)
+((TH1D*) mu_sel_lj->Get("tt_mutau/NOMINAL/mu_sel_lj_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(12) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(12)
+((TH1D*) mu_sel_lj->Get("tt_mutau/NOMINAL/mu_sel_lj_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(13) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(13)
+((TH1D*) mu_sel_lj->Get("tt_mutau/NOMINAL/mu_sel_lj_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(14) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(14)
+
+(double) 0.597553
+(double) 0.693096
+(double) 0.796686
+(double) 0.860921
+
+((TH1D*) mu_sel_ljout->Get("tt_mutau/NOMINAL/mu_sel_ljout_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(11) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(11)
+((TH1D*) mu_sel_ljout->Get("tt_mutau/NOMINAL/mu_sel_ljout_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(12) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(12)
+((TH1D*) mu_sel_ljout->Get("tt_mutau/NOMINAL/mu_sel_ljout_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(13) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(13)
+((TH1D*) mu_sel_ljout->Get("tt_mutau/NOMINAL/mu_sel_ljout_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(14) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(14)
+
+(double) 0.710337
+(double) 0.771717
+(double) 0.827277
+(double) 0.864113
+
+--barely 1% more signal....
+
+
+### but how much more events overall?
+
+((TH1D*) el_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(11) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(11)
+((TH1D*) el_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(12) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(12)
+((TH1D*) el_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(13) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(13)
+((TH1D*) el_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(14) / ((TH1D*) mu_sel_lj->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(14)
+
+((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(11) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(11)
+((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(12) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(12)
+((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(13) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(13)
+((TH1D*) el_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(14) / ((TH1D*) mu_sel_ljout->Get("sums_NOMINAL/mc_sum1_NOMINAL"))->GetBinContent(14)
+
+(double) 0.716273
+(double) 0.773809
+(double) 0.826996
+(double) 0.815067
+
+(double) 0.724549
+(double) 0.705970
+(double) 0.774931
+(double) 0.868142
+
+aha, so this should be the ratio of the constraint?
+and 2.4% electrin trigger should become 0.7-0.8 * 2.4%?
+no, what's the logic of this?
+
+The signal varies by 2.4% with el TRG in el channels.
+It varies the same in muon channels in the simultaneous fit.
+And which uncertainties damn it? Only MC stat and stat?
+
+https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit/wiki/nonstandard#nuisance-parameter-impacts
+
+> The impact of a nuisance parameter (NP) θ on a parameter of interest (POI) μ is defined as
+> the shift Δμ that is induced as θ is fixed and brought to its +1σ or −1σ post-fit values, with all other parameters profiled as normal.
+> 
+> This is effectively a measure of the correlation between the NP and the POI, and is useful for determining which NPs have the largest effect on the POI uncertainty.
+
+-- what's the post-fit values?
+And "with all other parameters profiled as normal," means they are varied.
+
+
+
+### fit more conservative muon efficiencies
+
+cp ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_expMu2.txt
+make both mucard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_expMu2 elcard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el bothcard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_expMu2
+
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_expMu2
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_expMu2
+
+make impacts   workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_expMu2.root   nn=v37_test172BIN1_mu_test1_expMu2   freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5  &
+make impacts   workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_expMu2.root nn=v37_test172BIN1_both_test1_expMu2 freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5  &
+
+python new_impact_table.py --merge-pdf  v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_el_test1.json v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_mu_test1_expMu2.json v37_test172BIN1_test1/latest_impacts_v37_test172BIN1_both_test1_expMu2.json  > v37_test172BIN1_test1/impacts_table_expMu2
+
+cat v37_test172BIN1_test1/impacts_table_expMu2
+$\tauh$ jet identification  &  4.7 &  4.5 &  4.4 \\
+           PU uncertainty  &  2.8 &  2.8 &  2.5 \\
+$\tauh$ misidentification background  &  1.9 &  2.2 &  2.4 \\
+       muon ID efficiency  &  1.2 &  1.1 \\
+     b-tagging efficiency  &  1.1 &  1.1 &  0.9 \\
+                      TES  &  0.7 &  0.8 &  0.8 \\
+electron trigger efficiency  &  2.3 &  0.6 \\
+         DY normalization  &  0.4 &  0.4 &  0.6 \\
+ Single Top normalization  &  0.6 &  0.5 &  0.5 \\
+     W+jets normalization  &  0.1 &  0.4 &  0.4 \\
+                      JES  &  0.1 &  0.3 &  0.4 \\
+   electron ID efficiency  &  1.8 &  0.4 \\
+  muon trigger efficiency  &  0.6 &  0.4 \\
+        QCD normalization  &  0.1 &  0.5 &  0.4 \\
+
+-- muons just doubled
+   and it seems the impact of electrons exactly doubled in both!
+
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_expMu2.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both.root
+combine -M FitDiagnostics   ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp.root
+
+Best fit r: 0.939362  -0.0689353/+0.0758681  (68% CL)
+Best fit r: 0.94178   -0.0684634/+0.0753474  (68% CL)
+-- 3rd meaningfull digit
+Best fit r: 0.943077  -0.0667657/+0.0745019  (68% CL)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1018,7 +1379,13 @@ and rounding should be 35863.818 -> 35900
 
 
 
-# plots for the pre-approval
+### unclustered MET
+
+
+
+
+
+# plots for the approval
 
 update the control plots with latest formats -- from the ones in AN
 + move nvtx to the backup -- since cannot make a new format plot of it -- no nvtx in stage2!!!
@@ -1106,11 +1473,53 @@ last plots:
 python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,250. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
 python stack_plot.py histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats_with_tauSys.root -o plots/update-v8_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,375. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
 
+make --dry-run plot_sel_1  nt=v37 proc=test172 distrs=bunchCONTROLS1 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=muon      output_type=pdf merge_procs="--merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other." options="--data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend"
 
-make plot_sel_1  nt=v37 proc=test172 distrs=bunchCONTROLS1 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=muon      output_type=pdf merge_procs="--merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other." options="--data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend" &
-make plot_sel_1  nt=v37 proc=test172 distrs=bunchCONTROLS1 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=electron  output_type=pdf merge_procs="--merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other." options="--data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend" &
+mkdir -p plots/v37_test172_bunchCONTROLS1/
 
-# prefit plots with full systematic
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d lep_pt  --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "muon p_{T} [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02
+
+
+make -k plot_sel_1  nt=v37 proc=test172 distrs=bunchCONTROLS1 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=muon      output_type=pdf merge_procs="--merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other." options="--data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 " &
+make -k plot_sel_1  nt=v37 proc=test172 distrs=bunchCONTROLS1 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=electron  output_type=pdf merge_procs="--merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other." options="--data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 " &
+
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root     --output-type pdf -o plots/v37_test172_bunchCONTROLS1/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel                                -d cos_phi_met_lep --wjet 1.4 --qcd 1.05   --title "" --title-x "cos(#Delta#phi(#mu, p^{miss}_{T}))" --title-y "Events" --top-legend --leg-n-columns 3
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel                                -d cos_phi_met_lep --wjet 1.4 --qcd 1.05   --title "" --title-x "cos(#Delta#phi(e, p^{miss}_{T}))"   --title-y "Events" --top-legend --leg-n-columns 3
+
+
+
+renames:
+
+mkdir renames
+cd renames
+
+for chan in Electron Muon
+    for distr in lep_pt lep_eta met_f cos_phi_met_lep Mt_lep_met_c Mt_lep_met_f dilep_mass nrjets nbjets tau_pt tau_eta bjet_pt rjet_lead_pt
+        ln -s ../distrs,*"$chan"_"$distr"*pdf "$chan"_"$distr".pdf
+    end
+end
+
+for chan in Electron Muon
+    for distr in Mt_lep_met_f
+        ln -s distrs,*"$chan"_"$distr"*pdf "$chan"_"$distr".pdf
+    end
+end
+
+omit the strange tau bin:
+
+make --dry-run plot_sel_1  nt=v37 proc=test172 distrs=bunchCONTROLS1 lumi=35800 chan_tag=mu datafile=SingleMuon     title_lep=muon      output_type=pdf merge_procs="--merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other." options="--data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 " | grep tau_pt
+make --dry-run plot_sel_1  nt=v37 proc=test172 distrs=bunchCONTROLS1 lumi=35800 chan_tag=el datafile=SingleElectron title_lep=electron  output_type=pdf merge_procs="--merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other." options="--data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 " | grep tau_pt
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root     --output-type pdf -o plots/v37_test172_bunchCONTROLS1/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25  --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02   --drop-bin 27.
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25  --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02   --drop-bin 27.
+
+
+
+
+
+
+## prefit plots with full systematic
 
 old plots:
 
@@ -1162,11 +1571,13 @@ hadd histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root 
 
 python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel_ljout    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,200. --uncertainty-systematic TauMisID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
 
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,200. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,200. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
 
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,175. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,175. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c el_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --leg-n-columns 3 --top-legend
 
 
 with no merging processes
@@ -1176,6 +1587,22 @@ python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_w
 
 python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02  --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25
 python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02  --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25
+
+
+merged processes for the paper:
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c el_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25
+
+
+test usual legend
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(e, p^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(#mu, p^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25
 
 
 
@@ -2176,6 +2603,8 @@ FINISH:
 make both mucard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp elcard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp bothcard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp
 make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp
 
+make impacts    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp.root   nn=v37_test172BIN1_both_test2   freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5
+
 
 
 scans
@@ -2304,7 +2733,9 @@ python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc.root distrs/v37_test13_
 python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc.root distrs/v37_test13_bunchCONTROLS1/SingleMuon.root --output-type png -o plots/v37_test13_bunchCONTROLS1/ --data-nick data_other --overwrite -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d bjet_eta --wjet 1.4 --qcd 1.05 --ratio-range 0.5            --title "" --title-x "leading b-tagged jet #eta"        --title-y "Events"
 python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc.root distrs/v37_test13_bunchCONTROLS1/SingleMuon.root --output-type png -o plots/v37_test13_bunchCONTROLS1/ --data-nick data_other --overwrite -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d Mt_lep_met_f --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "M_{T}(muon, MET) [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02
 python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc.root distrs/v37_test13_bunchCONTROLS1/SingleMuon.root --output-type png -o plots/v37_test13_bunchCONTROLS1/ --data-nick data_other --overwrite -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d met_c      --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "MET [GeV]"         --title-y "Events/GeV"     --draw-overflows 5 --legend-shift 0.02
-# N jets                                                                                                    --output-type png
+
+N jets                                                                                                    --output-type png
+
 python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc.root distrs/v37_test13_bunchCONTROLS1/SingleMuon.root --output-type png -o plots/v37_test13_bunchCONTROLS1/ --data-nick data_other --overwrite -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d nbjets     --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "number of b-tagged jets"         --title-y "Events"
 python stack_plot.py distrs/v37_test13_bunchCONTROLS1_mc.root distrs/v37_test13_bunchCONTROLS1/SingleMuon.root --output-type png -o plots/v37_test13_bunchCONTROLS1/ --data-nick data_other --overwrite -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d nrjets     --wjet 1.4 --qcd 1.05 --ratio-range 0.5 --bin-norm --title "" --title-x "number of not b-tagged jets"     --title-y "Events"
 
@@ -2357,6 +2788,11 @@ cp uncertainty_scans_el_mu_both.png uncertainty_scans_el_mu_both_10NLL_oldcolors
 
 python ttxsec/fit-stuff/plot_uncertainty_scans_mixed.py v37_test172BIN1_test1 --xsec-scale 831.76 --title-x "cross section [pb]" --nll-limit 5.
 cp uncertainty_scans_el_mu_both.png uncertainty_scans_el_mu_both_5NLL_oldcolors.png
+
+once again, no el and mu
+python ttxsec/fit-stuff/plot_uncertainty_scans_mixed.py --only-both v37_test172BIN1_test1 --xsec-scale 831.76 --title-x "cross section [pb]" --nll-limit 5. --output-type pdf
+cp uncertainty_scans_both.png uncertainty_scans_both_5NLL_oldcolors.png
+cp uncertainty_scans_both.pdf uncertainty_scans_both_5NLL_oldcolors.pdf
 
 scp "olek@ui-cms.ncg.ingrid.pt:/lstore/cms/olek/CMSSW_8_1_0/src/HiggsAnalysis/CombinedLimit/fitting/uncertainty_scans_el_mu_both*.png" plots/
 

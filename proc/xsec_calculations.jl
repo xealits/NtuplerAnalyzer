@@ -60,11 +60,11 @@ el_sys  = 0.082
 el_stat = 0.014
 
 mu_sig  = 0.926
-mu_sys  = 0.072
+mu_sys  = 0.073
 mu_stat = 0.011
 
-bt_sig  = 0.942
-bt_sys  = 0.070
+bt_sig  = 0.939
+bt_sys  = 0.071
 bt_stat = 0.009
 
 
