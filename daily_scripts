@@ -98,6 +98,66 @@ update AN
 add the objects review questions to the twiki
 
 
+## also questions
+
+unclustered MET uncertainty, from Yuta
+-- check if dileptons paper has it
+   check the old recommendation
+   check possible factor for implementation
+
+TOP PT variation effect on pT distributions: lep pT, MET, tau pT, b jet pT
+-- add to AN
+
+
+## the questions from the Mac, notes from approval
+
+All assets of the paper! table 1 etc
+
+Lepton charge mis-id uncertainty
+— state that it is negligible
+Also check the values? 5% charge uncertainty that’s way too much???
+
+B-tag jets are found from jets separated from tau
+— explicitly clarify in the paper
+
+Mention Atlas result, discuss it
+— check their tau ID uncertainty
+
+Tau ID uncertainty is much smaller In legacy rereco
+2%
+Refit and see the effect of it
+
+MET unclustered
+— can fix the MET
+
+pT plots with TOPPT re-weighting
+— to see the pT trends fixed
+
+Muon uncertainty is too small?
+
+Electron trigger uncertainty is too large?
+
+Mention in paper how systematics are propagated to QCD
+
+Mention explicitly which processes have the tau mis-ID systematic: QCD, W+jets and tau mis-ID parameters.
+
+Table1: explanation to the table?
+Caption on «tt signal» — what it means?
+— we over-simplified the table???
+
+Separate line for MC statistics in the table?
+— check
+
+Combine tables on systematics from dileptons and ours
+
+Data/Mc -> Data/Expectation or Data/Prediction
+Because there is data-driven QCD
+
+Mt in event categories instead of inclusive
+
+NLL plot has no value — either add separation of uncertainties or remove
+
+
 
 
 
@@ -198,6 +258,146 @@ our	781		sys	stat	lumi
 ratio	0.9726027397	unc	0.06209053232	0.008941	0.000036
 the BR	0.108				
 	0.1050410959		0.006705777491	0.000965628	0.000003888
+
+
+make impacts    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp.root   nn=v37_test172BIN1_el_test2   freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+make impacts    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp.root   nn=v37_test172BIN1_mu_test2   freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+
+cp ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp.txt ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2.txt
+vim ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2.txt
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2
+
+make both mucard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2 elcard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp bothcard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp_expMu2
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp_expMu2
+
+make impacts    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2.root   nn=v37_test172BIN1_mu_test2_expMu2   freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+make impacts    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp_expMu2.root nn=v37_test172BIN1_both_test2_expMu2 freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+
+
+pulls
+
+head -n -3 ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp.txt        > ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp_noMC.txt
+head -n -3 ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2.txt > ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2_noMC.txt
+
+make both mucard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2_noMC elcard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp_noMC bothcard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp_expMu2_noMC
+
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp_noMC
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2_noMC
+make workspace datacard=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp_expMu2_noMC
+
+
+make pre_pulls       workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp.root        nn=v37_test172BIN1_el_test2 freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+make pre_pulls       workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2.root        nn=v37_test172BIN1_mu_test2 freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+make pre_pulls       workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp_expMu2.root        nn=v37_test172BIN1_both_test2 freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+
+make pre_pulls_short workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp_noMC.root   nn=v37_test172BIN1_el_test2 freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf_only" points=100 min=0.5 max=1.5    &
+make pre_pulls_short workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2_noMC.root   nn=v37_test172BIN1_mu_test2 freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf_only" points=100 min=0.5 max=1.5    &
+make pre_pulls_short workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp_expMu2_noMC.root   nn=v37_test172BIN1_both_test2 freeze="--freezeParameters lumi_13TeV --freezeNuisanceGroup tt_th_pdf_only" points=100 min=0.5 max=1.5    &
+
+root -l pulls_of_nuisances_v37_test172BIN1_both_test2_shape.root
+root -l pulls_of_nuisances_v37_test172BIN1_el_test2_shape.root
+root -l pulls_of_nuisances_v37_test172BIN1_mu_test2_shape.root
+
+root -l pulls_of_nuisances_v37_test172BIN1_both_test2_shapeshort.root
+root -l pulls_of_nuisances_v37_test172BIN1_el_test2_shapeshort.root
+root -l pulls_of_nuisances_v37_test172BIN1_mu_test2_shapeshort.root
+
+gStyle->SetOptStat(0)
+nuisancs->Draw()
+
+TPaveText *pt = new TPaveText(.5, 1.5, 3.5, 2.5)
+pt->AddText("electron-tau channel")
+pt->Draw("same")
+
+nuisancs->SaveAs("postfit_el_nuisances.pdf")
+nuisancs->SaveAs("postfit_el_nuisances_lessparams.pdf")
+
+TPaveText *pt = new TPaveText(.5, 1.5, 3.5, 2.5)
+pt->AddText("muon-tau channel")
+pt->Draw("same")
+
+nuisancs->SaveAs("postfit_mu_nuisances.pdf")
+nuisancs->SaveAs("postfit_mu_nuisances_lessparams.pdf")
+
+gStyle->SetOptStat(0)
+nuisancs->Draw()
+
+TPaveText *pt = new TPaveText(.5, 1.5, 3.5, 2.5)
+pt->AddText("both channels")
+pt->Draw("same")
+
+nuisancs->SaveAs("postfit_both_nuisances.pdf")
+nuisancs->SaveAs("postfit_both_nuisances_lessparams.pdf")
+
+nll-s?
+
+make fit_unc         workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp.root   nn=v37_test172BIN1_test2_el freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+make fit_unc_toys    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp.root   nn=v37_test172BIN1_test2_el freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+
+make fit_unc         workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2.root   nn=v37_test172BIN1_test2_mu freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+make fit_unc_toys    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp_expMu2.root   nn=v37_test172BIN1_test2_mu freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+
+make fit_unc         workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp_expMu2.root nn=v37_test172BIN1_test2_both freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+make fit_unc_toys    workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp_expMu2.root nn=v37_test172BIN1_test2_both freeze="--freezeParameters lumi_13TeV" points=100 min=0.5 max=1.5    &
+
+python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test172BIN1_test2
+python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test172BIN1_test2 --xsec-scale 831.76 --title-x "cross section [pb]" --output-type pdf
+
+
+
+
+## TOPPT variations of pT distributions
+
+lep, met, tau and b jet
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title-x "#tau p_{T} [GeV]"   --title-y "Events" --draw-overflows 5 --legend-shift 0.02 --drop-bin 29. --x-range 30,100 --title ""
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title-x "#tau p_{T} [GeV]"   --title-y "Events" --draw-overflows 5 --legend-shift 0.02 --drop-bin 29. --x-range 30,100 -s TOPPTUp --title "top p_{T} Up"
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d lep_pt  --wjet 1.4 --qcd 1.05 --title-x "#mu p_{T} [GeV]"    --title-y "Events" --draw-overflows 5 --legend-shift 0.02 --title ""
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d lep_pt  --wjet 1.4 --qcd 1.05 --title-x "#mu p_{T} [GeV]"    --title-y "Events" --draw-overflows 5 --legend-shift 0.02 -s TOPPTUp --title "top p_{T} Up"
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel        -d bjet_pt --wjet 1.4 --qcd 1.05 --title-x "leading b jet p_{T} [GeV]"    --title-y "Events" --draw-overflows 5 --legend-shift 0.02 --title ""
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel        -d bjet_pt --wjet 1.4 --qcd 1.05 --title-x "leading b jet p_{T} [GeV]"    --title-y "Events" --draw-overflows 5 --legend-shift 0.02 -s TOPPTUp --title "top p_{T} Up"
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d met_f  --wjet 1.4 --qcd 1.05 --title-x "p^{miss}_{T} [GeV]"  --title-y "Events" --draw-overflows 5 --legend-shift 0.02 --title ""
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d met_f  --wjet 1.4 --qcd 1.05 --title-x "p^{miss}_{T} [GeV]"  --title-y "Events" --draw-overflows 5 --legend-shift 0.02 -s TOPPTUp --title "top p_{T} Up"
+
+electrons
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title-x "#tau p_{T} [GeV]"   --title-y "Events" --draw-overflows 5 --legend-shift 0.02 --drop-bin 29. --x-range 30,100 --title ""
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title-x "#tau p_{T} [GeV]"   --title-y "Events" --draw-overflows 5 --legend-shift 0.02 --drop-bin 29. --x-range 30,100 -s TOPPTUp --title "top p_{T} Up"
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d lep_pt  --wjet 1.4 --qcd 1.05 --title-x "e p_{T} [GeV]"    --title-y "Events" --draw-overflows 5 --legend-shift 0.02 --title ""
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d lep_pt  --wjet 1.4 --qcd 1.05 --title-x "e p_{T} [GeV]"    --title-y "Events" --draw-overflows 5 --legend-shift 0.02 -s TOPPTUp --title "top p_{T} Up"
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel        -d bjet_pt --wjet 1.4 --qcd 1.05 --title-x "leading b jet p_{T} [GeV]"    --title-y "Events" --draw-overflows 5 --legend-shift 0.02 --title ""
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel        -d bjet_pt --wjet 1.4 --qcd 1.05 --title-x "leading b jet p_{T} [GeV]"    --title-y "Events" --draw-overflows 5 --legend-shift 0.02 -s TOPPTUp --title "top p_{T} Up"
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d met_f  --wjet 1.4 --qcd 1.05 --title-x "p^{miss}_{T} [GeV]"  --title-y "Events" --draw-overflows 5 --legend-shift 0.02 --title ""
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_pt_per_toppt/ --data-nick data_other --overwrite --ratio-range 0.55 --text-size-axes-labels 20 --text-size-axes-titles 25 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d met_f  --wjet 1.4 --qcd 1.05 --title-x "p^{miss}_{T} [GeV]"  --title-y "Events" --draw-overflows 5 --legend-shift 0.02 -s TOPPTUp --title "top p_{T} Up"
+
+ln -s *Electron_lep_pt*NOMINAL*  el_sel_lep_pt_NOMINAL.pdf
+ln -s *Electron_tau_pt*NOMINAL*  el_sel_tau_pt_NOMINAL.pdf
+ln -s *Electron_bjet_pt*NOMINAL* el_sel_bjet_pt_NOMINAL.pdf
+ln -s *Electron_met*NOMINAL*     el_sel_met_NOMINAL.pdf
+
+ln -s *Electron_lep_pt*TOPPTUp*  el_sel_lep_pt_TOPPTUp.pdf
+ln -s *Electron_tau_pt*TOPPTUp*  el_sel_tau_pt_TOPPTUp.pdf
+ln -s *Electron_bjet_pt*TOPPTUp* el_sel_bjet_pt_TOPPTUp.pdf
+ln -s *Electron_met*TOPPTUp*     el_sel_met_TOPPTUp.pdf
+
+
+ln -s *Muon_lep_pt*NOMINAL*  mu_sel_lep_pt_NOMINAL.pdf
+ln -s *Muon_tau_pt*NOMINAL*  mu_sel_tau_pt_NOMINAL.pdf
+ln -s *Muon_bjet_pt*NOMINAL* mu_sel_bjet_pt_NOMINAL.pdf
+ln -s *Muon_met*NOMINAL*     mu_sel_met_NOMINAL.pdf
+
+ln -s *Muon_lep_pt*TOPPTUp*  mu_sel_lep_pt_TOPPTUp.pdf
+ln -s *Muon_tau_pt*TOPPTUp*  mu_sel_tau_pt_TOPPTUp.pdf
+ln -s *Muon_bjet_pt*TOPPTUp* mu_sel_bjet_pt_TOPPTUp.pdf
+ln -s *Muon_met*TOPPTUp*     mu_sel_met_TOPPTUp.pdf
+
+
 
 
 
