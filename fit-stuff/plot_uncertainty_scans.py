@@ -93,16 +93,20 @@ TGraph *g2 = new TGraph(430, ttree_full->GetV2(), ttree_full->GetV1())
 
 nn = args.fit_release
 
+nn_el   = nn + '_el'
+nn_mu   = nn + '_mu'
+nn_both = nn + '_both'
+
 the_files = {
-'el':   [  "higgsCombineel_%sFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn,   "higgsCombineel_%sNoTau.MultiDimFit.mH120.root" % nn,   "higgsCombineel_%sNoSys.MultiDimFit.mH120.root" % nn],
-'mu':   [  "higgsCombinemu_%sFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn,   "higgsCombinemu_%sNoTau.MultiDimFit.mH120.root" % nn,   "higgsCombinemu_%sNoSys.MultiDimFit.mH120.root" % nn],
-'both': ["higgsCombineboth_%sFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn, "higgsCombineboth_%sNoTau.MultiDimFit.mH120.root" % nn, "higgsCombineboth_%sNoSys.MultiDimFit.mH120.root" % nn],
+'el':   [ "higgsCombine%sFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn_el,   "higgsCombine%sNoTau.MultiDimFit.mH120.root" % nn_el,   "higgsCombine%sNoSys.MultiDimFit.mH120.root" % nn_el],
+'mu':   [ "higgsCombine%sFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn_mu,   "higgsCombine%sNoTau.MultiDimFit.mH120.root" % nn_mu,   "higgsCombine%sNoSys.MultiDimFit.mH120.root" % nn_mu],
+'both': [ "higgsCombine%sFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn_both, "higgsCombine%sNoTau.MultiDimFit.mH120.root" % nn_both, "higgsCombine%sNoSys.MultiDimFit.mH120.root" % nn_both],
 }
 
 the_files_expected = {
-'el':   [  "higgsCombineel_%s_ExpectedFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn,   "higgsCombineel_%s_ExpectedNoTau.MultiDimFit.mH120.root" % nn,   "higgsCombineel_%s_ExpectedNoSys.MultiDimFit.mH120.root" % nn],
-'mu':   [  "higgsCombinemu_%s_ExpectedFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn,   "higgsCombinemu_%s_ExpectedNoTau.MultiDimFit.mH120.root" % nn,   "higgsCombinemu_%s_ExpectedNoSys.MultiDimFit.mH120.root" % nn],
-'both': ["higgsCombineboth_%s_ExpectedFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn, "higgsCombineboth_%s_ExpectedNoTau.MultiDimFit.mH120.root" % nn, "higgsCombineboth_%s_ExpectedNoSys.MultiDimFit.mH120.root" % nn],
+'el':   [ "higgsCombine%s_ExpectedFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn_el,   "higgsCombine%s_ExpectedNoTau.MultiDimFit.mH120.root" % nn_el,   "higgsCombine%s_ExpectedNoSys.MultiDimFit.mH120.root" % nn_el],
+'mu':   [ "higgsCombine%s_ExpectedFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn_mu,   "higgsCombine%s_ExpectedNoTau.MultiDimFit.mH120.root" % nn_mu,   "higgsCombine%s_ExpectedNoSys.MultiDimFit.mH120.root" % nn_mu],
+'both': [ "higgsCombine%s_ExpectedFullUncertaintyNoLumi.MultiDimFit.mH120.root" % nn_both, "higgsCombine%s_ExpectedNoTau.MultiDimFit.mH120.root" % nn_both, "higgsCombine%s_ExpectedNoSys.MultiDimFit.mH120.root" % nn_both],
 }
 
 
@@ -110,11 +114,11 @@ the_files_expected = {
 gROOT.SetBatch();
 gStyle.SetOptStat(0);
 
-c1 = TCanvas("c1","Expected Bias Band Graph",200,10,800,800);
-c1.DrawFrame(0.85,0.75,1.15,1.25);
-
 def plot(chan, plot_expected, plot_data, report_lumi=True):
    #c1.SetGrid();
+
+   c1 = TCanvas("c1","Expected Bias Band Graph",200,10,800,800);
+   c1.DrawFrame(0.85,0.75,1.15,1.25);
 
    # prepare data files
    if plot_data:
@@ -145,7 +149,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
            #g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
            #g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
-           g_full .SetTitle(";%s;-2\\Delta ln L" % args.title_x)
+           g_full .SetTitle(";%s;-2#Delta ln (L)" % args.title_x)
            g_notau.SetTitle(";;")
            g_stat .SetTitle(";;")
 
@@ -189,7 +193,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
            #exp_g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
            #exp_g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
-           exp_g_full .SetTitle(";%s;-2\\Delta ln L" % args.title_x)
+           exp_g_full .SetTitle(";%s;-2#Delta ln (L)" % args.title_x)
            exp_g_notau.SetTitle(";;")
            exp_g_stat .SetTitle(";;")
 
@@ -313,7 +317,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    right_title = TPaveText(0.5, 0.92, 0.9, 0.99, "brNDC")
    both = True
    if report_lumi:
-       right_title.AddText("%s fb^{-1} (13 TeV)" % (35.8 if chan == 'el' else 35.8))
+       right_title.AddText("%s fb^{-1} (13 TeV)" % 35.8)
    elif both:
        right_title.AddText("%s fb^{-1} (13 TeV)" % '35.8')
    else:
@@ -368,7 +372,7 @@ def plot_all(report_lumi=True):
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
            #g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
            #g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
-           g_full .SetTitle(";%s;-2\\Delta ln L" % args.title_x)
+           g_full .SetTitle(";%s;-2#Delta ln (L)" % args.title_x)
            g_notau.SetTitle(";;")
            g_stat .SetTitle(";;")
 
@@ -417,7 +421,7 @@ def plot_all(report_lumi=True):
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
            #exp_g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
            #exp_g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
-           exp_g_full .SetTitle(";%s;-2\\Delta ln L" % args.title_x)
+           exp_g_full .SetTitle(";%s;-2#Delta ln (L)" % args.title_x)
            exp_g_notau.SetTitle(";;")
            exp_g_stat .SetTitle(";;")
 
@@ -551,8 +555,14 @@ def plot_all(report_lumi=True):
 ##plot('el', False, True)
 #
 ## 
-plot('both', True, True , False)
-plot('both', True, False, False)
+plot('el', True, True , True)
+plot('el', True, False, True)
+
+plot('mu', True, True , True)
+plot('mu', True, False, True)
+
+plot('both', True, True , True)
+plot('both', True, False, True)
 #c1.Clear()
 
 #plot_all()
