@@ -1,3 +1,20 @@
+# the question of ratio, to leave it or drop it
+
+The ratio of the cross sec-
+tions in the lepton-tau and the dilepton [3] final states σ tt (` τ h ) /σ tt (``) , and the ratio of the
+partial to the total width Γ ( t → τ h τν τ b ) /Γ total are also evaluated, contributing to the previous
+measurements [4, 5].
+
+-- remove the "ratio"
+
+The ratio of the cross sec-
+tions in the lepton-tau and the dilepton [3] final states σ tt (` τ h ) /σ tt (``) , and
+
+The ratio of the partial to the total width Γ( t → τ ν_{τ} b )/Γ_{total} is evaluated
+with respect to the measurement in the dilepton final state[3],
+complementing the previous measurements [4, 5].
+
+
 # remaining questions and updates
 
 the approval questions -> paper
@@ -914,6 +931,12 @@ python sumup_ttree_draw.py "lep_matching_gen[0]" --histo-range 20,-10,10   --con
 python sumup_ttree_draw.py "lep_matching_gen[0]" --histo-range 20,-10,10   --cond-com "leps_ID == -13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0]>2 && njets >2" --output v37_mischarge_muon.root          --histo-name mischarge_muon           gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root    &
 python sumup_ttree_draw.py "lep_matching_gen[0]" --histo-range 20,-10,10   --cond-com "leps_ID ==  13 && HLT_mu && lep_matched_HLT[0] && tau_IDlev[0]>2 && njets >2" --output v37_mischarge_muon_anti.root     --histo-name mischarge_muon_anti      gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root    &
 
+python sumup_ttree_draw.py "lep_matching_gen[0]" --histo-range 20,-10,10   --cond-com "leps_ID == -11 && HLT_el && lep_matched_HLT[0] && tau_IDlev[0]>2 && njets >2 && abs(lep_p4[0].eta()) < 1.5" --output v37_mischarge_electron_barrel.root      --histo-name mischarge_electron_barrel       gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root    &
+python sumup_ttree_draw.py "lep_matching_gen[0]" --histo-range 20,-10,10   --cond-com "leps_ID ==  11 && HLT_el && lep_matched_HLT[0] && tau_IDlev[0]>2 && njets >2 && abs(lep_p4[0].eta()) < 1.5" --output v37_mischarge_electron_barrel_anti.root --histo-name mischarge_electron_barrel_anti  gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root    &
+
+python sumup_ttree_draw.py "lep_matching_gen[0]" --histo-range 20,-10,10   --cond-com "leps_ID == -11 && HLT_el && lep_matched_HLT[0] && tau_IDlev[0]>2 && njets >2 && abs(lep_p4[0].eta()) > 1.5" --output v37_mischarge_electron_endcap.root      --histo-name mischarge_electron_endcap       gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root    &
+python sumup_ttree_draw.py "lep_matching_gen[0]" --histo-range 20,-10,10   --cond-com "leps_ID ==  11 && HLT_el && lep_matched_HLT[0] && tau_IDlev[0]>2 && njets >2 && abs(lep_p4[0].eta()) > 1.5" --output v37_mischarge_electron_endcap_anti.root --histo-name mischarge_electron_endcap_anti  gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/*root    &
+
 rm v37_mischarge_electron.root v37_mischarge_electron_anti.root v37_mischarge_muon.root v37_mischarge_muon_anti.root
 
 hadd -f v37_mischarging_leptons_all.root v37_mischarge_electron.root v37_mischarge_electron_anti.root v37_mischarge_muon.root v37_mischarge_muon_anti.root
@@ -961,6 +984,8 @@ mischarge_electron->Integral()
 (mischarge_electron->GetBinContent(12)) / mischarge_electron->Integral()
 0.00449764
 
+(mischarge_electron->GetBinContent(12) + mischarge_electron_anti->GetBinContent(12)) / (mischarge_electron->Integral() + mischarge_electron_anti->Integral())
+
 
 (mischarge_muon->GetBinContent(7) + mischarge_muon->GetBinContent(10)) / mischarge_muon->Integral()
 (double) 0.996624
@@ -987,6 +1012,18 @@ mischarge_muon->GetBinContent(17)
 (Double_t) 59.0000
 
 -- some from b hadrons...
+
+
+### uncertainties of the charge misidentification
+
+%BLUE% >> CORRECTION The charge misidentification probability is <0.45% for electrons, but the uncertainty is much smaller and is included in the ID uncertainty.
+For muons the charge misidentification and its' auncertainty are even smaller.
+But there is no solid reference within EGamma documentation:
+[[https://arxiv.org/pdf/1502.02701.pdf][Run1 EGamma performance (page 16)]]
+[[https://cds.cern.ch/record/2320638/files/DP2018_017.pdf][Run2 report]]
+[[http://cms.cern.ch/iCMS/analysisadmin/cadilines?line=EGM-17-001][Run2 performance paper]] (and [[https://gitlab.cern.ch/tdr/papers/EGM-17-001][gitlab]])
+-- the average probability of charge misidentification is 0.2% with a negligible uncertainty on order 0.05%, but it is not clearey stated for the performance in Run2.
+One good reference is that TOP-17-001 does not mention the uncertainty of the charge misidentification either.
 
 
 
