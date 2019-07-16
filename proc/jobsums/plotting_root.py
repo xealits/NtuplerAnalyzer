@@ -22,8 +22,8 @@ nick_info = {
 "wjets_other": {'color': kCyan+2,  'legend': 'W+jets#rightarrow l'},
 "wjets_tauh":  {'color': kCyan+3,  'legend': 'W+jets#rightarrow #tau_{h}'},
 "wjets_taul":  {'color': kCyan+4,  'legend': 'W+jets#rightarrow #tau_{l}'},
-"wjets":       {'color': kCyan+2,  'legend': 'W+jets'},
 "wjets":       {'color': kCyan+2,  'legend': 'W+jets#rightarrow l#nu+jets'},
+"wjets":       {'color': kCyan+2,  'legend': 'W+jets'},
 
 "dibosons":    {'color': kCyan,    'legend': 'dibosons'},
 "dibosons_other":    {'color': kCyan,    'legend': 'dibosons'},

@@ -21,9 +21,10 @@ python proc/signal_acceptance.py temp/ NtuplerAnalyzer_test_METfiltersOFF_TTJets
 parser.add_argument("output_dir",  type=str, default="temp/", help="the path of output directory")
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 parser.add_argument("--no-tau-cut",  action='store_true', help="don't apply tau cut")
-parser.add_argument("--same-cuts",  action='store_true', help="apply mu kino cuts to el as well")
+parser.add_argument("--same-cuts",   action='store_true', help="apply mu kino cuts to el as well")
+parser.add_argument("--only-signal", action='store_true', help="process only signal events")
 
-parser.add_argument('input_file', help="""the job files to process: 
+parser.add_argument('input_files', nargs='+', help="""the job files to process: 
 /gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_0.root""")
 
 
@@ -34,13 +35,13 @@ if args.debug:
 else:
     logging.basicConfig(level=logging.INFO)
 
-input_filename = args.input_file
+input_filename = args.input_files[0]
 if not isfile(input_filename):
     logging.info("missing: " + input_filename)
     exit(1)
 
 job_filename = input_filename.split('/')[-1]
-output_path = args.output_dir + '/' + job_filename
+output_path = args.output_dir + '/' + '_'.join(job_filename.split('_')[:-1]) + '.root'
 logging.debug(output_path)
 
 assert not isfile(output_path)
@@ -48,7 +49,7 @@ assert not isfile(output_path)
 logging.info("import ROOT")
 
 import ROOT
-from ROOT import TH1D, TFile, TTree, gROOT, TLorentzVector
+from ROOT import TH1D, TFile, TTree, gROOT, TLorentzVector, TMath
 from ROOT import kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, TColor
 from ROOT import TLegend
 #from ROOT import THStack
@@ -149,17 +150,23 @@ and the separate datasets
 
 
 # for all systematic weights
-histos = {
-'eltau':     (TH1D("gen_tbw_eltau",     "", 400, -200, 200), TH1D("gen_tw_eltau",     "", 400, -200, 200), TH1D("all_ev_eltau",     "", 200, 0, 200), TH1D("cut_ev_eltau",     "", 200, 0, 200), TH1D("ctr_cut_ev_eltau",     "", 200, 0, 200)),
-'elj':       (TH1D("gen_tbw_elj",       "", 400, -200, 200), TH1D("gen_tw_elj",       "", 400, -200, 200), TH1D("all_ev_elj",       "", 200, 0, 200), TH1D("cut_ev_elj",       "", 200, 0, 200), TH1D("ctr_cut_ev_elj",       "", 200, 0, 200)),
-'tauelj':    (TH1D("gen_tbw_tauelj",    "", 400, -200, 200), TH1D("gen_tw_tauelj",    "", 400, -200, 200), TH1D("all_ev_tauelj",    "", 200, 0, 200), TH1D("cut_ev_tauelj",    "", 200, 0, 200), TH1D("ctr_cut_ev_tauelj",    "", 200, 0, 200)),
-'taueltauh': (TH1D("gen_tbw_taueltauh", "", 400, -200, 200), TH1D("gen_tw_taueltauh", "", 400, -200, 200), TH1D("all_ev_taueltauh", "", 200, 0, 200), TH1D("cut_ev_taueltauh", "", 200, 0, 200), TH1D("ctr_cut_ev_taueltauh", "", 200, 0, 200)),
-'mutau':     (TH1D("gen_tbw_mutau",     "", 400, -200, 200), TH1D("gen_tw_mutau",     "", 400, -200, 200), TH1D("all_ev_mutau",     "", 200, 0, 200), TH1D("cut_ev_mutau",     "", 200, 0, 200), TH1D("ctr_cut_ev_mutau",     "", 200, 0, 200)),
-'muj':       (TH1D("gen_tbw_muj",       "", 400, -200, 200), TH1D("gen_tw_muj",       "", 400, -200, 200), TH1D("all_ev_muj",       "", 200, 0, 200), TH1D("cut_ev_muj",       "", 200, 0, 200), TH1D("ctr_cut_ev_muj",       "", 200, 0, 200)),
-'taumuj':    (TH1D("gen_tbw_taumuj",    "", 400, -200, 200), TH1D("gen_tw_taumuj",    "", 400, -200, 200), TH1D("all_ev_taumuj",    "", 200, 0, 200), TH1D("cut_ev_taumuj",    "", 200, 0, 200), TH1D("ctr_cut_ev_taumuj",    "", 200, 0, 200)),
-'taumutauh': (TH1D("gen_tbw_taumutauh", "", 400, -200, 200), TH1D("gen_tw_taumutauh", "", 400, -200, 200), TH1D("all_ev_taumutauh", "", 200, 0, 200), TH1D("cut_ev_taumutauh", "", 200, 0, 200), TH1D("ctr_cut_ev_taumutauh", "", 200, 0, 200)),
-'other':     (TH1D("gen_tbw_other",     "", 400, -200, 200), TH1D("gen_tw_other",     "", 400, -200, 200), TH1D("all_ev_other",     "", 200, 0, 200), TH1D("cut_ev_other",     "", 200, 0, 200), TH1D("ctr_cut_ev_other",     "", 200, 0, 200))}
+histos_all = {
+'eltau':     (TH1D("gen_tbw_eltau",     "", 400, -200, 200), TH1D("gen_tw_eltau",     "", 400, -200, 200), TH1D("all_ev_eltau",     "", 200, 0, 200), TH1D("cut_ev_eltau",     "", 200, 0, 200), TH1D("ctr_cut_ev_eltau",     "", 200, 0, 200), TH1D("all_toppt_ev_eltau",     "", 200, 0, 200), TH1D("cut_toppt_ev_eltau",     "", 200, 0, 200)),
+'elj':       (TH1D("gen_tbw_elj",       "", 400, -200, 200), TH1D("gen_tw_elj",       "", 400, -200, 200), TH1D("all_ev_elj",       "", 200, 0, 200), TH1D("cut_ev_elj",       "", 200, 0, 200), TH1D("ctr_cut_ev_elj",       "", 200, 0, 200), TH1D("all_toppt_ev_elj",       "", 200, 0, 200), TH1D("cut_toppt_ev_elj",       "", 200, 0, 200)),
+'tauelj':    (TH1D("gen_tbw_tauelj",    "", 400, -200, 200), TH1D("gen_tw_tauelj",    "", 400, -200, 200), TH1D("all_ev_tauelj",    "", 200, 0, 200), TH1D("cut_ev_tauelj",    "", 200, 0, 200), TH1D("ctr_cut_ev_tauelj",    "", 200, 0, 200), TH1D("all_toppt_ev_tauelj",    "", 200, 0, 200), TH1D("cut_toppt_ev_tauelj",    "", 200, 0, 200)),
+'taueltauh': (TH1D("gen_tbw_taueltauh", "", 400, -200, 200), TH1D("gen_tw_taueltauh", "", 400, -200, 200), TH1D("all_ev_taueltauh", "", 200, 0, 200), TH1D("cut_ev_taueltauh", "", 200, 0, 200), TH1D("ctr_cut_ev_taueltauh", "", 200, 0, 200), TH1D("all_toppt_ev_taueltauh", "", 200, 0, 200), TH1D("cut_toppt_ev_taueltauh", "", 200, 0, 200)),
+'mutau':     (TH1D("gen_tbw_mutau",     "", 400, -200, 200), TH1D("gen_tw_mutau",     "", 400, -200, 200), TH1D("all_ev_mutau",     "", 200, 0, 200), TH1D("cut_ev_mutau",     "", 200, 0, 200), TH1D("ctr_cut_ev_mutau",     "", 200, 0, 200), TH1D("all_toppt_ev_mutau",     "", 200, 0, 200), TH1D("cut_toppt_ev_mutau",     "", 200, 0, 200)),
+'muj':       (TH1D("gen_tbw_muj",       "", 400, -200, 200), TH1D("gen_tw_muj",       "", 400, -200, 200), TH1D("all_ev_muj",       "", 200, 0, 200), TH1D("cut_ev_muj",       "", 200, 0, 200), TH1D("ctr_cut_ev_muj",       "", 200, 0, 200), TH1D("all_toppt_ev_muj",       "", 200, 0, 200), TH1D("cut_toppt_ev_muj",       "", 200, 0, 200)),
+'taumuj':    (TH1D("gen_tbw_taumuj",    "", 400, -200, 200), TH1D("gen_tw_taumuj",    "", 400, -200, 200), TH1D("all_ev_taumuj",    "", 200, 0, 200), TH1D("cut_ev_taumuj",    "", 200, 0, 200), TH1D("ctr_cut_ev_taumuj",    "", 200, 0, 200), TH1D("all_toppt_ev_taumuj",    "", 200, 0, 200), TH1D("cut_toppt_ev_taumuj",    "", 200, 0, 200)),
+'taumutauh': (TH1D("gen_tbw_taumutauh", "", 400, -200, 200), TH1D("gen_tw_taumutauh", "", 400, -200, 200), TH1D("all_ev_taumutauh", "", 200, 0, 200), TH1D("cut_ev_taumutauh", "", 200, 0, 200), TH1D("ctr_cut_ev_taumutauh", "", 200, 0, 200), TH1D("all_toppt_ev_taumutauh", "", 200, 0, 200), TH1D("cut_toppt_ev_taumutauh", "", 200, 0, 200)),
+'other':     (TH1D("gen_tbw_other",     "", 400, -200, 200), TH1D("gen_tw_other",     "", 400, -200, 200), TH1D("all_ev_other",     "", 200, 0, 200), TH1D("cut_ev_other",     "", 200, 0, 200), TH1D("ctr_cut_ev_other",     "", 200, 0, 200), TH1D("all_toppt_ev_other",     "", 200, 0, 200), TH1D("cut_toppt_ev_other",     "", 200, 0, 200))}
 
+histos = {}
+if args.only_signal:
+    histos['eltau'] = histos_all['eltau']
+    histos['mutau'] = histos_all['mutau']
+else:
+    histos = histos_all
 
 def make_root_bin_edges(bin_edges):
     #bin_edges = [float(b) for b in args.custom_range.split(',')]
@@ -229,17 +236,37 @@ control_histos = {
 #el_histos = (histo_all_ev_eltau, histo_cut_ev_eltau)
 #mu_histos = (histo_all_ev_mutau, histo_cut_ev_mutau)
 
+def top_pT_SF(x):
+    # the SF function is SF(x)=exp(a+bx)
+    # where x is pT of the top quark (at generation?)
+    # sqrt(s)         channel             a             b
+    # 7 TeV         all combined         0.199         -0.00166
+    # 7 TeV         l+jets              0.174         -0.00137
+    # 7 TeV         dilepton            0.222         -0.00197
+    # 8 TeV         all combined         0.156         -0.00137
+    # 8 TeV         l+jets               0.159         -0.00141
+    # 8 TeV         dilepton             0.148         -0.00129
+    # 13 TeV        all combined        0.0615        -0.0005
+    # -- taking all combined 13 TeV
+    a = 0.0615
+    b = -0.0005
+    return TMath.Exp(a + b*x)
+
+def ttbar_pT_SF(t_pt, tbar_pt):
+    return TMath.Sqrt(top_pT_SF(t_pt) * top_pT_SF(tbar_pt))
+
 def round_pdf_weight(pdf_w):
     if pdf_w > 2.:
         pdf_w = 1.
     return pdf_w
 
-logging.debug(input_filename)
+for input_filename in args.input_files:
+  logging.debug(input_filename)
 
-tfile = TFile(input_filename)
-ttree = tfile.Get('ntupler/reduced_ttree')
+  tfile = TFile(input_filename)
+  ttree = tfile.Get('ntupler/reduced_ttree')
 
-for iev, event in enumerate(ttree):
+  for iev, event in enumerate(ttree):
     is_electron_process = abs(event.gen_t_w_decay_id) == 11 or abs(event.gen_tb_w_decay_id) == 11 or abs(event.gen_t_w_decay_id) == 15*11 or abs(event.gen_tb_w_decay_id) == 15*11
     is_eltau, is_mutau = False, False
     if   (abs(event.gen_t_w_decay_id) == 11    and abs(event.gen_tb_w_decay_id) > 15*15) or (abs(event.gen_tb_w_decay_id) == 11    and abs(event.gen_t_w_decay_id) > 15*15):
@@ -265,7 +292,13 @@ for iev, event in enumerate(ttree):
     else:
         process = 'other'
 
-    count_gen_tw, count_gen_tbw, all_histo, cut_histo, cut_control_histo = histos[process]
+    if args.only_signal and not (is_eltau or is_mutau):
+        continue
+
+    # for top pt effect on the acceptance
+    weight_top_pt = ttbar_pT_SF(event.gen_t_pt, event.gen_tb_pt)
+
+    count_gen_tw, count_gen_tbw, all_histo, cut_histo, cut_control_histo, all_toppt_histo, cut_toppt_histo = histos[process]
 
     count_gen_tw  .Fill(event.gen_t_w_decay_id)
     count_gen_tbw .Fill(event.gen_tb_w_decay_id)
@@ -320,6 +353,8 @@ for iev, event in enumerate(ttree):
     # events must be weighted with their weights
     for sys_i, sys_w in enumerate([the_mc_weight] + w_scale + w_alphas + w_pdf):
         all_histo.Fill(sys_i, sys_w)
+
+    all_toppt_histo.Fill(1, weight_top_pt)
 
     cut_control_histo.Fill(0, the_mc_weight)
     cut_control_histo.Fill(100)
@@ -480,6 +515,8 @@ for iev, event in enumerate(ttree):
 
     for sys_i, sys_w in enumerate([the_mc_weight] + w_scale + w_alphas + w_pdf):
         cut_histo.Fill(sys_i, sys_w)
+
+    cut_toppt_histo.Fill(1, weight_top_pt)
 
 
 

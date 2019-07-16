@@ -22,6 +22,8 @@ parser.add_argument('--norm-formulas',  action='store_true', help="normalize the
 parser.add_argument("--y-range",     type=str,      help="set Y range as `ymin,ymax`")
 parser.add_argument("--x-title",     type=str,      help="title of X axis")
 parser.add_argument("--y-title",     type=str,      help="title of Y axis")
+parser.add_argument("--fonts1",      type=int, default=43, help="axis font")
+parser.add_argument("--fonts1-size", type=int, default=25, help="axis and legend font size")
 parser.add_argument("--title",       type=str,      help="title of the pad")
 parser.add_argument('--left-title',  action='store_true', help="add the left label title")
 
@@ -74,8 +76,13 @@ def new_color():
         color_i += 1
         return color_i
 
-leg = TLegend(0.6, 0.7, 0.89, 0.89)
+colors = {'red': kRed, 'black': kBlack, 'blue': kBlue}
+styles = {}
+
+leg = TLegend(0.5, 0.7, 0.89, 0.89)
 leg.SetBorderSize(0)
+leg.SetTextFont(args.fonts1)
+leg.SetTextSize(args.fonts1_size)
 
 histos = {}
 legend_names = {
@@ -151,6 +158,7 @@ for i, fileparameter in enumerate(args.input_files):
 
     histo.SetMarkerStyle(19)
     histo.SetMarkerColor(color)
+    histo.SetMarkerColorAlpha(color, 0.)
 
     if not args.no_norm:
         histo.Scale(1./histo.Integral())
@@ -207,6 +215,18 @@ else:
         logging.debug("subform " + subform)
         nicks = [nick for nick in histos.keys() if nick in subform]
         logging.debug("nicks %s" % str(nicks))
+
+        # parse styles out of subform
+        color = style = None
+        if   subform.count(',') == 2:
+            subform, color, style = subform.split(',')
+        elif subform.count(',') == 1:
+            subform, color = subform.split(',')
+        elif subform.count(',') == 0:
+            pass
+        else:
+            logging.error('wrong subform, too many "," %s' % subform)
+            continue
 
         # a subform might be a ratio of two distributions
         sums_histos = []
@@ -265,6 +285,23 @@ else:
         for operand_histo in sums_histos[1:]:
             histo.Divide(operand_histo)
 
+        # set histo styles, if given
+        if color:
+            if color in colors:
+                col = colors[color]
+            else:
+                col = int(color)
+            histo.SetLineColor(col)
+            histo.SetMarkerColor(col)
+            histo.SetMarkerColorAlpha(col, 0.)
+
+        if style:
+            if style in styles:
+                stl = styles[style]
+            else:
+                stl = int(style)
+            histo.SetLineStyle(stl)
+
         form_histos.append(histo)
 
         plots_to_legend.append((histo, subform))
@@ -303,16 +340,18 @@ else:
             if args.title:
                 histo.SetTitle(args.title)
 
-            histo.GetYaxis().SetTitleOffset(1.4)
-            histo.GetYaxis().SetLabelFont(43)
-            histo.GetXaxis().SetLabelFont(43)
-            histo.GetYaxis().SetLabelSize(20)
-            histo.GetXaxis().SetLabelSize(20)
+            #histo.GetYaxis().SetTitleOffset(1.4)
+            histo.GetXaxis().SetTitleOffset(0.9)
 
-            histo.GetYaxis().SetTitleFont(43)
-            histo.GetXaxis().SetTitleFont(43)
-            histo.GetYaxis().SetTitleSize(24)
-            histo.GetXaxis().SetTitleSize(24)
+            histo.GetYaxis().SetLabelFont(args.fonts1)
+            histo.GetXaxis().SetLabelFont(args.fonts1)
+            histo.GetYaxis().SetLabelSize(args.fonts1_size*0.75)
+            histo.GetXaxis().SetLabelSize(args.fonts1_size*0.75)
+
+            histo.GetYaxis().SetTitleFont(args.fonts1)
+            histo.GetXaxis().SetTitleFont(args.fonts1)
+            histo.GetYaxis().SetTitleSize(args.fonts1_size)
+            histo.GetXaxis().SetTitleSize(args.fonts1_size)
             if y_max is not None and y_min is not None:
                 logging.debug("setting min-max")
                 histo.SetMaximum(y_max)

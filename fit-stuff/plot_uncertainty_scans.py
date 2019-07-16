@@ -1,4 +1,5 @@
 import argparse, logging
+from pdb import set_trace
 
 import ctypes
 from ctypes import c_double
@@ -29,7 +30,11 @@ parser = argparse.ArgumentParser(
 parser.add_argument("fit_release",    help="the name tag of the fit")
 parser.add_argument("--nll-limit",  type=float, default=10., help="limit the maximum of NLL on the plot (deafult 10)")
 parser.add_argument("--xsec-scale", type=float, default=143.23, help="the name tag of the fit (default 143.23)")
+parser.add_argument("--font-size",   type=int, default=40,  help="main font size")
+parser.add_argument("--canvas-size", type=int, default=800, help="the size of the canvas -- adjust to fit the relative font size")
 parser.add_argument("--title-x",    type=str,   default='\\text{visible cross section [pb]}', help="the name tag of the fit")
+parser.add_argument("--offset-x",   type=float,  default=0.8, help='')
+parser.add_argument("--offset-y",   type=float,  default=0.8, help='')
 parser.add_argument("--output-type",      type=str,   default='png', help="the output format (png by default)")
 parser.add_argument("--horizontal-lines", type=str,   help="add dashed grey horizontal lines at the Y axis given as <y1>[,<y2>]...")
 parser.add_argument("--debug", action="store_true", help="debug logging")
@@ -48,6 +53,13 @@ from ROOT import TCanvas, TGraph, TLine, gStyle, gROOT, gPad, TFile, TTree, TPav
 #include "TAxis.h"
 #include "TH1.h"
 logging.info("done")
+
+gStyle.SetTitleFontSize(args.font_size)
+gROOT.ForceStyle()
+
+gStyle.SetTitleW(0.7) # //per cent of the pad width
+gStyle.SetTitleH(0.5) # //per cent of the pad height
+# none of these work
 
 
 def rgb(r, g, b):
@@ -117,8 +129,13 @@ gStyle.SetOptStat(0);
 def plot(chan, plot_expected, plot_data, report_lumi=True):
    #c1.SetGrid();
 
-   c1 = TCanvas("c1","Expected Bias Band Graph",200,10,800,800);
+   #c1 = TCanvas("c1","Expected Bias Band Graph",200,10,800,800);
+   c1 = TCanvas("c1","Expected Bias Band Graph",200,10, args.canvas_size, args.canvas_size);
    c1.DrawFrame(0.85,0.75,1.15,1.25);
+
+   gStyle.SetTitleW(0.7) # //per cent of the pad width
+   gStyle.SetTitleH(0.5) # //per cent of the pad height
+   # none of these work
 
    # prepare data files
    if plot_data:
@@ -147,9 +164,11 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
 
            # removing the title
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
-           #g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
-           #g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
-           g_full .SetTitle(";%s;-2#Delta ln (L)" % args.title_x)
+           #g_full .SetTitle(";\\text{fitted } r;-2\\Delta log L")
+           #g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta log L")
+
+           #g_full .SetTitle(";%s;-2#Delta log (L)" % args.title_x)
+           g_full .SetTitle(";;")
            g_notau.SetTitle(";;")
            g_stat .SetTitle(";;")
 
@@ -159,6 +178,24 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            g_full .GetXaxis().SetRangeUser(0.75, 1.35)
            g_notau.GetXaxis().SetRangeUser(0.75, 1.35)
            g_stat .GetXaxis().SetRangeUser(0.75, 1.35)
+
+           # font
+           #set_trace()
+           g_full .GetXaxis().SetTitleFont(133)
+           g_notau.GetXaxis().SetTitleFont(133)
+           g_stat .GetXaxis().SetTitleFont(133)
+
+           g_full .GetXaxis().SetTitleSize(args.font_size)
+           g_notau.GetXaxis().SetTitleSize(args.font_size)
+           g_stat .GetXaxis().SetTitleSize(args.font_size)
+
+           g_full .GetYaxis().SetTitleFont(133)
+           g_notau.GetYaxis().SetTitleFont(133)
+           g_stat .GetYaxis().SetTitleFont(133)
+
+           g_full .GetYaxis().SetTitleSize(args.font_size)
+           g_notau.GetYaxis().SetTitleSize(args.font_size)
+           g_stat .GetYaxis().SetTitleSize(args.font_size)
 
            print "set up data plots", g_full
 
@@ -191,9 +228,9 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
 
            # removing the title
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
-           #exp_g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
-           #exp_g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
-           exp_g_full .SetTitle(";%s;-2#Delta ln (L)" % args.title_x)
+           #exp_g_full .SetTitle(";\\text{fitted } r;-2\\Delta log L")
+           #exp_g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta log L")
+           exp_g_full .SetTitle(";%s;-2#Delta log (L)" % args.title_x)
            exp_g_notau.SetTitle(";;")
            exp_g_stat .SetTitle(";;")
 
@@ -204,6 +241,31 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            exp_g_notau.GetXaxis().SetRangeUser(0.75, 1.35)
            exp_g_stat .GetXaxis().SetRangeUser(0.75, 1.35)
 
+           # fonts
+           exp_g_full .GetXaxis().SetTitleFont(133)
+           exp_g_notau.GetXaxis().SetTitleFont(133)
+           exp_g_stat .GetXaxis().SetTitleFont(133)
+
+           exp_g_full .GetXaxis().SetTitleSize(args.font_size)
+           exp_g_notau.GetXaxis().SetTitleSize(args.font_size)
+           exp_g_stat .GetXaxis().SetTitleSize(args.font_size)
+
+           exp_g_full .GetYaxis().SetTitleFont(133)
+           exp_g_notau.GetYaxis().SetTitleFont(133)
+           exp_g_stat .GetYaxis().SetTitleFont(133)
+
+           exp_g_full .GetYaxis().SetTitleSize(args.font_size)
+           exp_g_notau.GetYaxis().SetTitleSize(args.font_size)
+           exp_g_stat .GetYaxis().SetTitleSize(args.font_size)
+
+           exp_g_full .GetXaxis().SetTitleOffset(args.offset_x)
+           exp_g_notau.GetXaxis().SetTitleOffset(args.offset_x)
+           exp_g_stat .GetXaxis().SetTitleOffset(args.offset_x)
+
+           exp_g_full .GetYaxis().SetTitleOffset(args.offset_y)
+           exp_g_notau.GetYaxis().SetTitleOffset(args.offset_y)
+           exp_g_stat .GetYaxis().SetTitleOffset(args.offset_y)
+
            print "set up expectation plots", exp_g_full
 
 
@@ -212,6 +274,8 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    #g_notau.SetXTitle("fitted \\mu")
    #g_stat .SetXTitle("fitted \\mu")
    leg = TLegend(0.6, 0.7, 0.89, 0.89)
+   leg.SetTextFont(133)
+   leg.SetTextSize(args.font_size)
 
    # draw horizontal lines first
    drawn = False
@@ -370,9 +434,9 @@ def plot_all(report_lumi=True):
 
            # removing the title
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
-           #g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
-           #g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
-           g_full .SetTitle(";%s;-2#Delta ln (L)" % args.title_x)
+           #g_full .SetTitle(";\\text{fitted } r;-2\\Delta log L")
+           #g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta log L")
+           g_full .SetTitle(";%s;-2#Delta log (L)" % args.title_x)
            g_notau.SetTitle(";;")
            g_stat .SetTitle(";;")
 
@@ -419,9 +483,9 @@ def plot_all(report_lumi=True):
 
            # removing the title
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
-           #exp_g_full .SetTitle(";\\text{fitted } r;-2\\Delta ln L")
-           #exp_g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta ln L")
-           exp_g_full .SetTitle(";%s;-2#Delta ln (L)" % args.title_x)
+           #exp_g_full .SetTitle(";\\text{fitted } r;-2\\Delta log L")
+           #exp_g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta log L")
+           exp_g_full .SetTitle(";%s;-2#Delta log (L)" % args.title_x)
            exp_g_notau.SetTitle(";;")
            exp_g_stat .SetTitle(";;")
 
