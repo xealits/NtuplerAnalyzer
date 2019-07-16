@@ -1,3 +1,746 @@
+# tau pT data points with no horizontal lines?
+
+what is going on? why ep does not work?
+
+
+
+
+
+# check the magnitude of electron eff impact in the fit to both channels in the v14 table -- it is too small?
+
+0.2 is too small, shouldn't it be 0.4?
+
+what's in the ratio calculation?
+
+0.4
+
+muon eff 1.1
+
+trigger 0.72
+
+
+check it in AN too
+
+
+
+
+# the extrapolation uncertainties in the ratio to dileptons
+
+1) check if the values in the table are correct
+   leptau values OK
+   dilep  values NOT correct
+   check them in the calculation -- they are not included there!
+   the uncertainties in the calculation are the old ones from AN, which randomly match to dileptons paper!!
+   -- corrected them, returned to old magnitude of uncertainty in the ratio: 7%
+
+2) how are they symetrized? can we asymmetrize our uncertainties?
+
+3) is the sum in quadrature correct in case of PDFs?
+
+4) top quark pT is missing?
+
+if we asymetrize, how is the ratio calculated?
+
+how to make a Down variation in PDFs or top quark pT?
+
+in my case PDFs do not have up or down, each varies in separate direction?
+
+tt ME scale     ∓ 0.3 0.1
+PDF             ± 0.8 0.6
+Top quark pT    ∓ 0.5 < 0.1
+tt ISR scale    ∓ 0.1 < 0.1
+tt FSR scale    ± 0.1 < 0.1
+UE tune         < 0.1
+
+they are all uncorrelated! so no need to worry, I'm just adding them in quadrature at the end
+
+-- 1) add both variations in qudrature
+   2) corrected the table
+
+both in quadrature:
+tt ME scale         0.1   0.316227766
+PDF                 1     1
+top quark pT        0.25  0.5
+tt ISR              0.01  0.1
+tt FSR              0.01  0.1
+UE tune             0.04  0.04
+no ME-PS matching in accptance!!!			0
+
+
+
+
+
+
+
+
+test on ratio:
+
+
+0.071 / 0.939
+
+
+check all uncertainties of visible xsec are in the table --- DONE
+check extrapolation uncertainties, copy from sheet       --- DONE
+check values of extrapolation unc in leptau              --- DONE
+descibe the averages                                     --- DONE
+and groupings                                            --- DONE
+add top pT in extrapolation                              --- ???
+update ratio uncertainties everywhere                    ---
+
+the ME-PS in extrapolation:
+ME-PS matching                & 0.8 & 1.0 & 0.9 & 0.2    & 0 \\                                                                                                                                                    
+
+
+
+## top pt on acceptance
+
+updated the script to process all the files
+
+    time python signal_acceptance.py --only-signal temp/acceptance_with_toppt/ gstore_outdirs/v34/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v34_MC2016_Summer16_TTJets_powheg/180717_001103/0000/MC2016_Summer16_TTJets_powheg_*.root
+
+
+accept_nom   = cut_ev_mutau->GetBinContent(1+0)       / all_ev_mutau->GetBinContent(1+0)
+accept_toppt = cut_toppt_ev_mutau->GetBinContent(1+1) / all_toppt_ev_mutau->GetBinContent(1+1)
+
+(accept_toppt - accept_nom) / accept_nom
+
+
+
+
+
+
+
+
+# [[https://hypernews.cern.ch/HyperNews/CMS/get/TOP-18-005/58/1.html][Re: EP comments on paper draft v13]]
+
+ l87: ptmiss was already defined in l23
+
+>> It was already clarified earlier. In l23 ptmiss is introduced, and at L87 we give the precise definition, i.e. it is a negative sum of the momenta of all visible particles.
+
+--> ok, then I suggest to remove the symbol in l23.
+
+%BLUE% >> We´d prefer to keep it, as it does no harm, but OK.
+
+- l168: "Such misidentified τ h also come" --> "Such misidentified τ h also comes"
+
+>> This is plural as it refers to taus in different processes.
+
+--> As it is, it looks singular. Maybe "tau_h's"?
+
+%BLUE% >> No apostrophe. OK.
+
+
+- l227: PU was already defined in l97, please remove.
+
+>> We keep PU only in the formula (approximately L99), in the text we use "pileup" everywhere, for clarity.
+
+--> this I still do not understand. If you define PU, as you do in l102, why not using the acronym instead of "pileup" in l103, 204, 273
+
+%BLUE% >> It is clearer to spell it out.
+
+[2]
+
+- l56: define alpha_s and specify which scale is that
+
+%BLUE% >> Clarified.
+
+- l83: cross-section --> cross section
+
+%BLUE% >> OK.
+
+- l178, 234: remove "(pileup)"
+
+%BLUE% >> We think it is clearer to keep it, as it gives a direct link to the Table.
+
+- Table 2: pileup uncertainty --> pileup
+
+%BLUE% >> OK.
+
+[3]
+
+ - Table 2: it would be good to clarify in the text and caption how you are treating the uncertainties from TOP-17-001, i.e, how you are grouping them to match the same categories in your analysis, and that you are symmetrizing the asymmetric extrapolation uncertainties.
+
+%BLUE% >> Uncertainties are not grouped. They are treated as individual lines, as in Table 2.
+
+- Figure 3: if you want to keep it, please add luminosity info to the plot 
+
+%BLUE% >> Added.
+
+
+
+# more comments from Yuta
+
+> L125: please write that, HPS tau can overlap with the jet (otherwise it will lead huge confusion)
+
+>> At this selection stage there is no confusion: one tauh candidate and at least 2 jets are separate objects, and all events have a tauh candidate by the definition of the selection.
+
+But then, L135 (in v14) is very confusing; it sounds like you don't remove overlap with tauh. Also, the categorization based on the jet kinematics L 151 (in v14), you say "all jets in the event includin the tauh candidate". So, these are all very confusing as it is now.
+
+%BLUE% >> Removed "Among the jets separated from the τh by ∆R > 0.4,". It was confusing and unnecessary.
+
+> L153: what do you mean by "maximization of the yields in the two categories" ? All events just falls into one of 2 categories and the total number of events in the signal-like plus BG-like won't change ...
+
+>> Maximization in each category separately. Rephrased it.
+
+I still don't get what you want to say by "maximization of the yields in each of the two cateogries". "yields" means, number of signal events? Having categories won't increase the signal yield, isn't it ? It is just categorization and sum of the two categories will leave the signal yield unchanged.
+
+%BLUE% >> "maximize the number of events in each category", ie not too many in any of the two. We prefer "maximize".
+
+%BLUE% The overall yields do not change, but the fractions of events in event categories do.
+The event yields in the event categories are:
+N(all events in signal-like) = N(signal events|signal-like) + N(background events|signal-like);
+N(background-like) = N(signal|background-like) + N(background|background-like).
+We maximize N(signal-like) and N(background-like) to have less statistical uncertainty in each category.
+And we maximize N(signal|signal-like)/N(signal|background-like) with N(background|background-like)/N(background|signal-like) to separate signal and background events.
+
+> L154: Can you write the gain by spliting the catogires into 2 ? (I made the same comment before ...)
+
+>> In MC toys performing a fit without MT shape we see that the event categories alone constrain the uncertainty due to the background of misidentified taus from 25% to 5%. A fit to MT shape without event categories constrains this uncertainty from 25% to 2.5%. And the fit to MT shape with event categories we arrive at about 2% uncertainty from misidentified taus. The event categories provide an additional constrain on the background in an independent method.
+
+Why don't you write this explicitly in the paper ? I still don't see any description in v14.
+
+%BLUE% >> We think it is too much detail to write it in the paper. Added the concluding sentence in Sec. 5.
+
+> L205: tau charge mis-ID does not correlate wtih tau ID SF uncertainty. No ?
+
+>> No, they are not correlated.
+
+Then, I thnk you should note use "including".
+
+%BLUE% >> Rephrased it.
+
+> before L280: Can you add SM theoretical prediction? you wrote in the summary that it is in agreement with SM, but you never write theoretical value.
+
+>> We think it is not necessary.
+
+Hmm, but then, How we can convince readers that your mreasurement is consistent with SM prediction (summary). If you don't write this number, I would remove corresponding sentence in summary. 
+
+%BLUE% >> It is written in the summary that the results are consistent with the SM. That is the relevant place where to specify it. To write it earlier (for ex. at approx. L280), it would be an unnecessary repetition.
+
+
+
+
+# questions
+
+- general: "stat." --> "stat" , "syst." --> "syst", "lumi." --> "lumi"
+
+%BLUE% >> Corrected.
+
+- general: not sure \ttbar is defined anywhere
+
+%BLUE% >> It is defined at L3 (Introduction). We made it clearer by adding a direct definition at L5.
+
+- abstract: tau_h is not used, so please remove ", tau_h,"
+
+%BLUE% >> tau_h is used in the line 1 of the abstract, so we think it is clear as it is.
+
+- l6: including a tau --< including a tau lñepton (as in line 9 and 11)
+
+%BLUE% >> Corrected.
+
+- l13: remove ", l = e, mu". Already mentioned in l8
+
+%BLUE% >> Corrected.
+
+- l14: tau_h --> \tau_h
+
+%BLUE% >> Corrected.
+
+- l28: i suggest to introduce this paragraph with something like "This paper is organized as follows: "
+
+%BLUE% >> Rephrased the paragraph according to your suggestion.
+
+- l38: either "where the pseudorapidity is defined as η = − ln [ tan ( θ/2 )]" or 2where the pseudorapidity η is defined as − ln [ tan ( θ/2 )]"
+
+%BLUE% >> Corrected.
+
+- l62-78: "Leading" --> "leading", "Order" --> "order",....
+
+%BLUE% >> Corrected.
+
+- l87: ptmiss was already defined in l23
+
+%BLUE% >> It was already clarified earlier. In l23 ptmiss is introduced, and at L87 we give the precise definition, i.e. it is a negative sum of the momenta of all visible particles.
+
+- l90: is it "Delta phi²" or "(Delta phi)²"? The same for eta.
+
+%BLUE% >> Added the parentheses.
+
+- l116: is it clear what a "same sign... event" is?
+
+%BLUE% >> Corrected.
+
+- l118: that pT refers to which object? i suggest to be specific.
+
+%BLUE% >> We think it is clear as it is. There is no possible misinterpretation, as it is in the same sentence.
+
+- Fig. 1:
+
+- remove the horizonl error bar in data (since all bins have the same width)
+
+%BLUE% >> We will adopt the standard CMS format.
+
+- enlarge the size of the legends and axis titles
+
+%BLUE% >>
+
+- subindex "h" missing in the x-axis title?
+
+%BLUE% >> It is clarified in the caption.
+
+- p should be italic in x-axis title
+
+%BLUE% >>
+
+- points --> dots
+
+%BLUE% >> Replaced it with "full circle", we think it is more precise.
+
+- Drell-Yan --> DY
+
+%BLUE% >> We prefer to spell it out in the figure, it is clear from the caption.
+
+- observed points --> data
+
+%BLUE% >> Corrected.
+
+
+
+
+
+
+
+
+
+
+
+
+- l48: "are the masses of the top quark and of the W boson" --> "are, respectively, the masses of the top quark and of the W boson"
+
+%BLUE% >> Corrected.
+
+- l168: "Such misidentified τ h also come" --> "Such misidentified τ h also comes"
+
+%BLUE% >> This is plural as it refers to taus in different processes.
+
+- l173: PU was already defined in l97, please remove.
+
+%BLUE% >> Rephrased. Moved the definition to the Section 2 (event simulation).
+
+- l186: move the definition of SS to l116 and use it here.
+
+%BLUE% >> We prefer to keep the definition here, as it is closer to the place where it is used, avoiding confusion. If needed we can reformulate it in CWR.
+
+- l193: is that uncertainty stat only? Please specify.
+
+%BLUE% >> It includes systematic uncertainties.
+
+- Fig. 2:
+
+- use different type of line for one histogram so it can be distinguisehd in b&w versions.
+
+%BLUE% >> Corrected.
+
+- remove the dot in the legend (it is not shown in the histograms)
+
+%BLUE% >> Corrected.
+
+- use the same types of font for M_T as the ones used in the text
+
+%BLUE% >> 
+
+
+- l216: is TES used somewhere? If not, please remove.
+
+%BLUE% >> Removed.
+
+- l227: PU was already defined in l97, please remove.
+
+%BLUE% >> We keep PU only in the formula (approximately L99), in the text we use "pileup" everywhere, for clarity.
+
+- l240: "the renormalization and factorization scale, α_S" this is not correct, alpha_s is another thing
+
+%BLUE% >> Rephrased it.
+
+- l241: "parton distribution function" --> PDF
+
+%BLUE% >> Corrected.
+
+Table 1:
+
+- it was discussed in the approval the goal of this table and decided that signal-like and background-like should be defined in the caption. Otherwise, it is confusing to have signal in the background like and vice-versa.
+
+%BLUE% >> It is clearly stated in the L3-4 of the table caption. The reader is referred to Section 5 where the exact definition is given.
+
+- "The observed event yields in data shows" --> "The observed event yields in data show"
+
+%BLUE% >> Corrected.
+
+
+
+Fig. 2:
+
+- enlarge the size of the legends and axis titles
+
+%BLUE% >> 
+
+- fonts in x-Axis title should match the ones in the text
+
+%BLUE% >> 
+
+- points --> dots
+
+%BLUE% >> Corrected.
+
+- Drell-Yan --> DY
+
+%BLUE% >> We prefer to spell it out in the legend.
+
+- observed points --> data
+
+%BLUE% >> Corrected.
+
+- add a label in the plot for signal-like and backgorund-like
+
+%BLUE% >> 
+
+- why not all the uncertainties are included?
+
+%BLUE% >> Corrected, all systematic uncertainties are included.
+
+
+
+Table 2:
+
+- PU is already defined, please use either the test or the acronym
+
+%BLUE% >> Corrected, "pileup" is used.
+
+- is ME-PS matching defined somewhere in the text?
+
+%BLUE% >> Added the reference in Section 7 on systematic uncertainties.
+
+- Fig. 4: enlarge axis titles
+
+%BLUE% >> Corrected.
+
+- l302: tau --> \tau
+
+%BLUE% >> Corrected.
+
+- l306: the value quoted here does not match the one in l281
+
+%BLUE% >> Corrected.
+
+
+
+
+## post-aproval follow up
+
+- In general, and as already stated, the paper lacks the motivation for the measurements, particularly for reporting R. Also concerning CDF and ATLAS results, explicit comparisons should be made in the introduction and summary, in particular on the precision reached here. The summary could also benefit from adding "compatible with lepton universality" there.
+
+%BLUE% >> Included the note on lepton universality in the summary. But we would like to limit the summary section to the results of the paper. We give the reader the description of our result and corresponding references to other measurements, where the details can be found for possible comparison.
+As for the different value measured in our paper versus the paper by ATLAS, we give the exact definition of what is measured and prefer not to go into detailed comparison. However, if you have a specific suggestion we would try to include it in CWR. For example, in the Results section we can add a sentence like the following:
+
+%BLUE% While in~\cite{Aad:2015dya} the partial width is estimated for hadronic $\tau$s,
+here $R_\Gamma$ is measured for all $\tau$s by using the $\mathrm{BR}(\tau\rightarrow\tauh\nu_\tau)$
+that is determined with negligible uncertainty~\cite{Tanabashi:2018oca}.
+
+- Concerning the numbers, particulary the R_gamma, check everywhere in the paper and make sure correct values are reported. For example what you report in the Result section is different from AN and has a typo.
+
+%BLUE% >> Corrected. The AN numbers are correct, the numbers which were added to the paper are outdated.
+
+- Abstract: R definition: remove "pair" in The ratio of the partial width to all top quark pair decays
+
+%BLUE% >> Corrected.
+
+- L23: Detector does not have the full phase space "visible and full phase spaces of the detector" --> "visible phase spaces of the detector and the full phase space"
+
+%BLUE% >> Corrected.
+
+- L27: "contributing to the previous measurements [4, 5]" is misleading. You need to mention explicitly what was measured in CDF and ATLAS where the latter is different from yours. Substitute this with sth like: This measurement is complementary to similar quantities measured in other hadron collider experiments [4,5]. Then in the measurement or summary section specify the difference with ATLAS.
+
+%BLUE% >> Changed the sentence in the Introduction: "complementing the previous measurements [4, 5]". And rephrased the paragraph in Results to make it clear the \Gamme(top->tau) is estimated instead of \Gamma(top->tauh). If necessary, in Results we could add an explicit statement, as in the answer to the first question.
+
+- L284 and the text around: The R you quote is not correct. It should be the one as in AN. Also you say "divided by Br" which is incorrect. You have the correct statement in the AN. Please modify the paper.
+
+%BLUE% >> Corrected.
+
+- Table 2: it would be good to clarify in the text and caption how you are treating the uncertainties from TOP-17-001, i.e, how you are grouping them to match the same categories in your analysis, and that you are symmetrizing the asymmetric extrapolation uncertainties.
+
+%BLUE% >>
+
+- L305:Add a sentence saying the what is different/similar with the results of CDF and ATLAS
+
+%BLUE% >> We specify exactly what is done in the paper and refer to other papers with other results.
+
+- Figure 3: if you want to keep it, please add luminosity info to the plot
+
+%BLUE% >>
+
+
+
+
+## Yuta's questions
+
+ L8: "... does not include leptons from tau decay" cannot come first before you explain tau decay (L11).
+
+%BLUE% >> Moved the sentence to the end of the paragraph.
+
+L10: i.e. higiher than ... -> so what ?? (I made the same comment before ...)
+
+%BLUE% >> This gives the reader the order of magnitude of the BR. As we stated before, we prefer to keep it as there is no harm from this sentence.
+
+L14: tau -> \tau_\text{h}
+
+%BLUE% >> Corrected.
+
+L15: "prompt" needs some explanation
+
+%BLUE% >> We think it is clear as it is.
+
+L24: for "each final state" -> you should explicitly write, what "each"
+means.
+
+%BLUE% >> Corrected.
+
+I agree with Abideh, that, physics motivation should be much more
+strengthened.
+
+%BLUE% >> We added the references and we state clearly what is measured in the paper.
+
+L54: alphaS -> \alpha_S
+
+%BLUE% >> Corrected.
+
+L71: The multijet -> The QCD multijet (and also in Figure 1 legends)
+
+%BLUE% >> We removed "QCD" following the suggestion of the LE.
+
+L125: please write that, HPS tau can overlap with the jet (otherwise it will lead huge confusion)
+
+%BLUE% >> At this selection stage there is no confusion: one tauh candidate and at least 2 jets are separate objects, and all events have a tauh candidate by the definition of the selection.
+There can confusion with comparison to AN, where a "preselction" control region is defined, which requires at least 3 jets, whether or not they overlap with tauh candidate.
+
+Figure1 caption L3: compared with simulation (histograms).
+
+%BLUE% >> Corrected.
+
+L144: The sentence is too long. I would suggest to break the sentence
+here and start the new one.
+
+%BLUE% >> Corrected.
+
+L146: Why you include the tauh for jet triplet considration !? I didn't
+notice before, but isn't it just degrade your discrimnation rather than
+helping ?
+
+%BLUE% >> In case of the background process tt->l(qq)(bb) the misidentified tauh can come from any of the jets from the hard process.
+Notice that the event categories target the background process, not the signal.
+
+L153: what do you mean by "maximization of the yields in the two
+categories" ? All events just falls into one of 2 categories and the
+total number of events in the signal-like plus BG-like won't change ...
+
+%BLUE% >> Maximization in each category separately. Rephrased it.
+
+L154: Can you write the gain by spliting the catogires into 2 ? (I made the same comment before ...)
+
+%BLUE% >> In MC toys performing a fit without MT shape we see that the event categories alone constrain the uncertainty due to the background of misidentified taus from 25% to 5%.
+A fit to MT shape without event categories constrains this uncertainty from 25% to 2.5%.
+And the fit to MT shape with event categories we arrive at about 2% uncertainty from misidentified taus.
+The event categories provide an additional constrain on the background in an independent method.
+
+L161: global maximum of the likelhood function -> vague
+
+%BLUE% >> We think it is clear as it is. We could implement specific suggestions during CWR.
+
+L162: shouldn't be also the same for other methods ?
+
+%BLUE% >> Rephrased.
+
+L168: first time to use W+jets (define beforehand, possibly in section3)
+
+%BLUE% >> Added the definition in parentheses.
+
+L170: no need to write "(leptonic and hadronica tau decays)", as you already defined in L12,
+
+%BLUE% >> Removed.
+
+L173: PU is not a abbreviation at all. You better define pile-up (PU), if you want to do that.
+
+%BLUE% >> Rephrased.
+
+
+
+
+
+
+
+
+
+
+
+
+L176-L182: This paragraph does not mention anything about "BG estimate".  You should move this to appropriate place.
+
+%BLUE% >> Here we discuss the estimation of the background of the misidentified tauh, which is measured directly in the fit.
+
+L179: jet composition is unclear for outside readers.
+
+%BLUE% >> Rephrased.
+
+L194: not clear what you mean
+
+%BLUE% >> We think it is clear as it is.
+
+L205: tau charge mis-ID does _not_ correlate wtih tau ID SF uncertainty.  No ?
+
+%BLUE% >> No, they are not correlated.
+
+L207: visible mass of what ?
+
+%BLUE% >> Added \tauh.
+
+L214: no longer the dominant... -> what do you mean ?
+
+%BLUE% >> Rephrased.
+
+L217: "corresponding variations in the fit" -> vague
+
+%BLUE% >> Rephrased.
+
+L227: you already define PU.
+
+%BLUE% >> Rephrased.
+
+section7: what about the uncertainty related to MC generator ? (Herwig v.s. Powheg ?) did you consider this too ?
+
+%BLUE% >> No, it is not considered (as in TOP-17-001).
+
+L261: As already brought up in the approval, I'm not sure How meaningful
+this plot is. I would remove this.
+
+%BLUE% >> We prefer to keep it.
+
+Table2: As already brought up in the approval, I don't understand why, e.g. electron efficiencies got constarined in "combined" (0.2) even if
+it is 1.8 in e-tauh only channel. Can you explain ? (Muon efficiencies 0.6% -> 0.6% looks reasonable)
+
+%BLUE% >> The constrain on electron efficiency indirectly comes from the small variation of muon efficiencies. For example, increasing pre-fit variation of muon efficiencies produces proportional increase in the impact of electron efficiencies. This was described in the earlier answer.
+
+%BLUE% The impact of the uncertainty of electrons is significantly reduced in the simultaneous fit in both channels comparing to the impact in the fit to only electron-tau final state. It indirectly comes from the constraints in muon-tau final state and results in two effects, which effectively reduce the effect of variations in electron systematics on the signal strength to the magnitudes of the same effects from muon systematics. One is the constraint on the variation of the nuisance parameters of the electron systematics: the post-fit variation of the nuisance parameter is about 0.7-0.8 of the prefit value. In addition the electron systematics correlate less with the signal strength in the simultaneous fit to both final states than in the fit to electron-tau final state separately, which corresponds to the rest of the suppression of the impact of electron systematics. The best way to look at this effect is to consider the simultaneous fit to both final states as a fit to electron-tau final state + additional constraints from the muon-tau final state: 1) the Poissonian constraints in the bins of Mt distributions in muon-tau events and 2) the constraints on the nuisance parameters of muon ID and trigger. Both of them can be represented as constraints directly onto the parameter of signal strength in the electron-tau final state. These constraints (statistical uncertainty in muon-tau final state, muon ID and trigger) have small 1-sigma deviation of about 1% comparing to the constraint of electron systematics of about 2% (1.8% electron ID and 2.3% electron trigger in the fit in the electron-tau final state). As the result, in the PLR scans of the signal strength and of the impact of the nuisance parameters of electron systematics the signal strength is varied less with respect to the nuisance parameters of electrons. The variation of signal strength is closer to the variation in the fit to only muon-tau final state. The case of the systematics of muons is opposite: the statistical uncertainty + electron systematics are larger than the muon systematics and do not impose significant constraint on the signal strength. Therefore the variation of signal strength with respect to muon systematics is the same in the fits to muon-tau final state and in the simultaneous fit to both final states, which is reflected in the impacts.
+
+before L280: Can you add SM theoretical prediction? you wrote in the
+summary that it is in agreement with SM, but you never write theoretical
+value.
+
+%BLUE% >> We think it is not necessary.
+
+L297 and everywhere: use same notation; tau or tau lepton or tau-lepton
+? (to me, tau-lepton is the best but i leave up to LE).
+
+%BLUE% >> We follow the suggestion of the LE.
+
+L299: transfer -> transverse
+
+%BLUE% >> Corrected.
+
+L301: "in the largest background process" -> not clear what you mean
+
+%BLUE% >> Rephrased.
+
+L301: "In the fit ... tau lepton" -> very vague, and not clear. Also you should use \tau if you want.
+
+%BLUE% >> We prefer to keep it in the Summary. We added a clarification in the Section 5 "Event categories and fit procedure":
+In the fit, the signal enters as a free parameter without constraining the kinematics of the $\tau$ lepton.
+The kinematics of the fitted variables are not tied to the specific \ttbar signal model considered here, i.e. $\ttbar\rightarrow (\ell\nu_{\ell})(\tauh\nu_{\tau})\cPqb\cPaqb$.                                    
+
+
+
+
+
+
+
+# the corrections to figures
+
+
+comparison sig-bckg
+
+python jobsums/get_shapes.py --x-title "M_{T}(l, p^{miss}_{T}) [GeV]" --y-title "a.u." --norm-binwidth --formula "background,red,2:signal" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":./studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_mutau_Mt_inclusive "background":./studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive --y-range 0,0.0159 --output-type pdf --left-title --no-std-path
+
+text font?
+
+python jobsums/get_shapes.py --x-title "M_{T}(l, p^{miss}_{T}) [GeV]" --y-title "a.u." --norm-binwidth --formula "background,red,2:signal" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":./studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_mutau_Mt_inclusive "background":./studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive --y-range 0,0.0159 --output-type pdf --left-title --no-std-path --fonts1 133
+
+python jobsums/get_shapes.py --x-title "#font[12]{M}_{T}(#font[12]{l}, #font[12]{p}^{miss}_{T}) [GeV]" --y-title "a.u." --norm-binwidth --formula "background,red,2:signal" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":./studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_mutau_Mt_inclusive "background":./studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive --y-range 0,0.0159 --output-type pdf --left-title --no-std-path --fonts1 133
+
+
+TODO: mathematical ell:
+
+python jobsums/get_shapes.py --x-title "#font[12]{M}_{T}(#font[12]{#ell}, #font[12]{p}^{miss}_{T}) [GeV]" --y-title "a.u." --norm-binwidth --formula "background,red,2:signal" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":./studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_mutau_Mt_inclusive "background":./studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive --y-range 0,0.0159 --output-type pdf --left-title --no-std-path --fonts1 133
+
+python jobsums/get_shapes.py --x-title "#ell" --y-title "a.u." --norm-binwidth --formula "background,red,2:signal" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":./studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_mutau_Mt_inclusive "background":./studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive --y-range 0,0.0159 --output-type pdf --left-title --no-std-path --fonts1 133
+
+
+font sizes in legends and axis titles = text
+
+scales:
+stack distrs                    0.45  ~ 3
+comparison & uncert scans NLL   0.6   ~ 4
+
+now labels are 20, titles are 24
+
+what if change to 18 and 24 and just 24/0.6 = 40
+18 = 0.75*24
+
+24 / 0.48 = 50
+
+python jobsums/get_shapes.py --x-title "#font[12]{M}_{T}(#font[12]{l}, #font[12]{p}^{miss}_{T}) [GeV]" --y-title "a.u." --norm-binwidth --formula "background,black,2:signal,red" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":./studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_mutau_Mt_inclusive "background":./studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive --y-range 0,0.0159 --output-type pdf --left-title --no-std-path --fonts1 133 --fonts1-size 32
+
+0.48 / 0.6 = 0.8
+
+32 * / 0.8
+= 40
+40 * 0.75 = 30
+
+prefit tau pt and Mt
+
+tau pt
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root     --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55  --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel    -x mu_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events" --draw-overflows 2 --legend-shift 0.02 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --y-range 0,7500 --x-range 30,100 --font-size-axes-titles 40 --font-size-axes-labels 30 --margin-y 0.15 --margin-x 0.34 --offset-x 1.4
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55  --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel    -x el_selVloose    -d tau_pt  --wjet 1.4 --qcd 1.05 --title "" --title-x "#tau p_{T} [GeV]"  --title-y "Events" --draw-overflows 2 --legend-shift 0.02 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --y-range 0,7500 --x-range 30,100 --font-size-axes-titles 40 --font-size-axes-labels 30
+
+
+
+final:
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root     --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c mu_sel -x mu_selVloose -d tau_pt --wjet 1.4 --qcd 1.05 --title "" --title-x "#tau_{h} #font[12]{p}_{T} [GeV]" --title-y "Events" --draw-overflows 2 --legend-shift 0.05 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --y-range 0,7500 --x-range 30,100 --font-size-axes-titles 40 --font-size-axes-labels 30 --margin-y 0.14 --offset-y 1.2 --margin-x 0.4 --offset-x 3.
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_bunchCONTROLS1_tau_pt_with_allsys/ --data-nick data_other --overwrite --ratio-range 0.55 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35800 -c el_sel -x el_selVloose -d tau_pt --wjet 1.4 --qcd 1.05 --title "" --title-x "#tau_{h} #font[12]{p}_{T} [GeV]" --title-y "Events" --draw-overflows 2 --legend-shift 0.05 --drop-bin 29. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --y-range 0,7500 --x-range 30,100 --font-size-axes-titles 40 --font-size-axes-labels 30 --margin-y 0.14 --offset-y 1.2 --margin-x 0.4 --offset-x 3.
+
+
+prefit mt
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{M}_{T}(e, #font[12]{p}^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,120. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.12 --offset-y 1. --margin-x 0.4 --offset-x 2.8
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{M}_{T}(#mu, #font[12]{p}^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.12 --offset-y 1. --margin-x 0.4 --offset-x 2.8
+
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{M}_{T}(e, #font[12]{p}^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "signal-like"
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c el_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{M}_{T}(e, #font[12]{p}^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "background-like"
+
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{M}_{T}(#mu, #font[12]{p}^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "signal-like"
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/update-v11-v12-approval_plot_with_sys/paper-std/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{M}_{T}(#mu, #font[12]{p}^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.8 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "background-like"
+
+
+
+NLL plot with lumi
+
+python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test172BIN1_test2 --xsec-scale 831.76 --title-x "cross section [pb]" --output-type pdf --font-size 30 --canvas-size 400
+
+python ttxsec/fit-stuff/plot_uncertainty_scans.py v37_test172BIN1_test2 --xsec-scale 831.76 --title-x "cross section [pb]" --output-type pdf --font-size 30 --canvas-size 600 --offset-y 0.8 --offset-x 0.8
+
+
+
 # the question of ratio, to leave it or drop it
 
 The ratio of the cross sec-

@@ -191,6 +191,7 @@ if args.devs:
             if 'merge' in args.devs:
                 update_numbers = OrderedDict()
                 update_numbers['nom'] = numbers['nom']
+                # for a sys_group, like PDFs or scale r Up and Down etc, calculate the sqrt(sum(squares of deviations))
                 for sys_group_name, sys_group in systs_used_groups:
                     logging.debug('%s %s' % (sys_group_name, str(sys_group)))
                     if any(sys_name in numbers for sys_name in sys_group):
