@@ -11,6 +11,10 @@ acc_el = 0.1687
 acc_mu = 0.1756
 acc_bt = 0.1722
 
+println(acc_el, " ", acc_el_err)
+println(acc_mu, " ", acc_mu_err)
+println(acc_bt, " ", acc_bt_err)
+
 accept = [acc_el acc_mu acc_bt]
 
 el_sig  = 1.020
