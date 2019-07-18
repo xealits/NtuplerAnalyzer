@@ -1532,10 +1532,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// So in this case, CT10 will be weight number 109 (numbering starts from 0 as in C++) and ID = "3001". 
 			// according to
 			// https://lhapdf.hepforge.org/pdfsets
-			// 13100 is CT14nlo and has 57 members
+			// 13100 is CT14nnlo and has 57 members
 			// after these in the weights are (see the printout with names)
-			// 13164 -- CT14nlo_as_0117
-			// 13166 -- CT14nlo_as_0119
+			// 13164 -- CT14nnlo_as_0117
+			// 13166 -- CT14nnlo_as_0119
 			// these are variation of alpha S
 			// and after them is
 			// 11000 -- CT10nlo with 53 parameters
