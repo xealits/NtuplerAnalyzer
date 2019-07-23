@@ -2,6 +2,7 @@ import argparse
 import logging
 from os.path import isfile
 from sys import exit
+import pdb
 
 
 parser = argparse.ArgumentParser(
@@ -54,6 +55,11 @@ if args.y_range:
     y_min, y_max = [float(x) for x in args.y_range.split(',')]
 else:
     y_min = y_max = None
+
+
+# process title to get rid of escaping
+x_title = args.x_title
+y_title = args.y_title
 
 
 logging.info("import ROOT")
@@ -190,9 +196,9 @@ if not args.formula:
                 h.SetMinimum(y_min)
             if args.x_title:
                 #nom_MC.SetTitle(args.process)
-                h.SetXTitle(args.x_title)
+                h.SetXTitle(x_title)
             if args.y_title:
-                h.SetYTitle(args.y_title)
+                h.SetYTitle(y_title)
             if args.title:
                 h.SetTitle(args.title)
             h.Draw()
@@ -334,9 +340,10 @@ else:
         else:
             if args.x_title:
                 #nom_MC.SetTitle(args.process)
-                histo.SetXTitle(args.x_title)
+                histo.SetXTitle(x_title)
+                pdb.set_trace()
             if args.y_title:
-                histo.SetYTitle(args.y_title)
+                histo.SetYTitle(y_title)
             if args.title:
                 histo.SetTitle(args.title)
 

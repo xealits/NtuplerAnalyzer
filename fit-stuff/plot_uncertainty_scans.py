@@ -230,7 +230,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
            #g_full .SetTitle(";\\text{fitted } #hat{r};") # ROOT latex cannot put a hat on a letter
            #exp_g_full .SetTitle(";\\text{fitted } r;-2\\Delta log L")
            #exp_g_full .SetTitle(";\\text{fitted signal strength};-2\\Delta log L")
-           exp_g_full .SetTitle(";%s;-2#Delta log (L)" % args.title_x)
+           exp_g_full .SetTitle(";%s;-2 #Delta log (L)" % args.title_x)
            exp_g_notau.SetTitle(";;")
            exp_g_stat .SetTitle(";;")
 

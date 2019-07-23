@@ -948,7 +948,12 @@ leg.SetTextSize(args.font_size_axes_labels)
 if not args.fake_rate and not args.skip_legend and not (args.no_data or args.no_data_plot):
     #histos_data_sum.SetMarkerStyle(21)
     histos_data_sum.SetMarkerStyle(ROOT.kFullCircle)
-    leg.AddEntry(histos_data_sum, "data", "lep")
+    if args.no_horizontal_error_bars:
+        #histos_data[0][0].Draw('X0ep')
+        #leg.AddEntry(histos_data_sum, "data", "lX0ep")
+        leg.AddEntry(histos_data_sum, "data", "ep")
+    else:
+        leg.AddEntry(histos_data_sum, "data", "lep")
 
 if args.leg_n_columns:
     leg.SetNColumns(args.leg_n_columns)
@@ -1171,9 +1176,12 @@ elif args.form_shapes:
         #if args.no_horizontal_error_bars:
         #    gStyle.SetErrorX(0.)
         #histos_data[0][0].Draw('e1 p')
-        histos_data[0][0].Draw('p')
         #if args.no_horizontal_error_bars:
         #    gStyle.SetErrorX(1.)
+        if args.no_horizontal_error_bars:
+            histos_data[0][0].Draw('X0ep')
+        else:
+            histos_data[0][0].Draw('p')
 
     histos_loop = [h_record for h_record in histos_data[1:] + used_histos if h_record[1] in args.processes]
     for i, (histo, nick, _) in enumerate(histos_loop):
@@ -1197,7 +1205,10 @@ elif args.form_shapes:
     last_histo, _, _ = histos_loop[-1]
     last_histo.Draw("e same")
     if not args.no_data:
-        histos_data[0][0].Draw('same e1 p')
+        if args.no_horizontal_error_bars:
+            histos_data[0][0].Draw('X0ep same')
+        else:
+            histos_data[0][0].Draw('same e p')
 
     if not args.skip_legend:
         leg.Draw("same")
@@ -1539,7 +1550,10 @@ else:
             histo_data_relative.SetYTitle("Data/Pred.")
             histo_data_relative.GetYaxis().SetTitleOffset(args.offset_y)
             histo_data_relative.SetMarkerStyle(ROOT.kFullCircle);
-            histo_data_relative.Draw("ep same")
+            if args.no_horizontal_error_bars:
+                histo_data_relative.Draw('X0ep same')
+            else:
+                histo_data_relative.Draw('ep same')
             #histo_data_relative.Draw("hist p same")
 
     if args.plot:
@@ -1644,7 +1658,10 @@ else:
         if not (args.no_data or args.no_data_plot):
             #histos_data_sum.Draw("e1 p")
             histos_data_sum.SetMarkerStyle(ROOT.kFullCircle);
-            histos_data_sum.Draw("ep")
+            if args.no_horizontal_error_bars:
+                histos_data_sum.Draw('X0ep')
+            else:
+                histos_data_sum.Draw("ep")
             #histos_data_sum.Draw("hist p")
             if not args.fake_rate:
                 hs.Draw("same")
@@ -1670,7 +1687,10 @@ else:
                 hs_sum2.Draw("same e2")
 
             #histos_data_sum.Draw("same e1p")
-            histos_data_sum.Draw("same ep")
+            if args.no_horizontal_error_bars:
+                histos_data_sum.Draw('X0ep same')
+            else:
+                histos_data_sum.Draw("same ep")
             #histos_data_sum.Draw("hist same p")
         else:
             # the histogramStack cannot have title in root... therefore it cannot be plotted first..
