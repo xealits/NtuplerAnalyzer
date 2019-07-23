@@ -49,13 +49,28 @@ def process_event_for_fake_taus(ev):
         main_tau_SV_leng = ev.tau_SV_geom_flightLen     [main_tau_refit_index]
 
         # dalitz parameters
+        tau_track_lengs = len(ev.tau_SV_fit_track_OS_p4) == len(ev.tau_SV_fit_track_SS1_p4) == len(ev.tau_SV_fit_track_SS2_p4)
+        if not tau_track_lengs:
+            print "the problem in tau track lists tau_track_lengs"
+            return None
+
+        out_of_range  = main_tau_refit_index > len(ev.tau_SV_fit_track_OS_p4)
+        out_of_range |= main_tau_refit_index > len(ev.tau_SV_fit_track_SS1_p4)
+        out_of_range |= main_tau_refit_index > len(ev.tau_SV_fit_track_SS2_p4)
+        if out_of_range:
+            print "the problem in tau track lists main_tau_refit_index"
+            return None
+
         dalitz_m1 = (ev.tau_SV_fit_track_OS_p4[main_tau_refit_index] + ev.tau_SV_fit_track_SS1_p4[main_tau_refit_index]).mass()
         dalitz_m2 = (ev.tau_SV_fit_track_OS_p4[main_tau_refit_index] + ev.tau_SV_fit_track_SS2_p4[main_tau_refit_index]).mass()
+
+        tau_track_mass = (ev.tau_SV_fit_track_OS_p4[main_tau_refit_index] + ev.tau_SV_fit_track_SS1_p4[main_tau_refit_index] + ev.tau_SV_fit_track_SS2_p4[main_tau_refit_index]).mass()
     else:
         main_tau_SV_sign = -11.
         main_tau_SV_leng = -11.
         dalitz_m1 = -11.
         dalitz_m2 = -11.
+        tau_track_mass = -11.
 
     # SV > 2.
     if main_tau_SV_sign < 2.: return None
@@ -138,6 +153,9 @@ def process_event_for_fake_taus(ev):
     output_histos('tau_pt').Fill(main_tau_p4.pt())
     output_histos('tau_eta').Fill(main_tau_p4.eta())
 
+    output_histos('tau_mass')       .Fill(main_tau_p4.mass())
+    output_histos('tau_track_mass') .Fill(tau_track_mass)
+
     output_histos('tau_R1').Fill(ev.tau_leadChargedHadrCand_pt[0] / main_tau_p4.pt())
     output_histos('tau_R2').Fill(ev.tau_leadCand_pt[0]            / main_tau_p4.pt())
 
@@ -171,8 +189,11 @@ if __name__ == '__main__':
         output_histos_dict[pref + '_tau_R1'] =     TH1D(pref + "_tau_R1", "", 51,  0., 1.02)
         output_histos_dict[pref + '_tau_R2'] =     TH1D(pref + "_tau_R2", "", 51,  0., 1.02)
 
-        output_histos_dict[pref + '_tau_m1'] =     TH1D(pref + "_tau_m1", "", 51,  0., 1.02)
-        output_histos_dict[pref + '_tau_m2'] =     TH1D(pref + "_tau_m2", "", 51,  0., 1.02)
+        output_histos_dict[pref + '_tau_mass']       = TH1D(pref + "_tau_mass", "", 51,  0., 2.55)
+        output_histos_dict[pref + '_tau_track_mass'] = TH1D(pref + "_tau_track_mass", "", 51,  0., 2.55)
+
+        output_histos_dict[pref + '_tau_m1'] =     TH1D(pref + "_tau_m1", "", 51,  0., 1.53)
+        output_histos_dict[pref + '_tau_m2'] =     TH1D(pref + "_tau_m2", "", 51,  0., 1.53)
         output_histos_dict[pref + '_tau_m1_m2'] =  TH2D(pref + "_tau_m1_m2", "", 51,  0., 1.53, 51,  0., 1.53)
 
         output_histos_dict[pref + '_tau_sv_sign'] = TH1D(pref + "_tau_sv_sign", "", 21,  -1., 20.)
