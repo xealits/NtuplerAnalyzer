@@ -126,7 +126,7 @@ def process_event_for_fake_taus(ev):
 
         # print in 1 line
         #products_per_dR.append((round3(dR), prod[0], prod[1], round(prod[2].eta(),2), round(prod[2].phi(), 2)))
-        print origin, [(round3(prod[0]), prod[1], prod[2], round2(prod[3].eta()), round2(prod[3].eta())) for prod in products_per_dR]
+        print origin, [(round3(prod[0]), prod[1], prod[2], round2(prod[3].eta()), round2(prod[3].phi())) for prod in products_per_dR]
 
     if is_lep_jets:
         #is_w = (ev.gen_t_w1_final_pdgIds.size() + ev.gen_tb_w1_final_pdgIds.size()) > 0
