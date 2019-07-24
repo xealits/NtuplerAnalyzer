@@ -26,7 +26,7 @@ parser.add_argument("--y-title",     type=str,      help="title of Y axis")
 parser.add_argument("--fonts1",      type=int, default=43, help="axis font")
 parser.add_argument("--fonts1-size", type=int, default=25, help="axis and legend font size")
 parser.add_argument("--title",       type=str,      help="title of the pad")
-parser.add_argument('--left-title',  action='store_true', help="add the left label title")
+parser.add_argument('--left-title',  type=str, default="CMS #font[52]{Simulation}", help="the text of the left label title")
 
 parser.add_argument("--outname",     type=str,      help="set the output filename")
 
@@ -341,7 +341,7 @@ else:
             if args.x_title:
                 #nom_MC.SetTitle(args.process)
                 histo.SetXTitle(x_title)
-                pdb.set_trace()
+                #pdb.set_trace()
             if args.y_title:
                 histo.SetYTitle(y_title)
             if args.title:
@@ -380,12 +380,13 @@ for histo, subform in reversed(plots_to_legend):
 
 if args.left_title:
     #left_title = TPaveText(0.12, 0.8, 0.36, 0.88, "brNDC")
-    left_title = TPaveText(0.1, 0.92, 0.5, 0.97, "brNDC")
+    left_title = TPaveText(0.1, 0.92, 0.7, 0.97, "brNDC")
     #left_title.SetBorderSize(1)
     #left_title.SetTextAlign(11) # this adjust to left (+ margin inside the box and top)
     left_title.SetTextAlign(13) # this adjust to left (+ margin inside the box and top)
     left_title.SetMargin(0)
-    left_title.AddText("CMS simulation")
+    #left_title.AddText("CMS simulation")
+    left_title.AddText(args.left_title)
     #left_title.SetTextFont(1) # italic/cursive
     #left_title.SetTextFont(1)
     left_title.SetFillColor(0)

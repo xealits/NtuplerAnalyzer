@@ -77,6 +77,7 @@ def process_event_for_fake_taus(ev):
 
     # basic data on the main tau
     main_tau_p4 = main_tau[1]
+    if main_tau_p4.pt() < 21.: return None
     #TLorentzVector::TLorentzVector(double x, double y, double z, double t) =>
     tau_p4_tlor = TLorentzVector(main_tau_p4.X(), main_tau_p4.Y(), main_tau_p4.Z(), main_tau_p4.T())
 
@@ -97,7 +98,8 @@ def process_event_for_fake_taus(ev):
         ]
 
     # process the products per origin
-    for origin, fakes_close_in_dR, pdgIDs, statuses, p4s in final_products:
+    if is_lep_jets:
+      for origin, fakes_close_in_dR, pdgIDs, statuses, p4s in final_products:
         #tau_p4_tlor = TLorentzVector(main_tau_p4)
         products_per_dR = []
         for prod in zip(pdgIDs, statuses, p4s):
@@ -119,8 +121,26 @@ def process_event_for_fake_taus(ev):
         if not products_per_dR: continue
 
         # sort by dR
-        products_per_dR.sort(key=lambda p: p[0])
+        products_per_dR   .sort(key=lambda p: p[0])
+        fakes_close_in_dR .sort(key=lambda p: p[0])
 
+        # print in 1 line
+        #products_per_dR.append((round3(dR), prod[0], prod[1], round(prod[2].eta(),2), round(prod[2].phi(), 2)))
+        print origin, [(round3(prod[0]), prod[1], prod[2], round2(prod[3].eta()), round2(prod[3].eta())) for prod in products_per_dR]
+
+    if is_lep_jets:
+        #is_w = (ev.gen_t_w1_final_pdgIds.size() + ev.gen_tb_w1_final_pdgIds.size()) > 0
+        #is_b = (ev.gen_t_b_final_pdgIds.size()  + ev.gen_tb_b_final_pdgIds.size() ) > 0
+        is_w = (len(fake_taus_t_w) + len(fake_taus_tb_w)) > 0
+        is_b = (len(fake_taus_t_b) + len(fake_taus_tb_b)) > 0
+        if is_w and not (is_b):
+            prefix = 'ljw'
+        elif is_b and not (is_w):
+            prefix = 'ljb'
+        else:
+            prefix = 'ljo'
+
+    for origin, products_per_dR in [('tw', fake_taus_t_w), ('tb', fake_taus_t_b), ('tbw', fake_taus_tb_w), ('tbb', fake_taus_tb_b)]:
         # save info about products
         if origin in ('tb', 'tbb'):
             for dR, pdgID, _, _ in products_per_dR:
@@ -132,22 +152,6 @@ def process_event_for_fake_taus(ev):
                 output_histos('tau_fake_tw').Fill(abs(pdgID))
                 if dR < 0.1:
                     output_histos('tau_fake_tw_close').Fill(abs(pdgID))
-
-        # print in 1 line
-        #products_per_dR.append((round3(dR), prod[0], prod[1], round(prod[2].eta(),2), round(prod[2].phi(), 2)))
-        print origin, [(round3(prod[0]), prod[1], prod[2], round2(prod[3].eta()), round2(prod[3].eta())) for prod in products_per_dR]
-
-    if is_lep_jets:
-        #is_w = (ev.gen_t_w1_final_pdgIds.size() + ev.gen_tb_w1_final_pdgIds.size()) > 0
-        #is_b = (ev.gen_t_b_final_pdgIds.size()  + ev.gen_tb_b_final_pdgIds.size() ) > 0
-        is_w = len(fake_taus_t_w) + len(fake_taus_tb_w) > 0
-        is_b = len(fake_taus_t_b) + len(fake_taus_tb_b) > 0
-        if is_w and not (is_b):
-            prefix = 'ljw'
-        elif is_b and not (is_w):
-            prefix = 'ljb'
-        else:
-            prefix = 'ljo'
 
     output_histos('tau_IDlev').Fill(main_tau[0])
     output_histos('tau_pt').Fill(main_tau_p4.pt())
@@ -186,8 +190,8 @@ if __name__ == '__main__':
         output_histos_dict[pref + '_tau_pt'] =      TH1D(pref + "_tau_pt", "", 20,  0, 200)
         output_histos_dict[pref + '_tau_eta'] =     TH1D(pref + "_tau_eta", "", 20,  -2.5, 2.5)
 
-        output_histos_dict[pref + '_tau_R1'] =     TH1D(pref + "_tau_R1", "", 51,  0., 1.02)
-        output_histos_dict[pref + '_tau_R2'] =     TH1D(pref + "_tau_R2", "", 51,  0., 1.02)
+        output_histos_dict[pref + '_tau_R1'] =     TH1D(pref + "_tau_R1", "", 61,  0., 1.22)
+        output_histos_dict[pref + '_tau_R2'] =     TH1D(pref + "_tau_R2", "", 61,  0., 1.22)
 
         output_histos_dict[pref + '_tau_mass']       = TH1D(pref + "_tau_mass", "", 51,  0., 2.55)
         output_histos_dict[pref + '_tau_track_mass'] = TH1D(pref + "_tau_track_mass", "", 51,  0., 2.55)

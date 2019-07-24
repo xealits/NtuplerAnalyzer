@@ -30,8 +30,12 @@ parser = argparse.ArgumentParser(
 parser.add_argument("fit_release",    help="the name tag of the fit")
 parser.add_argument("--nll-limit",  type=float, default=10., help="limit the maximum of NLL on the plot (deafult 10)")
 parser.add_argument("--xsec-scale", type=float, default=143.23, help="the name tag of the fit (default 143.23)")
-parser.add_argument("--font-size",   type=int, default=40,  help="main font size")
-parser.add_argument("--canvas-size", type=int, default=800, help="the size of the canvas -- adjust to fit the relative font size")
+parser.add_argument("--font-size",   type=int,  default=40,    help="main font size")
+parser.add_argument("--canvas-size", type=int,  default=800,   help="the size of the canvas -- adjust to fit the relative font size")
+
+parser.add_argument("--left-title",  type=str,  default='CMS', help="the text of the left title")
+parser.add_argument("--left-title-below", action='store_true', help="draw the title inside the figure frame")
+
 parser.add_argument("--title-x",    type=str,   default='\\text{visible cross section [pb]}', help="the name tag of the fit")
 parser.add_argument("--offset-x",   type=float,  default=0.8, help='')
 parser.add_argument("--offset-y",   type=float,  default=0.8, help='')
@@ -364,10 +368,13 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    #left_title.SetTextFont(1)
    #left_title.SetFillColor(0)
 
-   left_title = TPaveText(0.1, 0.92, 0.5, 0.99, "brNDC")
+   if args.left_title_below:
+       left_title = TPaveText(0.12, 0.82, 0.72, 0.89, "brNDC")
+   else:
+       left_title = TPaveText(0.1, 0.92, 0.7, 0.99, "brNDC")
    left_title.SetTextAlign(13)
    left_title.SetMargin(0)
-   left_title.AddText("CMS")
+   left_title.AddText(args.left_title)
    left_title.SetFillColor(0)
 
    left_title.Draw("same")
@@ -570,19 +577,23 @@ def plot_all(report_lumi=True):
 
 
     #left_title = TPaveText(0.15, 0.82, 0.3, 0.88, "brNDC")
-    #left_title.AddText("CMS")
+    #left_title.AddText(args.left_title)
     #left_title.SetTextFont(1)
     #left_title.SetFillColor(0)
 
-    left_title = TPaveText(0.1, 0.92, 0.5, 0.99, "brNDC")
+    if args.left_title_below:
+        left_title = TPaveText(0.12, 0.82, 0.72, 0.89, "brNDC")
+    else:
+        left_title = TPaveText(0.1, 0.92, 0.7, 0.99, "brNDC")
+    #left_title = TPaveText(0.1, 0.92, 0.7, 0.99, "brNDC")
     left_title.SetTextAlign(13)
     left_title.SetMargin(0)
-    left_title.AddText("CMS")
+    left_title.AddText(args.left_title)
     left_title.SetFillColor(0)
 
     left_title.Draw("same")
 
-    right_title = TPaveText(0.5, 0.9, 0.9, 0.99, "brNDC")
+    right_title = TPaveText(0.7, 0.9, 0.9, 0.99, "brNDC")
     both = True
 
     if report_lumi:

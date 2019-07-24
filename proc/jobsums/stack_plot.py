@@ -41,6 +41,8 @@ parser.add_argument("--ratio-range", type=float, default=0.5, help="range of rat
 
 parser.add_argument("--label",  type=str, help="add a text label on the plot at top-left corner")
 
+parser.add_argument("--left-title",  type=str, default="CMS", help="the text of the left title (CMS default)")
+
 parser.add_argument("--fonts1",                type=int,   default=133, help="the font of main text")
 parser.add_argument("--font-size-axes-labels", type=float, default=14,  help="the text size of the labels of axes")
 parser.add_argument("--font-size-axes-titles", type=float, default=20,  help="the text size of the titles of axes")
@@ -1342,7 +1344,7 @@ elif args.osss or args.osss_mc or args.osss_pl:
     #left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
     #left_title.AddText("CMS preliminary at 13 TeV")
     left_title = TPaveText(0.12, 0.82, 0.2, 0.89, "brNDC")
-    left_title.AddText("CMS")
+    left_title.AddText(args.left_title)
     left_title.SetTextFont(1)
     left_title.SetFillColor(0)
 
@@ -1745,10 +1747,11 @@ else:
         #left_title = TPaveText(0.1, 0.92, 0.5, 0.99, "brNDC")
         left_title = TPaveText(args.margin_y, 0.92, 0.5, 1., "brNDC")
 
-    if args.no_data or args.no_data_plot:
-        left_title.AddText("CMS simulation")
-    else:
-        left_title.AddText("CMS")
+    #if args.no_data or args.no_data_plot:
+    #    left_title.AddText("CMS simulation")
+    #else:
+    #    left_title.AddText("CMS")
+    left_title.AddText(args.left_title)
     #left_title.SetTextFont(1)
     #left_title.SetFillColor(0)
 
