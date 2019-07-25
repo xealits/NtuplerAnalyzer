@@ -1,3 +1,338 @@
+# pre-CWR questions
+
+andrea castro castro@bo.infn.it via cern.onmicrosoft.com 
+	
+10:54 (10 hours ago)
+	
+to hn-cms-TOP-18-005
+
+*** Discussion title: Review of TOP-18-005
+
+Dear authors
+
+see below a few suggestion on your draft, whose implementation might be
+useful before the start of the CWR, to avoid repeated comments.
+
+Best regards
+
+Andrea
+
+
+
+
+
+ Abstract, first sentence: I suppose it would read better as "... where
+tau_h refers to the hadronic decays of the \tau lepton, and \ell=e,mu."
+
+%BLUE% >> Corrected.
+
+Abstract: last sentence: "all top quark decays" is not equal to
+"Gamma_tot", so I suggest "The ratio of the partial width Gamma(t->tau
+nutau b) to the total width is measured to be 0.1050 +- ... (syst)."
+
+%BLUE% >> Corrected.
+
+L2: we do not define LHC any more, so "... at the CERN LHC are mostly ..."
+
+%BLUE% >> Corrected.
+
+L3: "... in pairs (t\bar t) with ..." to define here t\bar t rather than later at L5
+
+%BLUE% >> Corrected.
+
+L5: "top quark pair (t\bar t) decay " ==> "t\bar t pair decay"
+
+%BLUE% >> Corrected.
+
+L6-8: I believe this sentence would read better as "In this paper, the
+process t\bar t-> (\ell nu_\ell)(\tau \nu_\tau)b\bar b is considered,
+where one W boson decays into enue or munum, and the other into
+taunutau."
+
+%BLUE% >> Corrected.
+
+L18: is this the "first" for CMS or the first in absolute? In the former case you should say so
+
+%BLUE% >> According to PDG it is the first at 13TeV and the first by CMS. The measurements by ATLAS and CDF were not performed at 13TeV collisions.
+
+L20: here "it" is supposed to refer to two sentences earlier (the
+measurement and not the data). To avoid ambiguities I suggest to write
+"The measurement is extended to a higher energy and it improves ..."
+
+%BLUE% >> Corrected.
+
+L23: "kinematics" is a discipline, so I suggest "kinematics" ==>
+"kinematic properties"
+
+%BLUE% >> Corrected.
+
+L25: strike "M_T" since it is defined (more appropriately) later
+
+%BLUE% >> Corrected.
+
+L26: use penname for "e" in "e\tau_h"
+
+%BLUE% >> Corrected.
+
+L28" "tau" ==> "\tau"
+
+%BLUE% >> Corrected.
+
+L32: rather than using the symbol "BR" you might use "\cal B" (so it
+would be one letter)
+
+%BLUE% >> Corrected.
+
+L33: the subscript "h" of "\tau_h" should be in roman font
+
+%BLUE% >> Corrected.
+
+L50: I assume you are using British English, since at L12 you wrote
+"flavour". In this case "counter clockwise" ==> "anticlockwise" is
+preferred
+
+%BLUE% >> Corrected.
+
+L63-64: since you are referring to "accuracy", there should be an
+additional hyphen before "order"
+
+%BLUE% >> Corrected.
+
+
+
+
+
+
+
+
+
+
+
+L68: since you are referring to "accuracy", there should be an
+additional hyphen before "order"
+
+%BLUE% >> Corrected.
+
+L71: "top s-channel" ==> "top quark s channel" (with no hyphen,
+according to guidelines)
+
+%BLUE% >> Corrected.
+
+L83: since you are referring to "expected xsec", there should be an
+additional hyphen before "order"
+
+%BLUE% >> Corrected.
+
+L83: try to avoid the line overflow
+
+%BLUE% >> Added "\ttbar pair" to move the value to the next line.
+
+L105: anti-kT is not a cone algorithm so the distance parameter is "R"
+and not "DeltaR" ==> "... with a distance parameter R=0.4."
+
+%BLUE% >> Indeed, corrected.
+
+L118: no need to use upper-case intitials, and also I believe it's
+better to hyphenize ==> "hadron-plus-strip (HPS) algorithm"
+
+%BLUE% >> Corrected.
+
+L128: "kinematics" ==> "kinematic properties"
+
+%BLUE% >> Corrected.
+
+L142: now it would be appropriate to define here "Delta R" since it has
+been removed from L105
+
+%BLUE% >> Added the deinition.
+
+L150: "Figure 1" ==> "Fig. 1"
+
+%BLUE% >> Corrected.
+
+Caption of fig. 1: "selected with the requirements described in Section
+4" is not needed, since this figure has been quoted in section 4; use
+penname for "e" in "e\tau_h"; add "quark" after "top"
+
+%BLUE% >> Corrected.
+
+L154: use penname for "e" in "e\tau_h"
+
+%BLUE% >> Corrected.
+
+L157: "kinematics" ==> "kinematic properties"
+
+%BLUE% >> Corrected.
+
+L159: add a comma after "process"
+
+%BLUE% >> Added.
+
+L162: remove the colon after "as"
+
+%BLUE% >> Removed.
+
+L170: "kinematics of the M_T distribution" ==> "details of the M_T
+distributions"
+
+%BLUE% >> Corrected.
+
+L175: "The kinematics of the fitted variables are not tied to the
+kinematics of the tau lepton" ==> "The fitter variables are not tied to
+the kinematic properties of the tau lepton"
+
+%BLUE% >> Corrected.
+
+
+
+
+
+
+
+
+L185: not sure, but I believe it's better to write "\tau_h's"
+
+%BLUE% >> OK, corrected.
+
+L187: "single-top" ==> "single top quark"
+
+%BLUE% >> Corrected.
+
+L189: you have already defined "pileup", so "The pileup, trigger and
+lepton identification efficiencies, ..."
+
+%BLUE% >> Ok, corrected.
+
+L190: no hyphen in "b-tagging", according to guidelines
+
+%BLUE% >> Corrected.
+
+Caption of fig. 2: "M_T" has already been defined, no need to use here
+both the symbol and its description
+
+%BLUE% >> Removed the symbol to keep the Figure more self-sufficient.
+
+L244: you have already defined "pileup", so "The pileup is estimated
+from the measured instantaneous luminosity ..."
+
+%BLUE% >> Ok, corrected.
+
+L249: use a dash in "Bowler--Lund"
+
+%BLUE% >> Corrected.
+
+L258: "dataset" ==> "data set", according to guidelines
+
+%BLUE% >> Corrected.
+
+L262: "final-state (FSR) and initial-state radiation (ISR)", with
+hyphens according to guidelines
+
+%BLUE% >> Corrected.
+
+L273: use penname for "e" in "e\tau_h"
+
+%BLUE% >> Corrected.
+
+Caption of table 1: use penname for "e" in "e\tau_h"; strike "defined by
+the kinematics of the jets in the event as described in Section 5",
+since that is redundant at this point; the sentences "The multijet
+process ... Section 6" and ""the observed ... expectations" belong to
+the main text and not to the table caption
+
+%BLUE% >> Corrected.
+
+Table 1: use a dash in "Drell--Yan"
+
+%BLUE% >> Added.
+
+L278: use penname for "e" in "e\tau_h"
+
+%BLUE% >> Corrected.
+
+Caption of fig. 3: use penname for "e" in "e\tau_h"; "top" ==> "top
+quark"; strike "gray" (not referring to colors)
+
+%BLUE% >> Corrected.
+
+
+
+
+
+
+
+
+
+Caption of table 2: use penname for "e" in "e\tau_h"
+
+%BLUE% >> Corrected
+
+Table 2: use a dash in "Drell--Yan" (twice); do not use "statistics" to
+mean "sample size" or "statistical uncertainty"
+
+%BLUE% >> Corrected.
+
+L289+1: use penname for "e" in "e\tau_h"
+
+%BLUE% >> Corrected.
+
+L293+1: use penname for "e" in "e\tau_h"
+
+%BLUE% >> Corrected.
+
+L293+1,+2,+3: is is "tau" or should it be instead "tau_h" ?
+
+%BLUE% >> 
+
+L297+1: use penname for "e" in "e\tau_h"
+
+%BLUE% >> Corrected.
+
+L309: "systematical" ==> "systematic"
+
+%BLUE% >> Corrected.
+
+L311: not sure, but I believe it's better to write "\tau's"
+
+%BLUE% >> OK. (Now the vote favors the apostrophe.)
+
+L320: "M_T" definition not needed here
+
+%BLUE% >> Corrected.
+
+L321, 322: "kinematics" ==> "kinematic properties" (or something
+equivalent)
+
+%BLUE% >> Corrected.
+
+L327: "tau" ==> "\tau"
+
+%BLUE% >> Corrected with "\ell\tau final state" instead of lepton-\tau.
+
+L332: the inclusion of the Acknowledgement section is mandatory (also for CWR)
+
+%BLUE% >> 
+
+L416: remove ", CERN"
+
+%BLUE% >> Removed.
+
+Ref. 46: Use the following BibTeX form to get the 2018 Particle Data Group reference:
+@article{PDG2018,
+      author         = "{Particle Data Group} and M. Tanabashi and others",
+      title          = "Review of particle physics",
+      journal        = "Phys. Rev. D",
+      volume         = "98",
+      pages          = "030001",
+      doi            = "10.1103/PhysRevD.98.030001",
+      year           = "2018",
+}
+
+%BLUE% >> Corrected.
+
+
+
+
 # plots with "CMS Preliminary" for PAS
 
 tau_pt
