@@ -282,7 +282,7 @@ L293+1: use penname for "e" in "e\tau_h"
 
 L293+1,+2,+3: is is "tau" or should it be instead "tau_h" ?
 
-%BLUE% >> 
+%BLUE% >> Yes, corrected.
 
 L297+1: use penname for "e" in "e\tau_h"
 
@@ -311,7 +311,10 @@ L327: "tau" ==> "\tau"
 
 L332: the inclusion of the Acknowledgement section is mandatory (also for CWR)
 
-%BLUE% >> 
+%BLUE% >> Added the acknowledgement of a [[https://twiki.cern.ch/twiki/bin/viewauth/CMS/Internal/PubAcknow]["short letter"]].
+Can I also add an acknowledgement for my grant?
+The grant comes from the Portuguese FCT agency via IDPASC program -- I would like to mention this.
+Also can I add an acknowledgement for the local computing resources of the lab in addition to "we gratefully acknowledge the computing centres and personnel of the Worldwide LHC Computing Grid"?
 
 L416: remove ", CERN"
 
@@ -329,6 +332,21 @@ Ref. 46: Use the following BibTeX form to get the 2018 Particle Data Group refer
 }
 
 %BLUE% >> Corrected.
+
+
+## on "tauh" in cross section and acceptance
+
+the formula is:
+
+sigma(tot) = N / (L * eff * B(fin.state) * A(fin.state))
+and
+sigma(vis) = N / (L * eff * B(fin.state))
+
+in our case B includes B(W->tau)*B(tau->tauh)
+
+so "fin.state" is just an indication where it is measured.
+
+    modified:   TOP-18-005.tex
 
 
 
