@@ -235,6 +235,7 @@ na = TauIDEmbedder(process, cms, # pass tour process object
 na.runTauID()
 
 
+"""
 if isMC:
     print "MC"
     process.p = cms.Path(
@@ -253,5 +254,24 @@ else:
      process.BadPFMuonFilter *
      process.BadChargedCandidateFilter *
      process.ntupler)
+"""
 
+
+if dataset_reco_name in '2017legacy_2016legacy':
+    # on the fly tau ID in 2016legacy and 2017legacy
+    run_path = process.rerunMvaIsolationSequence * process.NewTauIDsEmbedded * \
+        process.BadPFMuonFilter * process.BadChargedCandidateFilter
+else:
+    run_path = process.BadPFMuonFilter * process.BadChargedCandidateFilter
+
+if isMC:
+    print "MC"
+    # include bFrag systematics
+    run_path = run_path * process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer
+
+else:
+    print "Data"
+
+run_path = run_path * process.ntupler
+process.p = cms.Path(run_path)
 

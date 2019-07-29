@@ -73,6 +73,12 @@ input_files, isMC, dtag = ('file:/eos/user/m/mmagheri/6236CEDA-C0C8-E711-9081-FA
 #input_files, isMC, dtag = ('file:/eos/user/m/mmagheri/F6E4B280-3E97-E711-B40B-549F35AD8BFD.root',), True, 'Prova_locale_segnale'
 
 
+input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/test-data-files/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8_RunIISummer16MiniAODv3_PUMoriond17_94X_mcRun2_asymptotic_v3-v1_110000_B22320DB-EBBC-E811-A987-14187763B811.root",), True, 'MC_TTJets_2016legacy'
+input_files, isMC, dtag = ('file:/afs/cern.ch/user/o/otoldaie/public/RunIIFall17MiniAOD_TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8_MINIAODSIM_94X_mc2017_realistic_v10-v1_00000_9E2812DC-B7F4-E711-A3AC-0025905C54BA.root',), True, 'MC_TTJets_2017legacy_test2'
+input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/test-data-files/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIIFall17MiniAODv2_PU2017_12Apr2018_94X_mc2017_realistic_v14-v1_MINIAODSIM_00000_523E450B-CB41-E811-AACA-001E6739B849.root',), True, 'MC_TTJets_2017legacy_test2'
+
+dataset_reco_name = '2017legacy'
+
 from os import environ
 
 if 'INFILE' in environ:
@@ -199,20 +205,49 @@ process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
 #process.genParticles2HepMC = genParticles2HepMC.clone( genParticles = cms.InputTag("mergedGenParticles") )
 #process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
 #process.particleLevel.excludeNeutrinosFromJetClustering = False
-#process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
+process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
 
 
+import UserCode.NtuplerAnalyzer.CfiFile_cfi as std_config
 
-process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
+process.ntupler = std_config.ntupler
 #process.demo.minTracks=1000
 
-parameter_names_per_reco = process.parameter_names_per_reco
+print process.ntupler.tau_objs_name
+#print process.ntupler['tau_objs_name']
+print getattr(process.ntupler, 'tau_objs_name')
 
-process.ntupler.tauIDname = parameter_names_per_reco['tauIDname'].get(dataset_reco_name, parameter_names_per_reco['tauIDname']['default'])
+parameter_names_per_reco = std_config.parameter_names_per_reco
+
+for param_name, param_defs in parameter_names_per_reco.items():
+    param_def = param_defs['default']
+    for same_definition_group in param_defs:
+        if dataset_reco_name in same_definition_group:
+            param_def = param_defs[same_definition_group]
+
+    setattr(process.ntupler, param_name, param_def)
+
+print dataset_reco_name, process.ntupler.tau_objs_name, process.ntupler.tau_VLoose_ID
+
+
+# for legacy 2016 and 2017 the tau ID must be recomputed
+# setting up the recomputation here
+
+if dataset_reco_name in ('2016legacy', '2017legacy'):
+    from UserCode.NtuplerAnalyzer.runTauIdMVA import *
+    na = TauIDEmbedder(process, cms, # pass tour process object
+        #cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2017v2_WPEff90"), # <-- a tricky place, WP90 is ??
+        #cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2017v2_WPEff70"),
+        tauIdDiscrMVA_2017_version = 'v2',
+        debug  = True,
+        toKeep = ["2017v2"] # pick the one you need: ["2017v1", "2017v2", "newDM2017v2", "dR0p32017v2", "2016v1", "newDM2016v1"]
+    )
+    na.runTauID()
+
 
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.isMC = cms.bool(isMC)
-process.ntupler.is2017rereco = cms.bool(is2017rereco)
+process.ntupler.is2016legacy = cms.bool(dataset_reco_name == '2016legacy')
 process.ntupler.isLocal = cms.bool(False)
 process.ntupler.withHLT = cms.bool(withHLT)
 process.ntupler.dtag = cms.string(dtag)
@@ -285,20 +320,24 @@ process.BadChargedCandidateFilter.taggingMode = cms.bool(to_tag)
 process.BadChargedCandidateFilter.filter = cms.bool(not to_tag)
 
 
+
+
+if dataset_reco_name in '2017legacy_2016legacy':
+    # on the fly tau ID in 2016legacy and 2017legacy
+    run_path = process.rerunMvaIsolationSequence * process.NewTauIDsEmbedded * \
+        process.BadPFMuonFilter * process.BadChargedCandidateFilter
+else:
+    run_path = process.BadPFMuonFilter * process.BadChargedCandidateFilter
+
 if isMC:
     print "MC"
-    process.p = cms.Path(
-     process.BadPFMuonFilter *
-     process.BadChargedCandidateFilter *
-     process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
-     process.ntupler)
+    # include bFrag systematics
+    run_path = run_path * process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer
 
 else:
-    print "data"
-    process.p = cms.Path(
-     process.BadPFMuonFilter *
-     process.BadChargedCandidateFilter *
-     process.ntupler)
+    print "Data"
 
+run_path = run_path * process.ntupler
+process.p = cms.Path(run_path)
 
 

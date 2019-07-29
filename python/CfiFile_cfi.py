@@ -84,13 +84,13 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
 
 # per-dataset-reco parameters defs
 parameter_names_per_reco = {
-'tau_objs_name':  {'default': cms.string('slimmedTaus'), 'weird': cms.string('NewTauIDsEmbedded')},
-'tau_VVLoose_ID': {'2017legacy': cms.string("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017"), 'default': ''},
-'tau_VLoose_ID' : {'2017legacy': cms.string("byVLooseIsolationMVArun2017v2DBoldDMwLT2017" ), 'default': cms.string("byVLooseIsolationMVArun2v1DBoldDMwLT")},
-'tau_Loose_ID'  : {'2017legacy': cms.string("byLooseIsolationMVArun2017v2DBoldDMwLT2017"  ), 'default': cms.string("byLooseIsolationMVArun2v1DBoldDMwLT") },
-'tau_Medium_ID' : {'2017legacy': cms.string("byMediumIsolationMVArun2017v2DBoldDMwLT2017" ), 'default': cms.string("byMediumIsolationMVArun2v1DBoldDMwLT")},
-'tau_Tight_ID'  : {'2017legacy': cms.string("byTightIsolationMVArun2017v2DBoldDMwLT2017"  ), 'default': cms.string("byTightIsolationMVArun2v1DBoldDMwLT") },
-'tau_VTight_ID' : {'2017legacy': cms.string("byVTightIsolationMVArun2017v2DBoldDMwLT2017" ), 'default': cms.string("byVTightIsolationMVArun2v1DBoldDMwLT")},
-'tau_VVTight_ID': {'2017legacy': cms.string("byVVTightIsolationMVArun2017v2DBoldDMwLT2017"), 'default': ''},
+'tau_objs_name':  {'2017legacy_2016legacy': cms.string('NewTauIDsEmbedded'), 'default': cms.string('slimmedTaus'),},
+'tau_VVLoose_ID': {'2017legacy_2016legacy': cms.string("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017"), 'default': ''},
+'tau_VLoose_ID' : {'2017legacy_2016legacy': cms.string("byVLooseIsolationMVArun2017v2DBoldDMwLT2017" ), 'default': cms.string("byVLooseIsolationMVArun2v1DBoldDMwLT")},
+'tau_Loose_ID'  : {'2017legacy_2016legacy': cms.string("byLooseIsolationMVArun2017v2DBoldDMwLT2017"  ), 'default': cms.string("byLooseIsolationMVArun2v1DBoldDMwLT") },
+'tau_Medium_ID' : {'2017legacy_2016legacy': cms.string("byMediumIsolationMVArun2017v2DBoldDMwLT2017" ), 'default': cms.string("byMediumIsolationMVArun2v1DBoldDMwLT")},
+'tau_Tight_ID'  : {'2017legacy_2016legacy': cms.string("byTightIsolationMVArun2017v2DBoldDMwLT2017"  ), 'default': cms.string("byTightIsolationMVArun2v1DBoldDMwLT") },
+'tau_VTight_ID' : {'2017legacy_2016legacy': cms.string("byVTightIsolationMVArun2017v2DBoldDMwLT2017" ), 'default': cms.string("byVTightIsolationMVArun2v1DBoldDMwLT")},
+'tau_VVTight_ID': {'2017legacy_2016legacy': cms.string("byVVTightIsolationMVArun2017v2DBoldDMwLT2017"), 'default': ''},
 }
 

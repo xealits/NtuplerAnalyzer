@@ -3008,8 +3008,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_energy_ScaleDown    .push_back(0.);
 		NT_lep_energy_SmearUp      .push_back(0.);
 		NT_lep_energy_SmearDown    .push_back(0.);
-		NT_lep_energy_ScaleEtUp    .push_back(0.);
-		NT_lep_energy_ScaleEtDown  .push_back(0.);
+		NT_lep_energy_2016legacy_ScaleEtUp    .push_back(0.);
+		NT_lep_energy_2016legacy_ScaleEtDown  .push_back(0.);
         	NT_lep_energy_parameter1_r9.push_back(0.);
 		}
 
@@ -3027,8 +3027,14 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_energy_SmearUp   .push_back(selElectrons[l].userFloat("energySigmaUp"));
 		NT_lep_energy_SmearDown .push_back(selElectrons[l].userFloat("energySigmaDown"));
 		// legacy 2016 feature: energy invervion at 45GeV, correction with this additional variation
-		NT_lep_energy_ScaleEtUp   .push_back(selElectrons[l].userFloat("energyScaleEtUp"));
-		NT_lep_energy_ScaleEtDown .push_back(selElectrons[l].userFloat("energyScaleEtDown"));
+		if (is2016legacy) {
+			NT_lep_energy_2016legacy_ScaleEtUp   .push_back(selElectrons[l].userFloat("energyScaleEtUp"));
+			NT_lep_energy_2016legacy_ScaleEtDown .push_back(selElectrons[l].userFloat("energyScaleEtDown"));
+			}
+		else {
+			NT_lep_energy_2016legacy_ScaleEtUp   .push_back(0.);
+			NT_lep_energy_2016legacy_ScaleEtDown .push_back(0.);
+			}
 
 		NT_lep_id.push_back(selElectrons[l].pdgId());
 		// mu_trig_objs or el_trig_objs
