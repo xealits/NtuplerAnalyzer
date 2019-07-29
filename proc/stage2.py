@@ -5191,7 +5191,9 @@ def main(input_filename, fout_name, outdir, channels_to_select, lumi_bcdef=19714
 
     start_time = datetime.now()
 
-    input_tfile = TFile(input_filename)
+    #input_tfile = TFile(input_filename)
+    # open URLs
+    input_tfile = TFile.Open(input_filename)
     tree = input_tfile.Get('ntupler/reduced_ttree')
 
     """

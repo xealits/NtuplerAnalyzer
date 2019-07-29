@@ -137,3 +137,8 @@ time python channel_distrs_full_loop.py --do-W-stitching --metmuegclean false --
 time python channel_distrs_full_loop.py --do-W-stitching --metmuegclean false --options on_uncor_lepjets  -l logss temp/3/ channels_nom_sys_muon_sel_main -i ./gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_84.root &
 time python channel_distrs_full_loop.py --do-W-stitching --metmuegclean false --options on_remove_lepjets -l logss temp/4/  channels_nom_sys_muon_sel_main -i ./gstore_outdirs/v37/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v37_MC2016_Summer16_TTJets_powheg/190207_134619/0000/MC2016_Summer16_TTJets_powheg_84.root &
 
+
+time python channel_distrs_full_loop.py --do-W-stitching  -l logss temp/ channels_nom_sys_muon_sel_main -i /eos/user/o/otoldaie/test-data-files/MC_NtuplerAnalyzer_test_METfiltersOFF_TTTo2L2Nu_recordAll_1.root
+
+time python channel_distrs_full_loop.py --do-W-stitching  -l logss temp/ channels_nom_sys_muon_sel_main -i root://se01.indiacms.res.in:1094//cms/store/user/asikdar/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/CRAB3_MC_TTTo2L2Nu/190502_110028/0000/NtuplerAnalyzer_test_METfiltersOFF_TTTo2L2Nu_recordAll_1.root
+
