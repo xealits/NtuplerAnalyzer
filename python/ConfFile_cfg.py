@@ -83,6 +83,8 @@ if 'INFILE' in environ:
 if any('2015' in infile for infile in input_files) or '2015' in dtag:
     HLT_source = 'HLT2'
 
+dataset_reco_name = '2016original'
+
 record_scheme = 'tauCands' # 'signal' # 'tauID' # 'tauCands' #  Dilep MonitorHLT tauIDantiIso jets'
 
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/26ABF488-A0BE-E611-BEEB-0CC47A4D7640.root'
@@ -105,7 +107,7 @@ ivars.inputFiles = input_files
 
 to_tag = True
 
-output_file = './NtuplerAnalyzer_test_METfilters%s_%s_%s.root' % ('OFF' if to_tag else 'ON', dtag, record_scheme)
+output_file = './NtuplerAnalyzer_test_%_METfilters%s_%s_%s.root' % ('MC' if isMC else 'Data', 'OFF' if to_tag else 'ON', dtag, record_scheme)
 ivars.outputFile = output_file
 # get and parse the command line arguments
 ivars.parseArguments()
@@ -204,6 +206,10 @@ process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
 process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 #process.demo.minTracks=1000
 
+parameter_names_per_reco = process.parameter_names_per_reco
+
+process.ntupler.tauIDname = parameter_names_per_reco['tauIDname'].get(dataset_reco_name, parameter_names_per_reco['tauIDname']['default'])
+
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.isMC = cms.bool(isMC)
 process.ntupler.is2017rereco = cms.bool(is2017rereco)
@@ -260,11 +266,6 @@ process.load('Configuration.StandardSequences.Services_cff')
 #process.load("RecoMET.METFilters.metFilters_cff")
 #process.load("PhysicsTools.PatAlgos.slimming.metFilterPaths_cff")
 #from PhysicsTools.PatAlgos.slimming.metFilterPaths_cff import *
-process.load("RecoMET.METFilters.metFilters_cff") # back to this
-
-#process.p = cms.Path(Flag_BadChargedCandidateFilter * Flag_BadPFMuonFilter * process.ntupler)
-#process.p = cms.Path(BadChargedCandidateFilter * BadPFMuonFilter * process.ntupler)
-#process.p = cms.Path(process.BadChargedCandidateFilter * process.BadPFMuonFilter * process.ntupler)
 #process.p = cms.Sequence(process.BadChargedCandidateFilter * process.BadPFMuonFilter * process.ntupler)
 #process.p = cms.Sequence(process.metFilters * process.ntupler)
 
@@ -289,7 +290,7 @@ if isMC:
     process.p = cms.Path(
      process.BadPFMuonFilter *
      process.BadChargedCandidateFilter *
-#     process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
+     process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
      process.ntupler)
 
 else:

@@ -905,6 +905,11 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	edm::EDGetTokenT<pat::MuonCollection> muons_;
 	edm::EDGetTokenT<pat::ElectronCollection> electrons_;
 	edm::EDGetTokenT<pat::TauCollection> taus_;
+
+	//string ("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+	string tau_VLoose_ID, tau_Loose_ID , tau_Medium_ID, tau_Tight_ID , tau_VTight_ID;
+	//string ("byVVTightIsolationMVArun2017v2DBoldDMwLT2017");
+	//
 	edm::EDGetTokenT<reco::VertexCollection> vtx_;
 	edm::EDGetTokenT<double> rho_;
 	edm::EDGetTokenT<edm::TriggerResults> trigResults_, trigResultsRECO_, trigResultsPAT_;
@@ -1073,7 +1078,17 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	muons_     = consumes<pat::MuonCollection>    (edm::InputTag("slimmedMuons"));
 	electrons_ = consumes<pat::ElectronCollection>(edm::InputTag("slimmedElectrons"));
 	//taus_ = consumes<pat::TauCollection>(edm::InputTag("slimmedTaus"));
-	taus_ = consumes<pat::TauCollection>(edm::InputTag("NewTauIDsEmbedded")); // the taus with embedded reprocessed 2017v2 tau IDs for 2016 legacy
+	//taus_ = consumes<pat::TauCollection>(edm::InputTag("NewTauIDsEmbedded")); // the taus with embedded reprocessed 2017v2 tau IDs for 2016 legacy
+	taus_ = consumes<pat::TauCollection>(edm::InputTag(iConfig.getParameter<std::string>("tau_objs_name")));
+
+	//string ("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017");
+	tau_VLoose_ID = iConfig.getParameter<std::string>("tau_VLoose_ID");
+	tau_Loose_ID  = iConfig.getParameter<std::string>("tau_Loose_ID" );
+	tau_Medium_ID = iConfig.getParameter<std::string>("tau_Medium_ID");
+	tau_Tight_ID  = iConfig.getParameter<std::string>("tau_Tight_ID" );
+	tau_VTight_ID = iConfig.getParameter<std::string>("tau_VTight_ID");
+	//string ("byVVTightIsolationMVArun2017v2DBoldDMwLT2017");
+
 	vtx_ = consumes<reco::VertexCollection>(edm::InputTag("offlineSlimmedPrimaryVertices"));
 	rho_ = consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
 	// declare consuming the HLT to be able to get triggers in the following
@@ -2893,14 +2908,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	string tau_againstElectron ("againstElectronTightMVA6");
 
 	//("byIsolationMVArun2017v2DBoldDMwLTraw2017");
-	
-	//string ("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017");
-	string tau_VLoose_ID ("byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
-	string tau_Loose_ID  ("byLooseIsolationMVArun2017v2DBoldDMwLT2017");
-	string tau_Medium_ID ("byMediumIsolationMVArun2017v2DBoldDMwLT2017");
-	string tau_Tight_ID  ("byTightIsolationMVArun2017v2DBoldDMwLT2017");
-	string tau_VTight_ID ("byVTightIsolationMVArun2017v2DBoldDMwLT2017");
-	//string ("byVVTightIsolationMVArun2017v2DBoldDMwLT2017");
 
 	pat::TauCollection IDtaus, selTaus;
 	processTaus_ID    (taus,   weight, tau_decayMode, tau_againstMuon, tau_againstElectron, IDtaus, false, false);

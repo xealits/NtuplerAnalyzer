@@ -31,7 +31,7 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--dsets-info", type=str, default='dsets_info.yaml', help="file with info on datasets: xsec, dtag, isMC, possible LumiMask")
     parser.add_argument("--output-site", type=str, default='T2_PT_NCG_Lisbon', help="grid output site")
     parser.add_argument("--without-HLT", action="store_true", default=False, help="turn off HLT in events (to support noHLT MC in 2015)")
-    parser.add_argument("--is2016legacy", action="store_true", help="set the 2016legacy flag")
+    parser.add_argument("--dataset-reco-name", action="store_true", help="set the name customization per-dataset-per-reco")
 
     parser.add_argument('-l', '--lumi-certificate', type=str, default='', help='the certificate for data')
 
@@ -58,16 +58,16 @@ if __name__ == "__main__":
         dtag = dsets_info[dset]['dtag']
         isMC = dsets_info[dset]['isMC']
         LumiMask = dsets_info[dset]['LumiMask']
-        is2016legacy = 'is2016legacy' in dsets_info[dset]
+        dataset_reco_name = dsets_info.get(dataset_reco_name) #'is2016legacy' in dsets_info[dset]
     else:
         _, first, second, third = dset.split('/')
         isMC = 'SIM' in third
         dtag = first + ',' + second
         LumiMask = args.lumi_certificate
-        is2016legacy = False
+        dataset_reco_name = '2016legacy'
 
-    if args.is2016legacy:
-        is2016legacy = args.is2016legacy
+    if args.dataset_reco_name:
+        dataset_reco_name = args.dataset_reco_name
 
     withHLT = not args.without_HLT
 
@@ -76,13 +76,13 @@ if __name__ == "__main__":
     logging.debug('LumiMask = ' + LumiMask)
     logging.debug('isMC = ' + str(isMC))
     logging.debug('withHLT = ' + str(withHLT))
-    logging.debug('is2016legacy = ' + str(is2016legacy))
+    logging.debug('dataset_reco_name = ' + str(dataset_reco_name))
 
     config_file = conf_dir + version + '/%s%s_cfg.py' % (dtag, suffix)
 
     template_crab = template_crab.format(LumiMask=LumiMask, dtag=dtag, suffix=suffix, version=version, dset=dset,
         config_file=config_file, output_site=args.output_site)
-    template_cfg = template_cfg .format(isMC=isMC, dtag=dtag, record_scheme=record_scheme, withHLT=withHLT, is2016legacy=is2016legacy)
+    template_cfg = template_cfg .format(isMC=isMC, dtag=dtag, record_scheme=record_scheme, withHLT=withHLT, dataset_reco_name=dataset_reco_name)
 
     if not os.path.exists(conf_dir + version):
         os.makedirs(conf_dir + version)

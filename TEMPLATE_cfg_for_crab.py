@@ -30,7 +30,7 @@ ivars.inputFiles=(
 # MC or Data is used everywhere
 isMC = {isMC}   # PARAMETER
 dtag = '{dtag}' # PARAMETER
-is2016legacy = {is2016legacy}
+dataset_reco_name = {dataset_reco_name}
 
 #ivars.outputFile = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/MC2016_Summer16_TTJets_powheg_0.root'
 ivars.outputFile = dtag + '.root'
@@ -126,9 +126,25 @@ process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
 
 
 # NTUPLER
-process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
+#process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
+import UserCode.NtuplerAnalyzer.CfiFile_cfi as std_config
+
+process.ntupler = std_config.ntupler
+
+# set name customizations per dataset per reco
+parameter_names_per_reco = std_config.parameter_names_per_reco
+
+for param_name, param_defs in parameter_names_per_reco.items():
+    param_def = param_defs['default']
+    for same_definition_group in param_defs:
+        if dataset_reco_name in same_definition_group:
+            param_def = param_defs[same_definition_group]
+
+    setattr(process.ntupler, param_name, param_def)
+
+
 process.ntupler.isMC = cms.bool(isMC)
-process.ntupler.is2016legacy = cms.bool(is2016legacy)
+process.ntupler.is2016legacy = cms.bool(dataset_reco_name == '2016legacy')
 #process.ntupler.dtag = cms.string('MC2016_TT_powheg')
 process.ntupler.dtag = cms.string(dtag)
 

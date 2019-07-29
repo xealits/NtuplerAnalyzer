@@ -69,6 +69,28 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     jet_kino_cuts_pt  = cms.double( 20.),
     jet_kino_cuts_eta = cms.double( 2.5),
     tau_kino_cuts_pt  = cms.double( 20.),
-    tau_kino_cuts_eta = cms.double( 2.4)
+    tau_kino_cuts_eta = cms.double( 2.4),
+
+    # object names, variable among datasets and reco-s
+    tau_objs_name = cms.string('slimmedTaus'),
+    tau_VVLoose_ID = cms.string("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017"),
+    tau_VLoose_ID  = cms.string("byVLooseIsolationMVArun2017v2DBoldDMwLT2017" ),
+    tau_Loose_ID   = cms.string("byLooseIsolationMVArun2017v2DBoldDMwLT2017"  ),
+    tau_Medium_ID  = cms.string("byMediumIsolationMVArun2017v2DBoldDMwLT2017" ),
+    tau_Tight_ID   = cms.string("byTightIsolationMVArun2017v2DBoldDMwLT2017"  ),
+    tau_VTight_ID  = cms.string("byVTightIsolationMVArun2017v2DBoldDMwLT2017" ),
+    tau_VVTight_ID = cms.string("byVVTightIsolationMVArun2017v2DBoldDMwLT2017"),
 )
+
+# per-dataset-reco parameters defs
+parameter_names_per_reco = {
+'tau_objs_name':  {'default': cms.string('slimmedTaus'), 'weird': cms.string('NewTauIDsEmbedded')},
+'tau_VVLoose_ID': {'2017legacy': cms.string("byVVLooseIsolationMVArun2017v2DBoldDMwLT2017"), 'default': ''},
+'tau_VLoose_ID' : {'2017legacy': cms.string("byVLooseIsolationMVArun2017v2DBoldDMwLT2017" ), 'default': cms.string("byVLooseIsolationMVArun2v1DBoldDMwLT")},
+'tau_Loose_ID'  : {'2017legacy': cms.string("byLooseIsolationMVArun2017v2DBoldDMwLT2017"  ), 'default': cms.string("byLooseIsolationMVArun2v1DBoldDMwLT") },
+'tau_Medium_ID' : {'2017legacy': cms.string("byMediumIsolationMVArun2017v2DBoldDMwLT2017" ), 'default': cms.string("byMediumIsolationMVArun2v1DBoldDMwLT")},
+'tau_Tight_ID'  : {'2017legacy': cms.string("byTightIsolationMVArun2017v2DBoldDMwLT2017"  ), 'default': cms.string("byTightIsolationMVArun2v1DBoldDMwLT") },
+'tau_VTight_ID' : {'2017legacy': cms.string("byVTightIsolationMVArun2017v2DBoldDMwLT2017" ), 'default': cms.string("byVTightIsolationMVArun2v1DBoldDMwLT")},
+'tau_VVTight_ID': {'2017legacy': cms.string("byVVTightIsolationMVArun2017v2DBoldDMwLT2017"), 'default': ''},
+}
 
