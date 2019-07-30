@@ -1,23 +1,28 @@
 Installation
 ============
 
-The module works with CMSSW_8_0_26+ (CMSSW_8_0_29 recommended)
-and requires [TopQuarkAnalysis/BFragmentation](https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer) wich produces some values for [certain systematics](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopSystematics#Fragmentation).
+The module works with `CMSSW_9_4_5+` (`CMSSW_9_4_9` recommended)
+and requires [TopQuarkAnalysis/BFragmentation](https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer) wich produces the [b fragmentation systematics](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopSystematics#Fragmentation).
 
 Other modules are standard and it should not need anything additional.
 
 An example installation script:
 
-    cmsrel CMSSW_8_0_30
-    cd CMSSW_8_0_30/src 
+    cmsrel CMSSW_9_4_9
+    cd CMSSW_9_4_9/src
     cmsenv
+    git cms-init
 
     # copy of the BFragmentation installation
     mkdir TopQuarkAnalysis
     cd TopQuarkAnalysis
-    git clone ssh://git@gitlab.cern.ch:7999/CMS-TOPPAG/BFragmentationAnalyzer.git
-    cd -
+    # the original repository from TOP PAG:
+    # git clone ssh://git@gitlab.cern.ch:7999/CMS-TOPPAG/BFragmentationAnalyzer.git
+    # my fork with a small patch for compatibility with CMSSW 94X:
+    git clone https://gitlab.cern.ch/otoldaie/BFragmentationAnalyzer.git
+    cd BFragmentationAnalyzer
     scram b
+    cd ../../
 
     # installing the NtuplerAnalyzer
     mkdir UserCode
@@ -29,7 +34,7 @@ If something crashes during the compilation you can cd into separate directories
 compile them one by one and then compile-link everything together.
 Like:
 
-    cd CMSSW_8_0_30/src/UserCode/NtuplerAnalyzer/src/
+    cd CMSSW_9_4_9/src/UserCode/NtuplerAnalyzer/src/
     scram b -j 5
     cd ../plugins/
     scram b -j 5
@@ -37,7 +42,8 @@ Like:
 
 Then a test run should work with:
 
-    cd CMSSW_8_0_30/src/UserCode/NtuplerAnalyzer/
+    cd CMSSW_9_4_9/src/UserCode/NtuplerAnalyzer/
+    cp python/ConfFile_cfg.py ./
     cmsRun python/ConfFile_cfg.py
 
 --- it accesses test files in my CERNBox (EOS) area, for example 1 TT file:
