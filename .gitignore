@@ -4,3 +4,4 @@
 !proc/studies/*png
 !proc/studies/*/*png
 
+python/__init__.py

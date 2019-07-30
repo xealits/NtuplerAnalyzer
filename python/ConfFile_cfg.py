@@ -65,19 +65,62 @@ input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_TuneEE5C_13TeV-powheg-h
 input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_hdampDOWN_TuneCUETP8M2T4_13TeV-powheg-pythia8_F8364FC9-A5F2-E611-90F2-FA163E73666D.root",), True, 'TTJets_HDAMPDown'
 input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/TT_hdampUP_TuneCUETP8M2T4_13TeV-powheg-pythia8_1EA7E8C9-C0F2-E611-85C3-FA163E65B77A.root",),   True, 'TTJets_HDAMPUp'
 
-input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_165F54A0-A3BE-E611-B3F7-0025905A606A.root',), True, 'TTJets2'
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_TuneCUETP8M2T4_13TeV-powheg-fsrdown-pythia8_9EAC0046-06B7-E611-AF76-141877411FED.root',), True, 'TTJets_fsrdown'
-input_files, isMC, dtag = ('file:/eos/user/m/mmagheri/ttbar_prova.root',), True, 'TT_prova'
 
-input_files, isMC, dtag = ('file:/eos/user/m/mmagheri/6236CEDA-C0C8-E711-9081-FA163E84B51B.root',), False, 'Prova_locale_segnale'
-#input_files, isMC, dtag = ('file:/eos/user/m/mmagheri/F6E4B280-3E97-E711-B40B-549F35AD8BFD.root',), True, 'Prova_locale_segnale'
+input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/TT_165F54A0-A3BE-E611-B3F7-0025905A606A.root',), True, 'TTJets2_CMSSW94_test'
+input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/test-data-files/RunIIFall17MiniAOD_TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8_MINIAODSIM_94X_mc2017_realistic_v10-v1_00000_9E2812DC-B7F4-E711-A3AC-0025905C54BA.root',), True, 'TTJets_2017_test'
+# same file in public directory:
 
+input_files, isMC, dtag = ('file:/afs/cern.ch/user/m/mmagheri/workspace/public/FEC01104-3B42-E811-8349-001E6739BB01.root',), True, 'TTJets_2017_test_crashing'
+
+input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/test-data-files/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8_RunIISummer16MiniAODv3_PUMoriond17_94X_mcRun2_asymptotic_v3-v2_MINIAODSIM_100000_4AF402CC-38ED-E811-9602-AC1F6B23C806.root',), True, 'TTJets_ttHtranche3_2016legacy'
 
 input_files, isMC, dtag = ("file:/eos/user/o/otoldaie/test-data-files/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8_RunIISummer16MiniAODv3_PUMoriond17_94X_mcRun2_asymptotic_v3-v1_110000_B22320DB-EBBC-E811-A987-14187763B811.root",), True, 'MC_TTJets_2016legacy'
 input_files, isMC, dtag = ('file:/afs/cern.ch/user/o/otoldaie/public/RunIIFall17MiniAOD_TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8_MINIAODSIM_94X_mc2017_realistic_v10-v1_00000_9E2812DC-B7F4-E711-A3AC-0025905C54BA.root',), True, 'MC_TTJets_2017legacy_test2'
 input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/test-data-files/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8_RunIIFall17MiniAODv2_PU2017_12Apr2018_94X_mc2017_realistic_v14-v1_MINIAODSIM_00000_523E450B-CB41-E811-AACA-001E6739B849.root',), True, 'MC_TTJets_2017legacy_test2'
 
+input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/test-data-files/Data_SingleElectron_Run2016G_17Jul2018-v1_MINIAOD_50000_02DC57F5-A48B-E811-A98E-0CC47AF9B496.root',), False, 'Data_SingleElectron_Run2016G_2016legacy'
+input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/test-data-files/Data_SingleMuon_Run2017D_31Mar2018-v1_MINIAOD_80000_1E703527-F436-E811-80A7-E0DB55FC1055.root',),     False, 'Data_SingleMuon_Run2017D_2017legacy'
+
 dataset_reco_name = '2017legacy'
+
+'''
+running on
+input_files, isMC, dtag = ('file:/afs/cern.ch/user/m/mmagheri/workspace/public/FEC01104-3B42-E811-8349-001E6739BB01.root',), True, 'TTJets_2017_test_crashing'
+
+Requested UserFloat energyScaleEtUp is not available! Possible UserFloats are: 
+ElectronMVAEstimatorRun2Fall17IsoV1Values ElectronMVAEstimatorRun2Fall17NoIsoV1Values ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values ElectronMVAEstimatorRun2Spring15Trig25nsV1Values ElectronMVAEstimatorRun2Spring15Trig50nsV1Values ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values ElectronMVAEstimatorRun2Spring16HZZV1Values ecalEnergyErrPostCorr ecalEnergyErrPreCorr ecalEnergyPostCorr ecalEnergyPreCorr ecalTrkEnergyErrPostCorr ecalTrkEnergyErrPreCorr ecalTrkEnergyPostCorr ecalTrkEnergyPreCorr energyScaleDown energyScaleGainDown energyScaleGainUp energyScaleStatDown energyScaleStatUp energyScaleSystDown energyScaleSystUp energyScaleUp energyScaleValue energySigmaDown energySigmaPhiDown energySigmaPhiUp energySigmaRhoDown energySigmaRhoUp energySigmaUp energySigmaValue energySmearNrSigma heepTrkPtIso 
+
+on
+input_files, isMC, dtag = ('file:/eos/user/o/otoldaie/test-data-files/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8_RunIISummer16MiniAODv3_PUMoriond17_94X_mcRun2_asymptotic_v3-v2_MINIAODSIM_100000_4AF402CC-38ED-E811-9602-AC1F6B23C806.root',), True, 'TTJets_2016legacy'
+
+-- legacy 2016 was split into sub-processes???
+
+pat::Tau: the ID byVTightIsolationMVArun2017v2DBoldDMwLT2017 can't be found in this pat::Tau.
+The available IDs are: 'againstElectronLooseMVA6' 'againstElectronMVA6Raw' 'againstElectronMVA6category' 'againstElectronMediumMVA6' 'againstElectronTightMVA6' 'againstElectronVLooseMVA6' 'againstElectronVTightMVA6' 'againstMuonLoose3' 'againstMuonTight3' 'byCombinedIsolationDeltaBetaCorrRaw3Hits' 'byIsolationMVArun2v1DBdR03oldDMwLTraw' 'byIsolationMVArun2v1DBnewDMwLTraw' 'byIsolationMVArun2v1DBoldDMwLTraw' 'byIsolationMVArun2v1PWdR03oldDMwLTraw' 'byIsolationMVArun2v1PWnewDMwLTraw' 'byIsolationMVArun2v1PWoldDMwLTraw' 'byLooseCombinedIsolationDeltaBetaCorr3Hits' 'byLooseIsolationMVArun2v1DBdR03oldDMwLT' 'byLooseIsolationMVArun2v1DBnewDMwLT' 'byLooseIsolationMVArun2v1DBoldDMwLT' 'byLooseIsolationMVArun2v1PWdR03oldDMwLT' 'byLooseIsolationMVArun2v1PWnewDMwLT' 'byLooseIsolationMVArun2v1PWoldDMwLT' 'byMediumCombinedIsolationDeltaBetaCorr3Hits' 'byMediumIsolationMVArun2v1DBdR03oldDMwLT' 'byMediumIsolationMVArun2v1DBnewDMwLT' 'byMediumIsolationMVArun2v1DBoldDMwLT' 'byMediumIsolationMVArun2v1PWdR03oldDMwLT' 'byMediumIsolationMVArun2v1PWnewDMwLT' 'byMediumIsolationMVArun2v1PWoldDMwLT' 'byPhotonPtSumOutsideSignalCone' 'byTightCombinedIsolationDeltaBetaCorr3Hits' 'byTightIsolationMVArun2v1DBdR03oldDMwLT' 'byTightIsolationMVArun2v1DBnewDMwLT' 'byTightIsolationMVArun2v1DBoldDMwLT' 'byTightIsolationMVArun2v1PWdR03oldDMwLT' 'byTightIsolationMVArun2v1PWnewDMwLT' 'byTightIsolationMVArun2v1PWoldDMwLT' 'byVLooseIsolationMVArun2v1DBdR03oldDMwLT' 'byVLooseIsolationMVArun2v1DBnewDMwLT' 'byVLooseIsolationMVArun2v1DBoldDMwLT' 'byVLooseIsolationMVArun2v1PWdR03oldDMwLT' 'byVLooseIsolationMVArun2v1PWnewDMwLT' 'byVLooseIsolationMVArun2v1PWoldDMwLT' 'byVTightIsolationMVArun2v1DBdR03oldDMwLT' 'byVTightIsolationMVArun2v1DBnewDMwLT' 'byVTightIsolationMVArun2v1DBoldDMwLT' 'byVTightIsolationMVArun2v1PWdR03oldDMwLT' 'byVTightIsolationMVArun2v1PWnewDMwLT' 'byVTightIsolationMVArun2v1PWoldDMwLT' 'byVVLooseIsolationMVArun2v1DBoldDMwLT' 'byVVTightIsolationMVArun2v1DBdR03oldDMwLT' 'byVVTightIsolationMVArun2v1DBnewDMwLT' 'byVVTightIsolationMVArun2v1DBoldDMwLT' 'byVVTightIsolationMVArun2v1PWdR03oldDMwLT' 'byVVTightIsolationMVArun2v1PWnewDMwLT' 'byVVTightIsolationMVArun2v1PWoldDMwLT' 'chargedIsoPtSum' 'chargedIsoPtSumdR03' 'decayModeFinding' 'decayModeFindingNewDMs' 'footprintCorrection' 'footprintCorrectiondR03' 'neutralIsoPtSum' 'neutralIsoPtSumWeight' 'neutralIsoPtSumWeightdR03' 'neutralIsoPtSumdR03' 'photonPtSumOutsideSignalCone' 'photonPtSumOutsideSignalConedR03' 'puCorrPtSum' .
+
+now for 2017legacy TTJets:
+
+pat::Electron: the ID cutBasedElectronID-Fall17-94X-V1-tight can't be found in this pat::Electron.
+The available IDs are: 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose' 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium' 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight' 'cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto' 'cutBasedElectronID-Spring15-25ns-V1-standalone-loose' 'cutBasedElectronID-Spring15-25ns-V1-standalone-medium' 'cutBasedElectronID-Spring15-25ns-V1-standalone-tight' 'cutBasedElectronID-Spring15-25ns-V1-standalone-veto' 'cutBasedElectronID-Spring15-50ns-V2-standalone-loose' 'cutBasedElectronID-Spring15-50ns-V2-standalone-medium' 'cutBasedElectronID-Spring15-50ns-V2-standalone-tight' 'cutBasedElectronID-Spring15-50ns-V2-standalone-veto' 'eidLoose' 'eidRobustHighEnergy' 'eidRobustLoose' 'eidRobustTight' 'eidTight' 'heepElectronID-HEEPV60' 'mvaEleID-Spring15-25ns-Trig-V1-wp80' 'mvaEleID-Spring15-25ns-Trig-V1-wp90' 'mvaEleID-Spring15-25ns-nonTrig-V1-wp80' 'mvaEleID-Spring15-25ns-nonTrig-V1-wp90' 'mvaEleID-Spring15-25ns-nonTrig-V1-wpLoose' 'mvaEleID-Spring15-50ns-Trig-V1-wp80' 'mvaEleID-Spring15-50ns-Trig-V1-wp90' .
+
+new 2017 legacy TT file:
+Requested UserFloat energyScaleEtUp is not available! Possible UserFloats are: 
+ElectronMVAEstimatorRun2Fall17IsoV1Values ElectronMVAEstimatorRun2Fall17NoIsoV1Values ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values ElectronMVAEstimatorRun2Spring15Trig25nsV1Values ElectronMVAEstimatorRun2Spring15Trig50nsV1Values ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values ElectronMVAEstimatorRun2Spring16HZZV1Values ecalEnergyErrPostCorr ecalEnergyErrPreCorr ecalEnergyPostCorr ecalEnergyPreCorr ecalTrkEnergyErrPostCorr ecalTrkEnergyErrPreCorr ecalTrkEnergyPostCorr ecalTrkEnergyPreCorr energyScaleDown energyScaleGainDown energyScaleGainUp energyScaleStatDown energyScaleStatUp energyScaleSystDown energyScaleSystUp energyScaleUp energyScaleValue energySigmaDown energySigmaPhiDown energySigmaPhiUp energySigmaRhoDown energySigmaRhoUp energySigmaUp energySigmaValue energySmearNrSigma heepTrkPtIso 
+
+-- ScaleEt was 2016legacy only:
+https://twiki.cern.ch/twiki/bin/view/CMS/EgammaMiniAODV2#Energy_Scale_and_Smearing
+
+also:
+pat::Tau: the ID byVTightIsolationMVArun2017v2DBoldDMwLT2017 can't be found in this pat::Tau.
+The available IDs are: 'againstElectronLooseMVA6' 'againstElectronMVA6Raw' 'againstElectronMVA6category' 'againstElectronMediumMVA6' 'againstElectronTightMVA6' 'againstElectronVLooseMVA6' 'againstElectronVTightMVA6' 'againstMuonLoose3' 'againstMuonTight3' 'byCombinedIsolationDeltaBetaCorrRaw3Hits' 'byIsolationMVArun2v1DBdR03oldDMwLTraw' 'byIsolationMVArun2v1DBnewDMwLTraw' 'byIsolationMVArun2v1DBoldDMwLTraw' 'byIsolationMVArun2v1PWdR03oldDMwLTraw' 'byIsolationMVArun2v1PWnewDMwLTraw' 'byIsolationMVArun2v1PWoldDMwLTraw' 'byLooseCombinedIsolationDeltaBetaCorr3Hits' 'byLooseIsolationMVArun2v1DBdR03oldDMwLT' 'byLooseIsolationMVArun2v1DBnewDMwLT' 'byLooseIsolationMVArun2v1DBoldDMwLT' 'byLooseIsolationMVArun2v1PWdR03oldDMwLT' 'byLooseIsolationMVArun2v1PWnewDMwLT' 'byLooseIsolationMVArun2v1PWoldDMwLT' 'byMediumCombinedIsolationDeltaBetaCorr3Hits' 'byMediumIsolationMVArun2v1DBdR03oldDMwLT' 'byMediumIsolationMVArun2v1DBnewDMwLT' 'byMediumIsolationMVArun2v1DBoldDMwLT' 'byMediumIsolationMVArun2v1PWdR03oldDMwLT' 'byMediumIsolationMVArun2v1PWnewDMwLT' 'byMediumIsolationMVArun2v1PWoldDMwLT' 'byPhotonPtSumOutsideSignalCone' 'byTightCombinedIsolationDeltaBetaCorr3Hits' 'byTightIsolationMVArun2v1DBdR03oldDMwLT' 'byTightIsolationMVArun2v1DBnewDMwLT' 'byTightIsolationMVArun2v1DBoldDMwLT' 'byTightIsolationMVArun2v1PWdR03oldDMwLT' 'byTightIsolationMVArun2v1PWnewDMwLT' 'byTightIsolationMVArun2v1PWoldDMwLT' 'byVLooseIsolationMVArun2v1DBdR03oldDMwLT' 'byVLooseIsolationMVArun2v1DBnewDMwLT' 'byVLooseIsolationMVArun2v1DBoldDMwLT' 'byVLooseIsolationMVArun2v1PWdR03oldDMwLT' 'byVLooseIsolationMVArun2v1PWnewDMwLT' 'byVLooseIsolationMVArun2v1PWoldDMwLT' 'byVTightIsolationMVArun2v1DBdR03oldDMwLT' 'byVTightIsolationMVArun2v1DBnewDMwLT' 'byVTightIsolationMVArun2v1DBoldDMwLT' 'byVTightIsolationMVArun2v1PWdR03oldDMwLT' 'byVTightIsolationMVArun2v1PWnewDMwLT' 'byVTightIsolationMVArun2v1PWoldDMwLT' 'byVVLooseIsolationMVArun2v1DBoldDMwLT' 'byVVTightIsolationMVArun2v1DBdR03oldDMwLT' 'byVVTightIsolationMVArun2v1DBnewDMwLT' 'byVVTightIsolationMVArun2v1DBoldDMwLT' 'byVVTightIsolationMVArun2v1PWdR03oldDMwLT' 'byVVTightIsolationMVArun2v1PWnewDMwLT' 'byVVTightIsolationMVArun2v1PWoldDMwLT' 'chargedIsoPtSum' 'chargedIsoPtSumdR03' 'decayModeFinding' 'decayModeFindingNewDMs' 'footprintCorrection' 'footprintCorrectiondR03' 'neutralIsoPtSum' 'neutralIsoPtSumWeight' 'neutralIsoPtSumWeightdR03' 'neutralIsoPtSumdR03' 'photonPtSumOutsideSignalCone' 'photonPtSumOutsideSignalConedR03' 'puCorrPtSum' .
+
+-- taus are calculated on the fly in 2016legacy and 2017legacy
+https://twiki.cern.ch/twiki/bin/view/CMS/TauIDRecommendation13TeV#2017v2_discriminators ...
+look TEMPLATE for how it was done for ntupler production
+
+'''
+
 
 from os import environ
 
@@ -89,9 +132,7 @@ if 'INFILE' in environ:
 if any('2015' in infile for infile in input_files) or '2015' in dtag:
     HLT_source = 'HLT2'
 
-dataset_reco_name = '2016original'
-
-record_scheme = 'tauCands' # 'signal' # 'tauID' # 'tauCands' #  Dilep MonitorHLT tauIDantiIso jets'
+record_scheme = 'tauID_Dilep' # 'signal_recordAll' # 'signal' # 'tauID' # 'tauCands' #  Dilep MonitorHLT tauIDantiIso jets'
 
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/26ABF488-A0BE-E611-BEEB-0CC47A4D7640.root'
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root'
@@ -113,7 +154,7 @@ ivars.inputFiles = input_files
 
 to_tag = True
 
-output_file = './NtuplerAnalyzer_test_%_METfilters%s_%s_%s.root' % ('MC' if isMC else 'Data', 'OFF' if to_tag else 'ON', dtag, record_scheme)
+output_file = './NtuplerAnalyzer_test_%s_METfilters%s_%s_%s.root' % ('MC' if isMC else 'Data', 'OFF' if to_tag else 'ON', dtag, record_scheme)
 ivars.outputFile = output_file
 # get and parse the command line arguments
 ivars.parseArguments()
@@ -170,7 +211,7 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 #process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100000
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
@@ -208,6 +249,8 @@ process.load("GeneratorInterface.RivetInterface.particleLevel_cfi")
 process.load('TopQuarkAnalysis.BFragmentationAnalyzer.bfragWgtProducer_cfi')
 
 
+
+#process.load("UserCode.NtuplerAnalyzer.CfiFile_cfi")
 import UserCode.NtuplerAnalyzer.CfiFile_cfi as std_config
 
 process.ntupler = std_config.ntupler
@@ -255,6 +298,13 @@ process.ntupler.HLT_source = cms.string(HLT_source)
 #process.ntupler.elHLT_MC   = cms.string("HLT_Ele32_eta2p1_WPTight_Gsf_v8")
 #process.ntupler.elHLT_Data = cms.string("HLT_Ele32_eta2p1_WPTight_Gsf_v*")
 
+process.ntupler.muHLT_MC1   = cms.string("HLT_IsoMu24_v*"  )
+process.ntupler.muHLT_MC2   = cms.string("HLT_IsoTkMu24_v*")
+process.ntupler.muHLT_Data1 = cms.string("HLT_IsoMu24_v*"  )
+process.ntupler.muHLT_Data2 = cms.string("HLT_IsoTkMu24_v*")
+process.ntupler.elHLT_Data  = cms.string("HLT_Ele27_WPTight_Gsf_v*")
+process.ntupler.elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v*")
+
 ## test of DY 2015
 #process.ntupler.muHLT_MC1   = cms.string("HLT_IsoMu24_v*"  )
 #process.ntupler.muHLT_MC2   = cms.string("HLT_IsoTkMu24_v*")
@@ -301,6 +351,11 @@ process.load('Configuration.StandardSequences.Services_cff')
 #process.load("RecoMET.METFilters.metFilters_cff")
 #process.load("PhysicsTools.PatAlgos.slimming.metFilterPaths_cff")
 #from PhysicsTools.PatAlgos.slimming.metFilterPaths_cff import *
+process.load("RecoMET.METFilters.metFilters_cff") # back to this
+
+#process.p = cms.Path(Flag_BadChargedCandidateFilter * Flag_BadPFMuonFilter * process.ntupler)
+#process.p = cms.Path(BadChargedCandidateFilter * BadPFMuonFilter * process.ntupler)
+#process.p = cms.Path(process.BadChargedCandidateFilter * process.BadPFMuonFilter * process.ntupler)
 #process.p = cms.Sequence(process.BadChargedCandidateFilter * process.BadPFMuonFilter * process.ntupler)
 #process.p = cms.Sequence(process.metFilters * process.ntupler)
 
@@ -320,10 +375,7 @@ process.BadChargedCandidateFilter.taggingMode = cms.bool(to_tag)
 process.BadChargedCandidateFilter.filter = cms.bool(not to_tag)
 
 
-
-
 if dataset_reco_name in '2017legacy_2016legacy':
-    # on the fly tau ID in 2016legacy and 2017legacy
     run_path = process.rerunMvaIsolationSequence * process.NewTauIDsEmbedded * \
         process.BadPFMuonFilter * process.BadChargedCandidateFilter
 else:
@@ -333,11 +385,29 @@ if isMC:
     print "MC"
     # include bFrag systematics
     run_path = run_path * process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer
+    #run_path = run_path * process.NewTauIDsEmbedded
+    #process.p = cms.Path(
+    # process.BadPFMuonFilter *
+    # process.BadChargedCandidateFilter *
+    # process.NewTauIDsEmbedded *
+    # #process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
+    # process.ntupler)
+
+    #process.p = cms.Path(
+    # process.rerunMvaIsolationSequence *
+    # process.NewTauIDsEmbedded *
+    # process.BadPFMuonFilter *
+    # process.BadChargedCandidateFilter *
+    # #process.mergedGenParticles*process.genParticles2HepMC*process.particleLevel*process.bfragWgtProducer*
+    # process.ntupler)
 
 else:
-    print "Data"
+    print "data"
+    #process.p = cms.Path(
+    # process.BadPFMuonFilter *
+    # process.BadChargedCandidateFilter *
+    # process.ntupler)
 
 run_path = run_path * process.ntupler
 process.p = cms.Path(run_path)
-
 
