@@ -1188,7 +1188,7 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	bool period_2016EF  = !isMC && (dtag.Contains("2016E") || dtag.Contains("2016F"));
 	bool period_2016G   = !isMC && (dtag.Contains("2016G"));
 	bool period_2016H   = !isMC && (dtag.Contains("2016H"));
-	is2017data = !isMC && (dtag.Contains("Data2017")); // TODO check 2017 data handling with dtag
+	is2017data = !isMC && (dtag.Contains("2017")); // TODO check 2017 data handling with dtag
 
 	aMCatNLO = dtag.Contains("amcatnlo");
 	isWJets = dtag.Contains("WJet") || dtag.Contains("W0Jet") || dtag.Contains("W1Jet") || dtag.Contains("W2Jet") || dtag.Contains("W3Jet") || dtag.Contains("W4Jet");
@@ -2566,6 +2566,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		else if(!is2017data) // TODO make bool for 2017 data
 			{
+			// TODO: check what this is? the 2016original?
 			NT_filters_noBadMuons     = utils::passTriggerPatterns(patFilters, "Flag_noBadMuons"); // <---- the bad muons are done on the fly with cfg.py thingy
 			NT_filters_duplicateMuons = utils::passTriggerPatterns(patFilters, "Flag_duplicateMuons");
 			}
