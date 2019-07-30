@@ -28,6 +28,10 @@ An example installation script:
     mkdir UserCode
     cd UserCode
     git clone git@github.com:xealits/NtuplerAnalyzer.git
+    cd NtuplerAnalyzer
+    git remote rename origin github
+    git checkout --track github/legacy-2016-2017
+    cp plugins/template_BuildFile.xml plugins/BuildFile.xml
     scram b -j 10
 
 If something crashes during the compilation you can cd into separate directories,
