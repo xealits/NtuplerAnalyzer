@@ -65,12 +65,29 @@ def process_event_for_fake_taus(ev):
         dalitz_m2 = (ev.tau_SV_fit_track_OS_p4[main_tau_refit_index] + ev.tau_SV_fit_track_SS2_p4[main_tau_refit_index]).mass()
 
         tau_track_mass = (ev.tau_SV_fit_track_OS_p4[main_tau_refit_index] + ev.tau_SV_fit_track_SS1_p4[main_tau_refit_index] + ev.tau_SV_fit_track_SS2_p4[main_tau_refit_index]).mass()
+
+        # trying the algorithm with more energetic track
+        if ev.tau_SV_fit_track_SS1_p4[main_tau_refit_index].energy() > ev.tau_SV_fit_track_SS2_p4[main_tau_refit_index].energy():
+            more_en_ss_track = ev.tau_SV_fit_track_SS1_p4[main_tau_refit_index]
+            less_en_ss_track = ev.tau_SV_fit_track_SS2_p4[main_tau_refit_index]
+        else:
+            more_en_ss_track = ev.tau_SV_fit_track_SS2_p4[main_tau_refit_index]
+            less_en_ss_track = ev.tau_SV_fit_track_SS1_p4[main_tau_refit_index]
+
+        dalitz_m1_perE = (ev.tau_SV_fit_track_OS_p4[main_tau_refit_index] + more_en_ss_track).mass()
+        dalitz_m2_perE = (ev.tau_SV_fit_track_OS_p4[main_tau_refit_index] + less_en_ss_track).mass()
+        more_en_ss_track_energy = more_en_ss_track.energy()
+        less_en_ss_track_energy = less_en_ss_track.energy()
     else:
         main_tau_SV_sign = -11.
         main_tau_SV_leng = -11.
         dalitz_m1 = -11.
         dalitz_m2 = -11.
         tau_track_mass = -11.
+        dalitz_m1_perE          = -11.
+        dalitz_m2_perE          = -11.
+        more_en_ss_track_energy = -11.
+        less_en_ss_track_energy = -11.
 
     # SV > 2.
     if main_tau_SV_sign < 2.: return None
@@ -174,6 +191,21 @@ def process_event_for_fake_taus(ev):
 
     output_histos('tau_m1_m2').Fill(dalitz_m1, dalitz_m2)
 
+
+    output_histos('tau_perE_m1').Fill(dalitz_m1_perE)
+    output_histos('tau_perE_m2').Fill(dalitz_m2_perE)
+
+    output_histos('tau_perE_m1_m2').Fill(dalitz_m1_perE, dalitz_m2_perE)
+
+    output_histos('tau_perE_e1').Fill(more_en_ss_track_energy)
+    output_histos('tau_perE_e2').Fill(less_en_ss_track_energy)
+
+    output_histos('tau_perE_e1_e2').Fill(more_en_ss_track_energy, less_en_ss_track_energy)
+    output_histos('tau_perE_e1_m2').Fill(more_en_ss_track_energy, dalitz_m2_perE)
+    output_histos('tau_perE_e1_m1').Fill(more_en_ss_track_energy, dalitz_m1_perE)
+    output_histos('tau_perE_e2_m2').Fill(less_en_ss_track_energy, dalitz_m2_perE)
+    output_histos('tau_perE_e2_m1').Fill(less_en_ss_track_energy, dalitz_m1_perE)
+
 if __name__ == '__main__':
 
     args = sumup_ttree_events.parser.parse_args()
@@ -196,9 +228,21 @@ if __name__ == '__main__':
         output_histos_dict[pref + '_tau_mass']       = TH1D(pref + "_tau_mass", "", 51,  0., 2.55)
         output_histos_dict[pref + '_tau_track_mass'] = TH1D(pref + "_tau_track_mass", "", 51,  0., 2.55)
 
-        output_histos_dict[pref + '_tau_m1'] =     TH1D(pref + "_tau_m1", "", 51,  0., 1.53)
-        output_histos_dict[pref + '_tau_m2'] =     TH1D(pref + "_tau_m2", "", 51,  0., 1.53)
-        output_histos_dict[pref + '_tau_m1_m2'] =  TH2D(pref + "_tau_m1_m2", "", 51,  0., 1.53, 51,  0., 1.53)
+        output_histos_dict[pref + '_tau_m1'] =     TH1D(pref + "_tau_m1", "", 51,  0., 2.04)
+        output_histos_dict[pref + '_tau_m2'] =     TH1D(pref + "_tau_m2", "", 51,  0., 2.04)
+        output_histos_dict[pref + '_tau_m1_m2'] =  TH2D(pref + "_tau_m1_m2", "", 51,  0., 2.04, 51,  0., 2.04)
+
+        output_histos_dict[pref + '_tau_perE_m1'] =     TH1D(pref + "_tau_perE_m1", "", 51,  0., 2.04)
+        output_histos_dict[pref + '_tau_perE_m2'] =     TH1D(pref + "_tau_perE_m2", "", 51,  0., 2.04)
+        output_histos_dict[pref + '_tau_perE_m1_m2'] =  TH2D(pref + "_tau_perE_m1_m2", "", 51,  0., 2.04, 51,  0., 2.04)
+        output_histos_dict[pref + '_tau_perE_e1'] =     TH1D(pref + "_tau_perE_e1", "", 51,  0., 153)
+        output_histos_dict[pref + '_tau_perE_e2'] =     TH1D(pref + "_tau_perE_e2", "", 51,  0., 153)
+
+        output_histos_dict[pref + '_tau_perE_e1_e2'] =  TH2D(pref + "_tau_perE_e1_e2", "", 51,  0., 153., 51,  0., 153.)
+        output_histos_dict[pref + '_tau_perE_e1_m2'] =  TH2D(pref + "_tau_perE_e1_m2", "", 51,  0., 153., 51,  0., 2.04)
+        output_histos_dict[pref + '_tau_perE_e1_m1'] =  TH2D(pref + "_tau_perE_e1_m1", "", 51,  0., 153., 51,  0., 2.04)
+        output_histos_dict[pref + '_tau_perE_e2_m2'] =  TH2D(pref + "_tau_perE_e2_m2", "", 51,  0., 153., 51,  0., 2.04)
+        output_histos_dict[pref + '_tau_perE_e2_m1'] =  TH2D(pref + "_tau_perE_e2_m1", "", 51,  0., 153., 51,  0., 2.04)
 
         output_histos_dict[pref + '_tau_sv_sign'] = TH1D(pref + "_tau_sv_sign", "", 21,  -1., 20.)
         output_histos_dict[pref + '_tau_sv_leng'] = TH1D(pref + "_tau_sv_leng", "", 21,  -0.1, 2.)
