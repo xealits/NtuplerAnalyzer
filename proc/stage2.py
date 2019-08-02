@@ -2250,6 +2250,9 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     event_taus_pat_sv_sign = ROOT.DoubleVector()
     ttree_out.Branch("event_taus_pat_sv_sign", event_taus_pat_sv_sign)
     all_vector_branches.append(event_taus_pat_sv_sign)
+    event_taus_pat_sv_leng = ROOT.DoubleVector()
+    ttree_out.Branch("event_taus_pat_sv_leng", event_taus_pat_sv_leng)
+    all_vector_branches.append(event_taus_pat_sv_leng)
     # sign
     event_taus_sv_sign = ROOT.DoubleVector()
     ttree_out.Branch("event_taus_sv_sign", event_taus_sv_sign)
@@ -4715,6 +4718,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
             # save 3ch info if possible
             tau_pat_SV_sign = -11.
+            tau_pat_SV_leng = -11.
             tau_SV_sign = -11.
             tau_SV_leng = -11.
             dalitz_m1 = -11.
@@ -4728,6 +4732,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
             if refitted:
               try:
                 tau_pat_SV_sign = ev.tau_flightLengthSignificance[tau_index]
+                tau_pat_SV_leng = ev.tau_flightLength[tau_index]
                 tau_SV_sign     = ev.tau_SV_geom_flightLenSign [tau_refit_index]
                 tau_SV_leng     = ev.tau_SV_geom_flightLen     [tau_refit_index]
                 dalitz_m1 = (ev.tau_SV_fit_track_OS_p4[tau_refit_index] + ev.tau_SV_fit_track_SS1_p4[tau_refit_index]).mass()
@@ -4739,6 +4744,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
                   logging.error("IndexError2 : %d, %d" % (ev.indexevents, iev))
 
             event_taus_pat_sv_sign.push_back(tau_pat_SV_sign)
+            event_taus_pat_sv_leng.push_back(tau_pat_SV_leng)
             event_taus_sv_sign.push_back(tau_SV_sign)
             event_taus_sv_leng.push_back(tau_SV_leng)
             event_taus_sv_dalitz_m1.push_back(dalitz_m1)

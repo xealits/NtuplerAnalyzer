@@ -2,7 +2,7 @@ import argparse
 import logging
 from os.path import isfile, basename
 import ctypes
-from sys import argv
+from sys import argv, stderr
 
 
 parser = argparse.ArgumentParser(
@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('--ttree',    type=str, default="ntupler/reduced_ttree", help='path to the TTree in the file')
 
+parser.add_argument("--report-each-file",  action='store_true', help="print to stderr a new input file is open")
 parser.add_argument("--debug",  action='store_true', help="DEBUG level of logging")
 parser.add_argument("--output", type=str, default="output.root", help="filename for output")
 parser.add_argument("--n-events", type=int, default=-1, help="maximum events per file (-1 means no limit, default)")
@@ -45,7 +46,7 @@ event_process = None
 output_histos = None
 
 
-def process_files(input_files, ttree_name, output_filename, max_events, per_weight=False, save_weight=False):
+def process_files(input_files, ttree_name, output_filename, max_events, per_weight=False, save_weight=False, report_each_file=False):
     global event_process, output_histos
     weight_counter = None
 
@@ -55,6 +56,9 @@ def process_files(input_files, ttree_name, output_filename, max_events, per_weig
         if not isfile(filename):
             logging.info("missing: " + filename)
             continue
+
+        if report_each_file:
+            stderr.write("new input file: %s\n" % filename)
 
         logging.debug(filename)
         logging.debug(ttree_name)
@@ -117,7 +121,7 @@ set up the event processing and run main with command line parameters
 
 def main(args):
     #def process_files(input_files, ttree_name, output_filename, per_weight=False, save_weight=False):
-    process_files(args.input_files, args.ttree, args.output, args.n_events, args.per_weight, args.save_weight)
+    process_files(args.input_files, args.ttree, args.output, args.n_events, args.per_weight, args.save_weight, args.report_each_file)
 
 if __name__ == '__main__':
     #global event_process, output_histos
