@@ -52,13 +52,16 @@ def process_event_for_fake_taus(ev):
     if not (sel_el or sel_mu): return None
 
     # only SV refitted taus
-    if ev.event_taus_sv_sign[0] < 0:
+    sv_sign = ev.event_taus_sv_sign[0]
+    if sv_sign < 0:
         return None
+
+    # SV > 2.
+    if sv_sign < 2.: return None
 
     energy  = ev.event_taus[0].energy()
     sv_sign_pat = ev.event_taus_pat_sv_sign[0]
     sv_leng_pat = ev.event_taus_pat_sv_leng[0]
-    sv_sign = ev.event_taus_sv_sign[0]
     sv_leng = ev.event_taus_sv_leng[0]
 
     output_histos('tau_sv_leng_VS_energy')    .Fill(sv_leng,     energy)
