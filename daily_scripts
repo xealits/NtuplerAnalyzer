@@ -1,4 +1,145 @@
+# remaining questions
+
+from Albert De Roeck
+
+- line 90 Why is the multi-jet simulation normalised to Pythia? Surely Madgraph has its
+    own normalisation. Is that one not ok?
+    If that is done for a physics reason it may be useful to spell that out
+    in 1/2 sentence here.
+
+%BLUE% >>
+
+- line 200: Using the "same charge" sample: is that a good background estimator? We have a non-negligable charge misidentification, ie real signal event that will end up as an (SS) event. What is the contamination of real events, which became SS, compared to the total you select for this background estimator? if small then it is ok of course. 
+
+%BLUE% >>
+
+
+
 # CWR comment from Thomas Ferbel   (https://cds.cern.ch/record/2684836)
+
+You seem often to be tripping over your own words, and thereby writing things difficult to follow. Some places contain extra, unneeded words. Several symbols appear to be from a previous generation of usage, which indicates that the authors and the CLE have not looked at a recent version of our PubCom guidelines. I hope to have caught most of your transgressions in our standard nomenclature, and trust that my corrections will be entered into the text with care. 
+
+We no longer use a dot to signify multiplication but recommend using nothing or \times if that is essential; we now use the symbols pT and no longer those such as ET; we also recommend the use of "subdetector", "nonisolated" and "semileptonic" and not their hyphenated spellings. In addition, our terms for any mass usually use a lower-case m, thus transverse mass would be written as mT and not as MT. We don’t use branching “ratio” but “fraction”. Since you seem to have chosen UK English as your writing style, be aware that you should use "modelling" and not "modeling" in your draft. And I must confess that L252--265 seem somewnat crazy! You are not "varying" anything when you make the changes by the specified factors. I think I understand what you mean, but not because you have been helpful. You repeat the old ways this has been stated in the past, which I find very much wanting. Your term "visible" should be changed to "fiducial", as there is nothing visible about it. Why do you add the extra "al" to "kinematic" and "systematic"? And I hope that you can make your results quantitatively clearer in the Summary – e.g., by stating things in terms of how much you have improved on previous measurements. Finally, you keep talking about cross sections and ratios of widths, but you often seem to not maintain clarity what these widths and cross sections mean. For example, the mu, e, and ell values can be similar only if ell is either mu or e, or the mean of mu and e. And you don't specify which widths you are discussing. I am not sure if the “total” width is that of the top quark or that for all the dileptons states? And also I am not sure whether you have identified the 781pb with the total t\tbar cross section (all channels).
+
+Nevertheless, you have put together an excellent analysis, and presented the reader with a manuscript that can be fixed without much trouble. Of course, you may not agree with my recommendations, but I urge you not to reject them out of hand and check with your colleagues about my changes. Also check out my comments on the captions and figures. 
+
+I have added below in .doc format questions for sections that are usually discussed at the FR, but I provide recommendations for the entire draft using standard Adobe Acrobat tools for editing PDF files. Hope that you can consider both possibilities.
+
+                                                                 Good luck with your next draft, Tom.
+
+Title:
+
+L2, replace “including” with “that contains one”
+
+L3, replace “proton-proton” with “pp”. [This is overkill. Surely, anyone reading this will not be confused by the use of the simpler “pp”.]
+
+ 
+
+Abstract:
+
+L1,  replace “of the” with “for”; replace “process” with “is measured in the”; insert “final state” after “\bbar”; and delete “is mea-”.
+
+L2, delete “sured,”; delete the first “the”; replace “hadronic decays of the” with “all-hadron final state of the decayed; replace “=” with “is either an”; and replace “,” with “or a”.
+
+L3, delete “sample” and “and was”.
+
+L4, delete “2016 by”; and replace “proton-proton” with “pp”.
+
+L5, replace “. The” with “and the”.
+
+L6, clarify which “widths” you mean by inserting information (all top quark or just all ell-ell channels).
+
+Introduction:
+
+L2, delete “mostly”; insert “mainly” before second “in”; and replace “with” by “and”.
+
+L3, delete the first “the”; change “subsequent” to “subsequently”.
+
+L5, insert “wise consider” before final “the”.
+
+L6, delete “is considered”; and insert “either” after “into”.
+
+L8, replace “is approximately 6% (” with “corresponds to \approx”; delete “)”; and replace “higher” with “larger”.
+
+L10, replace “measurements” with “checks”; and delete “due to”.
+
+L11, replace “some tensions with” by “in the possibility of violations of”; delete “this final state,”; and insert “particular,” before “the”.
+
+L12, delete “exclusively”; insert a hyphen after “third”; and replace “, which” with “that because of their large masses”
+
+L13, delete “due to their large masses”.
+
+L14, delete “directly”; and replace “observable” with “observed”.
+
+L16, insert “, in fact,” after “is”; and change “proton-proton” to “pp”.
+
+L17, delete “sample was” and “2016 by”.
+
+L18, delete “and it”.
+
+L19, replace “and it” with “, which”; delete “relative”; and replace “with respect” by “relative”.
+
+L20, delete the first “the”; replace “improved” with “higher”; and replace “by using” with “through”.
+
+L21, delete “shape”; replace “properties” with “distributions”; replace “thus” by “that”; and change “constraining” to “constrain”.
+
+L22, replace “by performing” with “through a fit to”; put profile into quotation marks: “profile”; and replace “fit of” with “[Ref. # for PLR] to”.
+
+L23, replace “between” with “of the system containing the”; insert “the” after “and”; and insert “in the event, separately” after “momentum”; and delete “, in two categories of selected events”.
+
+L24, delete “, separately” and “experimental”.
+
+L25, insert “are performed” after “sections”; replace “visible” with “chosen fiducial”; and delete “are performed”.
+
+L27, change “earlier” to “the previous”. [And also add something after “width,” e.g., “of all the dilepton states” or “of the top quark”.] 
+
+L29, change “Experimentally, the” to “The”; and replace “by” with “through”.
+
+L30, replace the “approx/equal” with “\approx”.
+
+L31, replace the “approx/equal” with “\approx”; replace “In the first case, the” with “The”; and replace “produces” with “decays into”.
+
+L32, replace “in the case of” with “but its”; replace “, the distinction” with “are difficult to distinguish”; and delete “is ex-“.
+
+L33, delete “perimentally difficult”; replace “ell” by “we therefore”; change “does” to “do”; and insert “consider the” after “only”.
+
+L34, replace “hadronically are considered” with “to hadrons and \nu\tau.
+
+L35, after “2” replace the comma by a semicolon.
+
+L36, replace “of” by “about”; insert “event” before “samples”; and delete the second “the”.
+
+L37, delete “event”; change the comma after “4” to a semicolon.
+
+L39, delete the first “the”.
+
+L40, delete “both”; replace “width” with “their  partial widths relative to their total values” [And decide whether anything else is needed after “widths”.]; insert “and” before “the”; and insert “briefly” before “in”.
+
+Summary:
+
+L313, insert “where“ before first “ell”;  replace “= e,” by “is either an e or a”; replace “using a data sample with” with “by CMS in pp collisions at the LHC, corresponding to”; and delete “in”. 
+
+L314, delete “proton-proton collisions”.
+
+L315, remove the hyphen in “b tagged”.
+
+L316, delete “hadronically decaying”; replace “, “  with “decaying to hadrons (“; and insert “)” and a neutrino" after “h“ [This whole part becomes “identified as a \tau lepton decaying to hadrons (\tauh) and a neutrino.”]; and change “comes” to “arises”.
+
+L318, replace “of” with “in”; and replace “between” with “of the”. 
+
+L319, replace “, in” with “system in our”; delete “according”.
+
+L320, replace “In the fit, the” with “The”.
+
+L323, delete “relative”; replace “with respect” with “relative”.
+
+L324, insert “by \approx X%” before “[“; insert “total t\tbar” before “cross”.
+
+L326, replace “divided by” with “”to”.
+
+L328, insert “of the top quark” after “width”?
+
+L329, replace “with respect to” with “through”.
 
 
 
@@ -258,6 +399,13 @@ we decided to avoid a discussion of the improvement of the precision.
 
 %BLUE% >> Added an explanation.
 
+
+
+
+
+
+
+
 - line 140: the pseudo-rapidity variable was already introduced in line 47.
 
 %BLUE% >> I have moved the definition of DeltaR up, to the "E_CH is ... deposited ... within a cone of $\Delta R = \sqrt{(\Delta\varphi)^2 + (\Delta\eta)^2} = 0.4$".
@@ -313,31 +461,46 @@ This procedure follows [[https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopSystema
     sqrt{2}; Please check with some other recent papers where we vary the ISR/FSR scale 
     as a systematic uncertainty
 
-%BLUE% >> 
+%BLUE% >> The dileptons measurement (TOP-17-001) does vary ISR and FSR by 2.
+
+
+
+
+
+
+
+
 
 - line 262: Please add a reference to where these UE uncertainties are discussed.
 
-%BLUE% >> 
+%BLUE% >> Added.
 
 - line 265: Is there no "model uncertainty" in this full phase space extrapolation?
      I assume here you base yourself on POWHEG alone, by just varying its parameters?
 
-%BLUE% >> 
+%BLUE% >> Yes. The aMCatNLO alternative as one of the systematics was not considered as it was not recommended.
 
 - line 265: somehow I expected that you would crefer here to table 2 with a summary of 
     all the systematic considered
 
-%BLUE% >> 
+%BLUE% >> Added a sentence.
 
 - table 1: predictions and observation don't really match well: from the four results we 
    have 1  where the two agree (signal-like in the mu-tau) but for the other 
    3 ones the prediction is significantly higher than the observation. Not a worry?
 
-%BLUE% >> 
+%BLUE% >>
+ The ratio between the bservation and the predictions is about 0.95, which corresponds to what we get in the fit.
+ The table does not show the expected variation in systematics, which covers the difference.
+ In principle, we could add the systematic uncertainties.
+ But they might confuse the reader:
+ the table of event yields will show only the magnitude of the uncertainty,
+ when the shape plays a role in the fit as well,
+ therefore the final impact of the systematics on the signal strength differs from the magnitude of the variation of event yields with the variation of systematics.
 
 - line 286: for clarity I recommend you repeat/give again the fiducial cuts again here.
 
-%BLUE% >> 
+%BLUE% >> Added.
 
 - line 309/310: Not sure I get the point here. We measure both here and in [9] the   
    hadronic tau decay channel only, right?  We only convert the tau_h result to a full tau 
@@ -346,7 +509,10 @@ This procedure follows [[https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopSystema
    Or is it something more and am I missing something?
    Btw we write "tau's and taus" in this sentence. Guess we should use "taus"
 
-%BLUE% >> 
+%BLUE% >> You are correct. And since the uncertainty of tau BR is so small, it can be considered as just a presentation of the number.
+But since the other paper does not use it, we have to mention the difference.
+
+%BLUE% Corrected the difference with taus, but left the apostrophe since it was preferred before in the review.
 
 
 
