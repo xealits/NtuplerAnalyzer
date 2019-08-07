@@ -156,35 +156,63 @@ lines 8-9  I do not understand 5/81 and 4/81. I understand 5 (etau, mutau,
 taue, taumu, tautau), but what is 81 ? The total number of ll' combinations
 is 9, no ?
 
+%BLUE% >> Indeed, we could just focus on the combinatorics between leptons and the comparison between final states with taus and without.
+But in order to provide a context to the reader we consider all W decays, their "naive" branching fractions: 1/9 for each leptonic final state and 6/9 for the quark final states.
+
 lines 13-14  There are both CMS and ATLS H+ -> tau nu analyses with 13 TeV, 2016 data. Why do not cite them at this point ?
 
-line 23 add after lepton "(electron or muon)", othrwise one could think about
-tau lepton (tau_h)
+%BLUE% >> TODO this ^^^
+
+line 23 add after lepton "(electron or muon)", othrwise one could think about tau lepton (tau_h)
+
+%BLUE% >> Added.
 
 lines 24-25 one can not measure "directly"  cross-section in the "full space". You measure the visible cross-section and go to the total cross-section using MC.
 
+%BLUE% >> Corrected.
+
 line 81 mention that this tt~ cross-section is for mt = 172.5 GeV if it is the case.
+
+%BLUE% >> Added.
 
 line 89-90 QCD multijet events were generated with aMC@NLO. What is the reason to normalize it on PYTHIA8 LO
 cross-section ?
 
+%BLUE% >> TODO: same question
+
 line 97  Please replace "produced in the collision" by "in the event".  For example brem. photons or e+e- from
 gamma conversions are not produced in the pp collision, but produced after that in the tracker material.
+
+%BLUE% >> Corrected.
 
 In Section 6 it is not quite clear about background evaluation from the fit. Do you use the normalization and shapes
 from MC (except QCD) and you vary normalization within uncertainties in the fit ? If yes, mention it more clear.
 
+%BLUE% >> Added an explanation.
+
 line 223  I do not undertand this sentence about the measurement of tau missID from the fit. Is this 50 % uncertainty
 value recommended in tau ID paper at 13 TeV that you have cited ?
+
+%BLUE% >> The tau ID paper does not recommend a specific treatment of misidentified taus, but it demonstrates the typical behaviour of the misidentification in several selections of events.
+In these selections the Data-MC disagreement for the misidentification probability varies around 20-30%, depending on pT, eta and the kind of jets you have in the given selection.
+So, the pre-fit variation of 50% is a conservative value. But reducing it to 20% reduces the overal uncertainty by only about 0.1%.
+Therefore, we have decided to stick with the conservative magnitude of the prefit variation.
+Also, we had considered using a free parameter for the tau misidentification in the fit, but discarded it due to issues in the fitting software.
 
 Line 282-284  I do not understand this sentence "The effect of these uncertainties on final state objects ..."
 How QCD scale and PDF uncertainty can make an effect on the final state objects like jet, muon, electron ?
 
+%BLUE% >> But it still can affect their kinematic distribution within the fiducial space of the detector.
+
 Table 1  please, add  contribution from tt -> (tau_l nu_tau) (tau_h nu_tau) b b_bar as a separate line
+
+%BLUE% >> TODO this ^^^
 
 line 289  Does acceptance A include BR (W->tau nu) ? It looks like it is, since you get the total cross-section
 as sigma_tot = sigma_vis / A.  In that sence I do not understand R_gamma evaluation (line 301). You just multiply your sigma_tot
 by BR(W->tau nu).
+
+%BLUE% >> 
 
 
 
@@ -282,6 +310,9 @@ L18, delete “and it”.
 
 L19, replace “and it” with “, which”; delete “relative”; and replace “with respect” by “relative”.
 
+%BLUE% >> here we are trying to stress that we compare the relative precision of our measurement with the relative precisions in 7 and 8 TeV.
+We would like to leave "improves the relative precision with respect to 7 and 8 TeV" to keep it clear.
+
 L20, delete the first “the”; replace “improved” with “higher”; and replace “by using” with “through”.
 
 L21, delete “shape”; replace “properties” with “distributions”; replace “thus” by “that”; and change “constraining” to “constrain”.
@@ -321,6 +352,10 @@ L39, delete the first “the”.
 L40, delete “both”; replace “width” with “their  partial widths relative to their total values” [And decide whether anything else is needed after “widths”.]; insert “and” before “the”; and insert “briefly” before “in”.
 
 
+
+
+
+
 Summary:
 
 L313, insert “where“ before first “ell”;  replace “= e,” by “is either an e or a”; replace “using a data sample with” with “by CMS in pp collisions at the LHC, corresponding to”; and delete “in”. 
@@ -339,6 +374,9 @@ L320, replace “In the fit, the” with “The”.
 
 L323, delete “relative”; replace “with respect” with “relative”.
 
+%BLUE% >> here we are trying to stress that we compare the relative precision of our measurement with the relative precisions in 7 and 8 TeV.
+We would like to leave "improves the relative precision with respect to 7 and 8 TeV" to keep it clear.
+
 L324, insert “by \approx X%” before “[“; insert “total t\tbar” before “cross”.
 
 L326, replace “divided by” with “”to”.
@@ -346,6 +384,10 @@ L326, replace “divided by” with “”to”.
 L328, insert “of the top quark” after “width”?
 
 L329, replace “with respect to” with “through”.
+
+DONE these..
+
+
 
 
 
