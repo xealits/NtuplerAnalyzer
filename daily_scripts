@@ -1,4 +1,4 @@
-# remaining questions
+# remaining questions TODO:
 
 from Albert De Roeck
 
@@ -7,11 +7,62 @@ from Albert De Roeck
     If that is done for a physics reason it may be useful to spell that out
     in 1/2 sentence here.
 
-%BLUE% >>
+%BLUE% >> Indeed, the normalization comes from the generator, ie Madgraph, as discussed on [[https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns#QCD][the summary]] and [[https://twiki.cern.ch/twiki/bin/view/CMS/HowToGenXSecAnalyzer][the tool]] twikies, and also [[https://hypernews.cern.ch/HyperNews/CMS/get/susy-interpretations/196/1/1/1.html][in this thread]].
+The sentence was just forgotten because the simulated multijet events are not mentioned in the paper.
+The simulated multijet events are used only for the verification of the data-driven method in the Analysis Note.
+Therefore, I remove this line about the normalization of MC multijet altogether.
 
 - line 200: Using the "same charge" sample: is that a good background estimator? We have a non-negligable charge misidentification, ie real signal event that will end up as an (SS) event. What is the contamination of real events, which became SS, compared to the total you select for this background estimator? if small then it is ok of course. 
 
 %BLUE% >>
+in principle, the good part is that QCD and signal are in different parts of the mT distribution.
+
+mis-charge signal in mu selection: 176.57732241801028
+
+data-driven multijet in the table: 122 + 231 = 353
+
+............
+
+
+
+Sasha
+
+lines 13-14  There are both CMS and ATLS H+ -> tau nu analyses with 13 TeV, 2016 data. Why do not cite them at this point ?
+
+%BLUE% >> TODO this ^^^ add the citations, check the uncertainty and if the papers report the BRs
+
+line 89-90 QCD multijet events were generated with aMC@NLO. What is the reason to normalize it on PYTHIA8 LO
+cross-section ?
+
+%BLUE% >> Indeed, the normalization comes from the generator, ie Madgraph, as discussed on [[https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns#QCD][the summary]] and [[https://twiki.cern.ch/twiki/bin/view/CMS/HowToGenXSecAnalyzer][the tool]] twikies, and also [[https://hypernews.cern.ch/HyperNews/CMS/get/susy-interpretations/196/1/1/1.html][in this thread]].
+The sentence was just forgotten because the simulated multijet events are not mentioned in the paper.
+The simulated multijet events are used only for the verification of the data-driven method in the Analysis Note.
+Therefore, I remove this line about the normalization of MC multijet altogether.
+Table 1  please, add  contribution from tt -> (tau_l nu_tau) (tau_h nu_tau) b b_bar as a separate line
+
+
+
+
+From Thomas:
+
+%BLUE% >> TODO this ^^^
+
+And I must confess that L252--265 seem somewnat crazy!
+You are not "varying" anything when you make the changes by the specified factors.
+I think I understand what you mean, but not because you have been helpful.
+You repeat the old ways this has been stated in the past, which I find very much wanting.
+
+TODO: this ^^^
+
+And I hope that you can make your results quantitatively clearer in the Summary – e.g., by stating things in terms of how much you have improved on previous measurements.
+Finally, you keep talking about cross sections and ratios of widths, but you often seem to not maintain clarity what these widths and cross sections mean. For example, the mu, e, and ell values can be similar only if ell is either mu or e, or the mean of mu and e. And you don't specify which widths you are discussing. I am not sure if the “total” width is that of the top quark or that for all the dileptons states? And also I am not sure whether you have identified the 781pb with the total t\tbar cross section (all channels).
+
+TODO: this ^^^
+
+
+
+TODO: do not forget to change mT in figures!
+
 
 
 
@@ -178,7 +229,11 @@ line 81 mention that this tt~ cross-section is for mt = 172.5 GeV if it is the c
 line 89-90 QCD multijet events were generated with aMC@NLO. What is the reason to normalize it on PYTHIA8 LO
 cross-section ?
 
-%BLUE% >> TODO: same question
+%BLUE% >> Indeed, the normalization comes from the generator, ie Madgraph, as discussed on [[https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns#QCD][the summary]] and [[https://twiki.cern.ch/twiki/bin/view/CMS/HowToGenXSecAnalyzer][the tool]] twikies, and also [[https://hypernews.cern.ch/HyperNews/CMS/get/susy-interpretations/196/1/1/1.html][in this thread]].
+The sentence was just forgotten because the simulated multijet events are not mentioned in the paper.
+The simulated multijet events are used only for the verification of the data-driven method in the Analysis Note.
+Therefore, I remove this line about the normalization of MC multijet altogether.
+Table 1  please, add  contribution from tt -> (tau_l nu_tau) (tau_h nu_tau) b b_bar as a separate line
 
 line 97  Please replace "produced in the collision" by "in the event".  For example brem. photons or e+e- from
 gamma conversions are not produced in the pp collision, but produced after that in the tracker material.
@@ -212,7 +267,9 @@ line 289  Does acceptance A include BR (W->tau nu) ? It looks like it is, since 
 as sigma_tot = sigma_vis / A.  In that sence I do not understand R_gamma evaluation (line 301). You just multiply your sigma_tot
 by BR(W->tau nu).
 
-%BLUE% >> 
+%BLUE% >> The BR(W->tau nu) is included in the fiducial cross section, the acceptance is just the fraction of signal events passing in the fiducial space of the detector.
+Indeed, R_gamma is calculated with sigma_tot multiplied by BR(W->tau nu), which cancels out the BR(W->tau nu) included in the sigma_tot.
+Therefore, R_gamma includes only the BR(W-> e/mu) that is included in the measurement in dilepton channels.
 
 
 
@@ -225,7 +282,6 @@ we now use the symbols pT and no longer those such as ET;
 we also recommend the use of "subdetector", "nonisolated" and "semileptonic" and not their hyphenated spellings.
 In addition, our terms for any mass usually use a lower-case m, thus transverse mass would be written as mT and not as MT.
 
-TODO: change M_T in figures!!!
 
 We don’t use branching “ratio” but “fraction”.
 Since you seem to have chosen UK English as your writing style, be aware that you should use "modelling" and not "modeling" in your draft.
@@ -419,7 +475,10 @@ we decided to avoid a discussion of the improvement of the precision.
     If that is done for a physics reason it may be useful to spell that out 
     in 1/2 sentence here.
 
-%BLUE% >> 
+%BLUE% >> Indeed, the normalization comes from the generator, ie Madgraph, as discussed on [[https://twiki.cern.ch/twiki/bin/viewauth/CMS/SummaryTable1G25ns#QCD][the summary]] and [[https://twiki.cern.ch/twiki/bin/view/CMS/HowToGenXSecAnalyzer][the tool]] twikies, and also [[https://hypernews.cern.ch/HyperNews/CMS/get/susy-interpretations/196/1/1/1.html][in this thread]].
+The sentence was just forgotten because the simulated multijet events are not mentioned in the paper.
+The simulated multijet events are used only for the verification of the data-driven method in the Analysis Note.
+Therefore, I remove this line about the normalization of MC multijet altogether.
 
 - line 104: Do we require the leptons to come from the primary vertex. Please say that in   
     the text
