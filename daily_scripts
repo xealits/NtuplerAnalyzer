@@ -1,7 +1,9 @@
+
 # remaining questions TODO:
 
 from Albert De Roeck
 
+DONE
 - line 90 Why is the multi-jet simulation normalised to Pythia? Surely Madgraph has its
     own normalisation. Is that one not ok?
     If that is done for a physics reason it may be useful to spell that out
@@ -12,25 +14,134 @@ The sentence was just forgotten because the simulated multijet events are not me
 The simulated multijet events are used only for the verification of the data-driven method in the Analysis Note.
 Therefore, I remove this line about the normalization of MC multijet altogether.
 
+DONE
 - line 200: Using the "same charge" sample: is that a good background estimator? We have a non-negligable charge misidentification, ie real signal event that will end up as an (SS) event. What is the contamination of real events, which became SS, compared to the total you select for this background estimator? if small then it is ok of course. 
 
-%BLUE% >>
+%BLUE% >> In the SS selection the signal events comprize about 4.5% of events. But the effect of the signal events on the extraction of the QCD contribution is smaller than that, because the shapes of QCD and the signal are different.
+The distribution of QCD events is concentrated at lower values of the transverse mass, up to 100GeV (150GeV) in muon-tau (electron-tau) final state.
+And the signal is more smeared across the spectrum, with a peak at about 80-90GeV.
+More specifically, in the Same Sign muon-tau selection the fraction of signal events is about 3-4% in the mT bins up to 80 GeV.
+And the fraction of QCD events is about 10%.
+Therefore, the variation of the signal contribution due to the uncertainty in the tauh charge misidentification does not affect significantly the shape of the QCD estimated in the Same Sign selection.
+
 in principle, the good part is that QCD and signal are in different parts of the mT distribution.
 
 mis-charge signal in mu selection: 176.57732241801028
 
 data-driven multijet in the table: 122 + 231 = 353
 
+the sum in SS
+INFO:root:data       =     3905.000000      229.437170
+INFO:root:mc sum     =     3565.270126     3565.270126
+
+176.57732241801028 / 3905.000000
+0.04521826438361339
+
+per bin
+
+distrs/v37_test15_bunchFULLFIT1/SingleMuon.root
+distrs/v37_test15_bunchFULLFIT1_mc_1.root
+histosels/datafile_HISTOSEL_v37_test15_bunchFULLFIT1_nocats.root
+
+root [4] ((TH1D*) mu_sel_ss->Get("data_other/NOMINAL/mu_sel_ss_data_other_NOMINAL_Mt_lep_met_c"))->GetBinContent(1)
+(Double_t) 496.000
+root [5] ((TH1D*) mu_sel_ss->Get("data_other/NOMINAL/mu_sel_ss_data_other_NOMINAL_Mt_lep_met_c"))->GetBinContent(2)
+(Double_t) 513.000
+root [6] ((TH1D*) mu_sel_ss->Get("data_other/NOMINAL/mu_sel_ss_data_other_NOMINAL_Mt_lep_met_c"))->GetBinContent(3)
+(Double_t) 724.000
+root [7] ((TH1D*) mu_sel_ss->Get("data_other/NOMINAL/mu_sel_ss_data_other_NOMINAL_Mt_lep_met_c"))->GetBinContent(4)
+(Double_t) 880.000
+root [8] ((TH1D*) mu_sel_ss->Get("data_other/NOMINAL/mu_sel_ss_data_other_NOMINAL_Mt_lep_met_c"))->GetBinContent(5)
+(Double_t) 661.000
+root [9] ((TH1D*) mu_sel_ss->Get("data_other/NOMINAL/mu_sel_ss_data_other_NOMINAL_Mt_lep_met_c"))->GetBinContent(6)
+(Double_t) 434.000
+root [10] ((TH1D*) mu_sel_ss->Get("data_other/NOMINAL/mu_sel_ss_data_other_NOMINAL_Mt_lep_met_c"))->GetBinContent(7)
+(Double_t) 111.000
+
+root [7] ((TH1D*) mu_sel_ss->Get("tt_mutau/NOMINAL/mu_sel_ss_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(1) * 35900
+(double) 18.4494
+root [8] ((TH1D*) mu_sel_ss->Get("tt_mutau/NOMINAL/mu_sel_ss_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(2) * 35900
+(double) 19.6502
+root [9] ((TH1D*) mu_sel_ss->Get("tt_mutau/NOMINAL/mu_sel_ss_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(3) * 35900
+(double) 20.5049
+root [10] ((TH1D*) mu_sel_ss->Get("tt_mutau/NOMINAL/mu_sel_ss_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(4) * 35900
+(double) 23.0711
+root [11] ((TH1D*) mu_sel_ss->Get("tt_mutau/NOMINAL/mu_sel_ss_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(5) * 35900
+(double) 26.8025
+root [12] ((TH1D*) mu_sel_ss->Get("tt_mutau/NOMINAL/mu_sel_ss_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(6) * 35900
+(double) 33.9440
+root [13] ((TH1D*) mu_sel_ss->Get("tt_mutau/NOMINAL/mu_sel_ss_tt_mutau_NOMINAL_Mt_lep_met_c"))->GetBinContent(7) * 35900
+(double) 19.1332
+
+root [3] ((TH1D*) mu_sel->Get("qcd_other/NOMINAL/mu_sel_qcd_NOMINAL_Mt_lep_met_c"))->GetBinContent(1)
+(Double_t) 60.4974
+root [4] ((TH1D*) mu_sel->Get("qcd_other/NOMINAL/mu_sel_qcd_NOMINAL_Mt_lep_met_c"))->GetBinContent(2)
+(Double_t) 54.9846
+root [5] ((TH1D*) mu_sel->Get("qcd_other/NOMINAL/mu_sel_qcd_NOMINAL_Mt_lep_met_c"))->GetBinContent(3)
+(Double_t) 61.8442
+root [6] ((TH1D*) mu_sel->Get("qcd_other/NOMINAL/mu_sel_qcd_NOMINAL_Mt_lep_met_c"))->GetBinContent(4)
+(Double_t) 90.0294
+root [7] ((TH1D*) mu_sel->Get("qcd_other/NOMINAL/mu_sel_qcd_NOMINAL_Mt_lep_met_c"))->GetBinContent(5)
+(Double_t) 47.1595
+root [8] ((TH1D*) mu_sel->Get("qcd_other/NOMINAL/mu_sel_qcd_NOMINAL_Mt_lep_met_c"))->GetBinContent(6)
+(Double_t) 21.9071
+root [9] ((TH1D*) mu_sel->Get("qcd_other/NOMINAL/mu_sel_qcd_NOMINAL_Mt_lep_met_c"))->GetBinContent(7)
+(Double_t) 7.51175
+
+ 60.4974 / 496.000
+ 54.9846 / 513.000
+ 61.8442 / 724.000
+ 90.0294 / 880.000
+ 47.1595 / 661.000
+ 21.9071 / 434.000
+ 7.51175 / 111.000
+
+ 18.4494 / 496.000
+ 19.6502 / 513.000
+ 20.5049 / 724.000
+ 23.0711 / 880.000
+ 26.8025 / 661.000
+ 33.9440 / 434.000
+ 19.1332 / 111.000
+
+(double) 0.121971
+(double) 0.107182
+(double) 0.0854202
+(double) 0.102306
+(double) 0.0713457
+(double) 0.0504772
+(double) 0.0676734
+
+(double) 0.0371964
+(double) 0.0383045
+(double) 0.0283217
+(double) 0.0262172
+(double) 0.0405484
+(double) 0.0782120
+(double) 0.172371
+
+
 ............
+
+check the SS distribution? how much of the signal is in the QCD region?
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleMuon.root     --output-type pdf -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite --ratio-range 0.55 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35900 -c mu_sel_ss -x mu_selVloose_ss -d Mt_lep_met_f --wjet 1.4  --title "" --title-x "##font[12]{m}_{T} [GeV]" --title-y "Events" --draw-overflows 2 --legend-shift 0.05     --font-size-axes-titles 40 --font-size-axes-labels 30 --margin-y 0.14 --offset-y 1.2 --margin-x 0.4 --offset-x 3. --no-horizontal-error-bars
+
+python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs/v37_test172_bunchCONTROLS1/SingleElectron.root --output-type pdf -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite --ratio-range 0.55 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. -p -r --lumi 35900 -c el_sel_ss -x el_selVloose_ss -d Mt_lep_met_f --wjet 1.4  --title "" --title-x "##font[12]{m}_{T} [GeV]" --title-y "Events" --draw-overflows 2 --legend-shift 0.05     --font-size-axes-titles 40 --font-size-axes-labels 30 --margin-y 0.14 --offset-y 1.2 --margin-x 0.4 --offset-x 3. --no-horizontal-error-bars
+
+
 
 
 
 Sasha
 
+DONE
 lines 13-14  There are both CMS and ATLS H+ -> tau nu analyses with 13 TeV, 2016 data. Why do not cite them at this point ?
 
-%BLUE% >> TODO this ^^^ add the citations, check the uncertainty and if the papers report the BRs
+%BLUE% >> In order to avoid detailed overview of the results of the searches in various final states, we limited the references to the theory and phenomenology of the charged Higgs.
+But I've added two references to the recent searches of H+->tau nu.
 
+DONE
 line 89-90 QCD multijet events were generated with aMC@NLO. What is the reason to normalize it on PYTHIA8 LO
 cross-section ?
 
@@ -38,14 +149,17 @@ cross-section ?
 The sentence was just forgotten because the simulated multijet events are not mentioned in the paper.
 The simulated multijet events are used only for the verification of the data-driven method in the Analysis Note.
 Therefore, I remove this line about the normalization of MC multijet altogether.
+
+DONE
 Table 1  please, add  contribution from tt -> (tau_l nu_tau) (tau_h nu_tau) b b_bar as a separate line
+
+%BLUE% >> We would like to avoid adding a separate line for this final state in the table in order to keep the table in sync with the figures.
+
 
 
 
 
 From Thomas:
-
-%BLUE% >> TODO this ^^^
 
 And I must confess that L252--265 seem somewnat crazy!
 You are not "varying" anything when you make the changes by the specified factors.
@@ -201,6 +315,19 @@ Sasha  https://cds.cern.ch/record/2685067?ln=en
 
 ## Sasha
 
+DONE
+lines 13-14  There are both CMS and ATLS H+ -> tau nu analyses with 13 TeV, 2016 data. Why do not cite them at this point ?
+
+DONE
+line 89-90 QCD multijet events were generated with aMC@NLO. What is the reason to normalize it on PYTHIA8 LO
+cross-section ?
+
+DONE
+Table 1  please, add  contribution from tt -> (tau_l nu_tau) (tau_h nu_tau) b b_bar as a separate line
+
+
+
+
 Please, find below comments of Type B.
 
 lines 8-9  I do not understand 5/81 and 4/81. I understand 5 (etau, mutau,
@@ -212,7 +339,9 @@ But in order to provide a context to the reader we consider all W decays, their 
 
 lines 13-14  There are both CMS and ATLS H+ -> tau nu analyses with 13 TeV, 2016 data. Why do not cite them at this point ?
 
-%BLUE% >> TODO this ^^^
+%BLUE% >> In order to avoid detailed overview of the results of the searches in various final states, we limited the references to the theory and phenomenology of the charged Higgs.
+I've added two references to the recent searches of H+->tau nu.
+
 
 line 23 add after lepton "(electron or muon)", othrwise one could think about tau lepton (tau_h)
 
@@ -233,7 +362,6 @@ cross-section ?
 The sentence was just forgotten because the simulated multijet events are not mentioned in the paper.
 The simulated multijet events are used only for the verification of the data-driven method in the Analysis Note.
 Therefore, I remove this line about the normalization of MC multijet altogether.
-Table 1  please, add  contribution from tt -> (tau_l nu_tau) (tau_h nu_tau) b b_bar as a separate line
 
 line 97  Please replace "produced in the collision" by "in the event".  For example brem. photons or e+e- from
 gamma conversions are not produced in the pp collision, but produced after that in the tracker material.
@@ -244,6 +372,9 @@ In Section 6 it is not quite clear about background evaluation from the fit. Do 
 from MC (except QCD) and you vary normalization within uncertainties in the fit ? If yes, mention it more clear.
 
 %BLUE% >> Added an explanation.
+
+
+
 
 line 223  I do not undertand this sentence about the measurement of tau missID from the fit. Is this 50 % uncertainty
 value recommended in tau ID paper at 13 TeV that you have cited ?
@@ -257,11 +388,11 @@ Also, we had considered using a free parameter for the tau misidentification in 
 Line 282-284  I do not understand this sentence "The effect of these uncertainties on final state objects ..."
 How QCD scale and PDF uncertainty can make an effect on the final state objects like jet, muon, electron ?
 
-%BLUE% >> But it still can affect their kinematic distribution within the fiducial space of the detector.
+%BLUE% >> It still can affect their kinematic distribution within the fiducial space of the detector.
 
 Table 1  please, add  contribution from tt -> (tau_l nu_tau) (tau_h nu_tau) b b_bar as a separate line
 
-%BLUE% >> TODO this ^^^
+%BLUE% >> We would like to avoid adding a separate line for this final state in the table in order to keep the table in sync with the figures.
 
 line 289  Does acceptance A include BR (W->tau nu) ? It looks like it is, since you get the total cross-section
 as sigma_tot = sigma_vis / A.  In that sence I do not understand R_gamma evaluation (line 301). You just multiply your sigma_tot
@@ -369,6 +500,10 @@ L19, replace “and it” with “, which”; delete “relative”; and replace
 %BLUE% >> here we are trying to stress that we compare the relative precision of our measurement with the relative precisions in 7 and 8 TeV.
 We would like to leave "improves the relative precision with respect to 7 and 8 TeV" to keep it clear.
 
+%BLUE% >> Here we are trying to stress that we compare the relative precision of our measurement with the relative precisions in 7 and 8 TeV.
+We have had misunderstandings in the comparisons of the absolute and relative precisions.
+And we would like to keep "improves the relative precision with respect to 7 and 8 TeV" to make the point clear.
+
 L20, delete the first “the”; replace “improved” with “higher”; and replace “by using” with “through”.
 
 L21, delete “shape”; replace “properties” with “distributions”; replace “thus” by “that”; and change “constraining” to “constrain”.
@@ -432,6 +567,10 @@ L323, delete “relative”; replace “with respect” with “relative”.
 
 %BLUE% >> here we are trying to stress that we compare the relative precision of our measurement with the relative precisions in 7 and 8 TeV.
 We would like to leave "improves the relative precision with respect to 7 and 8 TeV" to keep it clear.
+
+%BLUE% >> Here we are trying to stress that we compare the relative precision of our measurement with the relative precisions in 7 and 8 TeV.
+We have had misunderstandings in the comparisons of the absolute and relative precisions.
+And we would like to keep "improves the relative precision with respect to 7 and 8 TeV" to make the point clear.                                                                                                                                                               
 
 L324, insert “by \approx X%” before “[“; insert “total t\tbar” before “cross”.
 
@@ -992,6 +1131,8 @@ so "fin.state" is just an indication where it is measured.
 
 
 
+
+
 # paper plots
 
 tau_pt
@@ -1003,18 +1144,18 @@ python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs
 
 mT prefit
 
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{M}_{T}(e, #font[12]{p}^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "signal-like"
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c el_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{M}_{T}(e, #font[12]{p}^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "background-like"
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{m}_{T}(e, #font[12]{p}^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "signal-like"
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c el_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{m}_{T}(e, #font[12]{p}^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "background-like"
 
 
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{M}_{T}(#mu, #font[12]{p}^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "signal-like"
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{M}_{T}(#mu, #font[12]{p}^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "background-like"
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{m}_{T}(#mu, #font[12]{p}^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "signal-like"
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{m}_{T}(#mu, #font[12]{p}^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "background-like"
 
 
 
 signal-background
 
-python get_shapes.py --x-title "#font[12]{M}_{T}(#font[12]{l}, #font[12]{p}^{miss}_{T}) [GeV]" --y-title "a.u." --norm-binwidth --formula "background,black,2:signal,red" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":../studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_mutau_Mt_inclusive "background":../studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive --y-range 0,0.0159 --output-type pdf --no-std-path --fonts1 133 --fonts1-size 32 --left-title "CMS #font[52]{Simulation}"
+python get_shapes.py --x-title "#font[12]{m}_{T}(#font[12]{l}, #font[12]{p}^{miss}_{T}) [GeV]" --y-title "a.u." --norm-binwidth --formula "background,black,2:signal,red" -c mu_selVloose -d Mt_lep_met_c -p tt_lj "signal":../studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_mutau_Mt_inclusive "background":../studies/mt-per-tau-pt-in-new-bins/v37_new_bins_Mt_plots_mu_sel_all.root:tt_lj_Mt_inclusive --y-range 0,0.0159 --output-type pdf --no-std-path --fonts1 133 --fonts1-size 32 --left-title "CMS #font[52]{Simulation}"
 
 cp ./compare_mu_selVloose_tt_lj_NOMINAL_Mt_lep_met_c_signal,background_formula.pdf plots/v37_test172_paper_plots/
 
