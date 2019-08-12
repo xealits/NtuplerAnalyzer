@@ -1,3 +1,103 @@
+# Thomas' fixes
+
+1. DONE Check the main corrections -- are there any more questionable ones?
+2. Apply the rest on the branch.
+3. Make the diff pdf.
+
+## Good points
+
+using mT instead of MT
+modelling instead of modeling
+
+"is used to estimate" instead of "is used for the estimation of"
+
+subdetectors instead of sub-detectors
+
+substitute Opposite Sign (OS) by Opposite Charge (OC)
+and Same Sign (SS) to Same Charge (SC)
+
+branching fractions instead of branching ratios
+
+
+## Questionable corrections
+
+abstract "remove 2016 by":
+collected in 2016 by the CMS detector
+->
+collected in the CMS detector
+
+L19, replace “and it” with “, which”; delete “relative”; and replace “with respect” by “relative”.
+
+%BLUE% >> Here we are trying to stress that we compare the relative precision of our measurement with the relative precisions in 7 and 8 TeV.
+We have had misunderstandings in the comparisons of the absolute and relative precisions.
+And we would like to keep "improves the relative precision with respect to 7 and 8 TeV" to make the point clear.
+
+L19, replace “and it” with “, which”; delete “relative”; and replace “with respect” by “relative”.
+
+-- replacing "and it" does not make sense:
+"The measurement is extended to a higher energy and it improves"
+->
+"The measurement is extended to a higher energy, which improves"
+
+-- the higher energy does not improve the precision, the new measurement method does
+
+L22, replace “by performing” with “through a fit to”; put profile into quotation marks: “profile”; and replace “fit of” with “[Ref. for PLR] to”.
+
+-- this way we get "the cross section is measured through a fit to a 'profile' likelihood ratio (PLR) to the transverse mass..."
+I am not sure this is correct.
+
+L319, replace “, in” with “system in our”; delete “according”.
+
+-- this way we get
+"The background is constrained ... in our two event categories, constructed according to the kinematic properties of the jets..."
+->
+"The background is constrained ... in our two event categories, according to the kinematic properties of the jets..."
+
+which seems wrong.
+
+
+
+## The main body of corrections
+
+### Questionable
+
+L58 The analysis makes use of simulated samples of tt events as well as other processes that result in τ leptons in the final state.
+
+-- does not make sense to remove "samples of tt"
+
+L59 "used to design the event selection, to calculate the acceptance..."
+--> "used to design the event selections to calculate the acceptance..."
+
+L100 "of the transverse momenta of any or all reconstructed particles," -- what is "any or all"?
+
+L105 "pT_{ch}" insted of "E_{ch}" -- it is a definition, and it uses E? -- No! we use ET, so change it for pT
+
+L138 substitute Opposite Sign (OS) by Opposite Charge (OC)
+
+L143 endcaps -> end sectors, but at L112 endcaps -> end detectors
+
+L186 "All processes, except multijet, are estimated from simulation"
+-> "All, except multijet, events are estimated from simulation"
+
+L191 "misidentification is determined...as a funtion of mT" -- it is not a function of mT, it is orthogonal to mT, that is why we can estimate it as a normalization parameter!
+
+Figure 2: change the X and Y axes titles?
+
+L253-254 "is extrapolated...by correcting the acceptance of the signal in ttbar data"???
+
+L254 "acceptance includes the modelling of uncertainties" -- is this correct?
+
+L267 (first sentece of "Results") using "number of events" instead of "event yields"?
+
+using "change" instead of "variation" for systematic uncertainties?
+
+
+
+## The diff script
+
+
+
+
 
 # remaining questions TODO:
 
@@ -175,7 +275,7 @@ TODO: this ^^^
 
 
 
-TODO: do not forget to change mT in figures!
+DONE: do not forget to change mT in figures!
 
 
 
