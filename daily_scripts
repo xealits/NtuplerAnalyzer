@@ -1,8 +1,9 @@
 # Thomas' fixes
 
 1. DONE Check the main corrections -- are there any more questionable ones?
-2. Apply the rest on the branch.
-3. Make the diff pdf.
+2. DONE Apply the rest on the branch.
+3. DONE Make the diff pdf.
+
 
 ## Good points
 
@@ -87,15 +88,72 @@ L253-254 "is extrapolated...by correcting the acceptance of the signal in ttbar 
 
 L254 "acceptance includes the modelling of uncertainties" -- is this correct?
 
+Table 1 "capitalize first letters of each set of words"
+-- then the table will disagree with the text and the legends in figures
+
 L267 (first sentece of "Results") using "number of events" instead of "event yields"?
+
+L277 "<The observed and expected NLL>...in the e-tauh and mu-tauh final states combined are shown"
+-> "... final states are shown combined"?
 
 using "change" instead of "variation" for systematic uncertainties?
 
+saying "fit to PLR" instead of "PLR fit"?
 
 
 ## The diff script
 
+The `latexdiff` is complicated, it plugs many different commands to marks the changes in the text.
+These commands are not standard, therefore special packages must be included in the CMS tdr system
+to process them. More than that, they have some not trivial syntaxis and are not simply grep-able.
 
+    latexdiff versions_TOP-18-005_CADI-BuildTag_2019-07-27_08-54-14.tex TOP-18-005.tex > TOP-18-005_revision_latexdiff.tex
+
+The unified `diff` is much simpler and can work.
+The only downside is it marks the whole line where a change appeared.
+
+    diff -U 2000 versions_TOP-18-005_CADI-BuildTag_2019-07-27_08-54-14.tex TOP-18-005.tex > TOP-18-005_revision_diff-u.tex
+
+
+Remove the first character space:
+
+    :% s,^ ,,
+
+Remove the differences in comments:
+
+    :% s,^[+-][ \t]*%,%,
+
+Clear up the comments:
+
+    :% s,\([^\\]\{3}\)%,\1\r%,
+
+Add the closing braces:
+
+    :% g/^[-+]/ s/$/}/
+
+Insert the openings:
+
+    :% s,^-,\\textcolor{red}{,
+    :% s,^+,\\textcolor{blue}{,
+
+
+### with wdiff
+
+wdiff -w "\textcolor{red}{" -x "}" -y "\textcolor{blue}{" -z "}" versions_TOP-18-005_CADI-BuildTag_2019-07-27_08-54-14.tex TOP-18-005.tex > TOP-18-005_revision_wdiff.tex
+
+comments are a big problem
+-- strip comments first?
+
+sed -e '/^[ ]*%/d' -e 's,\([^\\]\)%.*$,\1,g' versions_TOP-18-005_CADI-BuildTag_2019-07-27_08-54-14.tex > versions_TOP-18-005_CADI-BuildTag_2019-07-27_08-54-14_nocomments.tex
+sed -e '/^[ ]*%/d' -e 's,\([^\\]\)%.*$,\1,g' TOP-18-005.tex > versions_TOP-18-005_nocomments.rex
+
+wdiff -w "\textcolor{red}{" -x "}" -y "\textcolor{blue}{" -z "}" versions_TOP-18-005_CADI-BuildTag_2019-07-27_08-54-14_nocomments.tex versions_TOP-18-005_nocomments.rex > TOP-18-005_revision_wdiff_nocomments.tex
+
+make word_diff file_from=TOP-18-005.tex file_to=versions_TOP-18-005_at_corrections-Albert1-Alexandre1.tex
+
+make word_diff file_from=versions_TOP-18-005_at_corrections-Albert1-Alexandre1.tex file_to=TOP-18-005.tex
+
+it works!
 
 
 
