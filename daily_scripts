@@ -1,3 +1,259 @@
+# [[Greg Landsberg][https://cds.cern.ch/record/2685260?ln=en]]
+
+Congratulations on completing the dilepton tt¯ cross section measurement in the τ
+
+channel and a well-written paper! Please, find my detailed comments below, split in the physics and style categories.
+
+## PHYSICS COMMENTS:
+
+- LL7-9: the comparison is not very fair, as once you take into account the τ→τh
+branching fraction and the fact that you exclude decays into two τ's, the advantage is completely erased.
+I'd therefore drop this sentence altogether.
+
+%BLUE% >> Removed.
+
+- LL10-11: first of all, here you should really do the proper referencing of the R (D/D∗) measurements,
+which come from LHCb, BaBar, and Belle, not just LHCb.
+Similarly, you should cite all three R(K/K∗) LHCb papers, not just the last one.
+Finally, the text doesn't read well as is; suggest rephrasing it as follows:
+"Recent hints of lepton flavour universality violation [xx-yy] sparked a renewed interest to measurements involving τ leptons. The t→(τντ)b decay ..."
+
+%BLUE% >> Added a citation to a recent review paper. TODO: add the papers from experiments.
+Corrected the text.
+
+- L18: the absolute majority of our 2016 data papers cite an integrated luminosity of 35.9 fb−1;
+why your uses only 35.8 fb−1 despite being based on standard single-lepton triggers that were exposed to full integrated luminosity?
+
+%BLUE% >> It is a mistake in the rounding (35.86). It was also noticed in the PAS and corrected for the future update of the paper.
+
+- L25 and further in the paper: the standard notation for "visible cross section" is "fiducial cross section", and it's used by theorists and ATLAS. I strongly suggest switching to this terms throughout the paper [see also detailed style comments]: "... in the fiducial and full phase space are performed."
+
+%BLUE% >> Corrected.
+
+- LL33-34: the sentence is not quite accurate as you do not include light leptons from τ
+lepton decays in the definition of signal, but you account for those in the background.
+Suggest modifying the sentence saying exactly that.
+
+%BLUE% >> Corrected.
+
+- L55: give a  reference to our recent trigger paper here.
+
+%BLUE% >> Added (Khachatryan:2016bia 1609.02366).
+
+- L91: give the MCFM version here (7.0 ?).
+
+%BLUE% >> Yes, added.
+
+- LL100-101: are you sure that the b tagging discriminators use PF objects, and not directly tracks? Please, double-check.
+
+%BLUE% >> The CSV discriminator uses the tracks associated with the jet clustered from PF objects and the SV of the jet.
+Moved b tagging discriminators to a separate sentence:
+"Parameters of jets and the tracks associated with jets provide input variables for \cPqb tagging discriminators."
+
+- LL113-114: the muon charge misidentification rate can't be measured with the Z(μμ) events in data as if the charged is misidentified, it's almost guaranteed that the momentum is grossly mismeasured and therefore the event is not within the Z peak any longer; the muon misidentification rate is therefore determined from Z(μμ) simulation, unlike the electron one. Please, correct the sentence.
+
+%BLUE% >> Corrected.
+
+- L131: give a reference to our first W/Z cross section paper for the tag-and-probe method.
+
+%BLUE% >> Added.
+
+- Figures 1, 3: single top -> single t [or single top quark] in the legends.
+
+%BLUE% >> Corrected, "single top quark" everywhere.
+
+- L161: cite the PDG here.
+
+%BLUE% >> Added the citation.
+
+- LL207-208: drop "within statistical uncertainties" - you already gave the number with the uncertainties and claimed that it's consistent with the expectation from simulation, which is self-explanatory.
+
+%BLUE% >> Removed.
+
+- Table 2: it's odd to see the third part of the table not having a subtitle, unlike the other three; suggest "Normalization uncertainties".
+
+%BLUE% >> Added.
+
+
+## STYLE COMMENTS:
+
+Abstract, LL3-4: and was collected in proton-proton collisions at s√=13
+
+TeV in 2016 with the CMS detector.
+
+Introduction:
+
+L2: proton-proton (pp) collisions;
+LL7-8: τ
+lepton produced is [τ
+
+lepton is not a final-state particle!];
+L9: light-dilepton channels;
+L12: third-generation leptons;
+LL12-13: to beyond the standard model (SM) contributions [see physics comments on LL10-11];
+L16: in pp collisions;
+LL17-18: in 2016 with the CMS detector at the LHC and corresponds to;
+L20: at 7 and 8 TeV [5,6]. This is achieved;
+L21: thus better constraining;
+L23: between the light lepton and the missing transverse momentum;
+L36: are given in Section 3;
+
+The CMS detector:
+
+L45: Charged-particle trajectories;
+L48: anticlockwise-beam direction.
+L50: calorimetry, and a brass and scintillator hadron;
+L53: steel flux-return yoke of the solenoid.
+LL55-56: most interesting pp collision events for further analysis.
+
+Event simulation:
+
+L57: suggest "Simulated event samples";
+L58: add a comma before "as well";
+L59: delete "in the final state" [τ
+is not a final-state particle!];
+LL61-62: next-to-leading order (NLO);
+L62: mt=172.5 GeV [let LaTex to do the spacing!];
+LL64,70: suggest using standard CMS \MGvATNLO symbol to typeset the generator name;
+L66: leading order (LO) accuracy;
+L68: of t channel [cf. L69];
+LL69-70: s channel production is simulated with;
+LL71,75,90: suggest dropping "8" from Pythia8;
+L74: matrix element (ME) calculations. [You use the acronym ME later without ever defining it; also note that compound modifiers made of two nouns generally do not require hyphenation.]
+L75: NNPDF Collaboration; end the line with a comma;
+L78: pp interactions in the same or nearby bunch crossings (pileup, PU) are;
+L79: the PU distribution;
+L81: The next-to-next-to-leading order (NNLO) SM tt¯ production cross section;
+LL82-83: is used for the normalization of the simulated signal samples.
+L86: with the corresponding; The W+jets and DY+jets backgrounds [cf. LL65-66];
+L87: The t
+
+channel single;
+L90: is normalized directly to the LO cross section calculation obtained with \PYTHIA.
+
+Event reconstruction and selection:
+
+L93: two b quark jets;
+L96: subdetectors;
+L99: add a comma before "such as"l
+LL100-101: of all reconstructed PF objects, leptons;
+L109: from PU vertices;
+L110: from PU; pT
+is;
+L111: nonisolated [CMS Style];
+L113: than 0.5 and 0.1\%;
+L114: is measured using Z boson decays [30,31].
+L115: Hadronic τ lepton decays;
+L118: along the track bending direction to;
+L127: The τ lepton charge;
+L129: with same-sign (SS) μ and τh
+
+.
+L144: (``b tagged").
+L147: light-flavour jets [UK English];
+LL148-149: as shown in Fig, 1;
+Fig, 1 caption, L2: (filled circles) are compared with simulation (solid histograms). L5: processes combined together, single top quark production (mainly tW); L6: diboson, and multijet production. L7: on the data points indicate;
+
+Event categories and fit procedure:
+
+L150: suggest "Event categories and cross section measurement";
+L155: properties of jets;
+LL159,162,163-164: non-b-tagged jets;
+L159: add a comma before "including";
+L164: superscript "min" in Roman;
+L178: The effect of the systematic uncertainties in the;
+
+Background estimate:
+
+L182: jets, dominated by the lepton+jets tt¯
+process, where;
+L192: (as shown in Fig. 2) [don't tell a reader what to do!];
+L194: with a misidentified τh
+
+are;
+LL199-200: candidates of SS. [The acronym is now introduced on L129.]
+L201: within the uncertainties;
+L205: where the multijet production is;
+
+Systematical uncertainties:
+
+L210: Systematic uncertainties;
+L211: The main sources of the uncertainty are due to the τh
+identification;
+L212: PU description, jet energy scale (JES), and jet energy resolution (JER).
+L213: and the estimate;
+L216: The uncertainty in the;
+L217: with genuine τh.
+L219: uncertainty in the τh identification efficiency.
+L222: mainly lepton+jets tt¯, W+jets, and multijet production.
+L223: misidentification probability and;
+L225: with a jet falsely identified as the τh candidate.
+L226: misidentification probabilities and;
+L228: source of the uncertainty;
+L230: (light-flavour quarks);
+L231: light-flavour jets;
+L223: in the JES;
+L234: The uncertainty in the JES;
+LL237-238: an OS lepton pair with the invariant mass;
+L239: are corrected with the; The uncertainties in the;
+L240: The PU is;
+L244: the uncertainty in the;
+L245: parametrizations [UK English];
+L246: uncertainties in the semileptonic branching fractions, according;
+LL252-253: in the fiducial phase space of the detector. The fiducial cross section;
+L255: and factorization scales, and PDFs, including the effect of alphaS variation.
+L256: in the ME calculations are;
+L257: factors of 0.5 and 2.0 from their nominal values;
+L258: parton showering (PS) [you use the acronym later without defining it];
+LL260-262: delete ⋅
+
+in three spaces [not allowed by the CMS Style];
+L263: in the fiducial phase space;
+
+Results:
+
+L267: from the signal and the backgrounds;
+L268: is estimated using control samples in data, as described;
+L269: all the selections are summarized;
+L274: obtained from simulation.
+Table 1 caption, L2: delete "for an ... 35.8 fb−1
+" - this is implied throughout the paper. L5: of the data sample and; L6: of the simulation for other processes.
+L277: with the SM expectations.
+L278: uncertainties in the;
+LL285-286: The fiducial cross section; is defined in the acceptance region satisfying the kinematic selections defined earlier.
+LL286-287: in the fiducial phase space;
+Fig. 3 caption, L2: (upper) and background-like (lower) event categories; LL3-4: (filled circles) are compared with simulation (solid histograms). L5: to the SM predictions. LL5-6: (eτh [Roman!] and μτh
+
+final states); L8: on the data points indicate; L10: uncertainties in all simulated samples.
+Table 2 caption, L2: and their combination. L3: The uncertainties in the; L7: data taking period;
+Table 2 body, first column: swap the "muon momentum scale" and "electron momentum scale" rows to follow the natural order you use throughout the paper; diboson background; simulated sample size; data sample size;
+L298: data taking period;
+L299: as expected from the lepton flavour universality.
+L301: of the partial widths, the;
+L302: by the branching fraction;
+L304: data taking period; the uncertainty in the;
+L308: While in Ref. [9] the;
+
+Summary:
+
+L313: of 38.5 fb−1
+
+obtained in;
+L325: with the SM expectation.
+
+Acknowledgements:
+
+Please, use a longer version appropriate for regular papers.
+
+References:
+
+Ref. [34]: add the Erratum [as a doi reference].
+Ref. [42]: typeset the Erratum as a doi reference.
+
+That's all. Good luck with the remaining editorial work and timely submission!
+
+
+
 # Thomas' fixes
 
 1. DONE Check the main corrections -- are there any more questionable ones?
@@ -1302,12 +1558,12 @@ python stack_plot.py distrs/v37_test172_bunchCONTROLS1_mc_withTauSys.root distrs
 
 mT prefit
 
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{m}_{T}(e, #font[12]{p}^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "signal-like"
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c el_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{m}_{T}(e, #font[12]{p}^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "background-like"
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c el_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{m}_{T}(e, #font[12]{p}^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.04 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "signal-like"
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c el_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{m}_{T}(e, #font[12]{p}^{miss}_{T}) [GeV]"   --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.04 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_eltau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,100. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPelTRG,LEPelID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "background-like"
 
 
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{m}_{T}(#mu, #font[12]{p}^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "signal-like"
-python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{m}_{T}(#mu, #font[12]{p}^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.02 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "background-like"
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c mu_sel_ljout -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{m}_{T}(#mu, #font[12]{p}^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.04 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "signal-like"
+python stack_plot.py histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root histosels/datafile_HISTOSEL_v37_test172_bunchFULLFIT1BIN1_with_tausys.root -o plots/v37_test172_paper_plots/ --data-nick data_other --overwrite -p -r -c mu_sel_lj    -d Mt_lep_met_c --ratio-range 0.5 --bin-norm --title "" --title-x "#font[12]{m}_{T}(#mu, #font[12]{p}^{miss}_{T}) [GeV]" --title-y "Events/GeV" --draw-overflows 5 --legend-shift 0.04 --merge-procs wjets_taul,wjets_tauh,wjets_other:wjets.dy_other,dy_tautau:dy.s_top_mutau,s_top_lj,s_top_other:s_top.tt_lj,tt_taulj,tt_taultauh,tt_other. --y-range 0,150. --uncertainty-systematic bSF,PU,JES,JER,TES,LEPmuTRG,LEPmuID,TauMisID,TauID --lumi-label 35.9 --output-type pdf --ratio-range 0.55 --font-size-axes-labels 30 --font-size-axes-titles 40 --margin-y 0.11 --offset-y 0.9 --margin-x 0.4 --offset-x 2.8  --label "background-like"
 
 
 
