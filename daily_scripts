@@ -1,3 +1,604 @@
+# [[Sijin Qian][https://cds.cern.ch/record/2686265?ln=en]]
+
+ In general
+
+(1) Throughout the paper (including in Tables, etc.), (a) the "branching ratio" is used on L246 and L302, while (b) the "branching fraction" is used on L30 and Table 2 (the header column and the theoretical uncertainties block),
+
+I'm not sure whether they should be consistent, i.e.
+
+either all with (a) or all with (b) instead of a mixture.
+
+(2) In all Figures (the axis labels, plot labels and legends) and Tables (header rows and header columns), the 1st letter of each line should be capital, e.g.
+
+(a) Figs.1 and 3's legends:
+
+"data ... ... single top W+jets Drell-Yan dibosons multijet uncertainty" -->
+
+"Data ... ... Single top W+jets Drell-Yan Dibosons Multijet Uncertainty"
+
+(b) Table 1's header row: (the 3rd line)
+
+"background-like | signal-like | background-like | signal-like" --> "Background-like | Signal-like | Background-like | Signal-like"
+
+(c) The other places where should be changed similarly are
+
+Fig.2's legend, Table 1's header column (some rows), Fig.3's plot labels (at the upper-right corner of each plot), Table 2's header row (the 2nd line) and header column (some rows), and Fig.4 (the legend and the horizontal axis label).
+
+Pages 1-4
+
+(3) L30, L81, L95, L97, L111-112, L127, L140 and L142-143. These lines may be shortened from
+
+(a) L30: (as the "h" has been explained on L29)
+
+"branching fractions B(tauh -> hadrons + nutau)" --> "branching fractions B(tauh -> h + nutau)"
+
+(b) L81: (as the NLO has been introduced on L62; also, the number of adjectives before the "cross section" seems a little too many, so two words of "At the" and a comma may be better to be added around the 1st word)
+
+"The next-to-next-to-leading-order (NNLO) expected SM ttbar pair production cross section of" -->
+
+"At the next-to-NLO (NNLO), the expected SM ttbar pair production cross section of"
+
+(c) L95: "with a particle-flow (PF) algorithm [28]. The PF algorithm ..." --> "with a particle-flow (PF) algorithm [28]. This algorithm ..."
+
+(d) L97: "namely charged hadrons, photons, neutral hadrons, muons," --> "namely charged and neutral hadrons, photons, muons,"
+
+(e) L111-112: (two places)
+
+"if Irel > 0.0588 in the barrel and Irel > 0.0571 in the endcaps. The muon candidate is rejected if Irel > 0.15 in both the barrel and the endcaps." -->
+
+"if Irel > 0.0588 (0.0571) in the barrel (endcaps). The muon candidate is rejected if Irel > 0.15 in both the barrel and endcaps."
+
+(f) L127: "is taken as the sum of the charges of the charged hadrons (prongs) in ..." --> "is taken as the charge sum of the charged hadrons (prongs) in ..."
+
+(g) L140: (as the "phi" and "eta" have already been explained on L46-47)
+
+"> 0.4, where phi is the azimuthal angle and eta is the pseudorapidity." --> "> 0.4."
+
+(h) L142-143: "if Irel < 0.0994 in the barrel and Irel < 0.107 in the endcaps." --> "if Irel < 0.0994 (0.107) in the barrel (endcaps)."
+
+(4) L33, it'll be looked and sound better if a comma is added, i.e.
+
+"In this measurement l does not include leptons from ..." --> "In this measurement, l does not include leptons from ..."
+
+(5) L62, to be consistent in this paper (e.g. L161, etc.), two spaces should be added before and after the symbol "=", i.e.
+
+"mt=172.5 GeV." --> "mt = 172.5 GeV."
+
+(6) L69, to be consistent in this paper (e.g. L68, etc.) and with all other CMS papers, a hyphen should be added between the "s channel", i.e.
+
+"The single top quark s channel is produced" --> "The single top quark s-channel is produced"
+
+(7) L74, L100 and L135-136. The "ME" and "pT" should be explained at their 1st appearances in text on L74 and L100 instead of L135-136 for "pT", i.e.
+
+(a) L74: (as the "ME" has been used later in this paper)
+
+"for in the matrix-element calculations." --> "for in the matrix-element (ME) calculations."
+
+(b) L100: "vectorial sum of transverse momenta of all reconstructed" --> "vectorial sum of transverse momenta (pT) of all reconstructed"
+
+(c) L135-136: (then can be shortened correspondingly)
+
+"with transverse momentum pT > 30 (26) GeV and ..." --> "with pT > 30 (26) GeV and ..."
+
+(8) L146, the expression of "a b tagging efficiency" is looked quite odd similar as "a b c d xxxx". It may be improved by following the good examples in this paper (e.g. L158-159, L162, L164 and L315, etc.) to add a hyphen between "b tagging", i.e.
+
+"in a b tagging efficiency of about 66% with" --> "in a b-tagging efficiency of about 66% with"
+
+(9) L153-154, I've not figured out what the "(MT in the following)" is used for in this sentence yet. If it would not be too meaningful here, then whether it can be removed?
+
+Pages 7-8
+
+(10) L258 and L283, as the "PS" has been used on L260, it should be explained at its 1st appearance in text on L258, i.e.
+
+(a) L258: "in parton showering simulation of ..." --> "in parton showering (PS) simulation of ..."
+
+(b) L283: (then, can be shortened by using "PS")
+
+"and parton shower modeling" --> "and PS modeling"
+
+(11) L258-259, L268 and Table 1's caption (the 3rd line) may be shortened from
+
+(a) L258-259: "of final-state and initial-state radiation," --> "of final- and initial-state radiation,"
+
+(b) L268: "as described in the Section 6," --> "as described in Section 6,"
+
+(c) Table 1's caption (the 3rd line):
+
+"in the background-like and signal-like event categories." --> "in the background- and signal-like event categories."
+
+(12) L276, to be consistent in this paper, the font of electron "e" should be changed from
+
+"as a function of the cross section in the e(italic)tauh and ..." --> "as a function of the cross section in the e(non-italic)tauh and ..."
+
+Page 11
+
+(13) L289-290, I'm not sure whether the "acceptance" should be plural, i.e.
+
+"is the product of the geometrical and kinematic acceptance," --> "is the product of the geometrical and kinematic acceptances,"
+
+Page 12
+
+(14) L325, per the PubComm guidelines, some acronyms and variables (e.g. "SM", etc.) in the Summary Section may should be explained (or spelled out if it would not be used again in the Section at their 1st appearances in the Section, since some readers may only read the Summary Section instead of whole paper, i.e.
+
+"in agreement with SM expectations." --> "in agreement with Standard Model expectations."
+
+Pages 13-16, in the References Section
+
+(15) L351, in [1], I'm not sure whether three words in the article title should be in the lower case, i.e.
+
+"Test of Lepton Flavor Universality by the measurement of the" --> "Test of lepton flavor universality by the measurement of the"
+
+Other ones which also need to be similarly modified are [3] (for the 2nd word "Anatomy") and [43] (for the last word "Pole").
+
+(16) L434, in [30], to be consistent with all other CMS papers, the document name should be changed from
+
+"Technical Report CMS-DP-2017-004, 2017." --> "CMS Detector Performance Report CMS-DP-2017-004, 2017."
+
+(17) L469, in [42], to be consistent in this Section, the Erratum should be changed from "[Erratum: Phys. Rev. D 66, 079905 (2002)]." --> "[Erratum: Phys. Rev. D 66 (2002) 079905].
+
+(18) L478, in [46], this is a Collaboration paper, so that the individual name should be removed from the author part, i.e.
+
+"[46] Particle Data Group, M. Tanabashi et al.," --> "[46] Particle Data Group," 
+
+
+
+# [[Theodor Christian Herwig][https://cds.cern.ch/record/2686258?ln=en]]
+
+## Physics comments (Type B)
+
+ In addition, there are two points in particular that we would like to see addressed by the analysis team, first regarding the presentation of the extracted cross section values, and second regarding the fit construction and interpretation of results.
+
+In Section 8 ("Results"), a single "acceptance" factor is reported that related the "visible" and "total" cross sections for the ttbar process. The quoted "acceptance" appears to include both the purely geometric acceptance factor (e.g. due to kinematic selections on reconstructed objects) as well as the detector-specific efficiency (e.g. from lepton and tau ID, trigger, etc.). It would be useful to separate these two contributions into "acceptance" and "efficiency" corrections and to quote an efficiency-corrected visible cross section. This would allow for a comparison of these results with those from other experiments and with the correction factors predicted by other theory models.
+
+The treatment of decay channels involving tau leptons that are not considered as a part of the signal process would benefit from a more detailed discussion and comes up in several of the physics comments below. This measurement is motivated in the paper by its ability to probe anomalous tau lepton production in top decays, which in addition to the "e/mu+hadronic tau" signal considered here would also affect ttbar channels involving (a) one fully leptonic tau decay, (b) two fully leptonic tau decays, (c) one hadronic and one fully leptonic tau decay, and (d) two hadronic tau decays. In this analysis, each of these processes is treated as a background. Both (a) and (b) are included in the signal definition of Ref.[7] and (c) is treated as a background here despite having an experimental signature identical to the signal process. This treatment could lead to a scenario where anomalously large tau production is present in nature, but would increase the size of both signal and background in this analysis, so that a signal strength consistent with the SM is still observed. Similarly, the contribution of tau production to both the numerator and denominator of the ratio R_Gamma (L306) implies that a measurement might be consistent with the SM value, despite the presence of real sources of anomalous tau production in top decays.
+
+It should be clarified in the text whether the signal strength modifier is also applied to background processes involving taus from top decays. If not, consider modifying the fit setup to coherently treat all top decays involving taus. In the introduction of the ratios R_ltau/ll (L298) and R_Gamma (L306), the effect of processes involving taus from top decays that are not considered as signal in this analysis should be explicitly discussed. This is necessary for the reader to properly interpret the results in terms of limits on anomalous tau production and lepton universality.
+
+Best, Christian Herwig and Zoltan Gecse, for the Fermilab / LPC group
+
+## Type B Comments ###############
+
+Abstract: Indicate here why the result is significant (e.g., first measurement at 13 TeV that explicitly includes a tau lepton in the final state).
+
+Introduction: Add a Feynman diagram, which is generally useful to improve the clarity of the paper.
+
+6-9: State already here whether you consider tt > (tau nu b)(tau nu b) with one hadronic and one fully leptonic decay as a part of your signal. Also the abstract directly talks about tau_h, while this is more general, just saying tau. It would improve the clarity to discuss the signal in more explicit terms.
+
+8: “5/81” and “4/81” - better elaborate on your “81” (at least). The fractions 5/81 and 4/81 (slightly) confuse channel fractions with branching fractions. Also, the sentence has to be read carefully to understand that the numerators refer to dilepton decays whereas the denominators refer to all decays. And the argument that 5/81>4/81 is misleading since, as explained in the fourth paragraph, the tau decays are restricted to the hadronic channel (and 1/81 corresponds to tau tau).
+
+11: The “this” in “In this final state” should be spelled out since it refers back to the preceding paragraph.
+
+14: How would the anomalous tau production manifest itself? As there are existing high-precision ttbar measurements involving tau decays, would these other decay modes be modified enough to already see the effects to which you are sensitive? For example, the measurement in the e+mu- channel would be affected.
+
+33: The statement as written here begs the question: if prompt leptons are difficult to distinguish from leptonic tau leptons, why do you choose to exclude this process from your signal selection, including "prompt" leptons and not the ones from tau lepton decays?
+
+42: Use the latest version of the “CMS detector” material as there have been a few changes since the form used in the paper was released.
+
+54: momentum balance, instead of energy. (This may be fixed in the newer detector reference.)
+
+65: State how many jets are included in the LO matrix element calculation for W/Z+jets.
+
+68: How is the interference with ttbar treated in the tW simulation? Is a theoretical uncertainty assessed by comparing the diagram removal and subtraction schemes (https://arxiv.org/abs/0805.3067)?
+
+72: Strictly speaking, there is more to the “event tune” than CUETP8M2T4, which is the “underlying event tune”.
+
+79: It’s not clear how the 69.2 mb fits into the pileup weighting. If it is used to create a pre-distribution of PVs per event, then it has only an indirect role in the weighting process. And since many of the quantities are “pileup safe” it’s not clear why the reader needs to know this number. There are other numbers such as the PDG value for the top quark mass or the uncertainty in the cross section due to the top quark mass that would seem to be much more relevant.
+
+82: Consider also stating the uncertainty due to the top quark mass assumption. It is appropriate for a 'measurement' paper and the uncertainty is larger than that due to scale variations.
+
+92: This section might be improved by better organization. For example, you define in l.104ff the electron/muon isolation, including the cut values for tight leptons, and then multiple paragraphs later (l.142) the values for veto leptons. It would be clearer to first discuss all of the object-level selections (e.g. loose and tight leptons) before the event selection.
+
+111-112 (142,...): The “magic” numbers should be explained or referenced : “0.0588”, “0.0571”, “0.15” too ; there are some others on other lines (142, …, 260-261, ...) If these correspond to some fixed signal efficiency (e.g. in Z->ll events), please quote it.
+
+126: Please clarify that “genuine tau leptons” here refers specifically to the hadronic tau decay. Suggest changing tau to tau_h.
+
+140: “where phi is …, and eta is ...” - those are already defined on line 46-47, so no need to declare them again. (But the standard practice is to provide a reference as part of the detector section and not to give a formula for eta.)
+
+142: For electrons and muons that exceed the reconstructed pt thresholds the “loose” definition also includes lower bounds, e.g. 0.15< Irel < 0.25 for muons, as otherwise they would simply be “isolated”. Also, the “rejected” on lines 111 and 112 is too harsh as some of those muons could have been still considered as “loose” candidates...Clarify whether “loose” and “isolated” are inclusive or exclusive. (See also the above comment on L92)
+
+149: It would be instructive to explicitly quote the signal purity after the full event selection here, plus perhaps also the contamination from the remaining ttbar decay channels.
+
+Sec 4.: Are the leptons matched to the triggered objects?
+
+153: Logically it should be “M_T(\vec{p}^l_T,\vec{p}_T^\text{miss} ...)” /not M_T(l,...). This should also be made consistent between the text and in the Figures (axis labels).
+
+158: You might explicitly discuss the background from ttbar where it is not the b from t → bqq’ that has been b-tagged. (You require only ≥1 b-tagged jet, and that one could be the one from the t → blnu decay). The "wrong-tag" events presumably are the dominant ttbar contribution to your signal-rich region?
+
+165-166: This sentence is a bit confusing. How can the cut choice on Djjbmin maximize both the signal and background-like event category yields? The cut decides one or the other, i.e. if changing Djjbmin leads to one category becoming larger, and conversely the other becoming smaller. Describe the (presumably MC-based) optimization that was done in order to select the 60 GeV value.
+
+168: It’s never explicitly stated why mT is a good choice of observable to fit -- the signal may pass the W mass endpoint due to the two-neutrino final state whereas the dominant tt->lep+jets process cannot. It would be helpful to include this motivation in the ‘fit procedure’ section and perhaps also in the caption of Fig. 2.
+
+169: Define a “bin” here, explicitly giving their sizes and the range of values to be used in the fit.
+
+169-172: This sentence is quite long and would be improved by separating the signal strength definition into a shorter, self-contained sentence. Also, the present definition seems to suggest different signal strengths are considered for each bin of mT and lepton flavor (but are held in common for both signal categories?). You may break this into two sentences: one explicitly defining the signal strength used in the fit, and another detailing the categories, NPs, and so on.
+
+173: This statement doesn’t seem strictly true, since the tau pT contributes to the missing-pT and thus the transverse mass.
+
+185: How exactly do you treat the tt → tau_l tau_h bbbar background - it seems that this one should be discussed separately. In many aspects any measurement different from SM should also affect this background. E.g. If you measure a higher “signal” cross section, than this “signal” is also larger. If you observe anomalous tau coupling (as mentioned in l.13), than this process is even more affected.
+
+193: Have you checked to quantify the “independence” of mT from the tau lepton pT? One could check the size of the effect by re-weighting the tau pT by the non-closure observed in Fig1 (~20% at high pt). (See also comment on L173)
+
+196: Only changes to the normalization of the background templates are discussed here, but presumably the shapes are also allowed to vary (e.g. due to theory uncertainties).
+
+200: To pass the signal selection, both the lepton and tau must be incorrectly identified. It would be helpful to state the dominant origin of these events (e.g. conversions, heavy flavor decays...)? The origin affects whether the fake contribution is expected to be charge-symmetric.
+
+203-207: Is is unclear whether f_OS/SS is (A) a ratio of data events in OS and SS regions, or if it is (B) the double ratio comparing this quantity to the same one predicted by the MC. Put another way, does f_OS/SS=1 tell us that the same number of OS and SS events are expected, or that the ratio (which may NOT be 1) is well-described by the MC? L203 suggests (A), but ‘scale factor’ (L206) typically refers to data/MC comparisons suggesting (B). An explicit equation defining f_OS/SS would be useful here.
+
+218: “is estimated to be” - how is it estimated?
+
+224-228: After the 50% uncertainty on tau mis-ID is significantly constrained, are the mentioned differences in kinematic properties still covered? For example, does the profiled uncertainty cover data/MC differences in the reconstructed tau pT spectrum for a background-like selection? In Tab. 2 is this uncertainty included in the dominant “tau jet ID” entry? If so, it would be beneficial to separate them and explicitly show that the uncertainty is small. Otherwise it is hard to know whether to worry about the strong profiling. The sentence L227-228 calls it “not dominant” while the sentence L281-282 calls it “dominant”, so the situation here should be clarified.
+
+236: Did you consider that the events in “standard” Z->ll are much cleaner than your events and the correction factors may be biased (in particular isolation related)? Did you check with MC events for instance?
+
+237-238: Suggest removing the part of the sentence starting with “... selected by … ” (to the end of the sentence) - this is an unnecessary detail, and there is a reference anyway.
+
+241-243: The sentence “The pileup is ...” seems to contradict lines 79-80. Either provide more details or follow similar wording (relying on the reference given).
+
+247: In Fig.1 there is a trend towards softer-than-predicted tau leptons, of up to 20%. Does the trend persist after top pT re-weighting? If not, can you check the impact of re-weighting in tau lepton pT? (This could be done with the signal-rich selection, to disentangle effects from mis-identified taus.)
+
+254: Theory uncertainties are also included in the extraction of the visible cross section presumably, so it is not clear why they are introduced here only in the context of the acceptance extrapolation. We suggest explicitly mentioning their effect on the visible cross section (a la L262-264) before describing each source of uncertainty.
+
+257: State whether the scales are varied independently, coherently, or both. The determination of the uncertainty as the ‘envelope’ is clear for the case of the acceptance, but what is the treatment for the visible cross section extraction? Are shape variations considered for all combinations of scale choices, and how many nuisance parameters are included in the fit corresponding to the scale variations? Does the “ttbar ME” entry in Tab. 2 correspond to a combination of all renormalization, factorization, and hdamp scale variations?
+
+264: The decision to ignore correlations here should be justified.
+
+265: Are theory/shape uncertainties considered on the non-ttbar background?
+
+265: Have you checked the dependence of the extracted cross section on the top mass assumption?
+
+270 / Tab. 1: Regarding “The observed… expectation”, it is impossible to tell that the data/prediction agreement is good from the table, as the full uncertainties are not included. For example, the background muon channel shows a 4.2 sigma (!) discrepancy, just including the MC + data statistical uncertainties (and the difference is >2 sigma for 3 of 4 channels). The presentation here should be reconsidered, or an appropriate comment made in the text.
+
+Fig. 3: In the first sentence of the caption, specify the e or mu lepton in the mT definition (i.e. the "lepton" is not the tau lepton).
+
+277: It would be useful to include the post-fit normalization for each of the background processes here. (Have the post-fit estimates for these processes been cross-checked using orthogonal data selections, i.e. "validation regions"?) Also consider including a goodness-of-fit parameter (e.g. chi2/nDOF) to demonstrate the fit quality.
+
+Table 1, caption, last sentence: Not clear what the meaning is : “uncertainty in … multijet contributions includes … uncertainty of the data … and … uncertainty of … THE OTHER processes.” (which other processes, what is the relation to multijets) Capitalize firsts words.
+
+Tab. 2: Which process(es) does the “ME-PS matching” uncertainty correspond to? Matching schemes don’t appear to be described in the section describing MC samples.
+
+Tab. 2: Suggest quoting the total uncertainty for each of the experimental, theoretical, and extrapolation categories.
+
+288: Please add further explanation that the quoted cross sections here correspond to the full ttbar production process (not just the hadronic tau decay channels). The assumptions should be explicitly stated that allow you to extrapolate from e-tau_h and mu-tau_h decay channels to the full cross section (dividing by the SM branching fraction to those channels). Also consider instead reporting the cross section times branching ratio to each of the three channels, so that ell-tau_h is the sum of the other two channels.
+
+288: Why are the electron and muon estimates so similar, considering the differences in acceptance and efficiency that have not been taken into account at this point (but are apparently included in the acceptance factor).
+
+289-290: Here the acceptance seems to include all of the efficiencies in addition to the purely geometric acceptance effects. On one hand this suggests the visible cross-sections reported contain no efficiency corrections, limiting the use of these numbers. On the other hand, why is the acceptance defined to include efficiency - in this way the acceptance (generally a property of a physical process) becomes also a property of the detector and time, including its uncertainties? How is it possible that the acceptance as defined by you includes only “modeling” uncertainties but not efficiency uncertainties? It would improve the presentation if the efficiency factors for trigger, lepton and overall reconstruction are removed from the acceptance definition and treated as a separate correction, with a corresponding change to the visible cross section definition. Ideally the result would be cast as a limit on BR(top --> tau nu b) so that the various decay modes are properly correlated.
+
+298: Exactly how have you constructed this ratio? Ref.7 explicitly mentioned that tau → lnunu are considered as signal, so any non-SM modification of your result with that result would be very correlated. This issue should be addressed in the discussion here.
+
+299: As discussed above, anomalous tau production could also lead to a value or R consistent with the SM expectation (1.0).
+
+306: “... includes the correlations… The estimate … 0.0071 (syst)...”. Your cross-section syst. error is 62/781 ~ 8% (last line on page 11). Then your table reports that most of the uncertainties are fully correlated with the ones in the dilepton channel. Yet for the ratio you arrive at 71/1050 ~ 7% systematic uncertainty which is about the same you started with, how come? How do you “include” the correlations?
+
+320-321: The message of this sentence (“In the fit… tau lepton”) is unclear.
+
+321: Taus from top decays were included through their fully-leptonic decays in previous measurements by both experiments at 13 TeV in the e-mu channel (e.g. https://arxiv.org/abs/1510.05302 and https://arxiv.org/abs/1606.02699). Suggest rephrasing to ‘requiring hadronic tau decays’ or similar. 
+
+
+
+
+
+# [[Koushik Mandal][https://cds.cern.ch/record/2686257?ln=en]]
+
+## Physics comments (Type B)
+
+ Abstract:
+
+Why do you use () to present ttbar decay?
+
+It would be nice to mention the result on lepton flavor universality in abstract too.
+
+Event categories and fit procedure:
+
+Its mentioned that events are grouped into two categories based on b-jet and trijet kinematic criteria in order to get better discrimination over the background. But it seems like the PLR fit is done in both categories. Is the final result extracted from both event category? If so, then how does this event categorization improve your result over no categorization?
+
+Figure 3:
+
+Looks like ttbar -> other is a huge background. I understand that you are constraining this background by the fit. But it would be nice to add some words on how that fitted output differs from MC prediction and how precise is the background uncertainty.
+
+Line-by-line comments:
+
+L8-9: No explanation or reference for the numbers 5/81 and 4/81.
+
+L31: What is meant by distinct signature here?
+
+L108: The factor 0.5 is used as a rule of thumb or there is any other explanation?
+
+L110-112: This is a bit difficult to follow. It would better to rephrase rejected as selected or identified with inverting the Irel conditions as I guess these are the isolation conditions used for the electron or muon selection in the analysis. Then it would be relevant to L135. Also, you provide the misidentification probability in the following line, so sentence with selection or identification would be better.
+
+L121: What is meant by hadron plus a strip/ two strip?
+
+L128: This charge refers to the individual hadron or total tau charge?
+
+L132: What is a generic hadronic jets?
+
+L132: The misidentification rate is less than 1%. Could you please explain if this rate is so low, then how can ttbar lepton + jets where one jet is misidentified as tau jet be your dominant background (L181-183) and also could you provide a quantitative value of tau misidentification obtained from the fit as mentioned in L223?
+
+L167-168: Could you explain how does this provide the additional constraint on the background?
+
+L200: What are the other processes considered here?
+
+L219: How is the charge uncertainty added to the identification uncertainty?
+
+L249: Is this pT reweighting scale factor computed by the analyzers or taken from another source? 
+
+
+
+
+
+
+# [[Lea Michaela Caminada][https://cds.cern.ch/record/2686165?ln=en]]
+
+## Physics comments (Type B)
+
+ Abstract:
+
+"ttbar > (l nu_l)(tau_h nu_tau)bbbar" is a not a production process, but a decay. Rephrase, or at least add „pp> ttbar > (l nu_l)(tau_h nu_tau)bbbar“
+
+In Introduction, Results and Summary three results are presented: cross section, R_(ltau_h/ll) and R_width, while the abstract only mentions two of them > suggest to add R_(ltau_h/ll) also to abstract
+
+Introduction:
+
+L7-9: The argument about the higher branching ratio for ttbar decays with at least one tau decay in the final state being higher compared to ee/mumu/emu does not really seem to be appropriate in the context of this analysis, since final state with two taus are not considered.
+
+L27: What is meant by „complementing earlier measurements“?
+
+Event simulation:
+
+L61-80: Might consider having a table instead of the second paragraph as this would be easier to read.
+
+L82: used for the estimation of the number of ttbar events in the simulation > used for the normalization of the number of ttbar events in simulation
+
+L85: „The proton structure is described…“ It is not clear that this sentence refers to. Is it the cross section value? If yes, is it relevant to have this statement?
+
+Event reconstruction and selection
+
+L105: Can you add a motivation (or reference) for the choice of the definition of I_rel. In particular, why is there a factor 0.5 for E_ch^PU? The sentence on L108/109 is unclear. Please rephrase.
+
+L111: are these standard cut values? If yes, add a reference.
+
+L125: „Additional requirements…“ > it is not clear what this statement refers to as in the following there is only one additional requirement mentioned, namely the charge of the tau.
+
+L127: „the signal cone“ has not been defined.
+
+L136: can one of the two selected jets be the tau_h candidate or is a tau_h candidate required in addition to the two jets?
+
+L140: phi and theta have already been introduced in Section 2 > remove definition here.
+
+Figure 1 caption: „The pre-fit tau_h p_T distributions“ > „The tau_h p_T distributions“ (at this stage the fit has not yet been discussed)
+
+Figure 1 caption: „to the SM predicted values“ > „to the SM predicted cross sections"
+
+Event categories and fit procedure
+
+L152 vs L155: the use of the term „two event categories“ is confusing in this section as it is both used to refer to the „e tau_h/mu tau_h“ categories and the „signal-like/background-like“ categories. Please review and rephrase.
+
+L163: The statement of „less than two not b-tagged jets“ is not clear: This means zero or one not b-tagged jets? But zero is not possible, since there is always a tau_h candidate? Wouldn’t then „one not b-tagged jet“ be more appropriate?
+
+L167: „maximization of yields in the two categories“: It is not clear what this refers to. e tau_h/mu tau_h or signal-like/background-like?
+
+L167: „The categories proved an additional constrain“ > „Performing a simultaneous fit in two categories provides an additional constraint“ (or similar, it is not the „categories“ that provide the constraint, but the fact that you do the fit in two categories)
+
+L173: What does it mean that „The fitted variables are not tied to the kinematic properties of the tau lepton“? > Rephrase
+
+Background estimate
+
+L203: Justify why f_OS/SS measured in the control region can also be applied in the signal region. Did you check this in simulation?
+
+Systematical uncertainties
+
+L224: Why is the misidentification probability varied around the expected value and not around the measured value?
+
+L241: „The pileup is estimated…“ How is this information then used in your analysis to obtain a systematic uncertainty?
+
+Results
+
+L285: The definition of the visible cross section should be written explicitly. Are the isolation cuts included in the definition?
+
+Before L288: In L286 it says „the visible cross section is defined in the fiducial region satisfying the kinematical cuts described earlier“. From this we understand that the pt cut is different for e and mu. How is sigma(l tau_h) then defined?
+
+Before L296: State in the text how is sigma_tt (l tau_h) obtained from sigma_tt (e tau_h) and sigma_tt (mu tau_h)
+
+L298: How are the correlations in systematic uncertainties treated when obtaining the ratio R_(ltau_h/ll)? 
+
+
+
+
+
+# [[Thorsten Chwalek][https://cds.cern.ch/record/2685313?ln=en]]
+
+## Physics comments (Type B)
+
+ (1) In the abstract you say twice that the cross section is measured, once for the hadronic tau final state and once for the inclusive production cross section. but in fact you only measure it in the fiducial phase space and then extrapolate it the full phase space based on acceptance taken from simulation. I think it is worthwhile to mention the fiducial measurement already in the abstract, since it is a selling point of this analysis.
+
+(2) Why is the integrated luminosity 35.8 fb-1 instead of the more common value of 35.9 fb-1? Is it due to the chosen trigger paths?
+
+(3) I believe the description of the CMS detector is outdated, at least in conflicts with some mandatory statements from the twiki page.
+
+(4) Whenever there is discussion about pileup, i.e. for the total inelastic pp cross section or the uncertainty on that, you cite Ref. 20. but this reference is for the ATLAS measurement of the pp cross section, which neither supports the nominal value used in CMS (69.2 mb), nor the uncertainty of 4.6% on that value when estimating the systematic uncertainty.
+
+(5) Is it really necessary to quote the cuts on the electron isolation up to this many digits? I know, you were just copying it from the table in the twiki, but what relevance does this have to the reader (it might also trigger the question why the values for electron and muons differ and then you have to go into explaining that you actually select electrons based on the cut-based ID and so on ...)
+
+(6) In the determination of the f_{OS/SS} scale factor, how large is the individual contribution of statistical uncertainty and the combined systematic uncertainties to the total uncertainty of 0.05?
+
+(7) Is there any particular selection or ordering of the sources of uncertainties in the first paragraph of the systematic uncertainties section?
+
+(8) What exactly is the 'p_T^miss scale' uncertainty? is it the propagation of the JES uncertainty to p_T^miss or are you referring to the unclustered energy uncertainty, which varies the energy of all unclustered particles in the determination of p_T^miss.
+
+(9) The impact of a specific systematic uncertainties is evaluated by a likelihood scan and fixing all other nuisance parameters to their post-fit values. maybe clarify that you are referring to the post-fit values of the nominal fit results.
+
+(10) Is there a good explanation why there is a significant impact for the jet energy resolution in both channel independently, but not in the combined result?
+
+(11) What exactly is the 'ttbar background', 'Drell-Yan background', etc. uncertainty in Table 2? is it just a log normal nuisance parameter for the initial normalization? if so, please rephrase to 'ttbar background normalization'
+
+Line-by-line comments:
+
+- l.10: renewed interest in what, processes with tau leptons?
+
+- l.23: speaking about the invariant mass between two objects is jargon, better refers to the invariant mass computed from the lepton momentum and p_T^miss.
+
+- l.24: tau_h not yet defined, suggest to move paragraph starting in L29 before paragraph of L16
+
+- l.27: be more explicit: total decay width of the top quark
+
+- l. 61: The Reference for the ttbar production with POWHEG is missing (JHEP 0709 (2007) 126, arXiv:0707.3088)
+
+- l. 64: I believe that the correct (default) version of MG5_aMC@NLO is 2.2.2 (instead of 2.3.3). Can you please check for all MG5_aMC@NLO simulation samples used in the analysis?
+
+- l. 68: The Reference for the t-channel single top production with POWHEG is missing (JHEP 0909 (2009) 111, arXiv:0907.4076)
+
+- l. 71: I think, in at least some cases, Pythia 8.212 instead of 8.219 has been used, please check.
+
+- l. 72: Tune CUETP8M2T4 has been only used for ttbar to improve the modeling in the jet multiplicity, all other processes are generated with Tune CUETP8M1, which was the default in 2016
+
+- l.91: Please provide the version number of MCFM.
+
+- l.111: although correct int he meaning, the sentence on l.111 'The electron candidate is considered to be non-isolated and is rejected if I_rel > 0.0588...' is in this construction hard to understand for uniformed reader. I suggest to rephrase it to something like 'Electron candidates with I_rel > ... are considered to be nonisolated and are rejected'
+
+- l.111/112: a single candidate can be either in the barrel or the endcap, so: I_rel>0.0588 in the barrel *or*… “I_rel > 0.15 in *either( the barrel...
+
+- l.125: the tau lifetime information
+
+- l.140: redundant, pseudorapidity already defined in l.47
+
+- l.142: barrel or
+
+- l.154: you are using a different variant of the symbol \phi compared to l.139-140
+
+- l.194: determined separately ist misleading here, as (I assume) it is still the same fit in which the background normalizations are determined. It is also unclear if the normalizations are nuisance parameters with constraints or free fit parameters.
+
+- l. 207: Which systematic uncertainties are considered for the scale factor? All uncertainty sources of Section 7 or only specific ones? Please provide a bit more information.
+
+- l.209: the wording separate parameter is a little clearer, if you explain the role of these parameters in l.194
+
+- l. 257: Did you avoid drastic muR, muF variations (i.e. 0.5,2.0 and 2.0,0.5)?
+
+- Figure 1: please increase the width of the overflow bin to match the size of the remaining bins, otherwise you would also have to include horizontal error bars due to nonequidistant binning, also then y-axis label 'Events / X GeV'; align the 'lumi (sqrt(s))' to the right side (also for Figure 3) ; in my opinion the term 'lumped' in the caption is not very scientific (also for Figure 3); suggest tau_h p_T -> p_T(tau_h) (makes it more clear what the variable is and what the particle); shaded areas look very light when printed; colors for W+jets and diboson contributions look very similar when printed
+
+- Figure 2: change the y axis label from 'a.u.' to a proper meaning, e.g. 'norm to unity' or 'probability density'; also include a overflow bin in this figure
+
+- Figure 3: y axis label: use format "GeV>", uncertainty band is hard to see in printed version; caption 5th line (e tau_h) -> e not italic
+
+- Figure 4: x axis label: cross section -> ttbar cross section; caption: describe what is actually shown here. It cannot be the likelihood, which should have a maximum at 800 pb. Is it the profile likelihood ratio, with the cross section profiled?
+
+- Table 1 caption: suggest to clarify what of the other processes refers to, the processes that get subtracted from the data in the determination of the multijet shape
+
+- Table 2: is 'sample size' in Table 2 simply the statistical uncertainty of the data set?; in Table 2,the experimental uncertainties seems to ordered according to their impact on the combined results. how is the ordering for the other categories chosen? ; also there is some inconsistency in Table 2 for the usage of abbreviations (ttbar, tW, ME, PS, ISR, FSR) and nonabbreviated terms (Drell-Yan, jet energy scale, jet energy resolution); is the last column just a yes/no, or the correlation factor that is assumed? In the latter case, 100% may be clearer than just 1, remove the vertical line
+
+- l.269: do these categories refer to the definition of D_jjb in Section 5? If so: please refer to that section here
+
+- l.300: The extraction of R_\Gamma is not explained very clearly, and also the papers you refer to do not have the formulas that are needed explicitly. Why is R_\gamma not called the branching fraction B(t → tau nu_tau b)? It is not obvious, how R_\Gamma is computed
+
+- l.323: is it possible to quantify by how much the previous measurements have been improved?
+
+- l.328: maybe mention, which total width you are referring to: [...] the partial to the total top quark decay width [...]
+
+- is reference 35 (muon performance at 7 TeV) really necessary, as you also quote reference 31 (muon performance at 13 TeV)?
+
+- Is Reference 37 needed, when you are also using Reference 33 for the b-jet identification? If not, remove Ref. 37, as Ref. 33 is the most recent b tag paper.
+
+- Ref. 35: Replace it with the Run 2 muon reconstruction and performance paper (JINST 13 (2018) P06015) 
+
+
+
+
+# [[Kevin Stenson][https://cds.cern.ch/record/2685275?ln=en]]
+
+## Physics (Type B)
+
+ Type B (physics) comments:
+
+I think that every use of "multijet" should be changed to "QCD multijet". I think that you are explicitly considering just QCD multijet so it should be made clear. For example, a W+jets event where the W decays to quarks can very reasonably be called a multijet event. I think that this is NOT included in your "simulation of multijet events" and is NOT included in your estimation of the multijet background because you use simulation to subtract out all of the non-QCD background. If I am mistaken, then this should be clarified.
+
+%BLUE% >>
+
+L7-9: I don't see the point of this sentence. Why compare the branching ratio with the light dilepton? If you are trying to make the case that you can expect more events, this is obviously not true for two reasons. First, your analysis only considers hadronically decaying taus so only 65% of the 5/81 are targeted. Also, the tau_h efficiency is much lower than the muon and electron efficiencies. So it seems disingenous to point out that the tau BR is higher when there are important factors you don't mention here. Suggest removing the sentence.
+
+%BLUE% >> Removed it.
+
+L13-14: Is the new physics t-> H^+b -> tau nu b? I would suggest explicitly writing this. Given this justification, is there any way to use your final results to set a limiton new physics contributions?
+
+%BLUE% >>
+
+L23-4, L152: The way these two sentences are worded, I initially understood that the two event categories referred to muons and electrons. It wasn't until ~L169 that I figured out what the two event categories meant. Here are some possible solutions. For L23-4: "The cross section is measured from a profile likelihood ratio (PLR) fit of four transverse mass distributions, corresponding to a division by the lepton final state (electron or muon) and kinematic properties of the jets (signal-like or background-like)." Note that missing transvsere momentum has not yet been defined so defining the transvsere mass in terms of this quantity is problematic. One could also remove the sentence entirely. For L152: "...PLR fit [34] of four binned distributions of the transverse mass of the light-lepton and \ptmiss corresponding to a division by the lepton flavor (electron or muon) and by a division of the events into signal-like and background-like event categories." One could also move the first two sentences to the end of Section 5. This may make more sense since at the end you will have fully defined the event categories.
+
+%BLUE% >>
+
+L70, L90: You generate QCD events with MG5_aMC@NLO but then normalize to results from Pythia8. Why? Both are LO but I would tend to trust the MadGraph results more than the Pythia ones. Do they give different results?
+
+%BLUE% >> It is a mistake, QCD simulation is normalized to the cross section from MG5_aMC@NLO.
+But the QCD simulation is used only in the Analysis Note to verify the data-based method for QCD estimation.
+The paper does not mention the QCD simulation, therefore we have removed these lines.
+
+L106: I suspect that E_ch is composed just of tracks that originate from the primary vertex, while E_nh and E_ph are composed of all neutral particles. That is the only way the I_rel equation makes sense to me. If so, I think this information needs to be included. One would need to add text about how the primary vertex is selected (likely in the previous paragraph) and rewrite this sentence to make it clear how E_ch, E_nh, and E_ph are calculated.
+
+%BLUE% >> Added the sentence about the primary vertex in the previous paragraph.
+TODO: tracks/all particles?
+
+Figures 1 and 3: - The colors assigned for single top and W+jets are nearly indistinguishable. This does not work since they are adjacent. You could swap the colors of single top and ttbar->other to make it easy to distinguish. - Why do you change colors for the electron and muon signal channels? You don't change any of the background colors even though they also have different leptons in them. I would suggest using the same color for both. - In the signal legend for the muon mode has a problem. The subscript muon for the muon neutrino is spaced strangely. The tau subscript seems fine so I don't think it is an issue for all Greek letters. Can you see about fixing it? One alternative to simplify things is to remove the subscripts on all of the neutrinos or even remove the neutrinos entirely.
+
+%BLUE% >>
+
+Suggest switching the order of Sections 5 and 6. It seems like Section 6 provides a good motivation for Section 5. One might even move Section 5 to after Section 7. Here are some issues it resolves. - Currently, L156-158 (Section 5) mentions a background from "misidentified tau_h from the ttbar lepton+jets process" but it is not explained how this is a background. In L182-3 (Section 6) it is clarified that a jet fakes a tau_h. - In L191-193 (Section 6) a justification is given for using M_T. This justification would seem to be more natural if it occurs before stating that M_T is used in the fit (Section 5). Note that a switch to the order would require changing where M_T is defined and maybe some other minor changes. If this is not done, then the two issues above should still be addressed.
+
+%BLUE% >>
+
+L156-168: The text here needs to better explain and justify what is done. Some specific suggestions: - L157-8: I don't think it is correct to say that constraints are used. I would suggest that kinematic features are used. When people talk about constraints with the top quark and W boson mass, I assume they are talking about actually setting quantities equal to these masses, usually to obtain the neutrino momentum. - It would be very useful to show a plot of D_jjb or D^min_jjb for signal and background (ttbar lepton+jets) events so that one can see there is a difference and a cut at 60 GeV is reasonable. I think this plot would be much more useful than Figure 4 (which seems pointless) and at least as useful as Figure 2 (which is redundant with Figure 3). - Can you quantify the improvement in the analysis by splitting into two event categories? This could be an all MC study or fitting the data with a simplified fit putting all events into the same category. Does the total uncertainty improve? If so, by how much? I think this would be useful to add to the text to justify the event category splitting (assuming the uncertainty does, in fact, improve).
+
+%BLUE% >>
+
+L173-4: I have no idea what this sentence means. The only fitted variable is M_T, right? So are you saying that M_T is independent of the tau kinematics? Is this the same information as given in L192-193?
+
+%BLUE% >>
+
+L187: Does "lepton identification" correspond to both light leptons and tau leptons? Does it imply both efficiency and misidentification rate? Needs to be clarified in the text.
+
+%BLUE% >>
+
+L190-196: I do not understand the point of this paragraph and I am confused by it. I think the point of the paragraph is that, in contrast to the quantities described in L187-8, the tau_h misidentification rate is extracted from the fit to the data. Is that right? But then in L224-227, it seems like the misidentification probability is an input with a 50% uncertainty. This sentence also mentions differences between the expected and observed misidentification probability. Is the expected simulation and the observed data? Is the data the same sample you are using or something else? Like I said, I am very confused. I think that L190-6 and L223-228 should be rewritten. Some other questions/comments. Are you simply putting in the tau_h misid rate as a nuisance and the post-fit uncertainty is much smaller than the pre-fit uncertainty? Is that what you mean by measuring it in the fit? Is it implemented any different than the trigger efficiency, lepton ID efficiency, JER, etc.?
+
+%BLUE% >>
+
+L228, L281-2, Table 2: This is related to the above. In L228 it is stated that tau_h misid is NOT the dominant uncertainty. In L281-2 it is stated that tau_h identification and misidentification is one of the dominant experimental uncertainties. In Table 2 it appears that these two systematic uncertainties are combined into one value called tau_h jet identification. Is that correct? If tau_h misid is truly measured in the fit, then there should be a separate nuisance for it. So why don't you have separate lines in Table 2 for efficiency and misid rate? If you can add this, please do. Hopefully it will show that the efficiency is ~4.5% and the misid rate is much less. Then, you can be more precise about the dominant experimental uncertainties as being just the tau_h identification efficiency and the statement in L228 will not be in doubt.
+
+%BLUE% >>
+
+Figure 2: It would be useful to have the processes in the legend. So, "signal" could be "Signal: ttbar -> l nu tau_h nu b bbar" and "background" could be "Background: ttbar -> l nu q qbar' b bbar". It would also be good to have an overflow bin as in Figure 3 (or simply include the overflow in the last bin from 160-250). If the overflow bin is added, the information needs to be added to the caption.
+
+%BLUE% >>
+
+L217: You write that a 5% uncertainty is applied to all processes with a true tau_h. Is this really by process and not by event? I can imagine there are some W+jets with a true tau_h and without a true tau_h. So do you apply the 5% to all events in this sample, regardless of whether there is an actual tau_h in the acceptance? If so, then I think you need to specify which processes get the 5% uncertainty. If, in fact, you apply this based on each event, you need to reword the sentence accordingly.
+
+%BLUE% >>
+
+L244-247: It is not clear how these uncertainties are actually incorporated.
+
+%BLUE% >>
+
+L275-277: I don't think this paragraph or Figure 4 add anything useful to the paper. It also seems weird that the first time we can figure out the result is by reading off this plot and the number only appears in print much later. You could replace the paragraph with a sentence that simply states that separate fits are performed to the electron channel, muon channel, and combined channel. If you keep it, please specify that the "cross section" in L276 is the full phase space cross section.
+
+%BLUE% >>
+
+Table 2: What does "sample size" mean? Is this the same as the statistical uncertainty that appears in the results? If so, then the Table 2 caption is not quite accurate as it says these are the systematic uncertainties. You could change the caption to "Systematic and statistical uncertainties" or else remove the line from the table.
+
+%BLUE% >>
+
+L294-5: Is it true that the uncertainties for the full phase space are obtained by simple error propagation of the visible phase space and the acceptance uncertainties assuming no correlation? I tried it and I get uncertainties that are larger than what is reported. Can you check these numbers (with full precision) to be sure they are accurate. If it is not simple error propagation, should I be able to understand what is done from what is written in the paper?
+
+%BLUE% >>
+
+L296: The scale uncertainty shows a large asymmetry which doesn't seem to be reflected in the scale uncertainties in Table 2. Is this consistent?
+
+%BLUE% >>
+
+L320-1: I don't understand what this sentence is saying or why it needs to be stated. Can it be removed? 
+
+%BLUE% >>
+
+
+
+
+
 # [[Greg Landsberg][https://cds.cern.ch/record/2685260?ln=en]]
 
 Congratulations on completing the dilepton tt¯ cross section measurement in the τ
