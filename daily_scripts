@@ -553,7 +553,7 @@ L173-4: I have no idea what this sentence means. The only fitted variable is M_T
 
 L187: Does "lepton identification" correspond to both light leptons and tau leptons? Does it imply both efficiency and misidentification rate? Needs to be clarified in the text.
 
-%BLUE% >>
+%BLUE% >> It corresponds to the identification efficiency of electrons and muons. The misidentification rate is negligibly small. The identification of tau leptons corresponds to the "tauh jet identification" uncertainty.
 
 L190-196: I do not understand the point of this paragraph and I am confused by it. I think the point of the paragraph is that, in contrast to the quantities described in L187-8, the tau_h misidentification rate is extracted from the fit to the data. Is that right? But then in L224-227, it seems like the misidentification probability is an input with a 50% uncertainty. This sentence also mentions differences between the expected and observed misidentification probability. Is the expected simulation and the observed data? Is the data the same sample you are using or something else? Like I said, I am very confused. I think that L190-6 and L223-228 should be rewritten. Some other questions/comments. Are you simply putting in the tau_h misid rate as a nuisance and the post-fit uncertainty is much smaller than the pre-fit uncertainty? Is that what you mean by measuring it in the fit? Is it implemented any different than the trigger efficiency, lepton ID efficiency, JER, etc.?
 
@@ -569,23 +569,23 @@ Figure 2: It would be useful to have the processes in the legend. So, "signal" c
 
 L217: You write that a 5% uncertainty is applied to all processes with a true tau_h. Is this really by process and not by event? I can imagine there are some W+jets with a true tau_h and without a true tau_h. So do you apply the 5% to all events in this sample, regardless of whether there is an actual tau_h in the acceptance? If so, then I think you need to specify which processes get the 5% uncertainty. If, in fact, you apply this based on each event, you need to reword the sentence accordingly.
 
-%BLUE% >>
+%BLUE% >> The sub-processes, like W+jets with true tau_h or DY with tau_h, are handled separately. So, effectively it is applied on per-event basis. In the paper we present inclusive contributions of these processes (in the Table of event yields and in the Figures) to keep the focus of the reader on main factors in the measurement.
 
 L244-247: It is not clear how these uncertainties are actually incorporated.
 
-%BLUE% >>
+%BLUE% >> They are implemented with per-event weights and corresponding shape templates. Corrected the paragraph to state it clearly.
 
 L275-277: I don't think this paragraph or Figure 4 add anything useful to the paper. It also seems weird that the first time we can figure out the result is by reading off this plot and the number only appears in print much later. You could replace the paragraph with a sentence that simply states that separate fits are performed to the electron channel, muon channel, and combined channel. If you keep it, please specify that the "cross section" in L276 is the full phase space cross section.
 
-%BLUE% >>
+%BLUE% >> Rephrased and moved this paragraph to the discussion of the results at the end of the section.
 
 Table 2: What does "sample size" mean? Is this the same as the statistical uncertainty that appears in the results? If so, then the Table 2 caption is not quite accurate as it says these are the systematic uncertainties. You could change the caption to "Systematic and statistical uncertainties" or else remove the line from the table.
 
-%BLUE% >>
+%BLUE% >> Yes, it is the statistical uncertainty in the measurement.
 
 L294-5: Is it true that the uncertainties for the full phase space are obtained by simple error propagation of the visible phase space and the acceptance uncertainties assuming no correlation? I tried it and I get uncertainties that are larger than what is reported. Can you check these numbers (with full precision) to be sure they are accurate. If it is not simple error propagation, should I be able to understand what is done from what is written in the paper?
 
-%BLUE% >>
+%BLUE% >> TODO: 1) the rounding is important here, 2) there is an error in final result in eltau 789.34024 [11.05076336 70.5550516962668 19.733506000000002] -- the systematic must be 71, 3) there is an error in the estimation of uncertainties in the fiducial xsec, it is a relative uncertainty and the cross section values must be calculated w.r.t the fitted fiducial xsec, but they are calculated w.r.t expected fiducial xsec. However, it seems the 3) does not propagate to the full xsec.
 
 L296: The scale uncertainty shows a large asymmetry which doesn't seem to be reflected in the scale uncertainties in Table 2. Is this consistent?
 
@@ -593,7 +593,13 @@ L296: The scale uncertainty shows a large asymmetry which doesn't seem to be ref
 
 L320-1: I don't understand what this sentence is saying or why it needs to be stated. Can it be removed? 
 
-%BLUE% >>
+%BLUE% >> It notifies that the construction of the fit is model-independent with respect to the tau branch of the ttbar decay.
+
+
+
+### corrections
+
+Figure 2: It would be useful to have the processes in the legend. So, "signal" could be "Signal: ttbar -> l nu tau_h nu b bbar" and "background" could be "Background: ttbar -> l nu q qbar' b bbar". It would also be good to have an overflow bin as in Figure 3 (or simply include the overflow in the last bin from 160-250). If the overflow bin is added, the information needs to be added to the caption.
 
 
 
