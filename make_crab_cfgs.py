@@ -31,7 +31,7 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--dsets-info", type=str, default='dsets_info.yaml', help="file with info on datasets: xsec, dtag, isMC, possible LumiMask")
     parser.add_argument("--output-site", type=str, default='T2_PT_NCG_Lisbon', help="grid output site")
     parser.add_argument("--without-HLT", action="store_true", default=False, help="turn off HLT in events (to support noHLT MC in 2015)")
-    parser.add_argument("--dataset-reco-name", action="store_true", help="set the name customization per-dataset-per-reco")
+    parser.add_argument("--dataset-reco-name", type=str, help="set the name customization per-dataset-per-reco")
 
     parser.add_argument('-l', '--lumi-certificate', type=str, default='', help='the certificate for data')
 
@@ -58,13 +58,13 @@ if __name__ == "__main__":
         dtag = dsets_info[dset]['dtag']
         isMC = dsets_info[dset]['isMC']
         LumiMask = dsets_info[dset]['LumiMask']
-        dataset_reco_name = dsets_info.get(dataset_reco_name) #'is2016legacy' in dsets_info[dset]
+        dataset_reco_name = dsets_info.get(dset, 'default') #'is2016legacy' in dsets_info[dset]
     else:
         _, first, second, third = dset.split('/')
         isMC = 'SIM' in third
         dtag = first + ',' + second
         LumiMask = args.lumi_certificate
-        dataset_reco_name = '2016legacy'
+        dataset_reco_name = 'default'
 
     if args.dataset_reco_name:
         dataset_reco_name = args.dataset_reco_name

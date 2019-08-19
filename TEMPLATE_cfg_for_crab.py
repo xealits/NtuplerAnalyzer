@@ -30,7 +30,7 @@ ivars.inputFiles=(
 # MC or Data is used everywhere
 isMC = {isMC}   # PARAMETER
 dtag = '{dtag}' # PARAMETER
-dataset_reco_name = {dataset_reco_name}
+dataset_reco_name = '{dataset_reco_name}'
 
 #ivars.outputFile = '/afs/cern.ch/work/o/otoldaie/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/MC2016_Summer16_TTJets_powheg_0.root'
 ivars.outputFile = dtag + '.root'
@@ -172,6 +172,15 @@ process.ntupler.input = cms.untracked.vstring(
 #'root://cms-xrd-global.cern.ch///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/3E18521B-A4BE-E611-8843-0025905A607E.root'
 )
 process.ntupler.outfile = cms.string('/afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/MC2016_Summer16_TTJets_powheg_test.root')
+
+# triggers
+if '2017legacy' in dataset_reco_name:
+    process.ntupler.muHLT_MC1   = cms.string("HLT_IsoMu24_v*"  )
+    process.ntupler.muHLT_MC2   = cms.string("HLT_IsoTkMu24_v*")
+    process.ntupler.muHLT_Data1 = cms.string("HLT_IsoMu24_v*"  )
+    process.ntupler.muHLT_Data2 = cms.string("HLT_IsoTkMu24_v*")
+    process.ntupler.elHLT_Data  = cms.string("HLT_Ele27_WPTight_Gsf_v*")
+    process.ntupler.elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v*")
 
 
 theLumiMask = path.expandvars("") # -- lumi should be handled via CRAB3, but for now I leave this config option available in Ntupler for local runs

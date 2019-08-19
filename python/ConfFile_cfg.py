@@ -298,12 +298,14 @@ process.ntupler.HLT_source = cms.string(HLT_source)
 #process.ntupler.elHLT_MC   = cms.string("HLT_Ele32_eta2p1_WPTight_Gsf_v8")
 #process.ntupler.elHLT_Data = cms.string("HLT_Ele32_eta2p1_WPTight_Gsf_v*")
 
-process.ntupler.muHLT_MC1   = cms.string("HLT_IsoMu24_v*"  )
-process.ntupler.muHLT_MC2   = cms.string("HLT_IsoTkMu24_v*")
-process.ntupler.muHLT_Data1 = cms.string("HLT_IsoMu24_v*"  )
-process.ntupler.muHLT_Data2 = cms.string("HLT_IsoTkMu24_v*")
-process.ntupler.elHLT_Data  = cms.string("HLT_Ele27_WPTight_Gsf_v*")
-process.ntupler.elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v*")
+# triggers
+if '2017legacy' in dataset_reco_name:
+    process.ntupler.muHLT_MC1   = cms.string("HLT_IsoMu24_v*"  )
+    process.ntupler.muHLT_MC2   = cms.string("HLT_IsoTkMu24_v*")
+    process.ntupler.muHLT_Data1 = cms.string("HLT_IsoMu24_v*"  )
+    process.ntupler.muHLT_Data2 = cms.string("HLT_IsoTkMu24_v*")
+    process.ntupler.elHLT_Data  = cms.string("HLT_Ele27_WPTight_Gsf_v*")
+    process.ntupler.elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v*")
 
 ## test of DY 2015
 #process.ntupler.muHLT_MC1   = cms.string("HLT_IsoMu24_v*"  )
