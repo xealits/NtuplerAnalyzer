@@ -547,9 +547,14 @@ L156-168: The text here needs to better explain and justify what is done. Some s
 
 %BLUE% >>
 
+%BLUE% The event categories based on kinematic parameters of jets serve as independent constraint in addition to the MT shape. In an older MC study we saw that typically the misidentification uncertainty is reduced: from 25%, without categories and without a shape fit, to 5% with only categories, to 2.5% with the shape, and to 2% with the categories and the shape.
+
 L173-4: I have no idea what this sentence means. The only fitted variable is M_T, right? So are you saying that M_T is independent of the tau kinematics? Is this the same information as given in L192-193?
 
-%BLUE% >>
+%BLUE% >> Yes, only M_T is fitted, it is independed from tau kinematics and the kinematics of misidentified taus.
+This information is the same, but it is considered in two different contexts:
+in the discussion of the fit at L173-4 we notice that the fit is model-independent with respect to the tau branch of the decay;
+in L192-193 we discuss how it works to constrain the uncertainty about the probability to misidentify taus.
 
 L187: Does "lepton identification" correspond to both light leptons and tau leptons? Does it imply both efficiency and misidentification rate? Needs to be clarified in the text.
 
@@ -557,15 +562,25 @@ L187: Does "lepton identification" correspond to both light leptons and tau lept
 
 L190-196: I do not understand the point of this paragraph and I am confused by it. I think the point of the paragraph is that, in contrast to the quantities described in L187-8, the tau_h misidentification rate is extracted from the fit to the data. Is that right? But then in L224-227, it seems like the misidentification probability is an input with a 50% uncertainty. This sentence also mentions differences between the expected and observed misidentification probability. Is the expected simulation and the observed data? Is the data the same sample you are using or something else? Like I said, I am very confused. I think that L190-6 and L223-228 should be rewritten. Some other questions/comments. Are you simply putting in the tau_h misid rate as a nuisance and the post-fit uncertainty is much smaller than the pre-fit uncertainty? Is that what you mean by measuring it in the fit? Is it implemented any different than the trigger efficiency, lepton ID efficiency, JER, etc.?
 
-%BLUE% >>
+%BLUE% >> The uncertainties in the quantities in L187-8 are measured in seprate studies. We use them as an external input for our measurement. But the uncertainty in the tau misidentification probability (L190-96) is handled within our measurement, for our particular event selection, because it depends significantly on the kind of jets selected in the events. The uncertainty of tau misidentification enters the fit with large variation of +-50% from the expected value in MC. This variation covers the usual Data-MC disagreement in the tau misidentification probability, which is on order of 20-30%. The more conservative 50% also cover possible effects from the dependence of the misidentification probability on the kinematic parameters of fake taus. The reduction of the pre-fit variation to 20% changes the overall uncertainty by about 0.1%. Therefore we have decided to use the more conservative magnitude of the variation. The fit constrains the pre-fit misidentification probability giving the post-fit "observed" misidentification probability and the variation of the misidentification probability, which we shortly descrive as "to measure in the fit". L224 "the misidentification probability is varied within +-50% of the expected values" -- the "expected values" are the values in MC. The nuisance parameters can vary either just the number of events expected in a process or also the shape of the distribution in the process. Tau misidentification probability varies just the number of events. The trigger efficiency, lepton ID efficiency, JER have effect of the shape of MT distribution. Therefore in the fit they are included as "shape" variations, i.e. they vary both the number of events and the shape of the distribution.
 
 L228, L281-2, Table 2: This is related to the above. In L228 it is stated that tau_h misid is NOT the dominant uncertainty. In L281-2 it is stated that tau_h identification and misidentification is one of the dominant experimental uncertainties. In Table 2 it appears that these two systematic uncertainties are combined into one value called tau_h jet identification. Is that correct? If tau_h misid is truly measured in the fit, then there should be a separate nuisance for it. So why don't you have separate lines in Table 2 for efficiency and misid rate? If you can add this, please do. Hopefully it will show that the efficiency is ~4.5% and the misid rate is much less. Then, you can be more precise about the dominant experimental uncertainties as being just the tau_h identification efficiency and the statement in L228 will not be in doubt.
 
-%BLUE% >>
+%BLUE% >> In L228 we notice that the uncertainty from the misidentification is radically constrained, instead of 10-20% we get about 2.5% in the final result (listed in Table 2 as "ttbar background"). It is still one of the largest uncertainties in the final result. But it is noticeably smaller than the uncertainty in tau ID, and it is on the same level as the other large uncertainties (pileup and modeling).
+
+%BLUE% In the Table 2 the misidentification uncertainty is embedded in the uncertainty of the background process which produces the fake taus: "ttbar background", "W+jets background" and "multijet background". We chose this representation of nuisances to correspond to the measurement in dilepton final state (TOP-17-001), which is used in the estimation of the ratio between two final states. However, since these systematics are not correlated in the two measurements, we can split them into separate lines.
+
+%BLUE% Corrected L281-2 to use "the largest experimental/theoretical uncertainties" insted of "the dominant".
 
 Figure 2: It would be useful to have the processes in the legend. So, "signal" could be "Signal: ttbar -> l nu tau_h nu b bbar" and "background" could be "Background: ttbar -> l nu q qbar' b bbar". It would also be good to have an overflow bin as in Figure 3 (or simply include the overflow in the last bin from 160-250). If the overflow bin is added, the information needs to be added to the caption.
 
 %BLUE% >>
+
+
+
+
+
+
 
 L217: You write that a 5% uncertainty is applied to all processes with a true tau_h. Is this really by process and not by event? I can imagine there are some W+jets with a true tau_h and without a true tau_h. So do you apply the 5% to all events in this sample, regardless of whether there is an actual tau_h in the acceptance? If so, then I think you need to specify which processes get the 5% uncertainty. If, in fact, you apply this based on each event, you need to reword the sentence accordingly.
 
