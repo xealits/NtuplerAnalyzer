@@ -413,6 +413,8 @@ L298: How are the correlations in systematic uncertainties treated when obtainin
 
 (2) Why is the integrated luminosity 35.8 fb-1 instead of the more common value of 35.9 fb-1? Is it due to the chosen trigger paths?
 
+%BLUE% >> It was an error with rounding, corrected it in the text and in the figures.
+
 (3) I believe the description of the CMS detector is outdated, at least in conflicts with some mandatory statements from the twiki page.
 
 (4) Whenever there is discussion about pileup, i.e. for the total inelastic pp cross section or the uncertainty on that, you cite Ref. 20. but this reference is for the ATLAS measurement of the pp cross section, which neither supports the nominal value used in CMS (69.2 mb), nor the uncertainty of 4.6% on that value when estimating the systematic uncertainty.
@@ -431,6 +433,8 @@ L298: How are the correlations in systematic uncertainties treated when obtainin
 
 (11) What exactly is the 'ttbar background', 'Drell-Yan background', etc. uncertainty in Table 2? is it just a log normal nuisance parameter for the initial normalization? if so, please rephrase to 'ttbar background normalization'
 
+%BLUE% >> The names correspond to the uncertainties in the TOP-17-001 measurement. Here, "ttbar background" corresponds to the tauh misidentification in other ttbar processes, "W+jets background" and "multijet background" include the normalization and the uncertainties of tauh misidentification.  "DY background" is only normalization. We can separate the tauh misidentification and normalization systematics.
+
 Line-by-line comments:
 
 - l.10: renewed interest in what, processes with tau leptons?
@@ -441,11 +445,17 @@ Line-by-line comments:
 
 - l.27: be more explicit: total decay width of the top quark
 
+%BLUE% >> Corrected.
+
 - l. 61: The Reference for the ttbar production with POWHEG is missing (JHEP 0709 (2007) 126, arXiv:0707.3088)
+
+%BLUE% >> Added this reference. Also I have added J. M. Campbell, R. K. Ellis, P. Nason, and E. Re, “Top-Pair Production and Decay at NLO Matched with Parton Showers”, JHEP 04 (2015) 114, arXiv:1412.1828.
 
 - l. 64: I believe that the correct (default) version of MG5_aMC@NLO is 2.2.2 (instead of 2.3.3). Can you please check for all MG5_aMC@NLO simulation samples used in the analysis?
 
 - l. 68: The Reference for the t-channel single top production with POWHEG is missing (JHEP 0909 (2009) 111, arXiv:0907.4076)
+
+%BLUE% >> Added.
 
 - l. 71: I think, in at least some cases, Pythia 8.212 instead of 8.219 has been used, please check.
 
@@ -453,17 +463,39 @@ Line-by-line comments:
 
 - l.91: Please provide the version number of MCFM.
 
+%BLUE% >> Added.
+
 - l.111: although correct int he meaning, the sentence on l.111 'The electron candidate is considered to be non-isolated and is rejected if I_rel > 0.0588...' is in this construction hard to understand for uniformed reader. I suggest to rephrase it to something like 'Electron candidates with I_rel > ... are considered to be nonisolated and are rejected'
 
 - l.111/112: a single candidate can be either in the barrel or the endcap, so: I_rel>0.0588 in the barrel *or*… “I_rel > 0.15 in *either( the barrel...
 
+%BLUE% >> Corrected.
+
+
+
+
+
+
+
+
+
+
+
 - l.125: the tau lifetime information
+
+%BLUE% >> Added "the \tauh lifetime information".
 
 - l.140: redundant, pseudorapidity already defined in l.47
 
+%BLUE% >> Corrected.
+
 - l.142: barrel or
 
+%BLUE% >> Corrected.
+
 - l.154: you are using a different variant of the symbol \phi compared to l.139-140
+
+%BLUE% >> Corrected.
 
 - l.194: determined separately ist misleading here, as (I assume) it is still the same fit in which the background normalizations are determined. It is also unclear if the normalizations are nuisance parameters with constraints or free fit parameters.
 
@@ -472,6 +504,8 @@ Line-by-line comments:
 - l.209: the wording separate parameter is a little clearer, if you explain the role of these parameters in l.194
 
 - l. 257: Did you avoid drastic muR, muF variations (i.e. 0.5,2.0 and 2.0,0.5)?
+
+%BLUE% >> 
 
 - Figure 1: please increase the width of the overflow bin to match the size of the remaining bins, otherwise you would also have to include horizontal error bars due to nonequidistant binning, also then y-axis label 'Events / X GeV'; align the 'lumi (sqrt(s))' to the right side (also for Figure 3) ; in my opinion the term 'lumped' in the caption is not very scientific (also for Figure 3); suggest tau_h p_T -> p_T(tau_h) (makes it more clear what the variable is and what the particle); shaded areas look very light when printed; colors for W+jets and diboson contributions look very similar when printed
 
@@ -485,7 +519,11 @@ Line-by-line comments:
 
 - Table 2: is 'sample size' in Table 2 simply the statistical uncertainty of the data set?; in Table 2,the experimental uncertainties seems to ordered according to their impact on the combined results. how is the ordering for the other categories chosen? ; also there is some inconsistency in Table 2 for the usage of abbreviations (ttbar, tW, ME, PS, ISR, FSR) and nonabbreviated terms (Drell-Yan, jet energy scale, jet energy resolution); is the last column just a yes/no, or the correlation factor that is assumed? In the latter case, 100% may be clearer than just 1, remove the vertical line
 
+%BLUE% >> Yes, "sample size" is the statistical uncertainty. Other categories are ordered similar to the uncertainties in TOP-17-001 for easy comparison. THe last column is the correlation factor.
+
 - l.269: do these categories refer to the definition of D_jjb in Section 5? If so: please refer to that section here
+
+%BLUE% >> Yes. Added a reference.
 
 - l.300: The extraction of R_\Gamma is not explained very clearly, and also the papers you refer to do not have the formulas that are needed explicitly. Why is R_\gamma not called the branching fraction B(t → tau nu_tau b)? It is not obvious, how R_\Gamma is computed
 
@@ -493,11 +531,19 @@ Line-by-line comments:
 
 - l.328: maybe mention, which total width you are referring to: [...] the partial to the total top quark decay width [...]
 
+%BLUE% >> Added.
+
 - is reference 35 (muon performance at 7 TeV) really necessary, as you also quote reference 31 (muon performance at 13 TeV)?
+
+%BLUE% >> Removed Ref.35.
 
 - Is Reference 37 needed, when you are also using Reference 33 for the b-jet identification? If not, remove Ref. 37, as Ref. 33 is the most recent b tag paper.
 
+%BLUE% >> Removed reference 37. It provides enough information about the b-tagging algorithm (CSVv2). And its' first citation if Ref.33.
+
 - Ref. 35: Replace it with the Run 2 muon reconstruction and performance paper (JINST 13 (2018) P06015) 
+
+%BLUE% >> Replaced.
 
 
 
