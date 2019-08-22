@@ -285,25 +285,25 @@
 /WpWpJJ_QCD_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM : {LumiMask: '', dtag: MC2017_Fall17_WpWpJJ_QCD_13TeV, isMC: true, xsec: 0.02227}
 
 
-/SingleElectron/Run2017F-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleElectron_F, isMC: false, xsec: 1}
+/SingleElectron/Run2017F-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017legacy_13TeV_SingleElectron_F, isMC: false, xsec: 1}
 
-/SingleElectron/Run2017E-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleElectron_E, isMC: false, xsec: 1}
+/SingleElectron/Run2017E-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017legacy_13TeV_SingleElectron_E, isMC: false, xsec: 1}
 
-/SingleElectron/Run2017D-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleElectron_D, isMC: false, xsec: 1}
+/SingleElectron/Run2017D-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017legacy_13TeV_SingleElectron_D, isMC: false, xsec: 1}
 
-/SingleElectron/Run2017C-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleElectron_C, isMC: false, xsec: 1}
+/SingleElectron/Run2017C-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017legacy_13TeV_SingleElectron_C, isMC: false, xsec: 1}
 
-/SingleElectron/Run2017B-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleElectron_B, isMC: false, xsec: 1}
+/SingleElectron/Run2017B-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017legacy_13TeV_SingleElectron_B, isMC: false, xsec: 1}
 
-/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleMuon_B, isMC: false, xsec: 1}
+/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017legacy_13TeV_SingleMuon_B, isMC: false, xsec: 1}
 
-/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleMuon_C, isMC: false, xsec: 1}
+/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017legacy_13TeV_SingleMuon_C, isMC: false, xsec: 1}
 
-/SingleMuon/Run2017D-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleMuon_D, isMC: false, xsec: 1}
+/SingleMuon/Run2017D-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017legacy_13TeV_SingleMuon_D, isMC: false, xsec: 1}
 
-/SingleMuon/Run2017E-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleMuon_E, isMC: false, xsec: 1}
+/SingleMuon/Run2017E-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017legacy_13TeV_SingleMuon_E, isMC: false, xsec: 1}
 
-/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017_13TeV_SingleMuon_F, isMC: false, xsec: 1}
+/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD: {LumiMask: /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt ,  dtag: Data2017legacy_13TeV_SingleMuon_F, isMC: false, xsec: 1}
 
 
 

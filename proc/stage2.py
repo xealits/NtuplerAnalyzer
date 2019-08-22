@@ -180,24 +180,40 @@ def passes_dy_tautau_selection_stages(passed_triggers, leps, N_jets, taus, proc_
     channel_stage = 0
     pass_mu, pass_elmu, pass_elmu_el, pass_mumu, pass_elel, pass_el, pass_mu_all, pass_el_all = passed_triggers
 
-    # muon and OS tau and no b
-    pass_dy_objects_mu = pass_mu and len(leps[0]) == 1 and len(taus) > 0 and leps[4][0] * taus[0][2] < 0 and N_jets[0] == 0
-    pass_dy_objects_el = pass_el and len(leps[0]) == 1 and len(taus) > 0 and leps[4][0] * taus[0][2] < 0 and N_jets[0] == 0
-    pass_dy_mass = False
-    if pass_dy_objects_mu or pass_dy_objects_el:
-        nom_tau = taus[0][0]*taus[0][1][0]
-        pair    = leps[0][0] + nom_tau
-        pair_mass = pair.mass()
-        pass_dy_mass = 75. < pair_mass < 105.
+    # muon and any charge tau and no b
+    pass_dy_objects_mu = pass_mu and len(leps[0]) == 1 and len(taus) > 0 and N_jets[0] == 0
+    pass_dy_objects_el = pass_el and len(leps[0]) == 1 and len(taus) > 0 and N_jets[0] == 0
+    pass_objects = pass_dy_objects_mu or pass_dy_objects_el
+    if not pass_objects: return channel_stage
 
-    if   pass_dy_objects_mu and pass_dy_mass:
-        channel_stage = 103
+    opposite_charge = leps[4][0] * taus[0][2] < 0
+
+    nom_tau = taus[0][0]*taus[0][1][0]
+    pair    = leps[0][0] + nom_tau
+    pair_mass = pair.mass()
+    pass_dy_mass = 75. < pair_mass < 105.
+
+    if   pass_dy_objects_mu and opposite_charge:
+        if pass_dy_mass:
+            channel_stage = 105
+        else:
+            channel_stage = 104
     elif pass_dy_objects_mu:
-        channel_stage = 102
-    elif pass_dy_objects_el and pass_dy_mass:
-        channel_stage = 113
+        if pass_dy_mass:
+            channel_stage = 103
+        else:
+            channel_stage = 102
+
+    elif pass_dy_objects_el and opposite_charge:
+        if pass_dy_mass:
+            channel_stage = 115
+        else:
+            channel_stage = 114
     elif pass_dy_objects_el:
-        channel_stage = 112
+        if pass_dy_mass:
+            channel_stage = 113
+        else:
+            channel_stage = 112
 
     return channel_stage
 

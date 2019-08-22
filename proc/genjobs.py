@@ -41,9 +41,9 @@ parser.add_argument("vProc",       help="Processing version")
 parser.add_argument("chan_def",    help="definition of selection channels")
 parser.add_argument("-q", "--queue-dir",      type=str, default='./queue_dir',
         help="the directory for storing the generated job queues (default ./queue_dir)")
-parser.add_argument("-n", "--ntupler-dir",    type=str, default='/gstore/t3cms/store/user/otoldaie/',
+parser.add_argument("-n", "--ntupler-dir",    type=str, default='./gstore_outdirs/',
         help="the directory with Ntupler outputs (default /gstore/t3cms/store/user/otoldaie/)")
-parser.add_argument("-p", "--processing-dir", type=str, default='/lstore/cms/olek/outdirs/',
+parser.add_argument("-p", "--processing-dir", type=str, default='./lstore_outdirs/',
         help="the directory with Processed output (default /lstore/cms/olek/outdirs/)")
 
 parser.add_argument("--dtags", type=str, default='std',
@@ -54,8 +54,9 @@ parser.add_argument("--without-dtags", type=str, default='',
 
 parser.add_argument("--scheme", type=str, help="the scheme of queue as 5,5,0,15,15 for 1,2,3,4,5 nodes")
 
-parser.add_argument("--submit", type=str, default='online', help="the type of the jobs (online by default, other option is 'queue')")
-parser.add_argument("--mem-size",  type=str, default='1G', help="make the queue jobs with given memory size (1G default)")
+parser.add_argument("--submit",       type=str, default='online', help="the type of the jobs (online by default, other option is 'queue')")
+parser.add_argument("--batch-system", type=str, default='qsub',   help="the type of the batch system jobs (qsub by default (NCG cluster), other option is 'bsub' (deprecated LSF at lxplus) or 'condor')")
+parser.add_argument("--mem-size",     type=str, default='1G',     help="make the queue jobs with given memory size (1G default)")
 
 parser.add_argument("--do-W-stitching", action='store_true', help="turn ON skipping NUP events of inclusive sample")
 parser.add_argument("--all-jets",       action='store_true', help="propagate corrections to met from all selected jets, including lep and tau matched")
@@ -75,7 +76,9 @@ else:
 
 logging.debug("parsed args: %s" % repr(args))
 
-assert all(isdir(d) for d in [args.queue_dir, args.ntupler_dir, args.processing_dir])
+assert isdir(args.queue_dir)
+assert isdir(args.ntupler_dir)
+assert isdir(args.processing_dir)
 
 
 # dsets info is needed to get the DSET-FIRST-NAME of the requested dtag
@@ -494,13 +497,33 @@ cd UserCode/NtuplerAnalyzer/proc/
     cd -
     ulimit -c 0;'''
 
+    condor_subfile_template = '''executable            = {jobsh}
+arguments             = 
+output                = output/{jobsh_name}.$(ClusterId).$(ProcId).out
+error                 = error/{jobsh_name}.$(ClusterId).$(ProcId).err
+log                   = log/{jobsh_name}.$(ClusterId).log
+queue
+'''
+
+    batch_systems_submit_templates = {'qsub': "qsub -l h_vmem={mem_size} '{jobsh}'",
+                                      'bsub': "bsub -q cmscaf1nh -J {job_name} < '{jobsh}'",
+                                      'condor': "condor_submit {jobsh}.sub"}
+    job_submit_template = batch_systems_submit_templates[args.batch_system]
+
     from os import environ
 
     vars_for_the_job = dict(environ)
     # after boot.tcsh everything is in the vars
-    project_dir = '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/'
+    #project_dir = '/lstore/cms/olek/CMSSW_8_0_26_patch1/src/'
+    project_dir = vars_for_the_job['CMSSW_BASE'] + '/src/'
     ntupler_proc_dir = 'UserCode/NtuplerAnalyzer/proc/'
     vars_for_the_job.update(project_dir=project_dir)
+
+    if 'X509_USER_PROXY' not in vars_for_the_job:
+        vars_for_the_job['X509_USER_PROXY'] = ''
+    if 'VO_CMS_SW_DIR' not in vars_for_the_job:
+        vars_for_the_job['VO_CMS_SW_DIR'] = '/cvmfs/cms.cern.ch'
+
     job_template = job_template.format(**vars_for_the_job)
 
     # make the jobs dir
@@ -517,10 +540,14 @@ cd UserCode/NtuplerAnalyzer/proc/
         with open(job_filename, 'w') as f:
             f.write(job_template.format(job=a_job))
 
+        # if you submit condor, then make a .sub file for the job
+        with open(job_filename + '.sub', 'w') as f:
+            f.write(condor_subfile_template.format(jobsh=job_filename, jobsh_name=job_filename.split('/')[-1]))
+
     #make the queue submition file
     submition_file = jobs_dir + '/submit'
     with open(submition_file, 'w') as f:
-        f.write('\n'.join("""qsub -l h_vmem={mem_size} '{jobsh}' """.format(mem_size=args.mem_size, jobsh=j_fname) for j_fname in job_filenames) + '\n')
+        f.write('\n'.join(job_submit_template.format(mem_size=args.mem_size, jobsh=j_fname, job_name=j_fname.split('/')[-1]) for j_fname in job_filenames) + '\n')
 
 elif args.submit == 'online':
     com_file_template = """
