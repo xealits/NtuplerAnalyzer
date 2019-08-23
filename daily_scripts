@@ -581,6 +581,14 @@ python new_impact_table.py --merge-pdf latest_impacts_v37_test172BIN1_el_test2_e
 -- so, they are not related
 
 
+check their correlation/covariance?
+
+combine -M FitDiagnostics ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_el_exp.root   --plots --saveShapes --saveWithUncertainties --name Shapes_v37_test172BIN1_el_test2_expMu2_Thorsten1   --freezeParameters lumi_13TeV  &
+combine -M FitDiagnostics ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_mu_exp.root   --plots --saveShapes --saveWithUncertainties --name Shapes_v37_test172BIN1_mu_test2_expMu2_Thorsten1   --freezeParameters lumi_13TeV  &
+combine -M FitDiagnostics ttxsec/datacard_v37_test172_bunchFULLFIT1BIN1_both_exp.root --plots --saveShapes --saveWithUncertainties --name Shapes_v37_test172BIN1_both_test2_expMu2_Thorsten1 --freezeParameters lumi_13TeV  &
+
+
+
 
 #### check the asymmetry in the impact of the scale systematics
 
