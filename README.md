@@ -64,12 +64,13 @@ The ntupler saves the parameters needed for the corrections (pT of visible parti
 Structure
 =========
 
-The repository contains 2 projects:
+The repository contains the CMSSW plugin `NtuplerAnalyzer` for skimming MINIAODs on the grid.
+There are 2 satelite repositories:
 
-* ntupler, the thing that runs over crab on grid and reduces the MINIAODs to TTree with only important parameters
-* proc, the scripts for processing resulting TTree
+* [processing ntuples](https://github.com/xealits/processing_ntuples), the scripts for processing resulting TTree
+* [lab log](https://github.com/xealits/lab_log), common info, side studies, daily log
 
-The proc scripts are in `NtuplerAnalyzer/proc/` directory.
+The proc scripts are usually cloned in `NtuplerAnalyzer/proc/` directory. The lab log in `NtuplerAnalyzer/lab_log/`.
 
 The ntupler is a standard EDM module and uses standard directories:
 
