@@ -1,44 +1,35 @@
 Installation
 ============
 
-The module works with `CMSSW_9_4_5+` (`CMSSW_9_4_9` recommended)
-and requires [TopQuarkAnalysis/BFragmentation](https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer) wich produces the [b fragmentation systematics](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopSystematics#Fragmentation).
+The module works with CMSSW_8_0_26+ (CMSSW_8_0_29 recommended)
+and requires [TopQuarkAnalysis/BFragmentation](https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer) wich produces some values for [certain systematics](https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopSystematics#Fragmentation).
 
 Other modules are standard and it should not need anything additional.
 
 An example installation script:
 
-    cmsrel CMSSW_9_4_9
-    cd CMSSW_9_4_9/src
+    cmsrel CMSSW_8_0_30
+    cd CMSSW_8_0_30/src 
     cmsenv
-    git cms-init
 
     # copy of the BFragmentation installation
     mkdir TopQuarkAnalysis
     cd TopQuarkAnalysis
-    # the original repository from TOP PAG:
-    # git clone ssh://git@gitlab.cern.ch:7999/CMS-TOPPAG/BFragmentationAnalyzer.git
-    # my fork with a small patch for compatibility with CMSSW 94X:
-    git clone https://gitlab.cern.ch/otoldaie/BFragmentationAnalyzer.git
-    cd BFragmentationAnalyzer
+    git clone ssh://git@gitlab.cern.ch:7999/CMS-TOPPAG/BFragmentationAnalyzer.git
+    cd -
     scram b
-    cd ../../
 
     # installing the NtuplerAnalyzer
     mkdir UserCode
     cd UserCode
     git clone git@github.com:xealits/NtuplerAnalyzer.git
-    cd NtuplerAnalyzer
-    git remote rename origin github
-    git checkout --track github/legacy-2016-2017
-    cp plugins/template_BuildFile.xml plugins/BuildFile.xml
     scram b -j 10
 
 If something crashes during the compilation you can cd into separate directories,
 compile them one by one and then compile-link everything together.
 Like:
 
-    cd CMSSW_9_4_9/src/UserCode/NtuplerAnalyzer/src/
+    cd CMSSW_8_0_30/src/UserCode/NtuplerAnalyzer/src/
     scram b -j 5
     cd ../plugins/
     scram b -j 5
@@ -46,8 +37,7 @@ Like:
 
 Then a test run should work with:
 
-    cd CMSSW_9_4_9/src/UserCode/NtuplerAnalyzer/
-    cp python/ConfFile_cfg.py ./
+    cd CMSSW_8_0_30/src/UserCode/NtuplerAnalyzer/
     cmsRun python/ConfFile_cfg.py
 
 --- it accesses test files in my CERNBox (EOS) area, for example 1 TT file:
@@ -57,88 +47,6 @@ Then a test run should work with:
 
 --- so, now it should be readable for everybody.
 However the directory is not readable. For some reason I cannot chmod a directory on EOS.
-
-
-
-Info on installation in 94X
----------------------------
-
-The BFragmentationAnalyzer does not compile
-
-    cmsrel CMSSW_9_4_9
-    cd CMSSW_9_4_9/src
-    cmsenv
-    git cms-init
-
-    mkdir TopQuarkAnalysis
-    git clone https://gitlab.cern.ch/CMS-TOPPAG/BFragmentationAnalyzer.git
-    cd TopQuarkAnalysis
-    cd BFragmentationAnalyzer
-    git fetch origin master_94X:master94X
-    git checkout master94X
-    scram b
-
---- says there is no file "Utilities/General/FileInPath.h".
-Found it in cmssw `8_0_X` and wget all headers and src from that tag.
-
-    wget https://raw.githubusercontent.com/cms-sw/cmssw/CMSSW_8_0_X/Utilities/General/src/FileInPath.cc
-
---- and all the rest.
-
-Now
-
-    scram b
-    /afs/cern.ch/work/o/otoldaie/private/16/CMSSW_9_4_9/src/TopQuarkAnalysis/BFragmentationAnalyzer/plugins/BFragmentationWeightProducer.cc:130:35: error: no matching function for call to 'edm::Event::put(std::auto_ptr<edm::ValueMap<float> >&, const std::__cxx11::basic_string<char>&)'
-            iEvent.put(valMap, it.first);
-                                       ^
-
---- great.
-
-And also `master_94X` is not different from `master`:
-
-    git log origin/master...origin/master_94X
-
-Following the error in `Event::put` I change `auto_ptr` to `unique_ptr` and get:
-
-    /cvmfs/cms.cern.ch/slc6_amd64_gcc630/external/gcc/6.3.0/include/c++/6.3.0/bits/unique_ptr.h:359:7: note: declared here
-           unique_ptr(const unique_ptr&) = delete;
-           ^~~~~~~~~~
-
--- so this might be a problem.
-
-Made an adhoc solution by not using ValueMap, but really what you nead is:
-
-    Event.put(make_unique(*valMap), ...)
-
--- commited it in the local BFrag repository.
-Checked the run on Data and TT.
-Updated the TEMPLATE-s
-
-
-
-RivetInterface for
-
-    git cms-addpkg GeneratorInterface/RivetInterface
-    cd GeneratorInterface/RivetInterface
-    scram b
-
-OK
-
-
-HTT Recoil Corrections?
-do I use them here?
-try ntupler first
-
-
-Ntupler
-compiled!
-and BFrag worked!
-
-
-check other "compile 2017" defifs
--- it's `BFRAG_PROC`
-
-so, all ok with the external plugin
 
 
 
@@ -156,12 +64,13 @@ The ntupler saves the parameters needed for the corrections (pT of visible parti
 Structure
 =========
 
-The repository contains 2 projects:
+The repository contains the CMSSW plugin `NtuplerAnalyzer` for skimming MINIAODs on the grid.
+There are 2 satelite repositories:
 
-* ntupler, the thing that runs over crab on grid and reduces the MINIAODs to TTree with only important parameters
-* proc, the scripts for processing resulting TTree
+* [processing ntuples](https://github.com/xealits/processing_ntuples), the scripts for processing resulting TTree
+* [lab log](https://github.com/xealits/lab_log), common info, side studies, daily log
 
-The proc scripts are in `NtuplerAnalyzer/proc/` directory.
+The proc scripts are usually cloned in `NtuplerAnalyzer/proc/` directory. The lab log in `NtuplerAnalyzer/lab_log/`.
 
 The ntupler is a standard EDM module and uses standard directories:
 
