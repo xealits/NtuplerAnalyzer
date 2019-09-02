@@ -815,7 +815,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         'TuneCUETP8M2T4down': 'TuneCUETP8M2T4Down', 'TuneCUETP8M2T4up': 'TuneCUETP8M2T4Up',
         'isrup': 'ISRUp', 'isrdown': 'ISRDown',
         'hdampUP': 'HDAMPUp', 'hdampDOWN': 'HDAMPDown',
-        'GluonMoveCRTune': 'GluonMoveCRTuneUp', 'QCDbasedCRTune': 'QCDbasedCRTuneUp'}
+        'GluonMoveCRTune': 'GluonMoveCRTuneUp', 'QCDbasedCRTune': 'QCDbasedCRTuneUp',
+        'mtop1735': 'Mtop1GeVUp', 'mtop1715': 'Mtop1GeVDown',}
 
     def which_sys(dtag, systematics=tt_systematic_datasets):
         # if the dtag name is already fixed return it as is

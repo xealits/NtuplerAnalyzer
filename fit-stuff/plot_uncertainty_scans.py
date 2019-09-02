@@ -380,7 +380,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    left_title.Draw("same")
 
    #right_title = TPaveText(0.75, 0.9, 0.9, 0.94, "brNDC")
-   #right_title.AddText("L = %s fb^{-1}" % (31.3 if chan == 'el' else 35.8))
+   #right_title.AddText("L = %s fb^{-1}" % (31.3 if chan == 'el' else 35.9))
    #right_title.SetTextFont(132)
    #right_title.SetFillColor(0)
 
@@ -388,9 +388,9 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    right_title = TPaveText(0.5, 0.92, 0.9, 0.99, "brNDC")
    both = True
    if report_lumi:
-       right_title.AddText("%s fb^{-1} (13 TeV)" % 35.8)
+       right_title.AddText("%s fb^{-1} (13 TeV)" % 35.9)
    elif both:
-       right_title.AddText("%s fb^{-1} (13 TeV)" % '35.8')
+       right_title.AddText("%s fb^{-1} (13 TeV)" % '35.9')
    else:
        right_title.AddText("(13 TeV)")
 
@@ -597,9 +597,9 @@ def plot_all(report_lumi=True):
     both = True
 
     if report_lumi:
-        right_title.AddText("%s fb^{-1} (13 TeV)" % (35.8 if chan == 'el' else 35.8))
+        right_title.AddText("%s fb^{-1} (13 TeV)" % (35.9 if chan == 'el' else 35.9))
     elif both:
-        right_title.AddText("%s fb^{-1} (13 TeV)" % '35.8')
+        right_title.AddText("%s fb^{-1} (13 TeV)" % '35.9')
     else:
         right_title.AddText("(13 TeV)")
 

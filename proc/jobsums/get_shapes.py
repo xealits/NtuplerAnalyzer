@@ -4,6 +4,8 @@ from os.path import isfile
 from sys import exit
 import pdb
 
+from draw_overflows import DrawOverflow
+
 
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
@@ -27,6 +29,9 @@ parser.add_argument("--fonts1",      type=int, default=43, help="axis font")
 parser.add_argument("--fonts1-size", type=int, default=25, help="axis and legend font size")
 parser.add_argument("--title",       type=str,      help="title of the pad")
 parser.add_argument('--left-title',  type=str, default="CMS #font[52]{Simulation}", help="the text of the left label title")
+
+parser.add_argument("--draw-overflows", type=float, help="draw the bin with overflows in the given width")
+
 
 parser.add_argument("--outname",     type=str,      help="set the output filename")
 
@@ -85,10 +90,12 @@ def new_color():
 colors = {'red': kRed, 'black': kBlack, 'blue': kBlue}
 styles = {}
 
-leg = TLegend(0.5, 0.7, 0.89, 0.89)
+leg = TLegend(0.5, 0.55, 0.89, 0.89)
 leg.SetBorderSize(0)
 leg.SetTextFont(args.fonts1)
 leg.SetTextSize(args.fonts1_size)
+
+#leg.SetEntrySeparation(0.1)
 
 histos = {}
 legend_names = {
@@ -98,6 +105,9 @@ legend_names = {
 'tau40/inclusive2': '30<p_{T}<40',
 'tau60/inclusive2': '40<p_{T}<60',
 'tauMore60/inclusive2': '60<p_{T}',
+
+'signal':     '#splitline{signal}{t#bar{t}#rightarrow l#nu #tau_{h}#nu b#bar{b}}',
+'background': "#splitline{background}{t#bar{t}#rightarrow l#nu q#bar{q}' b#bar{b}}",
 }
 
 for i, fileparameter in enumerate(args.input_files):
@@ -149,7 +159,12 @@ for i, fileparameter in enumerate(args.input_files):
 
     tfile = TFile(filename)
     logging.debug("%s" % histo_path)
-    histo = tfile.Get(histo_path)
+
+    # if requested add the overflow bin
+    if args.draw_overflows:
+        histo = DrawOverflow(tfile.Get(histo_path), args.draw_overflows)
+    else:
+        histo = tfile.Get(histo_path)
 
     histo.Sumw2()
 
@@ -274,10 +289,6 @@ else:
                 histo.Add(h)
                 logging.debug("%15s %15s %10.1f" % (formula_name, nick, histo.Integral()))
 
-            # normalize the linear sum
-            if args.norm_formulas:
-                histo.Scale(1./histo.Integral())
-
             logging.debug("histo %20s %f" % (nick, histo.Integral()))
 
             #here histo is the linear combination in the formula
@@ -326,6 +337,10 @@ else:
 
             # rescale to 1 just in case
             #histo.Scale(1./histo.Integral())
+
+        # normalize the linear sum
+        if args.norm_formulas:
+            histo.Scale(1./histo.Integral())
 
 
         if drawn:

@@ -38,6 +38,7 @@ impacts: nn=el
 impacts: freeze=--freezeParameters lumi_13TeV
 impacts: toys=
 impacts:
+	echo `date` impacts workspace=${workspace} nn=${nn} freeze=${freeze} toys=${toys} >> logs
 	../../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts ${toys} --name ${nn} ${freeze} -d ${workspace} -m 125 --robustFit 1 --doInitialFit
 	../../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts ${toys} --name ${nn} ${freeze} -d ${workspace} -m 125 --robustFit 1 --doFits --parallel 5
 	../../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts ${toys} --name ${nn} ${freeze} -d ${workspace} -m 125 -o latest_impacts_${nn}.json

@@ -1775,7 +1775,7 @@ else:
     else:
         #right_title = TPaveText(0.65, 0.9, 0.9,  0.95, "brNDC")
         #right_title = TPaveText(0.5, 0.92, 0.9, 0.99, "brNDC")
-        right_title = TPaveText(0.5, 0.93, 0.9, 1., "brNDC")
+        right_title = TPaveText(0.5, 0.93, 0.98, 1., "brNDC")
 
     right_title.SetTextAlign(33)
     right_title.SetMargin(0)

@@ -1,3 +1,18 @@
+ttbar_xsec = 831.76
+
+W_lep_br = 0.108 * 3
+W_qar_br = 0.676
+
+W_lep_br2 = W_lep_br*W_lep_br
+W_qar_br2 = W_qar_br*W_qar_br
+
+br_tau_electron = 0.1785
+br_tau_muon     = 0.1736
+br_tau_lepton   = br_tau_electron + br_tau_muon
+br_tau_hadronic = 1 - br_tau_lepton
+
+
+
 dtags = {
 'MC2016_Summer16_DYJetsToLL_10to50_amcatnlo'   : ('dy', 18610),
 'MC2016_Summer16_DYJetsToLL_50toInf_madgraph'  : ('dy', 6225.42), #5765.4),
@@ -50,6 +65,34 @@ dtags = {
 'MC2016_Summer16_TTJets_powheg_hdampUP'        : ('ttbar', 831.76),
 'MC2016_Summer16_TTJets_powheg_isrdown'        : ('ttbar', 831.76),
 'MC2016_Summer16_TTJets_powheg_isrup'          : ('ttbar', 831.76),
+
+'MC2016_Summer16_TTJets_powheg_mtop1735'       : ('ttbar', 831.76),
+'MC2016_Summer16_TTJets_powheg_mtop1715'       : ('ttbar', 831.76),
+
+# 2017legacy has separate TT final states
+# full dtags:
+# MC2017legacy_Fall17_DYJetsToLL_50toInf_madgraph_ext1_v1
+# MC2017legacy_Fall17_DYJetsToLL_50toInf_madgraph_v1
+# MC2017legacy_Fall17_SingleT_tW_5FS_powheg_new_pmx_v1
+# MC2017legacy_Fall17_SingleT_tW_5FS_powheg_v1
+# MC2017legacy_Fall17_SingleTbar_tW_5FS_powheg_v1
+# MC2017legacy_Fall17_SingleTbar_tW_5FS_powheg_v2
+# MC2017legacy_Fall17_TTTo2L2Nu
+# MC2017legacy_Fall17_TTToHadronic_13TeV_v2
+# MC2017legacy_Fall17_TTToSemiLeptonic_new_pmx_v1
+# MC2017legacy_Fall17_TTToSemiLeptonic_v2
+# MC2017legacy_Fall17_WJets_madgraph_ext1v2
+# MC2017legacy_Fall17_WJets_madgraph_v2
+# MC2017legacy_Fall17_WJets_madgraph_v3
+# but I will use the main part to catch all versions and extra datasets
+
+'MC2017legacy_Fall17_WJets_madgraph'              : ('wjets', 52940.),
+'MC2017legacy_Fall17_DYJetsToLL_50toInf_madgraph' : ('dyjets', 6225.42),
+'MC2017legacy_Fall17_SingleT_tW_5FS_powheg'       : ('single_top', 35.6),
+'MC2017legacy_Fall17_SingleTbar_tW_5FS_powheg'    : ('single_top', 35.6),
+'MC2017legacy_Fall17_TTToHadronic_13TeV_v2'       : ('ttbar', 831.76 * W_qar_br2),
+'MC2017legacy_Fall17_TTToSemiLeptonic'            : ('ttbar', 831.76 * 2*W_lep_br*W_qar_br),
+'MC2017legacy_Fall17_TTTo2L2Nu'                   : ('ttbar', 831.76 * W_lep_br2),
 
 'MC2016_Summer16_WWTo2L2Nu_powheg'             : ('dibosons',  12.178 ),
 'MC2016_Summer16_WWToLNuQQ_powheg'             : ('dibosons',  49.997 ),
