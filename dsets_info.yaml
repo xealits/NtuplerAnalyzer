@@ -155,6 +155,10 @@
 /ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_SingleTbar_tW_5FS_powheg, isMC: true, xsec: 35.600000000000001}
 /ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_SingleT_tW_5FS_powheg, isMC: true, xsec: 35.600000000000001}
 
+/ST_tW_top_5f_DS_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM     : {LumiMask: '', dtag: MC2016_Summer16_SingleT_tW_5FS_powheg_DS,    isMC: true, xsec: 35.600000000000001}
+/ST_tW_antitop_5f_DS_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM : {LumiMask: '', dtag: MC2016_Summer16_SingleTbar_tW_5FS_powheg_DS, isMC: true, xsec: 35.600000000000001}
+
+
 
 /SingleElectron/Run2016B-03Feb2017_ver2-v2/MINIAOD: {LumiMask: /afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/LSforPath_HLT_Ele27_WPTight_Gsf_withLowestSeed_L1_SingleIsoEG26_OR_L1_SingleIsoEG28.json,
   dtag: Data13TeV_SingleElectron2016B_03Feb2017_ver2, isMC: false, xsec: 1}

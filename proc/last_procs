@@ -1,5 +1,14 @@
-# produce the ntuples with PAT SV flight length
+# check tt-tW interference effect
+python genjobs.py v37p3 p1interference  --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --dtags MC2016_Summer16_SingleT_tW_5FS_powheg_DS          --jobs-name-tag tt
+python genjobs.py v37p3 p1interference  --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --dtags MC2016_Summer16_SingleTbar_tW_5FS_powheg_DS       --jobs-name-tag tt
+
+
+# check mtop effect on event yield
+# and on acceptance in v37p3
 python genjobs.py v37p2 p1mtop  --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --dtags MC2016_Summer16_TTJets_powheg_mtop1735,MC2016_Summer16_TTJets_powheg_mtop1735_ext1,MC2016_Summer16_TTJets_powheg_mtop1715,MC2016_Summer16_TTJets_powheg_mtop1715_ext1          --jobs-name-tag tt
+
+# produce the yields
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test172 --distrs bunchFULLFIT1BIN1yield --chan-groups fit_tt_leptau_lj,fit_tt_leptau_ljout,fit_tt_leptau_Vloose_lj,fit_tt_leptau_Vloose_ljout --distributions yield
 
 
 # produce the ntuples with PAT SV flight length

@@ -29,6 +29,7 @@ impact_name_exp = {
 #"tau_fakes"  : ("$\\tauh$ misidentification background", ),
 "tau_fakes"   : ("\\ttbar background",          0.2,  0),
 "dy_norm"     : ("DY background",               0.9,  1),
+"tt_norm"     : ("tt background",               0.2,  0),
 "stop_norm"   : ("tW background",               1.1,  1),
 "dibos_norm"  : ("dibosons background",         0.2,  1),
 "wjets_norm"  : ("W+jets background",           0.2,  0),

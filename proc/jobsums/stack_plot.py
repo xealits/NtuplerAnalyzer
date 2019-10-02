@@ -29,6 +29,8 @@ parser.add_argument("--do-not-reweight", action='store_true', help="do not chang
 parser.add_argument("-o", "--output-directory", type=str, default='', help="optional output directory")
 parser.add_argument("--output-type", type=str, default='png', help="the output type (png by default)")
 
+parser.add_argument("--x-range-ratio-line", type=str, help="the x range for the norm ratio line")
+
 parser.add_argument("--no-horizontal-error-bars", action='store_true', help="for data in bins of equal width")
 
 parser.add_argument("--uncertainty-systematic",  type=str, help="add systematic variations to the hs sum uncertainty")
@@ -132,13 +134,16 @@ assert isfile(args.data_file)
 logging.info("import ROOT")
 
 import ROOT
-from ROOT import TFile, THStack, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kRed, kCyan, kGray, TLine, gStyle
+from ROOT import TFile, THStack, TLegend, TPaveText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kRed, kCyan, kGray, kBlack, TLine, gStyle
 import plotting_root
 from draw_overflows import DrawOverflow
 
-gStyle.SetHatchesLineWidth(1)
+kBlack = 1 # 2 # kRed
+
+# hash area
+gStyle.SetHatchesLineWidth(1)   # it does not change anything
 #gStyle.SetHatchesLineColor(kGray)
-gStyle.SetHatchesSpacing(5)
+gStyle.SetHatchesSpacing(1)     # it does not change anything
 
 #gStyle.SetErrorX(0) # this turns of horizontal error bars and hatched areas of MC sum histogram
 #gStyle->SetEndErrorSize(np)
@@ -234,12 +239,15 @@ if not args.no_data:
       for h, _, _ in histos:
         h.Scale(args.factor_everything)
 
-
+# loop over all data histos
 # normalize data distrs to different bin width:
 # or rebin
 if not args.no_data and (args.bin_norm or args.rebin):
   for _, distrs in histos_data_per_distr + histos_data_per_distr_ss:
       for histo, _, _ in distrs:
+        # line color to black
+        histo.SetLineColor(kBlack)
+        # rebin
         if args.rebin:
             histo.Rebin(args.rebin)
         if args.bin_norm:
@@ -595,6 +603,9 @@ def get_histos(infile, channels, shape_channel, sys_name, distr_name, skip_QCD=a
            if args.factor_everything:
                histo.Scale(args.factor_everything)
 
+           # set black linecolor
+           histo.SetLineColor(kBlack)
+
            # mc qcd normalization
            if nick in ('qcd', 'qcd_other'):
                histo.Scale(args.qcd_factor)
@@ -687,6 +698,7 @@ def get_histos_with_data_qcd(sys_name):
         for distr, histos in used_histos_per_distr_ss:
             # loop through normal list
             hs_sum2 = histos[0][0].Clone() #TH1F("sum","sum of histograms",100,-4,4);
+            hs_sum2.SetLineColor(kBlack)
             hs_sum2.SetName('mc_sum2_ss')
 
             for h, nick, channel in histos[1:]: # I sum different channels?... the old hacked not fixed yet
@@ -781,13 +793,15 @@ def get_histos_with_data_qcd(sys_name):
             if 'qcd' not in nick:
                 hs_sum_noqcd.Add(h)
 
-        hs_sum2.SetFillStyle(3004)
+        #hs_sum2.SetFillStyle(3004)
+        hs_sum2.SetFillStyle(3345)
         #hs_sum2.SetFillStyle(3354)
         #hs_sum2.SetFillStyle(3254)
         #gStyle.SetHatchesLineWidth(1)
         #gStyle.SetHatchesSpacing(1)
         #hs_sum2.SetFillColor(1)
         hs_sum2.SetFillColor(kGray+2)
+        hs_sum2.SetLineColor(kGray+2)
         hs_sum2.SetMarkerStyle(1)
         hs_sum2.SetMarkerColor(0)
 
@@ -981,6 +995,8 @@ for distr_name, (hs, _) in hs_legs_per_distr:
     for h in histos[1:]:
         hs_sum1.Add(h)
 
+    hs_sum1.SetLineColor(kBlack)
+    hs_sum1.SetLineColor(kGray+2)
     hs_sum1.SetFillStyle(3004);
     hs_sum1.SetFillColor(1);
     hs_sum1.SetMarkerStyle(1)
@@ -1436,24 +1452,31 @@ else:
         if args.exp_legend:
             ROOT.gPad.SetRightMargin(0.02)
 
+        pad1.SetTicks()
+        pad2.SetTicks()
+
     elif args.ratio:
         pad2 = TPad("pad2","This is pad2", 0., 0.05,  pad_right_edge, 1.)
         pad2.Draw()
         pad2.cd()
         if args.exp_legend:
             ROOT.gPad.SetRightMargin(0.02)
+        pad2.SetTicks()
+
     else:
         pad1 = TPad("pad1","This is pad1", 0., 0.,  pad_right_edge, 1.)
         pad1.Draw()
         pad1.cd()
         if args.exp_legend:
             ROOT.gPad.SetRightMargin(0.02)
+        pad1.SetTicks()
 
     # if fake rate then the sums should be divided by second distr sum
     if args.fake_rate:
         histos_data_sum.Divide(histos_data_sum2)
         hs_sum2.Divide(hs_sum1_2)
 
+    #x_min, x_max = hs_sum2.GetXaxis().GetXmin(), hs_sum2.GetXaxis().GetXmax()
     if args.x_range:
         x_min, x_max = (float(x) for x in args.x_range.split(','))
         histos_data_sum .SetAxisRange(x_min, x_max, "X")
@@ -1548,6 +1571,19 @@ else:
         #hs_sum1_relative.SetFillColor(kGray+2)
         hs_sum1_relative.Draw("e2")
         #hs_sum1_relative.Draw("a4")
+
+        # draw the line (dashed/thin/etc) at 1
+        if args.x_range_ratio_line:
+            x_min, x_max = (float(i) for i in args.x_range_ratio_line.split(','))
+            ratio_norm_line = TLine(x_min, 1., x_max, 1.)
+        else:
+            ratio_norm_line = TLine(hs_sum1_relative.GetXaxis().GetXmin(), 1., hs_sum1_relative.GetXaxis().GetXmax(), 1.)
+
+        #ratio_norm_line = TLine(x_min, 1., x_max, 1.)
+        #ratio_norm_line = TLine(0., 1., 200., 1.)
+        #ratio_norm_line.Draw()
+        ratio_norm_line.Draw("same")
+
         if not (args.no_data or args.no_data_plot):
             histo_data_relative.SetYTitle("Data/Pred.")
             histo_data_relative.GetYaxis().SetTitleOffset(args.offset_y)
@@ -1644,6 +1680,10 @@ else:
 
         #hs             .SetTitle(title_plot)
         hs_sum2        .SetTitle(title_plot)
+
+        hs_sum2          .SetLineColor(kBlack)
+        #hs               .SetLineColor(kBlack)
+        histos_data_sum  .SetLineColor(kBlack)
 
         if not (args.no_data or args.no_data_plot):
             histos_data_sum.GetYaxis().SetTitleOffset(args.offset_y)

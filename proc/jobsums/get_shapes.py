@@ -196,6 +196,8 @@ pad1 = TPad("pad1","This is pad1", 0., 0.,  1., 1.)
 
 pad1.Draw()
 
+pad1.SetTicks()
+
 if args.logy:
     pad1.SetLogy()
 

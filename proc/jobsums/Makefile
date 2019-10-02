@@ -117,6 +117,8 @@ multihadd2_distrs:
 	cat temp.multihadd2_coms | xargs -P ${max_procs} -d "\n" -I COMM sh -c "COMM || true"
 	hadd distrs/${nt}_${proc}_${distrs}/all/${dtag}.root distrs/${nt}_${proc}_${distrs}/all/${dtag}/all_chans.root.*
 
+# make multihadd2_distrs_all_dtags proc=test172 distrs=bunchFULLFIT1BIN1yield
+# jobsums/distrs/v37_test172_bunchFULLFIT1BIN1yield/
 multihadd2_distrs_all_dtags: nt=v37
 multihadd2_distrs_all_dtags: proc=test1
 multihadd2_distrs_all_dtags: distrs=bunch2

@@ -49,6 +49,8 @@ dtags = {
 'MC2016_Summer16_QCD_EMEnriched_Pt-50to80'   : ('qcd_emenriched', 1.),
 'MC2016_Summer16_QCD_EMEnriched_Pt-80to120'  : ('qcd_emenriched', 1.),
 
+'MC2016_Summer16_SingleT_tW_5FS_powheg_DS'                  : ('single_top', 35.6),
+'MC2016_Summer16_SingleTbar_tW_5FS_powheg_DS'               : ('single_top', 35.6),
 'MC2016_Summer16_SingleT_tW_5FS_powheg'                     : ('single_top', 35.6),
 'MC2016_Summer16_SingleTbar_tW_5FS_powheg'                  : ('single_top', 35.6),
 'MC2016_Summer16_schannel_4FS_leptonicDecays_amcatnlo'      : ('single_top', 10.11),

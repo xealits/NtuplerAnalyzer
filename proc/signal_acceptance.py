@@ -23,6 +23,7 @@ parser.add_argument("--debug",  action='store_true', help="DEBUG level of loggin
 parser.add_argument("--no-tau-cut",  action='store_true', help="don't apply tau cut")
 parser.add_argument("--same-cuts",   action='store_true', help="apply mu kino cuts to el as well")
 parser.add_argument("--only-signal", action='store_true', help="process only signal events")
+parser.add_argument("--alternative-genjets", action='store_true', help="use the second definition of gen particles")
 
 parser.add_argument('input_files', nargs='+', help="""the job files to process: 
 /gstore/t3cms/store/user/otoldaie/v19/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/Ntupler_v19_MC2016_Summer16_TTJets_powheg/180226_022336/0000/MC2016_Summer16_TTJets_powheg_0.root""")
@@ -464,7 +465,44 @@ for input_filename in args.input_files:
     n_b_jets_pass = 0
     n_jets_clean   = 0
     n_b_jets_clean = 0
-    for jet_p4, jet_pdgId in zip(event.gen2_jets_p4, event.gen2_jets_pdgId):
+
+    if args.alternative_genjets:
+        # for the signal only
+        # require 2 b jets pass: gen_tb_b_final_p4 and gen_t_b_final_p4
+        # and the tau: gen_tt_tau_vis_p4
+
+        if abs(event.gen_tt_tau_vis_p4[0].eta()) < 2.4 and event.gen_tt_tau_vis_p4[0].pt() > 30.:
+            tau = event.gen_tt_tau_vis_p4[0]
+
+            n_jets_taucands_pass += 1
+            n_jets_pass += 1
+
+            # count dR-cleaned from leptons
+            tjet_p4 = TLorentzVector(tau.X(),
+                                     tau.Y(),
+                                     tau.Z(),
+                                     tau.T())
+            dR_lep_jet = tlep_p4.DeltaR(tjet_p4)
+            if dR_lep_jet > 0.4:
+                n_jets_clean   += 1
+
+        for bjet in (event.gen_tb_b_final_p4, event.gen_t_b_final_p4): 
+            if abs(bjet.eta()) < 2.4 and bjet.pt() > 30.:
+                n_jets_pass   += 1
+                n_b_jets_pass += 1
+
+            # count dR-cleaned from leptons
+            tjet_p4 = TLorentzVector(bjet.X(),
+                                     bjet.Y(),
+                                     bjet.Z(),
+                                     bjet.T())
+            dR_lep_jet = tlep_p4.DeltaR(tjet_p4)
+            if dR_lep_jet > 0.4:
+                n_jets_clean   += 1
+                n_b_jets_clean += 1
+
+    else:
+      for jet_p4, jet_pdgId in zip(event.gen2_jets_p4, event.gen2_jets_pdgId):
         if jet_p4.pt() > 30 and abs(jet_p4.eta()) < 2.5:
             tjet_p4 = TLorentzVector(jet_p4.X(),
                                      jet_p4.Y(),

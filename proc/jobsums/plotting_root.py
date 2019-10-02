@@ -1,5 +1,7 @@
 import logging
-from ROOT import THStack, TLegend, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, TColor
+from ROOT import THStack, TLegend, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, TColor, kBlack
+
+kBlack = 1
 
 def rgb(r, g, b):
     '''rgb(r, g, b):
@@ -156,6 +158,7 @@ def stack_n_legend(used_histos, shift=0., exp_legend=False, sort_dy=False, leg=N
         histo.SetMarkerStyle(20);
         histo.SetLineStyle(proc_ocurance);
         histo.SetMarkerColor(col);
+        histo.SetLineColor(kBlack);
         #used_histos.append(histo) # hopefully root wont screw this up
         hs.Add(histo, "HIST")
 

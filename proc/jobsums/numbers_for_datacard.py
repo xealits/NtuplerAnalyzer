@@ -114,25 +114,27 @@ python numbers_for_datacard.py histosel-roots/v25p3_yields/histosel_v25p3_yields
 
 parser.add_argument("data_file",    help="full Data+MC file name")
 parser.add_argument("--file-data",  help="(optional) separate file for Data")
-parser.add_argument("-c", "--channels",  type=str, help="if given then get the numbers from here, enter multiple channels with 'mu_presel,mu_sel'")
+parser.add_argument("-c", "--channels", type=str, help="if given then get the numbers from here, enter multiple channels with 'mu_presel,mu_sel'")
 parser.add_argument("-d", "--distr",    type=str, default='Mt_lep_met', help="fitted distribution")
-parser.add_argument("-s", "--sys",    type=str, default='NOMINAL', help="systematic shift to consider")
+parser.add_argument("-s", "--sys",      type=str, default='NOMINAL', help="systematic shift to consider")
 parser.add_argument("-m", "--mu",  action = "store_true", help="muon channels: mu_lj, mu_lj_out")
 parser.add_argument("-e", "--el",  action = "store_true", help="electron channels: el_lj, el_lj_out")
 parser.add_argument("--debug",     action = "store_true", help="log debug output")
 parser.add_argument("--no-sums",   action = "store_false", default=True, help="don't collect MC sum")
+parser.add_argument("--re-sums",   action = "store_true",  default=True, help="recalculate MC sum")
 #parser.add_argument("-y", "--event-yields", type=str, default='text', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-y", "--event-yields", action='store_true', help="output in the form of event yield table (set -y latex for latex table output)")
 parser.add_argument("-r", "--ratios",       action='store_true', help="output ratios to data")
 
 parser.add_argument("--uncertainty-systematic",    type=str, default='', help="systematic uncertainties to add PU,bSF,...")
+parser.add_argument("--unfold-systematics",    action='store_true', help="show the syst differences")
 
 
 parser.add_argument("--data-nick",    type=str, default='data_other', help="the nickname of the data (data_other)")
 
 parser.add_argument("--skip-procs",    type=str, default='', help="skip these processes")
 
-parser.add_argument("--scale",    type=float, help="factor of lumi for mc procs")
+parser.add_argument("--scale",    type=float, default=1., help="factor of lumi for mc procs")
 parser.add_argument("--wjets",    type=float, help="factor of wjets")
 
 parser.add_argument("--range-min",    type=float, help="calculate from")
@@ -209,6 +211,7 @@ def range_integral(histo):
                 continue
             integral    += histo.GetBinContent(bini)
             uncertainty += histo.GetBinError(bini)
+
     else:
         integral = histo.Integral()
         uncertainty = 0.
@@ -220,9 +223,11 @@ def range_integral(histo):
                 uncertainty += histo.GetBinError(bini)
 
     if args.sqrt_unc:
-        return Yields(nominal=(integral, sqrt(uncertainty)), systematic=[])
+        #return Yields(nominal=(integral, sqrt(uncertainty)), systematic=[])
+        return integral, sqrt(uncertainty)
     else:
-        return Yields(nominal=(integral, uncertainty),       systematic=[])
+        #return Yields(nominal=(integral, uncertainty),       systematic=[])
+        return integral, uncertainty
 
 
 # sumhistos in the channel
@@ -247,7 +252,20 @@ for channel in channels:
     # sums_NOMINAL/mc_sum2_NOMINAL
     if args.no_sums:
         sum_histo = chan.Get("sums_NOMINAL/mc_sum2_NOMINAL")
-        mc_sums_sumhisto[channel] = range_integral(sum_histo)
+        mc_sums_sumhisto[channel] = Yields(nominal=range_integral(sum_histo), systematic=[]) # range_integral(sum_histo)
+
+        # add systematics if needed
+        if args.uncertainty_systematic:
+           for sys_name in args.uncertainty_systematic.split(','):
+               sum_histo_sys = 'sums_%s/mc_sum2_%s' % (sys_name, sys_name + 'Up')
+               sum_histo_sys.Scale(args.scale)
+               up   = range_integral(sum_histo_sys)[0]
+
+               sum_histo_sys = 'sums_%s/mc_sum2_%s' % (sys_name, sys_name + 'Down')
+               sum_histo_sys.Scale(args.scale)
+               down = range_integral(sum_histo_sys)[0]
+
+               mc_sums_sumhisto[channel].systematic.append((up, down))
 
     histos = []
     processes = []
@@ -284,10 +302,12 @@ for channel in channels:
 
        # adjusting to the broken data-driven qcd naming
        if process == 'qcd_other':
+           process = 'qcd'
            histo_name = '_'.join([channel, 'qcd', sys_name, distr_name])
            full_path = '%s/%s/%s' % (process, sys_name, histo_name)
            if not chan.Get(full_path):
                # try the MC qcd
+               process = 'qcd_other'
                histo_name = '_'.join([channel, 'qcd_other', sys_name, distr_name])
                full_path = '%s/%s/%s' % (process, sys_name, histo_name)
        else:
@@ -313,12 +333,26 @@ for channel in channels:
        #proc_yields[-1][1].append((process, histo.Integral()))
        if process not in proc_yields:
            proc_yields[process] = OrderedDict()
-       proc_yields[process][channel] = range_integral(histo)
+       proc_yields[process][channel] = Yields(nominal=range_integral(histo), systematic=[])
+       #return Yields(nominal=(integral, sqrt(uncertainty)), systematic=[])
 
        # add systematic variations
        if args.uncertainty_systematic:
-           for sys_name in args.uncertainty_systematic.split(','):
-               pass
+           for sname in args.uncertainty_systematic.split(','):
+               updown = []
+               for var in ('Up', 'Down'):
+                   histo_name = '_'.join([channel, process, sname + var, distr_name])
+                   full_path = '%s/%s/%s' % (process, sname + var, histo_name)
+
+                   histo = chan.Get(full_path)
+                   histo.Scale(args.scale)
+
+                   if 'wjet' in process and args.wjets:
+                       histo.Scale(args.wjets)
+
+                   updown.append(range_integral(histo)[0])
+
+               proc_yields[process][channel].systematic.append((updown[0], updown[1]))
 
     # get the data histogram
     if args.file_data:
@@ -330,7 +364,7 @@ for channel in channels:
     data_histo = file_with_data.Get(full_path)
 
     logging.debug(full_path)
-    data_yields[channel] = range_integral(data_histo).nominal
+    data_yields[channel] = range_integral(data_histo)
 
     # print datacard format yields for each channel
     if not args.event_yields:
@@ -348,7 +382,7 @@ for channel in channels:
             print 'mc sum = %f' % sum(proc[channel].nominal[0] for proc in proc_yields.values())
 
 
-proc_s = '%40s'
+proc_s = '%60s'
 item_s = '%6'
 
 def string_yield(integral):
@@ -370,15 +404,18 @@ if args.event_yields:
     print proc_s % 'process' + separator + separator.join([(item_s + 's') % channel for channel in channels]) + line_end
     #for process, chan_d in proc_yields.items():
     mc_sums   = {} # channel: sum of integrals
+    mc_resums = {} # channel: (yield, stat, syst)
 
     for process in proc_yields:
         #if process in proc_yields:
             if process == args.data_nick or 'sums_' in process: continue
             chan_d = proc_yields[process]
             line = proc_s % (process_latex_strings[process] if args.latex else process)
+
             # check the process in each requested channel
             # process = row
             # channel = column
+            # add up MC yield and uncertainties along the way
             for channel in channels:
                 #
                 if not channel in chan_d: continue
@@ -386,7 +423,31 @@ if args.event_yields:
                 data_yield, uncertainty_data = data_yields[channel]
                 if integral and args.ratios:
                     integral = integral / data_yield
-                line += separator + '$' + string_yield(integral) + ' \\pm ' + string_yield(uncertainty) + ' $'
+
+                sys_unc = 0.
+                if args.uncertainty_systematic:
+                    systs = chan_d.get(channel).systematic
+                    nom = integral
+                    sys_unc = sqrt(sum([(sys_up - nom)**2 for sys_up, _ in systs]))
+                    #line += separator + '$' + string_yield(integral) + ' \\pm ' + string_yield(uncertainty) + ' \\pm ' + string_yield(sys_unc) + ' $'
+                    #line += separator + '$' + string_yield(integral) + ' \\pm ' + string_yield(uncertainty) + ' \\pm ' + ','.join(str(s) for s,_ in systs) + ' $'
+                    if args.unfold_systematics:
+                        line += separator + '$' + string_yield(integral) + ' \\pm ' + string_yield(uncertainty) + ' \\pm ' + ', '.join('+%4.0f-%4.0f' % (u - nom, nom - d) for u,d in systs) + ' $'
+                    else:
+                        sys_unc = sqrt(sum([((sys_up - sys_down) * 0.5)**2 for sys_up, sys_down in systs]))
+                        line += separator + '$' + string_yield(integral) + ' \\pm ' + string_yield(uncertainty) + ' \\pm ' + string_yield(sys_unc) + ' $'
+
+                else:
+                    line += separator + '$' + string_yield(integral) + ' \\pm ' + string_yield(uncertainty) + ' $'
+
+                # add up the MC yields and stat uncertainty
+                if channel not in mc_resums:
+                    mc_resums[channel] = (0., 0., 0.)
+
+                prev_int, prev_stat, prev_sys = mc_resums[channel]
+                mc_resums[channel] = integral + prev_int, sqrt(prev_stat**2 + uncertainty**2), sqrt(prev_sys**2 + sys_unc**2)
+                # tuple(sqrt(i**2+j**2) for i, j in zip(mc_resums[channel], (integral, uncertainty, sys_unc)))
+
             print line + line_end
             # also calc sum
             for channel in channels:
@@ -395,13 +456,27 @@ if args.event_yields:
                 mc_sums[channel][1] += chan_d.get(channel, (0, 0)).nominal[1]
         #else:
             #continue
-
+        #if args.uncertainty_systematic:
 
     print "aaa!"
     print proc_s % 'mc_resum' + separator + separator.join([(item_s + '.3f') % (mc_sums[channel][0]) for channel in channels]) + line_end
+
+    if args.re_sums:
+        one_entry = '$' + item_s + '.0f' + ' \\pm ' + item_s + '.0f' + ' \\pm ' + item_s + '.0f $'
+        print proc_s % 'total' + separator + separator.join([one_entry % mc_resums[chan] for chan in channels]) + line_end
+
+        #chan_yield_stat_syst = []
+        #for channel in channels:
+        #    y, stat = mc_sums_sumhisto[channel].nominal
+        #    syst = sqrt(sum([((sys_up - sys_down) * 0.5)**2 for sys_up, sys_down in mc_sums_sumhisto[channel].systematic]))
+        #    chan_yield_stat_syst.append(y, stat, syst)
+        #one_entry = '$' + item_s + '.0f' + ' \\pm ' + item_s + '.0f' + ' \\pm ' + item_s + '.0f $'
+        #print proc_s % 'total' + separator + separator.join([one_entry % yss for yss in chan_yield_stat_syst]) + line_end
+
     if args.no_sums:
         if args.ratios:
             print proc_s % 'mc_sum_ratio' + separator + separator.join([(item_s + '.3f') % (mc_sums[channel][0]/data_yields[channel][0]) for channel in channels]) + line_end
+
         else:
             #print proc_s % 'mc_sum' + separator + separator.join([('$' + item_s + '.1f' + ' \\pm ' + item_s + '.1f $') % tuple(mc_sums[channel]) for channel in channels]) + line_end
             print proc_s % 'total' + separator + separator.join([('$' + item_s + '.0f' + ' \\pm ' + item_s + '.0f $') % tuple(mc_sums_sumhisto[channel].nominal) for channel in channels]) + line_end
