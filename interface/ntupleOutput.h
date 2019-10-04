@@ -571,6 +571,24 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_dR_matched_jet) // number of the
 //VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Bool_t, tau_SV_fit_isOk)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_refited_index) // number in the vectors of refited tau
 
+// isolation parameters
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_isolationCands)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_isolationChargedHadrCands)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_isolationGammaCands)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_isolationNeutrHadrCands)
+
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_signalCands)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_signalChargedHadrCands)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_signalGammaCands)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_signalNeutrHadrCands)
+
+//// these have 0 in the output
+//// isolation parameters
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_isolationPFCands)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_isolationPFChargedHadrCands)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_isolationPFGammaCands)
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_isolationPFNeutrHadrCands)
+
 // TAUS refit OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_matchingQuality)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_SV_fit_x)

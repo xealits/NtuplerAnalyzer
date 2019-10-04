@@ -3729,6 +3729,22 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		//NT_tau_hcalEnergy = tau.hcalEnergy();
 		//NT_tau_hcalEnergyLeadChargedHadrCand = tau.hcalEnergyLeadChargedHadrCand();
 
+		// PAT isolation parameters
+		NT_tau_n_isolationCands              .push_back(tau.isolationCands              () .size());
+		NT_tau_n_isolationChargedHadrCands   .push_back(tau.isolationChargedHadrCands   () .size());
+		NT_tau_n_isolationGammaCands         .push_back(tau.isolationGammaCands         () .size());
+		NT_tau_n_isolationNeutrHadrCands     .push_back(tau.isolationNeutrHadrCands     () .size());
+
+		NT_tau_n_signalCands              .push_back(tau.signalCands              () .size());
+		NT_tau_n_signalChargedHadrCands   .push_back(tau.signalChargedHadrCands   () .size());
+		NT_tau_n_signalGammaCands         .push_back(tau.signalGammaCands         () .size());
+		NT_tau_n_signalNeutrHadrCands     .push_back(tau.signalNeutrHadrCands     () .size());
+
+		// these have 0 in the output
+		//NT_tau_n_isolationPFCands            .push_back(tau.isolationPFCands            () .size());
+		//NT_tau_n_isolationPFChargedHadrCands .push_back(tau.isolationPFChargedHadrCands () .size());
+		//NT_tau_n_isolationPFGammaCands       .push_back(tau.isolationPFGammaCands       () .size());
+		//NT_tau_n_isolationPFNeutrHadrCands   .push_back(tau.isolationPFNeutrHadrCands   () .size());
 
 		// match to sel leptons
 		Float_t dR_to_sel = 999.;
