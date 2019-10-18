@@ -1563,7 +1563,7 @@ else:
                 histo_data_relative.GetXaxis().SetTitleOffset(4.)
 
         hs_sum1_relative   .GetYaxis().SetTitleOffset(args.offset_y) # place the title not overlapping with labels...
-        hs_sum1_relative   .SetYTitle("Data/Pred.")
+        hs_sum1_relative   .SetYTitle("Data / Pred.")
 
         #hs_sum1_relative.SetLineWidth(1)
         #hs_sum1_relative.SetLineColor(kGray)
@@ -1585,7 +1585,7 @@ else:
         ratio_norm_line.Draw("same")
 
         if not (args.no_data or args.no_data_plot):
-            histo_data_relative.SetYTitle("Data/Pred.")
+            histo_data_relative.SetYTitle("Data / Pred.")
             histo_data_relative.GetYaxis().SetTitleOffset(args.offset_y)
             histo_data_relative.SetMarkerStyle(ROOT.kFullCircle);
             if args.no_horizontal_error_bars:
