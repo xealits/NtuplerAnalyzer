@@ -30,6 +30,8 @@ parser = argparse.ArgumentParser(
 parser.add_argument("fit_release",    help="the name tag of the fit")
 parser.add_argument("--nll-limit",  type=float, default=10., help="limit the maximum of NLL on the plot (deafult 10)")
 parser.add_argument("--xsec-scale", type=float, default=143.23, help="the name tag of the fit (default 143.23)")
+
+parser.add_argument("--fonts",   type=int,  default=132,    help="main font")
 parser.add_argument("--font-size",   type=int,  default=40,    help="main font size")
 parser.add_argument("--canvas-size", type=int,  default=800,   help="the size of the canvas -- adjust to fit the relative font size")
 
@@ -320,7 +322,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
       #exp_g_notau.Draw("L same")
       #exp_g_stat .Draw("L same")
 
-      leg.AddEntry(exp_g_full, "expected", "L")
+      leg.AddEntry(exp_g_full, "Expected", "L")
       #leg.AddEntry(exp_g_full, "exp. full unc.", "L")
       #leg.AddEntry(exp_g_stat, "exp. stat unc.", "L")
 
@@ -328,7 +330,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
       #g_notau.Draw("L same")
       #g_stat .Draw("L same")
 
-      leg.AddEntry(g_full, "observed", "L")
+      leg.AddEntry(g_full, "Observed", "L")
       #leg.AddEntry(g_full, "fitted full unc.", "L")
       #leg.AddEntry(g_stat, "fitted stat unc.", "L")
 
@@ -355,9 +357,9 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
       exp_g_notau.Draw("L same")
       exp_g_stat .Draw("L same")
 
-      leg.AddEntry(exp_g_full,  "exp. full unc.", "L")
-      leg.AddEntry(exp_g_notau, "#splitline{exp. unc.}{w.o. tau ID}", "L")
-      leg.AddEntry(exp_g_stat,  "exp. stat unc.", "L")
+      leg.AddEntry(exp_g_full,  "Exp. full unc.", "L")
+      leg.AddEntry(exp_g_notau, "#splitline{Exp. unc.}{w.o. tau ID}", "L")
+      leg.AddEntry(exp_g_stat,  "Exp. stat unc.", "L")
 
    #left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
    #left_title.AddText("CMS preliminary at 13 TeV")
@@ -369,9 +371,9 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    #left_title.SetFillColor(0)
 
    if args.left_title_below:
-       left_title = TPaveText(0.12, 0.82, 0.72, 0.89, "brNDC")
+       left_title = TPaveText(0.14, 0.82, 0.72, 0.87, "brNDC")
    else:
-       left_title = TPaveText(0.1, 0.92, 0.7, 0.99, "brNDC")
+       left_title = TPaveText(0.1, 0.92, 0.7, 0.97, "brNDC")
    left_title.SetTextAlign(13)
    left_title.SetMargin(0)
    left_title.AddText(args.left_title)
@@ -385,7 +387,7 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
    #right_title.SetFillColor(0)
 
    #right_title = TPaveText(0.5, 0.9, 0.9, 0.95, "brNDC")
-   right_title = TPaveText(0.5, 0.92, 0.9, 0.99, "brNDC")
+   right_title = TPaveText(0.5, 0.92, 0.9, 0.97, "brNDC")
    both = True
    if report_lumi:
        right_title.AddText("%s fb^{-1} (13 TeV)" % 35.9)
@@ -582,9 +584,9 @@ def plot_all(report_lumi=True):
     #left_title.SetFillColor(0)
 
     if args.left_title_below:
-        left_title = TPaveText(0.12, 0.82, 0.72, 0.89, "brNDC")
+        left_title = TPaveText(0.12, 0.82, 0.72, 0.85, "brNDC")
     else:
-        left_title = TPaveText(0.1, 0.92, 0.7, 0.99, "brNDC")
+        left_title = TPaveText(0.1, 0.92, 0.7, 0.95, "brNDC")
     #left_title = TPaveText(0.1, 0.92, 0.7, 0.99, "brNDC")
     left_title.SetTextAlign(13)
     left_title.SetMargin(0)
@@ -593,7 +595,7 @@ def plot_all(report_lumi=True):
 
     left_title.Draw("same")
 
-    right_title = TPaveText(0.7, 0.9, 0.9, 0.99, "brNDC")
+    right_title = TPaveText(0.7, 0.92, 0.9, 0.95, "brNDC")
     both = True
 
     if report_lumi:
@@ -603,7 +605,7 @@ def plot_all(report_lumi=True):
     else:
         right_title.AddText("(13 TeV)")
 
-    right_title.SetTextFont(132)
+    right_title.SetTextFont(args.fonts1)
     right_title.SetFillColor(0)
     right_title.Draw("same")
 

@@ -29,6 +29,7 @@ parser.add_argument("--fonts1",      type=int, default=43, help="axis font")
 parser.add_argument("--fonts1-size", type=int, default=25, help="axis and legend font size")
 parser.add_argument("--title",       type=str,      help="title of the pad")
 parser.add_argument('--left-title',  type=str, default="CMS #font[52]{Simulation}", help="the text of the left label title")
+parser.add_argument('--left-title-inside',  action='store_true', help="put the left label inside the figure box")
 
 parser.add_argument("--draw-overflows", type=float, help="draw the bin with overflows in the given width")
 
@@ -106,8 +107,8 @@ legend_names = {
 'tau60/inclusive2': '40<p_{T}<60',
 'tauMore60/inclusive2': '60<p_{T}',
 
-'signal':     '#splitline{signal}{t#bar{t}#rightarrow l#nu #tau_{h}#nu b#bar{b}}',
-'background': "#splitline{background}{t#bar{t}#rightarrow l#nu q#bar{q}' b#bar{b}}",
+'signal':     '#splitline{Signal}{t#bar{t}#rightarrow l#nu #tau_{h}#nu b#bar{b}}',
+'background': "#splitline{Background}{t#bar{t}#rightarrow l#nu q#bar{q}' b#bar{b}}",
 }
 
 for i, fileparameter in enumerate(args.input_files):
@@ -397,7 +398,10 @@ for histo, subform in reversed(plots_to_legend):
 
 if args.left_title:
     #left_title = TPaveText(0.12, 0.8, 0.36, 0.88, "brNDC")
-    left_title = TPaveText(0.1, 0.92, 0.7, 0.97, "brNDC")
+    if args.left_title_inside:
+        left_title = TPaveText(0.14, 0.82, 0.7, 0.87, "brNDC")
+    else:
+        left_title = TPaveText(0.1, 0.92, 0.7, 0.97, "brNDC")
     #left_title.SetBorderSize(1)
     #left_title.SetTextAlign(11) # this adjust to left (+ margin inside the box and top)
     left_title.SetTextAlign(13) # this adjust to left (+ margin inside the box and top)

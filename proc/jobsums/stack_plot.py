@@ -42,8 +42,11 @@ parser.add_argument("--scale-relative-errors", type=float, default=1., help="to 
 parser.add_argument("--ratio-range", type=float, default=0.5, help="range of ratio plot (1-range 1+range)")
 
 parser.add_argument("--label",  type=str, help="add a text label on the plot at top-left corner")
+parser.add_argument("--label-offset",  type=float, default=0.05, help="offset in X axis of the position of the label (0.05 by default)")
 
 parser.add_argument("--left-title",  type=str, default="CMS", help="the text of the left title (CMS default)")
+parser.add_argument("--left-title-offset",  type=float, default=0., help="the offset in X direction of the position of the left title")
+parser.add_argument("--left-title-inside",  action="store_true", help="put the left title inside the plot box")
 
 parser.add_argument("--fonts1",                type=int,   default=133, help="the font of main text")
 parser.add_argument("--font-size-axes-labels", type=float, default=14,  help="the text size of the labels of axes")
@@ -967,9 +970,9 @@ if not args.fake_rate and not args.skip_legend and not (args.no_data or args.no_
     if args.no_horizontal_error_bars:
         #histos_data[0][0].Draw('X0ep')
         #leg.AddEntry(histos_data_sum, "data", "lX0ep")
-        leg.AddEntry(histos_data_sum, "data", "ep")
+        leg.AddEntry(histos_data_sum, "Data", "ep")
     else:
-        leg.AddEntry(histos_data_sum, "data", "lep")
+        leg.AddEntry(histos_data_sum, "Data", "lep")
 
 if args.leg_n_columns:
     leg.SetNColumns(args.leg_n_columns)
@@ -1780,12 +1783,14 @@ else:
     if args.exp_legend:
         #left_title = TPaveText(0.05, 0.9, 0.4, 0.94, "brNDC")
         left_title = TPaveText(0.12, 0.8, 0.35, 0.88, "brNDC")
+    elif args.left_title_inside:
+        left_title = TPaveText(args.margin_y + args.left_title_offset, 0.82, 0.5, 0.9, "brNDC")
     else:
         #left_title = TPaveText(0.1, 0.9, 0.4, 0.94, "brNDC")
         #left_title = TPaveText(0.12, 0.8, 0.35, 0.88, "brNDC")
         #left_title = TPaveText(0.1, 0.8, 0.25, 0.88, "brNDC")
         #left_title = TPaveText(0.1, 0.92, 0.5, 0.99, "brNDC")
-        left_title = TPaveText(args.margin_y, 0.92, 0.5, 1., "brNDC")
+        left_title = TPaveText(args.margin_y + args.left_title_offset, 0.92, 0.5, 1., "brNDC")
 
     #if args.no_data or args.no_data_plot:
     #    left_title.AddText("CMS simulation")
@@ -1828,7 +1833,7 @@ else:
 
     if args.label:
         #label_title = TPaveText(args.margin_y, 0.82, 0.5, 0.92, "brNDC")
-        label_title = TPaveText(args.margin_y + 0.05, 0.80, 0.3, 0.88, "brNDC")
+        label_title = TPaveText(args.margin_y + args.label_offset, 0.82, 0.5, 0.9, "brNDC")
 
         label_title.SetTextAlign(13)
         label_title.SetMargin(0)
@@ -1851,7 +1856,7 @@ else:
        if args.exp_legend: leg.SetBorderSize(0)
 
        # add the legend entry for MC sum error band
-       leg.AddEntry(hs_sum2, "uncertainty", 'f')
+       leg.AddEntry(hs_sum2, "Uncertainty", 'f')
        leg.Draw("same")
 
     if args.output_name:

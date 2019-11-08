@@ -14,6 +14,12 @@ workspace: datacard=ttxsec/latest_datacard_mu
 workspace:
 	../scripts/text2workspace.py ${datacard}.txt
 
+# an alternative
+workspace ?= ttxsec/latest_datacard_mu.root
+%.root: %.txt
+	#$(CC) $(CFLAGS) -o $@ -c $<
+	../scripts/text2workspace.py $<
+
 fit: workspace=ttxsec/datacard_v37_test172_bunchFULLFIT1_mu.root
 fit: nn=el
 fit: freeze=--freezeParameters lumi_13TeV
@@ -33,11 +39,11 @@ nll:
 
 # for toys pass
 #  -t -1 --expectSignal 1
-impacts: workspace=ttxsec/fit-stuff/latest_datacard_el.root
+#impacts: workspace=ttxsec/fit-stuff/latest_datacard_el.root
 impacts: nn=el
 impacts: freeze=--freezeParameters lumi_13TeV
 impacts: toys=
-impacts:
+impacts: ${workspace}
 	echo `date` impacts workspace=${workspace} nn=${nn} freeze=${freeze} toys=${toys} >> logs
 	../../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts ${toys} --name ${nn} ${freeze} -d ${workspace} -m 125 --robustFit 1 --doInitialFit
 	../../../CombineHarvester/CombineTools/scripts/combineTool.py -M Impacts ${toys} --name ${nn} ${freeze} -d ${workspace} -m 125 --robustFit 1 --doFits --parallel 5

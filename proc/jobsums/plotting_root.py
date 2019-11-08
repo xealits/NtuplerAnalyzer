@@ -15,7 +15,7 @@ def rgb(r, g, b):
     return TColor.GetColor(r, g, b)
 
 nick_info = {
-"data":        {'color': kWhite,   'legend': 'data'},
+"data":        {'color': kWhite,   'legend': 'Data'},
 "dy_other":    {'color': kGray,    'legend': 'DY #rightarrow other'},
 "dy_tautau":   {'color': kGray+2,  'legend': 'DY #rightarrow #tau#tau'},
 "dy":          {'color': kGray+2,  'legend': 'DY+jets'},
@@ -27,8 +27,8 @@ nick_info = {
 "wjets":       {'color': kCyan+2,  'legend': 'W+jets#rightarrow l#nu+jets'},
 "wjets":       {'color': kCyan+2,  'legend': 'W+jets'},
 
-"dibosons":    {'color': kCyan,    'legend': 'dibosons'},
-"dibosons_other":    {'color': kCyan,    'legend': 'dibosons'},
+"dibosons":    {'color': kCyan,    'legend': 'Dibosons'},
+"dibosons_other":    {'color': kCyan,    'legend': 'Dibosons'},
 "singletop":   {'color': kAzure,   'legend': 'singletop'},
 "single_top":  {'color': kAzure,   'legend': 'singletop'},
 "s_top_eltau": {'color': kAzure,   'legend': 's.top#rightarrow e#tau'},
@@ -36,7 +36,7 @@ nick_info = {
 "s_top_elmu":  {'color': kAzure+1, 'legend': 's.top#rightarrow e#mu'},
 "s_top_lj":    {'color': kAzure+2, 'legend': 's.top#rightarrow lj'},
 "s_top_other": {'color': kAzure+3, 'legend': 's.top#rightarrow other'},
-"s_top":       {'color': kAzure+6, 'legend': 'single top quark'},
+"s_top":       {'color': kAzure+6, 'legend': 'Single top quark'},
 
 "tt_jj":         {'color': kGreen+4,  'legend': 'tt_jj'},
 "tt_em":         {'color': kYellow-7, 'legend': 'tt_em'},
@@ -67,8 +67,8 @@ nick_info = {
 "tt_else":       {'color': rgb(189,0,38),      'legend': 't#bar{t}#rightarrow other'},
 "tt":            {'color': rgb(189,0,38),      'legend': 't#bar{t}'},
 
-"qcd"       : {'color': kViolet, 'legend': 'multijet'},
-"qcd_other" : {'color': kViolet, 'legend': 'multijet'},
+"qcd"       : {'color': kViolet, 'legend': 'Multijet'},
+"qcd_other" : {'color': kViolet, 'legend': 'Multijet'},
 }
 
 nick_colour = {nick: nick_info[nick]['color'] for nick in nick_info}
