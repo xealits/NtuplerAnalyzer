@@ -64,12 +64,12 @@ for(unsigned int count_idiso_muons = 0, n=0; n<muons.size (); ++n)
 	//Cut based identification
 
 	// ------------------------- muon IDs
-	passId     = patUtils::passId(muon, goodPV, mu_ID,      patUtils::CutVersion::Legacy2016_07Aug17Jul);
-	passVetoId = patUtils::passId(muon, goodPV, veto_mu_ID, patUtils::CutVersion::Legacy2016_07Aug17Jul);
+	passId     = patUtils::passId(muon, goodPV, mu_ID,      patUtils::CutVersion::StdMuon);
+	passVetoId = patUtils::passId(muon, goodPV, veto_mu_ID, patUtils::CutVersion::StdMuon);
 
 	// ------------------------- muon isolation
-	passIso     = patUtils::passIso(muon, mu_ISO,      patUtils::CutVersion::Legacy2016_07Aug17Jul);
-	passVetoIso = patUtils::passIso(muon, veto_mu_ISO, patUtils::CutVersion::Legacy2016_07Aug17Jul);
+	passIso     = patUtils::passIso(muon, mu_ISO,      patUtils::CutVersion::StdMuon);
+	passVetoIso = patUtils::passIso(muon, veto_mu_ISO, patUtils::CutVersion::StdMuon);
 
 
 	// ---------------------------- Muon Kinematics

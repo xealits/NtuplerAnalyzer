@@ -383,6 +383,7 @@ namespace patUtils
               break;
             }
 	case CutVersion::Legacy2016_07Aug17Jul:
+	case CutVersion::StdMuon:
 		switch(IdLevel){
 			case llvvMuonId::StdLoose :
 				if(mu.isLooseMuon()) return true;
@@ -738,6 +739,7 @@ namespace patUtils
            break;
 
 	case CutVersion::Legacy2016_07Aug17Jul :
+	case CutVersion::StdMuon :
 		// https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Muon_selectors_Since_9_4_X
 		switch(IsoLevel){
 			case llvvMuonIso::StdLoose : 

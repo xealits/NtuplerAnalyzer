@@ -100,11 +100,14 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     # Loose  0.2217
     # Medium 0.6321
     # Tight  0.8953
-    el_kino_cuts_pt  = cms.double( 27.),
+
+    # I choose the lowest pT cut for leptons w.r.to triggers targetting lep-tau channels (not the elmu thresholds)
+    # check that they match to HLTs in stage2!
+    el_kino_cuts_pt  = cms.double( 24.),
     el_kino_cuts_eta = cms.double( 2.5),
     el_veto_kino_cuts_pt  = cms.double( 15.),
     el_veto_kino_cuts_eta = cms.double( 2.5),
-    mu_kino_cuts_pt  = cms.double( 24.),
+    mu_kino_cuts_pt  = cms.double( 20.),
     mu_kino_cuts_eta = cms.double( 2.5),
     mu_veto_kino_cuts_pt  = cms.double( 10.),
     mu_veto_kino_cuts_eta = cms.double( 2.5),
