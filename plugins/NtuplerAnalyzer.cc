@@ -2039,6 +2039,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					for (unsigned int d_i = 0; d_i < 2; d_i++)
 						{
 						int d_i_pdgId = W_final->daughter(d_i)->pdgId();
+						LogInfo ("Demo") << "W boson daughter " << d_i << " " << d_i_pdgId;
 						if (fabs(d_i_pdgId) == 11 || fabs(d_i_pdgId) == 13)
 							{
 							decay_id = d_i_pdgId;

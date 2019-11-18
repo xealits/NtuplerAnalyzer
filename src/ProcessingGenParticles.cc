@@ -26,9 +26,34 @@ const reco::Candidate* find_W_decay(const reco::Candidate * W) {
 	// assume there can be only W->W transitions inbetween (TODO: to check actually)
 	//while (!found_decay) {
 	int hops_count = 0;
-	while (p->numberOfDaughters() == 1 && hops_count < 100)
+	//while (p->numberOfDaughters() == 1 && hops_count < 100)
+	while (hops_count < 100)
 		{
-		p = p->daughter(0);
+		// if there are many daughters
+		// then it is a W->W transition, probably W->gamme+W
+		// follow Ws
+		// if there are no W among daughters -- break
+		unsigned int n_daughters = p->numberOfDaughters();
+		if (n_daughters > 1)
+			{
+			// loop over daughters looking for W
+			bool found_W_transition = false;
+			for (unsigned int i = 0; i < n_daughters; ++i)
+				{
+				if (abs(p->daughter(i)->pdgId()) == 24)
+					{
+					p = p->daughter(i);
+					found_W_transition = true;
+					break;
+					}
+				}
+			// if there were no W among daughters, then it is the decay vertex, get out of the loop and return
+			if (!found_W_transition) break;
+			}
+		else
+			{
+			p = p->daughter(0);
+			}
 		hops_count++;
 		}
 
