@@ -945,10 +945,19 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	bool isLocal;
 	bool withHLT;
 	string  HLT_source,
+		low_pt_muHLT_MC1  , low_pt_muHLT_MC2  ,
+		low_pt_muHLT_Data1, low_pt_muHLT_Data2,
+		low_pt_elHLT_Data , low_pt_elHLT_MC,
 		muHLT_MC1  , muHLT_MC2  ,
 		muHLT_Data1, muHLT_Data2,
 		elHLT_Data , elHLT_MC,
 		lepMonitorHLT;
+
+	string
+		low_pt32_elHLT, low_pt28_150HT_elHLT, low_pt30_35PFJet_elHLT,
+		elmuHLT_1, elmuHLT_2, elmuHLT_3, elmuHLT_4,
+		elelHLT_1, elelHLT_2;
+
 
 	jet_id    jetID;
 	pu_jet_id jetPUID;
@@ -1034,6 +1043,12 @@ is2016legacy       (iConfig.getParameter<bool>("is2016legacy")),
 isLocal    (iConfig.getParameter<bool>("isLocal")),
 withHLT    (iConfig.getParameter<bool>("withHLT")),
 HLT_source (iConfig.getParameter<std::string>("HLT_source")),
+low_pt_muHLT_MC1  (iConfig.getParameter<std::string>("low_pt_muHLT_MC1")),
+low_pt_muHLT_MC2  (iConfig.getParameter<std::string>("low_pt_muHLT_MC2")),
+low_pt_muHLT_Data1(iConfig.getParameter<std::string>("low_pt_muHLT_Data1")),
+low_pt_muHLT_Data2(iConfig.getParameter<std::string>("low_pt_muHLT_Data2")),
+low_pt_elHLT_Data (iConfig.getParameter<std::string>("low_pt_elHLT_Data")),
+low_pt_elHLT_MC   (iConfig.getParameter<std::string>("low_pt_elHLT_MC")),
 muHLT_MC1  (iConfig.getParameter<std::string>("muHLT_MC1")),
 muHLT_MC2  (iConfig.getParameter<std::string>("muHLT_MC2")),
 muHLT_Data1(iConfig.getParameter<std::string>("muHLT_Data1")),
@@ -1041,6 +1056,17 @@ muHLT_Data2(iConfig.getParameter<std::string>("muHLT_Data2")),
 elHLT_Data (iConfig.getParameter<std::string>("elHLT_Data")),
 elHLT_MC   (iConfig.getParameter<std::string>("elHLT_MC")),
 lepMonitorHLT   (iConfig.getParameter<std::string>("lepMonitorHLT")),
+
+low_pt32_elHLT          (iConfig.getParameter<std::string>("low_pt32_elHLT")),
+low_pt28_150HT_elHLT    (iConfig.getParameter<std::string>("low_pt28_150HT_elHLT")),
+low_pt30_35PFJet_elHLT  (iConfig.getParameter<std::string>("low_pt30_35PFJet_elHLT")),
+elmuHLT_1               (iConfig.getParameter<std::string>("elmuHLT_1")),
+elmuHLT_2               (iConfig.getParameter<std::string>("elmuHLT_2")),
+elmuHLT_3               (iConfig.getParameter<std::string>("elmuHLT_3")),
+elmuHLT_4               (iConfig.getParameter<std::string>("elmuHLT_4")),
+elelHLT_1               (iConfig.getParameter<std::string>("elelHLT_1")),
+elelHLT_2               (iConfig.getParameter<std::string>("elelHLT_2")),
+
 jecDir     (iConfig.getParameter<std::string>("jecDir")),
 TjetResolutionFileName     (iConfig.getParameter<std::string>("resolutionFile")),
 TjetResolutionSFFileName   (iConfig.getParameter<std::string>("scaleFactorFile")),
@@ -2700,7 +2726,19 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	bool lepMonitorTrigger = !withHLT;
 	bool eTrigger = !withHLT;
 	bool muTrigger1 = !withHLT, muTrigger2 = !withHLT, muTrigger = !withHLT;
+	bool low_pt_eTrigger = !withHLT;
+	bool low_pt_muTrigger1 = !withHLT, low_pt_muTrigger2 = !withHLT, low_pt_muTrigger = !withHLT;
 	bool jetsHLT140 = !withHLT, jetsHLT400 = !withHLT, jetsHLT = !withHLT;
+
+	bool NT_HLT_el_low_pt32         = !withHLT;
+	bool NT_HLT_el_low_pt28_150HT   = !withHLT;
+	bool NT_HLT_el_low_pt30_35PFJet = !withHLT;
+	bool NT_HLT_elmu_1 = !withHLT;
+	bool NT_HLT_elmu_2 = !withHLT;
+	bool NT_HLT_elmu_3 = !withHLT;
+	bool NT_HLT_elmu_4 = !withHLT;
+	bool NT_HLT_elel_1 = !withHLT;
+	bool NT_HLT_elel_2 = !withHLT;
 
 	// TriggerNames for TriggerObjects --------------------
 
@@ -2742,14 +2780,35 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// -- pathName is the matched part of the trigger name (as I got it)
 			//    it is passed to select trigger objects
 			lepMonitorTrigger   = utils::passTriggerPatterns(tr, lepMonitorHLT);
-			eTrigger   = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_elTriggerName, elHLT_MC)   : utils::passTriggerPatternsAndGetName(tr, matched_elTriggerName, elHLT_Data));
+			eTrigger   = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_elTriggerName,  elHLT_MC)  : utils::passTriggerPatternsAndGetName(tr, matched_elTriggerName,  elHLT_Data));
 			muTrigger1 = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_MC1) : utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName1, muHLT_Data1));
 			muTrigger2 = (isMC ? utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName2, muHLT_MC2) : utils::passTriggerPatternsAndGetName(tr, matched_muTriggerName2, muHLT_Data2));
 			muTrigger = muTrigger1 || muTrigger2;
 
+			low_pt_eTrigger   = (isMC ?
+					utils::passTriggerPatterns(tr, low_pt_elHLT_MC)  :
+					utils::passTriggerPatterns(tr, low_pt_elHLT_Data));
+			low_pt_muTrigger1 = (isMC ?
+					utils::passTriggerPatterns(tr, low_pt_muHLT_MC1) :
+					utils::passTriggerPatterns(tr, low_pt_muHLT_Data1));
+			low_pt_muTrigger2 = (isMC ?
+					utils::passTriggerPatterns(tr, low_pt_muHLT_MC2) :
+					utils::passTriggerPatterns(tr, low_pt_muHLT_Data2));
+			low_pt_muTrigger = low_pt_muTrigger1 || low_pt_muTrigger2;
+
+			NT_HLT_el_low_pt32         = utils::passTriggerPatterns(tr, low_pt32_elHLT);
+			NT_HLT_el_low_pt28_150HT   = utils::passTriggerPatterns(tr, low_pt28_150HT_elHLT);
+			NT_HLT_el_low_pt30_35PFJet = utils::passTriggerPatterns(tr, low_pt30_35PFJet_elHLT);
+			NT_HLT_elmu_1              = utils::passTriggerPatterns(tr, elmuHLT_1);
+			NT_HLT_elmu_2              = utils::passTriggerPatterns(tr, elmuHLT_2);
+			NT_HLT_elmu_3              = utils::passTriggerPatterns(tr, elmuHLT_3);
+			NT_HLT_elmu_4              = utils::passTriggerPatterns(tr, elmuHLT_4);
+			NT_HLT_elel_1              = utils::passTriggerPatterns(tr, elelHLT_1);
+			NT_HLT_elel_2              = utils::passTriggerPatterns(tr, elelHLT_2);
+
 			jetsHLT140 = utils::passTriggerPatterns(tr, "HLT_PFJet140_v*");
-		jetsHLT400 = utils::passTriggerPatterns(tr, "HLT_PFJet400_v*");
-		}
+			jetsHLT400 = utils::passTriggerPatterns(tr, "HLT_PFJet400_v*");
+			}
 
 		if (record_jets)
 			{
@@ -2805,18 +2864,42 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	event_checkpoint++;
 
-	if (!record_all && !record_signal && !(eTrigger || muTrigger || lepMonitorTrigger || jetsHLT)) return; // orthogonalization is done afterwards
+	bool any_trigger = eTrigger || muTrigger || low_pt_eTrigger || low_pt_muTrigger || lepMonitorTrigger || jetsHLT ||
+			NT_HLT_el_low_pt32         ||
+			NT_HLT_el_low_pt28_150HT   ||
+			NT_HLT_el_low_pt30_35PFJet ||
+			NT_HLT_elmu_1              ||
+			NT_HLT_elmu_2              ||
+			NT_HLT_elmu_3              ||
+			NT_HLT_elmu_4              ||
+			NT_HLT_elel_1              ||
+			NT_HLT_elel_2              ;
+
+	if (!record_all && !record_signal && !any_trigger) return; // orthogonalization is done afterwards
 	event_counter ->Fill(event_checkpoint++);
 	weight_counter->Fill(event_checkpoint, weight);
 
 	NT_HLT_el = eTrigger;
 	NT_HLT_mu = muTrigger;
+	NT_HLT_el_low_pt = low_pt_eTrigger;
+	NT_HLT_mu_low_pt = low_pt_muTrigger;
 	NT_HLT_lepMonitor = lepMonitorTrigger;
 	NT_HLT_jets140 = jetsHLT140;
 	NT_HLT_jets400 = jetsHLT400;
 
 	LogInfo ("Demo") << "passed HLT " << eTrigger << ' ' << muTrigger << '(' << muTrigger1 << ',' << muTrigger2 << ')' << ';' << matched_elTriggerName << ' ' << matched_muTriggerName1 << ',' << matched_muTriggerName2 << ' ' << el_trig_objs.size() << ' ' << mu_trig_objs.size() << '(' << mu_trig_objs1.size() << ',' << mu_trig_objs2.size() << ')';
 	//LogInfo ("Demo") << "our trigger objects: " << el_trig_objs.size() << ' ' << mu_trig_objs.size();
+	LogInfo ("Demo") << "passed low pt HLT " << low_pt_eTrigger << ' ' << low_pt_muTrigger ;
+	LogInfo ("Demo") << "passed  other HLT "
+			<< " " << NT_HLT_el_low_pt32
+			<< " " << NT_HLT_el_low_pt28_150HT
+			<< " " << NT_HLT_el_low_pt30_35PFJet
+			<< " " << NT_HLT_elmu_1
+			<< " " << NT_HLT_elmu_2
+			<< " " << NT_HLT_elmu_3
+			<< " " << NT_HLT_elmu_4
+			<< " " << NT_HLT_elel_1
+			<< " " << NT_HLT_elel_2 ;
 
 	// PRIMARY VERTEX
 	reco::VertexCollection vtx;

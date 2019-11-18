@@ -23,13 +23,50 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     isLocal = cms.bool(False),
     withHLT     = cms.bool(True  ),    # in 2015 some datasets (like QCD) don't have HLT
     HLT_source  = cms.string("HLT"  ), # in 2015 had HLT2 for reHLT datasets
-    muHLT_MC1   = cms.string("HLT_IsoMu24_v4"  ),
-    muHLT_MC2   = cms.string("HLT_IsoTkMu24_v4"),
-    muHLT_Data1 = cms.string("HLT_IsoMu24_v*"  ), # the HLT pattern match
-    muHLT_Data2 = cms.string("HLT_IsoTkMu24_v*"),
-    elHLT_Data  = cms.string("HLT_Ele27_WPTight_Gsf_v*"),
-    elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v7"), #TODO: figure out how to pass some parameters from command line?
+
+    # same HLTs as in 2016, prescaled in 2017
+    low_pt_muHLT_MC1   = cms.string("HLT_IsoMu24_eta2p1_v*"),
+    low_pt_muHLT_MC2   = cms.string("HLT_IsoMu24_eta2p1_v*"),
+    low_pt_muHLT_Data1 = cms.string("HLT_IsoMu24_eta2p1_v*"), # the HLT pattern match
+    low_pt_muHLT_Data2 = cms.string("HLT_IsoMu24_eta2p1_v*"),
+
+    low_pt_elHLT_Data  = cms.string("HLT_Ele27_WPTight_Gsf_v*"),
+    low_pt_elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v*"), # Ele27 is about 31 fb^-1 in 2017
     #elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v*"), #MATTEO cambiato triggere elettroni MC, vediamo come va prima era v7
+
+    # new HLTs
+
+    low_pt32_elHLT  = cms.string("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v*"),
+
+    # not prescaled
+    # HT 150 is ok for ttbar, but not for DY tautau
+    low_pt28_150HT_elHLT  = cms.string("HLT_Ele28_eta2p1_WPTight_Gsf_HT150_v*"),
+
+    # not prescaled
+    # PF jet 35 GeV is too high for DY tauh
+    low_pt30_35PFJet_elHLT  = cms.string("HLT_Ele30_eta2p1_WPTight_Gsf_CentralPFJet35_EleCleaned_v*"),
+
+    # main new HLTs: lowest unprescaled single-lepton
+    muHLT_MC1   = cms.string("HLT_IsoMu27_v*"  ),
+    muHLT_MC2   = cms.string("HLT_IsoMu27_v*"),
+    muHLT_Data1 = cms.string("HLT_IsoMu27_v*"  ), # the HLT pattern match
+    muHLT_Data2 = cms.string("HLT_IsoMu27_v*"),
+    elHLT_Data  = cms.string("HLT_Ele35_WPTight_Gsf_v*"),
+    elHLT_MC    = cms.string("HLT_Ele35_WPTight_Gsf_v*"), #TODO: figure out how to pass some parameters from command line?
+
+    # dilepton HLTs
+    # at least here we can get a lot of events
+    elmuHLT_1 = cms.string("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*"),
+    elmuHLT_2 = cms.string("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
+    elmuHLT_3 = cms.string("HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
+    elmuHLT_4 = cms.string("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
+
+    # elel
+    elelHLT_1 = cms.string("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*"),
+    elelHLT_2 = cms.string("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*"),
+
+    # no mumu for now
+
     lepMonitorHLT = cms.string("HLT_PFHT400_*"),
 
     #hlt_objects = cms.InputTag("selectedPatTrigger"), # 2016
