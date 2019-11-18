@@ -86,6 +86,8 @@ for(unsigned int count_idiso_electrons = 0, n=0; n<electrons.size (); ++n)
 	//    barrel    endcap
 	// d0   0.05      0.10
 	// dz   0.10      0.20
+
+	/*
 	bool passStdImpactParameter = false;
 	if (eta <= 1.479) // barrel, newer selection is precise?
 		{
@@ -103,6 +105,12 @@ for(unsigned int count_idiso_electrons = 0, n=0; n<electrons.size (); ++n)
 		}
 	// Ichecked this sigma cut with EGamma ID page
 	// link is in AN....
+	*/
+
+	// cannot find any impact recommendation for legacy in 94X
+	// https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaRunIIRecommendations#Fall17v1
+	// it must be embedded into ID
+	bool passStdImpactParameter = true;
 
 	//passImpactParameter = electron.dB() < 0.02;
 	// what units is this? in the PAT example on top they say "we use < 0.02cm",
@@ -139,13 +147,13 @@ for(unsigned int count_idiso_electrons = 0, n=0; n<electrons.size (); ++n)
 	// Instead an average analysis is recommended to use safe highly efficient (when PV is properly found)
 	// baseline cuts given in the table below. The d0 and dz are NOT applied in the VID framework,
 	// and are left for regular users to cut on explicitly if desired. 
-	passId     = patUtils::passId(electron, goodPV, el_ID,      patUtils::CutVersion::Legacy2016_07Aug17Jul) && passImpactParameter;
-	passVetoId = patUtils::passId(electron, goodPV, veto_el_ID, patUtils::CutVersion::Legacy2016_07Aug17Jul) && passImpactParameterVeto;
+	passId     = patUtils::passId(electron, goodPV, el_ID,      patUtils::CutVersion::Legacy2017_94X_Fall17v1) && passImpactParameter;
+	passVetoId = patUtils::passId(electron, goodPV, veto_el_ID, patUtils::CutVersion::Legacy2017_94X_Fall17v1) && passImpactParameterVeto;
 
 	// ------------------------- electron isolation
 
-	passIso     = patUtils::passIso(electron, el_ISO,      patUtils::CutVersion::Legacy2016_07Aug17Jul, rho);
-	passVetoIso = patUtils::passIso(electron, veto_el_ISO, patUtils::CutVersion::Legacy2016_07Aug17Jul, rho);
+	passIso     = patUtils::passIso(electron, el_ISO,      patUtils::CutVersion::Legacy2017_94X_Fall17v1, rho);
+	passVetoIso = patUtils::passIso(electron, veto_el_ISO, patUtils::CutVersion::Legacy2017_94X_Fall17v1, rho);
 
 
 	// ---------------------------- Electron Kinematics

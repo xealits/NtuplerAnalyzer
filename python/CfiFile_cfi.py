@@ -85,13 +85,20 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     #resolutionFile  = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt'),
     #scaleFactorFile = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Spring16_25nsV10_MC_SF_AK4PFchs.txt'),
     # legacy 2016
-    resolutionFile  = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt'),
-    scaleFactorFile = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Summer16_25nsV1_MC_SF_AK4PFchs.txt'),
+    #resolutionFile  = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Summer16_25nsV1_MC_PtResolution_AK4PFchs.txt'),
+    #scaleFactorFile = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Summer16_25nsV1_MC_SF_AK4PFchs.txt'),
+    # Fall17_V3_MC_SF_AK4PFchs.txt Fall17_V3_MC_PtResolution_AK4PFchs.txt
+    resolutionFile  = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Fall17_V3_MC_PtResolution_AK4PFchs.txt'),
+    scaleFactorFile = cms.string('${CMSSW_BASE}/src/UserCode/NtuplerAnalyzer/data/jec/25ns/Fall17_V3_MC_SF_AK4PFchs.txt'),
 
     #mc2hessianCSV = cms.FileInPath('PhysicsTools/HepMCCandAlgos/data/NNPDF30_lo_as_0130_hessian_60.csv'), #MC2Hessian transformation matrix
     mc2hessianCSV = cms.FileInPath('PhysicsTools/HepMCCandAlgos/data/NNPDF30_nlo_as_0118_hessian_60.csv'), #MC2Hessian transformation matrix
 
-    btag_threshold = cms.double(0.2217),
+    # https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X
+    # loose WP
+    btag_threshold = cms.double(0.1522),
+    # 2016 legacy 94X https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation2016Legacy
+    #btag_threshold = cms.double(0.2217),
     # X80 2016 ReReco, https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco
     # Loose  0.5426
     # Medium 0.8484

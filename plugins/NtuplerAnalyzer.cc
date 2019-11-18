@@ -941,7 +941,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	bool record_ElTau, record_MuTau, record_tauCands, record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets, record_signal, record_all;
 
 	TString dtag;
-	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop, is2016legacy, is2017data;
+	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop, is2016legacy, is2017data, is2017legacy;
 	bool isLocal;
 	bool withHLT;
 	string  HLT_source,
@@ -1219,7 +1219,12 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	bool period_2016EF  = !isMC && (dtag.Contains("2016E") || dtag.Contains("2016F"));
 	bool period_2016G   = !isMC && (dtag.Contains("2016G"));
 	bool period_2016H   = !isMC && (dtag.Contains("2016H"));
-	is2017data = !isMC && (dtag.Contains("2017")); // TODO check 2017 data handling with dtag
+	is2017legacy = dtag.Contains("2017legacy");
+	is2017data   = !isMC && (dtag.Contains("2017")); // TODO check 2017 data handling with dtag
+	bool period_2017legacyB  = !isMC &&  dtag.Contains("2017B");
+	bool period_2017legacyC  = !isMC &&  dtag.Contains("2017C");
+	bool period_2017legacyDE = !isMC && (dtag.Contains("2017D") || dtag.Contains("2017E"));
+	bool period_2017legacyF  = !isMC &&  dtag.Contains("2017F");
 
 	aMCatNLO = dtag.Contains("amcatnlo");
 	isWJets = dtag.Contains("WJet") || dtag.Contains("W0Jet") || dtag.Contains("W1Jet") || dtag.Contains("W2Jet") || dtag.Contains("W3Jet") || dtag.Contains("W4Jet");
@@ -1276,7 +1281,26 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 			jet_corr_files = "/Summer16_07Aug2017GH_V11_DATA";
 		//else jet_corr_files = "/Summer16_07Aug2017GH_V11_DATA";
 		}
- 	// TODO add jet corrections for 2017
+
+	else if (is2017legacy)
+		{
+		// Fall17_17Nov2017B_V32_DATA.tar.gz
+		// Fall17_17Nov2017C_V32_DATA.tar.gz
+		// Fall17_17Nov2017DE_V32_DATA.tar.gz
+		// Fall17_17Nov2017F_V32_DATA.tar.gz
+		// Fall17_17Nov2017_V32_MC.tar.gz
+		if (isMC)
+			jet_corr_files = "Fall17_17Nov2017_V32_MC";
+		else if (period_2017legacyB)
+			jet_corr_files = "Fall17_17Nov2017B_V32_DATA";
+		else if (period_2017legacyC)
+			jet_corr_files = "Fall17_17Nov2017C_V32_DATA";
+		else if (period_2017legacyDE)
+			jet_corr_files = "Fall17_17Nov2017DE_V32_DATA";
+		else if (period_2017legacyF)
+			jet_corr_files = "Fall17_17Nov2017F_V32_DATA";
+		}
+
 	else
 		{
 		// original 2016 rereco, Moriond17
@@ -2564,7 +2588,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 	else
 		{
-		// 2016 data, Feb 2017 rereco
+		// 2016 data, Feb 2017 rereco, 2017legacy
 		trigResults_with_met_filters = trigResultsPAT;
 		}
 
@@ -3253,6 +3277,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_met_slimmedMets = MET.p4();
 		NT_met_init = MET.p4();
 
+		// https://cmssdt.cern.ch/lxr/source/DataFormats/PatCandidates/interface/MET.h?%21v=CMSSW_9_4_0
 		// systematic shifts
 		/*
 		 *       enum METUncertainty {
@@ -3395,6 +3420,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		// so now one need to get the uncorrected jet --> 
 		// TODO <-- it doesn't make sense: corrected jet differs only in pt, which doesn't matter in these cuts
 
+		/*
 		if (abseta <= 2.7)
 			{
 			looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1) && ((abseta<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abseta>2.4);
@@ -3411,7 +3437,33 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			looseJetID = (NEMF<0.90 && NumNeutralParticles>10);
 			tightJetID = looseJetID;
 			}
+		*/
 
+		// for 2017 94X see:
+		// https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2017
+		if (abseta <= 2.7)
+			{
+			// no Loose ID anymore!
+			//looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1) && ((abseta<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abseta>2.4);
+			// efficiency > 99% everywhere
+			// no CEMF<0.99
+			tightJetID        =  (NHF<0.90 && NEMF<0.90 && NumConst>1) &&             ((abseta<=2.4 && CHF>0 && CHM>0) || abseta>2.4);
+			tightLepVetoJetID = ((NHF<0.90 && NEMF<0.90 && NumConst>1  && MUF<0.8) && ((abseta<=2.4 && CHF>0 && CHM>0 && CEMF<0.80) || abseta>2.4));
+			}
+		else if (abseta <= 3.0)
+			{
+			//looseJetID = (NHF<0.98 && NEMF>0.01 && NumNeutralParticles>2);
+			tightJetID = (NEMF>0.02 && NEMF<0.99 && NumNeutralParticles>2);
+			}
+		else
+			{
+			//looseJetID = (NEMF<0.90 && NumNeutralParticles>10);
+			tightJetID = (NEMF<0.90 && NHF>0.02 && NumNeutralParticles>10);
+			}
+
+		// no Loose ID anymore!
+		// efficiency > 99% everywhere
+		looseJetID = tightJetID;
 		if (!looseJetID) continue; // 333
 
 		NT_jet_id.push_back(jet.pdgId());
