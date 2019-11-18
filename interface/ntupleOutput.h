@@ -410,6 +410,12 @@ Bool_t_in_NTuple(OUTNTUPLE, HLT_elmu_4)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_elel_1)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_elel_2)
 
+// lep-tau HLTs in 2017
+
+Bool_t_in_NTuple(OUTNTUPLE, HLT_eltau)
+Bool_t_in_NTuple(OUTNTUPLE, HLT_mutau1)
+Bool_t_in_NTuple(OUTNTUPLE, HLT_mutau2)
+
 Int_t_in_NTuple(OUTNTUPLE, leps_ID)
 Int_t_in_NTuple(OUTNTUPLE, nleps)
 Int_t_in_NTuple(OUTNTUPLE, njets)  // small eta and Loose PFID

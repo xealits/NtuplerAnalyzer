@@ -956,7 +956,8 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	string
 		low_pt32_elHLT, low_pt28_150HT_elHLT, low_pt30_35PFJet_elHLT,
 		elmuHLT_1, elmuHLT_2, elmuHLT_3, elmuHLT_4,
-		elelHLT_1, elelHLT_2;
+		elelHLT_1, elelHLT_2,
+		eltauHLT, mutauHLT1, mutauHLT2;
 
 
 	jet_id    jetID;
@@ -1066,6 +1067,10 @@ elmuHLT_3               (iConfig.getParameter<std::string>("elmuHLT_3")),
 elmuHLT_4               (iConfig.getParameter<std::string>("elmuHLT_4")),
 elelHLT_1               (iConfig.getParameter<std::string>("elelHLT_1")),
 elelHLT_2               (iConfig.getParameter<std::string>("elelHLT_2")),
+
+eltauHLT               (iConfig.getParameter<std::string>("eltauHLT")),
+mutauHLT1              (iConfig.getParameter<std::string>("mutauHLT1")),
+mutauHLT2              (iConfig.getParameter<std::string>("mutauHLT2")),
 
 jecDir     (iConfig.getParameter<std::string>("jecDir")),
 TjetResolutionFileName     (iConfig.getParameter<std::string>("resolutionFile")),
@@ -2806,6 +2811,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_HLT_elel_1              = utils::passTriggerPatterns(tr, elelHLT_1);
 			NT_HLT_elel_2              = utils::passTriggerPatterns(tr, elelHLT_2);
 
+			NT_HLT_eltau              = utils::passTriggerPatterns(tr, eltauHLT);
+			NT_HLT_mutau1             = utils::passTriggerPatterns(tr, mutauHLT1);
+			NT_HLT_mutau2             = utils::passTriggerPatterns(tr, mutauHLT2);
+
 			jetsHLT140 = utils::passTriggerPatterns(tr, "HLT_PFJet140_v*");
 			jetsHLT400 = utils::passTriggerPatterns(tr, "HLT_PFJet400_v*");
 			}
@@ -2873,7 +2882,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			NT_HLT_elmu_3              ||
 			NT_HLT_elmu_4              ||
 			NT_HLT_elel_1              ||
-			NT_HLT_elel_2              ;
+			NT_HLT_elel_2              ||
+			NT_HLT_eltau               ||
+			NT_HLT_mutau1              ||
+			NT_HLT_mutau2              ||
+			false;
 
 	if (!record_all && !record_signal && !any_trigger) return; // orthogonalization is done afterwards
 	event_counter ->Fill(event_checkpoint++);

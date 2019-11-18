@@ -67,6 +67,12 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
 
     # no mumu for now
 
+    # leptau triggers
+    eltauHLT  = cms.string("HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1*"),
+    mutauHLT1 = cms.string("HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1*"),
+    mutauHLT2 = cms.string("HLT_IsoMu24_eta2p1_LooseChargedIsoPFTau20_SingleL1*"),
+
+
     lepMonitorHLT = cms.string("HLT_PFHT400_*"),
 
     #hlt_objects = cms.InputTag("selectedPatTrigger"), # 2016
