@@ -607,10 +607,47 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_isolationChargedHadrCands)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_isolationGammaCands)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_isolationNeutrHadrCands)
 
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_isolationCands            , std::vector<std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_isolationChargedHadrCands , std::vector<std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_isolationGammaCands       , std::vector<std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_isolationNeutrHadrCands   , std::vector<std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>>)
+
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolation_cands_tau_index  , std::vector<int>)
+//VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolation_cands            , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationCands_tau_index  , std::vector<int>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationCands            , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationCharged_tau_index  , std::vector<int>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationCharged_pdgId      , std::vector<int>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationCharged            , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationGamma_tau_index  , std::vector<int>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationGamma            , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationNeutr_tau_index  , std::vector<int>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationNeutr_pdgId      , std::vector<int>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationNeutr            , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+
+
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_signalCands)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_signalChargedHadrCands)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_signalGammaCands)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_signalNeutrHadrCands)
+
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_signalCands_tau_index  , std::vector<int>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_signalCands            , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_signalCharged_tau_index  , std::vector<int>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_signalCharged_pdgId      , std::vector<int>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_signalCharged            , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_signalGamma_tau_index  , std::vector<int>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_signalGamma            , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_signalNeutr_tau_index  , std::vector<int>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_signalNeutr_pdgId      , std::vector<int>)
+VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_signalNeutr            , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
 
 //// these have 0 in the output
 //// isolation parameters
