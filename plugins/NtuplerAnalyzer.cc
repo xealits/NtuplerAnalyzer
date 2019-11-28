@@ -3374,6 +3374,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// similar to https://github.com/LLRCMS/LLRHiggsTauTau/blob/b8bc9146cab462fdaf8e4161761b5e70a08f4a65/NtupleProducer/plugins/HTauTauNtuplizer.cc
 
 	NT_nbjets = 0;
+	NT_nbjets_noVLooseTau = 0;
+	NT_nbjets_noMediumTau = 0;
+	NT_nbjets_noTightTau  = 0;
 	NT_nallbjets = 0;
 	NT_njets = 0;
 	NT_nalljets = 0;
@@ -3499,7 +3502,53 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			if (abseta < jet_kino_cuts_eta)
 				{
 				NT_njets += 1;
-				if (b_discriminator > btag_threshold) NT_nbjets += 1;
+				if (b_discriminator > btag_threshold)
+					{
+					NT_nbjets += 1;
+
+					// match to taus
+					bool matched_VLoose = false, matched_Medium = false, matched_Tight = false;
+					for(size_t i=0; i<selTaus.size(); ++i)
+						{
+						pat::Tau& tau = selTaus[i];
+						Float_t tau_dR = reco::deltaR(jet, tau);
+						if (tau_dR>0.4) continue;
+
+						// a matched tau
+						if (tau.tauID(tau_Tight_ID))
+							{
+							matched_VLoose = true;
+							matched_Medium = true;
+							matched_Tight  = true;
+							}
+						else if (tau.tauID(tau_Medium_ID))
+							{
+							matched_VLoose = true;
+							matched_Medium = true;
+							}
+						else if (tau.tauID(tau_VLoose_ID))
+							{
+							matched_VLoose = true;
+							}
+						}
+
+					if (!matched_VLoose)
+						{
+						NT_nbjets_noVLooseTau += 1;
+						NT_nbjets_noMediumTau += 1;
+						NT_nbjets_noTightTau  += 1;
+						}
+					else if (!matched_Medium)
+						{
+						NT_nbjets_noMediumTau += 1;
+						NT_nbjets_noTightTau  += 1;
+						}
+					else if (!matched_Tight )
+						{
+						NT_nbjets_noTightTau  += 1;
+						}
+
+					}
 				}
 			// counter of our old jets: cut on pt, on eta (small eta, central jet) and PFID Loose
 			}
