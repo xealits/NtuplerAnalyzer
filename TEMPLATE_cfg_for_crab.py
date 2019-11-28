@@ -173,14 +173,14 @@ process.ntupler.input = cms.untracked.vstring(
 )
 process.ntupler.outfile = cms.string('/afs/cern.ch/user/o/otoldaie/work/private/16/CMSSW_8_0_26_patch1/src/UserCode/NtuplerAnalyzer/MC2016_Summer16_TTJets_powheg_test.root')
 
-# triggers
-if '2017legacy' in dataset_reco_name:
-    process.ntupler.muHLT_MC1   = cms.string("HLT_IsoMu24_v*"  )
-    process.ntupler.muHLT_MC2   = cms.string("HLT_IsoTkMu24_v*")
-    process.ntupler.muHLT_Data1 = cms.string("HLT_IsoMu24_v*"  )
-    process.ntupler.muHLT_Data2 = cms.string("HLT_IsoTkMu24_v*")
-    process.ntupler.elHLT_Data  = cms.string("HLT_Ele27_WPTight_Gsf_v*")
-    process.ntupler.elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v*")
+## triggers
+#if '2017legacy' in dataset_reco_name:
+#    process.ntupler.muHLT_MC1   = cms.string("HLT_IsoMu24_v*"  )
+#    process.ntupler.muHLT_MC2   = cms.string("HLT_IsoTkMu24_v*")
+#    process.ntupler.muHLT_Data1 = cms.string("HLT_IsoMu24_v*"  )
+#    process.ntupler.muHLT_Data2 = cms.string("HLT_IsoTkMu24_v*")
+#    process.ntupler.elHLT_Data  = cms.string("HLT_Ele27_WPTight_Gsf_v*")
+#    process.ntupler.elHLT_MC    = cms.string("HLT_Ele27_WPTight_Gsf_v*")
 
 
 theLumiMask = path.expandvars("") # -- lumi should be handled via CRAB3, but for now I leave this config option available in Ntupler for local runs
