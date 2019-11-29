@@ -573,8 +573,9 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, gen_tt_tau_simpleID)
 // TAUS OUTPUT
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_id)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_p4, std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_IDlev)
-VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_decayMode)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_IDlev)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_decayMode)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_IDmedium_discr)
 
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_dR)

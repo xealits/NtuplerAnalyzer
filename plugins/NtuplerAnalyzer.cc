@@ -165,6 +165,14 @@ static double pu_vector_el_down[MAX_NVTX] = {0,
    0.0022493  ,   0.00196487 ,    0.0015343 ,    0.00130443 ,    0.00118566 ,    0          ,    0          ,    0          ,    0};
 
 
+//bool sort_CandidatesByPt(const pat::GenericParticle &a, const pat::GenericParticle &b)  { return a.pt()>b.pt(); }
+bool sort_TausByIDByPt(const pat::Tau &a, const pat::Tau &b)
+	{
+	return (a.userInt("IDlev") != b.userInt("IDlev") ?
+		a.userInt("IDlev") >  b.userInt("IDlev") :
+		a.pt()>b.pt());
+	}
+
 
 // try simpler first
 struct dR_matching {
@@ -3043,8 +3051,24 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 	// and these are the NT output taus
 	// taus are sorted py pt
-	std::sort (selTaus.begin(),  selTaus.end(),  utils::sort_CandidatesByPt);
+	//std::sort (selTaus.begin(),  selTaus.end(),  utils::sort_CandidatesByPt);
 
+	// sort taus by IDlev and pT
+	// first add IDlev into the tau
+
+	for(size_t i=0; i<selTaus.size(); ++i)
+		{
+		pat::Tau& tau = selTaus[i];
+
+		Int_t IDlev = 0;
+		if      (tau.tauID(tau_VTight_ID) >= 0.5) IDlev = 5;
+		else if (tau.tauID(tau_Tight_ID)  >= 0.5) IDlev = 4;
+		else if (tau.tauID(tau_Medium_ID) >= 0.5) IDlev = 3;
+		else if (tau.tauID(tau_Loose_ID)  >= 0.5) IDlev = 2;
+		else if (tau.tauID(tau_VLoose_ID) >= 0.5) IDlev = 1;
+		tau.addUserInt("IDlev", IDlev);
+		}
+	std::sort (selTaus.begin(),  selTaus.end(),  sort_TausByIDByPt);
 
 	//bool clean_lep_conditions = nVetoE==0 && nVetoMu==0 && nGoodPV != 0; // veto on std iso veto leptons
 	//bool clean_lep_conditions = nVetoE_all==0 && nVetoMu_all==0 && nGoodPV != 0; // veto on all iso veto leptons
@@ -3515,18 +3539,18 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						if (tau_dR>0.4) continue;
 
 						// a matched tau
-						if (tau.tauID(tau_Tight_ID))
+						if (tau.tauID(tau_Tight_ID) >= 0.5)
 							{
 							matched_VLoose = true;
 							matched_Medium = true;
 							matched_Tight  = true;
 							}
-						else if (tau.tauID(tau_Medium_ID))
+						else if (tau.tauID(tau_Medium_ID) >= 0.5)
 							{
 							matched_VLoose = true;
 							matched_Medium = true;
 							}
-						else if (tau.tauID(tau_VLoose_ID))
+						else if (tau.tauID(tau_VLoose_ID) >= 0.5)
 							{
 							matched_VLoose = true;
 							}
@@ -3906,12 +3930,13 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		{
 		pat::Tau& tau = selTaus[i];
 
-		Int_t IDlev = 0;
-		if (tau.tauID(tau_VTight_ID)) IDlev = 5;
-		else if (tau.tauID(tau_Tight_ID))  IDlev = 4;
-		else if (tau.tauID(tau_Medium_ID)) IDlev = 3;
-		else if (tau.tauID(tau_Loose_ID))  IDlev = 2;
-		else if (tau.tauID(tau_VLoose_ID)) IDlev = 1;
+		//Int_t IDlev = 0;
+		//if (tau.tauID(tau_VTight_ID)) IDlev = 5;
+		//else if (tau.tauID(tau_Tight_ID))  IDlev = 4;
+		//else if (tau.tauID(tau_Medium_ID)) IDlev = 3;
+		//else if (tau.tauID(tau_Loose_ID))  IDlev = 2;
+		//else if (tau.tauID(tau_VLoose_ID)) IDlev = 1;
+		Int_t IDlev = tau.userInt("IDlev");
 
 		//if (IDlev < 0) continue; // save only candidates with minimal ID
 		//if (IDlev > 0) NT_ntaus += 1;
@@ -3920,6 +3945,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_tau_decayMode.push_back(tau.decayMode());
 		NT_tau_p4.push_back(tau.p4());
 		NT_tau_IDlev.push_back(IDlev);
+		NT_tau_IDmedium_discr.push_back(tau.tauID(tau_Medium_ID));
 		NT_tau_leading_track_pt.push_back(tau.userFloat("leading_track_pt"));
 		NT_tau_leadChargedHadrCand_pt.push_back(tau.userFloat("leadChargedHadrCand_pt"));
 		NT_tau_leadNeutralCand_pt.push_back(tau.userFloat("leadNeutralCand_pt"));
@@ -3934,68 +3960,71 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_tau_n_isolationGammaCands         .push_back(tau.isolationGammaCands         () .size());
 		NT_tau_n_isolationNeutrHadrCands     .push_back(tau.isolationNeutrHadrCands     () .size());
 
-		// save the p4 momenta
-		//std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >> cands_p4;
-		for(const auto& cand: tau.isolationCands())
-			{
-			//cands_p4.push_back(cand->p4());
-			NT_tau_all_isolationCands_tau_index  .push_back(i);
-			NT_tau_all_isolationCands            .push_back(cand->p4());
-			}
-
-		//cands_p4.clear();
-		for(const auto& cand: tau.isolationChargedHadrCands())
-			{
-			NT_tau_all_isolationCharged_tau_index  .push_back(i);
-			NT_tau_all_isolationCharged_pdgId      .push_back(cand->pdgId());
-			NT_tau_all_isolationCharged            .push_back(cand->p4());
-			}
-
-		for(const auto& cand: tau.isolationGammaCands())
-			{
-			NT_tau_all_isolationGamma_tau_index  .push_back(i);
-			NT_tau_all_isolationGamma            .push_back(cand->p4());
-			}
-
-		for(const auto& cand: tau.isolationNeutrHadrCands())
-			{
-			NT_tau_all_isolationNeutr_tau_index  .push_back(i);
-			NT_tau_all_isolationNeutr_pdgId      .push_back(cand->pdgId());
-			NT_tau_all_isolationNeutr            .push_back(cand->p4());
-			}
-
 		NT_tau_n_signalCands              .push_back(tau.signalCands              () .size());
 		NT_tau_n_signalChargedHadrCands   .push_back(tau.signalChargedHadrCands   () .size());
 		NT_tau_n_signalGammaCands         .push_back(tau.signalGammaCands         () .size());
 		NT_tau_n_signalNeutrHadrCands     .push_back(tau.signalNeutrHadrCands     () .size());
 
-		// again save the p4 momenta
-		for(const auto& cand: tau.signalCands())
+		// save the p4 momenta for tau candidates with an ID
+		if (IDlev > 0)
 			{
-			//cands_p4.push_back(cand->p4());
-			NT_tau_all_signalCands_tau_index  .push_back(i);
-			NT_tau_all_signalCands            .push_back(cand->p4());
-			}
+			//std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >> cands_p4;
+			for(const auto& cand: tau.isolationCands())
+				{
+				//cands_p4.push_back(cand->p4());
+				NT_tau_all_isolationCands_tau_index  .push_back(i);
+				NT_tau_all_isolationCands            .push_back(cand->p4());
+				}
 
-		//cands_p4.clear();
-		for(const auto& cand: tau.signalChargedHadrCands())
-			{
-			NT_tau_all_signalCharged_tau_index  .push_back(i);
-			NT_tau_all_signalCharged_pdgId      .push_back(cand->pdgId());
-			NT_tau_all_signalCharged            .push_back(cand->p4());
-			}
+			//cands_p4.clear();
+			for(const auto& cand: tau.isolationChargedHadrCands())
+				{
+				NT_tau_all_isolationCharged_tau_index  .push_back(i);
+				NT_tau_all_isolationCharged_pdgId      .push_back(cand->pdgId());
+				NT_tau_all_isolationCharged            .push_back(cand->p4());
+				}
 
-		for(const auto& cand: tau.signalGammaCands())
-			{
-			NT_tau_all_signalGamma_tau_index  .push_back(i);
-			NT_tau_all_signalGamma            .push_back(cand->p4());
-			}
+			for(const auto& cand: tau.isolationGammaCands())
+				{
+				NT_tau_all_isolationGamma_tau_index  .push_back(i);
+				NT_tau_all_isolationGamma            .push_back(cand->p4());
+				}
 
-		for(const auto& cand: tau.signalNeutrHadrCands())
-			{
-			NT_tau_all_signalNeutr_tau_index  .push_back(i);
-			NT_tau_all_signalNeutr_pdgId      .push_back(cand->pdgId());
-			NT_tau_all_signalNeutr            .push_back(cand->p4());
+			for(const auto& cand: tau.isolationNeutrHadrCands())
+				{
+				NT_tau_all_isolationNeutr_tau_index  .push_back(i);
+				NT_tau_all_isolationNeutr_pdgId      .push_back(cand->pdgId());
+				NT_tau_all_isolationNeutr            .push_back(cand->p4());
+				}
+
+			// again save the p4 momenta
+			for(const auto& cand: tau.signalCands())
+				{
+				//cands_p4.push_back(cand->p4());
+				NT_tau_all_signalCands_tau_index  .push_back(i);
+				NT_tau_all_signalCands            .push_back(cand->p4());
+				}
+
+			//cands_p4.clear();
+			for(const auto& cand: tau.signalChargedHadrCands())
+				{
+				NT_tau_all_signalCharged_tau_index  .push_back(i);
+				NT_tau_all_signalCharged_pdgId      .push_back(cand->pdgId());
+				NT_tau_all_signalCharged            .push_back(cand->p4());
+				}
+
+			for(const auto& cand: tau.signalGammaCands())
+				{
+				NT_tau_all_signalGamma_tau_index  .push_back(i);
+				NT_tau_all_signalGamma            .push_back(cand->p4());
+				}
+
+			for(const auto& cand: tau.signalNeutrHadrCands())
+				{
+				NT_tau_all_signalNeutr_tau_index  .push_back(i);
+				NT_tau_all_signalNeutr_pdgId      .push_back(cand->pdgId());
+				NT_tau_all_signalNeutr            .push_back(cand->p4());
+				}
 			}
 
 		// these have 0 in the output
