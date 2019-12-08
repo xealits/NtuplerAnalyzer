@@ -16,16 +16,17 @@ submit:
 	crab submit -c $$c ; \
 	done
 
+resubmit: grep=.
 resubmit:
-	for js in `ls crab_projects/crab_Ntupler_${nt}* -d`; \
+	for js in `ls crab_projects/crab_Ntupler_${nt}* -d | grep ${grep}`; \
 	do \
 	echo $$js ; \
 	crab resubmit -d $$js ; \
 	done
 
-
+status: grep=.
 status:
-	for js in `ls crab_projects/crab_Ntupler_${nt}* -d`; \
+	for js in `ls crab_projects/crab_Ntupler_${nt}* -d | grep ${grep}`; \
 	do \
 	echo $$js ; \
 	crab status -d $$js ; \

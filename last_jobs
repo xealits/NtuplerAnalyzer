@@ -1,3 +1,27 @@
+# submit data to NCG
+for c in `cat dsets_data_2017legacy_31Mar2018.SingleLepton`
+do
+python make_crab_cfgs.py --dataset-reco-name 2017legacy $c 94v7 Dilep_tauID
+done | tee cur_jobs
+
+for c in `cat dsets_data_2017legacy_31Mar2018.SingleLepton`
+do
+python make_crab_cfgs.py --dataset-reco-name 2017legacy $c 94v5 Dilep_tauID
+done | tee cur_jobs
+
+# and QCD
+for c in `cat dsets_all_usual_mc_2017legacy_preliminarySet1.qcd_ht`
+do
+python make_crab_cfgs.py --dataset-reco-name 2017legacy $c 94v5 Dilep_tauID
+done | tee cur_jobs_qcd
+
+
+for c in `cat dsets_all_usual_mc_2017legacy_preliminarySet1.main`
+do
+python make_crab_cfgs.py --output-site T2_CH_CERNBOX --dataset-reco-name 2017legacy $c 94v5 Dilep_tauID
+done | tee cur_jobs
+
+
 for c in `cat dsets_all_usual_mc_2017legacy_preliminarySet1.main`
 do
 python make_crab_cfgs.py --output-site T2_CH_CERNBOX --dataset-reco-name 2017legacy $c 94v4 Dilep_tauID
