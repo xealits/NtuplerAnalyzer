@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
     parser.add_argument("dataset",    help="logical name of the dataset")
     parser.add_argument("version",    help="version of the Ntupler job")
-    parser.add_argument("record_scheme", help="ntupler's parameter record_scheme, sets thresholds wich events to save")
+    parser.add_argument("record_scheme", help="ntupler's parameter record_scheme, sets thresholds wich events to save, input: coma-separated list <record_bool1>,<rec_bool2>,...")
     parser.add_argument("-s", "--suffix", type=str, default='', help="suffix for dataset, used for ext MC datasets")
     parser.add_argument("-d", "--dsets-info", type=str, default='dsets_info.yaml', help="file with info on datasets: xsec, dtag, isMC, possible LumiMask")
     parser.add_argument("--output-site", type=str, default='T2_PT_NCG_Lisbon', help="grid output site")
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     version = args.version
     dset    = args.dataset
     suffix  = args.suffix
-    record_scheme  = args.record_scheme
+    record_scheme  = args.record_scheme.split(',')
     #out_dir = args.output_dir
 
     with open(args.dsets_info) as f:
@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
     template_crab = template_crab.format(LumiMask=LumiMask, dtag=dtag, suffix=suffix, version=version, dset=dset,
         config_file=config_file, output_site=args.output_site)
-    template_cfg = template_cfg .format(isMC=isMC, dtag=dtag, record_scheme=record_scheme, withHLT=withHLT, dataset_reco_name=dataset_reco_name)
+    template_cfg = template_cfg .format(isMC=isMC, dtag=dtag, record_scheme=str(record_scheme), withHLT=withHLT, dataset_reco_name=dataset_reco_name)
 
     if not os.path.exists(conf_dir + version):
         os.makedirs(conf_dir + version)

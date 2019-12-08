@@ -187,7 +187,7 @@ process.ntupler.outfile = cms.string('/afs/cern.ch/user/o/otoldaie/work/private/
 theLumiMask = path.expandvars("") # -- lumi should be handled via CRAB3, but for now I leave this config option available in Ntupler for local runs
 process.ntupler.lumisToProcess = LumiList.LumiList(filename = theLumiMask).getVLuminosityBlockRange()
 
-record_scheme = '{record_scheme}' # PARAMETER
+record_scheme = {record_scheme} # PARAMETER
 if record_scheme:
     process.ntupler.record_ElTau         = cms.bool('ElTau'         in record_scheme)
     process.ntupler.record_MuTau         = cms.bool('MuTau'         in record_scheme)
@@ -200,6 +200,8 @@ if record_scheme:
     process.ntupler.record_Dilep         = cms.bool('Dilep'         in record_scheme)
     process.ntupler.record_jets          = cms.bool('jets'          in record_scheme)
     process.ntupler.record_signal        = cms.bool('signal'        in record_scheme)
+    process.ntupler.record_lepTauVL_b    = cms.bool('lepTauVLid'    in record_scheme)
+    process.ntupler.record_ElMu_b        = cms.bool('el_mu_b'       in record_scheme)
 
 
 

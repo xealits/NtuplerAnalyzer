@@ -17,6 +17,8 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     record_jets          = cms.bool(False) ,
     record_signal        = cms.bool(False) ,
     record_all           = cms.bool(False) ,
+    record_lepTauVL_b    = cms.bool(False) ,
+    record_ElMu_b        = cms.bool(False) ,
 
     isMC = cms.bool(False),
     is2016legacy = cms.bool(False),

@@ -427,6 +427,9 @@ Int_t_in_NTuple(OUTNTUPLE, nbjets_noTightTau )
 Int_t_in_NTuple(OUTNTUPLE, nalljets)  // all jets, only pt and no leptons in dR
 Int_t_in_NTuple(OUTNTUPLE, nallbjets) // N b-jets among them
 Int_t_in_NTuple(OUTNTUPLE, ntaus)
+Int_t_in_NTuple(OUTNTUPLE, ntaus_idVL)
+Int_t_in_NTuple(OUTNTUPLE, ntaus_idM)
+Int_t_in_NTuple(OUTNTUPLE, ntaus_idT)
 
 // info on veto leps
 // ele impact is ON by default since v22

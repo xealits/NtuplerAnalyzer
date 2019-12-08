@@ -947,6 +947,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	//TH2D* zPtMass_histo;
 
 	bool record_ElTau, record_MuTau, record_tauCands, record_tauID, record_tauIDantiIso, record_bPreselection, record_MonitorHLT, record_ElMu, record_Dilep, record_jets, record_signal, record_all;
+	bool record_lepTauVL_b, record_ElMu_b;
 
 	TString dtag;
 	bool isMC, aMCatNLO, isWJets, isDY, isTT, isSingleTop, is2016legacy, is2017data, is2017legacy;
@@ -1045,7 +1046,9 @@ record_ElMu          (iConfig.getParameter<bool>("record_ElMu"))          ,
 record_Dilep         (iConfig.getParameter<bool>("record_Dilep"))         ,
 record_jets          (iConfig.getParameter<bool>("record_jets"))          ,
 record_signal        (iConfig.getParameter<bool>("record_signal"))        ,
-record_all           (iConfig.getParameter<bool>("record_all"))        ,
+record_all           (iConfig.getParameter<bool>("record_all"))           ,
+record_lepTauVL_b    (iConfig.getParameter<bool>("record_lepTauVL_b"))    ,
+record_ElMu_b        (iConfig.getParameter<bool>("record_ElMu_b"))        ,
 dtag       (iConfig.getParameter<std::string>("dtag")),
 isMC       (iConfig.getParameter<bool>("isMC")),
 is2016legacy       (iConfig.getParameter<bool>("is2016legacy")),
@@ -3048,6 +3051,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//crossClean_in_dR(selTaus,       selLeptons, 0.4, selTausNoLep,        weight, string("selTausNoLep"),        false, false);
 	//NT_ntaus = 0;
 	NT_ntaus = selTaus.size(); // all tau before MVA anti-jet iso
+	NT_ntaus_idVL = 0;
+	NT_ntaus_idM  = 0;
+	NT_ntaus_idT  = 0;
 
 	// and these are the NT output taus
 	// taus are sorted py pt
@@ -3939,7 +3945,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		Int_t IDlev = tau.userInt("IDlev");
 
 		//if (IDlev < 0) continue; // save only candidates with minimal ID
-		//if (IDlev > 0) NT_ntaus += 1;
+		if (IDlev > 0) NT_ntaus_idVL += 1;
+		if (IDlev > 2) NT_ntaus_idM  += 1;
+		if (IDlev > 3) NT_ntaus_idT  += 1;
 
 		NT_tau_id.push_back(tau.pdgId());
 		NT_tau_decayMode.push_back(tau.decayMode());
@@ -4454,6 +4462,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		record_ntuple |= record_tauID_cond;
 		}
 
+	if (record_lepTauVL_b)
+		{
+		record_ntuple |= record_tauID_cond && NT_ntaus_idVL > 0 && NT_nbjets_noVLooseTau > 0;
+		}
+
 	if (record_ElTau)
 		{
 		record_ntuple |= record_tauID_cond && selElectrons.size() == 1;
@@ -4481,6 +4494,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		 */
 		record_ntuple |= pass_leptons && lepMonitorTrigger && selLeptons.size() == 1;
 		}
+
+	if (record_ElMu_b)
+		{
+		record_ntuple |= pass_leptons && abs(NT_leps_ID) == 143 && NT_nbjets_noMediumTau > 0 && NT_njets > 1; // TODO: this is our ooold selection, it is stupid -- there is no need to ask for non-b-tagged jets
+		}
 	if (record_ElMu)
 		{
 		// all el-mu events (it's mainly TTbar, so should be few)
@@ -4494,6 +4512,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		 */
 		record_ntuple |= pass_leptons && selLeptons.size() == 2;
 		}
+
 	if (record_jets)
 		{
 		record_ntuple |= jetsHLT && selJets.size() > 0; // these are all-eta jets with pt-cut, anti-lep dR and Loose ID..
