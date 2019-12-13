@@ -985,7 +985,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 		mu_kino_cuts_pt, mu_kino_cuts_eta, mu_veto_kino_cuts_pt, mu_veto_kino_cuts_eta,
 		tau_kino_cuts_pt, tau_kino_cuts_eta;
 	double jet_kino_cuts_pt, jet_kino_cuts_eta;
-	double btag_threshold;
+	double btag_threshold, btag_threshold_Medium;
 
 	lumiUtils::GoodLumiFilter goodLumiFilter;
 	std::vector < std::string > urls; // = runProcess.getUntrackedParameter < std::vector < std::string > >("input");
@@ -1098,7 +1098,8 @@ tau_kino_cuts_pt    (iConfig.getParameter<double>("tau_kino_cuts_pt")),
 tau_kino_cuts_eta   (iConfig.getParameter<double>("tau_kino_cuts_eta")),
 jet_kino_cuts_pt    (iConfig.getParameter<double>("jet_kino_cuts_pt")),
 jet_kino_cuts_eta   (iConfig.getParameter<double>("jet_kino_cuts_eta")),
-btag_threshold   (iConfig.getParameter<double>("btag_threshold")),
+btag_threshold          (iConfig.getParameter<double>("btag_threshold")),
+btag_threshold_Medium   (iConfig.getParameter<double>("btag_threshold_Medium")),
 goodLumiFilter   (iConfig.getUntrackedParameter<std::vector<edm::LuminosityBlockRange>>("lumisToProcess", std::vector<edm::LuminosityBlockRange>())),
 urls   (iConfig.getUntrackedParameter <std::vector <std::string> >("input")),
 outUrl (iConfig.getParameter<std::string>("outfile")),
@@ -3407,6 +3408,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NT_nbjets_noVLooseTau = 0;
 	NT_nbjets_noMediumTau = 0;
 	NT_nbjets_noTightTau  = 0;
+
+	NT_nMbjets = 0;
+	NT_nMbjets_noVLooseTau = 0;
+	NT_nMbjets_noMediumTau = 0;
+	NT_nMbjets_noTightTau  = 0;
+
 	NT_nallbjets = 0;
 	NT_njets = 0;
 	NT_nalljets = 0;
@@ -3535,6 +3542,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				if (b_discriminator > btag_threshold)
 					{
 					NT_nbjets += 1;
+					if (b_discriminator > btag_threshold_Medium) {NT_nMbjets +=1;}
 
 					// match to taus
 					bool matched_VLoose = false, matched_Medium = false, matched_Tight = false;
@@ -3567,15 +3575,30 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						NT_nbjets_noVLooseTau += 1;
 						NT_nbjets_noMediumTau += 1;
 						NT_nbjets_noTightTau  += 1;
+						if (b_discriminator > btag_threshold_Medium)
+							{
+							NT_nMbjets_noVLooseTau +=1;
+							NT_nMbjets_noMediumTau +=1;
+							NT_nMbjets_noTightTau  +=1;
+							}
 						}
 					else if (!matched_Medium)
 						{
 						NT_nbjets_noMediumTau += 1;
 						NT_nbjets_noTightTau  += 1;
+						if (b_discriminator > btag_threshold_Medium)
+							{
+							NT_nMbjets_noMediumTau +=1;
+							NT_nMbjets_noTightTau  +=1;
+							}
 						}
 					else if (!matched_Tight )
 						{
 						NT_nbjets_noTightTau  += 1;
+						if (b_discriminator > btag_threshold_Medium)
+							{
+							NT_nMbjets_noTightTau  +=1;
+							}
 						}
 
 					}

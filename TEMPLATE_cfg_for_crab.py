@@ -51,11 +51,22 @@ process.load("Configuration.Geometry.GeometryIdeal_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 
-if isMC:
-    process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v6')
+# https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable
+if dataset_reco_name == '2017legacy':
+    if isMC:
+        #process.GlobalTag.globaltag = cms.string('94X_mc2017_realistic_v17')
+        process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v6')
+    else:
+        # for some reason this tag crashes TransientTrackBuilder
+        #process.GlobalTag.globaltag = cms.string('94X_dataRun2_v11')
+        process.GlobalTag.globaltag = cms.string('80X_dataRun2_2016SeptRepro_v7')
+
 else:
-    # so, era H has different global tag
-    process.GlobalTag.globaltag = cms.string('80X_dataRun2_Prompt_v16') if '2016H' in dtag else cms.string('80X_dataRun2_2016SeptRepro_v7')
+    if isMC:
+        process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v6')
+    else:
+        # so, era H has different global tag
+        process.GlobalTag.globaltag = cms.string('80X_dataRun2_Prompt_v16') if '2016H' in dtag else cms.string('80X_dataRun2_2016SeptRepro_v7')
 
 # some feature for tracks?
 process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")

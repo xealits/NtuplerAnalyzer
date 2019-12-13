@@ -419,10 +419,16 @@ Bool_t_in_NTuple(OUTNTUPLE, HLT_mutau2)
 Int_t_in_NTuple(OUTNTUPLE, leps_ID)
 Int_t_in_NTuple(OUTNTUPLE, nleps)
 Int_t_in_NTuple(OUTNTUPLE, njets)  // small eta and Loose PFID
-Int_t_in_NTuple(OUTNTUPLE, nbjets) // N b-jets among these
+
+Int_t_in_NTuple(OUTNTUPLE, nbjets) // N Loose b-jets among these
 Int_t_in_NTuple(OUTNTUPLE, nbjets_noVLooseTau)
 Int_t_in_NTuple(OUTNTUPLE, nbjets_noMediumTau)
 Int_t_in_NTuple(OUTNTUPLE, nbjets_noTightTau )
+
+Int_t_in_NTuple(OUTNTUPLE, nMbjets) // N Medium b-jets among these
+Int_t_in_NTuple(OUTNTUPLE, nMbjets_noVLooseTau)
+Int_t_in_NTuple(OUTNTUPLE, nMbjets_noMediumTau)
+Int_t_in_NTuple(OUTNTUPLE, nMbjets_noTightTau )
 
 Int_t_in_NTuple(OUTNTUPLE, nalljets)  // all jets, only pt and no leptons in dR
 Int_t_in_NTuple(OUTNTUPLE, nallbjets) // N b-jets among them

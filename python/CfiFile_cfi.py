@@ -98,7 +98,9 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
 
     # https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation94X
     # loose WP
-    btag_threshold = cms.double(0.1522),
+    btag_threshold        = cms.double(0.1522),
+    btag_threshold_Medium = cms.double(0.4941),
+    # Tight is 0.8001
     # 2016 legacy 94X https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation2016Legacy
     #btag_threshold = cms.double(0.2217),
     # X80 2016 ReReco, https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation80XReReco
@@ -121,7 +123,7 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
     mu_veto_kino_cuts_pt  = cms.double( 10.),
     mu_veto_kino_cuts_eta = cms.double( 2.5),
 
-    jet_kino_cuts_pt  = cms.double( 20.),
+    jet_kino_cuts_pt  = cms.double( 10.),
     jet_kino_cuts_eta = cms.double( 2.5),
     tau_kino_cuts_pt  = cms.double( 20.),
     tau_kino_cuts_eta = cms.double( 2.4),

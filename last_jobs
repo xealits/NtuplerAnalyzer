@@ -1,4 +1,16 @@
+# there is enough space now, normal record schemes
+for c in `cat dsets_data_2017legacy_31Mar2018.SingleLepton`
+do
+python make_crab_cfgs.py --output-site T2_CH_CERNBOX --dataset-reco-name 2017legacy $c 94v12 Dilep,tauID
+done | tee cur_jobs
+
+
 # submit to CERNBOX
+for c in `cat dsets_data_2017legacy_31Mar2018.SingleLepton`
+do
+python make_crab_cfgs.py --output-site T2_CH_CERNBOX --dataset-reco-name 2017legacy $c 94v11 lepTauVLid,el_mu_b
+done | tee cur_jobs
+
 for c in `cat dsets_data_2017legacy_31Mar2018.SingleLepton`
 do
 python make_crab_cfgs.py --output-site T2_CH_CERNBOX --dataset-reco-name 2017legacy $c 94v10 lepTauVLid,el_mu_b
