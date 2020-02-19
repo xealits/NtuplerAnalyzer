@@ -1018,7 +1018,7 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	TH1D *event_counter, *weight_counter, *systematic_weights; 
 
 	// gen level kinematic histograms
-	TH1D *ttbar_elel_el1_pt, *ttbar_elel_el2_pt, *ttbar_elel_b1_pt, *ttbar_elel_b2_pt,
+	TH1D *elel_el1_pt, *elel_el2_pt, *elel_b1_pt, *elel_b2_pt,
 		*ttbar_eltaul_el_pt, *ttbar_eltaul_tau_pt, *ttbar_eltaul_b1_pt, *ttbar_eltaul_b2_pt,
 		*ttbar_eltau1h_el_pt, *ttbar_eltau1h_tau_pt, *ttbar_eltau1h_b1_pt, *ttbar_eltau1h_b2_pt,
                 *ttbar_eltau1h_el_eta, *ttbar_eltau1h_tau_eta, *ttbar_eltau1h_b1_eta, *ttbar_eltau1h_b2_eta,
@@ -1364,10 +1364,24 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	weight_counter     = fs->make<TH1D>( "weight_counter"     , "pass category", 100,  0, 100);
 	systematic_weights = fs->make<TH1D>( "systematic_weights" , "pass category", 200,  0, 200);
 
-	define_gen_level_pt(ttbar_elel_el1);
-	define_gen_level_pt(ttbar_elel_el2);
-	define_gen_level_pt(ttbar_elel_b1);
-	define_gen_level_pt(ttbar_elel_b2);
+	/* We want to save gen level distributions
+	 * for particular sub-processes, i.e. the final states,
+	 * in each dtag, i.e. the hard process.
+	 * Let's define the histograms per the leptonic part of the final state:
+	 * elel, elmu, mumu, eltau1h, eltau3h, mutau1h, mutau3h, el and mu (for el+jets and mu+jets), tau1h and tau3h (for W+jets->tau+jets).
+	 * In principle, the final state definition might include the hadronic part of the final state.
+	 * But we do not need it now, for the current processes under study.
+	 * We can add it later.
+
+	 * This way we will cover all dtags (ttbar, DY, and W+jets) in one go:
+	 * define an ID of the final state calculated in each dtag differently,
+	 * save the corresponding histograms.
+	 */
+
+	define_gen_level_pt(elel_el1);
+	define_gen_level_pt(elel_el2);
+	define_gen_level_pt(elel_b1);
+	define_gen_level_pt(elel_b2);
 
 	define_gen_level_pt(ttbar_eltaul_el);
 	define_gen_level_pt(ttbar_eltaul_tau);
@@ -1514,6 +1528,17 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NT_gen_tb_w1_final_p4.SetXYZT(0,0,0,0);
 	NT_gen_tb_w2_final_p4.SetXYZT(0,0,0,0);
 	NT_gen_tb_b_final_p4.SetXYZT(0,0,0,0);
+
+	NT_gen_decay_lep1_p4.SetXYZT(0,0,0,0);
+	NT_gen_decay_lep2_p4.SetXYZT(0,0,0,0);
+
+	NT_gen_decay_bjet1_p4.SetXYZT(0,0,0,0);
+	NT_gen_decay_bjet2_p4.SetXYZT(0,0,0,0);
+
+	NT_gen_decay_jet1_p4.SetXYZT(0,0,0,0);
+	NT_gen_decay_jet2_p4.SetXYZT(0,0,0,0);
+
+	NT_gen_decay_missing_p4.SetXYZT(0,0,0,0);
 
 	math::Error<3>::type pvCov;
 	pvCov(0,0) = 999;
@@ -2408,10 +2433,26 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				isTTSignal |= (abs(NT_gen_tb_w_decay_id) == 11 || abs(NT_gen_tb_w_decay_id) == 13) && (abs(NT_gen_t_w_decay_id) > 15*15);
 				isTTSignal |= record_all;
 
+				// the general gen level IDs for ttbar
+				NT_gen_decay_lep1_id = NT_gen_t_w_decay_id;
+				NT_gen_decay_lep2_id = NT_gen_tb_w_decay_id;
+
+				// 
+				if (abs(NT_gen_decay_lep1_id) > 1) NT_gen_decay_lep1_p4 = (NT_gen_t_w1_final_p4 + NT_gen_t_w2_final_p4);
+				if (abs(NT_gen_decay_lep1_id) > 1) NT_gen_decay_lep2_p4 = (NT_gen_tb_w1_final_p4 + NT_gen_tb_w2_final_p4);
+
+				NT_gen_decay_bjet1_p4 = NT_gen_t_b_final_p4;
+				NT_gen_decay_bjet2_p4 = NT_gen_tb_b_final_p4;
+				// and no
+				//NT_gen_decay_bjet1_p4
+				//NT_gen_decay_bjet2_p4
+
 				// the gen level kinematic distributions for TTbar processes
 				// here we know: isTT == true -- dtag is ttbar
 				// all parsed gen-level particles (saved in the NT interface of the ntuple)
 				// the final state (saved in the NT variables)
+
+				/* implemented this through the general IDs
 				if (abs(NT_gen_t_w_decay_id) == 11 && abs(NT_gen_tb_w_decay_id) == 11)
 					{
 					// name of the gen electron??
@@ -2435,6 +2476,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					ttbar_elel_b1_pt->Fill(leading_pt);
 					ttbar_elel_b2_pt->Fill(subleading_pt);
 					}
+				*/
 
 				// el tau->lepton
 				if (abs(NT_gen_t_w_decay_id) == 11 && (abs(NT_gen_tb_w_decay_id) == 15*11 || abs(NT_gen_tb_w_decay_id) == 15*13))
@@ -2521,6 +2563,30 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 				}
 			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id << " is Sig " << isTTSignal;
+
+			// save the gen-levela distributions
+			// for the general final state IDs
+			if (abs(NT_gen_decay_lep1_id) == 11 && abs(NT_gen_decay_lep2_id) == 11)
+				{
+				// sort leptons by pT
+				auto pt1 = NT_gen_decay_lep1_p4.pt();
+				auto pt2 = NT_gen_decay_lep2_p4.pt();
+				auto leading_pt    = pt1 > pt2 ? pt1 : pt2;
+				auto subleading_pt = pt1 < pt2 ? pt1 : pt2;
+
+				// save
+				elel_el1_pt->Fill(leading_pt);
+				elel_el2_pt->Fill(subleading_pt);
+
+				// and b jets
+				pt1 = NT_gen_decay_bjet1_p4.pt();
+				pt2 = NT_gen_decay_bjet2_p4.pt();
+				leading_pt    = pt1 > pt2 ? pt1 : pt2;
+				subleading_pt = pt1 < pt2 ? pt1 : pt2;
+
+				elel_b1_pt->Fill(leading_pt);
+				elel_b2_pt->Fill(subleading_pt);
+				}
 			}
 
 		if(NT_nvtx_gen <0 )        NT_nvtx_gen=0; // TODO check vertexes procedure

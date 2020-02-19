@@ -253,6 +253,31 @@ Int_t_in_NTuple(OUTNTUPLE, gen_t_w_decay_id) // = id of lepton (+-11/13/15, sign
 //     (no overlaps with lepton id-s)
 Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_decay_id)
 
+// The general gen-level ID of the generated sub-process.
+// It works for any hard process, not only ttbar, that has up to 2 leptons in the final state
+// by recording the IDs of the leptons in the final state.
+// If there is no second lepton, its ID = 0.
+// The leptons are NOT sorted by their pT right now.
+// They are just saved in whatever order is implemented for each dtag.
+// For the gen-level distributions we sort them by pt if their PDG IDs are the same (el, mu, taul, tauh with no difference in 1h or 3h).
+Int_t_in_NTuple(OUTNTUPLE, gen_decay_lep1_id)
+Int_t_in_NTuple(OUTNTUPLE, gen_decay_lep2_id)
+
+// the general lepton p4-s
+OBJECT_in_NTuple(OUTNTUPLE, gen_decay_lep1_p4 , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
+OBJECT_in_NTuple(OUTNTUPLE, gen_decay_lep2_p4 , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
+
+// the general jet p4-s
+// save the hard process b jets of ttbar separately
+// the other jets are hard to get in the genparticle collection -- they come from the genjets
+OBJECT_in_NTuple(OUTNTUPLE, gen_decay_bjet1_p4 , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
+OBJECT_in_NTuple(OUTNTUPLE, gen_decay_bjet2_p4 , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
+OBJECT_in_NTuple(OUTNTUPLE, gen_decay_jet1_p4 , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
+OBJECT_in_NTuple(OUTNTUPLE, gen_decay_jet2_p4 , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
+
+// and a general sum of all hard process neutrinos
+OBJECT_in_NTuple(OUTNTUPLE, gen_decay_missing_p4 , ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double>>)
+
 // final states of t/tb b and W:
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_w1_final_pdgIds)
 VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_w1_final_statuses)
@@ -416,7 +441,7 @@ Bool_t_in_NTuple(OUTNTUPLE, HLT_eltau)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_mutau1)
 Bool_t_in_NTuple(OUTNTUPLE, HLT_mutau2)
 
-Int_t_in_NTuple(OUTNTUPLE, leps_ID)
+Int_t_in_NTuple(OUTNTUPLE, leps_ID) // = product of PDG IDs of all reconstructed leptons that are well identified and isolated
 Int_t_in_NTuple(OUTNTUPLE, nleps)
 Int_t_in_NTuple(OUTNTUPLE, njets)  // small eta and Loose PFID
 
