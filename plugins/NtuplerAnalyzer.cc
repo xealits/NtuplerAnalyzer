@@ -1020,7 +1020,10 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	// gen level kinematic histograms
 	TH1D *ttbar_elel_el1_pt, *ttbar_elel_el2_pt, *ttbar_elel_b1_pt, *ttbar_elel_b2_pt,
 		*ttbar_eltaul_el_pt, *ttbar_eltaul_tau_pt, *ttbar_eltaul_b1_pt, *ttbar_eltaul_b2_pt,
-		*ttbar_eltau1h_el_pt, *ttbar_eltau1h_tau_pt, *ttbar_eltau1h_b1_pt, *ttbar_eltau1h_b2_pt;
+		*ttbar_eltau1h_el_pt, *ttbar_eltau1h_tau_pt, *ttbar_eltau1h_b1_pt, *ttbar_eltau1h_b2_pt,
+                *ttbar_eltau1h_el_eta, *ttbar_eltau1h_tau_eta, *ttbar_eltau1h_b1_eta, *ttbar_eltau1h_b2_eta,
+               *ttbar_eltau3h_el_pt, *ttbar_eltau3h_tau_pt, *ttbar_eltau3h_b1_pt, *ttbar_eltau3h_b2_pt,
+                   *ttbar_eltau3h_el_eta, *ttbar_eltau3h_tau_eta, *ttbar_eltau3h_b1_eta, *ttbar_eltau3h_b2_eta;
 
 	/*
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > > NT_lep_p4;
@@ -1374,6 +1377,19 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	define_gen_level_pt(ttbar_eltau1h_tau);
 	define_gen_level_pt(ttbar_eltau1h_b1);
 	define_gen_level_pt(ttbar_eltau1h_b2);
+        define_gen_level_eta(ttbar_eltau1h_el);
+        define_gen_level_eta(ttbar_eltau1h_tau);
+        define_gen_level_eta(ttbar_eltau1h_b1);
+        define_gen_level_eta(ttbar_eltau1h_b2);
+        define_gen_level_pt(ttbar_eltau3h_el);
+        define_gen_level_pt(ttbar_eltau3h_tau);
+        define_gen_level_pt(ttbar_eltau3h_b1);
+        define_gen_level_pt(ttbar_eltau3h_b2);
+        define_gen_level_eta(ttbar_eltau3h_el);
+        define_gen_level_eta(ttbar_eltau3h_tau);
+        define_gen_level_eta(ttbar_eltau3h_b1);
+        define_gen_level_eta(ttbar_eltau3h_b2);
+
 
 	//ttbar_elmu_lep_pt = fs->make<TH1D>( "ttbar_lep_pt" , "ttbar_lep_pt", 200,  0, 200);
 	// for control of effect from PU reweighting, aMCatNLO gen -1 weights, top pt
@@ -2454,7 +2470,55 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					auto subleading_pt = t_b < tbar_b ? t_b : tbar_b;
 					ttbar_eltau1h_b1_pt->Fill(leading_pt);
 					ttbar_eltau1h_b2_pt->Fill(subleading_pt);
-					}
+                                        //eta distributions
+                                        auto t_w_el_eta     = (NT_gen_t_w1_final_p4 + NT_gen_t_w2_final_p4).eta();
+                                        auto tbar_w_tau_eta = (NT_gen_tb_w1_final_p4 + NT_gen_tb_w2_final_p4).eta();
+
+                                        ttbar_eltau1h_el_eta->Fill(t_w_el_eta);
+                                        ttbar_eltau1h_tau_eta->Fill(tbar_w_tau_eta);
+
+                                        auto t_b_eta    = NT_gen_t_b_final_p4.eta();
+                                        auto tbar_b_eta = NT_gen_tb_b_final_p4.eta();
+
+                                        auto leading_eta    = t_b_eta > tbar_b_eta ? t_b_eta : tbar_b_eta;
+                                        auto subleading_eta = t_b_eta < tbar_b_eta ? t_b_eta : tbar_b_eta;
+                                        ttbar_eltau1h_b1_eta->Fill(leading_eta);
+                                        ttbar_eltau1h_b2_eta->Fill(subleading_eta);
+
+      					}
+                                 //el tau -> 3charged
+                               if (abs(NT_gen_t_w_decay_id) == 11 && abs(NT_gen_tb_w_decay_id) >= 15*30)
+                                        {
+                                        auto t_w_el     = (NT_gen_t_w1_final_p4 + NT_gen_t_w2_final_p4).pt();
+                                        auto tbar_w_tau = (NT_gen_tb_w1_final_p4 + NT_gen_tb_w2_final_p4).pt();
+
+                                        ttbar_eltau3h_el_pt->Fill(t_w_el);
+                                        ttbar_eltau3h_tau_pt->Fill(tbar_w_tau);
+
+                                        auto t_b    = NT_gen_t_b_final_p4.pt();
+                                        auto tbar_b = NT_gen_tb_b_final_p4.pt();
+
+                                        auto leading_pt    = t_b > tbar_b ? t_b : tbar_b;
+                                        auto subleading_pt = t_b < tbar_b ? t_b : tbar_b;
+                                        ttbar_eltau3h_b1_pt->Fill(leading_pt);
+                                        ttbar_eltau3h_b2_pt->Fill(subleading_pt);
+                                       //eta distributions
+                                        auto t_w_el_eta     = (NT_gen_t_w1_final_p4 + NT_gen_t_w2_final_p4).eta();
+                                        auto tbar_w_tau_eta = (NT_gen_tb_w1_final_p4 + NT_gen_tb_w2_final_p4).eta();
+
+                                        ttbar_eltau3h_el_eta->Fill(t_w_el_eta);
+                                        ttbar_eltau3h_tau_eta->Fill(tbar_w_tau_eta);
+
+                                        auto t_b_eta    = NT_gen_t_b_final_p4.eta();
+                                        auto tbar_b_eta = NT_gen_tb_b_final_p4.eta();
+
+                                        auto leading_eta    = t_b_eta > tbar_b_eta ? t_b_eta : tbar_b_eta;
+                                        auto subleading_eta = t_b_eta < tbar_b_eta ? t_b_eta : tbar_b_eta;
+                                        ttbar_eltau3h_b1_eta->Fill(leading_eta);
+                                        ttbar_eltau3h_b2_eta->Fill(subleading_eta);
+
+                                        }
+
 				}
 			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id << " is Sig " << isTTSignal;
 			}
