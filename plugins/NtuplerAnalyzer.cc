@@ -72,6 +72,8 @@
 #include "UserCode/NtuplerAnalyzer/interface/ProcessingGenParticles.h"
 #include "UserCode/NtuplerAnalyzer/interface/ProcessingDRCleaning.h"
 
+#include "UserCode/NtuplerAnalyzer/interface/GenDistrs.h"
+
 //#include "UserCode/NtuplerAnalyzer/interface/RoccoR.cc"
 //#include "UserCode/NtuplerAnalyzer/interface/RoccoR.h"
 
@@ -88,9 +90,6 @@
 //#define BFRAG_PROC 2016
 //#endif
 // no defaults is probably safer
-
-#define define_gen_level_pt(name)  name ##_pt  = fs->make<TH1D>( #name "_pt",  #name "_pt",  200,  0, 200)
-#define define_gen_level_eta(name) name ##_eta = fs->make<TH1D>( #name "_eta", #name "_eta", 200,  -3.0, 3.0)
 
 
 
@@ -166,25 +165,6 @@ static double pu_vector_el_down[MAX_NVTX] = {0,
    0.00300153 ,   0.00380243 ,    0.0042683 ,    0.00449375 ,    0.00487654 ,    0.00471355 ,    0.0042893  ,    0.00359432 ,    0.00306198,    0.00248572,
    0.0022493  ,   0.00196487 ,    0.0015343 ,    0.00130443 ,    0.00118566 ,    0          ,    0          ,    0          ,    0};
 
-
-struct LorentzVector_pointer_pair {
-	const LorentzVector* first;
-	const LorentzVector* second;
-};
-
-struct LorentzVector_pointer_pair sorted_byPt_LorentzVectors(const LorentzVector& v1, const LorentzVector& v2)
-	{
-	struct LorentzVector_pointer_pair res;
-
-	auto pt1 = v1.pt();
-	auto pt2 = v2.pt();
-	auto leading_p    = pt1 > pt2 ? &v1 : &v2;
-	auto subleading_p = pt1 < pt2 ? &v1 : &v2;
-	res.first  = leading_p;
-	res.second = subleading_p;
-
-	return res;
-	}
 
 //bool sort_CandidatesByPt(const pat::GenericParticle &a, const pat::GenericParticle &b)  { return a.pt()>b.pt(); }
 bool sort_TausByIDByPt(const pat::Tau &a, const pat::Tau &b)
