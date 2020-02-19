@@ -1019,11 +1019,11 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
 	// gen level kinematic histograms
 	TH1D *elel_el1_pt, *elel_el2_pt, *elel_b1_pt, *elel_b2_pt,
-		*ttbar_eltaul_el_pt, *ttbar_eltaul_tau_pt, *ttbar_eltaul_b1_pt, *ttbar_eltaul_b2_pt,
-		*ttbar_eltau1h_el_pt, *ttbar_eltau1h_tau_pt, *ttbar_eltau1h_b1_pt, *ttbar_eltau1h_b2_pt,
-                *ttbar_eltau1h_el_eta, *ttbar_eltau1h_tau_eta, *ttbar_eltau1h_b1_eta, *ttbar_eltau1h_b2_eta,
-               *ttbar_eltau3h_el_pt, *ttbar_eltau3h_tau_pt, *ttbar_eltau3h_b1_pt, *ttbar_eltau3h_b2_pt,
-                   *ttbar_eltau3h_el_eta, *ttbar_eltau3h_tau_eta, *ttbar_eltau3h_b1_eta, *ttbar_eltau3h_b2_eta;
+		*eltaul_el_pt, *eltaul_tau_pt, *eltaul_b1_pt, *eltaul_b2_pt,
+		*eltau1h_el_pt, *eltau1h_tau_pt, *eltau1h_b1_pt, *eltau1h_b2_pt,
+                *eltau1h_el_eta, *eltau1h_tau_eta, *eltau1h_b1_eta, *eltau1h_b2_eta,
+		*eltau3h_el_pt, *eltau3h_tau_pt, *eltau3h_b1_pt, *eltau3h_b2_pt,
+		*eltau3h_el_eta, *eltau3h_tau_eta, *eltau3h_b1_eta, *eltau3h_b2_eta;
 
 	/*
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > > NT_lep_p4;
@@ -1383,26 +1383,28 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	define_gen_level_pt(elel_b1);
 	define_gen_level_pt(elel_b2);
 
-	define_gen_level_pt(ttbar_eltaul_el);
-	define_gen_level_pt(ttbar_eltaul_tau);
-	define_gen_level_pt(ttbar_eltaul_b1);
-	define_gen_level_pt(ttbar_eltaul_b2);
-	define_gen_level_pt(ttbar_eltau1h_el);
-	define_gen_level_pt(ttbar_eltau1h_tau);
-	define_gen_level_pt(ttbar_eltau1h_b1);
-	define_gen_level_pt(ttbar_eltau1h_b2);
-        define_gen_level_eta(ttbar_eltau1h_el);
-        define_gen_level_eta(ttbar_eltau1h_tau);
-        define_gen_level_eta(ttbar_eltau1h_b1);
-        define_gen_level_eta(ttbar_eltau1h_b2);
-        define_gen_level_pt(ttbar_eltau3h_el);
-        define_gen_level_pt(ttbar_eltau3h_tau);
-        define_gen_level_pt(ttbar_eltau3h_b1);
-        define_gen_level_pt(ttbar_eltau3h_b2);
-        define_gen_level_eta(ttbar_eltau3h_el);
-        define_gen_level_eta(ttbar_eltau3h_tau);
-        define_gen_level_eta(ttbar_eltau3h_b1);
-        define_gen_level_eta(ttbar_eltau3h_b2);
+	define_gen_level_pt(eltaul_el);
+	define_gen_level_pt(eltaul_tau);
+	define_gen_level_pt(eltaul_b1);
+	define_gen_level_pt(eltaul_b2);
+
+	define_gen_level_pt(eltau1h_el);
+	define_gen_level_pt(eltau1h_tau);
+	define_gen_level_pt(eltau1h_b1);
+	define_gen_level_pt(eltau1h_b2);
+        define_gen_level_eta(eltau1h_el);
+        define_gen_level_eta(eltau1h_tau);
+        define_gen_level_eta(eltau1h_b1);
+        define_gen_level_eta(eltau1h_b2);
+
+        define_gen_level_pt(eltau3h_el);
+        define_gen_level_pt(eltau3h_tau);
+        define_gen_level_pt(eltau3h_b1);
+        define_gen_level_pt(eltau3h_b2);
+        define_gen_level_eta(eltau3h_el);
+        define_gen_level_eta(eltau3h_tau);
+        define_gen_level_eta(eltau3h_b1);
+        define_gen_level_eta(eltau3h_b2);
 
 
 	//ttbar_elmu_lep_pt = fs->make<TH1D>( "ttbar_lep_pt" , "ttbar_lep_pt", 200,  0, 200);
@@ -2444,123 +2446,8 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				NT_gen_decay_bjet1_p4 = NT_gen_t_b_final_p4;
 				NT_gen_decay_bjet2_p4 = NT_gen_tb_b_final_p4;
 				// and no
-				//NT_gen_decay_bjet1_p4
-				//NT_gen_decay_bjet2_p4
-
-				// the gen level kinematic distributions for TTbar processes
-				// here we know: isTT == true -- dtag is ttbar
-				// all parsed gen-level particles (saved in the NT interface of the ntuple)
-				// the final state (saved in the NT variables)
-
-				/* implemented this through the general IDs
-				if (abs(NT_gen_t_w_decay_id) == 11 && abs(NT_gen_tb_w_decay_id) == 11)
-					{
-					// name of the gen electron??
-					//
-					// NT_gen_t_w1_final_p4
-					// NT_gen_t_w2_final_p4
-					// NT_gen_t_b_final_p4
-					auto t_w_el    = (NT_gen_t_w1_final_p4 + NT_gen_t_w2_final_p4).pt();
-					auto tbar_w_el = (NT_gen_tb_w1_final_p4 + NT_gen_tb_w2_final_p4).pt();
-
-					auto leading_pt    = t_w_el > tbar_w_el ? t_w_el : tbar_w_el;
-					auto subleading_pt = t_w_el < tbar_w_el ? t_w_el : tbar_w_el;
-					ttbar_elel_el1_pt->Fill(leading_pt);
-					ttbar_elel_el2_pt->Fill(subleading_pt);
-
-					auto t_b    = NT_gen_t_b_final_p4.pt();
-					auto tbar_b = NT_gen_tb_b_final_p4.pt();
-
-					leading_pt    = t_b > tbar_b ? t_b : tbar_b;
-					subleading_pt = t_b < tbar_b ? t_b : tbar_b;
-					ttbar_elel_b1_pt->Fill(leading_pt);
-					ttbar_elel_b2_pt->Fill(subleading_pt);
-					}
-				*/
-
-				// el tau->lepton
-				if (abs(NT_gen_t_w_decay_id) == 11 && (abs(NT_gen_tb_w_decay_id) == 15*11 || abs(NT_gen_tb_w_decay_id) == 15*13))
-					{
-					auto t_w_el     = (NT_gen_t_w1_final_p4 + NT_gen_t_w2_final_p4).pt();
-					auto tbar_w_tau = (NT_gen_tb_w1_final_p4 + NT_gen_tb_w2_final_p4).pt();
-
-					ttbar_eltaul_el_pt->Fill(t_w_el);
-					ttbar_eltaul_tau_pt->Fill(tbar_w_tau);
-
-					auto t_b    = NT_gen_t_b_final_p4.pt();
-					auto tbar_b = NT_gen_tb_b_final_p4.pt();
-
-					auto leading_pt    = t_b > tbar_b ? t_b : tbar_b;
-					auto subleading_pt = t_b < tbar_b ? t_b : tbar_b;
-					ttbar_eltaul_b1_pt->Fill(leading_pt);
-					ttbar_eltaul_b2_pt->Fill(subleading_pt);
-					}
-
-				// el tau->1charged
-				if (abs(NT_gen_t_w_decay_id) == 11 && (abs(NT_gen_tb_w_decay_id) > 15*15 && abs(NT_gen_tb_w_decay_id) < 15*30))
-					{
-					auto t_w_el     = (NT_gen_t_w1_final_p4 + NT_gen_t_w2_final_p4).pt();
-					auto tbar_w_tau = (NT_gen_tb_w1_final_p4 + NT_gen_tb_w2_final_p4).pt();
-
-					ttbar_eltau1h_el_pt->Fill(t_w_el);
-					ttbar_eltau1h_tau_pt->Fill(tbar_w_tau);
-
-					auto t_b    = NT_gen_t_b_final_p4.pt();
-					auto tbar_b = NT_gen_tb_b_final_p4.pt();
-
-					auto leading_pt    = t_b > tbar_b ? t_b : tbar_b;
-					auto subleading_pt = t_b < tbar_b ? t_b : tbar_b;
-					ttbar_eltau1h_b1_pt->Fill(leading_pt);
-					ttbar_eltau1h_b2_pt->Fill(subleading_pt);
-                                        //eta distributions
-                                        auto t_w_el_eta     = (NT_gen_t_w1_final_p4 + NT_gen_t_w2_final_p4).eta();
-                                        auto tbar_w_tau_eta = (NT_gen_tb_w1_final_p4 + NT_gen_tb_w2_final_p4).eta();
-
-                                        ttbar_eltau1h_el_eta->Fill(t_w_el_eta);
-                                        ttbar_eltau1h_tau_eta->Fill(tbar_w_tau_eta);
-
-                                        auto t_b_eta    = NT_gen_t_b_final_p4.eta();
-                                        auto tbar_b_eta = NT_gen_tb_b_final_p4.eta();
-
-                                        auto leading_eta    = t_b_eta > tbar_b_eta ? t_b_eta : tbar_b_eta;
-                                        auto subleading_eta = t_b_eta < tbar_b_eta ? t_b_eta : tbar_b_eta;
-                                        ttbar_eltau1h_b1_eta->Fill(leading_eta);
-                                        ttbar_eltau1h_b2_eta->Fill(subleading_eta);
-
-      					}
-                                 //el tau -> 3charged
-                               if (abs(NT_gen_t_w_decay_id) == 11 && abs(NT_gen_tb_w_decay_id) >= 15*30)
-                                        {
-                                        auto t_w_el     = (NT_gen_t_w1_final_p4 + NT_gen_t_w2_final_p4).pt();
-                                        auto tbar_w_tau = (NT_gen_tb_w1_final_p4 + NT_gen_tb_w2_final_p4).pt();
-
-                                        ttbar_eltau3h_el_pt->Fill(t_w_el);
-                                        ttbar_eltau3h_tau_pt->Fill(tbar_w_tau);
-
-                                        auto t_b    = NT_gen_t_b_final_p4.pt();
-                                        auto tbar_b = NT_gen_tb_b_final_p4.pt();
-
-                                        auto leading_pt    = t_b > tbar_b ? t_b : tbar_b;
-                                        auto subleading_pt = t_b < tbar_b ? t_b : tbar_b;
-                                        ttbar_eltau3h_b1_pt->Fill(leading_pt);
-                                        ttbar_eltau3h_b2_pt->Fill(subleading_pt);
-                                       //eta distributions
-                                        auto t_w_el_eta     = (NT_gen_t_w1_final_p4 + NT_gen_t_w2_final_p4).eta();
-                                        auto tbar_w_tau_eta = (NT_gen_tb_w1_final_p4 + NT_gen_tb_w2_final_p4).eta();
-
-                                        ttbar_eltau3h_el_eta->Fill(t_w_el_eta);
-                                        ttbar_eltau3h_tau_eta->Fill(tbar_w_tau_eta);
-
-                                        auto t_b_eta    = NT_gen_t_b_final_p4.eta();
-                                        auto tbar_b_eta = NT_gen_tb_b_final_p4.eta();
-
-                                        auto leading_eta    = t_b_eta > tbar_b_eta ? t_b_eta : tbar_b_eta;
-                                        auto subleading_eta = t_b_eta < tbar_b_eta ? t_b_eta : tbar_b_eta;
-                                        ttbar_eltau3h_b1_eta->Fill(leading_eta);
-                                        ttbar_eltau3h_b2_eta->Fill(subleading_eta);
-
-                                        }
-
+				//NT_gen_decay_jet1_p4
+				//NT_gen_decay_jet2_p4
 				}
 			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id << " is Sig " << isTTSignal;
 
@@ -2587,6 +2474,74 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				elel_b1_pt->Fill(leading_pt);
 				elel_b2_pt->Fill(subleading_pt);
 				}
+
+			// el tau->lepton
+			if (abs(NT_gen_decay_lep1_id) == 11 && (abs(NT_gen_decay_lep2_id) == 15*11 || abs(NT_gen_decay_lep2_id) == 15*13))
+				{
+				eltaul_el_pt ->Fill(NT_gen_decay_lep1_p4.pt());
+				eltaul_tau_pt->Fill(NT_gen_decay_lep2_p4.pt());
+				//eltaul_el_eta ->Fill(NT_gen_decay_lep1_p4.eta());
+				//eltaul_tau_eta->Fill(NT_gen_decay_lep2_p4.eta());
+
+				// and b jets
+				// sort by pt
+				auto pt1 = NT_gen_decay_bjet1_p4.pt();
+				auto pt2 = NT_gen_decay_bjet2_p4.pt();
+				auto leading_p4    = pt1 > pt2 ? &NT_gen_decay_bjet1_p4 : &NT_gen_decay_bjet2_p4;
+				auto subleading_p4 = pt1 < pt2 ? &NT_gen_decay_bjet1_p4 : &NT_gen_decay_bjet2_p4;
+
+				eltaul_b1_pt->Fill(leading_p4->pt());
+				eltaul_b2_pt->Fill(subleading_p4->pt());
+				//eltaul_b1_eta->Fill(leading_p4.eta());
+				//eltaul_b2_eta->Fill(subleading_p4.eta());
+				}
+
+			// el tau->1charged
+			if (abs(NT_gen_decay_lep1_id) == 11 && (abs(NT_gen_decay_lep2_id) > 15*15 && abs(NT_gen_decay_lep2_id) < 15*30))
+				{
+				eltau1h_el_pt ->Fill(NT_gen_decay_lep1_p4.pt());
+				eltau1h_tau_pt->Fill(NT_gen_decay_lep2_p4.pt());
+				eltau1h_el_eta ->Fill(NT_gen_decay_lep1_p4.eta());
+				eltau1h_tau_eta->Fill(NT_gen_decay_lep2_p4.eta());
+
+				// and b jets
+				// sort by pt
+				auto pt1 = NT_gen_decay_bjet1_p4.pt();
+				auto pt2 = NT_gen_decay_bjet2_p4.pt();
+				auto leading_p4    = pt1 > pt2 ? &NT_gen_decay_bjet1_p4 : &NT_gen_decay_bjet2_p4;
+				auto subleading_p4 = pt1 < pt2 ? &NT_gen_decay_bjet1_p4 : &NT_gen_decay_bjet2_p4;
+
+				eltau1h_b1_pt->Fill(leading_p4->pt());
+				eltau1h_b2_pt->Fill(subleading_p4->pt());
+				eltau1h_b1_eta->Fill(leading_p4->eta());
+				eltau1h_b2_eta->Fill(subleading_p4->eta());
+				}
+
+
+			//el tau -> 3charged
+			// practically the same as 3charged hadrons
+			// TODO merge these procedures
+			if (abs(NT_gen_decay_lep1_id) == 11 && abs(NT_gen_decay_lep2_id) >= 15*30)
+				{
+				eltau3h_el_pt ->Fill(NT_gen_decay_lep1_p4.pt());
+				eltau3h_tau_pt->Fill(NT_gen_decay_lep2_p4.pt());
+				eltau3h_el_eta ->Fill(NT_gen_decay_lep1_p4.eta());
+				eltau3h_tau_eta->Fill(NT_gen_decay_lep2_p4.eta());
+
+				// and b jets
+				// sort by pt
+				auto pt1 = NT_gen_decay_bjet1_p4.pt();
+				auto pt2 = NT_gen_decay_bjet2_p4.pt();
+				auto leading_p4    = pt1 > pt2 ? &NT_gen_decay_bjet1_p4 : &NT_gen_decay_bjet2_p4;
+				auto subleading_p4 = pt1 < pt2 ? &NT_gen_decay_bjet1_p4 : &NT_gen_decay_bjet2_p4;
+
+				eltau3h_b1_pt->Fill(leading_p4->pt());
+				eltau3h_b2_pt->Fill(subleading_p4->pt());
+				eltau3h_b1_eta->Fill(leading_p4->eta());
+				eltau3h_b2_eta->Fill(subleading_p4->eta());
+				}
+
+
 			}
 
 		if(NT_nvtx_gen <0 )        NT_nvtx_gen=0; // TODO check vertexes procedure
