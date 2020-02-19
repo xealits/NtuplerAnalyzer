@@ -167,6 +167,25 @@ static double pu_vector_el_down[MAX_NVTX] = {0,
    0.0022493  ,   0.00196487 ,    0.0015343 ,    0.00130443 ,    0.00118566 ,    0          ,    0          ,    0          ,    0};
 
 
+struct LorentzVector_pointer_pair {
+	const LorentzVector* first;
+	const LorentzVector* second;
+};
+
+struct LorentzVector_pointer_pair sorted_byPt_LorentzVectors(const LorentzVector& v1, const LorentzVector& v2)
+	{
+	struct LorentzVector_pointer_pair res;
+
+	auto pt1 = v1.pt();
+	auto pt2 = v2.pt();
+	auto leading_p    = pt1 > pt2 ? &v1 : &v2;
+	auto subleading_p = pt1 < pt2 ? &v1 : &v2;
+	res.first  = leading_p;
+	res.second = subleading_p;
+
+	return res;
+	}
+
 //bool sort_CandidatesByPt(const pat::GenericParticle &a, const pat::GenericParticle &b)  { return a.pt()>b.pt(); }
 bool sort_TausByIDByPt(const pat::Tau &a, const pat::Tau &b)
 	{
@@ -1500,7 +1519,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	#define NTUPLE_INTERFACE_CLASS_RESET
 	#include "UserCode/NtuplerAnalyzer/interface/ntupleOutput.h"
 	#undef NTUPLE_INTERFACE_CLASS_RESET
-	// if output contains stand-alone objects (not vector of LorentxVector-s, but just 1 LorentzVector, like MET or something)
+	// if output contains stand-alone objects (not vector of LorentzVector-s, but just 1 LorentzVector, like MET or something)
 	// you have to reset them yourself, since each object might have its' own method
 	NT_met_init.SetXYZT(0,0,0,0);
 
@@ -2456,23 +2475,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			if (abs(NT_gen_decay_lep1_id) == 11 && abs(NT_gen_decay_lep2_id) == 11)
 				{
 				// sort leptons by pT
-				auto pt1 = NT_gen_decay_lep1_p4.pt();
-				auto pt2 = NT_gen_decay_lep2_p4.pt();
-				auto leading_pt    = pt1 > pt2 ? pt1 : pt2;
-				auto subleading_pt = pt1 < pt2 ? pt1 : pt2;
-
+				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_lep1_p4, NT_gen_decay_lep2_p4);
 				// save
-				elel_el1_pt->Fill(leading_pt);
-				elel_el2_pt->Fill(subleading_pt);
+				elel_el1_pt->Fill(sorted_p4s.first->pt());
+				elel_el2_pt->Fill(sorted_p4s.second->pt());
 
 				// and b jets
-				pt1 = NT_gen_decay_bjet1_p4.pt();
-				pt2 = NT_gen_decay_bjet2_p4.pt();
-				leading_pt    = pt1 > pt2 ? pt1 : pt2;
-				subleading_pt = pt1 < pt2 ? pt1 : pt2;
-
-				elel_b1_pt->Fill(leading_pt);
-				elel_b2_pt->Fill(subleading_pt);
+				sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
+				elel_b1_pt->Fill(sorted_p4s.first->pt());
+				elel_b2_pt->Fill(sorted_p4s.second->pt());
 				}
 
 			// el tau->lepton
@@ -2484,16 +2495,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				//eltaul_tau_eta->Fill(NT_gen_decay_lep2_p4.eta());
 
 				// and b jets
-				// sort by pt
-				auto pt1 = NT_gen_decay_bjet1_p4.pt();
-				auto pt2 = NT_gen_decay_bjet2_p4.pt();
-				auto leading_p4    = pt1 > pt2 ? &NT_gen_decay_bjet1_p4 : &NT_gen_decay_bjet2_p4;
-				auto subleading_p4 = pt1 < pt2 ? &NT_gen_decay_bjet1_p4 : &NT_gen_decay_bjet2_p4;
-
-				eltaul_b1_pt->Fill(leading_p4->pt());
-				eltaul_b2_pt->Fill(subleading_p4->pt());
-				//eltaul_b1_eta->Fill(leading_p4.eta());
-				//eltaul_b2_eta->Fill(subleading_p4.eta());
+				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
+				eltaul_b1_pt->Fill(sorted_p4s.first->pt());
+				eltaul_b2_pt->Fill(sorted_p4s.second->pt());
 				}
 
 			// el tau->1charged
@@ -2505,18 +2509,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				eltau1h_tau_eta->Fill(NT_gen_decay_lep2_p4.eta());
 
 				// and b jets
-				// sort by pt
-				auto pt1 = NT_gen_decay_bjet1_p4.pt();
-				auto pt2 = NT_gen_decay_bjet2_p4.pt();
-				auto leading_p4    = pt1 > pt2 ? &NT_gen_decay_bjet1_p4 : &NT_gen_decay_bjet2_p4;
-				auto subleading_p4 = pt1 < pt2 ? &NT_gen_decay_bjet1_p4 : &NT_gen_decay_bjet2_p4;
-
-				eltau1h_b1_pt->Fill(leading_p4->pt());
-				eltau1h_b2_pt->Fill(subleading_p4->pt());
-				eltau1h_b1_eta->Fill(leading_p4->eta());
-				eltau1h_b2_eta->Fill(subleading_p4->eta());
+				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
+				eltau1h_b1_pt->Fill(sorted_p4s.first->pt());
+				eltau1h_b2_pt->Fill(sorted_p4s.second->pt());
+				eltau1h_b1_eta->Fill(sorted_p4s.first->eta());
+				eltau1h_b2_eta->Fill(sorted_p4s.second->eta());
 				}
-
 
 			//el tau -> 3charged
 			// practically the same as 3charged hadrons
@@ -2529,18 +2527,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				eltau3h_tau_eta->Fill(NT_gen_decay_lep2_p4.eta());
 
 				// and b jets
-				// sort by pt
-				auto pt1 = NT_gen_decay_bjet1_p4.pt();
-				auto pt2 = NT_gen_decay_bjet2_p4.pt();
-				auto leading_p4    = pt1 > pt2 ? &NT_gen_decay_bjet1_p4 : &NT_gen_decay_bjet2_p4;
-				auto subleading_p4 = pt1 < pt2 ? &NT_gen_decay_bjet1_p4 : &NT_gen_decay_bjet2_p4;
-
-				eltau3h_b1_pt->Fill(leading_p4->pt());
-				eltau3h_b2_pt->Fill(subleading_p4->pt());
-				eltau3h_b1_eta->Fill(leading_p4->eta());
-				eltau3h_b2_eta->Fill(subleading_p4->eta());
+				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
+				eltau3h_b1_pt->Fill(sorted_p4s.first->pt());
+				eltau3h_b2_pt->Fill(sorted_p4s.second->pt());
+				eltau3h_b1_eta->Fill(sorted_p4s.first->eta());
+				eltau3h_b2_eta->Fill(sorted_p4s.second->eta());
 				}
-
 
 			}
 
