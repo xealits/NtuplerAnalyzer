@@ -2417,15 +2417,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			// save the gen-levela distributions
 			// for the general final state IDs
-			GenDistrs_record({
-					NT_gen_decay_lep1_id,
-					NT_gen_decay_lep2_id,
-					&NT_gen_decay_lep1_p4,
-					&NT_gen_decay_lep2_p4,
-					&NT_gen_decay_jet1_p4,
-					&NT_gen_decay_jet2_p4,
-					&NT_gen_decay_bjet1_p4,
-					&NT_gen_decay_bjet2_p4,
+			GenDistrs_record((struct GenDistrs_recorded_gen_objects) {
+					{NT_gen_decay_lep1_id, NT_gen_decay_lep2_id},
+					{&NT_gen_decay_lep1_p4, &NT_gen_decay_lep2_p4},
+					//&NT_gen_decay_jet1_p4, &NT_gen_decay_jet2_p4,
+					{&NT_gen_decay_bjet1_p4, &NT_gen_decay_bjet2_p4},
 				});
 			}
 
@@ -4645,6 +4641,8 @@ NtuplerAnalyzer::beginJob()
 void 
 NtuplerAnalyzer::endJob() 
 {
+GenDistrs_cleanup();
+
 if (isLocal && !isMC){
 	goodLumiFilter.FindLumiInFiles(urls); // urls! why are they here at all? no even 1 comment in that "Utilities!"
 	goodLumiFilter.DumpToJson(((outUrl.ReplaceAll(".root",""))+".json").Data());
