@@ -2422,10 +2422,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				// sort leptons by pT
 				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_lep1_p4, NT_gen_decay_lep2_p4);
 				// save
-				elel_el1_pt->Fill(sorted_p4s.first->pt());
-				elel_el2_pt->Fill(sorted_p4s.second->pt());
-				elel_el1_eta->Fill(sorted_p4s.first->eta());
-				elel_el2_eta->Fill(sorted_p4s.second->eta());
+				elel_l1_pt->Fill(sorted_p4s.first->pt());
+				elel_l2_pt->Fill(sorted_p4s.second->pt());
+				elel_l1_eta->Fill(sorted_p4s.first->eta());
+				elel_l2_eta->Fill(sorted_p4s.second->eta());
 
 				// and b jets
 				sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
@@ -2438,10 +2438,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// el tau->lepton
 			if (abs(NT_gen_decay_lep1_id) == 11 && (abs(NT_gen_decay_lep2_id) == 15*11 || abs(NT_gen_decay_lep2_id) == 15*13))
 				{
-				eltaul_el_pt ->Fill(NT_gen_decay_lep1_p4.pt());
-				eltaul_tau_pt->Fill(NT_gen_decay_lep2_p4.pt());
-				eltaul_el_eta ->Fill(NT_gen_decay_lep1_p4.eta());
-				eltaul_tau_eta->Fill(NT_gen_decay_lep2_p4.eta());
+				eltaul_l1_pt ->Fill(NT_gen_decay_lep1_p4.pt());
+				eltaul_l2_pt->Fill(NT_gen_decay_lep2_p4.pt());
+				eltaul_l1_eta ->Fill(NT_gen_decay_lep1_p4.eta());
+				eltaul_l2_eta->Fill(NT_gen_decay_lep2_p4.eta());
 
 				// and b jets
 				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
@@ -2454,10 +2454,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// el tau->1charged
 			if (abs(NT_gen_decay_lep1_id) == 11 && (abs(NT_gen_decay_lep2_id) > 15*15 && abs(NT_gen_decay_lep2_id) < 15*30))
 				{
-				eltau1h_el_pt ->Fill(NT_gen_decay_lep1_p4.pt());
-				eltau1h_tau_pt->Fill(NT_gen_decay_lep2_p4.pt());
-				eltau1h_el_eta ->Fill(NT_gen_decay_lep1_p4.eta());
-				eltau1h_tau_eta->Fill(NT_gen_decay_lep2_p4.eta());
+				eltau1h_l1_pt ->Fill(NT_gen_decay_lep1_p4.pt());
+				eltau1h_l2_pt->Fill(NT_gen_decay_lep2_p4.pt());
+				eltau1h_l1_eta ->Fill(NT_gen_decay_lep1_p4.eta());
+				eltau1h_l2_eta->Fill(NT_gen_decay_lep2_p4.eta());
 
 				// and b jets
 				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
@@ -2472,10 +2472,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			// TODO merge these procedures
 			if (abs(NT_gen_decay_lep1_id) == 11 && abs(NT_gen_decay_lep2_id) >= 15*30)
 				{
-				eltau3h_el_pt ->Fill(NT_gen_decay_lep1_p4.pt());
-				eltau3h_tau_pt->Fill(NT_gen_decay_lep2_p4.pt());
-				eltau3h_el_eta ->Fill(NT_gen_decay_lep1_p4.eta());
-				eltau3h_tau_eta->Fill(NT_gen_decay_lep2_p4.eta());
+				eltau3h_l1_pt ->Fill(NT_gen_decay_lep1_p4.pt());
+				eltau3h_l2_pt->Fill(NT_gen_decay_lep2_p4.pt());
+				eltau3h_l1_eta ->Fill(NT_gen_decay_lep1_p4.eta());
+				eltau3h_l2_eta->Fill(NT_gen_decay_lep2_p4.eta());
 
 				// and b jets
 				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);

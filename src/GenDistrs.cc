@@ -21,39 +21,39 @@ struct LorentzVector_pointer_pair sorted_byPt_LorentzVectors(const LorentzVector
 
 int genDistrs_make_histos_in_FileService(edm::Service<TFileService>& fs)
 	{
-	define_gen_level_pt(elel_el1);
-	define_gen_level_pt(elel_el2);
+	define_gen_level_pt(elel_l1);
+	define_gen_level_pt(elel_l2);
 	define_gen_level_pt(elel_b1);
 	define_gen_level_pt(elel_b2);
-	define_gen_level_eta(elel_el1);
-	define_gen_level_eta(elel_el2);
+	define_gen_level_eta(elel_l1);
+	define_gen_level_eta(elel_l2);
 	define_gen_level_eta(elel_b1);
 	define_gen_level_eta(elel_b2);
 
-	define_gen_level_pt(eltaul_el);
-	define_gen_level_pt(eltaul_tau);
+	define_gen_level_pt(eltaul_l1);
+	define_gen_level_pt(eltaul_l2);
 	define_gen_level_pt(eltaul_b1);
 	define_gen_level_pt(eltaul_b2);
-	define_gen_level_eta(eltaul_el);
-	define_gen_level_eta(eltaul_tau);
+	define_gen_level_eta(eltaul_l1);
+	define_gen_level_eta(eltaul_l2);
 	define_gen_level_eta(eltaul_b1);
 	define_gen_level_eta(eltaul_b2);
 
-	define_gen_level_pt(eltau1h_el);
-	define_gen_level_pt(eltau1h_tau);
+	define_gen_level_pt(eltau1h_l1);
+	define_gen_level_pt(eltau1h_l2);
 	define_gen_level_pt(eltau1h_b1);
 	define_gen_level_pt(eltau1h_b2);
-        define_gen_level_eta(eltau1h_el);
-        define_gen_level_eta(eltau1h_tau);
+        define_gen_level_eta(eltau1h_l1);
+        define_gen_level_eta(eltau1h_l2);
         define_gen_level_eta(eltau1h_b1);
         define_gen_level_eta(eltau1h_b2);
 
-        define_gen_level_pt(eltau3h_el);
-        define_gen_level_pt(eltau3h_tau);
+        define_gen_level_pt(eltau3h_l1);
+        define_gen_level_pt(eltau3h_l2);
         define_gen_level_pt(eltau3h_b1);
         define_gen_level_pt(eltau3h_b2);
-        define_gen_level_eta(eltau3h_el);
-        define_gen_level_eta(eltau3h_tau);
+        define_gen_level_eta(eltau3h_l1);
+        define_gen_level_eta(eltau3h_l2);
         define_gen_level_eta(eltau3h_b1);
         define_gen_level_eta(eltau3h_b2);
 

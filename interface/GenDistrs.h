@@ -17,15 +17,26 @@ struct LorentzVector_pointer_pair sorted_byPt_LorentzVectors(const LorentzVector
 
 void genDistrs_fill_sorted_pair(const LorentzVector& v1, const LorentzVector& v2);
 
-// gen level kinematic histograms
-TH1D *elel_el1_pt, *elel_el2_pt, *elel_b1_pt, *elel_b2_pt,
-	*elel_el1_eta, *elel_el2_eta, *elel_b1_eta, *elel_b2_eta,
-	*eltaul_el_pt,  *eltaul_tau_pt,  *eltaul_b1_pt,  *eltaul_b2_pt,
-	*eltaul_el_eta, *eltaul_tau_eta, *eltaul_b1_eta, *eltaul_b2_eta,
-	*eltau1h_el_pt, *eltau1h_tau_pt, *eltau1h_b1_pt, *eltau1h_b2_pt,
-	*eltau1h_el_eta, *eltau1h_tau_eta, *eltau1h_b1_eta, *eltau1h_b2_eta,
-	*eltau3h_el_pt,  *eltau3h_tau_pt,  *eltau3h_b1_pt,  *eltau3h_b2_pt,
-	*eltau3h_el_eta, *eltau3h_tau_eta, *eltau3h_b1_eta, *eltau3h_b2_eta;
+/** gen level kinematic histograms
+
+The final state process is defined by the final state leptons.
+The ordering of leptons is as follows:
+1. order by PDG ID
+2. if the ID is the same -- order by pT
+3. in case of taus the leptonic and hadronic taus are separated,
+   but different hadronic modes (1ch or 3ch etc) are treated as the same
+
+The kinematic distributions saved for each object:
+pt and eta of the leading and subleading objects
+*/
+#define GENDISTR_kinem_histos(name) TH1D \
+	*name##_l1_pt,  *name##_l2_pt,  *name##_b1_pt,  *name##_b2_pt, \
+	*name##_l1_eta, *name##_l2_eta, *name##_b1_eta, *name##_b2_eta
+
+GENDISTR_kinem_histos(elel);
+GENDISTR_kinem_histos(eltaul);
+GENDISTR_kinem_histos(eltau1h);
+GENDISTR_kinem_histos(eltau3h);
 
 int genDistrs_make_histos_in_FileService(edm::Service<TFileService>& fs);
 
