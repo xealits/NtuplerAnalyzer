@@ -1016,14 +1016,6 @@ class NtuplerAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 	TTree* NT_output_ttree; 
 	TH1D *event_counter, *weight_counter, *systematic_weights; 
 
-	// gen level kinematic histograms
-	TH1D *elel_el1_pt, *elel_el2_pt, *elel_b1_pt, *elel_b2_pt,
-		*eltaul_el_pt, *eltaul_tau_pt, *eltaul_b1_pt, *eltaul_b2_pt,
-		*eltau1h_el_pt, *eltau1h_tau_pt, *eltau1h_b1_pt, *eltau1h_b2_pt,
-                *eltau1h_el_eta, *eltau1h_tau_eta, *eltau1h_b1_eta, *eltau1h_b2_eta,
-		*eltau3h_el_pt, *eltau3h_tau_pt, *eltau3h_b1_pt, *eltau3h_b2_pt,
-		*eltau3h_el_eta, *eltau3h_tau_eta, *eltau3h_b1_eta, *eltau3h_b2_eta;
-
 	/*
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > > NT_lep_p4;
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > >* pt_lep_p4; // yep, vectors of complex objects require additional persistent pointers
@@ -1377,34 +1369,7 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	 * save the corresponding histograms.
 	 */
 
-	define_gen_level_pt(elel_el1);
-	define_gen_level_pt(elel_el2);
-	define_gen_level_pt(elel_b1);
-	define_gen_level_pt(elel_b2);
-
-	define_gen_level_pt(eltaul_el);
-	define_gen_level_pt(eltaul_tau);
-	define_gen_level_pt(eltaul_b1);
-	define_gen_level_pt(eltaul_b2);
-
-	define_gen_level_pt(eltau1h_el);
-	define_gen_level_pt(eltau1h_tau);
-	define_gen_level_pt(eltau1h_b1);
-	define_gen_level_pt(eltau1h_b2);
-        define_gen_level_eta(eltau1h_el);
-        define_gen_level_eta(eltau1h_tau);
-        define_gen_level_eta(eltau1h_b1);
-        define_gen_level_eta(eltau1h_b2);
-
-        define_gen_level_pt(eltau3h_el);
-        define_gen_level_pt(eltau3h_tau);
-        define_gen_level_pt(eltau3h_b1);
-        define_gen_level_pt(eltau3h_b2);
-        define_gen_level_eta(eltau3h_el);
-        define_gen_level_eta(eltau3h_tau);
-        define_gen_level_eta(eltau3h_b1);
-        define_gen_level_eta(eltau3h_b2);
-
+	genDistrs_make_histos_in_FileService(fs);
 
 	//ttbar_elmu_lep_pt = fs->make<TH1D>( "ttbar_lep_pt" , "ttbar_lep_pt", 200,  0, 200);
 	// for control of effect from PU reweighting, aMCatNLO gen -1 weights, top pt
@@ -2459,11 +2424,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				// save
 				elel_el1_pt->Fill(sorted_p4s.first->pt());
 				elel_el2_pt->Fill(sorted_p4s.second->pt());
+				elel_el1_eta->Fill(sorted_p4s.first->eta());
+				elel_el2_eta->Fill(sorted_p4s.second->eta());
 
 				// and b jets
 				sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
 				elel_b1_pt->Fill(sorted_p4s.first->pt());
 				elel_b2_pt->Fill(sorted_p4s.second->pt());
+				elel_b1_eta->Fill(sorted_p4s.first->eta());
+				elel_b2_eta->Fill(sorted_p4s.second->eta());
 				}
 
 			// el tau->lepton
@@ -2471,13 +2440,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				{
 				eltaul_el_pt ->Fill(NT_gen_decay_lep1_p4.pt());
 				eltaul_tau_pt->Fill(NT_gen_decay_lep2_p4.pt());
-				//eltaul_el_eta ->Fill(NT_gen_decay_lep1_p4.eta());
-				//eltaul_tau_eta->Fill(NT_gen_decay_lep2_p4.eta());
+				eltaul_el_eta ->Fill(NT_gen_decay_lep1_p4.eta());
+				eltaul_tau_eta->Fill(NT_gen_decay_lep2_p4.eta());
 
 				// and b jets
 				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
 				eltaul_b1_pt->Fill(sorted_p4s.first->pt());
 				eltaul_b2_pt->Fill(sorted_p4s.second->pt());
+				eltaul_b1_eta->Fill(sorted_p4s.first->eta());
+				eltaul_b2_eta->Fill(sorted_p4s.second->eta());
 				}
 
 			// el tau->1charged

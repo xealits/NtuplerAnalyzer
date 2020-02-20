@@ -1,10 +1,10 @@
 #ifndef GENDISTRS_H
 #define GENDISTRS_H
 
-#define define_gen_level_pt(name)  name ##_pt  = fs->make<TH1D>( #name "_pt",  #name "_pt",  200,  0, 200)
-#define define_gen_level_eta(name) name ##_eta = fs->make<TH1D>( #name "_eta", #name "_eta", 200,  -3.0, 3.0)
-
 #include "Math/Vector4D.h"
+#include "TH1D.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
 
@@ -14,5 +14,19 @@ struct LorentzVector_pointer_pair {
 };
 
 struct LorentzVector_pointer_pair sorted_byPt_LorentzVectors(const LorentzVector& v1, const LorentzVector& v2);
+
+void genDistrs_fill_sorted_pair(const LorentzVector& v1, const LorentzVector& v2);
+
+// gen level kinematic histograms
+TH1D *elel_el1_pt, *elel_el2_pt, *elel_b1_pt, *elel_b2_pt,
+	*elel_el1_eta, *elel_el2_eta, *elel_b1_eta, *elel_b2_eta,
+	*eltaul_el_pt,  *eltaul_tau_pt,  *eltaul_b1_pt,  *eltaul_b2_pt,
+	*eltaul_el_eta, *eltaul_tau_eta, *eltaul_b1_eta, *eltaul_b2_eta,
+	*eltau1h_el_pt, *eltau1h_tau_pt, *eltau1h_b1_pt, *eltau1h_b2_pt,
+	*eltau1h_el_eta, *eltau1h_tau_eta, *eltau1h_b1_eta, *eltau1h_b2_eta,
+	*eltau3h_el_pt,  *eltau3h_tau_pt,  *eltau3h_b1_pt,  *eltau3h_b2_pt,
+	*eltau3h_el_eta, *eltau3h_tau_eta, *eltau3h_b1_eta, *eltau3h_b2_eta;
+
+int genDistrs_make_histos_in_FileService(edm::Service<TFileService>& fs);
 
 #endif /* GENDISTRS_H */
