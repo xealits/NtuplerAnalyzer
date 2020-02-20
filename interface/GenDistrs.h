@@ -8,15 +8,6 @@
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
 
-struct LorentzVector_pointer_pair {
-	const LorentzVector* first;
-	const LorentzVector* second;
-};
-
-struct LorentzVector_pointer_pair sorted_byPt_LorentzVectors(const LorentzVector& v1, const LorentzVector& v2);
-
-void genDistrs_fill_sorted_pair(const LorentzVector& v1, const LorentzVector& v2);
-
 /** gen level kinematic histograms
 
 The final state process is defined by the final state leptons.
@@ -38,6 +29,18 @@ GENDISTR_kinem_histos(eltaul);
 GENDISTR_kinem_histos(eltau1h);
 GENDISTR_kinem_histos(eltau3h);
 
-int genDistrs_make_histos_in_FileService(edm::Service<TFileService>& fs);
+int GenDistrs_make_histos_in_FileService(edm::Service<TFileService>& fs);
+
+struct GenDistrs_general_gen_params {
+	Int_t gen_decay_lep1_id;
+	Int_t gen_decay_lep2_id;
+	const LorentzVector* NT_gen_decay_lep1_p4;
+	const LorentzVector* NT_gen_decay_lep2_p4;
+	const LorentzVector* NT_gen_decay_jet1_p4;
+	const LorentzVector* NT_gen_decay_jet2_p4;
+	const LorentzVector* NT_gen_decay_bjet1_p4;
+	const LorentzVector* NT_gen_decay_bjet2_p4;
+};
+int GenDistrs_record(struct GenDistrs_general_gen_params);
 
 #endif /* GENDISTRS_H */

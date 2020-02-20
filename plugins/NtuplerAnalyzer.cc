@@ -1369,7 +1369,7 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	 * save the corresponding histograms.
 	 */
 
-	genDistrs_make_histos_in_FileService(fs);
+	GenDistrs_make_histos_in_FileService(fs);
 
 	//ttbar_elmu_lep_pt = fs->make<TH1D>( "ttbar_lep_pt" , "ttbar_lep_pt", 200,  0, 200);
 	// for control of effect from PU reweighting, aMCatNLO gen -1 weights, top pt
@@ -2417,74 +2417,16 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			// save the gen-levela distributions
 			// for the general final state IDs
-			if (abs(NT_gen_decay_lep1_id) == 11 && abs(NT_gen_decay_lep2_id) == 11)
-				{
-				// sort leptons by pT
-				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_lep1_p4, NT_gen_decay_lep2_p4);
-				// save
-				elel_l1_pt->Fill(sorted_p4s.first->pt());
-				elel_l2_pt->Fill(sorted_p4s.second->pt());
-				elel_l1_eta->Fill(sorted_p4s.first->eta());
-				elel_l2_eta->Fill(sorted_p4s.second->eta());
-
-				// and b jets
-				sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
-				elel_b1_pt->Fill(sorted_p4s.first->pt());
-				elel_b2_pt->Fill(sorted_p4s.second->pt());
-				elel_b1_eta->Fill(sorted_p4s.first->eta());
-				elel_b2_eta->Fill(sorted_p4s.second->eta());
-				}
-
-			// el tau->lepton
-			if (abs(NT_gen_decay_lep1_id) == 11 && (abs(NT_gen_decay_lep2_id) == 15*11 || abs(NT_gen_decay_lep2_id) == 15*13))
-				{
-				eltaul_l1_pt ->Fill(NT_gen_decay_lep1_p4.pt());
-				eltaul_l2_pt->Fill(NT_gen_decay_lep2_p4.pt());
-				eltaul_l1_eta ->Fill(NT_gen_decay_lep1_p4.eta());
-				eltaul_l2_eta->Fill(NT_gen_decay_lep2_p4.eta());
-
-				// and b jets
-				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
-				eltaul_b1_pt->Fill(sorted_p4s.first->pt());
-				eltaul_b2_pt->Fill(sorted_p4s.second->pt());
-				eltaul_b1_eta->Fill(sorted_p4s.first->eta());
-				eltaul_b2_eta->Fill(sorted_p4s.second->eta());
-				}
-
-			// el tau->1charged
-			if (abs(NT_gen_decay_lep1_id) == 11 && (abs(NT_gen_decay_lep2_id) > 15*15 && abs(NT_gen_decay_lep2_id) < 15*30))
-				{
-				eltau1h_l1_pt ->Fill(NT_gen_decay_lep1_p4.pt());
-				eltau1h_l2_pt->Fill(NT_gen_decay_lep2_p4.pt());
-				eltau1h_l1_eta ->Fill(NT_gen_decay_lep1_p4.eta());
-				eltau1h_l2_eta->Fill(NT_gen_decay_lep2_p4.eta());
-
-				// and b jets
-				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
-				eltau1h_b1_pt->Fill(sorted_p4s.first->pt());
-				eltau1h_b2_pt->Fill(sorted_p4s.second->pt());
-				eltau1h_b1_eta->Fill(sorted_p4s.first->eta());
-				eltau1h_b2_eta->Fill(sorted_p4s.second->eta());
-				}
-
-			//el tau -> 3charged
-			// practically the same as 3charged hadrons
-			// TODO merge these procedures
-			if (abs(NT_gen_decay_lep1_id) == 11 && abs(NT_gen_decay_lep2_id) >= 15*30)
-				{
-				eltau3h_l1_pt ->Fill(NT_gen_decay_lep1_p4.pt());
-				eltau3h_l2_pt->Fill(NT_gen_decay_lep2_p4.pt());
-				eltau3h_l1_eta ->Fill(NT_gen_decay_lep1_p4.eta());
-				eltau3h_l2_eta->Fill(NT_gen_decay_lep2_p4.eta());
-
-				// and b jets
-				struct LorentzVector_pointer_pair sorted_p4s = sorted_byPt_LorentzVectors(NT_gen_decay_bjet1_p4, NT_gen_decay_bjet2_p4);
-				eltau3h_b1_pt->Fill(sorted_p4s.first->pt());
-				eltau3h_b2_pt->Fill(sorted_p4s.second->pt());
-				eltau3h_b1_eta->Fill(sorted_p4s.first->eta());
-				eltau3h_b2_eta->Fill(sorted_p4s.second->eta());
-				}
-
+			GenDistrs_record({
+					NT_gen_decay_lep1_id,
+					NT_gen_decay_lep2_id,
+					&NT_gen_decay_lep1_p4,
+					&NT_gen_decay_lep2_p4,
+					&NT_gen_decay_jet1_p4,
+					&NT_gen_decay_jet2_p4,
+					&NT_gen_decay_bjet1_p4,
+					&NT_gen_decay_bjet2_p4,
+				});
 			}
 
 		if(NT_nvtx_gen <0 )        NT_nvtx_gen=0; // TODO check vertexes procedure
