@@ -26,6 +26,7 @@ pt and eta of the leading and subleading objects
 
 GENDISTR_kinem_histos(elel);
 GENDISTR_kinem_histos(eltaul);
+GENDISTR_kinem_histos(taulel);
 GENDISTR_kinem_histos(eltau1h);
 GENDISTR_kinem_histos(eltau3h);
 
