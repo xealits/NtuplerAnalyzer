@@ -2909,6 +2909,20 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			jetsHLT400 = utils::passTriggerPatterns(tr, "HLT_PFJet400_v*");
 			}
 
+		// print out trigger names from tr, not from trigNames
+		if (true) //(debug)
+			{ // TODO: make a separate executable
+			LogInfo ("Demo") << "Printing HLT trigger list" << endl;
+			LogInfo ("Demo") << "-- Commented out --" << endl;
+			int i = 0;
+			for (edm::TriggerNames::Strings::const_iterator trnames = tr.triggerNames().begin(); trnames!=tr.triggerNames().end(); ++trnames, ++i)
+				{
+				LogInfo ("Demo") << i << "\t" << *trnames << endl;
+				}
+			LogInfo ("Demo") << "----------- End of trigger list ----------" << endl;
+			//return 0;
+			}
+
 		if (record_jets)
 			{
 			jetsHLT = jetsHLT140 || jetsHLT400;
