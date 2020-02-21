@@ -209,6 +209,13 @@ int GenDistrs_make_histos_in_FileService(edm::Service<TFileService>& fs)
 	fstate = new FinalStateProcess("mutau3h", {{13,13}, {15*30,1000*1000}}, fs);
 	all_final_states.push_back(fstate);
 
+	// DY tautau final states
+	fstate = new FinalStateProcess("taueltauh", {{11,11}, {15*15,1000*1000}}, fs);
+	all_final_states.push_back(fstate);
+	fstate = new FinalStateProcess("taumutauh", {{11,11}, {15*15,1000*1000}}, fs);
+	all_final_states.push_back(fstate);
+	// with no difference between tauh -- add if needed
+
 	// lepton+jets, in ttbar and wjets
 	fstate = new FinalStateProcess("el",   {{1,1}, {11,11}} , fs);
 	all_final_states.push_back(fstate);
