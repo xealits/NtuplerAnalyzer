@@ -28,6 +28,8 @@ struct recorded_histos {
 struct recorded_gen_histos {
 	TH1D* h_lep_pts[2];
 	TH1D* h_lep_etas[2];
+	TH1D* h_jet_pts[2];
+	TH1D* h_jet_etas[2];
 	TH1D* h_bjet_pts[2];
 	TH1D* h_bjet_etas[2];
 };
@@ -120,15 +122,20 @@ FinalStateProcess::FinalStateProcess(std::string name,
 proc_name(name),
 proc_selection_ranges(dilep_ranges)
 	{
-	params.h_lep_pts[0]  = quick_fs_histo_pt(l0);
-	params.h_lep_pts[1]  = quick_fs_histo_pt(l1);
-	params.h_lep_etas[0] = quick_fs_histo_eta(l0);
-	params.h_lep_etas[1] = quick_fs_histo_eta(l1);
+	params.h_lep_pts[0]  = quick_fs_histo_pt  (l0);
+	params.h_lep_pts[1]  = quick_fs_histo_pt  (l1);
+	params.h_lep_etas[0] = quick_fs_histo_eta (l0);
+	params.h_lep_etas[1] = quick_fs_histo_eta (l1);
 
-	params.h_bjet_pts[0]  = quick_fs_histo_pt(b0);
-	params.h_bjet_pts[1]  = quick_fs_histo_pt(b1);
-	params.h_bjet_etas[0] = quick_fs_histo_eta(b0);
-	params.h_bjet_etas[1] = quick_fs_histo_eta(b1);
+	params.h_jet_pts[0]  = quick_fs_histo_pt  (j0);
+	params.h_jet_pts[1]  = quick_fs_histo_pt  (j1);
+	params.h_jet_etas[0] = quick_fs_histo_eta (j0);
+	params.h_jet_etas[1] = quick_fs_histo_eta (j1);
+
+	params.h_bjet_pts[0]  = quick_fs_histo_pt  (b0);
+	params.h_bjet_pts[1]  = quick_fs_histo_pt  (b1);
+	params.h_bjet_etas[0] = quick_fs_histo_eta (b0);
+	params.h_bjet_etas[1] = quick_fs_histo_eta (b1);
 	}
 
 void FinalStateProcess::record_histos(struct GenDistrs_recorded_gen_objects gen_obj)
@@ -147,9 +154,12 @@ void FinalStateProcess::record_histos(struct GenDistrs_recorded_gen_objects gen_
 			gen_obj.leps[0], gen_obj.leps[1],
 			{{params.h_lep_pts[0], params.h_lep_pts[1]}, {params.h_lep_etas[0], params.h_lep_etas[1]}});
 		}
-	// sort jets by pT
+	// sort b jets by pT
 	record_a_pair_sorted_by_pt(gen_obj.bjets[0], gen_obj.bjets[1],
 		{{params.h_bjet_pts[0], params.h_bjet_pts[1]}, {params.h_bjet_etas[0], params.h_bjet_etas[1]}});
+	// same for other jets
+	record_a_pair_sorted_by_pt(gen_obj.jets[0], gen_obj.jets[1],
+		{{params.h_jet_pts[0], params.h_jet_pts[1]}, {params.h_jet_etas[0], params.h_jet_etas[1]}});
 	}
 
 std::vector<FinalStateProcess*> all_final_states;

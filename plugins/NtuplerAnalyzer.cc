@@ -1532,6 +1532,16 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	iEvent.getByToken(jets_, jetsHandle);
 	if(jetsHandle.isValid() ) jets = *jetsHandle;
 
+	// get genJets from the event
+	// needed for truth matching and gen-level distributions
+	std::vector<reco::GenJet> genJets;
+	edm::Handle<std::vector<reco::GenJet>> genJetsHandle;
+	//genJetsHandle.getByLabel(ev, "slimmedGenJets");
+	iEvent.getByToken( genJets_, genJetsHandle); // twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#GenJets
+	if (genJetsHandle.isValid() ) genJets = *genJetsHandle;
+	// sort by pT
+	std::sort(genJets.begin(), genJets.end(), utils::sort_CandidatesByPt);
+
 	// for matching reco to gen I need
 	// leptons (11, 13), taus (15) and tau od DM10 (3ch) from hard processes or from tt decay in case of tt
 	// and visible products of W and b in case of tt
@@ -1553,6 +1563,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	//  - gen nvtx
 	//  - gen NUP (NUmber of Particles? needed for WNJets)
 	//  - top pt-s, channel ID and other processing gen particles (save LorentzVector of generated taus, or non-neutrino part of generated tau)
+	// PARSING the gen-level info for truth matching etc
 	if(isMC)
 		{
 		LogInfo ("Demo") << "Processing MC";
@@ -2460,6 +2471,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				// no bjets
 				//NT_gen_decay_bjet1_p4 = NT_gen_t_b_final_p4;
 				//NT_gen_decay_bjet2_p4 = NT_gen_tb_b_final_p4;
+				// common jets
+				if (genJets.size()>0) NT_gen_decay_jet1_p4 = genJets[0].p4();
+				if (genJets.size()>1) NT_gen_decay_jet2_p4 = genJets[1].p4();
 				}
 
 			if (isWJets)
@@ -2481,6 +2495,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					NT_gen_decay_lep1_p4 = gen_leading_W_lepton;
 					//NT_gen_decay_lep2_p4 = 0;
 					}
+				// common jets
+				if (genJets.size()>0) NT_gen_decay_jet1_p4 = genJets[0].p4();
+				if (genJets.size()>1) NT_gen_decay_jet2_p4 = genJets[1].p4();
 				}
 
 			if (isTT)
@@ -2498,11 +2515,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				if (abs(NT_gen_decay_lep1_id) > 1) NT_gen_decay_lep1_p4 = (NT_gen_t_w1_final_p4 + NT_gen_t_w2_final_p4);
 				if (abs(NT_gen_decay_lep1_id) > 1) NT_gen_decay_lep2_p4 = (NT_gen_tb_w1_final_p4 + NT_gen_tb_w2_final_p4);
 
+				// the final states from b quarks
 				NT_gen_decay_bjet1_p4 = NT_gen_t_b_final_p4;
 				NT_gen_decay_bjet2_p4 = NT_gen_tb_b_final_p4;
-				// and no
-				//NT_gen_decay_jet1_p4
-				//NT_gen_decay_jet2_p4
+				// common jets
+				if (genJets.size()>0) NT_gen_decay_jet1_p4 = genJets[0].p4();
+				if (genJets.size()>1) NT_gen_decay_jet2_p4 = genJets[1].p4();
 				}
 			LogInfo ("Demo") << "Found: t decay = " << NT_gen_t_w_decay_id << " ; tb decay = " << NT_gen_tb_w_decay_id << " is Sig " << isTTSignal;
 
@@ -2511,7 +2529,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			GenDistrs_record((struct GenDistrs_recorded_gen_objects) {
 					{NT_gen_decay_lep1_id, NT_gen_decay_lep2_id},
 					{&NT_gen_decay_lep1_p4, &NT_gen_decay_lep2_p4},
-					//&NT_gen_decay_jet1_p4, &NT_gen_decay_jet2_p4,
+					{&NT_gen_decay_jet1_p4, &NT_gen_decay_jet2_p4},
 					{&NT_gen_decay_bjet1_p4, &NT_gen_decay_bjet2_p4},
 				});
 			}
@@ -3543,13 +3561,6 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// PAT jets are opened above
 	// to have access to their partonFlavour/hadronFlavour
 	// at processing MC weights
-
-	// get genJets from the event
-	std::vector<reco::GenJet> genJets;
-	edm::Handle<std::vector<reco::GenJet>> genJetsHandle;
-	//genJetsHandle.getByLabel(ev, "slimmedGenJets");
-	iEvent.getByToken( genJets_, genJetsHandle); // twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2016#GenJets
-	if (genJetsHandle.isValid() ) genJets = *genJetsHandle;
 
 	LorentzVector full_jet_corr(0., 0., 0., 0.);
 	//pat::JetCollection IDjets;

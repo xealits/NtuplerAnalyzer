@@ -16,6 +16,7 @@ int GenDistrs_cleanup(void);
 struct GenDistrs_recorded_gen_objects {
 	Int_t lep_ids[2];
 	LorentzVector* leps[2];
+	LorentzVector* jets[2];
 	LorentzVector* bjets[2];
 };
 int GenDistrs_record(struct GenDistrs_recorded_gen_objects);
