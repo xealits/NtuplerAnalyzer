@@ -26,8 +26,11 @@ struct recorded_histos {
 /** the definition of parameters recorded in each final state
 */
 struct recorded_gen_histos {
+	TH1D* h_lep_control_ids[2];
 	TH1D* h_lep_pts[2];
+	TH2D* h_lep_pt_pt;
 	TH1D* h_lep_etas[2];
+	TH2D* h_lep_pts_etas[2];
 	TH1D* h_jet_pts[2];
 	TH1D* h_jet_etas[2];
 	TH1D* h_bjet_pts[2];
@@ -65,24 +68,6 @@ int record_a_pair_sorted_by_pt(const LorentzVector* v1, const LorentzVector* v2,
 	return 0; //Success
 	}
 
-/** sort by PDG ID
-
-does not merge different tauh yet!
-*/
-int record_leptons_sorted_by_ID(const Int_t id1, const Int_t id2,
-		const LorentzVector* v1, const LorentzVector* v2,
-		struct recorded_histos histos)
-	{
-	//
-	unsigned int lowest_id = id1 < id2 ? 0 : 1;
-	auto another_id = 1 - lowest_id;
-	histos.pts[lowest_id]  ->Fill(v1->pt());
-	histos.pts[another_id] ->Fill(v2->pt());
-	histos.etas[lowest_id] ->Fill(v1->eta());
-	histos.etas[another_id]->Fill(v2->eta());
-	return 0; //Success
-	}
-
 
 class FinalStateProcess
 {
@@ -113,8 +98,11 @@ public:
 	void record_histos(struct GenDistrs_recorded_gen_objects);
 };
 
-#define quick_fs_histo_pt(obj)  fs->make<TH1D>((proc_name + "_" #obj "_pt" ).c_str(), (proc_name + "_" #obj "_pt ").c_str(),  200,  0, 200)
-#define quick_fs_histo_eta(obj) fs->make<TH1D>((proc_name + "_" #obj "_eta").c_str(), (proc_name + "_" #obj "_eta").c_str(),  200, -3.0, 3.0)
+#define quick_fs_histo_control_id(obj)     fs->make<TH1D>((proc_name + "_" #obj "_id" ).c_str(), (proc_name + "_" #obj "_id ").c_str(),  200,  0, 200)
+#define quick_fs_histo_pt(obj)     fs->make<TH1D>((proc_name + "_" #obj "_pt" ).c_str(), (proc_name + "_" #obj "_pt ").c_str(),  200,  0, 200)
+#define quick_fs_histo_eta(obj)    fs->make<TH1D>((proc_name + "_" #obj "_eta").c_str(), (proc_name + "_" #obj "_eta").c_str(),  200, -3.0, 3.0)
+#define quick_fs_histo_pt_eta(obj) fs->make<TH2D>((proc_name + "_" #obj "_pt_eta").c_str(), (proc_name + "_" #obj "_pt_eta").c_str(), 40, 0, 200,  40, -3.0, 3.0)
+#define quick_fs_histo_pt_pt(obj)  fs->make<TH2D>((proc_name + "_" #obj "_pt_pt").c_str(), (proc_name + "_" #obj "_pt_pt").c_str(), 40, 0, 200,  40, 0, 200)
 
 FinalStateProcess::FinalStateProcess(std::string name,
 		struct dilep_id_ranges dilep_ranges,
@@ -122,10 +110,15 @@ FinalStateProcess::FinalStateProcess(std::string name,
 proc_name(name),
 proc_selection_ranges(dilep_ranges)
 	{
+	params.h_lep_control_ids[0]  = quick_fs_histo_control_id  (l0);
+	params.h_lep_control_ids[1]  = quick_fs_histo_control_id  (l1);
 	params.h_lep_pts[0]  = quick_fs_histo_pt  (l0);
 	params.h_lep_pts[1]  = quick_fs_histo_pt  (l1);
+	params.h_lep_pt_pt   = quick_fs_histo_pt_pt (l0l1);
 	params.h_lep_etas[0] = quick_fs_histo_eta (l0);
 	params.h_lep_etas[1] = quick_fs_histo_eta (l1);
+	params.h_lep_pts_etas[0] = quick_fs_histo_pt_eta (l0);
+	params.h_lep_pts_etas[1] = quick_fs_histo_pt_eta (l1);
 
 	params.h_jet_pts[0]  = quick_fs_histo_pt  (j0);
 	params.h_jet_pts[1]  = quick_fs_histo_pt  (j1);
@@ -140,20 +133,48 @@ proc_selection_ranges(dilep_ranges)
 
 void FinalStateProcess::record_histos(struct GenDistrs_recorded_gen_objects gen_obj)
 	{
+	unsigned int leading_lep, sublead_lep;
 	// sort leptons by IDs if they are different
 	if (abs(gen_obj.lep_ids[0]) != abs(gen_obj.lep_ids[1]))
 		{
-		record_leptons_sorted_by_ID(abs(gen_obj.lep_ids[0]), abs(gen_obj.lep_ids[1]),
-			gen_obj.leps[0], gen_obj.leps[1],
-			{{params.h_lep_pts[0], params.h_lep_pts[1]}, {params.h_lep_etas[0], params.h_lep_etas[1]}});
+		//record_leptons_sorted_by_ID(abs(gen_obj.lep_ids[0]), abs(gen_obj.lep_ids[1]),
+		//	gen_obj.leps[0], gen_obj.leps[1],
+		//	{{params.h_lep_pts[0], params.h_lep_pts[1]}, {params.h_lep_etas[0], params.h_lep_etas[1]}});
+		//histos.pts[lowest_id]  ->Fill(v1->pt());
+		//histos.pts[another_id] ->Fill(v2->pt());
+
+		unsigned int lowest_id = abs(gen_obj.lep_ids[0]) < abs(gen_obj.lep_ids[1]) ? 0 : 1;
+		auto another_id = 1 - lowest_id;
+		// many variables with names to describe the semantics of what is done
+		leading_lep = lowest_id;
+		sublead_lep = another_id;
 		}
+
 	else
 	// otherwise by pT
 		{
-		record_a_pair_sorted_by_pt(
-			gen_obj.leps[0], gen_obj.leps[1],
-			{{params.h_lep_pts[0], params.h_lep_pts[1]}, {params.h_lep_etas[0], params.h_lep_etas[1]}});
+		//record_a_pair_sorted_by_pt(
+		//	gen_obj.leps[0], gen_obj.leps[1],
+		//	{{params.h_lep_pts[0], params.h_lep_pts[1]}, {params.h_lep_etas[0], params.h_lep_etas[1]}});
+
+		double pts[2] = {gen_obj.leps[0]->pt(), gen_obj.leps[1]->pt()};
+
+		unsigned int larger_pt = pts[0] > pts[1] ? 0 : 1;
+		auto another_pt = 1 - larger_pt;
+		leading_lep = larger_pt;
+		sublead_lep = another_pt;
 		}
+
+	params.h_lep_control_ids[leading_lep] ->Fill(gen_obj.lep_ids[0]);
+	params.h_lep_control_ids[sublead_lep] ->Fill(gen_obj.lep_ids[1]);
+	params.h_lep_pts[leading_lep] ->Fill(gen_obj.leps[0]->pt());
+	params.h_lep_pts[sublead_lep] ->Fill(gen_obj.leps[1]->pt());
+	params.h_lep_pt_pt ->Fill(gen_obj.leps[0]->pt(), gen_obj.leps[1]->pt());
+	params.h_lep_etas[leading_lep] ->Fill(gen_obj.leps[0]->eta());
+	params.h_lep_etas[sublead_lep]->Fill(gen_obj.leps[1]->eta());
+	params.h_lep_pts_etas[leading_lep]  ->Fill(gen_obj.leps[0]->pt(), gen_obj.leps[0]->eta());
+	params.h_lep_pts_etas[sublead_lep] ->Fill(gen_obj.leps[1]->pt(), gen_obj.leps[1]->eta());
+
 	// sort b jets by pT
 	record_a_pair_sorted_by_pt(gen_obj.bjets[0], gen_obj.bjets[1],
 		{{params.h_bjet_pts[0], params.h_bjet_pts[1]}, {params.h_bjet_etas[0], params.h_bjet_etas[1]}});

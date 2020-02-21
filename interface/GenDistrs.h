@@ -3,6 +3,7 @@
 
 #include "Math/Vector4D.h"
 #include "TH1D.h"
+#include "TH2D.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
