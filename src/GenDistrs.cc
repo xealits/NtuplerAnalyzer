@@ -190,13 +190,29 @@ int GenDistrs_make_histos_in_FileService(edm::Service<TFileService>& fs)
 	FinalStateProcess* fstate;
 	fstate = new FinalStateProcess("elel",   {{11,11}, {11,11}} , fs);
 	all_final_states.push_back(fstate);
+	fstate = new FinalStateProcess("mumu",   {{13,13}, {13,13}} , fs);
+	all_final_states.push_back(fstate);
+	fstate = new FinalStateProcess("elmu",   {{11,11}, {13,13}} , fs);
+	all_final_states.push_back(fstate);
+
 	fstate = new FinalStateProcess("eltaul", {{11,11}, {15*11,15*11}}, fs);
 	all_final_states.push_back(fstate);
 	//fstate = new FinalStateProcess("taulel", {{11,11}, {11,11}} );
 	//all_final_states.push_back(fstate);
+
 	fstate = new FinalStateProcess("eltau1h", {{11,11}, {15*15,15*29}}, fs);
 	all_final_states.push_back(fstate);
 	fstate = new FinalStateProcess("eltau3h", {{11,11}, {15*30,1000*1000}}, fs);
+	all_final_states.push_back(fstate);
+	fstate = new FinalStateProcess("mutau1h", {{13,13}, {15*15,15*29}}, fs);
+	all_final_states.push_back(fstate);
+	fstate = new FinalStateProcess("mutau3h", {{13,13}, {15*30,1000*1000}}, fs);
+	all_final_states.push_back(fstate);
+
+	// lepton+jets, in ttbar and wjets
+	fstate = new FinalStateProcess("el",   {{1,1}, {11,11}} , fs);
+	all_final_states.push_back(fstate);
+	fstate = new FinalStateProcess("mu",   {{1,1}, {13,13}} , fs);
 	all_final_states.push_back(fstate);
 
 	return 0; // Success
