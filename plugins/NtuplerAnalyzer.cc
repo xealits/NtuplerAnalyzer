@@ -1906,6 +1906,9 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		iEvent.getByToken(genParticle_, genHandle);
 
 		NT_gen_genPx = 0, NT_gen_genPy = 0, NT_gen_visPx = 0, NT_gen_visPy = 0;
+		LorentzVector gen_Z_decay_product[2], gen_temp_prompt_lepton_sum_fstates, gen_leading_W_lepton;
+		bool gen_leading_W_lepton_saved = false;
+		vector<LorentzVector> gen_prompt_leptons;
 		if(genHandle.isValid())
 			{
 			gen = *genHandle;
@@ -2289,8 +2292,20 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					NT_gen_pythia8_prompt_leptons_N += 1;
 					int gen_prompt_lepton_ID = id;
 					if (abs(id) == 15)
+						{
 						gen_prompt_lepton_ID *= simple_tau_decay_id(&p);
+						// sum the tau decay products
+						sum_separate_final_cands(&p, gen_temp_prompt_lepton_sum_fstates, true);
+						gen_prompt_leptons.push_back(gen_temp_prompt_lepton_sum_fstates);
+						gen_temp_prompt_lepton_sum_fstates.SetXYZT(0,0,0,0);
+						}
+					else
+						{
+						// just p4 of final states
+						gen_prompt_leptons.push_back(p.p4());
+						}
 					NT_gen_pythia8_prompt_leptons_IDs.push_back(gen_prompt_lepton_ID);
+
 					LogInfo ("Demo") << "Found (pythia8) prompt lepton: " << id << ' ' << gen_prompt_lepton_ID << ' ' << NT_gen_pythia8_prompt_leptons_N;
 					}
 
@@ -2311,6 +2326,19 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 						}
 					NT_gen_zdecays_IDs.push_back(d0_id);
 					NT_gen_zdecays_IDs.push_back(d1_id);
+
+					// save the p4 of decay products for later
+					if (a_d0_id == 15)
+						{
+						// save only visible products for taus
+						sum_separate_final_cands(p.daughter(0), gen_Z_decay_product[0], true);
+						sum_separate_final_cands(p.daughter(1), gen_Z_decay_product[1], true);
+						}
+					else if (a_d0_id == 11 || a_d0_id == 13) // light leptons
+						{
+						gen_Z_decay_product[0] = p.daughter(0)->p4();
+						gen_Z_decay_product[1] = p.daughter(1)->p4();
+						}
 					}
 
 				// and W->Lnu processes, apparently prompt leptons don't work there -- sometimes lepton goes directly to final state
@@ -2380,6 +2408,11 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 					NT_gen_N_wdecays += 1;
 					NT_gen_wdecays_IDs.push_back(wdecay_id);
+					if (!gen_leading_W_lepton_saved)
+						{
+						sum_separate_final_cands(p.daughter(lep_daughter), gen_leading_W_lepton, true);
+						gen_leading_W_lepton_saved = true;
+						}
 					LogInfo ("Demo") << "done with W";
 					}
 				}
@@ -2390,6 +2423,64 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				NT_genMass = genMomentum.M();
 				// weight in processing
 				//NT_zPtWeight = zPtMass_histo->GetBinContent(zPtMass_histo->GetXaxis()->FindBin(NT_genMass), zPtMass_histo->GetYaxis()->FindBin(NT_genPt));
+
+				// DY general gen-level objects
+				/* most of DY events have a Z boson
+				then the decay is defined by gen_N_zdecays  -- the number of Z boson decays in the event
+				and by IDs of each decay in gen_zdecays_IDs -- the PDG IDs of the two products of Z boson decay
+
+				but
+				sometimes there are no Z bosons -- the process went through a virtual photon
+				then you have to look at gen_pythia8_prompt_leptons_N and gen_pythia8_prompt_leptons_IDs
+				ironically, this gen_pythia8_prompt_leptons_N not always = 2, sometimes it is 0
+				but luckily there is never a case when both
+				gen_pythia8_prompt_leptons_N = 0 and gen_N_zdecays = 0
+
+				check in the ntuples with:
+				ttree->Draw("gen_pythia8_prompt_leptons_N:gen_N_zdecays", "", "col")
+				*/
+
+				NT_gen_decay_lep1_id = 0;
+				NT_gen_decay_lep2_id = 0;
+				if (NT_gen_N_zdecays > 0)
+					{
+					NT_gen_decay_lep1_id = NT_gen_zdecays_IDs[0];
+					NT_gen_decay_lep2_id = NT_gen_zdecays_IDs[1];
+					NT_gen_decay_lep1_p4 = gen_Z_decay_product[0];
+					NT_gen_decay_lep2_p4 = gen_Z_decay_product[1];
+					}
+				else if (NT_gen_pythia8_prompt_leptons_N > 0)
+					{
+					NT_gen_decay_lep1_id = NT_gen_pythia8_prompt_leptons_IDs[0];
+					NT_gen_decay_lep2_id = NT_gen_pythia8_prompt_leptons_IDs[1];
+					NT_gen_decay_lep1_p4 = gen_prompt_leptons[0];
+					NT_gen_decay_lep2_p4 = gen_prompt_leptons[1];
+					}
+
+				// no bjets
+				//NT_gen_decay_bjet1_p4 = NT_gen_t_b_final_p4;
+				//NT_gen_decay_bjet2_p4 = NT_gen_tb_b_final_p4;
+				}
+
+			if (isWJets)
+				{
+				/* in WJets gen_N_wdecays >= 1, it mostly = 1, rarely there are 2 W bosons, and very rarely 3
+				so, let's pick up the first W and assume it corresponds to the hard process
+				NT_gen_wdecays_IDs does not contain neutrinos!
+				*/
+
+				NT_gen_decay_lep1_id = 0;
+				NT_gen_decay_lep2_id = 0;
+				if (NT_gen_N_wdecays > 0)
+					{
+					/* we look only at leptonic W decays
+					 * one of the products is neutrino
+					 */
+					NT_gen_decay_lep1_id = NT_gen_wdecays_IDs[0];
+					NT_gen_decay_lep2_id = 1; // neutrino
+					NT_gen_decay_lep1_p4 = gen_leading_W_lepton;
+					//NT_gen_decay_lep2_p4 = 0;
+					}
 				}
 
 			if (isTT)
@@ -2910,6 +3001,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 
 		// print out trigger names from tr, not from trigNames
+		/*
 		if (true) //(debug)
 			{ // TODO: make a separate executable
 			LogInfo ("Demo") << "Printing HLT trigger list" << endl;
@@ -2922,6 +3014,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			LogInfo ("Demo") << "----------- End of trigger list ----------" << endl;
 			//return 0;
 			}
+		*/
 
 		if (record_jets)
 			{

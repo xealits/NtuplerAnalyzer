@@ -372,6 +372,39 @@ if (!save_only_visible)
 // strictly sequencial algorithm
 }
 
+/** sumup visible momenta of gen tau products
+*/
+void sum_separate_final_cands(
+	const reco::Candidate * part,
+	LorentzVector& sum_parts,
+	bool save_only_visible)
+
+{
+unsigned int pdgId = abs(part->pdgId());
+unsigned int ndaughters = part->numberOfDaughters();
+if (ndaughters == 0) // it's a final state
+	{
+	// handle neutrinos
+	if (pdgId == 12 || pdgId == 14 || pdgId == 16)
+		{
+		if (!save_only_visible) sum_parts += part->p4();
+		}
+	else // add up everything else
+		{
+		sum_parts += part->p4();
+		}
+	}
+
+	else
+		{
+		// loop through daughters
+		for (int d_i=0; d_i < ndaughters; d_i++)
+			{
+			const reco::Candidate * daughter = part->daughter(d_i);
+			sum_separate_final_cands(daughter, sum_parts, save_only_visible);
+			}
+		}
+}
 
 /*
  * save all visible no-daughters candidates (leaf candidates)

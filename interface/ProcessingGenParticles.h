@@ -39,6 +39,11 @@ void sum_final_cands(
 	LorentzVector& sum_vis,
 	bool save_only_visible);
 
+void sum_separate_final_cands(
+	const reco::Candidate * part,
+	LorentzVector& sum_parts,
+	bool save_only_visible = true);
+
 int parse_chain_id(const reco::Candidate& part);
 
 #endif /* PROCESSINGGENPARTICLES_H */
