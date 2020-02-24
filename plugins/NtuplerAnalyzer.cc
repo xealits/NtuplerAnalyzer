@@ -2370,6 +2370,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					int wdecay_id = 1;
 					int d0_id = abs(p.daughter(0)->pdgId());
 					int d1_id = abs(p.daughter(1)->pdgId());
+					if (d0_id == 24 || d1_id == 24) continue; // skip W->W+gamma transitions
 					LogInfo ("Demo") << "processing standalone W " << d0_id << ' ' << d1_id;
 
 					int lep_daughter = (d0_id == 11 || d0_id == 13 || d0_id == 15 ? 0 : (d1_id == 11 || d1_id == 13 || d1_id == 15 ? 1 : -1));
