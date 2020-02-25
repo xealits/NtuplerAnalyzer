@@ -132,7 +132,7 @@ if 'INFILE' in environ:
 if any('2015' in infile for infile in input_files) or '2015' in dtag:
     HLT_source = 'HLT2'
 
-record_scheme = 'tauID_Dilep' # 'signal_recordAll' # 'signal' # 'tauID' # 'tauCands' #  Dilep MonitorHLT tauIDantiIso jets'
+record_scheme = ['tauID','Dilep'] # ('signal','recordAll') # ('signal',) # ('tauID',) # ('tauCands',) #  Dilep MonitorHLT tauIDantiIso jets'
 
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/26ABF488-A0BE-E611-BEEB-0CC47A4D7640.root'
  #'root://eoscms//eos/cms///store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/165F54A0-A3BE-E611-B3F7-0025905A606A.root'
@@ -154,7 +154,7 @@ ivars.inputFiles = input_files
 
 to_tag = True
 
-output_file = './NtuplerAnalyzer_test_%s_METfilters%s_%s_%s.root' % ('MC' if isMC else 'Data', 'OFF' if to_tag else 'ON', dtag, record_scheme)
+output_file = './NtuplerAnalyzer_test_%s_METfilters%s_%s_%s.root' % ('MC' if isMC else 'Data', 'OFF' if to_tag else 'ON', dtag, '_'.join(record_scheme))
 ivars.outputFile = output_file
 # get and parse the command line arguments
 ivars.parseArguments()
