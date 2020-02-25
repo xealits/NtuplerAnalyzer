@@ -210,9 +210,9 @@ int GenDistrs_make_histos_in_FileService(edm::Service<TFileService>& fs)
 	all_final_states.push_back(fstate);
 
 	// DY tautau final states
-	fstate = new FinalStateProcess("taueltauh", {{11,11}, {15*15,1000*1000}}, fs);
+	fstate = new FinalStateProcess("taueltauh", {{15*11,15*11}, {15*15,1000*1000}}, fs);
 	all_final_states.push_back(fstate);
-	fstate = new FinalStateProcess("taumutauh", {{11,11}, {15*15,1000*1000}}, fs);
+	fstate = new FinalStateProcess("taumutauh", {{15*13,15*13}, {15*15,1000*1000}}, fs);
 	all_final_states.push_back(fstate);
 	// with no difference between tauh -- add if needed
 
@@ -220,6 +220,8 @@ int GenDistrs_make_histos_in_FileService(edm::Service<TFileService>& fs)
 	fstate = new FinalStateProcess("el",   {{1,1}, {11,11}} , fs);
 	all_final_states.push_back(fstate);
 	fstate = new FinalStateProcess("mu",   {{1,1}, {13,13}} , fs);
+	all_final_states.push_back(fstate);
+	fstate = new FinalStateProcess("tauh", {{1,1}, {15*15,1000*1000}} , fs);
 	all_final_states.push_back(fstate);
 
 	return 0; // Success
