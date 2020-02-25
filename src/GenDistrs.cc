@@ -100,7 +100,9 @@ public:
 
 #define quick_fs_histo_control_id(obj)     fs->make<TH1D>((proc_name + "_" #obj "_id" ).c_str(), (proc_name + "_" #obj "_id ").c_str(),  200,  0, 200)
 #define quick_fs_histo_pt(obj)     fs->make<TH1D>((proc_name + "_" #obj "_pt" ).c_str(), (proc_name + "_" #obj "_pt ").c_str(),  200,  0, 200)
-#define quick_fs_histo_eta(obj)    fs->make<TH1D>((proc_name + "_" #obj "_eta").c_str(), (proc_name + "_" #obj "_eta").c_str(),  200, -3.0, 3.0)
+#define quick_fs_histo_pt150(obj)  fs->make<TH1D>((proc_name + "_" #obj "_pt" ).c_str(), (proc_name + "_" #obj "_pt ").c_str(),  150,  0, 150)
+#define quick_fs_histo_pt200(obj)  fs->make<TH1D>((proc_name + "_" #obj "_pt" ).c_str(), (proc_name + "_" #obj "_pt ").c_str(),  200,  0, 200)
+#define quick_fs_histo_eta(obj)    fs->make<TH1D>((proc_name + "_" #obj "_eta").c_str(), (proc_name + "_" #obj "_eta").c_str(),  50, -2.5, 2.5)
 #define quick_fs_histo_pt_eta(obj) fs->make<TH2D>((proc_name + "_" #obj "_pt_eta").c_str(), (proc_name + "_" #obj "_pt_eta").c_str(), 40, 0, 200,  40, -3.0, 3.0)
 #define quick_fs_histo_pt_pt(obj)  fs->make<TH2D>((proc_name + "_" #obj "_pt_pt").c_str(), (proc_name + "_" #obj "_pt_pt").c_str(), 40, 0, 200,  40, 0, 200)
 
@@ -112,21 +114,21 @@ proc_selection_ranges(dilep_ranges)
 	{
 	params.h_lep_control_ids[0]  = quick_fs_histo_control_id  (l0);
 	params.h_lep_control_ids[1]  = quick_fs_histo_control_id  (l1);
-	params.h_lep_pts[0]  = quick_fs_histo_pt  (l0);
-	params.h_lep_pts[1]  = quick_fs_histo_pt  (l1);
+	params.h_lep_pts[0]  = quick_fs_histo_pt150  (l0);
+	params.h_lep_pts[1]  = quick_fs_histo_pt150  (l1);
 	params.h_lep_pt_pt   = quick_fs_histo_pt_pt (l0l1);
 	params.h_lep_etas[0] = quick_fs_histo_eta (l0);
 	params.h_lep_etas[1] = quick_fs_histo_eta (l1);
 	params.h_lep_pts_etas[0] = quick_fs_histo_pt_eta (l0);
 	params.h_lep_pts_etas[1] = quick_fs_histo_pt_eta (l1);
 
-	params.h_jet_pts[0]  = quick_fs_histo_pt  (j0);
-	params.h_jet_pts[1]  = quick_fs_histo_pt  (j1);
+	params.h_jet_pts[0]  = quick_fs_histo_pt200  (j0);
+	params.h_jet_pts[1]  = quick_fs_histo_pt200  (j1);
 	params.h_jet_etas[0] = quick_fs_histo_eta (j0);
 	params.h_jet_etas[1] = quick_fs_histo_eta (j1);
 
-	params.h_bjet_pts[0]  = quick_fs_histo_pt  (b0);
-	params.h_bjet_pts[1]  = quick_fs_histo_pt  (b1);
+	params.h_bjet_pts[0]  = quick_fs_histo_pt200  (b0);
+	params.h_bjet_pts[1]  = quick_fs_histo_pt200  (b1);
 	params.h_bjet_etas[0] = quick_fs_histo_eta (b0);
 	params.h_bjet_etas[1] = quick_fs_histo_eta (b1);
 	}
