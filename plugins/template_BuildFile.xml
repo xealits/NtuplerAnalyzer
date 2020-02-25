@@ -26,3 +26,8 @@
 <flags EDM_PLUGIN="1"/>
 <flags CPPDEFINES="BFRAG_PROC=2016"/>
 
+<!-- use these at debug:
+-g  adds the debug symbols, so gdb can parse the compiled file
+-O0 suppresses optimization, so that the code in the compile file corresponds exactly to cpp source
+<flags CXXFLAGS="-Wno-sign-compare -Wno-unused-variable -Wno-unused-but-set-variable  -g -O0"/>
+-->
