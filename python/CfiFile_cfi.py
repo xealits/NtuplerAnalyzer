@@ -125,7 +125,7 @@ ntupler = cms.EDAnalyzer('NtuplerAnalyzer' ,
 
     jet_kino_cuts_pt  = cms.double( 10.),
     jet_kino_cuts_eta = cms.double( 2.5),
-    tau_kino_cuts_pt  = cms.double( 20.),
+    tau_kino_cuts_pt  = cms.double( 10.), # <-- I think the recommendation says only the taus with pT>18 are saved
     tau_kino_cuts_eta = cms.double( 2.4),
 
     # object names, variable among datasets and reco-s
