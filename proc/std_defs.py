@@ -743,6 +743,7 @@ distr_defs = {
     'relIso_mu':     ({'NOMINAL': lambda ev: ev.event_leptons_alliso_reliso[0] if len(ev.event_leptons_alliso_reliso) > 0 else -111.},  ('custom-range', [0, 0.15, 0.25, 0.5, 1., 2., 4.])),
     'relIso_mu_ext': ({'NOMINAL': lambda ev: ev.event_leptons_alliso_reliso[0] if len(ev.event_leptons_alliso_reliso) > 0 else -111.},  ('custom-range', [0, 0.15, 0.25, 0.5, 1., 2., 4., 8., 16.])),
     'yield':         ({'NOMINAL': lambda ev: 1},     ('histo-range',  [3,0.0,3.0])),
+    'nvtx':          ({'NOMINAL': lambda ev: 1},     ('histo-range',  [50, 0.0,50.0])),
 }
 
 # CHECK: implement multi-dim histos?

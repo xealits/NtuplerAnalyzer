@@ -95,11 +95,12 @@ fit_unc: min=0.5
 fit_unc: max=1.5
 fit_unc: toys=
 fit_unc:
-	combine -M MultiDimFit --algo none              ${toys} --rMin ${min} --rMax ${max} ${workspace} --saveWorkspace -n ${nn}Bestfit
+	combine -M MultiDimFit --algo none              ${toys} --rMin ${min} --rMax ${max} ${workspace} --saveWorkspace -n ${nn}Bestfit --freezeParameters r
 	combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters all --fastScan                   -n ${nn}NoSys
-	combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff,tau_fakes,lumi_13TeV" -n ${nn}NoTau
-	combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit                                                     -n ${nn}FullUncertaintyWLumi
-	combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "lumi_13TeV"                     -n ${nn}FullUncertaintyNoLumi
+	#combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "tauID_eff,tau_fakes,lumi_13TeV" -n ${nn}NoTau
+	combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "r,TAUID,tau_fakes,lumi_13TeV"     -n ${nn}NoTau
+	combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters r                                                    -n ${nn}FullUncertaintyWLumi
+	combine -M MultiDimFit --algo grid --points 100 ${toys} --rMin ${min} --rMax ${max} higgsCombine${nn}Bestfit.MultiDimFit.mH120.root --snapshotName MultiDimFit --freezeParameters "r,lumi_13TeV"                     -n ${nn}FullUncertaintyNoLumi
 	plot1DScan.py --output scan_${nn} higgsCombine${nn}FullUncertaintyWLumi.MultiDimFit.mH120.root --others 'higgsCombine${nn}FullUncertaintyNoLumi.MultiDimFit.mH120.root:lumi:4' 'higgsCombine${nn}NoSys.MultiDimFit.mH120.root:stat:2' --breakdown lumi,syst,stat
 
 fit_unc_toys: workspace=ttxsec/latest_datacard_mu.root

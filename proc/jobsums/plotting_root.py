@@ -50,7 +50,7 @@ nick_info = {
 "tt_eltau3ch":   {'color': rgb(254,204,92),    'legend': 't#bar{t}#rightarrow e#tau_{3h}'},
 
 #"tt_mutau":      {'color': rgb(255, 255, 178), 'legend': 't#bar{t}#rightarrow #mu#nu_{#mu}#tau_{h}#nu_{#tau}b#bar{b}'},
-"tt_mutau":      {'color': rgb(255, 255, 178), 'legend': 't#bar{t}#rightarrowe#bf{#mu}#nu#tau_{h}#nub#bar{b}'},
+"tt_mutau":      {'color': rgb(255, 255, 178), 'legend': 't#bar{t}#rightarrow#bf{#mu}#nu#tau_{h}#nub#bar{b}'},
 "tt_eltau":      {'color': rgb(254,204,92),    'legend': 't#bar{t}#rightarrowe#nu#tau_{h}#nub#bar{b}'},
 "tt_elmu":       {'color': rgb(254,224,210),   'legend': 't#bar{t}#rightarrowe#nu#mu#nub#bar{b}'},
 "tt_taultauh":   {'color': rgb(253,141,60),    'legend': 't#bar{t}#rightarrow#tau_{l}#nu#tau_{h}#nu b#bar{b}'},

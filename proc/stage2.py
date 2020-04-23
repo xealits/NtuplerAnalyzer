@@ -1943,6 +1943,12 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
     nup = array( 'i', [ 0 ] )
     ttree_out.Branch( 'nup', nup, 'nup/I' )
 
+    nvtx = array( 'i', [ 0 ] )
+    ttree_out.Branch( 'nvtx', nvtx, 'nvtx/I' )
+
+    nvtx_gen = array( 'i', [ 0 ] )
+    ttree_out.Branch( 'nvtx_gen', nvtx_gen, 'nvtx_gen/I' )
+
     # lj_var of the jets in the event
     event_jets_lj_var = array( 'f', [ 0 ] )
     ttree_out.Branch( 'event_jets_lj_var', event_jets_lj_var, 'event_jets_lj_var/f' )
@@ -2400,6 +2406,8 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         #if isWJetsInclusive and DO_W_STITCHING:
         #    if ev.gen_NUP > 5: continue
         nup[0] = ev.gen_NUP
+        nvtx[0]     = ev.nvtx
+        nvtx_gen[0] = ev.nvtx_gen
 
         #if iev <  range_min: continue
         #if iev >= 10: break
@@ -4420,10 +4428,11 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
 
         #if notpasses_tt_leptau and notpasses_em and notpasses_dy_tautau and notpasses_dy_mumu and notpasses_wjets and notpasses_alliso and notpasses_presel:
         # only main selection and preselection
-        #if notpasses_tt_leptau and notpasses_presel:
-        # only main selection
-        if notpasses_tt_leptau:
+        if notpasses_tt_leptau and notpasses_presel:
             continue
+        # only main selection
+        #if notpasses_tt_leptau:
+        #    continue
 
         # SAVE SELECTION, objects and weights
 
@@ -4480,7 +4489,7 @@ def full_loop(tree, ttree_out, dtag, lumi_bcdef, lumi_gh, logger, channels_to_se
         if requires_lj:
             # all jets, without regard to tau in the event go into the calculation
             # (taumatched jets go too)
-            with_all_permutation_masses = True
+            with_all_permutation_masses = False #True
             # order: not-b-taged, b-taged
             # only medium b-tags p8 p9
             b_cand_jets     = jets.medium + jets.taumatched[0]

@@ -77,7 +77,7 @@ y_title = args.y_title
 logging.info("import ROOT")
 
 import ROOT
-from ROOT import gStyle, gROOT, gPad, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TLine, TPaveText, TText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, kBlue, kBlack
+from ROOT import gStyle, gROOT, gPad, TFile, TCanvas, TPad, THStack, TH1D, TLegend, TLine, TArrow, TPaveText, TText, kGreen, kYellow, kOrange, kViolet, kAzure, kWhite, kGray, kRed, kCyan, kBlue, kBlack
 gROOT.SetBatch()
 gStyle.SetOptStat(0)
 #gStyle.SetLineWidth(2)
@@ -204,20 +204,22 @@ for i, fileparameter in enumerate(args.input_files):
 
 
 cst = TCanvas("cst","stacked hists",10,10,700,700)
+cst.Draw("Y+")
 
 y_axis_tick_len = 0.03
 bottom_margin = 0.17
 
 if args.add_outlier_plot:
-    padsplit_x = 0.9
+    padsplit_x = 0.89
     pad1 = TPad("pad1","This is pad1", 0.,  0., padsplit_x, 1.)
-    pad2 = TPad("pad2","This is pad2", padsplit_x, 0., 1.,  1.)
+    pad2 = TPad("pad2","This is pad2", padsplit_x, 0., 1., 1.)
     pad1.SetLeftMargin(0.14)
     pad1.SetRightMargin(0.)
     pad1.SetBottomMargin(bottom_margin)
     pad2.SetTitle("")
     pad2.SetLeftMargin(0.)
     pad2.SetBottomMargin(bottom_margin)
+    pad2.SetRightMargin(0.5)
     pad1.Draw()
     pad2.Draw()
 
@@ -239,8 +241,8 @@ if args.logy:
 
 if args.add_outlier_plot:
     pad2.SetTicks()
-    #pad1.SetTicks(1, 0) 
-    #pad2.SetTicks(0, 1)
+    pad1.SetTicks(1, 0) 
+    pad2.SetTicks(0, 0)
     if args.logy:
         pad2.SetLogy()
 
@@ -363,10 +365,7 @@ else:
             histo.SetMarkerColorAlpha(col, 0.)
 
         if style:
-            if style in styles:
-                stl = styles[style]
-            else:
-                stl = int(style)
+            stl = styles.get(style, int(style))
             histo.SetLineStyle(stl)
 
         form_histos.append(histo)
@@ -447,8 +446,12 @@ else:
             # draw the verticle line in the background
             if args.vertical_line:
                 x, ymin, ymax = (float(i) for i in args.vertical_line.split(','))
-                l = TLine(x, ymin, x, ymax)
-                l.Draw("same")
+                #l = TLine(x, ymin, x, ymax)
+                l = TArrow(x, ymin, x, ymax, 0.05, "<|")
+                l.SetAngle(40)
+                l.SetLineWidth(1)
+                l.Draw()
+                #l.Draw("same")
 
                 #drawn = True
                 #histo.Draw("hist same")
@@ -467,6 +470,8 @@ if not args.no_legend:
 if args.add_outlier_plot:
     sig, bkg = (float(i) for i in args.add_outlier_plot.split(','))
     pad2.cd()
+    pad2.Draw("Y+")
+    cst.Draw("Y+")
 
     #l = TLine(0., 0.5, 1., 0.5)
     #l.Draw("same")
@@ -477,6 +482,13 @@ if args.add_outlier_plot:
     sig_hist.SetMinimum(y_min)
     sig_hist.SetLineColor(colors['red'])
     sig_hist.SetLineWidth(3)
+
+    # the Y axis title
+    sig_hist.GetYaxis().SetTitle("Fraction of events")
+    sig_hist.GetYaxis().SetTitleFont(args.fonts1)
+    sig_hist.GetYaxis().SetTitleOffset(2.5)
+    sig_hist.GetYaxis().SetTitleSize(args.font_size_axes_titles)
+    sig_hist.GetYaxis().SetLabelSize(0.)
 
     # remove ticks
     sig_hist.GetXaxis().SetTickLength(0.)
@@ -500,9 +512,10 @@ if args.add_outlier_plot:
     sig_hist.GetXaxis().SetBinLabel(1, "untagged")
     sig_hist.LabelsOption("v")
 
+    sig_hist.Draw("same Y+") # the Y axis ticks on the right side!!
     sig_hist.Draw("same")
 
-    bkg_hist = TH1D("untagged_events_signal", "", 1, 0., 1.)
+    bkg_hist = TH1D("untagged_events_background", "", 1, 0., 1.)
     bkg_hist.SetBinContent(1, bkg)
     bkg_hist.SetLineColor(colors['black'])
     bkg_hist.SetLineWidth(3)
@@ -538,7 +551,10 @@ if args.left_title:
 #right_title = TPaveText(0.65, 0.91, 0.89, 0.96, "brNDC")
 #right_title = TPaveText(0.65, 0.92, 0.9 + (1 - padsplit_x), 0.97, "brNDC")
 #right_title = TPaveText(0.65, 0.92, 0.89 + (1 - padsplit_x), 0.97, "brNDC")
-right_title = TPaveText(0.65, 0.92, 0.99, 0.97, "brNDC")
+if args.add_outlier_plot:
+    right_title = TPaveText(0.65, 0.92, 0.945, 0.97, "brNDC")
+else:
+    right_title = TPaveText(0.65, 0.92, 0.99, 0.97, "brNDC")
 right_title.SetTextAlign(33)
 right_title.SetMargin(0)
 right_title.AddText("(13 TeV)")

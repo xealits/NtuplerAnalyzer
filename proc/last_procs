@@ -1,3 +1,40 @@
+# figures for the thesis
+# from the mets..
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test13 --distrs bunchCONTROLMET --chans mu_sel,mu_sel_ss,el_sel,el_sel_ss,mu_preselCand,mu_preselCand_ss,el_preselCand,el_preselCand_ss,wjets_mu,wjets_mu_ss,wjets_el,wjets_el_ss,tt_elmu --distributions met_c,met_f,met_f2 --sys NOMINAL,TOPPTUp
+
+# nvtx
+python loop_selections.py --options " --wjets-nup-cut " --nt v37 --proc test13 --distrs bunchCONTROLNVTX --chans mu_sel,mu_sel_ss,el_sel,el_sel_ss,mu_selVloose,mu_selVloose_ss,el_selVloose,el_selVloose_ss --distributions nbjets,nrjets,nvtx --sys NOMINAL,PUUp,PUDown
+
+make batch_plots
+split -l 1500 batch_jobs/submit batch_jobs/submit.
+source batch_jobs/submit.aa
+source batch_jobs/submit.ab
+
+# 
+python genjobs.py v37 processing2NVTX --dsets-info-filename dsets_info_old.yaml --do-W-stitching channels_nom_sys_muon_sel_main --submit queue --batch-system qsub   --dtags Data13TeV_SingleElectron2016B_03Feb2017_ver2,Data13TeV_SingleElectron2016D_03Feb2017_v1,Data13TeV_SingleElectron2016F_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver2,Data13TeV_SingleElectron2016C_03Feb2017_v1,Data13TeV_SingleElectron2016E_03Feb2017_v1,Data13TeV_SingleElectron2016G_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver3,Data13TeV_SingleMuon2016B_03Feb2017_ver2,Data13TeV_SingleMuon2016D_03Feb2017_v1,Data13TeV_SingleMuon2016F_03Feb2017_v1,Data13TeV_SingleMuon2016H_03Feb2017_ver2,Data13TeV_SingleMuon2016C_03Feb2017_v1,Data13TeV_SingleMuon2016E_03Feb2017_v1,Data13TeV_SingleMuon2016G_03Feb2017_v1,Data13TeV_SingleMuon2016H_03Feb2017_ver3
+
+#and MC
+python genjobs.py v37 processing2NVTX --do-W-stitching channels_nom_sys_muon_sel_main --submit queue --batch-system condor --dtags MC2017legacy_Fall17_DYJetsToLL_50toInf_madgraph_ext1_v1,MC2017legacy_Fall17_DYJetsToLL_50toInf_madgraph_v1,MC2017legacy_Fall17_SingleT_tW_5FS_powheg_new_pmx_v1,MC2017legacy_Fall17_SingleT_tW_5FS_powheg_v1,MC2017legacy_Fall17_SingleTbar_tW_5FS_powheg_v1,MC2017legacy_Fall17_SingleTbar_tW_5FS_powheg_v2,MC2017legacy_Fall17_TTTo2L2Nu,MC2017legacy_Fall17_TTToHadronic_13TeV_v2,MC2017legacy_Fall17_TTToSemiLeptonic_new_pmx_v1,MC2017legacy_Fall17_TTToSemiLeptonic_v2,MC2017legacy_Fall17_WJets_madgraph_ext1v2,MC2017legacy_Fall17_WJets_madgraph_v2,MC2017legacy_Fall17_WJets_madgraph_v3
+
+# to the old script interface
+python genjobs.py v37 processing2NVTX --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue   --dtags Data13TeV_SingleElectron2016B_03Feb2017_ver2,Data13TeV_SingleElectron2016D_03Feb2017_v1,Data13TeV_SingleElectron2016F_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver2,Data13TeV_SingleElectron2016C_03Feb2017_v1,Data13TeV_SingleElectron2016E_03Feb2017_v1,Data13TeV_SingleElectron2016G_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver3,Data13TeV_SingleMuon2016B_03Feb2017_ver2,Data13TeV_SingleMuon2016D_03Feb2017_v1,Data13TeV_SingleMuon2016F_03Feb2017_v1,Data13TeV_SingleMuon2016H_03Feb2017_ver2,Data13TeV_SingleMuon2016C_03Feb2017_v1,Data13TeV_SingleMuon2016E_03Feb2017_v1,Data13TeV_SingleMuon2016G_03Feb2017_v1,Data13TeV_SingleMuon2016H_03Feb2017_ver3
+
+python genjobs.py v37 processing2NVTXmc --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue   --dtags MC2016_Summer16_TTJets_powheg  --jobs-name-tag tt
+python genjobs.py v37 processing2NVTXmc --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue   --without-dtags MC2016_Summer16_TTJets_powheg,std_data  --jobs-name-tag mc
+python genjobs.py v37 processing2NVTXmc --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue   --dtags wjets  --jobs-name-tag wjets
+
+# together again, with presel
+python genjobs.py v37 processing3NVTX --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue
+
+# it seems v37 does not contain any presel events
+# v39 should have
+python genjobs.py v39 processing2NVTX --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue
+#   --dtags Data13TeV_SingleElectron2016B_03Feb2017_ver2,Data13TeV_SingleElectron2016D_03Feb2017_v1,Data13TeV_SingleElectron2016F_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver2,Data13TeV_SingleElectron2016C_03Feb2017_v1,Data13TeV_SingleElectron2016E_03Feb2017_v1,Data13TeV_SingleElectron2016G_03Feb2017_v1,Data13TeV_SingleElectron2016H_03Feb2017_ver3,Data13TeV_SingleMuon2016B_03Feb2017_ver2,Data13TeV_SingleMuon2016D_03Feb2017_v1,Data13TeV_SingleMuon2016F_03Feb2017_v1,Data13TeV_SingleMuon2016H_03Feb2017_ver2,Data13TeV_SingleMuon2016C_03Feb2017_v1,Data13TeV_SingleMuon2016E_03Feb2017_v1,Data13TeV_SingleMuon2016G_03Feb2017_v1,Data13TeV_SingleMuon2016H_03Feb2017_ver3
+# ERROR:root:no directory ./gstore_outdirs/v39/SingleMuon/Ntupler_v39_Data13TeV_SingleMuon2016H_03Feb2017_ver3/
+# and estra MC is missing
+
+
+
 # check tt-tW interference effect
 python genjobs.py v37p3 p1interference  --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --dtags MC2016_Summer16_SingleT_tW_5FS_powheg_DS          --jobs-name-tag tt
 python genjobs.py v37p3 p1interference  --options no_prop_lepjets --do-W-stitching --metmuegclean false channels_nom_sys_muon_sel_main --submit queue         --dtags MC2016_Summer16_SingleTbar_tW_5FS_powheg_DS       --jobs-name-tag tt

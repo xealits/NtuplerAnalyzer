@@ -21,6 +21,8 @@ ymin2 = (ctypes.c_double * n)()
 ymax2 = (ctypes.c_double * n)()
 
 
+
+
 parser = argparse.ArgumentParser(
     formatter_class = argparse.RawDescriptionHelpFormatter,
     description = "plot the NLL scans for the given fitting release",
@@ -38,6 +40,10 @@ parser.add_argument("--canvas-size", type=int,  default=800,   help="the size of
 parser.add_argument("--left-title",  type=str,  default='CMS', help="the text of the left title")
 parser.add_argument("--left-title-below", action='store_true', help="draw the title inside the figure frame")
 
+parser.add_argument("--add-brazil", action='store_true', help="draw the brazil plot bands for the observed data")
+
+parser.add_argument("--mark-dileptons", type=float, help="add the arrow to mark the cross section in dileptons")
+
 parser.add_argument("--title-x",    type=str,   default='\\text{visible cross section [pb]}', help="the name tag of the fit")
 parser.add_argument("--offset-x",   type=float,  default=0.8, help='')
 parser.add_argument("--offset-y",   type=float,  default=0.8, help='')
@@ -54,11 +60,31 @@ else:
 
 logging.info("importing ROOT")
 import ROOT
-from ROOT import TCanvas, TGraph, TLine, gStyle, gROOT, gPad, TFile, TTree, TPaveText, TLegend, kBlack, TColor, kGray
+from ROOT import TCanvas, TGraph, TLine, TArrow, gStyle, gROOT, gPad, TFile, TTree, TPaveText, TLegend, kBlack, kBlue, TColor, kGray
 #include "TGraph.h"
 #include "TAxis.h"
 #include "TH1.h"
 logging.info("done")
+
+'''
+void redrawBorder()
+{
+   // this little macro redraws the axis tick marks and the pad border lines.
+   gPad->Update();
+   gPad->RedrawAxis();
+   TLine l;
+   l.DrawLine(gPad->GetUxmin(), gPad->GetUymax(), gPad->GetUxmax(), gPad->GetUymax());
+   l.DrawLine(gPad->GetUxmax(), gPad->GetUymin(), gPad->GetUxmax(), gPad->GetUymax());
+}
+'''
+
+def redrawBorder():
+   # this little macro redraws the axis tick marks and the pad border lines.
+   gPad.Update()
+   gPad.RedrawAxis()
+   l = TLine()
+   l.DrawLine(gPad.GetUxmin(), gPad.GetUymax(), gPad.GetUxmax(), gPad.GetUymax())
+   l.DrawLine(gPad.GetUxmax(), gPad.GetUymin(), gPad.GetUxmax(), gPad.GetUymax())
 
 gStyle.SetTitleFontSize(args.font_size)
 gROOT.ForceStyle()
@@ -137,7 +163,8 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
 
    #c1 = TCanvas("c1","Expected Bias Band Graph",200,10,800,800);
    c1 = TCanvas("c1","Expected Bias Band Graph",200,10, args.canvas_size, args.canvas_size);
-   c1.DrawFrame(0.85,0.75,1.15,1.25);
+   c1.cd()
+   frame = c1.DrawFrame(0.85,0.75,1.15,1.25);
 
    gStyle.SetTitleW(0.7) # //per cent of the pad width
    gStyle.SetTitleH(0.5) # //per cent of the pad height
@@ -296,16 +323,90 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
                l.Draw('same')
            print "drew line", y
 
+
    if plot_expected and plot_data:
+      #c1.cd()
       print "plotting both"
       exp_g_full.SetLineStyle(7)
 
       if not drawn:
           exp_g_full .Draw("ap") # this cast makes the following work
-          exp_g_full .Draw("L")
+          #exp_g_full .Draw("L")
+          drawn=True
       else:
           exp_g_full .Draw("same ap")
           exp_g_full .Draw("same L")
+
+      # the brazil plot behind observed
+      if args.add_brazil:
+          print("BRAZIL PLOT")
+          # get the X values
+          # -- scan the possible range
+          brazil_step = 1
+          brazil_x_for_level_4 = [x for x in range(650, 950, brazil_step) if g_full.Eval(x) < 4.]
+          brazil_x_for_level_1 = [x for x in range(650, 950, brazil_step) if g_full.Eval(x) < 1.]
+
+          N_4 = len(brazil_x_for_level_4)
+          N_1 = len(brazil_x_for_level_1)
+          yellow = TGraph(2*N_4)    # yellow band
+          green  = TGraph(2*N_1)    # green band
+
+          # fill the graphs
+          for i, x in enumerate(brazil_x_for_level_4):
+              yellow.SetPoint(i,           x, g_full.Eval(x))
+              yellow.SetPoint(2*N_4 -1 -i, x, 0.)
+
+          # fill the graphs
+          for i, x in enumerate(brazil_x_for_level_1):
+              green.SetPoint(i,           x, g_full.Eval(x))
+              green.SetPoint(2*N_1 -1 -i, x, 0.)
+
+          # draw filled areas
+          yellow.SetFillColor(ROOT.kOrange)
+          yellow.SetLineColor(ROOT.kOrange)
+          yellow.SetFillStyle(1001)
+
+          green.SetFillColor(ROOT.kGreen+1)
+          green.SetLineColor(ROOT.kGreen+1)
+          green.SetFillStyle(1001)
+
+          if not drawn:
+              print "DRAW ANEW"
+              #yellow.Draw('ap') # this cast makes the following work
+              yellow.Draw('AF')
+              green.Draw('same F')
+              drawn=True
+          else:
+              print "DRAW ONTOP"
+              #yellow.Draw('same ap')
+              yellow.Draw('same F')
+              green.Draw('same F')
+
+      # now the axis ticks are covered by the plot
+      #frame = c.DrawFrame(1.4,0.001, 4.1, 10)
+      #frame.GetYaxis().CenterTitle()
+      #frame.GetYaxis().SetTitleSize(0.05)
+      #frame.GetXaxis().SetTitleSize(0.05)
+      #frame.GetXaxis().SetLabelSize(0.04)
+      #frame.GetYaxis().SetLabelSize(0.04)
+      #frame.GetYaxis().SetTitleOffset(0.9)
+      #frame.GetXaxis().SetNdivisions(508)
+      #frame.GetYaxis().CenterTitle(True)
+      #frame.GetYaxis().SetTitle("95% upper limit on #sigma / #sigma_{SM}")
+      ##    frame.GetYaxis().SetTitle("95% upper limit on #sigma #times BR / (#sigma #times BR)_{SM}")
+      #frame.GetXaxis().SetTitle("background systematic uncertainty [%]")
+      #frame.SetMinimum(0)
+      #frame.SetMaximum(max(up2s)*1.05)
+      #frame.GetXaxis().SetLimits(min(values),max(values))
+
+      ##frame = c1.GetFrame()
+      #frame = c1.GetPad(0).GetFrame()
+      #ROOT.gPad.SetTicks(1,1)
+
+      #frame.Draw("sameaxis")
+      #frame.Draw("same")
+
+      redrawBorder()
 
       if args.horizontal_lines:
          for y in [float(s) for s in args.horizontal_lines.split(',')]:
@@ -314,8 +415,15 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
              l.Draw('same L')
              print "drew line", y
 
-      exp_g_full .Draw("same ap")
+      #exp_g_full .Draw("same ap")
+      #exp_g_full .Draw("same")
       exp_g_full .Draw("same L")
+
+      #plotted = ''
+      #plotted += '_exp' if plot_expected else ''
+      #plotted += '_obs' if plot_data else ''
+      #c1.SaveAs("uncertainty_scans_%s_%s%s.%s" % (args.fit_release, chan, plotted, args.output_type))
+      #return None
 
       #exp_g_full .Draw("ap") # this cast makes the following work
       #exp_g_full .Draw("L")
@@ -326,9 +434,25 @@ def plot(chan, plot_expected, plot_data, report_lumi=True):
       #leg.AddEntry(exp_g_full, "exp. full unc.", "L")
       #leg.AddEntry(exp_g_stat, "exp. stat unc.", "L")
 
-      g_full .Draw("L same")
+          #leg.AddEntry(l, "Dileptons", "L")
+
+      g_full .Draw("same L")
       #g_notau.Draw("L same")
       #g_stat .Draw("L same")
+
+      # to mark the dileptons
+      if args.mark_dileptons:
+          #l = TArrow(args.mark_dileptons, 0.02, args.mark_dileptons, 5., 0.05, "<|")
+          l = TArrow(args.mark_dileptons, 0.5, args.mark_dileptons, 5., 0.05, "<|")
+          #l = TArrow(x, ymin, x, ymax, 0.05, "<|")
+          l.SetAngle(40)
+          l.SetLineWidth(1)
+
+          #l.SetAngle(40)
+          #l.SetLineWidth(0)
+          ##l.SetFillColor(2)
+          #l.SetFillColor(kBlue)
+          l.Draw()
 
       leg.AddEntry(g_full, "Observed", "L")
       #leg.AddEntry(g_full, "fitted full unc.", "L")

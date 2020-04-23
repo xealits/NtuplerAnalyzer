@@ -108,7 +108,7 @@ parser.add_argument("-f", "--form-shapes", action='store_true', help="plot the s
 #parser.add_argument("-e", "--shape-evolution", type=str, default='usual', help="plot the same distr in different channels normalized to 1")
 parser.add_argument("--processes", type=str, default='all', help="set processes to consider (all by default)")
 
-parser.add_argument("--data-nick", type=str, default='data', help="data nick")
+parser.add_argument("--data-nick", type=str, default='data_other', help="data nick")
 
 parser.add_argument("--exp-legend",   action='store_true', help="experimentary legend drawing")
 parser.add_argument("--top-legend",   action='store_true', help="draw legend at the top")
@@ -1414,7 +1414,7 @@ else:
 
     if args.ratio and args.plot:
         pad1 = TPad("pad1","This is pad1", 0., 0.3, pad_right_edge, 1.)
-        pad2 = TPad("pad2","This is pad2", 0., 0.0, pad_right_edge, 0.3)
+        pad2 = TPad("pad2","This is pad2", 0., 0.0, pad_right_edge, 0.29)
 
         # trying to draw the axis labels on top of histograms
         pad1.GetFrame().SetFillColor(42)
@@ -1824,7 +1824,7 @@ else:
 
     right_title.SetTextAlign(33)
     right_title.SetMargin(0)
-    right_title.AddText("%s fb^{-1} (13 TeV)" % (args.lumi / 1000. if args.lumi else args.lumi_label))
+    right_title.AddText("%s fb^{-1} (13 TeV)" % (args.lumi / 1000. if not args.lumi_label else args.lumi_label))
     right_title.SetTextFont(132)
     right_title.SetFillColor(0)
 
