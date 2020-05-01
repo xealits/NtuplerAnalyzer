@@ -682,6 +682,18 @@ struct sv_pair geometrical_SV(
 			}
 		}
 
+	// 3)
+	// here I basically correct the impact parameters b
+	// the original impact parameters contain a large uncertainty along Z axis -- they are mostly smeared along the Z
+	// so in the calculation of the intersection points for the tracks I use b_long_perp-s instead of b_vec-s
+	// and the original tracks
+	//
+	// b_long_perp is the projection of the impact vector on the track in the transverse plane with respect to the tau flight vector
+	// so it is collinear with the track component in the plane,
+	// exactly as it must be according to the decay geometry:
+	// the track, the impact parameter, and the tau flight vector lie in one plane
+	//
+	// in order to do this:
 	// and to optimal direction
 	// find perpendicular b-s
 	TVector3 b_long1 = max_average * (b_vec1.Dot(max_average));
@@ -753,6 +765,7 @@ struct sv_pair geometrical_SV(
 	//dB = b_perp3 - b_perp1;
 	//double x31 = dV.Dot(dB) / dV.Mag2();
 
+	// 4)
 	// the best point calculation with projected b-s
 	TVector3 dV = t1 - t2;
 	TVector3 dB1 = b_long_perp1 - b_long_perp2;
@@ -2783,9 +2796,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	if (!isMC)
 		{
 		// event is good if all filters ar true
-		NT_filters_hbhe             = utils::passTriggerPatterns(patFilters, "Flag_HBHENoiseFilter*", "Flag_HBHENoiseIsoFilter*");
-		NT_filters_ecalDeadCellTrig = utils::passTriggerPatterns(patFilters, "Flag_EcalDeadCellTriggerPrimitiveFilter*");
+		// 
 		NT_filters_good_vertices    = utils::passTriggerPatterns(patFilters, "Flag_goodVertices");
+		// https://twiki.cern.ch/twiki/bin/view/CMS/HCALNoiseFilterRecipe
+		NT_filters_hbhe             = utils::passTriggerPatterns(patFilters, "Flag_HBHENoiseFilter*", "Flag_HBHENoiseIsoFilter*");
+		// https://indico.cern.ch/event/401529/contributions/1845064/attachments/804310/1102311/EcalTPFilterpresentation-4.pdf
+		NT_filters_ecalDeadCellTrig = utils::passTriggerPatterns(patFilters, "Flag_EcalDeadCellTriggerPrimitiveFilter*");
 		NT_filters_eebad            = utils::passTriggerPatterns(patFilters, "Flag_eeBadScFilter");
 		NT_filters_halo             = utils::passTriggerPatterns(patFilters, "Flag_globalTightHalo2016Filter");
 		NT_filters_halo_super       = utils::passTriggerPatterns(patFilters, "Flag_globalSuperTightHalo2016Filter");
