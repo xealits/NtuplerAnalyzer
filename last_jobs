@@ -1,3 +1,10 @@
+# special run with tau parameters
+for c in /TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM /TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM
+do
+python make_crab_cfgs.py --output-site T2_CH_CERNBOX --dataset-reco-name 2017legacy $c 94vTesting1 tauID
+done | tee cur_jobs
+
+
 # corrections for optimization study 2
 for c in `cat dsets_all_usual_mc_2017legacy_preliminarySet2`
 do

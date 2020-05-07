@@ -32,6 +32,13 @@ void save_final_cands(const reco::Candidate * part,
 	std::vector<int>& provenance_ids,
 	int provenance_id);
 
+void save_final_cands(const reco::Candidate * part,
+	std::vector<LorentzVector>& saved_particles,
+	std::vector<int>& provenance_ids,
+	std::vector<int>& final_state_pdg_ids,
+	std::vector<int>& intermediate_meson_pdg_ids,
+	int provenance_id);
+
 // sumup visible momenta of gen tau products
 void sum_final_cands(
 	const reco::Candidate * part,

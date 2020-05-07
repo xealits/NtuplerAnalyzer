@@ -253,6 +253,18 @@ Int_t_in_NTuple(OUTNTUPLE, gen_t_w_decay_id) // = id of lepton (+-11/13/15, sign
 //     (no overlaps with lepton id-s)
 Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_decay_id)
 
+// analysis hadronic W decays in ttbar, recording the intermediate mesons
+Int_t_in_NTuple(OUTNTUPLE, gen_t_w_decay_id_q0) // = quark PDG ID if W decays hadronically
+Int_t_in_NTuple(OUTNTUPLE, gen_t_w_decay_id_q1)
+Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_decay_id_q0)
+Int_t_in_NTuple(OUTNTUPLE, gen_tb_w_decay_id_q1)
+
+VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_gid_w_prods_pdg)
+VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_tb_gid_w_prods_pdg)
+
+VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_t_gid_w_prods_intermediate)
+VECTOR_PARAMs_in_NTuple (OUTNTUPLE, Int_t, gen_tb_gid_w_prods_intermediate)
+
 // The general gen-level ID of the generated sub-process.
 // It works for any hard process, not only ttbar, that has up to 2 leptons in the final state
 // by recording the IDs of the leptons in the final state.
@@ -612,6 +624,8 @@ VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_decayMode)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_IDmedium_discr)
 
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen_provenance)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t,   tau_matching_gen_intermediate)
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_matching_gen_dR)
 
 // tau gen matches in DY and TT for studying the momentum transition at different stages
@@ -663,6 +677,11 @@ VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationGamma            , std::vec
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationNeutr_tau_index  , std::vector<int>)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationNeutr_pdgId      , std::vector<int>)
 VECTOR_OBJECTs_in_NTuple(OUTNTUPLE, tau_all_isolationNeutr            , std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >>)
+
+// charged iso impact params
+//VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_isoCharged_rawimpacts)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_isoCharged_closest_to_SV_length)
+VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Float_t, tau_isoCharged_closest_to_SV)
 
 
 VECTOR_PARAMs_in_NTuple(OUTNTUPLE, Int_t, tau_n_signalCands)

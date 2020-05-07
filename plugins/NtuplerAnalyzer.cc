@@ -286,6 +286,8 @@ struct gen_matching {
 	//Int_t sum;
 	Int_t closest;
 	Float_t dR;
+	Int_t provenance_id;
+	Int_t intermediate_meson_id;
 };
 
 struct gen_matching match_to_gen(const LorentzVector& p4,
@@ -300,12 +302,15 @@ struct gen_matching match_to_gen(const LorentzVector& p4,
 	vector<int>& gid_tau3ch,
 	vector<int>& gid_taulep,
 	vector<int>& gid_w_prods,
+	vector<int>& gid_w_prods_intermediate,
 	vector<int>& gid_b_prods)
 
 {
 Float_t min_dR = 9999.;
 Float_t dR_cut = 0.4;
 Int_t   min_id = 0;
+Int_t   min_provenance_id = 0;
+Int_t   min_intermediate_meson_id = 0;
 //LorentzVector min_p4(0., 0., 0., 0.);
 
 edm::LogInfo ("Demo") << "act gen sizes " << gen_leps.size() << gen_taus.size() << gen_tau3ch.size() << gen_w_prods.size() << gen_b_prods.size();
@@ -330,8 +335,8 @@ for (unsigned int i = 0; i<gen_leps.size(); i++)
 	if (dR < dR_cut && dR < min_dR)
 		{
 		min_dR = dR;
-		int id = gid_leps[i];
-		min_id = (id > 0 ? gen_id : -gen_id);
+		min_provenance_id = gid_leps[i];
+		min_id = (min_provenance_id > 0 ? gen_id : -gen_id);
 		//min_p4 = gen_leps[i];
 		}
 	}
@@ -343,8 +348,8 @@ for (unsigned int i = 0; i<gen_taus.size(); i++)
 	if (dR < dR_cut && dR < min_dR)
 		{
 		min_dR = dR;
-		int id = gid_taus[i];
-		min_id = (id > 0 ? gen_id : -gen_id);
+		min_provenance_id = gid_taus[i];
+		min_id = (min_provenance_id > 0 ? gen_id : -gen_id);
 		//min_p4 = gen_taus[i];
 		}
 	}
@@ -356,8 +361,8 @@ for (unsigned int i = 0; i<gen_tau3ch.size(); i++)
 	if (dR < dR_cut && dR < min_dR)
 		{
 		min_dR = dR;
-		int id = gid_tau3ch[i];
-		min_id = (id > 0 ? gen_id : -gen_id);
+		min_provenance_id = gid_tau3ch[i];
+		min_id = (min_provenance_id > 0 ? gen_id : -gen_id);
 		//min_p4 = gen_tau3ch[i];
 		}
 	}
@@ -369,8 +374,8 @@ for (unsigned int i = 0; i<gen_taulep.size(); i++)
 	if (dR < dR_cut && dR < min_dR)
 		{
 		min_dR = dR;
-		int id = gid_taulep[i];
-		min_id = (id > 0 ? gen_id : -gen_id);
+		min_provenance_id = gid_taulep[i];
+		min_id = (min_provenance_id > 0 ? gen_id : -gen_id);
 		//min_p4 = gen_taulep[i];
 		}
 	}
@@ -382,9 +387,10 @@ for (unsigned int i = 0; i<gen_w_prods.size(); i++)
 	if (dR < dR_cut && dR < min_dR)
 		{
 		min_dR = dR;
-		int id = gid_w_prods[i];
-		min_id = (id > 0 ? gen_id : -gen_id);
+		min_provenance_id = gid_w_prods[i];
+		min_id = (min_provenance_id > 0 ? gen_id : -gen_id);
 		//min_p4 = gen_w_prods[i];
+		min_intermediate_meson_id = gid_w_prods_intermediate[i];
 		}
 	}
 
@@ -395,14 +401,14 @@ for (unsigned int i = 0; i<gen_b_prods.size(); i++)
 	if (dR < dR_cut && dR < min_dR)
 		{
 		min_dR = dR;
-		int id = gid_b_prods[i];
-		min_id = (id > 0 ? gen_id : -gen_id);
+		min_provenance_id = gid_b_prods[i];
+		min_id = (min_provenance_id > 0 ? gen_id : -gen_id);
 		//min_p4 = gen_b_prods[i];
 		}
 	}
 
 //struct gen_matching match = {.closest=min_id, .dR=min_dR, .p4=min_p4};
-struct gen_matching match = {.closest=min_id, .dR=min_dR};
+struct gen_matching match = {.closest=min_id, .dR=min_dR, .provenance_id=min_provenance_id, .intermediate_meson_id=min_intermediate_meson_id};
 return match;
 }
 
@@ -1555,6 +1561,12 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// save the corresponding ID of the particle
 	// -- to match b to W+ and b-bar to W- etc
 	vector<int>           gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods;
+	// intermediate provenance for W products: to record heavy mesons in ttbar decay only
+	// = heavy meson pdgID in the decay chain W->meson->w final state
+	// heavy meson PDG IDs are: 4xx for D, 5xx for B
+	// otherwise = 0
+	vector<int>           gid_w_prods_pdg;
+	vector<int>           gid_w_prods_intermediate;
 
 	bool isTTSignal = false;
 
@@ -2199,7 +2211,20 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					if (decay_id == 1)
 						{
 						LogInfo ("Demo") << "W was not leptonic";
-						save_final_cands(W_final, gen_w_prods, gid_w_prods, W_final->pdgId());
+						save_final_cands(W_final, gen_w_prods, gid_w_prods, gid_w_prods_pdg, gid_w_prods_intermediate, W_final->pdgId());
+						//
+						// save hadronic decay ID
+						if (id>0)
+							{
+							NT_gen_t_w_decay_id_q0  = W_final->daughter(0)->pdgId();
+							NT_gen_t_w_decay_id_q1  = W_final->daughter(1)->pdgId();
+							}
+						else
+							{
+							NT_gen_tb_w_decay_id_q0 = W_final->daughter(0)->pdgId();
+							NT_gen_tb_w_decay_id_q1 = W_final->daughter(1)->pdgId();
+							}
+						//gid_w_prods_intermediate
 						LogInfo ("Demo") << "processed hadronic W";
 						//NT_gen_match_w_id.push_back(id); // TODO: remake the saving important gen particloes
 						}
@@ -2503,6 +2528,23 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			if (isTT)
 				{
+				// hadronic W decay products
+				// sort them out
+				for (unsigned int i=0; i<gid_w_prods.size(); i++)
+					{
+					int provenance_w_id = gid_w_prods[i];
+					if (provenance_w_id>0)
+						{
+						NT_gen_t_gid_w_prods_pdg.push_back(gid_w_prods_pdg[i]);
+						NT_gen_t_gid_w_prods_intermediate.push_back(gid_w_prods_intermediate[i]);
+						}
+					else
+						{
+						NT_gen_tb_gid_w_prods_pdg.push_back(gid_w_prods_pdg[i]);
+						NT_gen_tb_gid_w_prods_intermediate.push_back(gid_w_prods_intermediate[i]);
+						}
+					}
+
 				// lepton+tauh decay
 				isTTSignal |= (abs(NT_gen_t_w_decay_id) == 11 || abs(NT_gen_t_w_decay_id) == 13)   && (abs(NT_gen_tb_w_decay_id) > 15*15);
 				isTTSignal |= (abs(NT_gen_tb_w_decay_id) == 11 || abs(NT_gen_tb_w_decay_id) == 13) && (abs(NT_gen_t_w_decay_id) > 15*15);
@@ -3324,7 +3366,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_passIso.push_back(patUtils::passIso(selMuons[l], patUtils::llvvMuonIso::Tight, patUtils::CutVersion::Moriond17Cut));
 		if (isMC)
 			{
-			struct gen_matching match = match_to_gen(selMuons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods);
+			struct gen_matching match = match_to_gen(selMuons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_w_prods_intermediate, gid_b_prods);
 			NT_lep_matching_gen   .push_back(match.closest);
 			NT_lep_matching_gen_dR.push_back(match.dR);
 			if (isDY || isTT)
@@ -3386,7 +3428,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_passIso.push_back(patUtils::passIso(selElectrons[l], patUtils::llvvElecIso::Tight, patUtils::CutVersion::Moriond17Cut, NT_fixedGridRhoFastjetAll));
 		if (isMC)
 			{
-			struct gen_matching match = match_to_gen(selElectrons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods);
+			struct gen_matching match = match_to_gen(selElectrons[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_w_prods_intermediate, gid_b_prods);
 			NT_lep_matching_gen   .push_back(match.closest);
 			NT_lep_matching_gen_dR.push_back(match.dR);
 
@@ -3441,7 +3483,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_alliso_matched_HLT_dR.push_back(match_to_HLTs.dR);
 		if (isMC)
 			{
-			struct gen_matching match = match_to_gen(selElectrons_allIso[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods);
+			struct gen_matching match = match_to_gen(selElectrons_allIso[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_w_prods_intermediate, gid_b_prods);
 			NT_lep_alliso_matching_gen   .push_back(match.closest);
 			NT_lep_alliso_matching_gen_dR.push_back(match.dR);
 			}
@@ -3461,7 +3503,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_lep_alliso_matched_HLT_dR.push_back(match_to_HLTs.dR);
 		if (isMC)
 			{
-			struct gen_matching match = match_to_gen(selMuons_allIso[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods);
+			struct gen_matching match = match_to_gen(selMuons_allIso[l].p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_w_prods_intermediate, gid_b_prods);
 			NT_lep_alliso_matching_gen   .push_back(match.closest);
 			NT_lep_alliso_matching_gen_dR.push_back(match.dR);
 			}
@@ -3941,7 +3983,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 			LogInfo ("Demo") << "match gen to jets";
 			LogInfo ("Demo") << "gen sizes " << gen_leps.size() << gen_taus.size() << gen_tau3ch.size() << gen_w_prods.size() << gen_b_prods.size();
 			// match to GENPRODUCTS
-			struct gen_matching match = match_to_gen(jet.p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods);
+			struct gen_matching match = match_to_gen(jet.p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_w_prods_intermediate, gid_b_prods);
 			NT_jet_matching_gen   .push_back(match.closest);
 			NT_jet_matching_gen_dR.push_back(match.dR);
 			LogInfo ("Demo") << "matched gen";
@@ -4262,8 +4304,10 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		if (isMC)
 			{
 			LogInfo ("Demo") << "gen match to tau";
-			struct gen_matching match = match_to_gen(tau.p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_b_prods);
+			struct gen_matching match = match_to_gen(tau.p4(), gen_leps, gen_taus, gen_tau3ch, gen_taulep, gen_w_prods, gen_b_prods, gid_leps, gid_taus, gid_tau3ch, gid_taulep, gid_w_prods, gid_w_prods_intermediate, gid_b_prods);
 			NT_tau_matching_gen   .push_back(match.closest);
+			NT_tau_matching_gen_provenance   .push_back(match.provenance_id);
+			NT_tau_matching_gen_intermediate .push_back(match.intermediate_meson_id);
 			NT_tau_matching_gen_dR.push_back(match.dR);
 
 			if (isDY || isTT)
@@ -4335,7 +4379,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			// rebuild tau tracks (supposed o be more precise)
 			// match allTracks (not pvTracks) to tau tracks
-			std::vector<reco::TransientTrack> transTracks_tau;  
+			std::vector<reco::TransientTrack> transTracks_tau;
 
 			for (reco::CandidatePtrVector::const_iterator itr = sigCands.begin(); itr != sigCands.end(); ++itr)
 				{
@@ -4468,6 +4512,41 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 					min_dR_ss2 = dR_ss2;
 					matched_track_SS2 = i;
 					}
+
+				}
+
+			// match to iso cands too
+			//vector<math::XYZPointD> iso_charged_cands_impact_params;
+			vector<ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>, ROOT::Math::DefaultCoordinateSystemTag>> iso_charged_cands_impact_params;
+			vector<double> iso_charged_cands_track_match_dRs;
+			//if (i == 0) for(const auto& cand: tau.isolationChargedHadrCands())
+			if (i == 0) for(size_t iso_i=0; iso_i<tau.isolationChargedHadrCands().size(); iso_i++)
+				{
+				auto cand = tau.isolationChargedHadrCands()[iso_i];
+				double dR_min = 999.;
+				ROOT_TTree_vector3D impact_param;
+				for(size_t ti=0; ti<track_cands->size(); ++ti)
+					{
+					if (ti == matched_track_SS2 || ti == matched_track_SS1 || ti == matched_track_OS) continue;
+					if((*track_cands)[ti].charge()==0 || (*track_cands)[ti].vertexRef().isNull()) continue;
+					if(!(*track_cands)[ti].bestTrack()) continue;
+
+					auto track = (*track_cands)[ti].bestTrack();
+					auto cand_p4 = cand->p4();
+					double dR  = sqrt(pow(track->eta() - cand_p4.eta(), 2) + pow(track->phi() - cand_p4.phi(), 2));
+					if (dR < dR_min)
+						{
+						dR_min = dR;
+						auto ref_vertex    = *((*track_cands)[ti].vertexRef());
+						//auto closest_point = (*track_cands)[ti].vertex();
+						// they say this is deprecated, use referencePoint() instead 
+						// http://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_9_4_0/doc/html/d8/df2/classreco_1_1TrackBase.html#ad1df46f9140d1bb01b0cc83c55b7ba83
+						auto closest_point = (*track_cands)[ti].vertex();
+						impact_param = closest_point - ref_vertex.position();
+						}
+					}
+				iso_charged_cands_track_match_dRs .push_back(dR_min);
+				iso_charged_cands_impact_params   .push_back(impact_param);
 				}
 
 			// tracks are matched, save parameters
@@ -4561,6 +4640,39 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 				NT_tau_SV_fit_track_SS1_matched_track_b.back(), NT_tau_SV_fit_track_SS1_matched_track_p3.back());
 			NT_tau_SV_geom_flightLen.push_back(geom_SV.flightLength);
 			NT_tau_SV_geom_flightLenSign.push_back(geom_SV.flightLengthSignificance);
+
+			// check the compatibility of iso candidates to the SV
+			// only first tau
+			//if (i == 0) for(const auto& cand: tau.isolationChargedHadrCands())
+			if (i == 0) for(size_t iso_i=0; iso_i<tau.isolationChargedHadrCands().size(); iso_i++)
+				{
+				TVector3 tau_vec, impact_vec, track_vec;
+				ROOT_TTree_vector3D iso_impact = iso_charged_cands_impact_params[iso_i];
+				ROOT_TTree_vector3D iso_track  = tau.isolationChargedHadrCands()[iso_i]->p4().Vect();
+				impact_vec .SetXYZ(iso_impact.X(), iso_impact.Y(), iso_impact.Z());
+				track_vec  .SetXYZ(iso_track.X(),  iso_track.Y(),  iso_track.Z());
+
+				// ROOT_TTree_vector3D
+				// use perpendicular component of the impact with respect to tauh as the direction
+				auto tau_vect = tau.p4().Vect();
+				tau_vec.SetXYZ(tau_vect.X(), tau_vect.Y(), tau_vect.Z());
+				tau_vec.SetMag(1);
+				TVector3 b_long = tau_vec * (impact_vec.Dot(tau_vec));
+				TVector3 b_perp = impact_vec - b_long;
+
+				// closest approach of the isolation track with the tau direction
+				TVector3 projection_on_track = -b_perp + tau_vec*geom_SV.flightLength;
+
+				track_vec.SetMag(1); // length to the closest approach is not known
+				double length_to_closest = projection_on_track.Dot(track_vec);
+				// it must be positive, close to SV length
+				// maybe not 
+				track_vec.SetMag(length_to_closest);
+				double closest_distance = (track_vec - projection_on_track).Mag();
+
+				NT_tau_isoCharged_closest_to_SV_length.push_back(length_to_closest);
+				NT_tau_isoCharged_closest_to_SV.push_back(closest_distance);
+				}
 			}
 		else
 			{

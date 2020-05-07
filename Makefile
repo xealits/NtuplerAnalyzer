@@ -8,6 +8,8 @@
 #echo foo & \
 #
 
+compile:
+	scram b -j 5
 
 submit: job_file=cur_jobs
 submit:

@@ -453,6 +453,78 @@ if (!(pdgId == 12 || pdgId == 14 || pdgId == 16))
 // strictly sequencial algorithm
 }
 
+/** for W decay final states finds the PDG ID of the intermediate B or D meson, or returns 0
+ */
+int intermediate_meson_pdg_id(const reco::Candidate * part)
+{
+unsigned int abs_pdgId = abs(part->pdgId());
+if (abs_pdgId > 400 && abs_pdgId < 600) // D or B meson
+	return part->pdgId();
+else
+	{
+	if (!part->mother()) return 0; // root particle in the gen decay tree
+	unsigned int abs_mother_pdgId = abs(part->mother()->pdgId()); // is there really only 1 mother in QCD interactions?
+	if (abs_mother_pdgId == 24)
+		return 0; // stop on W boson -- works only for W decays!
+	else
+		{
+		return intermediate_meson_pdg_id(part->mother());
+		}
+	}
+}
+
+/*
+ * also save PDGs of the final state products
+ */
+void save_final_cands(
+	const reco::Candidate * part,
+	vector<LorentzVector>& saved_particles,
+	vector<int>& provenance_ids,
+	vector<int>& PDG_ids,
+	vector<int>& intermediate_meson_PDG_ids,
+	int provenance_id
+	)
+
+{
+unsigned int pdgId = abs(part->pdgId());
+if (!(pdgId == 12 || pdgId == 14 || pdgId == 16))
+	{
+	if (part->numberOfDaughters() == 0) // it's a final state
+		{
+		// check if it is not already saved
+		LorentzVector part_p4 = part->p4();
+		//if (std::find(saved_particles.begin(), saved_particles.end(), part) == saved_particles.end())
+		bool dR_match_to_saved = false;
+		for (int saved_p=0; saved_p<saved_particles.size(); saved_p++)
+			{
+			dR_match_to_saved = reco::deltaR(part_p4, saved_particles[saved_p]) < 0.0001;
+			if (dR_match_to_saved) break;
+			}
+		// then save it:
+		if (! dR_match_to_saved)
+			{
+			saved_particles.push_back(part_p4);
+			provenance_ids.push_back(provenance_id);
+			PDG_ids.push_back(part->pdgId());
+
+			// find the intermediate meson if it exists, and save its id
+			if (abs(provenance_id) == 24)
+				intermediate_meson_PDG_ids.push_back(intermediate_meson_pdg_id(part));
+			}
+		}
+	else
+		{
+		// loop through daughters
+		for (int d_i=0; d_i < part->numberOfDaughters(); d_i++)
+			{
+			const reco::Candidate * daughter = part->daughter(d_i);
+			save_final_cands(daughter, saved_particles, provenance_ids, PDG_ids, intermediate_meson_PDG_ids, provenance_id);
+			}
+		}
+	}
+// strictly sequencial algorithm
+}
+
 
 
 // Top pT reweighting
