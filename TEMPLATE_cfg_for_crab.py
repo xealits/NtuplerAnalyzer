@@ -144,6 +144,10 @@ import UserCode.NtuplerAnalyzer.CfiFile_cfi as std_config
 process.ntupler = std_config.ntupler
 
 # set name customizations per dataset per reco
+#
+# when new taus are embedded on the fly -- MVA tau ID is reprocessed or DeepTau is calculated,
+# update the default name of tau objects in the ntupler (slimmedTaus)
+# with whatever is defined for this dataset in parameter_names_per_reco
 parameter_names_per_reco = std_config.parameter_names_per_reco
 
 for param_name, param_defs in parameter_names_per_reco.items():
@@ -246,16 +250,29 @@ process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
 # for legacy 2016 the tau ID must be recomputed
 # setting up the recomputation here
 
-from UserCode.NtuplerAnalyzer.runTauIdMVA import *
+#from UserCode.NtuplerAnalyzer.runTauIdMVA import *
+#
+#na = TauIDEmbedder(process, cms, # pass tour process object
+#    #cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2017v2_WPEff90"), # <-- a tricky place, WP90 is ??
+#    #cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2017v2_WPEff70"),
+#    tauIdDiscrMVA_2017_version = 'v2',
+#    debug  = True,
+#    toKeep = ["2017v2"] # pick the one you need: ["2017v1", "2017v2", "newDM2017v2", "dR0p32017v2", "2016v1", "newDM2016v1"]
+#)
+#na.runTauID()
 
-na = TauIDEmbedder(process, cms, # pass tour process object
-    #cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2017v2_WPEff90"), # <-- a tricky place, WP90 is ??
-    #cut = cms.string("RecoTauTag_tauIdMVAIsoDBoldDMwLT2017v2_WPEff70"),
-    tauIdDiscrMVA_2017_version = 'v2',
-    debug  = True,
-    toKeep = ["2017v2"] # pick the one you need: ["2017v1", "2017v2", "newDM2017v2", "dR0p32017v2", "2016v1", "newDM2016v1"]
-)
-na.runTauID()
+# DeepTau formula
+# https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePFTauID#Running_of_the_DNN_based_tau_ID
+if dataset_reco_name in ('2016legacy', '2017legacy'):
+    updatedTauName = process.ntupler.tau_objs_name.value() # "slimmedTausNewID" #name of pat::Tau collection with new tau-Ids
+    import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
+    tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, debug = False,
+                        updatedTauName = updatedTauName,
+                        toKeep = [ "2017v2", # "dR0p32017v2", "newDM2017v2", #classic MVAIso tau-Ids
+                                   "deepTau2017v1", #deepTau Tau-Ids
+                                   "DPFTau_2016_v0", #D[eep]PF[low] Tau-Id
+                                   ])
+    tauIdEmbedder.runTauID()
 
 
 """
