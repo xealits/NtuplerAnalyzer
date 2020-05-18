@@ -2951,15 +2951,15 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	bool low_pt_muTrigger1 = !withHLT, low_pt_muTrigger2 = !withHLT, low_pt_muTrigger = !withHLT;
 	bool jetsHLT140 = !withHLT, jetsHLT400 = !withHLT, jetsHLT = !withHLT;
 
-	bool NT_HLT_el_low_pt32         = !withHLT;
-	bool NT_HLT_el_low_pt28_150HT   = !withHLT;
-	bool NT_HLT_el_low_pt30_35PFJet = !withHLT;
-	bool NT_HLT_elmu_1 = !withHLT;
-	bool NT_HLT_elmu_2 = !withHLT;
-	bool NT_HLT_elmu_3 = !withHLT;
-	bool NT_HLT_elmu_4 = !withHLT;
-	bool NT_HLT_elel_1 = !withHLT;
-	bool NT_HLT_elel_2 = !withHLT;
+	NT_HLT_el_low_pt32         = !withHLT;
+	NT_HLT_el_low_pt28_150HT   = !withHLT;
+	NT_HLT_el_low_pt30_35PFJet = !withHLT;
+	NT_HLT_elmu_1 = !withHLT;
+	NT_HLT_elmu_2 = !withHLT;
+	NT_HLT_elmu_3 = !withHLT;
+	NT_HLT_elmu_4 = !withHLT;
+	NT_HLT_elel_1 = !withHLT;
+	NT_HLT_elel_2 = !withHLT;
 
 	// TriggerNames for TriggerObjects --------------------
 
@@ -3153,7 +3153,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	if(vtxHandle.isValid() ) vtx = *vtxHandle;
 	NT_nvtx = vtx.size();
 
-	reco::Vertex goodPV;                                                                                                                                                                                               
+	reco::Vertex goodPV;
 	unsigned int nGoodPV(0);
 	for(size_t ivtx=0; ivtx<vtx.size(); ++ivtx)
 		{
@@ -4667,7 +4667,7 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		{
 		/*
 		 * tau ID preselection
-		 * about twice less events then in our preselection with b jets
+		 * about twice less events than in our preselection with b jets
 		 *
 		 * should contain good WJets control sample
 		 */
