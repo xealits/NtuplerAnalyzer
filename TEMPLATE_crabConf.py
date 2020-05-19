@@ -1,4 +1,4 @@
-from CRABClient.UserUtilities import config, getUsernameFromSiteDB
+from CRABClient.UserUtilities import config, getUsername # getUsernameFromSiteDB
 config = config()
 
 
@@ -29,7 +29,7 @@ else:
     config.Data.unitsPerJob = 500 # should produce 100-150MB job output files for tauID+Dilep record
     config.Data.lumiMask = LumiMask
 
-config.Data.outLFNDirBase = '/store/user/%s/%s/' % (getUsernameFromSiteDB(), version)
+config.Data.outLFNDirBase = '/store/user/%s/%s/' % (getUsername(), version)
 config.Data.publication = False
 config.Data.outputDatasetTag = request_tag
 
