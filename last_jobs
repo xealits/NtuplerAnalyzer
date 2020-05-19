@@ -4,6 +4,8 @@ do
 python make_crab_cfgs.py --output-site T2_CH_CERNBOX --dataset-reco-name 2017legacy $c 94v15 Dilep,tauID
 done | tee cur_jobs
 
+make submit
+
 
 # for optimization study 2
 for c in `cat dsets_all_usual_mc_2017legacy_preliminarySet2`

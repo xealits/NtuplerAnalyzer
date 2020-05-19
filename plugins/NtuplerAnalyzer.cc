@@ -4166,6 +4166,20 @@ NtuplerAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 		NT_tau_p4.push_back(tau.p4());
 		NT_tau_IDlev.push_back(IDlev);
 		NT_tau_IDmedium_discr.push_back(tau.tauID(tau_Medium_ID));
+
+		// DeepTau
+		NT_tau_deep_rawdiscr.push_back(tau.tauID("byDeepTau2017v1VSjetraw"));
+		//
+		// by[WP]DeepTau2017v1VSjet
+		// WP=VVVLoose,VVLoose,VLoose,Loose,Medium,Tight,VTight,VVTight
+		Int_t deep_IDlev = 0;
+		if      (tau.tauID("byVVTightDeepTau2017v1VSjet")  >= 0.5) deep_IDlev = 5;
+		else if (tau.tauID("byTightDeepTau2017v1VSjet")    >= 0.5) deep_IDlev = 4;
+		else if (tau.tauID("byMediumDeepTau2017v1VSjet")   >= 0.5) deep_IDlev = 3;
+		else if (tau.tauID("byVLooseDeepTau2017v1VSjet")   >= 0.5) deep_IDlev = 2;
+		else if (tau.tauID("byVVVLooseDeepTau2017v1VSjet") >= 0.5) deep_IDlev = 1;
+		NT_tau_deep_IDlev.push_back(deep_IDlev);
+
 		NT_tau_leading_track_pt.push_back(tau.userFloat("leading_track_pt"));
 		NT_tau_leadChargedHadrCand_pt.push_back(tau.userFloat("leadChargedHadrCand_pt"));
 		NT_tau_leadNeutralCand_pt.push_back(tau.userFloat("leadNeutralCand_pt"));
