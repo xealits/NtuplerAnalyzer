@@ -1246,7 +1246,7 @@ triggerObjects_InputTag (iConfig.getParameter<edm::InputTag>("hlt_objects"))
 	bool period_2016EF  = !isMC && (dtag.Contains("2016E") || dtag.Contains("2016F"));
 	bool period_2016G   = !isMC && (dtag.Contains("2016G"));
 	bool period_2016H   = !isMC && (dtag.Contains("2016H"));
-	is2017legacy = dtag.Contains("2017legacy");
+	is2017legacy = dtag.Contains("2017legacy") ||  dtag.Contains("MC2017");
 	is2017data   = !isMC && (dtag.Contains("2017")); // TODO check 2017 data handling with dtag
 	bool period_2017legacyB  = !isMC &&  dtag.Contains("2017B");
 	bool period_2017legacyC  = !isMC &&  dtag.Contains("2017C");
